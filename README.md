@@ -64,9 +64,15 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Posts**
 
+- N/A
+
 #### **Authentication**
 
+- N/A
+
 #### **Theme & Customization**
+
+- N/A
 
 ## Roadmap
 
