@@ -20,10 +20,11 @@ class ThunderApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Thunder',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      darkTheme: ThemeData(
         useMaterial3: true,
+        brightness: Brightness.dark,
       ),
+      themeMode: ThemeMode.dark,
       home: const Thunder(),
     );
   }

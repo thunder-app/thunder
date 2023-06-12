@@ -6,8 +6,8 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/communities/bloc/communities_bloc.dart';
 
-class CommunityPage extends StatelessWidget {
-  const CommunityPage({super.key});
+class CommunitiesPage extends StatelessWidget {
+  const CommunitiesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
