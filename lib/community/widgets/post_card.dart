@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -114,7 +115,13 @@ class PostCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () {},
+          onTap: () {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => PostPage(postId: post.id),
+              ),
+            );
+          },
         ),
       ],
     );
