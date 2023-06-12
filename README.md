@@ -54,7 +54,7 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 
 ## Features
 
-Thunder is currently undergoing **active development**, and it is possible that not all features have been fully implemented at this stage. This repository is also currently main
+Thunder is currently undergoing **active development**, and it is possible that not all features have been fully implemented at this stage.
 
 Due to this, significant breaking changes may occur between versions. The next section summarizes the features that are currently implemented.
 
