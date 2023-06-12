@@ -40,20 +40,17 @@
   <br>
 </div>
 
-<br />
 <hr />
-<div>
-Hey there! Just wanted to let you know that this repo is currently my personal side project to build something cool while learning about Dart and Flutter.
-
-<br />
-As the sole maintainer of this project, progress might be a bit slow. But hey, here's where you can make a difference! Whether you're proficient at Flutter and Dart, or just simply interested in the project, I would be absolutely thrilled if you could lend a hand and contribute.
-
-<br />
+<p>
+Hey there! Just wanted to let you know that this repo is currently my personal side project to build something cool while learning about Dart and Flutter.  
+</p>
+<p>
+As the sole maintainer of this project, progress might be a bit slow. But hey, here's where you can make a difference! Whether you're proficient at Flutter and Dart, or just simply interested in the project, I would be absolutely thrilled if you could lend a hand and contribute.  
+</p>
+<p>
 Your passion, contributions, and ideas would be greatly appreciated! Together, let's make this project shine. 🚀 💻
-</div>
-
+</p>
 <hr />
-<br />
 
 ## Features
 
