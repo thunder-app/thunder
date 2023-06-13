@@ -8,9 +8,10 @@
 /// mo - month
 /// y - year
 String formatTimeToString({required String dateTime}) {
-  DateTime date = DateTime.parse(dateTime);
+  DateTime date = DateTime.parse(dateTime).toUtc();
+  DateTime now = DateTime.now().toUtc();
 
-  Duration difference = DateTime.now().difference(date.toLocal());
+  Duration difference = now.difference(date).abs();
 
   int durationInMinutes = difference.inMinutes;
   int durationInHours = difference.inHours;

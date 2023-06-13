@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/utils/date_time.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -12,10 +13,10 @@ import 'package:thunder/post/widgets/comment_view.dart';
 import 'package:thunder/shared/media_view.dart';
 
 class PostPageSuccess extends StatefulWidget {
-  final Post post;
+  final PostView postView;
   final List<CommentViewTree> comments;
 
-  const PostPageSuccess({super.key, required this.post, this.comments = const []});
+  const PostPageSuccess({super.key, required this.postView, this.comments = const []});
 
   @override
   State<PostPageSuccess> createState() => _PostPageSuccessState();
@@ -53,21 +54,43 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(widget.post.name, style: theme.textTheme.titleMedium),
+                  child: Text(widget.postView.post.name, style: theme.textTheme.titleMedium),
                 ),
-                MediaView(post: widget.post),
-                if (widget.post.body != null)
+                Row(
+                  children: [
+                    Text(
+                      widget.postView.community.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    Text(
+                      ' · ${formatTimeToString(dateTime: widget.postView.post.published)} · ',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    Text(
+                      widget.postView.creator.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                  ],
+                ),
+                MediaView(post: widget.postView.post),
+                if (widget.postView.post.body != null)
                   Padding(
                     padding: const EdgeInsets.symmetric(vertical: 8.0),
                     child: MarkdownBody(
-                      data: widget.post.body!,
+                      data: widget.postView.post.body!,
                       onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
                       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                         p: theme.textTheme.bodyMedium,
@@ -78,6 +101,47 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                       ),
                     ),
                   ),
+                Divider(),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.arrow_upward,
+                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.arrow_downward,
+                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.star_border_rounded,
+                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.reply_rounded,
+                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {},
+                      icon: Icon(
+                        Icons.ios_share_rounded,
+                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                      ),
+                    )
+                  ],
+                )
               ],
             ),
           ),

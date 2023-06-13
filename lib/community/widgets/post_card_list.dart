@@ -3,8 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lemmy/lemmy.dart';
-
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -50,7 +48,6 @@ class _PostCardListState extends State<PostCardList> {
         controller: _scrollController,
         itemCount: widget.postViews?.length ?? 0,
         itemBuilder: (context, index) {
-          print(widget.postViews![index].post.url);
           return PostCard(postView: widget.postViews![index]);
         },
       ),
