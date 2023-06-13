@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/account/account.dart';
 import 'package:thunder/communities/bloc/communities_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/communities/pages/communities_page.dart';
@@ -25,38 +27,57 @@ class _ThunderState extends State<Thunder> {
         BlocProvider<ThunderBloc>(create: (context) => ThunderBloc()),
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
         BlocProvider<CommunityBloc>(create: (context) => CommunityBloc()),
+        BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
       ],
-      child: Scaffold(
-        bottomNavigationBar: NavigationBar(
-          labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-          onDestinationSelected: (int index) {
-            setState(() => currentPageIndex = index);
-          },
-          selectedIndex: currentPageIndex,
-          destinations: const <Widget>[
-            NavigationDestination(
-              icon: Icon(Icons.dashboard_rounded),
-              label: 'Feed',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.search_rounded),
-              label: 'Communities',
-            ),
-            NavigationDestination(
-              icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
-            ),
-          ],
-        ),
-        body: <Widget>[
-          const CommunityPage(),
-          const CommunitiesPage(),
-          Container(
-            color: Colors.blue,
-            alignment: Alignment.center,
-            child: const Text('Page 3'),
-          ),
-        ][currentPageIndex],
+      child: BlocBuilder<AuthBloc, AuthState>(
+        builder: (context, state) {
+          switch (state.status) {
+            case AuthStatus.initial:
+              context.read<AuthBloc>().add(CheckAuth());
+              return const Center(child: CircularProgressIndicator());
+            case AuthStatus.loading:
+              return const Center(child: CircularProgressIndicator());
+            case AuthStatus.success:
+              return Scaffold(
+                bottomNavigationBar: NavigationBar(
+                  labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+                  onDestinationSelected: (int index) {
+                    setState(() => currentPageIndex = index);
+                  },
+                  selectedIndex: currentPageIndex,
+                  destinations: const <Widget>[
+                    NavigationDestination(
+                      icon: Icon(Icons.dashboard_rounded),
+                      label: 'Feed',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.search_rounded),
+                      label: 'Communities',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.person_rounded),
+                      label: 'Account',
+                    ),
+                    NavigationDestination(
+                      icon: Icon(Icons.settings_rounded),
+                      label: 'Settings',
+                    ),
+                  ],
+                ),
+                body: <Widget>[
+                  const CommunityPage(),
+                  const CommunitiesPage(),
+                  const AccountPage(),
+                  Container(
+                    alignment: Alignment.center,
+                    child: const Text('Settings'),
+                  ),
+                ][currentPageIndex],
+              );
+            case AuthStatus.failure:
+              return const Center(child: Text('Something went wrong'));
+          }
+        },
       ),
     );
   }
