@@ -14,7 +14,7 @@ class AuthState extends Equatable {
   }) {
     return AuthState(
       status: status ?? this.status,
-      isLoggedIn: isLoggedIn ?? this.isLoggedIn,
+      isLoggedIn: isLoggedIn ?? false,
     );
   }
 

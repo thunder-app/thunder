@@ -9,7 +9,21 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
+    on<ClearAuth>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      prefs.remove('jwt');
+      prefs.remove('instance');
+      prefs.remove('username');
+
+      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+    });
+
     on<CheckAuth>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading));
+
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? jwt = prefs.getString('jwt');
       String? instance = prefs.getString('instance');
@@ -53,6 +67,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('jwt', loginResponse.jwt!);
         await prefs.setString('instance', instance);
+        await prefs.setString('username', event.username);
 
         return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: true));
       } catch (e) {

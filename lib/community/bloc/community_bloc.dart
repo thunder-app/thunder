@@ -48,6 +48,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             limit: 30,
             sort: event.sortType ?? SortType.Active,
             type_: event.listingType ?? ListingType.Local,
+            communityId: event.communityId,
           ),
         );
 
@@ -83,6 +84,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           postViews: posts,
           page: 2,
           listingType: event.listingType ?? ListingType.Local,
+          communityId: event.communityId,
         ));
       }
 
@@ -93,6 +95,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           limit: 30,
           sort: event.sortType ?? SortType.Active,
           type_: state.listingType,
+          communityId: state.communityId,
         ),
       );
 

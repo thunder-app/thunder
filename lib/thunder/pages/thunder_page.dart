@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/account.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/communities/bloc/communities_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -28,6 +29,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
         BlocProvider<CommunityBloc>(create: (context) => CommunityBloc()),
         BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
+        BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
       ],
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
@@ -38,6 +40,7 @@ class _ThunderState extends State<Thunder> {
             case AuthStatus.loading:
               return const Center(child: CircularProgressIndicator());
             case AuthStatus.success:
+              if (state.isLoggedIn) context.read<AccountBloc>().add(GetAccountInformation());
               return Scaffold(
                 bottomNavigationBar: NavigationBar(
                   labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
