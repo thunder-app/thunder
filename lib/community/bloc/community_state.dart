@@ -8,12 +8,12 @@ class CommunityState extends Equatable {
   final CommunityStatus status;
 
   final int page;
-  final List<PostView>? postViews;
+  final List<PostViewMedia>? postViews;
 
   CommunityState copyWith({
     CommunityStatus? status,
     int? page,
-    List<PostView>? postViews,
+    List<PostViewMedia>? postViews,
   }) {
     return CommunityState(
       status: status ?? this.status,
