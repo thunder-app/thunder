@@ -10,7 +10,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 part 'community_event.dart';
 part 'community_state.dart';
 
-const throttleDuration = Duration(milliseconds: 100);
+const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -25,7 +25,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   }
 
   Future<void> _getCommunityPostsEvent(event, emit) async {
-    print('fetching');
     Lemmy lemmy = LemmyClient.instance;
 
     if (event.reset) {
@@ -42,7 +41,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       return emit(state.copyWith(
         status: CommunityStatus.success,
         postViews: getPostsResponse.posts,
-        page: state.page + 1,
+        page: 2,
       ));
     }
 

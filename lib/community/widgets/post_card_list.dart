@@ -49,6 +49,7 @@ class _PostCardListState extends State<PostCardList> {
         controller: _scrollController,
         itemCount: widget.postViews?.length ?? 0,
         itemBuilder: (context, index) {
+          print(widget.postViews![index].post.url);
           return PostCard(postView: widget.postViews![index]);
         },
       ),
