@@ -27,6 +27,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider<CommunityBloc>(create: (context) => CommunityBloc()),
       ],
       child: Scaffold(
+        appBar: AppBar(),
         bottomNavigationBar: NavigationBar(
           labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
           onDestinationSelected: (int index) {
