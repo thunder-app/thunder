@@ -87,6 +87,13 @@ class PostCard extends StatelessWidget {
                                   ),
                                   text: formatTimeToString(dateTime: post.published),
                                 ),
+                                const SizedBox(width: 14.0),
+                                if (post.featuredCommunity == true || post.featuredLocal == true)
+                                  Icon(
+                                    Icons.campaign_rounded,
+                                    size: 24.0,
+                                    color: Colors.green.shade800,
+                                  ),
                               ],
                             ),
                           ],

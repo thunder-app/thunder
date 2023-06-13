@@ -29,10 +29,7 @@ class PostPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 case PostStatus.refreshing:
                 case PostStatus.success:
-                  Post? post = state.postView?.post;
-
-                  if (post == null) return const Center(child: CircularProgressIndicator());
-                  return PostPageSuccess(post: post, comments: state.comments);
+                  return PostPageSuccess(postView: state.postView!, comments: state.comments);
                 case PostStatus.failure:
                   return const Center(child: Text('Something went wrong'));
                 case PostStatus.empty:

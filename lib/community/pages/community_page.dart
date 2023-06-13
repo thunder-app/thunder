@@ -16,19 +16,34 @@ class SortTypeItem {
 
 const sortTypeItems = [
   SortTypeItem(
-    sortType: SortType.Active,
-    icon: Icons.rocket_launch_rounded,
-    label: 'Active',
-  ),
-  SortTypeItem(
     sortType: SortType.Hot,
     icon: Icons.local_fire_department_rounded,
     label: 'Hot',
   ),
   SortTypeItem(
+    sortType: SortType.Active,
+    icon: Icons.rocket_launch_rounded,
+    label: 'Active',
+  ),
+  SortTypeItem(
     sortType: SortType.New,
     icon: Icons.auto_awesome_rounded,
     label: 'New',
+  ),
+  SortTypeItem(
+    sortType: SortType.Old,
+    icon: Icons.history_toggle_off_rounded,
+    label: 'Old',
+  ),
+  SortTypeItem(
+    sortType: SortType.MostComments,
+    icon: Icons.comment_bank_rounded,
+    label: 'Most Comments',
+  ),
+  SortTypeItem(
+    sortType: SortType.NewComments,
+    icon: Icons.add_comment_rounded,
+    label: 'New Comments',
   ),
 ];
 
@@ -56,33 +71,58 @@ class _CommunityPageState extends State<CommunityPage> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              PopupMenuButton<SortType>(
+              IconButton(
                 icon: Icon(sortTypeIcon),
-                position: PopupMenuPosition.under,
-                initialValue: sortType,
-                onSelected: (SortType value) {
-                  setState(() {
-                    sortType = value;
-                    sortTypeIcon = sortTypeItems.firstWhere((element) => element.sortType == value).icon;
-                  });
-
-                  context.read<CommunityBloc>().add(GetCommunityPostsEvent(sortType: sortType, reset: true));
-                },
-                itemBuilder: (BuildContext context) => sortTypeItems
-                    .map((item) => PopupMenuItem<SortType>(
-                          value: item.sortType,
-                          child: Row(
-                            children: [
-                              Icon(item.icon),
-                              const SizedBox(width: 12.0),
-                              Text(
-                                item.label,
-                                style: theme.textTheme.bodyLarge,
+                onPressed: () {
+                  showModalBottomSheet<void>(
+                    showDragHandle: true,
+                    context: context,
+                    builder: (BuildContext bottomSheetContext) {
+                      return SingleChildScrollView(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.max,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'Sort Options',
+                                  style: theme.textTheme.titleLarge!.copyWith(),
+                                ),
                               ),
-                            ],
-                          ),
-                        ))
-                    .toList(),
+                            ),
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: sortTypeItems.length,
+                              itemBuilder: (BuildContext itemBuilderContext, int index) {
+                                return ListTile(
+                                  title: Text(
+                                    sortTypeItems[index].label,
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                  leading: Icon(sortTypeItems[index].icon),
+                                  onTap: () {
+                                    setState(() {
+                                      sortType = sortTypeItems[index].sortType;
+                                      sortTypeIcon = sortTypeItems[index].icon;
+                                    });
+
+                                    context.read<CommunityBloc>().add(GetCommunityPostsEvent(sortType: sortTypeItems[index].sortType, reset: true));
+                                    Navigator.of(context).pop();
+                                  },
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 16.0),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                },
               ),
               const SizedBox(width: 8.0),
             ],

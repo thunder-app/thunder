@@ -60,11 +60,13 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Communities**
 
-- Browse communities
+- Browse local community's posts
 
 #### **Posts**
 
-- N/A
+- See a specific post and its associated comments
+- Infinite scrolling for posts
+- Infinite scrolling for comments
 
 #### **Authentication**
 
