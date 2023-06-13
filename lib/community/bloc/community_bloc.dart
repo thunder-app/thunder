@@ -28,11 +28,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _getCommunityPostsEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VotePostEvent>(
+      _votePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
-  Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.loading));
+      emit(state.copyWith(status: CommunityStatus.refreshing));
 
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
@@ -40,7 +44,48 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? jwt = prefs.getString('jwt');
 
+      if (jwt == null) return;
+
+      PostResponse postResponse = await lemmy.likePost(
+        CreatePostLike(
+          auth: jwt,
+          postId: event.postId,
+          score: event.score,
+        ),
+      );
+
+      PostView updatedPostView = postResponse.postView;
+
+      int existingPostViewIndex = state.postViews!.indexWhere((postView) => postView.post.id == event.postId);
+      state.postViews![existingPostViewIndex].counts = updatedPostView.counts;
+      state.postViews![existingPostViewIndex].post = updatedPostView.post;
+      state.postViews![existingPostViewIndex].myVote = updatedPostView.myVote;
+
+      return emit(state.copyWith(status: CommunityStatus.success));
+    } on DioException catch (e) {
+      print(e);
+      if (e.type == DioExceptionType.receiveTimeout) {
+        emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Network timeout connecting to Lemmy instance'));
+      } else {
+        emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
+      }
+    } catch (e) {
+      print(e);
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
+    try {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      Lemmy lemmy = lemmyClient.lemmy;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String? jwt = prefs.getString('jwt');
+
       if (event.reset) {
+        emit(state.copyWith(status: CommunityStatus.loading));
+
         GetPostsResponse getPostsResponse = await lemmy.getPosts(
           GetPosts(
             auth: jwt,
