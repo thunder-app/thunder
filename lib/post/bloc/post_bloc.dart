@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
@@ -34,11 +35,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostEvent(event, emit) async {
     print('fetching post');
     emit(state.copyWith(status: PostStatus.loading));
-    Lemmy lemmy = LemmyClient.instance;
+    LemmyClient lemmyClient = LemmyClient.instance;
+    Lemmy lemmy = lemmyClient.lemmy;
 
-    GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jwt = prefs.getString('jwt');
+
+    GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id, auth: jwt));
     GetCommentsResponse getCommentsResponse = await lemmy.getComments(
       GetComments(
+        auth: jwt,
         postId: event.id,
         sort: CommentSortType.Hot,
         limit: 50,
@@ -60,13 +66,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostCommentsEvent(event, emit) async {
     print('fetching comment - start: ${state.commentCount}/${state.postView!.counts.comments}');
 
-    Lemmy lemmy = LemmyClient.instance;
+    LemmyClient lemmyClient = LemmyClient.instance;
+    Lemmy lemmy = lemmyClient.lemmy;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? jwt = prefs.getString('jwt');
 
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
       GetCommentsResponse getCommentsResponse = await lemmy.getComments(
         GetComments(
+          auth: jwt,
           postId: state.postId ?? event.postId,
           sort: CommentSortType.Hot,
           limit: 50,
@@ -91,12 +101,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     emit(state.copyWith(status: PostStatus.refreshing));
 
-    GetCommentsResponse getCommentsResponse = await lemmy.getComments(GetComments(
-      postId: state.postId ?? event.postId,
-      sort: CommentSortType.Hot,
-      limit: 50,
-      page: state.commentPage,
-    ));
+    GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+      GetComments(
+        auth: jwt,
+        postId: state.postId ?? event.postId,
+        sort: CommentSortType.Hot,
+        limit: 50,
+        page: state.commentPage,
+      ),
+    );
 
     // Build the tree view from the flattened comments
     List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
