@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy/lemmy.dart';
+
+import 'package:thunder/post/widgets/comment_card.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
 
 class CommentSubview extends StatelessWidget {
-  final List<CommentView> comments;
+  final List<CommentViewTree> comments;
+  final int level;
 
-  const CommentSubview({super.key, required this.comments});
+  const CommentSubview({super.key, required this.comments, this.level = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -13,15 +16,7 @@ class CommentSubview extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: comments.length,
       itemBuilder: (context, index) {
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (index == 0) const Divider(),
-            Text(comments[index].comment.content),
-            Divider(),
-          ],
-        );
+        return CommentCard(commentViewTree: comments[index]);
       },
     );
   }

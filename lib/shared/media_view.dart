@@ -1,7 +1,9 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:lemmy/lemmy.dart';
+
 import 'package:url_launcher/url_launcher.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
+import 'package:lemmy/lemmy.dart';
 
 class MediaView extends StatelessWidget {
   final Post post;
@@ -20,8 +22,8 @@ class MediaView extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    print(post.url);
     if (post.url == null) return Container();
+
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: ClipRRect(

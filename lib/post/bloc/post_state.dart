@@ -9,13 +9,13 @@ class PostState extends Equatable {
 
   final int? postId;
   final PostView? postView;
-  final List<CommentView> comments;
+  final List<CommentViewTree> comments;
 
   PostState copyWith({
     required PostStatus status,
     int? postId,
     PostView? postView,
-    List<CommentView>? comments,
+    List<CommentViewTree>? comments,
   }) {
     return PostState(
       status: status,

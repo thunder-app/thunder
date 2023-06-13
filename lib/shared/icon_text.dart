@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class IconText extends StatelessWidget {
-  IconText({
+  const IconText({
     super.key,
     required this.icon,
     required this.text,
@@ -13,7 +13,7 @@ class IconText extends StatelessWidget {
   final String text;
   final Color? textColor;
 
-  double padding;
+  final double padding;
 
   @override
   Widget build(BuildContext context) {
