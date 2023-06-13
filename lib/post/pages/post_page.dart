@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PostPage extends StatelessWidget {
   final int postId;
@@ -43,6 +45,8 @@ class PostPage extends StatelessWidget {
                         Padding(
                           padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Padding(
                                 padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -52,7 +56,17 @@ class PostPage extends StatelessWidget {
                               if (post.body != null)
                                 Padding(
                                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                  child: Text(post.body!),
+                                  child: MarkdownBody(
+                                    data: post.body!,
+                                    onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                      p: theme.textTheme.bodyMedium,
+                                      blockquoteDecoration: const BoxDecoration(
+                                        color: Colors.transparent,
+                                        border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                             ],
                           ),

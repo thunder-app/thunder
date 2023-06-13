@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:lemmy/lemmy.dart';
+
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
@@ -104,7 +106,7 @@ class PostCard extends StatelessWidget {
                           ),
                           IconButton(
                             onPressed: () {},
-                            icon: Icon(Icons.bookmark),
+                            icon: Icon(Icons.star_border_rounded),
                             visualDensity: VisualDensity.compact,
                           ),
                         ],
@@ -116,26 +118,10 @@ class PostCard extends StatelessWidget {
             ),
           ),
           onTap: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => PostPage(postId: post.id),
-              ),
-            );
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostPage(postId: post.id)));
           },
         ),
       ],
     );
-    // return Card(
-    //   child: Column(
-    //     mainAxisAlignment: MainAxisAlignment.start,
-    //     crossAxisAlignment: CrossAxisAlignment.start,
-    //     children: [
-    //       Text(post.name),
-    //       Text(post.embedDescription ?? ''),
-    //       Text(post.embedTitle ?? ''),
-    //       Text(post.embedVideoUrl ?? ''),
-    //     ],
-    //   ),
-    // );
   }
 }

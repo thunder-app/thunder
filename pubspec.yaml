@@ -43,6 +43,9 @@ dependencies:
   flutter_dotenv: ^5.1.0
   cached_network_image: ^3.2.3
   url_launcher: ^6.1.11
+  flutter_markdown: ^0.6.15
+  stream_transform: ^2.1.0
+  bloc_concurrency: ^0.2.2
 
 dev_dependencies:
   flutter_test:

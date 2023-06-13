@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CommentCard extends StatefulWidget {
   const CommentCard({
@@ -124,7 +126,17 @@ class _CommentCardState extends State<CommentCard> {
                       ? Container()
                       : Padding(
                           padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: Text(widget.commentViewTree.comment.content),
+                          child: MarkdownBody(
+                            data: widget.commentViewTree.comment.content,
+                            onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                            styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                              p: theme.textTheme.bodyMedium,
+                              blockquoteDecoration: const BoxDecoration(
+                                color: Colors.transparent,
+                                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                              ),
+                            ),
+                          ),
                         ),
                 ),
               ),
