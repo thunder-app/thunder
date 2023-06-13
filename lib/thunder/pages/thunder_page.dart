@@ -42,6 +42,7 @@ class _ThunderState extends State<Thunder> {
             case AuthStatus.success:
               if (state.isLoggedIn) context.read<AccountBloc>().add(GetAccountInformation());
               return Scaffold(
+                drawer: Drawer(),
                 bottomNavigationBar: NavigationBar(
                   labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
                   onDestinationSelected: (int index) {

@@ -32,6 +32,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     try {
+      emit(state.copyWith(status: CommunityStatus.loading));
+
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
 
@@ -39,8 +41,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       String? jwt = prefs.getString('jwt');
 
       if (event.reset) {
-        emit(state.copyWith(status: CommunityStatus.loading));
-
         GetPostsResponse getPostsResponse = await lemmy.getPosts(
           GetPosts(
             auth: jwt,

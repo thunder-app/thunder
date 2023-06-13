@@ -10,17 +10,22 @@ class PostState extends Equatable {
     this.comments = const [],
     this.commentPage = 1,
     this.commentCount = 0,
+    this.communityId,
+    this.errorMessage,
   });
 
   final PostStatus status;
 
   final int? postId;
+  final int? communityId;
   final PostView? postView;
 
   // Comment related data
   final List<CommentViewTree> comments;
   final int commentPage;
   final int commentCount;
+
+  final String? errorMessage;
 
   PostState copyWith({
     required PostStatus status,
@@ -29,6 +34,8 @@ class PostState extends Equatable {
     List<CommentViewTree>? comments,
     int? commentPage,
     int? commentCount,
+    int? communityId,
+    String? errorMessage,
   }) {
     return PostState(
       status: status,
@@ -37,9 +44,11 @@ class PostState extends Equatable {
       comments: comments ?? this.comments,
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
+      communityId: communityId ?? this.communityId,
+      errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount];
+  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage];
 }
