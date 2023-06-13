@@ -15,6 +15,7 @@ class GetPostEvent extends PostEvent {
 
 class GetPostCommentsEvent extends PostEvent {
   final int? postId;
+  final bool reset;
 
-  const GetPostCommentsEvent({this.postId});
+  const GetPostCommentsEvent({this.postId, this.reset = false});
 }

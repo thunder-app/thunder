@@ -35,6 +35,5 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
   }
 
   // Return the root comments (those with an empty or "0" path)
-  print(commentMap.values);
   return commentMap.values.where((commentView) => commentView.comment.path.isEmpty || commentView.comment.path == '0.${commentView.comment.id}').toList();
 }
