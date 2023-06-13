@@ -15,3 +15,10 @@ class GetCommunityPostsEvent extends CommunityEvent {
 
   const GetCommunityPostsEvent({this.reset = false, this.sortType, this.listingType, this.communityId});
 }
+
+class VotePostEvent extends CommunityEvent {
+  final int postId;
+  final int score;
+
+  const VotePostEvent({required this.postId, required this.score});
+}

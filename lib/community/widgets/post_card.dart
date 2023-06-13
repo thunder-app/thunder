@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/pages/post_page.dart';
@@ -9,15 +11,22 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
-class PostCard extends StatelessWidget {
+class PostCard extends StatefulWidget {
   final PostViewMedia postView;
 
   const PostCard({super.key, required this.postView});
 
   @override
+  State<PostCard> createState() => _PostCardState();
+}
+
+class _PostCardState extends State<PostCard> {
+  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final Post post = postView.post;
+    final Post post = widget.postView.post;
+
+    int? myVote = widget.postView.myVote;
 
     return Column(
       children: [
@@ -34,7 +43,7 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaView(postView: postView),
+                MediaView(postView: widget.postView),
                 Text(
                   post.name,
                   style: theme.textTheme.titleMedium,
@@ -49,7 +58,7 @@ class PostCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              postView.community.name,
+                              widget.postView.community.name,
                               style: theme.textTheme.titleSmall?.copyWith(
                                 fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                                 color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
@@ -60,7 +69,7 @@ class PostCard extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconText(
-                                  text: formatNumberToK(postView.counts.upvotes),
+                                  text: formatNumberToK(widget.postView.counts.upvotes),
                                   icon: Icon(
                                     Icons.arrow_upward,
                                     size: 18.0,
@@ -75,7 +84,7 @@ class PostCard extends StatelessWidget {
                                     size: 17.0,
                                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                                   ),
-                                  text: formatNumberToK(postView.counts.comments),
+                                  text: formatNumberToK(widget.postView.counts.comments),
                                   padding: 5.0,
                                 ),
                                 const SizedBox(width: 10.0),
@@ -103,13 +112,19 @@ class PostCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: myVote == 1 ? 0 : 1));
+                            },
                             icon: Icon(Icons.arrow_upward),
+                            color: myVote == 1 ? Colors.orange : null,
                             visualDensity: VisualDensity.compact,
                           ),
                           IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: myVote == -1 ? 0 : -1));
+                            },
                             icon: Icon(Icons.arrow_downward),
+                            color: myVote == -1 ? Colors.blue : null,
                             visualDensity: VisualDensity.compact,
                           ),
                           IconButton(

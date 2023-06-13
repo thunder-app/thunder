@@ -91,148 +91,161 @@ class _CommunityPageState extends State<CommunityPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return BlocBuilder<CommunityBloc, CommunityState>(
+    return BlocConsumer<CommunityBloc, CommunityState>(
+      listener: (context, state) {
+        if (state.status == CommunityStatus.networkFailure) {
+          SnackBar snackBar = SnackBar(
+            content: Text(state.errorMessage ?? 'No error message available'),
+            behavior: SnackBarBehavior.floating,
+          );
+          WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+        }
+      },
       builder: (context, state) {
-        bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+        return BlocBuilder<CommunityBloc, CommunityState>(
+          builder: (context, state) {
+            bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              state.communityId == null ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : (state.postViews?.first.community.name ?? ''),
-            ),
-            centerTitle: false,
-            toolbarHeight: 70.0,
-            actions: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: Icon(sortTypeIcon),
-                    onPressed: () {
-                      showModalBottomSheet<void>(
-                        showDragHandle: true,
-                        context: context,
-                        builder: (BuildContext bottomSheetContext) {
-                          return SingleChildScrollView(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'Sort Options',
-                                      style: theme.textTheme.titleLarge!.copyWith(),
-                                    ),
-                                  ),
-                                ),
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: sortTypeItems.length,
-                                  itemBuilder: (BuildContext itemBuilderContext, int index) {
-                                    return ListTile(
-                                      title: Text(
-                                        sortTypeItems[index].label,
-                                        style: theme.textTheme.bodyMedium,
+            return Scaffold(
+              appBar: AppBar(
+                title: Text(
+                  state.communityId == null ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : (state.postViews?.first.community.name ?? ''),
+                ),
+                centerTitle: false,
+                toolbarHeight: 70.0,
+                actions: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: Icon(sortTypeIcon),
+                        onPressed: () {
+                          showModalBottomSheet<void>(
+                            showDragHandle: true,
+                            context: context,
+                            builder: (BuildContext bottomSheetContext) {
+                              return SingleChildScrollView(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          'Sort Options',
+                                          style: theme.textTheme.titleLarge!.copyWith(),
+                                        ),
                                       ),
-                                      leading: Icon(sortTypeItems[index].icon),
-                                      onTap: () {
-                                        setState(() {
-                                          sortType = sortTypeItems[index].sortType;
-                                          sortTypeIcon = sortTypeItems[index].icon;
-                                        });
+                                    ),
+                                    ListView.builder(
+                                      shrinkWrap: true,
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      itemCount: sortTypeItems.length,
+                                      itemBuilder: (BuildContext itemBuilderContext, int index) {
+                                        return ListTile(
+                                          title: Text(
+                                            sortTypeItems[index].label,
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                          leading: Icon(sortTypeItems[index].icon),
+                                          onTap: () {
+                                            setState(() {
+                                              sortType = sortTypeItems[index].sortType;
+                                              sortTypeIcon = sortTypeItems[index].icon;
+                                            });
 
-                                        context.read<CommunityBloc>().add(GetCommunityPostsEvent(sortType: sortTypeItems[index].sortType, reset: true));
-                                        Navigator.of(context).pop();
+                                            context.read<CommunityBloc>().add(GetCommunityPostsEvent(sortType: sortTypeItems[index].sortType, reset: true));
+                                            Navigator.of(context).pop();
+                                          },
+                                        );
                                       },
-                                    );
-                                  },
+                                    ),
+                                    const SizedBox(height: 16.0),
+                                  ],
                                 ),
-                                const SizedBox(height: 16.0),
-                              ],
-                            ),
+                              );
+                            },
                           );
                         },
-                      );
-                    },
-                  ),
-                  const SizedBox(width: 8.0),
-                ],
-              )
-            ],
-          ),
-          drawer: Drawer(
-            child: SafeArea(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
-                    child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
-                  ),
-                  Column(
-                    children: destinations.map((Destination destination) {
-                      return DrawerItem(
-                        disabled: destination.listingType == ListingType.Subscribed && isLoggedIn == false,
-                        onTap: () {
-                          context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, listingType: destination.listingType));
-                          Navigator.of(context).pop();
-                        },
-                        label: destination.label,
-                        icon: destination.icon,
-                      );
-                    }).toList(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
-                    child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
-                  ),
-                  (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
-                      ? Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                            child: Scrollbar(
-                              controller: _scrollController,
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                child: ListView.builder(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    itemCount: context.read<AccountBloc>().state.subsciptions.length,
-                                    itemBuilder: (context, index) {
-                                      return TextButton(
-                                        style: TextButton.styleFrom(
-                                          alignment: Alignment.centerLeft,
-                                          minimumSize: const Size.fromHeight(50),
-                                        ),
-                                        onPressed: () {
-                                          context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: context.read<AccountBloc>().state.subsciptions[index].community.id));
-
-                                          Navigator.of(context).pop();
-                                        },
-                                        child: Text(context.read<AccountBloc>().state.subsciptions[index].community.name),
-                                      );
-                                    }),
-                              ),
-                            ),
-                          ),
-                        )
-                      : Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-                          child: Text(
-                            'No subscriptions available',
-                            style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                          ),
-                        )
+                      ),
+                      const SizedBox(width: 8.0),
+                    ],
+                  )
                 ],
               ),
-            ),
-          ),
-          body: SafeArea(child: _getBody(context, state)),
+              drawer: Drawer(
+                child: SafeArea(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+                        child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
+                      ),
+                      Column(
+                        children: destinations.map((Destination destination) {
+                          return DrawerItem(
+                            disabled: destination.listingType == ListingType.Subscribed && isLoggedIn == false,
+                            onTap: () {
+                              context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, listingType: destination.listingType));
+                              Navigator.of(context).pop();
+                            },
+                            label: destination.label,
+                            icon: destination.icon,
+                          );
+                        }).toList(),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+                        child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
+                      ),
+                      (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
+                          ? Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                child: Scrollbar(
+                                  controller: _scrollController,
+                                  child: SingleChildScrollView(
+                                    controller: _scrollController,
+                                    child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const NeverScrollableScrollPhysics(),
+                                        itemCount: context.read<AccountBloc>().state.subsciptions.length,
+                                        itemBuilder: (context, index) {
+                                          return TextButton(
+                                            style: TextButton.styleFrom(
+                                              alignment: Alignment.centerLeft,
+                                              minimumSize: const Size.fromHeight(50),
+                                            ),
+                                            onPressed: () {
+                                              context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: context.read<AccountBloc>().state.subsciptions[index].community.id));
+
+                                              Navigator.of(context).pop();
+                                            },
+                                            child: Text(context.read<AccountBloc>().state.subsciptions[index].community.name),
+                                          );
+                                        }),
+                                  ),
+                                ),
+                              ),
+                            )
+                          : Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                              child: Text(
+                                'No subscriptions available',
+                                style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                              ),
+                            )
+                    ],
+                  ),
+                ),
+              ),
+              body: SafeArea(child: _getBody(context, state)),
+            );
+          },
         );
       },
     );
@@ -248,6 +261,7 @@ class _CommunityPageState extends State<CommunityPage> {
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.refreshing:
+      case CommunityStatus.networkFailure:
       case CommunityStatus.success:
         return PostCardList(postViews: state.postViews);
       case CommunityStatus.empty:
