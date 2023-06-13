@@ -7,4 +7,8 @@ abstract class CommunityEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetCommunityPostsEvent extends CommunityEvent {}
+class GetCommunityPostsEvent extends CommunityEvent {
+  final bool reset;
+
+  const GetCommunityPostsEvent({this.reset = false});
+}

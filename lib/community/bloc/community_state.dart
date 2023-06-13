@@ -13,15 +13,15 @@ class CommunityState extends Equatable {
   CommunityState copyWith({
     CommunityStatus? status,
     int? page,
-    List<PostView>? postView,
+    List<PostView>? postViews,
   }) {
     return CommunityState(
       status: status ?? this.status,
       page: page ?? this.page,
-      postViews: postView ?? this.postViews,
+      postViews: postViews ?? this.postViews,
     );
   }
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [status, page, postViews];
 }

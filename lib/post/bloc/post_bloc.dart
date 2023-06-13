@@ -21,13 +21,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         GetComments(
           postId: event.id,
           sort: CommentSortType.Hot,
+          limit: 50,
         ),
       );
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
 
-      emit(state.copyWith(status: PostStatus.success, postId: event.id, postView: getPostResponse.postView, comments: commentTree));
+      emit(state.copyWith(
+        status: PostStatus.success,
+        postId: event.id,
+        postView: getPostResponse.postView,
+        comments: commentTree,
+      ));
     });
 
     on<GetPostCommentsEvent>((event, emit) async {
