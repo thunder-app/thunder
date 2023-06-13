@@ -37,6 +37,9 @@
 
 <div align="center">
   <br>
+    <img src="./docs/assets/screenshot_2.png" alt="Home Feed" width="150">
+    <img src="./docs/assets/screenshot_1.png" alt="Spark" width="170">
+    <img src="./docs/assets/screenshot_3.png" alt="Sidebar" width="150">
   <br>
 </div>
 
@@ -61,6 +64,7 @@ Due to this, significant breaking changes may occur between versions. The next s
 #### **Communities**
 
 - Browse local community's posts
+- Browse your subscriptions if logged in
 
 #### **Posts**
 
@@ -70,7 +74,7 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Authentication**
 
-- N/A
+- Basic login functionality
 
 #### **Theme & Customization**
 
@@ -78,7 +82,10 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 ## Roadmap
 
-The current focus is to enable users to browse communities, see posts and comments, and be able to authenticate with their accounts.
+The current focus is to provide a MVP to be able to do basic tasks, including
+- browsing through posts, comments, communities and feeds (all, hot, new, etc.)
+- authenticating with your account and seeing subscriptions
+- searching for communities, and basic interaction with them (subscribing to communities, upvoting/downvoting posts, replying to comments)
 
 ## Contributing
 

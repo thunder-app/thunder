@@ -18,7 +18,7 @@ dependencies:
   lemmy:
     git:
       url: https://github.com/hjiangsu/lemmy-dart.git
-      ref: 0.0.7-alpha 
+      ref: 0.0.9-alpha 
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

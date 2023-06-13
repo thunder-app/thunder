@@ -11,6 +11,7 @@ class GetCommunityPostsEvent extends CommunityEvent {
   final bool reset;
   final SortType? sortType;
   final ListingType? listingType;
+  final int? communityId;
 
-  const GetCommunityPostsEvent({this.reset = false, this.sortType, this.listingType});
+  const GetCommunityPostsEvent({this.reset = false, this.sortType, this.listingType, this.communityId});
 }

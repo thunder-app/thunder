@@ -16,3 +16,5 @@ class LoginAttempt extends AuthEvent {
 }
 
 class CheckAuth extends AuthEvent {}
+
+class ClearAuth extends AuthEvent {}
