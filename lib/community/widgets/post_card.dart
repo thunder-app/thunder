@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
@@ -9,7 +10,7 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCard extends StatelessWidget {
-  final PostView postView;
+  final PostViewMedia postView;
 
   const PostCard({super.key, required this.postView});
 
@@ -33,7 +34,7 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaView(post: post),
+                MediaView(postView: postView),
                 Text(
                   post.name,
                   style: theme.textTheme.titleMedium,

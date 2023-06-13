@@ -9,6 +9,7 @@ abstract class CommunityEvent extends Equatable {
 
 class GetCommunityPostsEvent extends CommunityEvent {
   final bool reset;
+  final SortType? sortType;
 
-  const GetCommunityPostsEvent({this.reset = false});
+  const GetCommunityPostsEvent({this.reset = false, this.sortType});
 }

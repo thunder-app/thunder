@@ -7,9 +7,10 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/post_card.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 class PostCardList extends StatefulWidget {
-  final List<PostView>? postViews;
+  final List<PostViewMedia>? postViews;
 
   const PostCardList({super.key, this.postViews});
 

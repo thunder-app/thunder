@@ -4,6 +4,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/core/enums/media_type.dart';
+import 'package:thunder/core/models/media.dart';
+import 'package:thunder/core/models/pictr_media_extension.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -24,7 +28,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
   }
 
-  Future<void> _getCommunityPostsEvent(event, emit) async {
+  Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     Lemmy lemmy = LemmyClient.instance;
 
     if (event.reset) {
@@ -34,13 +38,40 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         GetPosts(
           page: 1,
           limit: 30,
-          sort: SortType.Active,
+          sort: event.sortType ?? SortType.Active,
         ),
       );
 
+      List<PostViewMedia> posts = [];
+
+      getPostsResponse.posts.forEach((PostView postView) async {
+        List<Media> media = [];
+        String? url = postView.post.url;
+
+        if (url != null && PictrsMediaExtension.isPictrsURL(url)) {
+          media = await PictrsMediaExtension.getMediaInformation(url);
+        } else if (url != null) {
+          media.add(Media(originalUrl: url, mediaType: MediaType.link));
+        }
+
+        posts.add(PostViewMedia(
+          post: postView.post,
+          community: postView.community,
+          counts: postView.counts,
+          creator: postView.creator,
+          creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
+          creatorBlocked: postView.creatorBlocked,
+          saved: postView.saved,
+          subscribed: postView.subscribed,
+          read: postView.read,
+          unreadComments: postView.unreadComments,
+          media: media,
+        ));
+      });
+
       return emit(state.copyWith(
         status: CommunityStatus.success,
-        postViews: getPostsResponse.posts,
+        postViews: posts,
         page: 2,
       ));
     }
@@ -49,12 +80,37 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       GetPosts(
         page: state.page,
         limit: 30,
-        sort: SortType.Active,
+        sort: event.sortType ?? SortType.Active,
       ),
     );
 
-    List<PostView> postViews = List.from(state.postViews ?? []);
-    postViews.addAll(getPostsResponse.posts);
+    List<PostViewMedia> posts = [];
+
+    getPostsResponse.posts.forEach((PostView postView) async {
+      List<Media> media = [];
+      String? url = postView.post.url;
+
+      if (url != null && PictrsMediaExtension.isPictrsURL(url)) {
+        media = await PictrsMediaExtension.getMediaInformation(url);
+      }
+
+      posts.add(PostViewMedia(
+        post: postView.post,
+        community: postView.community,
+        counts: postView.counts,
+        creator: postView.creator,
+        creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
+        creatorBlocked: postView.creatorBlocked,
+        saved: postView.saved,
+        subscribed: postView.subscribed,
+        read: postView.read,
+        unreadComments: postView.unreadComments,
+        media: media,
+      ));
+    });
+
+    List<PostViewMedia> postViews = List.from(state.postViews ?? []);
+    postViews.addAll(posts);
 
     emit(state.copyWith(
       status: CommunityStatus.success,
