@@ -7,6 +7,7 @@ import 'package:thunder/communities/bloc/communities_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/search/pages/search_page.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/communities/pages/communities_page.dart';
@@ -55,7 +56,7 @@ class _ThunderState extends State<Thunder> {
                     ),
                     NavigationDestination(
                       icon: Icon(Icons.search_rounded),
-                      label: 'Communities',
+                      label: 'Search',
                     ),
                     NavigationDestination(
                       icon: Icon(Icons.person_rounded),
@@ -69,7 +70,7 @@ class _ThunderState extends State<Thunder> {
                 ),
                 body: <Widget>[
                   const CommunityPage(),
-                  const CommunitiesPage(),
+                  const SearchPage(),
                   const AccountPage(),
                   Container(
                     alignment: Alignment.center,

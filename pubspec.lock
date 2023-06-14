@@ -25,6 +25,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  auto_size_text:
+    dependency: "direct main"
+    description:
+      name: auto_size_text
+      sha256: "3f5261cd3fb5f2a9ab4e2fc3fba84fd9fcaac8821f20a1d4e71f557521b22599"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.0"
   bloc:
     dependency: "direct main"
     description:
@@ -129,6 +137,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
+  csslib:
+    dependency: transitive
+    description:
+      name: csslib
+      sha256: "706b5707578e0c1b4b7550f64078f0a0f19dec3f50a178ffae7006b0a9ca58fb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   cupertino_icons:
     dependency: "direct main"
     description:
@@ -153,6 +169,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.1.0"
+  effective_dart:
+    dependency: transitive
+    description:
+      name: effective_dart
+      sha256: "6a69783c808344084b65667e87ff600823531e95810a8a15882cb542fe22de80"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.3.2"
   equatable:
     dependency: "direct main"
     description:
@@ -161,6 +185,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.5"
+  expandable:
+    dependency: transitive
+    description:
+      name: expandable
+      sha256: "9604d612d4d1146dafa96c6d8eec9c2ff0994658d6d09fed720ab788c7f5afc2"
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.1"
   fake_async:
     dependency: transitive
     description:
@@ -256,8 +288,16 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  html:
+    dependency: "direct main"
+    description:
+      name: html
+      sha256: "3a7812d5bcd2894edf53dfaf8cd640876cf6cef50a8f238745c8b8120ea74d3a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.15.4"
   http:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: http
       sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
@@ -300,8 +340,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.1.1-alpha"
-      resolved-ref: "58f1d252d22b23e114b89b8cdc3ab8d0f7436f4f"
+      ref: "0.1.4-alpha"
+      resolved-ref: cf761666d1d8ae564bd6598f2664ed50de8dc9b6
       url: "https://github.com/hjiangsu/lemmy-dart.git"
     source: git
     version: "1.0.0"
@@ -321,6 +361,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.1.0"
+  markdown_editable_textinput:
+    dependency: "direct main"
+    description:
+      name: markdown_editable_textinput
+      sha256: f52a40c6c9ad21c9fedc09e7f29ac2f173909e255b80f3f668f44be477a8dec6
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   matcher:
     dependency: transitive
     description:
@@ -622,6 +670,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.2"
+  translator:
+    dependency: transitive
+    description:
+      name: translator
+      sha256: "225ee22fc482736c593be5c232c0c5884b16d7cc42945c51ac73d9a0441dddcc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.7"
   typed_data:
     dependency: transitive
     description:
