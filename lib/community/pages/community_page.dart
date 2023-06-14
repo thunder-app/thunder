@@ -139,7 +139,13 @@ class _CommunityPageState extends State<CommunityPage> {
                                                 sortTypeIcon = sortTypeItems[index].icon;
                                               });
 
-                                              context.read<CommunityBloc>().add(GetCommunityPostsEvent(sortType: sortTypeItems[index].sortType, reset: true, communityId: state.communityId));
+                                              context.read<CommunityBloc>().add(
+                                                    GetCommunityPostsEvent(
+                                                      sortType: sortTypeItems[index].sortType,
+                                                      reset: true,
+                                                      communityId: widget.communityId ?? state.communityId,
+                                                    ),
+                                                  );
                                               Navigator.of(context).pop();
                                             },
                                           );
@@ -188,7 +194,7 @@ class _CommunityPageState extends State<CommunityPage> {
       case CommunityStatus.refreshing:
       case CommunityStatus.networkFailure:
       case CommunityStatus.success:
-        return PostCardList(postViews: state.postViews);
+        return PostCardList(postViews: state.postViews, communityId: widget.communityId);
       case CommunityStatus.empty:
       case CommunityStatus.failure:
         return Center(
@@ -213,7 +219,14 @@ class _CommunityPageState extends State<CommunityPage> {
                 const SizedBox(height: 32.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                  onPressed: () => {context.read<CommunityBloc>().add(const GetCommunityPostsEvent(reset: true))},
+                  onPressed: () => {
+                    context.read<CommunityBloc>().add(
+                          GetCommunityPostsEvent(
+                            reset: true,
+                            communityId: widget.communityId,
+                          ),
+                        ),
+                  },
                   child: const Text('Refresh Content'),
                 ),
               ],

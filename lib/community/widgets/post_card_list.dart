@@ -9,8 +9,9 @@ import 'package:thunder/core/models/post_view_media.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
+  final int? communityId;
 
-  const PostCardList({super.key, this.postViews});
+  const PostCardList({super.key, this.postViews, this.communityId});
 
   @override
   State<PostCardList> createState() => _PostCardListState();
@@ -33,7 +34,7 @@ class _PostCardListState extends State<PostCardList> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      context.read<CommunityBloc>().add(const GetCommunityPostsEvent());
+      context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
     }
   }
 
@@ -42,7 +43,7 @@ class _PostCardListState extends State<PostCardList> {
     return RefreshIndicator(
       onRefresh: () async {
         HapticFeedback.mediumImpact();
-        context.read<CommunityBloc>().add(const GetCommunityPostsEvent(reset: true));
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId));
       },
       child: ListView.builder(
         controller: _scrollController,
