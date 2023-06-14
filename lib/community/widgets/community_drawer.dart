@@ -135,7 +135,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                     minimumSize: const Size.fromHeight(50),
                                   ),
                                   onPressed: () {
-                                    context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: context.read<AccountBloc>().state.subsciptions[index].community.id));
+                                    context.read<CommunityBloc>().add(
+                                          GetCommunityPostsEvent(
+                                            reset: true,
+                                            communityId: context.read<AccountBloc>().state.subsciptions[index].community.id,
+                                          ),
+                                        );
 
                                     Navigator.of(context).pop();
                                   },
