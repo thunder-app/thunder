@@ -28,7 +28,6 @@ class _ThunderState extends State<Thunder> {
       providers: [
         BlocProvider<ThunderBloc>(create: (context) => ThunderBloc()),
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
-        BlocProvider<CommunityBloc>(create: (context) => CommunityBloc()),
         BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
         BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
       ],

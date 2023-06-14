@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/utils/debounce.dart';
@@ -147,6 +149,12 @@ class _SearchPageState extends State<SearchPage> {
                 ),
                 visualDensity: VisualDensity.compact,
               ),
+              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                  create: (context) => AuthBloc(),
+                  child: CommunityPage(communityId: communityView.community.id),
+                ),
+              )),
             );
           },
         );
