@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy/lemmy.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:lemmy/lemmy.dart';
+
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
@@ -71,8 +73,8 @@ class CommunityPage extends StatefulWidget {
 }
 
 class _CommunityPageState extends State<CommunityPage> {
-  SortType? sortType = SortType.Active;
-  IconData sortTypeIcon = Icons.rocket_launch_rounded;
+  SortType? sortType = SortType.Hot;
+  IconData sortTypeIcon = Icons.local_fire_department_rounded;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -243,6 +245,14 @@ class _CommunityPageState extends State<CommunityPage> {
                   ),
                 ),
               ),
+              floatingActionButton: (state.communityId != null)
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+                      },
+                      child: const Icon(Icons.add),
+                    )
+                  : null,
               body: SafeArea(child: _getBody(context, state)),
             );
           },

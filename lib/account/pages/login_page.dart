@@ -48,11 +48,13 @@ class _LoginPageState extends State<LoginPage> {
             border: OutlineInputBorder(),
             labelText: 'Username',
           ),
+          enableSuggestions: false,
         ),
         const SizedBox(height: 12.0),
         TextField(
           controller: _passwordTextEditingController,
           obscureText: !showPassword,
+          enableSuggestions: false,
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
             labelText: 'Password',
@@ -77,6 +79,7 @@ class _LoginPageState extends State<LoginPage> {
             labelText: 'Instance',
             hintText: 'lemmy.ml',
           ),
+          enableSuggestions: false,
         ),
         const SizedBox(height: 32.0),
         ElevatedButton(
