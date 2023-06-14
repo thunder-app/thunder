@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/community.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/pages/post_page.dart';
@@ -57,12 +58,17 @@ class _PostCardState extends State<PostCard> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              widget.postView.community.name,
-                              style: theme.textTheme.titleSmall?.copyWith(
-                                fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                                color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                            GestureDetector(
+                              child: Text(
+                                widget.postView.community.name,
+                                style: theme.textTheme.titleSmall?.copyWith(
+                                  fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
+                                  color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                                ),
                               ),
+                              onTap: () => Navigator.of(context).push(MaterialPageRoute(
+                                builder: (_) => CommunityPage(communityId: widget.postView.community.id),
+                              )),
                             ),
                             const SizedBox(height: 8.0),
                             Row(
