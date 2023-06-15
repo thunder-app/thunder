@@ -8,7 +8,6 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 class SortTypeItem {
   const SortTypeItem({required this.sortType, required this.icon, required this.label});
@@ -86,13 +85,11 @@ class _CommunityPageState extends State<CommunityPage> {
               return Scaffold(
                 appBar: AppBar(
                   title: Text(
-                    (widget.communityId != null && state.communityId == null)
+                    (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
                         ? ''
-                        : (state.communityId != null && state.postViews != null && state.postViews!.isNotEmpty)
+                        : (state.communityId != null)
                             ? (state.postViews?.first.community.name ?? '')
-                            : (state.listingType != null)
-                                ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label)
-                                : '',
+                            : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
                   ),
                   centerTitle: false,
                   toolbarHeight: 70.0,

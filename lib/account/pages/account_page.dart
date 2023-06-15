@@ -15,8 +15,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  String defaultAvatar = 'https://www.redditstatic.com/avatars/defaults/v2/avatar_default_1.png';
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -40,7 +38,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             CircleAvatar(
                               backgroundColor: Colors.transparent,
-                              foregroundImage: CachedNetworkImageProvider(accountState.personView!.person.avatar ?? defaultAvatar),
+                              foregroundImage: accountState.personView!.person.avatar != null ? CachedNetworkImageProvider(accountState.personView!.person.avatar!) : null,
                               maxRadius: 70,
                             ),
                             const SizedBox(height: 24),
@@ -58,9 +56,7 @@ class _AccountPageState extends State<AccountPage> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size.fromHeight(50),
                               ),
-                              onPressed: () => {
-                                context.read<AuthBloc>().add(ClearAuth()),
-                              },
+                              onPressed: () => context.read<AuthBloc>().add(ClearAuth()),
                               child: const Text('Log out'),
                             ),
                           ],

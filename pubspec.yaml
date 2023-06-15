@@ -36,6 +36,7 @@ dependencies:
   html: ^0.15.4
   http: ^0.13.6
   auto_size_text: ^3.0.0
+  json_theme: ^6.0.0
 
 dev_dependencies:
   flutter_test:
@@ -50,6 +51,8 @@ flutter:
   assets:
     - .env
     - assets/logo.png
+    - assets/logo_background.png
+    - assets/themes/black.json
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
