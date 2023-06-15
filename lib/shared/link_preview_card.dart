@@ -1,38 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/shared/image_preview.dart';
 
-class LinkPreviewCard extends StatefulWidget {
-  const LinkPreviewCard({super.key, this.originURL, this.mediaURL, this.mediaHeight, this.mediaWidth});
+class LinkPreviewCard extends StatelessWidget {
+  const LinkPreviewCard({super.key, this.originURL, this.mediaURL, this.mediaHeight, this.mediaWidth, this.showLinkPreviews = true});
 
   final String? originURL;
   final String? mediaURL;
   final double? mediaHeight;
   final double? mediaWidth;
-
-  @override
-  State<LinkPreviewCard> createState() => _LinkPreviewCardState();
-}
-
-class _LinkPreviewCardState extends State<LinkPreviewCard> {
-  late SharedPreferences preferences;
-  bool showLinkPreviews = true;
-
-  void _initPreferences() async {
-    preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      showLinkPreviews = preferences.getBool('setting_general_show_link_previews') ?? true;
-    });
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.initState();
-  }
+  final bool showLinkPreviews;
 
   Future<void> _launchURL(url) async {
     Uri uri = Uri.parse(url);
@@ -43,7 +21,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (widget.mediaURL != null && widget.mediaHeight != null && widget.mediaWidth != null) {
+    if (mediaURL != null && mediaHeight != null && mediaWidth != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -54,7 +32,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
               children: [
-                if (showLinkPreviews) ImagePreview(url: widget.mediaURL!, height: widget.mediaHeight, width: widget.mediaWidth, isExpandable: false),
+                if (showLinkPreviews) ImagePreview(url: mediaURL!, height: mediaHeight, width: mediaWidth, isExpandable: false),
                 Container(
                   color: Colors.grey.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
@@ -69,7 +47,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
                       ),
                       Expanded(
                         child: Text(
-                          widget.originURL!,
+                          originURL!,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: Colors.white60,
@@ -82,7 +60,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
               ],
             ),
           ),
-          onTap: () => _launchURL(widget.originURL),
+          onTap: () => _launchURL(originURL),
         ),
       );
     } else {
@@ -109,7 +87,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
                       ),
                       Expanded(
                         child: Text(
-                          widget.originURL ?? '',
+                          originURL ?? '',
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: Colors.white60,
@@ -122,7 +100,7 @@ class _LinkPreviewCardState extends State<LinkPreviewCard> {
               ],
             ),
           ),
-          onTap: () => _launchURL(widget.originURL),
+          onTap: () => _launchURL(originURL),
         ),
       );
     }

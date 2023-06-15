@@ -6,9 +6,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
-import 'package:thunder/core/models/pictr_media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
 /// Logic to vote on a post
@@ -57,50 +57,61 @@ Future<PostView> savePost(int postId, bool save) async {
 
 /// Parse a post with media
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
-  List<PostViewMedia> posts = [];
-
-  postViews.forEach((PostView postView) async {
-    List<Media> media = [];
-    String? url = postView.post.url;
-
-    if (url != null && PictrsMediaExtension.isPictrsURL(url)) {
-      media = await PictrsMediaExtension.getMediaInformation(url);
-    } else if (url != null) {
-      // For external links, attempt to fetch any media associated with it (image, title)
-      LinkInfo linkInfo = await getLinkInfo(url);
-
-      if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-        try {
-          ImageInfo imageInfo = await MediaExtension.getImageInfo(Image.network(linkInfo.imageURL!));
-          int mediaHeight = imageInfo.image.height;
-          int mediaWidth = imageInfo.image.width;
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
-
-          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-        } catch (e) {
-          // Default back to a link
-          media.add(Media(mediaType: MediaType.link, originalUrl: url));
-        }
-      } else {
-        media.add(Media(mediaType: MediaType.link, originalUrl: url));
-      }
-    }
-
-    posts.add(PostViewMedia(
-      community: postView.community,
-      counts: postView.counts,
-      creator: postView.creator,
-      creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
-      creatorBlocked: postView.creatorBlocked,
-      myVote: postView.myVote,
-      post: postView.post,
-      read: postView.read,
-      saved: postView.saved,
-      subscribed: postView.subscribed,
-      unreadComments: postView.unreadComments,
-      media: media,
-    ));
-  });
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post));
+  List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
+}
+
+Future<PostViewMedia> parsePostView(PostView postView) async {
+  List<Media> media = [];
+  String? url = postView.post.url;
+
+  if (url != null && isImageUrl(url)) {
+    try {
+      MediaType mediaType = MediaType.image;
+      Size result = await retrieveImageDimensions(url);
+
+      Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
+      media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
+    } catch (e) {
+      // If it fails, fall back to a media type of link
+      media.add(Media(originalUrl: url, mediaType: MediaType.link));
+    }
+  } else if (url != null) {
+    // For external links, attempt to fetch any media associated with it (image, title)
+    LinkInfo linkInfo = await getLinkInfo(url);
+
+    if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
+      try {
+        Size result = await retrieveImageDimensions(url);
+
+        int mediaHeight = result.height.toInt();
+        int mediaWidth = result.width.toInt();
+        Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
+
+        media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+      } catch (e) {
+        // Default back to a link
+        media.add(Media(mediaType: MediaType.link, originalUrl: url));
+      }
+    } else {
+      media.add(Media(mediaType: MediaType.link, originalUrl: url));
+    }
+  }
+
+  return PostViewMedia(
+    community: postView.community,
+    counts: postView.counts,
+    creator: postView.creator,
+    creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
+    creatorBlocked: postView.creatorBlocked,
+    myVote: postView.myVote,
+    post: postView.post,
+    read: postView.read,
+    saved: postView.saved,
+    subscribed: postView.subscribed,
+    unreadComments: postView.unreadComments,
+    media: media,
+  );
 }

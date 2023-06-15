@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -42,6 +44,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         setState(() => showFullHeightImages = value);
         break;
     }
+
+    if (context.mounted) context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
   }
 
   void _initPreferences() async {
@@ -67,10 +71,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('General'),
-        centerTitle: false,
-      ),
+      appBar: AppBar(title: const Text('General'), centerTitle: false),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(

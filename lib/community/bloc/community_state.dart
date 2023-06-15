@@ -10,6 +10,7 @@ class CommunityState extends Equatable {
     this.errorMessage,
     this.listingType = ListingType.Local,
     this.communityId,
+    this.hasReachedEnd = false,
   });
 
   final CommunityStatus status;
@@ -23,6 +24,8 @@ class CommunityState extends Equatable {
   // Specifies the community we are loading for
   final int? communityId;
 
+  final bool hasReachedEnd;
+
   CommunityState copyWith({
     CommunityStatus? status,
     int? page,
@@ -30,6 +33,7 @@ class CommunityState extends Equatable {
     String? errorMessage,
     ListingType? listingType,
     int? communityId,
+    bool? hasReachedEnd,
   }) {
     return CommunityState(
       status: status ?? this.status,
@@ -38,9 +42,10 @@ class CommunityState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       listingType: listingType ?? this.listingType,
       communityId: communityId ?? this.communityId,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
     );
   }
 
   @override
-  List<Object?> get props => [status, page, postViews, errorMessage, listingType, communityId];
+  List<Object?> get props => [status, page, postViews, errorMessage, listingType, communityId, hasReachedEnd];
 }

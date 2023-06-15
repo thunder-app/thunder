@@ -11,7 +11,9 @@ class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
 
-  const PostCardList({super.key, this.postViews, this.communityId});
+  final bool? hasReachedEnd;
+
+  const PostCardList({super.key, this.postViews, this.communityId, this.hasReachedEnd});
 
   @override
   State<PostCardList> createState() => _PostCardListState();
@@ -40,6 +42,8 @@ class _PostCardListState extends State<PostCardList> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return RefreshIndicator(
       onRefresh: () async {
         HapticFeedback.mediumImpact();
@@ -47,8 +51,35 @@ class _PostCardListState extends State<PostCardList> {
       },
       child: ListView.builder(
         controller: _scrollController,
-        itemCount: widget.postViews?.length ?? 0,
+        itemCount: widget.postViews!.length + 1,
         itemBuilder: (context, index) {
+          if (index == widget.postViews!.length) {
+            if (widget.hasReachedEnd == true) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Container(
+                    color: theme.dividerColor.withOpacity(0.1),
+                    padding: const EdgeInsets.symmetric(vertical: 32.0),
+                    child: Text(
+                      'Hmmm. It seems like you\'ve reached the bottom.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: const CircularProgressIndicator(),
+                  ),
+                ],
+              );
+            }
+          }
           return PostCard(postView: widget.postViews![index]);
         },
       ),

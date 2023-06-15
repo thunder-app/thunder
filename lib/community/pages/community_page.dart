@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 
@@ -52,7 +51,6 @@ const sortTypeItems = [
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
-
   const CommunityPage({super.key, this.communityId});
 
   @override
@@ -88,7 +86,7 @@ class _CommunityPageState extends State<CommunityPage> {
                     (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
                         ? ''
                         : (state.communityId != null)
-                            ? (state.postViews?.first.community.name ?? '')
+                            ? (state.postViews?.firstOrNull?.community.name ?? '')
                             : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
                   ),
                   centerTitle: false,
@@ -162,14 +160,14 @@ class _CommunityPageState extends State<CommunityPage> {
                   ],
                 ),
                 drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
-                floatingActionButton: (state.communityId != null)
-                    ? FloatingActionButton(
-                        onPressed: () {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
-                        },
-                        child: const Icon(Icons.add),
-                      )
-                    : null,
+                // floatingActionButton: (state.communityId != null)
+                //     ? FloatingActionButton(
+                //         onPressed: () {
+                //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+                //         },
+                //         child: const Icon(Icons.add),
+                //       )
+                //     : null,
                 body: SafeArea(child: _getBody(context, state)),
               );
             },
@@ -191,7 +189,11 @@ class _CommunityPageState extends State<CommunityPage> {
       case CommunityStatus.refreshing:
       case CommunityStatus.networkFailure:
       case CommunityStatus.success:
-        return PostCardList(postViews: state.postViews, communityId: widget.communityId);
+        return PostCardList(
+          postViews: state.postViews,
+          communityId: widget.communityId,
+          hasReachedEnd: state.hasReachedEnd,
+        );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
         return Center(
@@ -216,14 +218,7 @@ class _CommunityPageState extends State<CommunityPage> {
                 const SizedBox(height: 32.0),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                  onPressed: () => {
-                    context.read<CommunityBloc>().add(
-                          GetCommunityPostsEvent(
-                            reset: true,
-                            communityId: widget.communityId,
-                          ),
-                        ),
-                  },
+                  onPressed: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
                   child: const Text('Refresh Content'),
                 ),
               ],

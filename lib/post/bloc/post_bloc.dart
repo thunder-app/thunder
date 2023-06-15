@@ -74,7 +74,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: PostStatus.success,
           postId: getPostResponse.postView.post.id,
-          postView: posts.first,
+          postView: posts.firstOrNull,
           comments: commentTree,
           commentPage: state.commentPage + 1,
           commentCount: getCommentsResponse.comments.length,

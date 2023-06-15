@@ -96,9 +96,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int attemptCount = 0;
 
-    print('event: ${event.communityId} state ${state.communityId}');
-
     try {
+      Stopwatch stopwatch = Stopwatch()..start();
+
       while (attemptCount < 2) {
         try {
           LemmyClient lemmyClient = LemmyClient.instance;
@@ -114,7 +114,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               GetPosts(
                 auth: jwt,
                 page: 1,
-                limit: 30,
+                limit: 15,
                 sort: event.sortType ?? SortType.Hot,
                 type_: event.listingType ?? ListingType.Local,
                 communityId: event.communityId,
@@ -125,41 +125,45 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
             return emit(state.copyWith(
               status: CommunityStatus.success,
-              postViews: posts,
               page: 2,
+              postViews: posts,
               listingType: event.listingType ?? ListingType.Local,
               communityId: event.communityId,
+              hasReachedEnd: posts.isEmpty,
             ));
           } else {
+            if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success));
+            emit(state.copyWith(status: CommunityStatus.refreshing));
+
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
                 auth: jwt,
                 page: state.page,
-                limit: 30,
+                limit: 15,
                 sort: event.sortType ?? SortType.Hot,
-                type_: state.listingType,
+                type_: state.listingType ?? ListingType.Local,
                 communityId: state.communityId,
               ),
             );
 
             List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
-
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
             postViews.addAll(posts);
 
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
-                postViews: postViews,
                 page: state.page + 1,
+                postViews: postViews,
+                hasReachedEnd: posts.isEmpty,
               ),
             );
           }
         } catch (e) {
-          print('re-attempting: $attemptCount');
           attemptCount += 1;
         }
       }
+      print('doSomething() executed in ${stopwatch.elapsed}');
     } on DioException catch (e) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message));
     } catch (e) {
