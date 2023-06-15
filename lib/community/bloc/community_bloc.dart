@@ -83,6 +83,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int attemptCount = 0;
 
+    print('event: ${event.communityId} state ${state.communityId}');
+
     try {
       while (attemptCount < 2) {
         try {
@@ -94,8 +96,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
-
-            print('refreshing with ${event.communityId}');
 
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
@@ -118,8 +118,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: event.communityId,
             ));
           } else {
-            print('fetching more with with ${event.communityId} or ${state.communityId}');
-
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
                 auth: jwt,
@@ -127,7 +125,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 limit: 30,
                 sort: event.sortType ?? SortType.Hot,
                 type_: state.listingType,
-                communityId: event.communityId ?? state.communityId,
+                communityId: state.communityId,
               ),
             );
 
