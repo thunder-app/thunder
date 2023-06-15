@@ -1,22 +1,15 @@
-import 'dart:ui';
-
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
-import 'package:thunder/core/enums/media_type.dart';
-import 'package:thunder/core/models/media.dart';
-import 'package:thunder/core/models/media_extension.dart';
-import 'package:thunder/core/models/pictr_media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/utils/links.dart';
+import 'package:thunder/utils/post.dart';
 
 part 'community_event.dart';
 part 'community_state.dart';
@@ -37,45 +30,65 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _votePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<SavePostEvent>(
+      _savePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<ForceRefreshEvent>(
+      _forceRefreshEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+  }
+
+  Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
+    emit(state.copyWith(status: CommunityStatus.refreshing));
+    emit(state.copyWith(status: CommunityStatus.success));
   }
 
   Future<void> _votePostEvent(VotePostEvent event, Emitter<CommunityState> emit) async {
     try {
       emit(state.copyWith(status: CommunityStatus.refreshing));
 
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
+      PostView postView = await votePost(event.postId, event.score);
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
-
-      if (jwt == null) return;
-
-      PostResponse postResponse = await lemmy.likePost(
-        CreatePostLike(
-          auth: jwt,
-          postId: event.postId,
-          score: event.score,
-        ),
-      );
-
-      PostView updatedPostView = postResponse.postView;
-
+      // Find the specific post to update
       int existingPostViewIndex = state.postViews!.indexWhere((postView) => postView.post.id == event.postId);
-      state.postViews![existingPostViewIndex].counts = updatedPostView.counts;
-      state.postViews![existingPostViewIndex].post = updatedPostView.post;
-      state.postViews![existingPostViewIndex].myVote = updatedPostView.myVote;
+      state.postViews![existingPostViewIndex].counts = postView.counts;
+      state.postViews![existingPostViewIndex].post = postView.post;
+      state.postViews![existingPostViewIndex].myVote = postView.myVote;
 
       return emit(state.copyWith(status: CommunityStatus.success));
     } on DioException catch (e) {
-      print(e);
       if (e.type == DioExceptionType.receiveTimeout) {
-        emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      } else {
-        emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
+        return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       }
+
+      return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
     } catch (e) {
-      print(e);
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<CommunityState> emit) async {
+    try {
+      emit(state.copyWith(status: CommunityStatus.refreshing));
+
+      PostView postView = await savePost(event.postId, event.save);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.postViews!.indexWhere((postView) => postView.post.id == event.postId);
+      state.postViews![existingPostViewIndex].counts = postView.counts;
+      state.postViews![existingPostViewIndex].post = postView.post;
+      state.postViews![existingPostViewIndex].saved = postView.saved;
+
+      return emit(state.copyWith(status: CommunityStatus.success));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to save post'));
+      }
+
+      return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
+    } catch (e) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -108,7 +121,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               ),
             );
 
-            List<PostViewMedia> posts = await _parsePostViews(getPostsResponse.posts);
+            List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
 
             return emit(state.copyWith(
               status: CommunityStatus.success,
@@ -129,7 +142,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               ),
             );
 
-            List<PostViewMedia> posts = await _parsePostViews(getPostsResponse.posts);
+            List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
 
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
             postViews.addAll(posts);
@@ -152,53 +165,5 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     } catch (e) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
-  }
-
-  Future<List<PostViewMedia>> _parsePostViews(List<PostView> postViews) async {
-    List<PostViewMedia> posts = [];
-
-    postViews.forEach((PostView postView) async {
-      List<Media> media = [];
-      String? url = postView.post.url;
-
-      if (url != null && PictrsMediaExtension.isPictrsURL(url)) {
-        media = await PictrsMediaExtension.getMediaInformation(url);
-      } else if (url != null) {
-        // For external links, attempt to fetch any media associated with it (image, title)
-        LinkInfo linkInfo = await getLinkInfo(url);
-
-        if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-          try {
-            ImageInfo imageInfo = await MediaExtension.getImageInfo(Image.network(linkInfo.imageURL!));
-            int mediaHeight = imageInfo.image.height;
-            int mediaWidth = imageInfo.image.width;
-            Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
-
-            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-          } catch (e) {
-            // Default back to a link
-            media.add(Media(mediaType: MediaType.link, originalUrl: url));
-          }
-        } else {
-          media.add(Media(mediaType: MediaType.link, originalUrl: url));
-        }
-      }
-
-      posts.add(PostViewMedia(
-        post: postView.post,
-        community: postView.community,
-        counts: postView.counts,
-        creator: postView.creator,
-        creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
-        creatorBlocked: postView.creatorBlocked,
-        saved: postView.saved,
-        subscribed: postView.subscribed,
-        read: postView.read,
-        unreadComments: postView.unreadComments,
-        media: media,
-      ));
-    });
-
-    return posts;
   }
 }

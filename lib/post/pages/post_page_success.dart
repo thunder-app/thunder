@@ -101,30 +101,39 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                       ),
                     ),
                   ),
-                Divider(),
+                const Divider(),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.arrow_upward,
-                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                      ),
+                      onPressed: () {
+                        context.read<PostBloc>().add(VotePostEvent(
+                              postId: widget.postView.post.id,
+                              score: widget.postView.myVote == 1 ? 0 : 1,
+                            ));
+                      },
+                      icon: const Icon(Icons.arrow_upward),
+                      color: widget.postView.myVote == 1 ? Colors.orange : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.arrow_downward,
-                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                      ),
+                      onPressed: () {
+                        context.read<PostBloc>().add(VotePostEvent(
+                              postId: widget.postView.post.id,
+                              score: widget.postView.myVote == -1 ? 0 : -1,
+                            ));
+                      },
+                      icon: const Icon(Icons.arrow_downward),
+                      color: widget.postView.myVote == -1 ? Colors.blue : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                     ),
                     IconButton(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.star_border_rounded,
-                        color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                      ),
+                      onPressed: () {
+                        context.read<PostBloc>().add(SavePostEvent(
+                              postId: widget.postView.post.id,
+                              save: !widget.postView.saved,
+                            ));
+                      },
+                      icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                      color: widget.postView.saved ? Colors.orange : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                     ),
                     IconButton(
                       onPressed: () {},

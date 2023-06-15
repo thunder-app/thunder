@@ -6,10 +6,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/post.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';
@@ -26,9 +28,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _getPostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-
     on<GetPostCommentsEvent>(
       _getPostCommentsEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<VotePostEvent>(
+      _votePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SavePostEvent>(
+      _savePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
   }
@@ -44,6 +53,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       String? jwt = prefs.getString('jwt');
 
       GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id, auth: jwt));
+
+      List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
 
       GetCommentsResponse getCommentsResponse = await lemmy.getComments(
         GetComments(
@@ -63,7 +74,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         state.copyWith(
           status: PostStatus.success,
           postId: getPostResponse.postView.post.id,
-          postView: getPostResponse.postView,
+          postView: posts.first,
           comments: commentTree,
           commentPage: state.commentPage + 1,
           commentCount: getCommentsResponse.comments.length,
@@ -141,5 +152,49 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       commentPage: state.commentPage + 1,
       commentCount: state.commentCount + (getCommentsResponse.comments.isEmpty ? 50 : getCommentsResponse.comments.length),
     ));
+  }
+
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      PostView postView = await votePost(event.postId, event.score);
+
+      state.postView?.counts = postView.counts;
+      state.postView?.post = postView.post;
+      state.postView?.myVote = postView.myVote;
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
+      }
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e) {
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      PostView postView = await savePost(event.postId, event.save);
+
+      state.postView?.counts = postView.counts;
+      state.postView?.post = postView.post;
+      state.postView?.saved = postView.saved;
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
+      }
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e) {
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
   }
 }
