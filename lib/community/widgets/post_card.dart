@@ -27,8 +27,6 @@ class _PostCardState extends State<PostCard> {
     final ThemeData theme = Theme.of(context);
     final Post post = widget.postView.post;
 
-    int? myVote = widget.postView.myVote;
-
     return Column(
       children: [
         Divider(
@@ -119,23 +117,35 @@ class _PostCardState extends State<PostCard> {
                         children: [
                           IconButton(
                             onPressed: () {
-                              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: myVote == 1 ? 0 : 1));
+                              context.read<CommunityBloc>().add(VotePostEvent(
+                                    postId: post.id,
+                                    score: widget.postView.myVote == 1 ? 0 : 1,
+                                  ));
                             },
-                            icon: Icon(Icons.arrow_upward),
-                            color: myVote == 1 ? Colors.orange : null,
+                            icon: const Icon(Icons.arrow_upward),
+                            color: widget.postView.myVote == 1 ? Colors.orange : null,
                             visualDensity: VisualDensity.compact,
                           ),
                           IconButton(
                             onPressed: () {
-                              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: myVote == -1 ? 0 : -1));
+                              context.read<CommunityBloc>().add(VotePostEvent(
+                                    postId: post.id,
+                                    score: widget.postView.myVote == -1 ? 0 : -1,
+                                  ));
                             },
                             icon: Icon(Icons.arrow_downward),
-                            color: myVote == -1 ? Colors.blue : null,
+                            color: widget.postView.myVote == -1 ? Colors.blue : null,
                             visualDensity: VisualDensity.compact,
                           ),
                           IconButton(
-                            onPressed: () {},
-                            icon: Icon(Icons.star_border_rounded),
+                            onPressed: () {
+                              context.read<CommunityBloc>().add(SavePostEvent(
+                                    postId: post.id,
+                                    save: widget.postView.saved ? false : true,
+                                  ));
+                            },
+                            icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                            color: widget.postView.saved ? Colors.orange : null,
                             visualDensity: VisualDensity.compact,
                           ),
                         ],
@@ -146,8 +156,20 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
           ),
-          onTap: () {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => PostPage(postId: post.id)));
+          onTap: () async {
+            CommunityBloc bloc = BlocProvider.of<CommunityBloc>(context);
+            final value = await Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) {
+                  return BlocProvider.value(
+                    value: bloc,
+                    child: PostPage(postId: post.id),
+                  );
+                },
+              ),
+            );
+            context.read<CommunityBloc>().add(ForceRefreshEvent());
           },
         ),
       ],

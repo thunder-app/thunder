@@ -19,3 +19,17 @@ class GetPostCommentsEvent extends PostEvent {
 
   const GetPostCommentsEvent({this.postId, this.reset = false});
 }
+
+class VotePostEvent extends PostEvent {
+  final int postId;
+  final int score;
+
+  const VotePostEvent({required this.postId, required this.score});
+}
+
+class SavePostEvent extends PostEvent {
+  final int postId;
+  final bool save;
+
+  const SavePostEvent({required this.postId, required this.save});
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -19,7 +20,16 @@ class PostPage extends StatelessWidget {
       body: SafeArea(
         child: BlocProvider(
           create: (context) => PostBloc(),
-          child: BlocBuilder<PostBloc, PostState>(
+          child: BlocConsumer<PostBloc, PostState>(
+            listener: (context, state) {
+              if (state.status == PostStatus.success) {
+                // Update the community's post
+                int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((postView) => postView.post.id == postId);
+                if (postIdIndex != null) {
+                  context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
+                }
+              }
+            },
             builder: (context, state) {
               switch (state.status) {
                 case PostStatus.initial:

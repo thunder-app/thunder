@@ -18,7 +18,7 @@ class PostState extends Equatable {
 
   final int? postId;
   final int? communityId;
-  final PostView? postView;
+  final PostViewMedia? postView;
 
   // Comment related data
   final List<CommentViewTree> comments;
@@ -30,7 +30,7 @@ class PostState extends Equatable {
   PostState copyWith({
     required PostStatus status,
     int? postId,
-    PostView? postView,
+    PostViewMedia? postView,
     List<CommentViewTree>? comments,
     int? commentPage,
     int? commentCount,

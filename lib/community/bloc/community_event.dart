@@ -22,3 +22,12 @@ class VotePostEvent extends CommunityEvent {
 
   const VotePostEvent({required this.postId, required this.score});
 }
+
+class SavePostEvent extends CommunityEvent {
+  final int postId;
+  final bool save;
+
+  const SavePostEvent({required this.postId, required this.save});
+}
+
+class ForceRefreshEvent extends CommunityEvent {}
