@@ -1,7 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:lemmy/lemmy.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LemmyClient {
   Lemmy lemmy = Lemmy(baseUrl: dotenv.env['LEMMY_BASE_URL']!);

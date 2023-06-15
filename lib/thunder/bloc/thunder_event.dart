@@ -12,3 +12,5 @@ class ThemeChangeEvent extends ThunderEvent {
 
   const ThemeChangeEvent({required this.themeType});
 }
+
+class UserPreferencesChangeEvent extends ThunderEvent {}

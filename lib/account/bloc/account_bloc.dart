@@ -48,7 +48,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               posts: getPersonDetailsResponse.posts,
             ));
           } catch (e) {
-            print('re-attempting: $attemptCount');
             attemptCount += 1;
           }
         }

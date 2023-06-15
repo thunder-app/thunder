@@ -2,50 +2,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
-class PostCard extends StatefulWidget {
+class PostCard extends StatelessWidget {
   final PostViewMedia postView;
 
   const PostCard({super.key, required this.postView});
 
   @override
-  State<PostCard> createState() => _PostCardState();
-}
-
-class _PostCardState extends State<PostCard> {
-  late SharedPreferences preferences;
-  bool showVoteActions = true;
-  bool showSaveAction = true;
-
-  void _initPreferences() async {
-    preferences = await SharedPreferences.getInstance();
-
-    setState(() {
-      showVoteActions = preferences.getBool('setting_general_show_vote_actions') ?? true;
-      showSaveAction = preferences.getBool('setting_general_show_save_action') ?? true;
-    });
-  }
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final Post post = widget.postView.post;
+    final Post post = postView.post;
+
+    final bool showFullHeightImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_full_height_images') ?? true;
+    final bool showVoteActions = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_vote_actions') ?? true;
+    final bool showSaveAction = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_save_action') ?? true;
+
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return Column(
       children: [
@@ -62,12 +45,8 @@ class _PostCardState extends State<PostCard> {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaView(postView: widget.postView),
-                Text(
-                  post.name,
-                  style: theme.textTheme.titleMedium,
-                  softWrap: true,
-                ),
+                MediaView(postView: postView, showFullHeightImages: showFullHeightImages),
+                Text(post.name, style: theme.textTheme.titleMedium, softWrap: true),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
                   child: Row(
@@ -78,14 +57,14 @@ class _PostCardState extends State<PostCard> {
                           children: [
                             GestureDetector(
                               child: Text(
-                                widget.postView.community.name,
+                                postView.community.name,
                                 style: theme.textTheme.titleSmall?.copyWith(
                                   fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                                   color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                                 ),
                               ),
                               onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => CommunityPage(communityId: widget.postView.community.id),
+                                builder: (_) => CommunityPage(communityId: postView.community.id),
                               )),
                             ),
                             const SizedBox(height: 8.0),
@@ -93,7 +72,7 @@ class _PostCardState extends State<PostCard> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconText(
-                                  text: formatNumberToK(widget.postView.counts.upvotes),
+                                  text: formatNumberToK(postView.counts.upvotes),
                                   icon: Icon(
                                     Icons.arrow_upward,
                                     size: 18.0,
@@ -108,7 +87,7 @@ class _PostCardState extends State<PostCard> {
                                     size: 17.0,
                                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                                   ),
-                                  text: formatNumberToK(widget.postView.counts.comments),
+                                  text: formatNumberToK(postView.counts.comments),
                                   padding: 5.0,
                                 ),
                                 const SizedBox(width: 10.0),
@@ -137,39 +116,24 @@ class _PostCardState extends State<PostCard> {
                         children: [
                           if (showVoteActions)
                             IconButton(
-                              onPressed: () {
-                                context.read<CommunityBloc>().add(VotePostEvent(
-                                      postId: post.id,
-                                      score: widget.postView.myVote == 1 ? 0 : 1,
-                                    ));
-                              },
                               icon: const Icon(Icons.arrow_upward),
-                              color: widget.postView.myVote == 1 ? Colors.orange : null,
+                              color: postView.myVote == 1 ? Colors.orange : null,
                               visualDensity: VisualDensity.compact,
+                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1)) : null,
                             ),
                           if (showVoteActions)
                             IconButton(
-                              onPressed: () {
-                                context.read<CommunityBloc>().add(VotePostEvent(
-                                      postId: post.id,
-                                      score: widget.postView.myVote == -1 ? 0 : -1,
-                                    ));
-                              },
-                              icon: Icon(Icons.arrow_downward),
-                              color: widget.postView.myVote == -1 ? Colors.blue : null,
+                              icon: const Icon(Icons.arrow_downward),
+                              color: postView.myVote == -1 ? Colors.blue : null,
                               visualDensity: VisualDensity.compact,
+                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1)) : null,
                             ),
                           if (showSaveAction)
                             IconButton(
-                              onPressed: () {
-                                context.read<CommunityBloc>().add(SavePostEvent(
-                                      postId: post.id,
-                                      save: widget.postView.saved ? false : true,
-                                    ));
-                              },
-                              icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
-                              color: widget.postView.saved ? Colors.orange : null,
+                              icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                              color: postView.saved ? Colors.purple : null,
                               visualDensity: VisualDensity.compact,
+                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true)) : null,
                             ),
                         ],
                       ),
@@ -181,18 +145,22 @@ class _PostCardState extends State<PostCard> {
           ),
           onTap: () async {
             CommunityBloc bloc = BlocProvider.of<CommunityBloc>(context);
-            final value = await Navigator.push(
+            AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) {
                   return BlocProvider.value(
                     value: bloc,
-                    child: PostPage(postId: post.id),
+                    child: BlocProvider.value(
+                      value: authBloc,
+                      child: PostPage(postId: post.id),
+                    ),
                   );
                 },
               ),
             );
-            context.read<CommunityBloc>().add(ForceRefreshEvent());
+            if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
           },
         ),
       ],

@@ -25,7 +25,6 @@ class _ThunderState extends State<Thunder> {
     return MultiBlocProvider(
       providers: [
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
-        BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
         BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
       ],
       child: BlocBuilder<AuthBloc, AuthState>(

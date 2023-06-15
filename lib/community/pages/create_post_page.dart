@@ -20,7 +20,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
 
-  final List<bool> _selectedPostType = <bool>[true, false, false];
+  // final List<bool> _selectedPostType = <bool>[true, false, false];
 
   String description = '';
   TextEditingController controller = TextEditingController();
@@ -33,8 +33,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
     controller.addListener(() {
       if (controller.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
       if (controller.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
-
-      print(controller.text);
     });
 
     _titleTextController.addListener(() {

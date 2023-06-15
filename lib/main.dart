@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:thunder/core/enums/theme_type.dart';
-import 'package:thunder/routes.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
+import 'package:thunder/routes.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,13 +21,16 @@ class ThunderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThunderBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(create: (context) => AuthBloc()),
+      ],
       child: BlocBuilder<ThunderBloc, ThunderState>(
         builder: (context, state) {
           switch (state.status) {
             case ThunderStatus.initial:
-              context.read<ThunderBloc>().add(ThemeChangeEvent(themeType: ThemeType.black));
+              context.read<ThunderBloc>().add(const ThemeChangeEvent(themeType: ThemeType.black));
               return const Material(child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.loading:
               return const Material(child: Center(child: CircularProgressIndicator()));

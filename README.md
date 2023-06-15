@@ -55,11 +55,17 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 </p>
 <hr />
 
+
+## Releases
+**Note:** As this is still in alpha and WIP, releases will happen through GitHub. There are no plans at the moment to release to Google Play store (and derivatives) or Apple's TestFlight. However, this may change in the future as more progress is made.
+
+All releases will be held in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
+- For iOS users, you can install Thunder using [AltStore](https://altstore.io/)
+- For Android users, simply install Thunder with the provided APK file.
+
 ## Features
 
-Thunder is currently undergoing **active development**, and it is possible that not all features have been fully implemented at this stage.
-
-Due to this, significant breaking changes may occur between versions. The next section summarizes the features that are currently implemented.
+Thunder is currently undergoing **active development**, and it is possible that not all features have been fully implemented at this stage. Due to this, significant breaking changes may occur between versions. The next section summarizes the features that are currently implemented.
 
 #### **Communities**
 
@@ -75,11 +81,11 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Authentication**
 
-- Singe account login with instance
+- Single account login with instance
 
 #### **Theme & Customization**
 
-- N/A
+- Basic settings
 
 ## Roadmap
 
@@ -97,8 +103,6 @@ Contributions are always welcome! To contribute potential features or bug-fixes:
 3. Create a pull request to have your changes reviewed and merged
 
 ## Building From Source
-
-There are a few prerequisites in order to build and run the application locally.
 
 ### Installing Flutter and Related Dependencies
 

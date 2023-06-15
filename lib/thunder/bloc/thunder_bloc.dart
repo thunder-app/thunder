@@ -22,6 +22,10 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   ThunderBloc() : super(const ThunderState()) {
+    on<UserPreferencesChangeEvent>(
+      _userPreferencesChangeEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<ThemeChangeEvent>(
       _themeChangeEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -48,9 +52,20 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       final themeJson = jsonDecode(themeString);
       final theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
-      return emit(state.copyWith(status: ThunderStatus.success, theme: theme));
+      return emit(state.copyWith(status: ThunderStatus.success, theme: theme, preferences: prefs));
     } catch (e) {
-      print(e);
+      emit(state.copyWith(status: ThunderStatus.failure));
+    }
+  }
+
+  Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
+    try {
+      emit(state.copyWith(status: ThunderStatus.loading));
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
+    } catch (e) {
       emit(state.copyWith(status: ThunderStatus.failure));
     }
   }

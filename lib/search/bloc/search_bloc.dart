@@ -57,14 +57,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse));
     } on DioException catch (e) {
-      print(e);
       if (e.type == DioExceptionType.receiveTimeout) {
-        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
+        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
     } catch (e) {
-      print(e);
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -93,14 +91,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(status: SearchStatus.success, results: state.results));
     } on DioException catch (e) {
-      print(e);
       if (e.type == DioExceptionType.receiveTimeout) {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
     } catch (e) {
-      print(e);
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
