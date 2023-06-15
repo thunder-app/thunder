@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -22,6 +23,25 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  late SharedPreferences preferences;
+  bool showVoteActions = true;
+  bool showSaveAction = true;
+
+  void _initPreferences() async {
+    preferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      showVoteActions = preferences.getBool('setting_general_show_vote_actions') ?? true;
+      showSaveAction = preferences.getBool('setting_general_show_save_action') ?? true;
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -115,39 +135,42 @@ class _PostCardState extends State<PostCard> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          IconButton(
-                            onPressed: () {
-                              context.read<CommunityBloc>().add(VotePostEvent(
-                                    postId: post.id,
-                                    score: widget.postView.myVote == 1 ? 0 : 1,
-                                  ));
-                            },
-                            icon: const Icon(Icons.arrow_upward),
-                            color: widget.postView.myVote == 1 ? Colors.orange : null,
-                            visualDensity: VisualDensity.compact,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              context.read<CommunityBloc>().add(VotePostEvent(
-                                    postId: post.id,
-                                    score: widget.postView.myVote == -1 ? 0 : -1,
-                                  ));
-                            },
-                            icon: Icon(Icons.arrow_downward),
-                            color: widget.postView.myVote == -1 ? Colors.blue : null,
-                            visualDensity: VisualDensity.compact,
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              context.read<CommunityBloc>().add(SavePostEvent(
-                                    postId: post.id,
-                                    save: widget.postView.saved ? false : true,
-                                  ));
-                            },
-                            icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
-                            color: widget.postView.saved ? Colors.orange : null,
-                            visualDensity: VisualDensity.compact,
-                          ),
+                          if (showVoteActions)
+                            IconButton(
+                              onPressed: () {
+                                context.read<CommunityBloc>().add(VotePostEvent(
+                                      postId: post.id,
+                                      score: widget.postView.myVote == 1 ? 0 : 1,
+                                    ));
+                              },
+                              icon: const Icon(Icons.arrow_upward),
+                              color: widget.postView.myVote == 1 ? Colors.orange : null,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          if (showVoteActions)
+                            IconButton(
+                              onPressed: () {
+                                context.read<CommunityBloc>().add(VotePostEvent(
+                                      postId: post.id,
+                                      score: widget.postView.myVote == -1 ? 0 : -1,
+                                    ));
+                              },
+                              icon: Icon(Icons.arrow_downward),
+                              color: widget.postView.myVote == -1 ? Colors.blue : null,
+                              visualDensity: VisualDensity.compact,
+                            ),
+                          if (showSaveAction)
+                            IconButton(
+                              onPressed: () {
+                                context.read<CommunityBloc>().add(SavePostEvent(
+                                      postId: post.id,
+                                      save: widget.postView.saved ? false : true,
+                                    ));
+                              },
+                              icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                              color: widget.postView.saved ? Colors.orange : null,
+                              visualDensity: VisualDensity.compact,
+                            ),
                         ],
                       ),
                     ],

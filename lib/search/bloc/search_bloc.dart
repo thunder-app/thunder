@@ -48,8 +48,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? jwt = prefs.getString('jwt');
 
-      if (jwt == null) return;
-
       SearchResponse searchResponse = await lemmy.search(
         Search(
           auth: jwt,

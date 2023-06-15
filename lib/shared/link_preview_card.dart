@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/shared/image_preview.dart';
 
-class LinkPreviewCard extends StatelessWidget {
+class LinkPreviewCard extends StatefulWidget {
   const LinkPreviewCard({super.key, this.originURL, this.mediaURL, this.mediaHeight, this.mediaWidth});
 
   final String? originURL;
@@ -11,19 +12,38 @@ class LinkPreviewCard extends StatelessWidget {
   final double? mediaHeight;
   final double? mediaWidth;
 
-  Future<void> _launchURL(url) async {
-    Uri url0 = Uri.parse(url);
+  @override
+  State<LinkPreviewCard> createState() => _LinkPreviewCardState();
+}
 
-    if (!await launchUrl(url0)) {
-      throw 'Could not launch $url';
-    }
+class _LinkPreviewCardState extends State<LinkPreviewCard> {
+  late SharedPreferences preferences;
+  bool showLinkPreviews = true;
+
+  void _initPreferences() async {
+    preferences = await SharedPreferences.getInstance();
+
+    setState(() {
+      showLinkPreviews = preferences.getBool('setting_general_show_link_previews') ?? true;
+    });
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.initState();
+  }
+
+  Future<void> _launchURL(url) async {
+    Uri uri = Uri.parse(url);
+    if (!await launchUrl(uri)) throw Exception('Error: Could not launch $url');
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    if (mediaURL != null && mediaHeight != null && mediaWidth != null) {
+    if (widget.mediaURL != null && widget.mediaHeight != null && widget.mediaWidth != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -34,7 +54,7 @@ class LinkPreviewCard extends StatelessWidget {
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
               children: [
-                ImagePreview(url: mediaURL!, height: mediaHeight, width: mediaWidth, isExpandable: false),
+                if (showLinkPreviews) ImagePreview(url: widget.mediaURL!, height: widget.mediaHeight, width: widget.mediaWidth, isExpandable: false),
                 Container(
                   color: Colors.grey.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
@@ -49,7 +69,7 @@ class LinkPreviewCard extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          originURL!,
+                          widget.originURL!,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: Colors.white60,
@@ -62,7 +82,7 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => _launchURL(widget.originURL),
         ),
       );
     } else {
@@ -89,7 +109,7 @@ class LinkPreviewCard extends StatelessWidget {
                       ),
                       Expanded(
                         child: Text(
-                          originURL ?? '',
+                          widget.originURL ?? '',
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
                             color: Colors.white60,
@@ -102,7 +122,7 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => _launchURL(widget.originURL),
         ),
       );
     }

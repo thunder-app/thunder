@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thunder/core/enums/theme_type.dart';
+import 'package:thunder/routes.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
@@ -31,14 +32,11 @@ class ThunderApp extends StatelessWidget {
             case ThunderStatus.loading:
               return const Material(child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.success:
-              return MaterialApp(
+              return MaterialApp.router(
                 title: 'Thunder',
-                // theme: state.theme,
-                theme: ThemeData.dark(
-                  useMaterial3: true,
-                ),
+                routerConfig: router,
+                theme: ThemeData.dark(useMaterial3: true),
                 debugShowCheckedModeBanner: false,
-                home: const Thunder(),
               );
             case ThunderStatus.failure:
               return const Material(child: Center(child: CircularProgressIndicator()));

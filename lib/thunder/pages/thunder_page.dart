@@ -8,6 +8,7 @@ import 'package:thunder/communities/bloc/communities_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
+import 'package:thunder/settings/pages/settings_page.dart';
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -80,10 +81,7 @@ class _ThunderState extends State<Thunder> {
           const CommunityPage(),
           const SearchPage(),
           const AccountPage(),
-          Container(
-            alignment: Alignment.center,
-            child: const Text('Settings'),
-          ),
+          SettingsPage(),
         ][currentPageIndex];
       case AuthStatus.failure:
         return Center(

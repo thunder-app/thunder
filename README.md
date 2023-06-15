@@ -1,6 +1,6 @@
 <h1 align="center">
   <br>
-    <img src="./assets/logo.png" alt="Markdownify" width="200">
+    <img src="./assets/logo.png" alt="Thunder" width="200">
   <br>
   Thunder
   <br>
@@ -63,8 +63,9 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Communities**
 
-- Browse local community's posts
-- Browse your subscriptions if logged in
+- Browse community posts
+- Search for communities from the current instance (and subscribe)
+- Browse subscriptions if logged in
 
 #### **Posts**
 
@@ -74,7 +75,7 @@ Due to this, significant breaking changes may occur between versions. The next s
 
 #### **Authentication**
 
-- Basic login functionality
+- Singe account login with instance
 
 #### **Theme & Customization**
 
@@ -99,28 +100,18 @@ Contributions are always welcome! To contribute potential features or bug-fixes:
 
 There are a few prerequisites in order to build and run the application locally.
 
-### Create an Environment File
-
-Thunder uses `.env` to store secrets, including credentials for API access. This is an example of a minimal `.env` file.
-
-```dart
-// [REQUIRED] Lemmy specific information
-LEMMU_BASE_URL = ""
-```
-
 ### Installing Flutter and Related Dependencies
 
 Thunder is developed with Flutter, and is built to support both iOS and Android.
 
 To build the app from source, a few steps are required.
 
-1. Create a `.env` file in the root directory as described in the previous section.
-2. Set up and install Flutter.
+1. Set up and install Flutter.
    - For more information, visit https://docs.flutter.dev/get-started/install.
-3. Clone this repository and fetch the dependencies using `flutter pub get`
-4. Run the appropriate build command depending on the platform.
-   - iOS: `flutter build ios --release`
-   - Android: `flutter build apk`
+2. Clone this repository and fetch the dependencies using `flutter pub get`
+3. Run the appropriate build command depending on the platform.
+   - iOS: `flutter build ios --release --no-tree-shake-icons`
+   - Android: `flutter build apk --release --no-tree-shake-icons`
 
 ## Conventions
 
