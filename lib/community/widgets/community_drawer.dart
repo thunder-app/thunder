@@ -144,7 +144,21 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
                                     Navigator.of(context).pop();
                                   },
-                                  child: Text(context.read<AccountBloc>().state.subsciptions[index].community.name),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        context.read<AccountBloc>().state.subsciptions[index].community.title,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                      ),
+                                      Text(
+                                        context.read<AccountBloc>().state.subsciptions[index].community.name,
+                                        style: theme.textTheme.bodyMedium,
+                                      )
+                                    ],
+                                  ),
                                 );
                               }),
                         ),

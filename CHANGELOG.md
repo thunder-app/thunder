@@ -6,6 +6,10 @@
 ### Changed
 - Initial feed now shows a compact version of an image, rather than the full height image
 
+### Fixed
+- Fixed issue where if you log in with an instance that does not exist, the community page will indefinitely load
+- Fixed issue where a community would show a loading indicator if there were too little posts within that community
+
 ## 0.1.0-alpha - 2023-06-15
 ### Added
 - Sorting post feed by hot, active, etc.
