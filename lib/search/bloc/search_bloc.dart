@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -56,13 +57,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       );
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse));
-    } on DioException catch (e) {
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       if (e.type == DioExceptionType.receiveTimeout) {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -90,13 +95,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       state.results!.communities[communityToUpdateIndex] = communityResponse.communityView;
 
       return emit(state.copyWith(status: SearchStatus.success, results: state.results));
-    } on DioException catch (e) {
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       if (e.type == DioExceptionType.receiveTimeout) {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }

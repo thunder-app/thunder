@@ -154,7 +154,7 @@ class PostCard extends StatelessWidget {
                     value: bloc,
                     child: BlocProvider.value(
                       value: authBloc,
-                      child: PostPage(postId: post.id),
+                      child: PostPage(postView: postView),
                     ),
                   );
                 },

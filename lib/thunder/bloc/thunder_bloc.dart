@@ -6,6 +6,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -53,7 +54,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       final theme = ThemeDecoder.decodeThemeData(themeJson)!;
 
       return emit(state.copyWith(status: ThunderStatus.success, theme: theme, preferences: prefs));
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: ThunderStatus.failure));
     }
   }
@@ -65,7 +68,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
       return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: ThunderStatus.failure));
     }
   }

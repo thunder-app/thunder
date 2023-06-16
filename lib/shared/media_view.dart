@@ -45,7 +45,7 @@ class MediaView extends StatelessWidget {
             CachedNetworkImage(
               imageUrl: postView!.media.first.mediaUrl!,
               height: showFullHeightImages ? postView!.media.first.height : 150,
-              width: postView!.media.first.width,
+              width: postView!.media.first.width ?? MediaQuery.of(context).size.width - 24,
               fit: BoxFit.fitWidth,
               progressIndicatorBuilder: (context, url, downloadProgress) => Container(
                 color: Colors.grey.shade900,

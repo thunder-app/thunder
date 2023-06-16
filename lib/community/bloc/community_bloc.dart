@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -58,13 +59,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].myVote = postView.myVote;
 
       return emit(state.copyWith(status: CommunityStatus.success));
-    } on DioException catch (e) {
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       if (e.type == DioExceptionType.receiveTimeout) {
         return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       }
 
       return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -82,13 +87,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].saved = postView.saved;
 
       return emit(state.copyWith(status: CommunityStatus.success));
-    } on DioException catch (e) {
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       if (e.type == DioExceptionType.receiveTimeout) {
         return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to save post'));
       }
 
       return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -159,14 +168,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               ),
             );
           }
-        } catch (e) {
+        } catch (e, s) {
+          await Sentry.captureException(e, stackTrace: s);
+
           attemptCount += 1;
         }
       }
       print('doSomething() executed in ${stopwatch.elapsed}');
-    } on DioException catch (e) {
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message));
-    } catch (e) {
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }

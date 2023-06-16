@@ -1,7 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:flutter/widgets.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:thunder/routes.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -13,7 +16,20 @@ void main() async {
   // Load up environment variables
   await dotenv.load(fileName: ".env");
 
-  runApp(const ThunderApp());
+  String? SENTRY_DSN = dotenv.env['SENTRY_DSN'];
+
+  if (SENTRY_DSN != null) {
+    await SentryFlutter.init(
+      (options) {
+        options.dsn = kDebugMode ? '' : SENTRY_DSN;
+        options.debug = kDebugMode;
+        options.tracesSampleRate = 1.0;
+      },
+      appRunner: () => runApp(const ThunderApp()),
+    );
+  } else {
+    runApp(const ThunderApp());
+  }
 }
 
 class ThunderApp extends StatelessWidget {
