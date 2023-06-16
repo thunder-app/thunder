@@ -44,39 +44,46 @@ class _ThunderState extends State<Thunder> {
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           return Scaffold(
-            bottomNavigationBar: BottomNavigationBar(
-              currentIndex: selectedPageIndex,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              unselectedItemColor: theme.colorScheme.onSurface,
-              selectedItemColor: theme.colorScheme.tertiary,
-              type: BottomNavigationBarType.fixed,
-              unselectedFontSize: 24.0,
-              selectedFontSize: 24.0,
-              items: const [
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.dashboard_rounded),
-                  label: 'Feed',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.search_rounded),
-                  label: 'Search',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.person_rounded),
-                  label: 'Account',
-                ),
-                BottomNavigationBarItem(
-                  icon: Icon(Icons.settings_rounded),
-                  label: 'Settings',
-                ),
-              ],
-              onTap: (index) {
-                setState(() {
-                  selectedPageIndex = index;
-                  pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                });
-              },
+            bottomNavigationBar: Theme(
+              data: ThemeData(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+              ),
+              child: BottomNavigationBar(
+                currentIndex: selectedPageIndex,
+                showSelectedLabels: false,
+                showUnselectedLabels: false,
+                unselectedItemColor: theme.colorScheme.onSurface,
+                selectedItemColor: theme.colorScheme.tertiary,
+                type: BottomNavigationBarType.fixed,
+                unselectedFontSize: 20.0,
+                selectedFontSize: 20.0,
+                backgroundColor: theme.colorScheme.surfaceTint.withOpacity(0.1),
+                items: const [
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.dashboard_rounded),
+                    label: 'Feed',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.search_rounded),
+                    label: 'Search',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.person_rounded),
+                    label: 'Account',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.settings_rounded),
+                    label: 'Settings',
+                  ),
+                ],
+                onTap: (index) {
+                  setState(() {
+                    selectedPageIndex = index;
+                    pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                  });
+                },
+              ),
             ),
             body: _getThunderBody(context, state),
           );

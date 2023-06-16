@@ -1,3 +1,11 @@
+## Unreleased
+### Added
+- Switching between tabs keeps the state of the tab
+- Added Sentry to allow for debugging and logging
+
+### Changed
+- Initial feed now shows a compact version of an image, rather than the full height image
+
 ## 0.1.0-alpha - 2023-06-15
 ### Added
 - Sorting post feed by hot, active, etc.
