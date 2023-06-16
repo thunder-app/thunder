@@ -57,7 +57,10 @@ class CommunityPage extends StatefulWidget {
   State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> {
+class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveClientMixin<CommunityPage> {
+  @override
+  bool get wantKeepAlive => true;
+
   SortType? sortType = SortType.Hot;
   IconData sortTypeIcon = Icons.local_fire_department_rounded;
 
