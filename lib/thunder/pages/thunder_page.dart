@@ -18,10 +18,24 @@ class Thunder extends StatefulWidget {
 }
 
 class _ThunderState extends State<Thunder> {
-  int currentPageIndex = 0;
+  int selectedPageIndex = 0;
+  PageController pageController = PageController(initialPage: 0);
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    pageController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
@@ -30,30 +44,39 @@ class _ThunderState extends State<Thunder> {
       child: BlocBuilder<AuthBloc, AuthState>(
         builder: (context, state) {
           return Scaffold(
-            bottomNavigationBar: NavigationBar(
-              labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
-              onDestinationSelected: (int index) {
-                setState(() => currentPageIndex = index);
-              },
-              selectedIndex: currentPageIndex,
-              destinations: const <Widget>[
-                NavigationDestination(
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: selectedPageIndex,
+              showSelectedLabels: false,
+              showUnselectedLabels: false,
+              unselectedItemColor: theme.colorScheme.onSurface,
+              selectedItemColor: theme.colorScheme.tertiary,
+              type: BottomNavigationBarType.fixed,
+              unselectedFontSize: 24.0,
+              selectedFontSize: 24.0,
+              items: const [
+                BottomNavigationBarItem(
                   icon: Icon(Icons.dashboard_rounded),
                   label: 'Feed',
                 ),
-                NavigationDestination(
+                BottomNavigationBarItem(
                   icon: Icon(Icons.search_rounded),
                   label: 'Search',
                 ),
-                NavigationDestination(
+                BottomNavigationBarItem(
                   icon: Icon(Icons.person_rounded),
                   label: 'Account',
                 ),
-                NavigationDestination(
+                BottomNavigationBarItem(
                   icon: Icon(Icons.settings_rounded),
                   label: 'Settings',
                 ),
               ],
+              onTap: (index) {
+                setState(() {
+                  selectedPageIndex = index;
+                  pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                });
+              },
             ),
             body: _getThunderBody(context, state),
           );
@@ -70,18 +93,24 @@ class _ThunderState extends State<Thunder> {
         context.read<AuthBloc>().add(CheckAuth());
         return const Center(child: CircularProgressIndicator());
       case AuthStatus.loading:
-        WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => currentPageIndex = 0));
+        WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => selectedPageIndex = 0));
         return const Center(child: CircularProgressIndicator());
       case AuthStatus.success:
         if (state.isLoggedIn) {
           context.read<AccountBloc>().add(GetAccountInformation());
         }
-        return <Widget>[
-          const CommunityPage(),
-          const SearchPage(),
-          const AccountPage(),
-          SettingsPage(),
-        ][currentPageIndex];
+
+        return PageView(
+          controller: pageController,
+          onPageChanged: (index) => setState(() => selectedPageIndex = index),
+          physics: const NeverScrollableScrollPhysics(),
+          children: <Widget>[
+            const CommunityPage(),
+            const SearchPage(),
+            const AccountPage(),
+            SettingsPage(),
+          ],
+        );
       case AuthStatus.failure:
         return Center(
           child: Padding(
