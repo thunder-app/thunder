@@ -52,6 +52,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     on<LoginAttempt>((event, emit) async {
+      LemmyClient lemmyClient = LemmyClient.instance;
+      String originalBaseUrl = lemmyClient.lemmy.baseUrl;
+
       try {
         emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
 
@@ -61,7 +64,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           instance = 'https://$instance';
         }
 
-        LemmyClient lemmyClient = LemmyClient.instance;
         lemmyClient.changeBaseUrl(instance);
 
         Lemmy lemmy = lemmyClient.lemmy;
@@ -84,6 +86,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: true));
       } on DioException catch (e, s) {
+        // Change the instance back to the previous one
+        lemmyClient.changeBaseUrl(originalBaseUrl);
+
         dynamic errorMessage;
 
         if (e.response?.data != null) {
