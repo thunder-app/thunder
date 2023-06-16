@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy/lemmy.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -30,6 +31,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? jwt = prefs.getString('jwt');
       String? instance = prefs.getString('instance');
+      String? defaultInstance = prefs.getString('setting_instance_default_instance');
+
+      if (jwt == null && defaultInstance != null) {
+        LemmyClient lemmyClient = LemmyClient.instance;
+        lemmyClient.changeBaseUrl(defaultInstance);
+        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+      }
 
       if (instance != null) {
         LemmyClient lemmyClient = LemmyClient.instance;
@@ -75,7 +83,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await prefs.setString('username', event.username);
 
         return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: true));
-      } on DioException catch (e) {
+      } on DioException catch (e, s) {
         dynamic errorMessage;
 
         if (e.response?.data != null) {
@@ -87,8 +95,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           errorMessage = e.error.toString();
         }
 
+        await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: errorMessage.toString()));
-      } catch (e) {
+      } catch (e, s) {
+        await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: e.toString()));
       }
     });

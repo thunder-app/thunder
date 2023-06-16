@@ -57,23 +57,32 @@ Future<PostView> savePost(int postId, bool save) async {
 
 /// Parse a post with media
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post));
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
+
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
   if (url != null && isImageUrl(url)) {
     try {
       MediaType mediaType = MediaType.image;
-      Size result = await retrieveImageDimensions(url);
 
-      Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
-      media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
+      if (fetchImageDimensions) {
+        Size result = await retrieveImageDimensions(url);
+
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
+        media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
+      } else {
+        media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
+      }
     } catch (e) {
       // If it fails, fall back to a media type of link
       media.add(Media(originalUrl: url, mediaType: MediaType.link));
@@ -84,13 +93,14 @@ Future<PostViewMedia> parsePostView(PostView postView) async {
 
     if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
       try {
-        Size result = await retrieveImageDimensions(url);
+        // Size result = await retrieveImageDimensions(url);
 
-        int mediaHeight = result.height.toInt();
-        int mediaWidth = result.width.toInt();
-        Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
+        // int mediaHeight = result.height.toInt();
+        // int mediaWidth = result.width.toInt();
+        // Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
 
-        media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+        // media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+        media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: 200));
       } catch (e) {
         // Default back to a link
         media.add(Media(mediaType: MediaType.link, originalUrl: url));

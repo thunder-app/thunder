@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -18,7 +20,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
-  bool showFullHeightImages = true;
+  bool showFullHeightImages = false;
+
+  String defaultInstance = 'lemmy.world';
+
+  TextEditingController instanceController = TextEditingController();
 
   // Loading
   bool isLoading = true;
@@ -43,6 +49,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
         break;
+      case 'setting_instance_default_instance':
+        await prefs.setString('setting_instance_default_instance', value);
+        setState(() => defaultInstance = value);
+        break;
     }
 
     if (context.mounted) context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
@@ -55,7 +65,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
-      showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? true;
+      showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       isLoading = false;
     });
   }
@@ -117,7 +127,56 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
-                        )
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Instances',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        TextFormField(
+                          // initialValue: defaultInstance ?? '',
+
+                          controller: instanceController,
+                          decoration: const InputDecoration(
+                            prefix: Text('https://'),
+                            isDense: true,
+                            hintText: 'lemmy.ml',
+                          ),
+                        ),
+                        const SizedBox(height: 16.0),
+                        ElevatedButton(
+                          onPressed: () {
+                            setPreferences('setting_instance_default_instance', 'https://${instanceController.text}');
+
+                            LemmyClient lemmyClient = LemmyClient.instance;
+                            lemmyClient.changeBaseUrl('https://${instanceController.text}');
+                            SnackBar snackBar = SnackBar(
+                              content: Text('Default instance changed to ${instanceController.text}'),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          },
+                          child: const Text('Change default instance'),
+                        ),
+                        // ToggleOption(
+                        //   description: 'Change default instance',
+                        //   value: defaultInstance,
+                        //   iconEnabled: Icons.computer_rounded,
+                        //   iconDisabled: Icons.photo_size_select_actual_rounded,
+                        //   onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
+                        // ),
                       ],
                     ),
                   ),

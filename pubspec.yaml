@@ -43,6 +43,7 @@ dependencies:
   image_size_getter_http_input: ^2.0.0
   exif: ^3.1.4
   image: ^4.0.17
+  sentry_flutter: ^7.7.0
 
 dev_dependencies:
   flutter_test:

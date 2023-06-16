@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:lemmy/lemmy.dart';
@@ -47,13 +48,19 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               personView: getPersonDetailsResponse.personView,
               posts: getPersonDetailsResponse.posts,
             ));
-          } catch (e) {
+          } catch (e, s) {
+            await Sentry.captureException(e, stackTrace: s);
+
             attemptCount += 1;
           }
         }
-      } on DioException catch (e) {
+      } on DioException catch (e, s) {
+        await Sentry.captureException(e, stackTrace: s);
+
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
-      } catch (e) {
+      } catch (e, s) {
+        await Sentry.captureException(e, stackTrace: s);
+
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });
