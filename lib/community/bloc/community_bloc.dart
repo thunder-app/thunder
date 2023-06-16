@@ -138,7 +138,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               postViews: posts,
               listingType: event.listingType ?? ListingType.Local,
               communityId: event.communityId,
-              hasReachedEnd: posts.isEmpty,
+              hasReachedEnd: posts.isEmpty || posts.length < 15,
             ));
           } else {
             if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success));
