@@ -25,7 +25,7 @@ class PostPage extends StatelessWidget {
             listener: (context, state) {
               if (state.status == PostStatus.success) {
                 // Update the community's post
-                int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((postView) => postView.post.id == postView.post.id);
+                int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView.post.id);
                 if (postIdIndex != null) {
                   context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
                 }
