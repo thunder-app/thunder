@@ -6,8 +6,10 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:json_theme/json_theme.dart';
+import 'package:path/path.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/theme_type.dart';
@@ -23,6 +25,10 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   ThunderBloc() : super(const ThunderState()) {
+    on<InitializeAppEvent>(
+      _initializeAppEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<UserPreferencesChangeEvent>(
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -31,6 +37,23 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _themeChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+  }
+
+  Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
+    try {
+      // Load up database
+      final database = await openDatabase(
+        join(await getDatabasesPath(), 'thunder.db'),
+        onCreate: (db, version) {
+          return db.execute('CREATE TABLE accounts(id INTEGER PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
+        },
+        version: 1,
+      );
+
+      emit(state.copyWith(status: ThunderStatus.success, database: database));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+    }
   }
 
   Future<void> _themeChangeEvent(ThemeChangeEvent event, Emitter<ThunderState> emit) async {

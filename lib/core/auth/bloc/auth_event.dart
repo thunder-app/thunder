@@ -17,4 +17,12 @@ class LoginAttempt extends AuthEvent {
 
 class CheckAuth extends AuthEvent {}
 
-class ClearAuth extends AuthEvent {}
+class RemoveAccount extends AuthEvent {
+  final String accountId;
+
+  const RemoveAccount({required this.accountId});
+}
+
+class AddAccount extends AuthEvent {}
+
+class RemoveAllAccounts extends AuthEvent {}

@@ -1,9 +1,11 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -23,6 +25,36 @@ class _AccountPageState extends State<AccountPage> {
     AccountState accountState = context.read<AccountBloc>().state;
 
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) {
+                  SharedPreferences? preferences = context.read<ThunderBloc>().state.preferences;
+
+                  // String profiles = preferences!.get('profiles') ?? '[]';
+
+                  return ListView(
+                    children: [
+                      ListTile(
+                        onTap: () {},
+                        title: const Text('Profile 1'),
+                      ),
+                      ListTile(
+                        onTap: () {},
+                        title: const Text('Add New Profile'),
+                      )
+                    ],
+                  );
+                },
+              );
+            },
+            icon: const Icon(Icons.people_alt_rounded),
+          )
+        ],
+      ),
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -56,7 +88,7 @@ class _AccountPageState extends State<AccountPage> {
                               style: ElevatedButton.styleFrom(
                                 minimumSize: const Size.fromHeight(50),
                               ),
-                              onPressed: () => context.read<AuthBloc>().add(ClearAuth()),
+                              onPressed: () => context.read<AuthBloc>().add(RemoveAccount(accountId: context.read<AuthBloc>().state.account!.id)),
                               child: const Text('Log out'),
                             ),
                           ],

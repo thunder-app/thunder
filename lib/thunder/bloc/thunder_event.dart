@@ -14,3 +14,5 @@ class ThemeChangeEvent extends ThunderEvent {
 }
 
 class UserPreferencesChangeEvent extends ThunderEvent {}
+
+class InitializeAppEvent extends ThunderEvent {}
