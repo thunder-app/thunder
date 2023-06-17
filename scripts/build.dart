@@ -72,7 +72,7 @@ void createAPKFile(String version) {
 
   // Copy the APK file to the "release" directory and rename it
   File apkFile = File('build/app/outputs/flutter-apk/app-release.apk');
-  String newApkPath = '${releaseDir.path}/thunder-$version.apk';
+  String newApkPath = '${releaseDir.path}/thunder-v$version.apk';
   File renamedApkFile = apkFile.copySync(newApkPath);
 
   print('APK file copied and renamed successfully!');
@@ -82,7 +82,7 @@ void createAPKFile(String version) {
 void createIPAFile(String version) {
   print('\nCreating IPA release file...');
 
-  String outputDirectoryPath = 'release/Payload';
+  String outputDirectoryPath = 'release/Payload/';
   String runnerAppPath = 'build/ios/iphoneos/Runner.app';
 
   Directory outputDirectory = Directory(outputDirectoryPath);
@@ -105,11 +105,11 @@ void createIPAFile(String version) {
   });
 
   // Compress the "Payload" directory into a zip file, and rename it to .ipa
-  ProcessResult zipResult = Process.runSync('zip', ['-r', 'release/thunder-$version.ipa', outputDirectoryPath]);
+  ProcessResult zipResult = Process.runSync('bash', ['-c', 'cd release && zip -r thunder-v$version.ipa Payload']);
   if (zipResult.exitCode == 0) {
     print('IPA file created successfully!');
   } else {
-    print('Failed to create IPA file. Error: ${zipResult.stderr}');
+    print('Failed to create IPA file. Error: ${zipResult.stdout}');
   }
 
   // Remove Payload directory

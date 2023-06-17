@@ -78,10 +78,12 @@ class _ThunderState extends State<Thunder> {
                   ),
                 ],
                 onTap: (index) {
-                  setState(() {
-                    selectedPageIndex = index;
-                    pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-                  });
+                  if (index < 4) {
+                    setState(() {
+                      selectedPageIndex = index;
+                      pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                    });
+                  }
                 },
               ),
             ),

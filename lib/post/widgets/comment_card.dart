@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -6,6 +7,8 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+enum SwipeAction { upvote, downvote, reply, save }
 
 class CommentCard extends StatefulWidget {
   const CommentCard({
@@ -41,6 +44,10 @@ class _CommentCardState extends State<CommentCard> {
   bool isHidden = true;
   GlobalKey childKey = GlobalKey();
 
+  double dismissThreshold = 0;
+  DismissDirection? dismissDirection;
+  SwipeAction? swipeAction;
+
   @override
   void initState() {
     isHidden = widget.collapsed;
@@ -68,79 +75,133 @@ class _CommentCardState extends State<CommentCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Divider(height: 1),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => isHidden = !isHidden),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              widget.commentViewTree.creator.name,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: widget.commentViewTree.creator.admin
-                                    ? theme.colorScheme.tertiary
-                                    : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
-                                        ? Colors.amber
-                                        : theme.colorScheme.onSecondaryContainer,
-                                fontWeight: FontWeight.w500,
+          Dismissible(
+            key: ObjectKey(widget.commentViewTree.comment.id),
+            resizeDuration: Duration.zero,
+            dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+            confirmDismiss: (DismissDirection direction) async {
+              print('$dismissDirection: $dismissThreshold');
+              return false;
+            },
+            onUpdate: (DismissUpdateDetails details) {
+              SwipeAction? _swipeAction;
+              if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.startToEnd) {
+                _swipeAction = SwipeAction.upvote;
+                if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+              } else if (details.progress > 0.3 && details.direction == DismissDirection.startToEnd) {
+                _swipeAction = SwipeAction.downvote;
+                if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+              } else if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.endToStart) {
+                _swipeAction = SwipeAction.reply;
+                if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+              } else if (details.progress > 0.3 && details.direction == DismissDirection.endToStart) {
+                _swipeAction = SwipeAction.save;
+                if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+              } else {
+                _swipeAction = null;
+              }
+
+              print('$dismissDirection: $dismissThreshold, $_swipeAction');
+
+              setState(() {
+                dismissThreshold = details.progress;
+                dismissDirection = details.direction;
+                swipeAction = _swipeAction;
+              });
+            },
+            background: dismissDirection == DismissDirection.startToEnd
+                ? AnimatedContainer(
+                    alignment: Alignment.centerLeft,
+                    color: dismissThreshold < 0.3 ? Colors.orange.shade700 : Colors.blue.shade700,
+                    duration: const Duration(milliseconds: 200),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * dismissThreshold,
+                      child: Icon(dismissThreshold < 0.3 ? Icons.north : Icons.south),
+                    ),
+                  )
+                : AnimatedContainer(
+                    alignment: Alignment.centerRight,
+                    color: dismissThreshold < 0.3 ? theme.colorScheme.onSecondary : theme.colorScheme.onPrimary,
+                    duration: const Duration(milliseconds: 200),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * dismissThreshold,
+                      child: Icon(dismissThreshold < 0.3 ? Icons.reply : Icons.star_rounded),
+                    ),
+                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () => setState(() => isHidden = !isHidden),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              Text(
+                                widget.commentViewTree.creator.name,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: widget.commentViewTree.creator.admin
+                                      ? theme.colorScheme.tertiary
+                                      : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
+                                          ? Colors.amber
+                                          : theme.colorScheme.onSecondaryContainer,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            const Icon(Icons.north, size: 12.0),
-                            const SizedBox(width: 2.0),
-                            Text(
-                              formatNumberToK(widget.commentViewTree.counts.upvotes),
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onBackground,
+                              const SizedBox(width: 8.0),
+                              const Icon(Icons.north, size: 12.0),
+                              const SizedBox(width: 2.0),
+                              Text(
+                                formatNumberToK(widget.commentViewTree.counts.upvotes),
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  color: theme.colorScheme.onBackground,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                      Text(
-                        formatTimeToString(dateTime: widget.commentViewTree.comment.published),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onBackground,
-                        ),
-                      )
-                    ],
+                        Text(
+                          formatTimeToString(dateTime: widget.commentViewTree.comment.published),
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onBackground,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              AnimatedSize(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.fastOutSlowIn,
-                child: AnimatedOpacity(
-                  opacity: isHidden ? 0.0 : 1.0,
-                  curve: Curves.fastOutSlowIn,
+                AnimatedSize(
                   duration: const Duration(milliseconds: 200),
-                  child: isHidden
-                      ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: MarkdownBody(
-                            data: widget.commentViewTree.comment.content,
-                            onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
-                            styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                              p: theme.textTheme.bodyMedium,
-                              blockquoteDecoration: const BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                  curve: Curves.fastOutSlowIn,
+                  child: AnimatedOpacity(
+                    opacity: isHidden ? 0.0 : 1.0,
+                    curve: Curves.fastOutSlowIn,
+                    duration: const Duration(milliseconds: 200),
+                    child: isHidden
+                        ? Container()
+                        : Padding(
+                            padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                            child: MarkdownBody(
+                              data: widget.commentViewTree.comment.content,
+                              onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                              styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                p: theme.textTheme.bodyMedium,
+                                blockquoteDecoration: const BoxDecoration(
+                                  color: Colors.transparent,
+                                  border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           AnimatedContainer(
             key: childKey,
