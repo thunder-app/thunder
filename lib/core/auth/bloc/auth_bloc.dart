@@ -4,65 +4,66 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy/lemmy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:collection/collection.dart';
+import 'package:uuid/uuid.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
-    on<ClearAuth>((event, emit) async {
+    on<RemoveAccount>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      await Account.deleteAccount(event.accountId);
 
-      prefs.remove('jwt');
-      prefs.remove('instance');
-      prefs.remove('username');
-
-      await Future.delayed(const Duration(milliseconds: 500), () {
-        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
-      });
+      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
     });
 
+    // This event should be triggered during the start of the app, or when there is a change in the active account
     on<CheckAuth>((event, emit) async {
-      emit(state.copyWith(status: AuthStatus.loading));
+      emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
+      // Check to see what the current active account/profile is
+      // The profile will match an account in the database (through the account's id)
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
-      String? instance = prefs.getString('instance');
-      String? defaultInstance = prefs.getString('setting_instance_default_instance');
+      String? activeProfileId = prefs.getString('active_profile_id');
 
-      if (jwt == null && defaultInstance != null) {
-        LemmyClient lemmyClient = LemmyClient.instance;
-        lemmyClient.changeBaseUrl(defaultInstance);
-        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+      if (activeProfileId == null) {
+        return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
       }
 
-      if (instance != null) {
-        LemmyClient lemmyClient = LemmyClient.instance;
-        lemmyClient.changeBaseUrl(instance);
+      List<Account> accounts = await Account.accounts();
+
+      if (accounts.isEmpty) {
+        return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
       }
 
-      if (jwt == null) {
-        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
-      } else {
-        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: true));
+      Account? activeAccount = accounts.firstWhereOrNull((Account account) => account.id == activeProfileId);
+
+      if (activeAccount == null) {
+        return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
+      }
+
+      if (activeAccount.username != null && activeAccount.jwt != null && activeAccount.instance != null) {
+        // Set lemmy client to use the instance
+        LemmyClient.instance.changeBaseUrl(activeAccount.instance!);
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true));
       }
     });
 
+    // This event should be triggered when the user logs in with a username/password
     on<LoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmy.baseUrl;
 
       try {
-        emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
+        emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
         String instance = event.instance;
-
-        if (!instance.contains('https://')) {
-          instance = 'https://$instance';
-        }
+        if (!instance.contains('https://')) instance = 'https://$instance';
 
         lemmyClient.changeBaseUrl(instance);
 
@@ -76,15 +77,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
 
         if (loginResponse.jwt == null) {
-          return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false));
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwt', loginResponse.jwt!);
-        await prefs.setString('instance', instance);
-        await prefs.setString('username', event.username);
+        // Create a new account in the database
+        Uuid uuid = const Uuid();
+        String accountId = uuid.toString().substring(0, 13);
 
-        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: true));
+        Account account = Account(
+          id: accountId,
+          username: event.username,
+          jwt: loginResponse.jwt,
+          instance: instance,
+        );
+
+        await Account.insertAccount(account);
+
+        // Set this account as the active account
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('active_profile_id', accountId);
+
+        add(CheckAuth());
       } on DioException catch (e, s) {
         // Change the instance back to the previous one
         lemmyClient.changeBaseUrl(originalBaseUrl);
@@ -101,10 +114,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
 
         await Sentry.captureException(e, stackTrace: s);
-        return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: errorMessage.toString()));
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: errorMessage.toString()));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
-        return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: e.toString()));
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });
   }
