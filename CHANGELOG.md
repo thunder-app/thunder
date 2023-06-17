@@ -1,4 +1,4 @@
-## Unreleased
+## 0.1.1-alpha - 2023-06-16
 ### Added
 - Switching between tabs keeps the state of the tab
 - Added Sentry to allow for debugging and logging
