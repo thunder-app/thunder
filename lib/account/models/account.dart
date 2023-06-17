@@ -51,6 +51,20 @@ class Account {
     });
   }
 
+  static Future<Account?> fetchAccount(String accountId) async {
+    Database? database = await DB.instance.database;
+
+    final List<Map<String, dynamic>>? maps = await database?.query('accounts', where: 'id = ?', whereArgs: [accountId]);
+    if (maps == null || maps.isEmpty) return null;
+
+    return Account(
+      id: maps.first['id'],
+      username: maps.first['username'],
+      jwt: maps.first['jwt'],
+      instance: maps.first['instance'],
+    );
+  }
+
   static Future<void> updateAccount(Account account) async {
     Database? database = await DB.instance.database;
     if (database == null) return;

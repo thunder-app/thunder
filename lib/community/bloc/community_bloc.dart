@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -61,16 +63,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       return emit(state.copyWith(status: CommunityStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
 
       return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -89,16 +88,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       return emit(state.copyWith(status: CommunityStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to save post'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to save post'));
 
       return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -106,22 +102,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     int attemptCount = 0;
 
     try {
-      Stopwatch stopwatch = Stopwatch()..start();
+      var exception;
+
+      Account? account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
         try {
-          LemmyClient lemmyClient = LemmyClient.instance;
-          Lemmy lemmy = lemmyClient.lemmy;
-
-          SharedPreferences prefs = await SharedPreferences.getInstance();
-          String? jwt = prefs.getString('jwt');
+          Lemmy lemmy = LemmyClient.instance.lemmy;
 
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
 
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
-                auth: jwt,
+                auth: account?.jwt,
                 page: 1,
                 limit: 15,
                 sort: event.sortType ?? SortType.Hot,
@@ -132,21 +126,23 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
             List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
 
-            return emit(state.copyWith(
-              status: CommunityStatus.success,
-              page: 2,
-              postViews: posts,
-              listingType: event.listingType ?? ListingType.Local,
-              communityId: event.communityId,
-              hasReachedEnd: posts.isEmpty || posts.length < 15,
-            ));
+            return emit(
+              state.copyWith(
+                status: CommunityStatus.success,
+                page: 2,
+                postViews: posts,
+                listingType: event.listingType ?? ListingType.Local,
+                communityId: event.communityId,
+                hasReachedEnd: posts.isEmpty || posts.length < 15,
+              ),
+            );
           } else {
             if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success));
             emit(state.copyWith(status: CommunityStatus.refreshing));
 
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
-                auth: jwt,
+                auth: account?.jwt,
                 page: state.page,
                 limit: 15,
                 sort: event.sortType ?? SortType.Hot,
@@ -169,19 +165,18 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             );
           }
         } catch (e, s) {
+          exception = e;
+          attemptCount++;
           await Sentry.captureException(e, stackTrace: s);
-
-          attemptCount += 1;
         }
       }
-      print('doSomething() executed in ${stopwatch.elapsed}');
+
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString()));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }

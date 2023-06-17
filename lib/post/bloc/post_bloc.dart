@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/utils/comment.dart';
@@ -47,21 +49,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.loading));
 
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
 
       PostViewMedia postView = event.postView;
-
-      // GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id, auth: jwt));
-      // List<PostViewMedia> posts = await parsePostViews([postView]);
 
       GetCommentsResponse getCommentsResponse = await lemmy.getComments(
         GetComments(
           page: 1,
-          auth: jwt,
+          auth: account?.jwt,
           communityId: postView.post.communityId,
           postId: postView.post.id,
           sort: CommentSortType.Hot,
@@ -94,18 +90,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(event, emit) async {
-    LemmyClient lemmyClient = LemmyClient.instance;
-    Lemmy lemmy = lemmyClient.lemmy;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jwt = prefs.getString('jwt');
+    Account? account = await fetchActiveProfileAccount();
+    Lemmy lemmy = LemmyClient.instance.lemmy;
 
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
       GetCommentsResponse getCommentsResponse = await lemmy.getComments(
         GetComments(
-          auth: jwt,
+          auth: account?.jwt,
           communityId: state.communityId,
           postId: state.postId,
           sort: CommentSortType.Hot,
@@ -133,7 +126,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
     GetCommentsResponse getCommentsResponse = await lemmy.getComments(
       GetComments(
-        auth: jwt,
+        auth: account?.jwt,
         communityId: state.communityId,
         postId: state.postId,
         sort: CommentSortType.Hot,
@@ -171,15 +164,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -196,14 +187,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

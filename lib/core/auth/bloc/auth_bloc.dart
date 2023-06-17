@@ -1,13 +1,15 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
-import 'package:lemmy/lemmy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
+
+import 'package:lemmy/lemmy.dart';
+
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -19,7 +21,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await Account.deleteAccount(event.accountId);
 
-      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+      await Future.delayed(const Duration(seconds: 1), () {
+        return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+      });
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -30,6 +34,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       // The profile will match an account in the database (through the account's id)
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? activeProfileId = prefs.getString('active_profile_id');
+
+      // If there is an existing jwt, remove it from the prefs
+      String? jwt = prefs.getString('jwt');
+
+      if (jwt != null) {
+        prefs.remove('jwt');
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: 'You have been logged out. Please log in again!'));
+      }
 
       if (activeProfileId == null) {
         return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
@@ -63,7 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
         String instance = event.instance;
-        if (!instance.contains('https://')) instance = 'https://$instance';
+        if (!instance.startsWith('https://')) instance = 'https://$instance';
 
         lemmyClient.changeBaseUrl(instance);
 
