@@ -144,32 +144,32 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        TextFormField(
-                          // initialValue: defaultInstance ?? '',
+                        // TextFormField(
+                        //   // initialValue: defaultInstance ?? '',
 
-                          controller: instanceController,
-                          decoration: const InputDecoration(
-                            prefix: Text('https://'),
-                            isDense: true,
-                            hintText: 'lemmy.ml',
-                          ),
-                        ),
-                        const SizedBox(height: 16.0),
-                        ElevatedButton(
-                          onPressed: () {
-                            setPreferences('setting_instance_default_instance', 'https://${instanceController.text}');
+                        //   controller: instanceController,
+                        //   decoration: const InputDecoration(
+                        //     prefix: Text('https://'),
+                        //     isDense: true,
+                        //     hintText: 'lemmy.ml',
+                        //   ),
+                        // ),
+                        // const SizedBox(height: 16.0),
+                        // ElevatedButton(
+                        //   onPressed: () {
+                        //     setPreferences('setting_instance_default_instance', 'https://${instanceController.text}');
 
-                            LemmyClient lemmyClient = LemmyClient.instance;
-                            lemmyClient.changeBaseUrl('https://${instanceController.text}');
-                            SnackBar snackBar = SnackBar(
-                              content: Text('Default instance changed to ${instanceController.text}'),
-                              behavior: SnackBarBehavior.floating,
-                            );
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          },
-                          child: const Text('Change default instance'),
-                        ),
+                        //     LemmyClient lemmyClient = LemmyClient.instance;
+                        //     lemmyClient.changeBaseUrl('https://${instanceController.text}');
+                        //     SnackBar snackBar = SnackBar(
+                        //       content: Text('Default instance changed to ${instanceController.text}'),
+                        //       behavior: SnackBarBehavior.floating,
+                        //     );
+                        //     ScaffoldMessenger.of(context).clearSnackBars();
+                        //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        //   },
+                        //   child: const Text('Change default instance'),
+                        // ),
                         // ToggleOption(
                         //   description: 'Change default instance',
                         //   value: defaultInstance,
