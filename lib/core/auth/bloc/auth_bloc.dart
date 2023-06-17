@@ -89,10 +89,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Change the instance back to the previous one
         lemmyClient.changeBaseUrl(originalBaseUrl);
 
-        dynamic errorMessage;
+        String? errorMessage;
 
         if (e.response?.data != null) {
-          errorMessage = e.response?.data?['error'];
+          Map<String, dynamic> data = e.response?.data as Map<String, dynamic>;
+
+          errorMessage = data.containsKey('error') ? data['error'] : e.message;
           errorMessage = errorMessage?.replaceAll('_', ' ');
         } else if (e.response?.statusCode != null) {
           errorMessage = e.message;
