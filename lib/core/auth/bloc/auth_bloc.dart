@@ -109,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
         prefs.setString('active_profile_id', accountId);
 
-        add(CheckAuth());
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
       } on DioException catch (e, s) {
         // Change the instance back to the previous one
         lemmyClient.changeBaseUrl(originalBaseUrl);

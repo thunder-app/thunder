@@ -1,3 +1,10 @@
+## Unreleased
+### Added
+- Update notification which should pop up whenever there is a newer GitHub release
+
+### Changed
+- Login code has changed to improve support for multiple logins/profiles in the future
+
 ## 0.1.1-alpha - 2023-06-16
 ### Added
 - Switching between tabs keeps the state of the tab
