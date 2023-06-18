@@ -13,6 +13,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/theme_type.dart';
+import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/update/check_github_update.dart';
 
 part 'thunder_event.dart';
 part 'thunder_state.dart';
@@ -50,7 +52,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         version: 1,
       );
 
-      emit(state.copyWith(status: ThunderStatus.success, database: database));
+      // Check for any updates from GitHub
+      Version version = await fetchVersion();
+
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
+      add(const ThemeChangeEvent(themeType: ThemeType.black));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
     }
