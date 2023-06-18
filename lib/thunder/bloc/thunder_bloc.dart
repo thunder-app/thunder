@@ -55,8 +55,14 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Check for any updates from GitHub
       Version version = await fetchVersion();
 
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
-      add(const ThemeChangeEvent(themeType: ThemeType.black));
+      // Get theme preferences
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
+
+      bool useDarkTheme = themeType == 'dark';
+
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, useDarkTheme: useDarkTheme));
+      // add(const ThemeChangeEvent(themeType: ThemeType.black));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
     }
@@ -66,29 +72,48 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.loading));
 
-      // @todo keep user preferences for theming
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
 
-      String themeName = 'assets/themes/black.json';
-
-      switch (event.themeType) {
-        case ThemeType.black:
-          themeName = 'assets/themes/black.json';
-        case ThemeType.white:
-          themeName = 'assets/themes/white.json';
+      if (themeType == 'dark') {
+        return emit(state.copyWith(status: ThunderStatus.success, useDarkTheme: true, preferences: prefs));
+      } else {
+        return emit(state.copyWith(status: ThunderStatus.success, useDarkTheme: false, preferences: prefs));
       }
-
-      final themeString = await rootBundle.loadString(themeName);
-      final themeJson = jsonDecode(themeString);
-      final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-
-      return emit(state.copyWith(status: ThunderStatus.success, theme: theme, preferences: prefs));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
       emit(state.copyWith(status: ThunderStatus.failure));
     }
   }
+
+  // Future<void> _themeChangeEvent(ThemeChangeEvent event, Emitter<ThunderState> emit) async {
+  //   try {
+  //     emit(state.copyWith(status: ThunderStatus.loading));
+
+  //     // @todo keep user preferences for theming
+  //     SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  //     String themeName = 'assets/themes/black.json';
+
+  //     switch (event.themeType) {
+  //       case ThemeType.black:
+  //         themeName = 'assets/themes/black.json';
+  //       case ThemeType.white:
+  //         themeName = 'assets/themes/white.json';
+  //     }
+
+  //     final themeString = await rootBundle.loadString(themeName);
+  //     final themeJson = jsonDecode(themeString);
+  //     final theme = ThemeDecoder.decodeThemeData(themeJson)!;
+
+  //     return emit(state.copyWith(status: ThunderStatus.success, theme: theme, preferences: prefs));
+  //   } catch (e, s) {
+  //     await Sentry.captureException(e, stackTrace: s);
+
+  //     emit(state.copyWith(status: ThunderStatus.failure));
+  //   }
+  // }
 
   Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
     try {

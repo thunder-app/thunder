@@ -20,6 +20,7 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
+const timeout = Duration(seconds: 3);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -62,7 +63,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       PostViewMedia postView = event.postView;
 
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+      GetCommentsResponse getCommentsResponse = await lemmy
+          .getComments(
         GetComments(
           page: 1,
           auth: account?.jwt,
@@ -71,7 +73,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           sort: CommentSortType.Hot,
           limit: 50,
         ),
-      );
+      )
+          .timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to fetch comments');
+      });
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -104,7 +109,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+      GetCommentsResponse getCommentsResponse = await lemmy
+          .getComments(
         GetComments(
           auth: account?.jwt,
           communityId: state.communityId,
@@ -113,7 +119,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           limit: 50,
           page: 1,
         ),
-      );
+      )
+          .timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to fetch comments');
+      });
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -132,7 +141,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (state.commentCount >= state.postView!.counts.comments) return;
     emit(state.copyWith(status: PostStatus.refreshing));
 
-    GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+    GetCommentsResponse getCommentsResponse = await lemmy
+        .getComments(
       GetComments(
         auth: account?.jwt,
         communityId: state.communityId,
@@ -141,7 +151,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         limit: 50,
         page: state.commentPage,
       ),
-    );
+    )
+        .timeout(timeout, onTimeout: () {
+      throw Exception('Error: Timeout when attempting to fetch more comments');
+    });
 
     // Build the tree view from the flattened comments
     List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -163,7 +176,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      PostView postView = await votePost(event.postId, event.score);
+      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote post');
+      });
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -186,7 +201,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      PostView postView = await savePost(event.postId, event.save);
+      PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to save post');
+      });
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -209,7 +226,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      CommentView commentView = await voteComment(event.commentId, event.score);
+      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote on comment');
+      });
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
@@ -238,7 +257,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      CommentView commentView = await saveComment(event.commentId, event.save);
+      CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting save a comment');
+      });
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree

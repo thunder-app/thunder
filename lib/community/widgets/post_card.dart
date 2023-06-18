@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
@@ -119,21 +120,36 @@ class PostCard extends StatelessWidget {
                               icon: const Icon(Icons.arrow_upward),
                               color: postView.myVote == 1 ? Colors.orange : null,
                               visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1)) : null,
+                              onPressed: isUserLoggedIn
+                                  ? () {
+                                      HapticFeedback.mediumImpact();
+                                      context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1));
+                                    }
+                                  : null,
                             ),
                           if (showVoteActions)
                             IconButton(
                               icon: const Icon(Icons.arrow_downward),
                               color: postView.myVote == -1 ? Colors.blue : null,
                               visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1)) : null,
+                              onPressed: isUserLoggedIn
+                                  ? () {
+                                      HapticFeedback.mediumImpact();
+                                      context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1));
+                                    }
+                                  : null,
                             ),
                           if (showSaveAction)
                             IconButton(
                               icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
                               color: postView.saved ? Colors.purple : null,
                               visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true)) : null,
+                              onPressed: isUserLoggedIn
+                                  ? () {
+                                      HapticFeedback.mediumImpact();
+                                      context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true));
+                                    }
+                                  : null,
                             ),
                         ],
                       ),
