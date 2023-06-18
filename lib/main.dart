@@ -72,7 +72,9 @@ class ThunderApp extends StatelessWidget {
                 child: MaterialApp.router(
                   title: 'Thunder',
                   routerConfig: router,
-                  theme: ThemeData.dark(useMaterial3: true),
+                  themeMode: state.useDarkTheme ? ThemeMode.dark : ThemeMode.light,
+                  theme: ThemeData(useMaterial3: true),
+                  darkTheme: ThemeData.dark(useMaterial3: true),
                   debugShowCheckedModeBanner: false,
                 ),
               );

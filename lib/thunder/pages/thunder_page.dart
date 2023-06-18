@@ -42,6 +42,7 @@ class _ThunderState extends State<Thunder> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final useDarkTheme = context.read<ThunderBloc>().state.useDarkTheme;
 
     return MultiBlocProvider(
       providers: [
@@ -65,7 +66,7 @@ class _ThunderState extends State<Thunder> {
                 type: BottomNavigationBarType.fixed,
                 unselectedFontSize: 20.0,
                 selectedFontSize: 20.0,
-                backgroundColor: theme.colorScheme.surfaceTint.withOpacity(0.1),
+                backgroundColor: useDarkTheme ? theme.colorScheme.surfaceTint.withOpacity(0.1) : null,
                 items: const [
                   BottomNavigationBarItem(
                     icon: Icon(Icons.dashboard_rounded),

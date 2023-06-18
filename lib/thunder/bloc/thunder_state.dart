@@ -9,6 +9,7 @@ class ThunderState extends Equatable {
     this.preferences,
     this.database,
     this.version,
+    this.useDarkTheme = true,
   });
 
   final ThunderStatus status;
@@ -18,6 +19,7 @@ class ThunderState extends Equatable {
 
   final Database? database;
   final Version? version;
+  final bool useDarkTheme;
 
   ThunderState copyWith({
     ThunderStatus? status,
@@ -25,6 +27,7 @@ class ThunderState extends Equatable {
     SharedPreferences? preferences,
     Database? database,
     Version? version,
+    bool? useDarkTheme,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -32,6 +35,7 @@ class ThunderState extends Equatable {
       preferences: preferences ?? this.preferences,
       database: database ?? this.database,
       version: version ?? this.version,
+      useDarkTheme: useDarkTheme ?? this.useDarkTheme,
     );
   }
 
