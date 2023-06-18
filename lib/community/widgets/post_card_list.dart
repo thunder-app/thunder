@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/post_card.dart';
@@ -13,7 +14,9 @@ class PostCardList extends StatefulWidget {
 
   final bool? hasReachedEnd;
 
-  const PostCardList({super.key, this.postViews, this.communityId, this.hasReachedEnd});
+  final ListingType? listingType;
+
+  const PostCardList({super.key, this.postViews, this.communityId, this.hasReachedEnd, this.listingType});
 
   @override
   State<PostCardList> createState() => _PostCardListState();
@@ -47,7 +50,11 @@ class _PostCardListState extends State<PostCardList> {
     return RefreshIndicator(
       onRefresh: () async {
         HapticFeedback.mediumImpact();
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId));
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+              reset: true,
+              listingType: widget.communityId != null ? null : widget.listingType,
+              communityId: widget.listingType != null ? null : widget.communityId,
+            ));
       },
       child: ListView.builder(
         controller: _scrollController,

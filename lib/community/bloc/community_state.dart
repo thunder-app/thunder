@@ -40,8 +40,8 @@ class CommunityState extends Equatable {
       page: page ?? this.page,
       postViews: postViews ?? this.postViews,
       errorMessage: errorMessage ?? this.errorMessage,
-      listingType: listingType ?? this.listingType,
-      communityId: communityId ?? this.communityId,
+      listingType: listingType,
+      communityId: communityId,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
     );
   }

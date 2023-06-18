@@ -43,6 +43,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _savePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VoteCommentEvent>(
+      _voteCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SaveCommentEvent>(
+      _saveCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
@@ -183,6 +191,63 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
       state.postView?.saved = postView.saved;
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      CommentView commentView = await voteComment(event.commentId, event.score);
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      currentTree.myVote = commentView.myVote; // Update the comment's information
+      currentTree.counts.score = commentView.counts.score;
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote on comment'));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      CommentView commentView = await saveComment(event.commentId, event.save);
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      currentTree.saved = commentView.saved; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {

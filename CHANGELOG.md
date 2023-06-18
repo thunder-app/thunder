@@ -1,6 +1,7 @@
 ## Unreleased
 ### Added
 - Update notification which should pop up whenever there is a newer GitHub release
+- When logging into your account, it should prompt autofill (tested personally on iOS, but should also work in Android
 
 ### Changed
 - Login code has changed to improve support for multiple logins/profiles in the future

@@ -194,7 +194,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.success:
         return PostCardList(
           postViews: state.postViews,
-          communityId: widget.communityId,
+          listingType: state.communityId != null ? null : state.listingType,
+          communityId: widget.communityId ?? state.communityId,
           hasReachedEnd: state.hasReachedEnd,
         );
       case CommunityStatus.empty:
