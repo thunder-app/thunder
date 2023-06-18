@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:sqflite/sqflite.dart';
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/communities/bloc/communities_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/version.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -20,6 +25,8 @@ class Thunder extends StatefulWidget {
 class _ThunderState extends State<Thunder> {
   int selectedPageIndex = 0;
   PageController pageController = PageController(initialPage: 0);
+
+  bool hasShownUpdateDialog = false;
 
   @override
   void initState() {
@@ -107,6 +114,33 @@ class _ThunderState extends State<Thunder> {
       case AuthStatus.success:
         if (state.isLoggedIn) {
           context.read<AccountBloc>().add(GetAccountInformation());
+        }
+
+        Version? version = context.read<ThunderBloc>().state.version;
+
+        if (version?.hasUpdate == true && hasShownUpdateDialog == false) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            showSimpleNotification(
+              GestureDetector(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Update released: ${version?.latestVersion}',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    Icon(Icons.arrow_forward, color: theme.colorScheme.tertiary),
+                  ],
+                ),
+                onTap: () => launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest')),
+              ),
+              // leading: Icon(Icons.update_rounded, color: theme.colorScheme.tertiary),
+              background: theme.colorScheme.onSecondary,
+              autoDismiss: false,
+              slideDismissDirection: DismissDirection.vertical,
+            );
+            setState(() => hasShownUpdateDialog = true);
+          });
         }
 
         return PageView(

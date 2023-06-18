@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
-import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
@@ -63,16 +63,18 @@ class ThunderApp extends StatelessWidget {
         builder: (context, state) {
           switch (state.status) {
             case ThunderStatus.initial:
-              context.read<ThunderBloc>().add(const ThemeChangeEvent(themeType: ThemeType.black));
+              context.read<ThunderBloc>().add(InitializeAppEvent());
               return const Material(child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.loading:
               return const Material(child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.success:
-              return MaterialApp.router(
-                title: 'Thunder',
-                routerConfig: router,
-                theme: ThemeData.dark(useMaterial3: true),
-                debugShowCheckedModeBanner: false,
+              return OverlaySupport.global(
+                child: MaterialApp.router(
+                  title: 'Thunder',
+                  routerConfig: router,
+                  theme: ThemeData.dark(useMaterial3: true),
+                  debugShowCheckedModeBanner: false,
+                ),
               );
             case ThunderStatus.failure:
               return const Material(child: Center(child: CircularProgressIndicator()));

@@ -47,6 +47,7 @@ dependencies:
   image: ^4.0.17
   sentry_flutter: ^7.7.0
   uuid: ^3.0.7
+  overlay_support: ^2.1.0
 
 dev_dependencies:
   flutter_test:
