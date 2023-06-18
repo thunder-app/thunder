@@ -34,3 +34,17 @@ class SavePostEvent extends PostEvent {
 
   const SavePostEvent({required this.postId, required this.save});
 }
+
+class VoteCommentEvent extends PostEvent {
+  final int commentId;
+  final int score;
+
+  const VoteCommentEvent({required this.commentId, required this.score});
+}
+
+class SaveCommentEvent extends PostEvent {
+  final int commentId;
+  final bool save;
+
+  const SaveCommentEvent({required this.commentId, required this.save});
+}

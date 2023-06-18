@@ -113,14 +113,18 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
 
+            ListingType defaultListingType = ListingType.Local;
+            int? communityId = event.communityId;
+            ListingType? listingType = communityId != null ? null : (event.listingType ?? defaultListingType);
+
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
                 auth: account?.jwt,
                 page: 1,
                 limit: 15,
                 sort: event.sortType ?? SortType.Hot,
-                type_: event.listingType ?? ListingType.Local,
-                communityId: event.communityId,
+                type_: listingType,
+                communityId: communityId,
               ),
             );
 
@@ -131,14 +135,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 status: CommunityStatus.success,
                 page: 2,
                 postViews: posts,
-                listingType: event.listingType ?? ListingType.Local,
-                communityId: event.communityId,
+                listingType: listingType,
+                communityId: communityId,
                 hasReachedEnd: posts.isEmpty || posts.length < 15,
               ),
             );
           } else {
-            if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success));
-            emit(state.copyWith(status: CommunityStatus.refreshing));
+            if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId));
+            emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId));
+
+            int? communityId = event.communityId ?? state.communityId;
+            ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
 
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
@@ -146,7 +153,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 page: state.page,
                 limit: 15,
                 sort: event.sortType ?? SortType.Hot,
-                type_: state.listingType ?? ListingType.Local,
+                type_: state.listingType,
                 communityId: state.communityId,
               ),
             );
@@ -160,6 +167,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 status: CommunityStatus.success,
                 page: state.page + 1,
                 postViews: postViews,
+                communityId: communityId,
+                listingType: listingType,
                 hasReachedEnd: posts.isEmpty,
               ),
             );
@@ -171,13 +180,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         }
       }
 
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString(), listingType: state.listingType, communityId: state.communityId));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message, listingType: state.listingType, communityId: state.communityId));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId));
     }
   }
 }
