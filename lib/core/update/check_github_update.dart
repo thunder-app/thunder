@@ -1,19 +1,15 @@
-import 'package:http/http.dart' as http;
-import 'package:thunder/core/models/version.dart';
 import 'dart:convert';
-import 'package:yaml/yaml.dart';
+
+import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'dart:io';
+import 'package:sentry_flutter/sentry_flutter.dart';
+
+import 'package:thunder/core/models/version.dart';
 
 Future<String?> getCurrentVersion() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-  String appName = packageInfo.appName;
-  String packageName = packageInfo.packageName;
   String version = packageInfo.version;
-  String buildNumber = packageInfo.buildNumber;
 
-  print(version);
   return 'v$version';
 }
 
@@ -39,8 +35,8 @@ Future<Version> fetchVersion() async {
     }
 
     return Version(version: currentVersion ?? 'N/A', latestVersion: 'N/A', hasUpdate: false);
-  } catch (e) {
-    print('Error checking for updates: $e');
+  } catch (e, s) {
+    await Sentry.captureException(e, stackTrace: s);
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }
 }
