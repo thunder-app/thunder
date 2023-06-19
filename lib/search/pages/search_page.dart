@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -121,45 +122,47 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return ListTile(
-              title: Text(communityView.community.title),
-              subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
-              trailing: isUserLoggedIn
-                  ? IconButton(
-                      onPressed: communityView.subscribed == SubscribedType.Pending
-                          ? null
-                          : () {
-                              context.read<SearchBloc>().add(
-                                    ChangeCommunitySubsciptionStatusEvent(
-                                      communityId: communityView.community.id,
-                                      follow: communityView.subscribed == SubscribedType.NotSubscribed ? true : false,
-                                    ),
-                                  );
-                              SnackBar snackBar = SnackBar(
-                                content: Text('${communityView.subscribed == SubscribedType.NotSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
-                                behavior: SnackBarBehavior.floating,
-                              );
-                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              });
-                            },
-                      icon: Icon(
-                        switch (communityView.subscribed) {
-                          SubscribedType.NotSubscribed => Icons.add,
-                          SubscribedType.Pending => Icons.pending_rounded,
-                          SubscribedType.Subscribed => Icons.remove,
-                        },
-                      ),
-                      visualDensity: VisualDensity.compact,
-                    )
-                  : null,
-              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                  create: (context) => AuthBloc(),
-                  child: CommunityPage(communityId: communityView.community.id),
-                ),
-              )),
-            );
+                title: Text(communityView.community.title),
+                subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
+                trailing: isUserLoggedIn
+                    ? IconButton(
+                        onPressed: communityView.subscribed == SubscribedType.Pending
+                            ? null
+                            : () {
+                                context.read<SearchBloc>().add(
+                                      ChangeCommunitySubsciptionStatusEvent(
+                                        communityId: communityView.community.id,
+                                        follow: communityView.subscribed == SubscribedType.NotSubscribed ? true : false,
+                                      ),
+                                    );
+                                SnackBar snackBar = SnackBar(
+                                  content: Text('${communityView.subscribed == SubscribedType.NotSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
+                                  behavior: SnackBarBehavior.floating,
+                                );
+                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                });
+                              },
+                        icon: Icon(
+                          switch (communityView.subscribed) {
+                            SubscribedType.NotSubscribed => Icons.add,
+                            SubscribedType.Pending => Icons.pending_rounded,
+                            SubscribedType.Subscribed => Icons.remove,
+                          },
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      )
+                    : null,
+                onTap: () {
+                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => BlocProvider.value(
+                      value: accountBloc,
+                      child: CommunityPage(communityId: communityView.community.id),
+                    ),
+                  ));
+                });
           },
         );
       case SearchStatus.empty:

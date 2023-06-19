@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:thunder/core/singletons/database.dart';
@@ -28,7 +29,8 @@ FutureOr<SentryEvent?> beforeSend(SentryEvent event, {Hint? hint}) async {
 }
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Load up environment variables
   await dotenv.load(fileName: ".env");
@@ -67,9 +69,9 @@ class ThunderApp extends StatelessWidget {
           switch (state.status) {
             case ThunderStatus.initial:
               context.read<ThunderBloc>().add(InitializeAppEvent());
-              return const Material(child: Center(child: CircularProgressIndicator()));
+              FlutterNativeSplash.remove();
+              return const Material(color: Color.fromRGBO(33, 33, 35, 1), child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.loading:
-              return const Material(child: Center(child: CircularProgressIndicator()));
             case ThunderStatus.success:
               return OverlaySupport.global(
                 child: MaterialApp.router(
@@ -82,7 +84,12 @@ class ThunderApp extends StatelessWidget {
                 ),
               );
             case ThunderStatus.failure:
-              return const Material(child: Center(child: CircularProgressIndicator()));
+              return const Material(
+                color: Color.fromRGBO(33, 33, 35, 1),
+                child: Center(
+                  child: Text('An unexpected error occurred', style: TextStyle(color: Colors.white)),
+                ),
+              );
           }
         },
       ),

@@ -35,7 +35,7 @@ class AccountState extends Equatable {
   }) {
     return AccountState(
       status: status ?? this.status,
-      subsciptions: subsciptions ?? this.subsciptions,
+      subsciptions: subsciptions ?? [],
       comments: comments ?? [],
       moderates: moderates ?? [],
       posts: posts ?? [],

@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 class SortTypeItem {
   const SortTypeItem({required this.sortType, required this.icon, required this.label});
@@ -67,6 +68,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
@@ -93,58 +97,54 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
         },
         builder: (context, state) {
-          return BlocBuilder<CommunityBloc, CommunityState>(
-            builder: (context, state) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                    (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
-                        ? ''
-                        : (state.communityId != null)
-                            ? (state.postViews?.firstOrNull?.community.name ?? '')
-                            : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
-                  ),
-                  centerTitle: false,
-                  toolbarHeight: 70.0,
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        if (state.communityId != null)
-                          IconButton(
-                            icon: Icon(
-                              (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
-                            ),
-                            onPressed: () => {
-                              context.read<CommunityBloc>().add(
-                                    ChangeCommunitySubsciptionStatusEvent(
-                                      communityId: state.communityId!,
-                                      follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.NotSubscribed ? true : false),
-                                    ),
-                                  )
-                            },
-                          ),
-                        IconButton(
-                          icon: Icon(sortTypeIcon),
-                          onPressed: () => showSortBottomSheet(context, state),
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
+                    ? ''
+                    : (state.communityId != null)
+                        ? (state.postViews?.firstOrNull?.community.name ?? '')
+                        : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
+              ),
+              centerTitle: false,
+              toolbarHeight: 70.0,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (state.communityId != null && isUserLoggedIn)
+                      IconButton(
+                        icon: Icon(
+                          (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
                         ),
-                        const SizedBox(width: 8.0),
-                      ],
-                    )
+                        onPressed: () => {
+                          context.read<CommunityBloc>().add(
+                                ChangeCommunitySubsciptionStatusEvent(
+                                  communityId: state.communityId!,
+                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.NotSubscribed ? true : false),
+                                ),
+                              )
+                        },
+                      ),
+                    IconButton(
+                      icon: Icon(sortTypeIcon),
+                      onPressed: () => showSortBottomSheet(context, state),
+                    ),
+                    const SizedBox(width: 8.0),
                   ],
-                ),
-                drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
-                // floatingActionButton: (state.communityId != null)
-                //     ? FloatingActionButton(
-                //         onPressed: () {
-                //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
-                //         },
-                //         child: const Icon(Icons.add),
-                //       )
-                //     : null,
-                body: SafeArea(child: _getBody(context, state)),
-              );
-            },
+                )
+              ],
+            ),
+            drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
+            // floatingActionButton: (state.communityId != null)
+            //     ? FloatingActionButton(
+            //         onPressed: () {
+            //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+            //         },
+            //         child: const Icon(Icons.add),
+            //       )
+            //     : null,
+            body: SafeArea(child: _getBody(context, state)),
           );
         },
       ),
