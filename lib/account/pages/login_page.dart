@@ -67,7 +67,11 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      padding: EdgeInsets.only(
+        left: 12.0,
+        right: 12.0,
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
       child: Center(
         child: SingleChildScrollView(
           child: Column(
@@ -129,7 +133,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 32.0),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60), backgroundColor: theme.colorScheme.onSecondary),
                 onPressed: (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                     ? () {
                         TextInput.finishAutofillContext();
