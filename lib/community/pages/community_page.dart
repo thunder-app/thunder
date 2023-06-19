@@ -141,6 +141,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                                     GetCommunityPostsEvent(
                                                       sortType: sortTypeItems[index].sortType,
                                                       reset: true,
+                                                      listingType: state.communityId != null ? null : state.listingType,
                                                       communityId: widget.communityId ?? state.communityId,
                                                     ),
                                                   );
