@@ -47,6 +47,7 @@ dependencies:
   uuid: ^3.0.7
   overlay_support: ^2.1.0
   package_info_plus: ^4.0.2
+  photo_view: ^0.14.0
 
 dev_dependencies:
   flutter_test:
