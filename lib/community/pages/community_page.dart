@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
@@ -66,11 +67,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
+        listenWhen: (previousState, currentState) {
+          if (previousState.subscribedType != currentState.subscribedType) {
+            context.read<AccountBloc>().add(GetAccountInformation());
+          }
+          return true;
+        },
         listener: (context, state) {
           if (state.status == CommunityStatus.networkFailure) {
             SnackBar snackBar = SnackBar(
@@ -98,65 +103,23 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        if (state.communityId != null)
+                          IconButton(
+                            icon: Icon(
+                              (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                            ),
+                            onPressed: () => {
+                              context.read<CommunityBloc>().add(
+                                    ChangeCommunitySubsciptionStatusEvent(
+                                      communityId: state.communityId!,
+                                      follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.NotSubscribed ? true : false),
+                                    ),
+                                  )
+                            },
+                          ),
                         IconButton(
                           icon: Icon(sortTypeIcon),
-                          onPressed: () {
-                            showModalBottomSheet<void>(
-                              showDragHandle: true,
-                              context: context,
-                              builder: (BuildContext bottomSheetContext) {
-                                return SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Sort Options',
-                                            style: theme.textTheme.titleLarge!.copyWith(),
-                                          ),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: sortTypeItems.length,
-                                        itemBuilder: (BuildContext itemBuilderContext, int index) {
-                                          return ListTile(
-                                            title: Text(
-                                              sortTypeItems[index].label,
-                                              style: theme.textTheme.bodyMedium,
-                                            ),
-                                            leading: Icon(sortTypeItems[index].icon),
-                                            onTap: () {
-                                              setState(() {
-                                                sortType = sortTypeItems[index].sortType;
-                                                sortTypeIcon = sortTypeItems[index].icon;
-                                              });
-
-                                              context.read<CommunityBloc>().add(
-                                                    GetCommunityPostsEvent(
-                                                      sortType: sortTypeItems[index].sortType,
-                                                      reset: true,
-                                                      listingType: state.communityId != null ? null : state.listingType,
-                                                      communityId: widget.communityId ?? state.communityId,
-                                                    ),
-                                                  );
-                                              Navigator.of(context).pop();
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(height: 16.0),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
+                          onPressed: () => showSortBottomSheet(context, state),
                         ),
                         const SizedBox(width: 8.0),
                       ],
@@ -231,5 +194,65 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           ),
         );
     }
+  }
+
+  void showSortBottomSheet(BuildContext context, CommunityState state) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (BuildContext bottomSheetContext) {
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort Options',
+                    style: theme.textTheme.titleLarge!.copyWith(),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: sortTypeItems.length,
+                itemBuilder: (BuildContext itemBuilderContext, int index) {
+                  return ListTile(
+                    title: Text(
+                      sortTypeItems[index].label,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    leading: Icon(sortTypeItems[index].icon),
+                    onTap: () {
+                      setState(() {
+                        sortType = sortTypeItems[index].sortType;
+                        sortTypeIcon = sortTypeItems[index].icon;
+                      });
+
+                      context.read<CommunityBloc>().add(
+                            GetCommunityPostsEvent(
+                              sortType: sortTypeItems[index].sortType,
+                              reset: true,
+                              listingType: state.communityId != null ? null : state.listingType,
+                              communityId: widget.communityId ?? state.communityId,
+                            ),
+                          );
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

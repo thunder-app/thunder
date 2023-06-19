@@ -74,8 +74,6 @@ class ProfileSelect extends StatelessWidget {
                   ],
                 );
               } else {
-                print(currentAccountId);
-                print(currentAccountId == snapshot.data![index].id);
                 return ListTile(
                   leading: const Icon(Icons.person),
                   title: Text(snapshot.data![index].username ?? 'N/A'),
