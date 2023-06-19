@@ -3,9 +3,13 @@
 - New update in-app notification to notify you of new GitHub releases
 - Autofill options for logging into your account (tested on iOS, untested on Android physical device)
 - Added an option to switch to a light theme
+- Tapping on the community's name within a post will allow you to view the community
+- When viewing a community, you can now subscribe/unsubscribe to that community directly
+- You can now login with different accounts, and switch between those accounts
+- Comments can now be upvoted, downvoted, and saved through swipe gesture
 
-### Changed
-- Login code has changed to improve support for multiple logins/profiles in the future
+### Fixed
+- Fixed issue where refreshing or selecting a sort option would cause the feed to show the Local feed
 
 ## 0.1.1-alpha - 2023-06-16
 ### Added
