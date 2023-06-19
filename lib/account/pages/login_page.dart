@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final VoidCallback popRegister;
+
+  const LoginPage({super.key, required this.popRegister});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -64,11 +67,11 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
 
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: Center(
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Image.asset('assets/logo.png', width: 196.0, height: 196.0),
@@ -138,9 +141,15 @@ class _LoginPageState extends State<LoginPage> {
                                 instance: _instanceTextEditingController.text,
                               ),
                             );
+                        context.pop();
                       }
                     : null,
                 child: Text('Login', style: theme.textTheme.titleMedium),
+              ),
+              TextButton(
+                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                onPressed: () => widget.popRegister(),
+                child: Text('Cancel', style: theme.textTheme.titleMedium),
               ),
             ],
           ),

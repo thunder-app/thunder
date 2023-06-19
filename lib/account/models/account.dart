@@ -15,12 +15,12 @@ class Account {
   });
 
   Map<String, dynamic> toMap() {
-    return {'id': id, 'username': username, 'jwt': jwt, 'instance': instance};
+    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance};
   }
 
   @override
   String toString() {
-    return 'Account{id: $id, username: $username, instance: $instance}';
+    return 'Account{accountId: $id, username: $username, instance: $instance}';
   }
 
   static Future<void> insertAccount(Account account) async {
@@ -43,7 +43,7 @@ class Account {
 
     return List.generate(maps.length, (i) {
       return Account(
-        id: maps[i]['id'],
+        id: maps[i]['accountId'],
         username: maps[i]['username'],
         jwt: maps[i]['jwt'],
         instance: maps[i]['instance'],
@@ -54,11 +54,11 @@ class Account {
   static Future<Account?> fetchAccount(String accountId) async {
     Database? database = await DB.instance.database;
 
-    final List<Map<String, dynamic>>? maps = await database?.query('accounts', where: 'id = ?', whereArgs: [accountId]);
+    final List<Map<String, dynamic>>? maps = await database?.query('accounts', where: 'accountId = ?', whereArgs: [accountId]);
     if (maps == null || maps.isEmpty) return null;
 
     return Account(
-      id: maps.first['id'],
+      id: maps.first['accountId'],
       username: maps.first['username'],
       jwt: maps.first['jwt'],
       instance: maps.first['instance'],
@@ -69,13 +69,13 @@ class Account {
     Database? database = await DB.instance.database;
     if (database == null) return;
 
-    await database.update('accounts', account.toMap(), where: 'id = ?', whereArgs: [account.id]);
+    await database.update('accounts', account.toMap(), where: 'accountId = ?', whereArgs: [account.id]);
   }
 
   static Future<void> deleteAccount(String id) async {
     Database? database = await DB.instance.database;
     if (database == null) return;
 
-    await database.delete('accounts', where: 'id = ?', whereArgs: [id]);
+    await database.delete('accounts', where: 'accountId = ?', whereArgs: [id]);
   }
 }
