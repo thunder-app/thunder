@@ -44,13 +44,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
-    emit(state.copyWith(status: CommunityStatus.refreshing));
-    emit(state.copyWith(status: CommunityStatus.success));
+    emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+    emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
   }
 
   Future<void> _votePostEvent(VotePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing));
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
 
       PostView postView = await votePost(event.postId, event.score);
 
@@ -60,22 +60,45 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].post = postView.post;
       state.postViews![existingPostViewIndex].myVote = postView.myVote;
 
-      return emit(state.copyWith(status: CommunityStatus.success));
+      return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            communityId: state.communityId,
+            listingType: state.listingType,
+            errorMessage: 'Error: Network timeout when attempting to vote',
+          ),
+        );
+      }
 
-      return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+        status: CommunityStatus.networkFailure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+        status: CommunityStatus.failure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
     }
   }
 
   Future<void> _savePostEvent(SavePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(status: CommunityStatus.refreshing));
+      emit(state.copyWith(
+        status: CommunityStatus.refreshing,
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
 
       PostView postView = await savePost(event.postId, event.save);
 
@@ -85,16 +108,39 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].post = postView.post;
       state.postViews![existingPostViewIndex].saved = postView.saved;
 
-      return emit(state.copyWith(status: CommunityStatus.success));
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to save post'));
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: 'Error: Network timeout when attempting to save post',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
 
-      return emit(state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+        status: CommunityStatus.networkFailure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+        status: CommunityStatus.failure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
     }
   }
 
