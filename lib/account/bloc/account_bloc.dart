@@ -24,6 +24,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           try {
             Lemmy lemmy = LemmyClient.instance.lemmy;
 
+            if (account == null || account.jwt == null) {
+              return emit(state.copyWith(
+                status: AccountStatus.success,
+                subsciptions: [],
+              ));
+            }
+
             ListCommunitiesResponse listCommunitiesResponse = await lemmy.listCommunities(
               ListCommunities(
                 auth: account?.jwt,

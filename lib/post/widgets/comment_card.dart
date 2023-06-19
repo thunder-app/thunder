@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -63,6 +64,8 @@ class _CommentCardState extends State<CommentCard> {
     int? myVote = widget.commentViewTree.myVote;
     bool saved = widget.commentViewTree.saved;
     int score = widget.commentViewTree.counts.score;
+
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return Container(
       decoration: BoxDecoration(
@@ -131,6 +134,7 @@ class _CommentCardState extends State<CommentCard> {
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
+              direction: isUserLoggedIn ? DismissDirection.horizontal : DismissDirection.none,
               key: ObjectKey(widget.commentViewTree.comment.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},

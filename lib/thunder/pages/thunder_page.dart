@@ -49,7 +49,14 @@ class _ThunderState extends State<Thunder> {
         BlocProvider<CommunitiesBloc>(create: (context) => CommunitiesBloc()),
         BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
       ],
-      child: BlocBuilder<AuthBloc, AuthState>(
+      child: BlocConsumer<AuthBloc, AuthState>(
+        listenWhen: (previous, current) {
+          if (previous.isLoggedIn != current.isLoggedIn) return true;
+          return false;
+        },
+        listener: (context, state) {
+          context.read<AccountBloc>().add(GetAccountInformation());
+        },
         builder: (context, state) {
           return Scaffold(
             bottomNavigationBar: Theme(

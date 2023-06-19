@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -61,7 +62,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
     }
 
-    if (context.mounted) context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    if (context.mounted) {
+      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    }
   }
 
   void _initPreferences() async {
