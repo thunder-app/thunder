@@ -148,8 +148,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
+  /// Get community posts
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int attemptCount = 0;
+
+    // This is a temp placeholder for when we add the option to select default types
+    ListingType defaultListingType = ListingType.Local;
+    SortType defaultSortType = SortType.Hot;
 
     try {
       var exception;
@@ -163,21 +168,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
 
-            ListingType defaultListingType = ListingType.Local;
             int? communityId = event.communityId;
             ListingType? listingType = communityId != null ? null : (event.listingType ?? defaultListingType);
+            SortType sortType = event.sortType ?? defaultSortType;
 
-            GetPostsResponse getPostsResponse = await lemmy.getPosts(
-              GetPosts(
-                auth: account?.jwt,
-                page: 1,
-                limit: 15,
-                sort: event.sortType ?? SortType.Hot,
-                type_: listingType,
-                communityId: communityId,
-              ),
-            );
-
+            // Fetch community's information
             SubscribedType? subscribedType;
 
             if (communityId != null) {
@@ -191,6 +186,19 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               subscribedType = getCommunityResponse.communityView.subscribed;
             }
 
+            // Fetch community's posts
+            GetPostsResponse getPostsResponse = await lemmy.getPosts(
+              GetPosts(
+                auth: account?.jwt,
+                page: 1,
+                limit: 15,
+                sort: sortType,
+                type_: listingType,
+                communityId: communityId,
+              ),
+            );
+
+            // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
 
             return emit(
@@ -202,26 +210,34 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 communityId: communityId,
                 hasReachedEnd: posts.isEmpty || posts.length < 15,
                 subscribedType: subscribedType,
+                sortType: sortType,
               ),
             );
           } else {
-            if (state.hasReachedEnd) return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId));
+            if (state.hasReachedEnd) {
+              // Stop extra requests if we've reached the end
+              return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId));
+            }
+
             emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId));
 
             int? communityId = event.communityId ?? state.communityId;
             ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
+            SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
+            // Fetch more posts from the community
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
                 auth: account?.jwt,
                 page: state.page,
                 limit: 15,
-                sort: event.sortType ?? SortType.Hot,
+                sort: sortType,
                 type_: state.listingType,
                 communityId: state.communityId,
               ),
             );
 
+            // Parse the posts, and append them to the existing list
             List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
             postViews.addAll(posts);
@@ -235,6 +251,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 listingType: listingType,
                 hasReachedEnd: posts.isEmpty,
                 subscribedType: state.subscribedType,
+                sortType: sortType,
               ),
             );
           }
