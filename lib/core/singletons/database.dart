@@ -16,7 +16,6 @@ class DB {
   }
 
   Future<Database> _init() async {
-    databaseFactory.deleteDatabase(join(await getDatabasesPath(), 'thunder.db'));
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
       onCreate: (db, version) {
