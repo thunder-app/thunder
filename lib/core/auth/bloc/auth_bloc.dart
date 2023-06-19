@@ -127,11 +127,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
       } on DioException catch (e, s) {
         // Change the instance back to the previous one
-        lemmyClient.changeBaseUrl(originalBaseUrl);
+        try {
+          lemmyClient.changeBaseUrl(originalBaseUrl);
+        } catch (e, s) {
+          await Sentry.captureException(e, stackTrace: s);
+          return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
+        }
 
         String? errorMessage;
 
-        if (e.response?.data != null) {
+        if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
           Map<String, dynamic> data = e.response?.data as Map<String, dynamic>;
 
           errorMessage = data.containsKey('error') ? data['error'] : e.message;
