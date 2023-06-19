@@ -16,10 +16,11 @@ class DB {
   }
 
   Future<Database> _init() async {
+    databaseFactory.deleteDatabase(join(await getDatabasesPath(), 'thunder.db'));
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
       onCreate: (db, version) {
-        return db.execute('CREATE TABLE accounts(id STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
+        return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
       },
       version: 1,
     );

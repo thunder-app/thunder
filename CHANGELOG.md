@@ -2,6 +2,7 @@
 ### Added
 - New update in-app notification to notify you of new GitHub releases
 - Autofill options for logging into your account (tested on iOS, untested on Android physical device)
+- Added an option to switch to a light theme
 
 ### Changed
 - Login code has changed to improve support for multiple logins/profiles in the future

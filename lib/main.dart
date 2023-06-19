@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:thunder/core/singletons/database.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -31,6 +32,8 @@ void main() async {
 
   // Load up environment variables
   await dotenv.load(fileName: ".env");
+
+  await DB.instance.database;
 
   String? sentryDSN = dotenv.env['SENTRY_DSN'];
 

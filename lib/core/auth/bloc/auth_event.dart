@@ -26,3 +26,9 @@ class RemoveAccount extends AuthEvent {
 class AddAccount extends AuthEvent {}
 
 class RemoveAllAccounts extends AuthEvent {}
+
+class SwitchAccount extends AuthEvent {
+  final String accountId;
+
+  const SwitchAccount({required this.accountId});
+}

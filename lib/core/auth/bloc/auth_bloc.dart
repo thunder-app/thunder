@@ -26,6 +26,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       });
     });
 
+    on<SwitchAccount>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
+
+      Account? account = await Account.fetchAccount(event.accountId);
+      if (account == null) return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
+
+      // Set this account as the active account
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      prefs.setString('active_profile_id', event.accountId);
+
+      await Future.delayed(const Duration(seconds: 1), () {
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
+      });
+    });
+
     // This event should be triggered during the start of the app, or when there is a change in the active account
     on<CheckAuth>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
@@ -94,7 +109,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         // Create a new account in the database
         Uuid uuid = const Uuid();
-        String accountId = uuid.toString().substring(0, 13);
+        String accountId = uuid.v4().replaceAll('-', '').substring(0, 13);
 
         Account account = Account(
           id: accountId,

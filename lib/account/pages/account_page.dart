@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
+import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -27,32 +30,11 @@ class _AccountPageState extends State<AccountPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            onPressed: () {
-              showModalBottomSheet(
-                context: context,
-                builder: (context) {
-                  SharedPreferences? preferences = context.read<ThunderBloc>().state.preferences;
-
-                  // String profiles = preferences!.get('profiles') ?? '[]';
-
-                  return ListView(
-                    children: [
-                      ListTile(
-                        onTap: () {},
-                        title: const Text('Profile 1'),
-                      ),
-                      ListTile(
-                        onTap: () {},
-                        title: const Text('Add New Profile'),
-                      )
-                    ],
-                  );
-                },
-              );
-            },
-            icon: const Icon(Icons.people_alt_rounded),
-          )
+          if (authState.isLoggedIn)
+            IconButton(
+              onPressed: () => showProfileModalSheet(),
+              icon: const Icon(Icons.people_alt_rounded),
+            )
         ],
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
@@ -95,10 +77,38 @@ class _AccountPageState extends State<AccountPage> {
                         ),
                       ),
                     )
-                  : const LoginPage(),
+                  : Center(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.people_rounded, size: 100, color: theme.dividerColor),
+                          const SizedBox(height: 16),
+                          const Text('Add an account to see your profile', textAlign: TextAlign.center),
+                          const SizedBox(height: 24.0),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                            child: const Text('Manage Accounts'),
+                            onPressed: () => showProfileModalSheet(),
+                          )
+                        ],
+                      ),
+                    ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  void showProfileModalSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      showDragHandle: true,
+      builder: (context) => const FractionallySizedBox(
+        heightFactor: 0.9,
+        child: ProfileModalBody(),
       ),
     );
   }
