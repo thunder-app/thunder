@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
@@ -73,6 +73,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
             context.read<AccountBloc>().add(GetAccountInformation());
+          }
+
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              sortTypeIcon = sortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+            });
           }
           return true;
         },
