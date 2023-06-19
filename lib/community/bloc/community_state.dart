@@ -11,6 +11,7 @@ class CommunityState extends Equatable {
     this.listingType = ListingType.Local,
     this.communityId,
     this.hasReachedEnd = false,
+    this.subscribedType,
   });
 
   final CommunityStatus status;
@@ -25,6 +26,7 @@ class CommunityState extends Equatable {
   final int? communityId;
 
   final bool hasReachedEnd;
+  final SubscribedType? subscribedType;
 
   CommunityState copyWith({
     CommunityStatus? status,
@@ -34,6 +36,7 @@ class CommunityState extends Equatable {
     ListingType? listingType,
     int? communityId,
     bool? hasReachedEnd,
+    SubscribedType? subscribedType,
   }) {
     return CommunityState(
       status: status ?? this.status,
@@ -43,6 +46,7 @@ class CommunityState extends Equatable {
       listingType: listingType,
       communityId: communityId,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      subscribedType: subscribedType ?? this.subscribedType,
     );
   }
 

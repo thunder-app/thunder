@@ -46,9 +46,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Load up database
       final database = await openDatabase(
         join(await getDatabasesPath(), 'thunder.db'),
-        onCreate: (db, version) {
-          return db.execute('CREATE TABLE accounts(id INTEGER PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
-        },
         version: 1,
       );
 

@@ -41,6 +41,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _forceRefreshEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<ChangeCommunitySubsciptionStatusEvent>(
+      _changeCommunitySubsciptionStatusEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
@@ -174,6 +178,19 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               ),
             );
 
+            SubscribedType? subscribedType;
+
+            if (communityId != null) {
+              GetCommunityResponse getCommunityResponse = await lemmy.getCommunity(
+                GetCommunity(
+                  auth: account?.jwt,
+                  id: communityId,
+                ),
+              );
+
+              subscribedType = getCommunityResponse.communityView.subscribed;
+            }
+
             List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
 
             return emit(
@@ -184,6 +201,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 listingType: listingType,
                 communityId: communityId,
                 hasReachedEnd: posts.isEmpty || posts.length < 15,
+                subscribedType: subscribedType,
               ),
             );
           } else {
@@ -216,6 +234,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 communityId: communityId,
                 listingType: listingType,
                 hasReachedEnd: posts.isEmpty,
+                subscribedType: state.subscribedType,
               ),
             );
           }
@@ -233,6 +252,67 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId));
+    }
+  }
+
+  Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<CommunityState> emit) async {
+    try {
+      emit(state.copyWith(
+        status: CommunityStatus.refreshing,
+        communityId: state.communityId,
+        listingType: state.listingType,
+      ));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) return;
+
+      CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
+        auth: account!.jwt!,
+        communityId: event.communityId,
+        follow: event.follow,
+      ));
+
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        subscribedType: communityResponse.communityView.subscribed,
+      ));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: 'Error: Network timeout when attempting to subscribe to community',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      } else {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: e.toString(),
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(
+        state.copyWith(
+          status: CommunityStatus.failure,
+          errorMessage: e.toString(),
+          communityId: state.communityId,
+          listingType: state.listingType,
+        ),
+      );
     }
   }
 }
