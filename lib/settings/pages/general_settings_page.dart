@@ -20,6 +20,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+  bool hideNsfwPreviews = true;
 
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
@@ -49,6 +50,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
         break;
+      case 'setting_general_hide_nsfw_previews':
+        await prefs.setBool('setting_general_hide_nsfw_previews', value);
+        setState(() => hideNsfwPreviews = value);
+        break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
@@ -73,6 +78,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
       isLoading = false;
     });
@@ -135,6 +141,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
+                        ),
+                        ToggleOption(
+                          description: 'Hide NSFW previews',
+                          value: hideNsfwPreviews,
+                          iconEnabled: Icons.no_adult_content,
+                          iconDisabled: Icons.no_adult_content,
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
                       ],
                     ),
