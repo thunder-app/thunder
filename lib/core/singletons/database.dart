@@ -1,6 +1,5 @@
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class DB {
   static final DB _db = DB._internal();
@@ -12,8 +11,7 @@ class DB {
 
   Future<Database?> get database async {
     if (_database != null) return _database;
-    databaseFactory = databaseFactoryFfi;
-    await _init();
+    _database = await _init();
     return _database;
   }
 
