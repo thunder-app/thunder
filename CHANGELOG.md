@@ -7,6 +7,9 @@
 - When viewing a community, you can now subscribe/unsubscribe to that community directly
 - You can now login with different accounts, and switch between those accounts
 - Comments can now be upvoted, downvoted, and saved through swipe gesture
+- Tapping on an image will show you a fullscreen view
+- Added haptic feedback for some actions
+- Vote and comment actions are hidden/disabled when not logged in
 
 ### Fixed
 - Fixed issue where refreshing or selecting a sort option would cause the feed to show the Local feed
