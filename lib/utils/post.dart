@@ -89,14 +89,17 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
     if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
       try {
-        // Size result = await retrieveImageDimensions(url);
+        if (fetchImageDimensions) {
+          Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
-        // int mediaHeight = result.height.toInt();
-        // int mediaWidth = result.width.toInt();
-        // Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
+          int mediaHeight = result.height.toInt();
+          int mediaWidth = result.width.toInt();
+          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
 
-        // media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-        media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: 200));
+          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+        } else {
+          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
+        }
       } catch (e) {
         // Default back to a link
         media.add(Media(mediaType: MediaType.link, originalUrl: url));

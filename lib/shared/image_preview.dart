@@ -59,11 +59,11 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: [
           CachedNetworkImage(
             imageUrl: widget.url,
-            height: widget.isGallery ? null : widget.height,
-            width: widget.isGallery ? null : widget.width,
+            height: widget.height ?? 150,
+            width: widget.width ?? MediaQuery.of(context).size.width - 24,
             memCacheHeight: widget.height?.toInt(),
             memCacheWidth: widget.width?.toInt(),
-            fit: BoxFit.fitWidth,
+            fit: BoxFit.cover,
             progressIndicatorBuilder: (context, url, downloadProgress) => Container(
               color: Colors.grey.shade900,
               child: Center(

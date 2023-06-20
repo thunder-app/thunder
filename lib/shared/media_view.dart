@@ -34,6 +34,7 @@ class MediaView extends StatelessWidget {
         mediaURL: postView!.media.first.mediaUrl,
         mediaHeight: postView!.media.first.height,
         mediaWidth: postView!.media.first.width,
+        showFullHeightImages: showFullHeightImages,
       );
     }
 

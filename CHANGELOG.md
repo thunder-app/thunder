@@ -4,6 +4,7 @@
 
 ### Fixed
 - Fixed issue where selecting the light theme would revert back to dark theme on app relaunch
+- Fixed issue where link previews were not being shown properly
 
 ## 0.2.0-alpha - 2023-06-20
 ### Added
