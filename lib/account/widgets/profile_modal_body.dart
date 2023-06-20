@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';

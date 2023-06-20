@@ -32,7 +32,7 @@ class _AccountPageState extends State<AccountPage> {
         actions: [
           if (authState.isLoggedIn)
             IconButton(
-              onPressed: () => showProfileModalSheet(),
+              onPressed: () => showProfileModalSheet(context),
               icon: const Icon(Icons.people_alt_rounded),
             )
         ],
@@ -89,7 +89,7 @@ class _AccountPageState extends State<AccountPage> {
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                             child: const Text('Manage Accounts'),
-                            onPressed: () => showProfileModalSheet(),
+                            onPressed: () => showProfileModalSheet(context),
                           )
                         ],
                       ),
@@ -101,15 +101,24 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 
-  void showProfileModalSheet() {
+  void showProfileModalSheet(BuildContext context) {
+    AuthBloc authBloc = context.read<AuthBloc>();
+    ThunderBloc thunderBloc = context.read<ThunderBloc>();
     showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      showDragHandle: true,
-      builder: (context) => const FractionallySizedBox(
-        heightFactor: 0.9,
-        child: ProfileModalBody(),
-      ),
-    );
+        isScrollControlled: true,
+        context: context,
+        showDragHandle: true,
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: authBloc),
+              BlocProvider.value(value: thunderBloc),
+            ],
+            child: const FractionallySizedBox(
+              heightFactor: 0.9,
+              child: ProfileModalBody(),
+            ),
+          );
+        });
   }
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -58,7 +56,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_theme_type':
         await prefs.setString('setting_theme_type', value);
         setState(() => themeType = value);
-        if (context.mounted) context.read<ThunderBloc>().add(ThemeChangeEvent());
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
     }
 
@@ -157,8 +155,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ToggleOption(
                           description: 'Use dark theme',
                           value: themeType == 'dark',
-                          iconEnabled: Icons.import_export_rounded,
-                          iconDisabled: Icons.import_export_rounded,
+                          iconEnabled: Icons.dark_mode_rounded,
+                          iconDisabled: Icons.dark_mode_outlined,
                           onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
                         ),
                         // TextFormField(

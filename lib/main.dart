@@ -9,12 +9,11 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:thunder/core/singletons/database.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/database.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 // Ignore specific exceptions to send to Sentry
 FutureOr<SentryEvent?> beforeSend(SentryEvent event, {Hint? hint}) async {
@@ -35,6 +34,7 @@ void main() async {
   // Load up environment variables
   await dotenv.load(fileName: ".env");
 
+  // Load up sqlite database
   await DB.instance.database;
 
   String? sentryDSN = dotenv.env['SENTRY_DSN'];
@@ -44,7 +44,7 @@ void main() async {
       (options) {
         options.dsn = kDebugMode ? '' : sentryDSN;
         options.debug = kDebugMode;
-        options.tracesSampleRate = 0.7;
+        options.tracesSampleRate = kDebugMode ? 1.0 : 0.1;
         options.beforeSend = beforeSend;
       },
       appRunner: () => runApp(const ThunderApp()),
@@ -59,38 +59,20 @@ class ThunderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ThunderBloc()),
-        BlocProvider(create: (context) => AuthBloc()),
-      ],
-      child: BlocBuilder<ThunderBloc, ThunderState>(
+    return BlocProvider(
+      create: (context) => ThemeBloc(),
+      child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
-          switch (state.status) {
-            case ThunderStatus.initial:
-              context.read<ThunderBloc>().add(InitializeAppEvent());
-              FlutterNativeSplash.remove();
-              return const Material(color: Color.fromRGBO(33, 33, 35, 1), child: Center(child: CircularProgressIndicator()));
-            case ThunderStatus.loading:
-            case ThunderStatus.success:
-              return OverlaySupport.global(
-                child: MaterialApp.router(
-                  title: 'Thunder',
-                  routerConfig: router,
-                  themeMode: state.useDarkTheme ? ThemeMode.dark : ThemeMode.light,
-                  theme: ThemeData(useMaterial3: true),
-                  darkTheme: ThemeData.dark(useMaterial3: true),
-                  debugShowCheckedModeBanner: false,
-                ),
-              );
-            case ThunderStatus.failure:
-              return const Material(
-                color: Color.fromRGBO(33, 33, 35, 1),
-                child: Center(
-                  child: Text('An unexpected error occurred', style: TextStyle(color: Colors.white)),
-                ),
-              );
-          }
+          return OverlaySupport.global(
+            child: MaterialApp.router(
+              title: 'Thunder',
+              routerConfig: router,
+              themeMode: state.useDarkTheme ? ThemeMode.dark : ThemeMode.light,
+              theme: ThemeData(useMaterial3: true),
+              darkTheme: ThemeData.dark(useMaterial3: true),
+              debugShowCheckedModeBanner: false,
+            ),
+          );
         },
       ),
     );

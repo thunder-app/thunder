@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class SettingTopic {
   final String title;
@@ -38,7 +41,7 @@ class SettingsPage extends StatelessWidget {
                     title: Text(topic.title),
                     leading: Icon(topic.icon),
                     trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => GoRouter.of(context).push(topic.path),
+                    onTap: () => GoRouter.of(context).push(topic.path, extra: context.read<ThunderBloc>()),
                   ))
               .toList(),
         ),

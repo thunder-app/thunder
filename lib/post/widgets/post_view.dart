@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -35,12 +37,24 @@ class PostSubview extends StatelessWidget {
           Row(
             children: [
               GestureDetector(
-                onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => BlocProvider(
-                    create: (context) => AuthBloc(),
-                    child: CommunityPage(communityId: postView.community.id),
-                  ),
-                )),
+                onTap: () {
+                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: CommunityPage(communityId: postView.community.id),
+                      ),
+                    ),
+                  );
+                },
                 child: Text(
                   postView.community.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
