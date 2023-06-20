@@ -14,12 +14,20 @@
   <a href="">
     <img src="https://img.shields.io/github/license/hjiangsu/thunder" alt="License">
   </a>
-    <a href="">
+  <a href="">
+    <img src="https://img.shields.io/github/stars/hjiangsu/thunder" alt="Stars">
+  </a>
+  <a href="">
     <img src="https://img.shields.io/github/forks/hjiangsu/thunder" alt="Forks">
   </a>
-    <a href="">
+  <a href="">
     <img src="https://img.shields.io/badge/platform-ios%20%7C%20android-blueviolet" alt="Platforms">
   </a>
+  <a href="">
+    <img src="https://img.shields.io/github/v/release/hjiangsu/thunder" alt="Latest Release">
+  </a>
+  
+
 </p>
 
 <p align="center">
@@ -75,31 +83,33 @@ Thunder is currently undergoing **active development**, and it is possible that 
 
 #### **Posts**
 
+- Voting and saving for posts and comments
 - See a specific post and its associated comments
 - Infinite scrolling for posts
 - Infinite scrolling for comments
 
 #### **Authentication**
 
-- Single account login with instance
+- Multi-account login and switching
 
 #### **Theme & Customization**
 
-- Basic settings
+- Basic settings to change the view of posts on a given community/feed
+- Light and dark themes available
 
 ## Roadmap
 
 The current focus is to provide a MVP to be able to do basic tasks, including
-- browsing through posts, comments, communities and feeds (all, hot, new, etc.)
-- authenticating with your account and seeing subscriptions
-- searching for communities, and basic interaction with them (subscribing to communities, upvoting/downvoting posts, replying to comments)
+- Ability to create posts and comments
+- Improvements to accessibility
+- Improvements to customizability of post views (compact, normal, expanded, etc)
 
 ## Contributing
 
 Contributions are always welcome! To contribute potential features or bug-fixes:
 
 1. Fork this repository
-2. Apply any changes and/or additions
+2. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 3. Create a pull request to have your changes reviewed and merged
 
 ## Building From Source
@@ -113,9 +123,7 @@ To build the app from source, a few steps are required.
 1. Set up and install Flutter.
    - For more information, visit https://docs.flutter.dev/get-started/install.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
-3. Run the appropriate build command depending on the platform.
-   - iOS: `flutter build ios --release --no-tree-shake-icons`
-   - Android: `flutter build apk --release --no-tree-shake-icons`
+3. Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions
 
 ## Conventions
 
