@@ -50,7 +50,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       bool useDarkTheme = themeType == 'dark';
 
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, useDarkTheme: useDarkTheme));
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, useDarkTheme: useDarkTheme, preferences: prefs));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

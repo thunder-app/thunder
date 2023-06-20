@@ -44,10 +44,10 @@ class _ThunderState extends State<Thunder> {
     return BlocProvider(
       create: (context) => ThunderBloc(),
       child: BlocBuilder<ThunderBloc, ThunderState>(
-        builder: (context, state) {
+        builder: (context, thunderBlocState) {
           FlutterNativeSplash.remove();
 
-          switch (state.status) {
+          switch (thunderBlocState.status) {
             case ThunderStatus.initial:
               context.read<ThunderBloc>().add(InitializeAppEvent());
               return const Center(child: CircularProgressIndicator());
@@ -78,9 +78,10 @@ class _ThunderState extends State<Thunder> {
                           WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => selectedPageIndex = 0));
                           return const Center(child: CircularProgressIndicator());
                         case AuthStatus.success:
-                          Version? version = context.read<ThunderBloc>().state.version;
+                          Version? version = thunderBlocState.version;
+                          bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
 
-                          if (version?.hasUpdate == true && hasShownUpdateDialog == false) {
+                          if (version?.hasUpdate == false && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
                               setState(() => hasShownUpdateDialog = true);
@@ -111,7 +112,7 @@ class _ThunderState extends State<Thunder> {
               );
             case ThunderStatus.failure:
               return ErrorMessage(
-                message: state.errorMessage,
+                message: thunderBlocState.errorMessage,
                 action: () => {context.read<AuthBloc>().add(CheckAuth())},
                 actionText: 'Refresh Content',
               );

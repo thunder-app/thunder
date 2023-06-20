@@ -15,11 +15,14 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
-  // General settings
+  // Post Settings
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+
+  // Notification Settings
+  bool showInAppUpdateNotification = true;
 
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
@@ -58,6 +61,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         setState(() => themeType = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case 'setting_notifications_show_inapp_update':
+        await prefs.setBool('setting_notifications_show_inapp_update', value);
+        setState(() => showInAppUpdateNotification = value);
+        break;
     }
 
     if (context.mounted) {
@@ -69,11 +76,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
+      // Post Settings
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+
+      // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
+
+      // Notification Settings
+      showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+
       isLoading = false;
     });
   }
@@ -192,6 +206,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         //   iconDisabled: Icons.photo_size_select_actual_rounded,
                         //   onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
                         // ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Notifications',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Show in-app update notification',
+                          value: showInAppUpdateNotification,
+                          iconEnabled: Icons.update_rounded,
+                          iconDisabled: Icons.update_disabled_rounded,
+                          onToggle: (bool value) => setPreferences('setting_notifications_show_inapp_update', value),
+                        ),
                       ],
                     ),
                   ),

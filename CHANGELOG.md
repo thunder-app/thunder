@@ -1,3 +1,10 @@
+## Unreleased
+### Added
+- Added settings option to enable or disable the in-app update notifications
+
+### Fixed
+- Fixed issue where selecting the light theme would revert back to dark theme on app relaunch
+
 ## 0.2.0-alpha - 2023-06-20
 ### Added
 - New update in-app notification to notify you of new GitHub releases
