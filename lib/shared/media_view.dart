@@ -116,9 +116,10 @@ class MediaView extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container(alignment: Alignment.center,
-                    padding: const EdgeInsets.all(20),
-                    child: hideNsfw ? const Column(
+                  if (hideNsfw) Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(20),
+                      child: const Column(
                         children: [
                           Icon(
                             Icons.warning_rounded,
@@ -129,12 +130,12 @@ class MediaView extends StatelessWidget {
                             textScaleFactor: 1.5,
                           ),
                         ]
-                    ) : Container()
-                  ),
+                    )
+                  )
                 ],
-              ),
-            ),
+          ),
         ),
-      );
+      ),
+    );
   }
 }
