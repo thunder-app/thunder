@@ -1,4 +1,4 @@
-## Unreleased
+## 0.2.0-alpha - 2023-06-20
 ### Added
 - New update in-app notification to notify you of new GitHub releases
 - Autofill options for logging into your account (tested on iOS, untested on Android physical device)
