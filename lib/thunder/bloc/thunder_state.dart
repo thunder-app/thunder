@@ -10,6 +10,7 @@ class ThunderState extends Equatable {
     this.database,
     this.version,
     this.useDarkTheme = true,
+    this.errorMessage,
   });
 
   final ThunderStatus status;
@@ -21,6 +22,8 @@ class ThunderState extends Equatable {
   final Version? version;
   final bool useDarkTheme;
 
+  final String? errorMessage;
+
   ThunderState copyWith({
     ThunderStatus? status,
     ThemeData? theme,
@@ -28,6 +31,7 @@ class ThunderState extends Equatable {
     Database? database,
     Version? version,
     bool? useDarkTheme,
+    String? errorMessage,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -36,9 +40,10 @@ class ThunderState extends Equatable {
       database: database ?? this.database,
       version: version ?? this.version,
       useDarkTheme: useDarkTheme ?? this.useDarkTheme,
+      errorMessage: errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, theme];
+  List<Object?> get props => [status, theme, preferences, database, version, useDarkTheme, errorMessage];
 }

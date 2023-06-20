@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
+
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 enum SwipeAction { upvote, downvote, reply, save }
 

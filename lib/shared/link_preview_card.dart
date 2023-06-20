@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -22,7 +23,7 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final useDarkTheme = context.read<ThunderBloc>().state.useDarkTheme;
+    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (mediaURL != null && mediaHeight != null && mediaWidth != null) {
       return Padding(

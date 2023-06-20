@@ -6,6 +6,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
+import 'package:thunder/shared/error_message.dart';
 
 class PostPage extends StatelessWidget {
   final PostViewMedia postView;
@@ -26,7 +27,7 @@ class PostPage extends StatelessWidget {
               if (state.status == PostStatus.success) {
                 // Update the community's post
                 int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView.post.id);
-                if (postIdIndex != null) {
+                if (postIdIndex != null && state.postView != null) {
                   context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
                 }
               }
@@ -60,12 +61,18 @@ class PostPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 case PostStatus.loading:
                   return const Center(child: CircularProgressIndicator());
-                case PostStatus.failure:
                 case PostStatus.refreshing:
                 case PostStatus.success:
-                  return PostPageSuccess(postView: state.postView!, comments: state.comments);
+                  if (state.postView != null) return PostPageSuccess(postView: state.postView!, comments: state.comments);
+                  return const Center(child: Text('Empty'));
                 case PostStatus.empty:
                   return const Center(child: Text('Empty'));
+                case PostStatus.failure:
+                  return ErrorMessage(
+                    message: state.errorMessage,
+                    action: () => {context.read<PostBloc>().add(GetPostEvent(postView: postView))},
+                    actionText: 'Refresh Content',
+                  );
               }
             },
           ),
