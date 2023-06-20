@@ -133,8 +133,7 @@ class _LoginPageState extends State<LoginPage> {
                     ? () => {
                           // Perform login authentication
                           context.read<AuthBloc>().add(LoginAttempt(
-                                username:
-                                    _usernameTextEditingController.text.trim(),
+                                username: _usernameTextEditingController.text,
                                 password:
                                     _passwordTextEditingController.text.trim(),
                                 instance:
