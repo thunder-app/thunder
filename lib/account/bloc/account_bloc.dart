@@ -2,9 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -17,26 +18,30 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       int attemptCount = 0;
 
       try {
+        Account? account = await fetchActiveProfileAccount();
+
         while (attemptCount < 2) {
           try {
-            LemmyClient lemmyClient = LemmyClient.instance;
-            Lemmy lemmy = lemmyClient.lemmy;
+            Lemmy lemmy = LemmyClient.instance.lemmy;
 
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            String? jwt = prefs.getString('jwt');
-            String? username = prefs.getString('username');
+            if (account == null || account.jwt == null) {
+              return emit(state.copyWith(
+                status: AccountStatus.success,
+                subsciptions: [],
+              ));
+            }
 
             ListCommunitiesResponse listCommunitiesResponse = await lemmy.listCommunities(
               ListCommunities(
-                auth: jwt,
+                auth: account?.jwt,
                 type_: ListingType.Subscribed,
               ),
             );
 
             GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.getPersonDetails(
               GetPersonDetails(
-                auth: jwt,
-                username: username,
+                auth: account?.jwt,
+                username: account?.username,
               ),
             );
 

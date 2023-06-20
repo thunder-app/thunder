@@ -1,16 +1,16 @@
-import 'dart:convert';
+import 'package:flutter/material.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:json_theme/json_theme.dart';
+import 'package:path/path.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:thunder/core/enums/theme_type.dart';
+import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/update/check_github_update.dart';
 
 part 'thunder_event.dart';
 part 'thunder_state.dart';
@@ -23,41 +23,37 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   ThunderBloc() : super(const ThunderState()) {
+    on<InitializeAppEvent>(
+      _initializeAppEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<UserPreferencesChangeEvent>(
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<ThemeChangeEvent>(
-      _themeChangeEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
   }
 
-  Future<void> _themeChangeEvent(ThemeChangeEvent event, Emitter<ThunderState> emit) async {
+  Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
     try {
-      emit(state.copyWith(status: ThunderStatus.loading));
+      // Load up database
+      final database = await openDatabase(
+        join(await getDatabasesPath(), 'thunder.db'),
+        version: 1,
+      );
 
-      // @todo keep user preferences for theming
+      // Check for any updates from GitHub
+      Version version = await fetchVersion();
+
+      // Get theme preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
+      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
 
-      String themeName = 'assets/themes/black.json';
+      bool useDarkTheme = themeType == 'dark';
 
-      switch (event.themeType) {
-        case ThemeType.black:
-          themeName = 'assets/themes/black.json';
-        case ThemeType.white:
-          themeName = 'assets/themes/white.json';
-      }
-
-      final themeString = await rootBundle.loadString(themeName);
-      final themeJson = jsonDecode(themeString);
-      final theme = ThemeDecoder.decodeThemeData(themeJson)!;
-
-      return emit(state.copyWith(status: ThunderStatus.success, theme: theme, preferences: prefs));
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, useDarkTheme: useDarkTheme));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      emit(state.copyWith(status: ThunderStatus.failure));
+      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -67,11 +63,12 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
+      await Future.delayed(const Duration(seconds: 1), () {
+        return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
+      });
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      emit(state.copyWith(status: ThunderStatus.failure));
+      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 }

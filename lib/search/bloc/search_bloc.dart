@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -43,15 +45,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
 
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
 
       SearchResponse searchResponse = await lemmy.search(
         Search(
-          auth: jwt,
+          auth: account?.jwt,
           q: event.query,
         ),
       );
@@ -61,14 +60,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
       if (e.type == DioExceptionType.receiveTimeout) {
-        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
-        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -76,16 +75,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
 
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
-
-      if (jwt == null) return;
+      if (account?.jwt == null) return;
 
       CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
-        auth: jwt,
+        auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,
       ));
@@ -99,13 +95,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
       if (e.type == DioExceptionType.receiveTimeout) {
-        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
-        emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
       }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 }

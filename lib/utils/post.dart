@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:lemmy/lemmy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
@@ -13,17 +15,14 @@ import 'package:thunder/utils/links.dart';
 
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, int score) async {
-  LemmyClient lemmyClient = LemmyClient.instance;
-  Lemmy lemmy = lemmyClient.lemmy;
+  Account? account = await fetchActiveProfileAccount();
+  Lemmy lemmy = LemmyClient.instance.lemmy;
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? jwt = prefs.getString('jwt');
-
-  if (jwt == null) throw Exception('User not logged in');
+  if (account?.jwt == null) throw Exception('User not logged in');
 
   PostResponse postResponse = await lemmy.likePost(
     CreatePostLike(
-      auth: jwt,
+      auth: account!.jwt!,
       postId: postId,
       score: score,
     ),
@@ -35,17 +34,14 @@ Future<PostView> votePost(int postId, int score) async {
 
 /// Logic to save a post
 Future<PostView> savePost(int postId, bool save) async {
-  LemmyClient lemmyClient = LemmyClient.instance;
-  Lemmy lemmy = lemmyClient.lemmy;
+  Account? account = await fetchActiveProfileAccount();
+  Lemmy lemmy = LemmyClient.instance.lemmy;
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? jwt = prefs.getString('jwt');
-
-  if (jwt == null) throw Exception('User not logged in');
+  if (account?.jwt == null) throw Exception('User not logged in');
 
   PostResponse postResponse = await lemmy.savePost(
     SavePost(
-      auth: jwt,
+      auth: account!.jwt!,
       postId: postId,
       save: save,
     ),

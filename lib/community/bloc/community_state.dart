@@ -11,10 +11,13 @@ class CommunityState extends Equatable {
     this.listingType = ListingType.Local,
     this.communityId,
     this.hasReachedEnd = false,
+    this.subscribedType,
+    this.sortType = SortType.Hot,
   });
 
   final CommunityStatus status;
   final ListingType? listingType;
+  final SortType? sortType;
 
   final int page;
   final List<PostViewMedia>? postViews;
@@ -25,6 +28,7 @@ class CommunityState extends Equatable {
   final int? communityId;
 
   final bool hasReachedEnd;
+  final SubscribedType? subscribedType;
 
   CommunityState copyWith({
     CommunityStatus? status,
@@ -34,18 +38,22 @@ class CommunityState extends Equatable {
     ListingType? listingType,
     int? communityId,
     bool? hasReachedEnd,
+    SubscribedType? subscribedType,
+    SortType? sortType,
   }) {
     return CommunityState(
       status: status ?? this.status,
       page: page ?? this.page,
       postViews: postViews ?? this.postViews,
       errorMessage: errorMessage ?? this.errorMessage,
-      listingType: listingType ?? this.listingType,
-      communityId: communityId ?? this.communityId,
+      listingType: listingType,
+      communityId: communityId,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      subscribedType: subscribedType ?? this.subscribedType,
+      sortType: sortType ?? this.sortType,
     );
   }
 
   @override
-  List<Object?> get props => [status, page, postViews, errorMessage, listingType, communityId, hasReachedEnd];
+  List<Object?> get props => [status, page, postViews, errorMessage, listingType, communityId, hasReachedEnd, subscribedType, sortType];
 }
