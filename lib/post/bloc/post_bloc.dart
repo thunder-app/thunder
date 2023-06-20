@@ -7,6 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/utils/comment.dart';
@@ -18,6 +20,7 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
+const timeout = Duration(seconds: 3);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -41,33 +44,39 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _savePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VoteCommentEvent>(
+      _voteCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SaveCommentEvent>(
+      _saveCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
       emit(state.copyWith(status: PostStatus.loading));
 
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
 
       PostViewMedia postView = event.postView;
 
-      // GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id, auth: jwt));
-      // List<PostViewMedia> posts = await parsePostViews([postView]);
-
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+      GetCommentsResponse getCommentsResponse = await lemmy
+          .getComments(
         GetComments(
           page: 1,
-          auth: jwt,
+          auth: account?.jwt,
           communityId: postView.post.communityId,
           postId: postView.post.id,
           sort: CommentSortType.Hot,
           limit: 50,
         ),
-      );
+      )
+          .timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to fetch comments');
+      });
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -94,25 +103,26 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(event, emit) async {
-    LemmyClient lemmyClient = LemmyClient.instance;
-    Lemmy lemmy = lemmyClient.lemmy;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jwt = prefs.getString('jwt');
+    Account? account = await fetchActiveProfileAccount();
+    Lemmy lemmy = LemmyClient.instance.lemmy;
 
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+      GetCommentsResponse getCommentsResponse = await lemmy
+          .getComments(
         GetComments(
-          auth: jwt,
+          auth: account?.jwt,
           communityId: state.communityId,
           postId: state.postId,
           sort: CommentSortType.Hot,
           limit: 50,
           page: 1,
         ),
-      );
+      )
+          .timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to fetch comments');
+      });
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -131,16 +141,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (state.commentCount >= state.postView!.counts.comments) return;
     emit(state.copyWith(status: PostStatus.refreshing));
 
-    GetCommentsResponse getCommentsResponse = await lemmy.getComments(
+    GetCommentsResponse getCommentsResponse = await lemmy
+        .getComments(
       GetComments(
-        auth: jwt,
+        auth: account?.jwt,
         communityId: state.communityId,
         postId: state.postId,
         sort: CommentSortType.Hot,
         limit: 50,
         page: state.commentPage,
       ),
-    );
+    )
+        .timeout(timeout, onTimeout: () {
+      throw Exception('Error: Timeout when attempting to fetch more comments');
+    });
 
     // Build the tree view from the flattened comments
     List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -162,7 +176,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      PostView postView = await votePost(event.postId, event.score);
+      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote post');
+      });
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -171,15 +187,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -187,7 +201,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      PostView postView = await savePost(event.postId, event.save);
+      PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to save post');
+      });
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -196,14 +212,73 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
-      }
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
+
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote on comment');
+      });
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      currentTree.myVote = commentView.myVote; // Update the comment's information
+      currentTree.counts.score = commentView.counts.score;
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote on comment'));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting save a comment');
+      });
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      currentTree.saved = commentView.saved; // Update the comment's information
+
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
+
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
