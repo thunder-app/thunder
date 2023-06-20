@@ -63,6 +63,9 @@ class ThunderApp extends StatelessWidget {
       create: (context) => ThemeBloc(),
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
+          if (state.status == ThemeStatus.initial) {
+            context.read<ThemeBloc>().add(ThemeChangeEvent());
+          }
           return OverlaySupport.global(
             child: MaterialApp.router(
               title: 'Thunder',
