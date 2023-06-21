@@ -137,7 +137,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
             floatingActionButton: (state.communityId != null || widget.communityName != null)
                 ? FloatingActionButton(
                     onPressed: () {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return BlocProvider<CommunityBloc>.value(
+                              value: communityBloc,
+                              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                            );
+                          },
+                        ),
+                      );
                     },
                     child: const Icon(Icons.add),
                   )

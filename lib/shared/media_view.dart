@@ -51,6 +51,7 @@ class MediaView extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(6),
           child: Stack(
+            alignment: Alignment.center,
             children: [
               hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
               if (hideNsfw)

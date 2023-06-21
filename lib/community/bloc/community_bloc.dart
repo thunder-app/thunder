@@ -45,6 +45,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _changeCommunitySubsciptionStatusEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CreatePostEvent>(
+      _createPostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
@@ -284,6 +288,92 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           state.copyWith(
             status: CommunityStatus.networkFailure,
             errorMessage: 'Error: Network timeout when attempting to subscribe to community',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      } else {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: e.toString(),
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(
+        state.copyWith(
+          status: CommunityStatus.failure,
+          errorMessage: e.toString(),
+          communityId: state.communityId,
+          listingType: state.listingType,
+        ),
+      );
+    }
+  }
+
+  Future<void> _createPostEvent(CreatePostEvent event, Emitter<CommunityState> emit) async {
+    try {
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.failure,
+            errorMessage: 'You are not logged in. Cannot create a post.',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+
+      if (state.communityId == null) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.failure,
+            errorMessage: 'Could not determine community to post to.',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+
+      PostResponse createPostResponse = await lemmy.createPost(
+        CreatePost(
+          auth: account!.jwt!,
+          communityId: state.communityId!,
+          name: event.name,
+          body: event.body,
+        ),
+      );
+
+      // Parse the posts, and append them to the existing list
+      List<PostViewMedia> posts = await parsePostViews([createPostResponse.postView]);
+      List<PostViewMedia> postViews = List.from(state.postViews ?? []);
+      postViews.addAll(posts);
+
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        postViews: postViews,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: 'Error: Network timeout when attempting to create a post',
             communityId: state.communityId,
             listingType: state.listingType,
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:overlay_support/overlay_support.dart';
 
@@ -104,7 +105,10 @@ class _ThunderState extends State<Thunder> {
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
                               const CommunityPage(),
-                              const SearchPage(),
+                              BlocProvider(
+                                create: (context) => SearchBloc(),
+                                child: const SearchPage(),
+                              ),
                               const AccountPage(),
                               SettingsPage(),
                             ],

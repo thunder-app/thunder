@@ -21,3 +21,9 @@ class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
 }
 
 class ResetSearch extends SearchEvent {}
+
+class ContinueSearchEvent extends SearchEvent {
+  final String query;
+
+  const ContinueSearchEvent({required this.query});
+}

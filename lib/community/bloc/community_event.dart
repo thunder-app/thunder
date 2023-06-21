@@ -39,3 +39,10 @@ class ChangeCommunitySubsciptionStatusEvent extends CommunityEvent {
 
   const ChangeCommunitySubsciptionStatusEvent({required this.communityId, required this.follow});
 }
+
+class CreatePostEvent extends CommunityEvent {
+  final String name;
+  final String body;
+
+  const CreatePostEvent({required this.name, required this.body});
+}
