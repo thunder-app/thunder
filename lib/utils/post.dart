@@ -4,6 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:lemmy/lemmy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -19,6 +24,7 @@ import 'package:thunder/utils/links.dart';
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, int score) async {
 <<<<<<< HEAD
+<<<<<<< HEAD
   LemmyClient lemmyClient = LemmyClient.instance;
   Lemmy lemmy = lemmyClient.lemmy;
 
@@ -31,6 +37,8 @@ Future<PostView> votePost(int postId, int score) async {
     CreatePostLike(
       auth: jwt,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   Account? account = await fetchActiveProfileAccount();
   Lemmy lemmy = LemmyClient.instance.lemmy;
 
@@ -39,6 +47,9 @@ Future<PostView> votePost(int postId, int score) async {
   PostResponse postResponse = await lemmy.likePost(
     CreatePostLike(
       auth: account!.jwt!,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       postId: postId,
       score: score,
@@ -52,6 +63,7 @@ Future<PostView> votePost(int postId, int score) async {
 /// Logic to save a post
 Future<PostView> savePost(int postId, bool save) async {
 <<<<<<< HEAD
+<<<<<<< HEAD
   LemmyClient lemmyClient = LemmyClient.instance;
   Lemmy lemmy = lemmyClient.lemmy;
 
@@ -64,6 +76,8 @@ Future<PostView> savePost(int postId, bool save) async {
     SavePost(
       auth: jwt,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   Account? account = await fetchActiveProfileAccount();
   Lemmy lemmy = LemmyClient.instance.lemmy;
 
@@ -72,6 +86,9 @@ Future<PostView> savePost(int postId, bool save) async {
   PostResponse postResponse = await lemmy.savePost(
     SavePost(
       auth: account!.jwt!,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       postId: postId,
       save: save,

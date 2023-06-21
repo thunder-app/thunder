@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +18,9 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/community/pages/community_page.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -46,11 +52,14 @@ class PostSubview extends StatelessWidget {
           Row(
             children: [
 <<<<<<< HEAD
+<<<<<<< HEAD
               Text(
                 postView.community.name,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               GestureDetector(
                 onTap: () {
                   AccountBloc accountBloc = context.read<AccountBloc>();
@@ -75,6 +84,9 @@ class PostSubview extends StatelessWidget {
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 ),
               ),
@@ -114,42 +126,60 @@ class PostSubview extends StatelessWidget {
             children: [
               IconButton(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 onPressed: isUserLoggedIn ? () => context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == 1 ? 0 : 1)) : null,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
                         context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == 1 ? 0 : 1));
                       }
                     : null,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 icon: const Icon(Icons.arrow_upward),
                 color: postView.myVote == 1 ? Colors.orange : null,
               ),
               IconButton(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 onPressed: isUserLoggedIn ? () => context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == -1 ? 0 : -1)) : null,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
                         context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == -1 ? 0 : -1));
                       }
                     : null,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 icon: const Icon(Icons.arrow_downward),
                 color: postView.myVote == -1 ? Colors.blue : null,
               ),
               IconButton(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 onPressed: isUserLoggedIn ? () => context.read<PostBloc>().add(SavePostEvent(postId: postView.post.id, save: !postView.saved)) : null,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
                         context.read<PostBloc>().add(SavePostEvent(postId: postView.post.id, save: !postView.saved));
                       }
                     : null,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
                 color: postView.saved ? Colors.purple : null,

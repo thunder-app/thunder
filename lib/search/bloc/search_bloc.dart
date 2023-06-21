@@ -8,6 +8,11 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -49,6 +54,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(status: SearchStatus.loading));
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
 
@@ -59,12 +65,17 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         Search(
           auth: jwt,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
 
       SearchResponse searchResponse = await lemmy.search(
         Search(
           auth: account?.jwt,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           q: event.query,
         ),
@@ -76,9 +87,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (e.type == DioExceptionType.receiveTimeout) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+=======
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
+      } else {
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
         return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
@@ -89,7 +106,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+=======
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -100,6 +121,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
@@ -112,6 +134,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
         auth: jwt,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
 
@@ -119,6 +143,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
         auth: account!.jwt!,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         communityId: event.communityId,
         follow: event.follow,
@@ -134,6 +161,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (e.type == DioExceptionType.receiveTimeout) {
 <<<<<<< HEAD
+<<<<<<< HEAD
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
@@ -142,6 +170,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
         return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
@@ -150,6 +180,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }

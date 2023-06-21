@@ -7,6 +7,10 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/shared/error_message.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/shared/error_message.dart';
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -31,7 +35,11 @@ class PostPage extends StatelessWidget {
                 // Update the community's post
                 int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView.post.id);
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if (postIdIndex != null) {
+=======
+                if (postIdIndex != null && state.postView != null) {
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
                 if (postIdIndex != null && state.postView != null) {
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -41,7 +49,10 @@ class PostPage extends StatelessWidget {
             },
             builder: (context, state) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               if (state.status == PostStatus.failure) {
                 SnackBar snackBar = SnackBar(
                   content: Expanded(
@@ -64,6 +75,9 @@ class PostPage extends StatelessWidget {
                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
               }
 
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               switch (state.status) {
                 case PostStatus.initial:
@@ -73,6 +87,7 @@ class PostPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 case PostStatus.refreshing:
                 case PostStatus.success:
+<<<<<<< HEAD
 <<<<<<< HEAD
                   return PostPageSuccess(postView: state.postView!, comments: state.comments);
                 case PostStatus.failure:
@@ -108,6 +123,8 @@ class PostPage extends StatelessWidget {
                 case PostStatus.empty:
                   return const Center(child: Text('Empty'));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                   if (state.postView != null) return PostPageSuccess(postView: state.postView!, comments: state.comments);
                   return const Center(child: Text('Empty'));
                 case PostStatus.empty:
@@ -118,6 +135,9 @@ class PostPage extends StatelessWidget {
                     action: () => {context.read<PostBloc>().add(GetPostEvent(postView: postView))},
                     actionText: 'Refresh Content',
                   );
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               }
             },

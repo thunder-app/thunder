@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -10,12 +13,20 @@ import 'package:go_router/go_router.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -92,6 +103,10 @@ class _SearchPageState extends State<SearchPage> {
   Widget _getSearchBody(BuildContext context, SearchState state) {
     final theme = Theme.of(context);
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -139,6 +154,7 @@ class _SearchPageState extends State<SearchPage> {
 
             return ListTile(
 <<<<<<< HEAD
+<<<<<<< HEAD
               title: Text(communityView.community.title),
               subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
               trailing: IconButton(
@@ -177,6 +193,8 @@ class _SearchPageState extends State<SearchPage> {
               )),
             );
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 title: Text(communityView.community.title),
                 subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
                 trailing: isUserLoggedIn
@@ -227,6 +245,9 @@ class _SearchPageState extends State<SearchPage> {
                     ),
                   );
                 });
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           },
         );
@@ -234,6 +255,7 @@ class _SearchPageState extends State<SearchPage> {
         return const Center(child: Text('Empty'));
       case SearchStatus.networkFailure:
       case SearchStatus.failure:
+<<<<<<< HEAD
 <<<<<<< HEAD
         return Center(
           child: Padding(
@@ -264,15 +286,21 @@ class _SearchPageState extends State<SearchPage> {
             ),
           ),
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return ErrorMessage(
           message: state.errorMessage,
           action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text))},
           actionText: 'Retry',
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         );
     }
   }
 }
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 // import 'package:auto_size_text/auto_size_text.dart';
@@ -437,5 +465,7 @@ class _SearchPageState extends State<SearchPage> {
 //     );
 //   }
 // }
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

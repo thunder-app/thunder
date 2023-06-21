@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -11,6 +12,8 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -24,6 +27,9 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class Thunder extends StatefulWidget {
@@ -38,6 +44,11 @@ class _ThunderState extends State<Thunder> {
   PageController pageController = PageController(initialPage: 0);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  bool hasShownUpdateDialog = false;
+
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
   bool hasShownUpdateDialog = false;
 
@@ -55,6 +66,7 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
 <<<<<<< HEAD
     final theme = Theme.of(context);
 
@@ -110,6 +122,8 @@ class _ThunderState extends State<Thunder> {
             body: _getThunderBody(context, state),
           );
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     return BlocProvider(
       create: (context) => ThunderBloc(),
       child: BlocBuilder<ThunderBloc, ThunderState>(
@@ -185,12 +199,16 @@ class _ThunderState extends State<Thunder> {
                 actionText: 'Refresh Content',
               );
           }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         },
       ),
     );
   }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
   Widget _getThunderBody(BuildContext context, AuthState state) {
     final theme = Theme.of(context);
@@ -246,6 +264,8 @@ class _ThunderState extends State<Thunder> {
         );
     }
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   // Generates the BottomNavigationBar
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
     final theme = Theme.of(context);
@@ -314,6 +334,9 @@ class _ThunderState extends State<Thunder> {
       autoDismiss: false,
       slideDismissDirection: DismissDirection.vertical,
     );
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   }
 }

@@ -1,8 +1,11 @@
 import 'package:lemmy/lemmy.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
@@ -46,6 +49,9 @@ Future<CommentView> saveComment(int commentId, bool save) async {
   CommentView updatedCommentView = commentResponse.commentView;
   return updatedCommentView;
 }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
@@ -84,7 +90,10 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
   return commentMap.values.where((commentView) => commentView.comment.path.isEmpty || commentView.comment.path == '0.${commentView.comment.id}').toList();
 }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
@@ -107,4 +116,7 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 
   return []; // Return an empty list if the target ID is not found
 }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

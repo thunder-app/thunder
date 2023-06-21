@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/shared/image_viewer.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/shared/image_viewer.dart';
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -42,6 +46,7 @@ class MediaView extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+<<<<<<< HEAD
 <<<<<<< HEAD
       child: ClipRRect(
         borderRadius: BorderRadius.circular(6),
@@ -107,6 +112,8 @@ class MediaView extends StatelessWidget {
             ),
           ],
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ImageViewer(url: postView!.media.first.mediaUrl!),
@@ -176,6 +183,9 @@ class MediaView extends StatelessWidget {
               ),
             ],
           ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         ),
       ),

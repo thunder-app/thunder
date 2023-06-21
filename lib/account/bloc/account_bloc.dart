@@ -3,14 +3,20 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:lemmy/lemmy.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -25,6 +31,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
       try {
 <<<<<<< HEAD
+<<<<<<< HEAD
         while (attemptCount < 2) {
           try {
             LemmyClient lemmyClient = LemmyClient.instance;
@@ -38,6 +45,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               ListCommunities(
                 auth: jwt,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         Account? account = await fetchActiveProfileAccount();
 
         while (attemptCount < 2) {
@@ -54,6 +63,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             ListCommunitiesResponse listCommunitiesResponse = await lemmy.listCommunities(
               ListCommunities(
                 auth: account?.jwt,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 type_: ListingType.Subscribed,
               ),
@@ -62,8 +74,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.getPersonDetails(
               GetPersonDetails(
 <<<<<<< HEAD
+<<<<<<< HEAD
                 auth: jwt,
                 username: username,
+=======
+                auth: account?.jwt,
+                username: account?.username,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
                 auth: account?.jwt,
                 username: account?.username,

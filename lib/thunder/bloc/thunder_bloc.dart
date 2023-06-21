@@ -1,5 +1,9 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'dart:convert';
+=======
+import 'package:flutter/material.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:flutter/material.dart';
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -7,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+<<<<<<< HEAD
 <<<<<<< HEAD
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,6 +22,8 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/theme_type.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:path/path.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -25,6 +32,9 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/update/check_github_update.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 part 'thunder_event.dart';
@@ -39,16 +49,23 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   ThunderBloc() : super(const ThunderState()) {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<InitializeAppEvent>(
       _initializeAppEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<UserPreferencesChangeEvent>(
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+<<<<<<< HEAD
 <<<<<<< HEAD
     on<ThemeChangeEvent>(
       _themeChangeEvent,
@@ -82,6 +99,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       emit(state.copyWith(status: ThunderStatus.failure));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   }
 
   Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
@@ -105,6 +124,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }
@@ -116,18 +138,24 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
       return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
       emit(state.copyWith(status: ThunderStatus.failure));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       await Future.delayed(const Duration(seconds: 1), () {
         return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
       });
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }

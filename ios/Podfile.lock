@@ -1,6 +1,11 @@
 PODS:
   - Flutter (1.0.0)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  - flutter_native_splash (0.0.1):
+    - Flutter
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
   - flutter_native_splash (0.0.1):
     - Flutter
@@ -32,6 +37,10 @@ PODS:
 DEPENDENCIES:
   - Flutter (from `Flutter`)
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
   - flutter_native_splash (from `.symlinks/plugins/flutter_native_splash/ios`)
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -52,6 +61,11 @@ EXTERNAL SOURCES:
   Flutter:
     :path: Flutter
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  flutter_native_splash:
+    :path: ".symlinks/plugins/flutter_native_splash/ios"
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
   flutter_native_splash:
     :path: ".symlinks/plugins/flutter_native_splash/ios"
@@ -72,6 +86,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+  flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
   flutter_native_splash: 52501b97d1c0a5f898d687f1646226c1f93c56ef
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

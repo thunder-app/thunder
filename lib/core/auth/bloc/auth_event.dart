@@ -18,8 +18,11 @@ class LoginAttempt extends AuthEvent {
 class CheckAuth extends AuthEvent {}
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 class ClearAuth extends AuthEvent {}
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 class RemoveAccount extends AuthEvent {
   final String accountId;
 
@@ -35,4 +38,7 @@ class SwitchAccount extends AuthEvent {
 
   const SwitchAccount({required this.accountId});
 }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

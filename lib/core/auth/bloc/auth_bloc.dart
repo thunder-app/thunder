@@ -2,10 +2,13 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:lemmy/lemmy.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
@@ -14,6 +17,9 @@ import 'package:uuid/uuid.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/account/models/account.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -22,6 +28,7 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
+<<<<<<< HEAD
 <<<<<<< HEAD
     on<ClearAuth>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
@@ -34,17 +41,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       await Future.delayed(const Duration(milliseconds: 500), () {
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<RemoveAccount>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
 
       await Account.deleteAccount(event.accountId);
 
       await Future.delayed(const Duration(seconds: 1), () {
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
       });
     });
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     on<CheckAuth>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading));
@@ -73,6 +86,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<SwitchAccount>((event, emit) async {
       emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
 
@@ -129,12 +144,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     });
 
     // This event should be triggered when the user logs in with a username/password
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<LoginAttempt>((event, emit) async {
       LemmyClient lemmyClient = LemmyClient.instance;
       String originalBaseUrl = lemmyClient.lemmy.baseUrl;
 
       try {
+<<<<<<< HEAD
 <<<<<<< HEAD
         emit(state.copyWith(status: AuthStatus.loading, isLoggedIn: false));
 
@@ -144,10 +163,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           instance = 'https://$instance';
         }
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         emit(state.copyWith(status: AuthStatus.loading, account: null, isLoggedIn: false));
 
         String instance = event.instance;
         if (!instance.startsWith('https://')) instance = 'https://$instance';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
         lemmyClient.changeBaseUrl(instance);
@@ -162,6 +186,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
 
         if (loginResponse.jwt == null) {
+<<<<<<< HEAD
 <<<<<<< HEAD
           return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false));
         }
@@ -180,6 +205,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         if (e.response?.data != null) {
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
@@ -213,6 +240,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         String? errorMessage;
 
         if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           Map<String, dynamic> data = e.response?.data as Map<String, dynamic>;
 
@@ -226,15 +256,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         await Sentry.captureException(e, stackTrace: s);
 <<<<<<< HEAD
+<<<<<<< HEAD
         return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: errorMessage.toString()));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, isLoggedIn: false, errorMessage: e.toString()));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: errorMessage.toString()));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       }
     });

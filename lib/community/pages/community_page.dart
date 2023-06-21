@@ -5,16 +5,22 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class SortTypeItem {
@@ -76,7 +82,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   @override
   Widget build(BuildContext context) {
 <<<<<<< HEAD
+<<<<<<< HEAD
     final theme = Theme.of(context);
+=======
+    super.build(context);
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
     super.build(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
@@ -86,7 +97,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
             context.read<AccountBloc>().add(GetAccountInformation());
@@ -100,6 +114,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
           return true;
         },
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         listener: (context, state) {
           if (state.status == CommunityStatus.networkFailure) {
@@ -111,6 +128,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
         },
         builder: (context, state) {
+<<<<<<< HEAD
 <<<<<<< HEAD
           return BlocBuilder<CommunityBloc, CommunityState>(
             builder: (context, state) {
@@ -206,6 +224,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               );
             },
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -254,6 +274,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
             //       )
             //     : null,
             body: SafeArea(child: _getBody(context, state)),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           );
         },
@@ -276,7 +299,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         return PostCardList(
           postViews: state.postViews,
 <<<<<<< HEAD
+<<<<<<< HEAD
           communityId: widget.communityId,
+=======
+          listingType: state.communityId != null ? null : state.listingType,
+          communityId: widget.communityId ?? state.communityId,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,
@@ -285,6 +313,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
+<<<<<<< HEAD
 <<<<<<< HEAD
         return Center(
           child: Padding(
@@ -318,6 +347,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
   }
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return ErrorMessage(
           message: state.errorMessage,
           action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
@@ -385,5 +416,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       },
     );
   }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 }

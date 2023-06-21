@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -65,6 +71,7 @@ class PostCard extends StatelessWidget {
                           children: [
                             GestureDetector(
 <<<<<<< HEAD
+<<<<<<< HEAD
                               child: Text(
                                 postView.community.name,
                                 style: theme.textTheme.titleSmall?.copyWith(
@@ -77,6 +84,8 @@ class PostCard extends StatelessWidget {
                               )),
                             ),
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                                 child: Text(
                                   postView.community.name,
                                   style: theme.textTheme.titleSmall?.copyWith(
@@ -102,6 +111,9 @@ class PostCard extends StatelessWidget {
                                     ),
                                   );
                                 }),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                             const SizedBox(height: 8.0),
                             Row(
@@ -148,6 +160,7 @@ class PostCard extends StatelessWidget {
                         ),
                       ),
 <<<<<<< HEAD
+<<<<<<< HEAD
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -175,6 +188,8 @@ class PostCard extends StatelessWidget {
                         ],
                       ),
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                       if (isUserLoggedIn)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -217,6 +232,9 @@ class PostCard extends StatelessWidget {
                               ),
                           ],
                         ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                     ],
                   ),
@@ -225,6 +243,7 @@ class PostCard extends StatelessWidget {
             ),
           ),
           onTap: () async {
+<<<<<<< HEAD
 <<<<<<< HEAD
             CommunityBloc bloc = BlocProvider.of<CommunityBloc>(context);
             AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
@@ -241,6 +260,8 @@ class PostCard extends StatelessWidget {
                   );
                 },
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
             AccountBloc accountBloc = context.read<AccountBloc>();
             AuthBloc authBloc = context.read<AuthBloc>();
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -257,6 +278,9 @@ class PostCard extends StatelessWidget {
                   ],
                   child: PostPage(postView: postView),
                 ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               ),
             );

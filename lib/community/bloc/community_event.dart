@@ -32,7 +32,10 @@ class SavePostEvent extends CommunityEvent {
 
 class ForceRefreshEvent extends CommunityEvent {}
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class ChangeCommunitySubsciptionStatusEvent extends CommunityEvent {
   final int communityId;
@@ -40,4 +43,7 @@ class ChangeCommunitySubsciptionStatusEvent extends CommunityEvent {
 
   const ChangeCommunitySubsciptionStatusEvent({required this.communityId, required this.follow});
 }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

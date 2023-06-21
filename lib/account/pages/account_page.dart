@@ -2,10 +2,13 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
@@ -14,6 +17,9 @@ import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -35,7 +41,10 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       appBar: AppBar(
         actions: [
           if (authState.isLoggedIn)
@@ -45,6 +54,9 @@ class _AccountPageState extends State<AccountPage> {
             )
         ],
       ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {},
@@ -80,7 +92,11 @@ class _AccountPageState extends State<AccountPage> {
                                 minimumSize: const Size.fromHeight(50),
                               ),
 <<<<<<< HEAD
+<<<<<<< HEAD
                               onPressed: () => context.read<AuthBloc>().add(ClearAuth()),
+=======
+                              onPressed: () => context.read<AuthBloc>().add(RemoveAccount(accountId: context.read<AuthBloc>().state.account!.id)),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
                               onPressed: () => context.read<AuthBloc>().add(RemoveAccount(accountId: context.read<AuthBloc>().state.account!.id)),
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -91,8 +107,11 @@ class _AccountPageState extends State<AccountPage> {
                       ),
                     )
 <<<<<<< HEAD
+<<<<<<< HEAD
                   : const LoginPage(),
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                   : Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,6 +129,9 @@ class _AccountPageState extends State<AccountPage> {
                         ],
                       ),
                     ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
             ),
           );
@@ -118,7 +140,10 @@ class _AccountPageState extends State<AccountPage> {
     );
   }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
   void showProfileModalSheet(BuildContext context) {
     AuthBloc authBloc = context.read<AuthBloc>();
@@ -140,5 +165,8 @@ class _AccountPageState extends State<AccountPage> {
           );
         });
   }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 }

@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <<<<<<< HEAD
+<<<<<<< HEAD
 <dict>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
@@ -50,6 +51,8 @@
 	<false/>
 </dict>
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 	<dict>
 		<key>CADisableMinimumFrameDurationOnPhone</key>
 		<true/>
@@ -99,5 +102,8 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 	</dict>
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 </plist>

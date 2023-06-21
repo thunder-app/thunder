@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -8,6 +9,8 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:url_launcher/url_launcher.dart';
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,6 +24,9 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
 enum SwipeAction { upvote, downvote, reply, save }
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class CommentCard extends StatefulWidget {
@@ -58,11 +64,17 @@ class _CommentCardState extends State<CommentCard> {
   GlobalKey childKey = GlobalKey();
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   double dismissThreshold = 0;
   DismissDirection? dismissDirection;
   SwipeAction? swipeAction;
 
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   @override
   void initState() {
@@ -75,13 +87,19 @@ class _CommentCardState extends State<CommentCard> {
     final theme = Theme.of(context);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     int? myVote = widget.commentViewTree.myVote;
     bool saved = widget.commentViewTree.saved;
     int score = widget.commentViewTree.counts.score;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     return Container(
       decoration: BoxDecoration(
@@ -100,6 +118,7 @@ class _CommentCardState extends State<CommentCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Divider(height: 1),
+<<<<<<< HEAD
 <<<<<<< HEAD
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,6 +194,8 @@ class _CommentCardState extends State<CommentCard> {
               ),
             ],
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
@@ -364,6 +385,9 @@ class _CommentCardState extends State<CommentCard> {
                 ],
               ),
             ),
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           ),
           AnimatedContainer(
@@ -387,9 +411,12 @@ class _CommentCardState extends State<CommentCard> {
             ),
           ),
 <<<<<<< HEAD
+<<<<<<< HEAD
           // (widget.comment.children.length > 0 && isHidden == false)
           //     ? CommentCardMoreReplies(level: widget.level + 1, submissionId: widget.comment.submissionId, commentId: widget.comment.id)
           //     : Container(),
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         ],

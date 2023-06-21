@@ -8,6 +8,11 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -45,12 +50,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       transformer: throttleDroppable(throttleDuration),
     );
 <<<<<<< HEAD
+<<<<<<< HEAD
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
     emit(state.copyWith(status: CommunityStatus.refreshing));
     emit(state.copyWith(status: CommunityStatus.success));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<ChangeCommunitySubsciptionStatusEvent>(
       _changeCommunitySubsciptionStatusEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -60,13 +68,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
     emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
     emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   }
 
   Future<void> _votePostEvent(VotePostEvent event, Emitter<CommunityState> emit) async {
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       emit(state.copyWith(status: CommunityStatus.refreshing));
+=======
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
       emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -79,6 +94,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].post = postView.post;
       state.postViews![existingPostViewIndex].myVote = postView.myVote;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       return emit(state.copyWith(status: CommunityStatus.success));
     } on DioException catch (e, s) {
@@ -94,6 +110,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
@@ -123,6 +141,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
       ));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }
@@ -130,13 +151,19 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   Future<void> _savePostEvent(SavePostEvent event, Emitter<CommunityState> emit) async {
     try {
 <<<<<<< HEAD
+<<<<<<< HEAD
       emit(state.copyWith(status: CommunityStatus.refreshing));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       emit(state.copyWith(
         status: CommunityStatus.refreshing,
         communityId: state.communityId,
         listingType: state.listingType,
       ));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       PostView postView = await savePost(event.postId, event.save);
@@ -147,6 +174,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].post = postView.post;
       state.postViews![existingPostViewIndex].saved = postView.saved;
 
+<<<<<<< HEAD
 <<<<<<< HEAD
       return emit(state.copyWith(status: CommunityStatus.success));
     } on DioException catch (e, s) {
@@ -178,6 +206,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           SharedPreferences prefs = await SharedPreferences.getInstance();
           String? jwt = prefs.getString('jwt');
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       return emit(state.copyWith(
         status: CommunityStatus.success,
         communityId: state.communityId,
@@ -230,11 +260,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       while (attemptCount < 2) {
         try {
           Lemmy lemmy = LemmyClient.instance.lemmy;
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
 
+<<<<<<< HEAD
 <<<<<<< HEAD
             GetPostsResponse getPostsResponse = await lemmy.getPosts(
               GetPosts(
@@ -269,6 +303,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 sort: event.sortType ?? SortType.Hot,
                 type_: state.listingType ?? ListingType.Local,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
             int? communityId = event.communityId;
             ListingType? listingType = communityId != null ? null : (event.listingType ?? defaultListingType);
             SortType sortType = event.sortType ?? defaultSortType;
@@ -334,12 +370,19 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 limit: 15,
                 sort: sortType,
                 type_: state.listingType,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 communityId: state.communityId,
               ),
             );
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+            // Parse the posts, and append them to the existing list
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 =======
             // Parse the posts, and append them to the existing list
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
@@ -353,18 +396,25 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 page: state.page + 1,
                 postViews: postViews,
 <<<<<<< HEAD
+<<<<<<< HEAD
                 hasReachedEnd: posts.isEmpty,
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                 communityId: communityId,
                 listingType: listingType,
                 hasReachedEnd: posts.isEmpty,
                 subscribedType: state.subscribedType,
                 sortType: sortType,
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               ),
             );
           }
         } catch (e, s) {
+<<<<<<< HEAD
 <<<<<<< HEAD
           await Sentry.captureException(e, stackTrace: s);
 
@@ -381,6 +431,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           exception = e;
           attemptCount++;
           await Sentry.captureException(e, stackTrace: s);
@@ -455,6 +507,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           listingType: state.listingType,
         ),
       );
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }

@@ -105,13 +105,19 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   disabled: destination.listingType == ListingType.Subscribed && isLoggedIn == false,
                   onTap: () {
 <<<<<<< HEAD
+<<<<<<< HEAD
                     context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, listingType: destination.listingType));
 =======
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                     context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                           reset: true,
                           listingType: destination.listingType,
                           communityId: null,
                         ));
+<<<<<<< HEAD
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
+=======
 >>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                     Navigator.of(context).pop();
                   },
