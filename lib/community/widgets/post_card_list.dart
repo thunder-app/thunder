@@ -111,7 +111,10 @@ class _PostCardListState extends State<PostCardList> {
                       );
                     }
                   } else {
-                    return PostCard(postView: widget.postViews![index]);
+                    return PostCard(
+                      postView: widget.postViews![index],
+                      showInstanceName: widget.communityId == null,
+                    );
                   }
                 },
               ),

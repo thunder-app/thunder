@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/shared/image_preview.dart';
@@ -71,7 +75,7 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => triggerOnTap(context),
         ),
       );
     } else {
@@ -111,9 +115,35 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => triggerOnTap(context),
         ),
       );
+    }
+  }
+
+  void triggerOnTap(BuildContext context) {
+    if (originURL != null && originURL!.contains('/c/')) {
+      // Push navigation
+      AccountBloc accountBloc = context.read<AccountBloc>();
+      AuthBloc authBloc = context.read<AuthBloc>();
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+      String? communityName = generateCommunityInstanceUrl(originURL);
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: accountBloc),
+              BlocProvider.value(value: authBloc),
+              BlocProvider.value(value: thunderBloc),
+            ],
+            child: CommunityPage(communityName: communityName),
+          ),
+        ),
+      );
+    } else {
+      _launchURL(originURL);
     }
   }
 }

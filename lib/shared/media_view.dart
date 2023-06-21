@@ -73,6 +73,7 @@ class MediaView extends StatelessWidget {
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
+
     return CachedNetworkImage(
       imageUrl: postView!.media.first.mediaUrl!,
       height: showFullHeightImages ? postView!.media.first.height : 150,

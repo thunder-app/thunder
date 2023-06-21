@@ -14,12 +14,14 @@ import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCard extends StatelessWidget {
   final PostViewMedia postView;
+  final bool showInstanceName;
 
-  const PostCard({super.key, required this.postView});
+  const PostCard({super.key, required this.postView, this.showInstanceName = true});
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +50,11 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaView(postView: postView, showFullHeightImages: showFullHeightImages, hideNsfwPreviews: hideNsfwPreviews,),
+                MediaView(
+                  postView: postView,
+                  showFullHeightImages: showFullHeightImages,
+                  hideNsfwPreviews: hideNsfwPreviews,
+                ),
                 Text(post.name, style: theme.textTheme.titleMedium, softWrap: true),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
@@ -60,7 +66,7 @@ class PostCard extends StatelessWidget {
                           children: [
                             GestureDetector(
                                 child: Text(
-                                  postView.community.name,
+                                  '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
                                   style: theme.textTheme.titleSmall?.copyWith(
                                     fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),

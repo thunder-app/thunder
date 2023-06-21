@@ -4,6 +4,7 @@ import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 
 class Destination {
   const Destination(this.label, this.listingType, this.icon);
@@ -90,6 +91,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return Drawer(
+      width: MediaQuery.of(context).size.width * 0.80,
       child: SafeArea(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -133,6 +135,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: context.read<AccountBloc>().state.subsciptions.length,
                               itemBuilder: (context, index) {
+                                CommunitySafe community = context.read<AccountBloc>().state.subsciptions[index].community;
+
                                 return TextButton(
                                   style: TextButton.styleFrom(
                                     alignment: Alignment.centerLeft,
@@ -153,14 +157,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
                                       Text(
-                                        context.read<AccountBloc>().state.subsciptions[index].community.title,
+                                        community.title,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                       ),
                                       Text(
-                                        context.read<AccountBloc>().state.subsciptions[index].community.name,
+                                        '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
                                         style: theme.textTheme.bodyMedium,
-                                      )
+                                      ),
                                     ],
                                   ),
                                 );
