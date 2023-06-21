@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -13,8 +15,9 @@ class MediaView extends StatelessWidget {
   final Post? post;
   final PostViewMedia? postView;
   final bool showFullHeightImages;
+  final bool hideNsfwPreviews;
 
-  const MediaView({super.key, this.post, this.postView, this.showFullHeightImages = true});
+  const MediaView({super.key, this.post, this.postView, this.showFullHeightImages = true, required this.hideNsfwPreviews});
 
   Future<void> _launchURL(url) async {
     Uri uri = Uri.parse(url);
@@ -37,6 +40,8 @@ class MediaView extends StatelessWidget {
       );
     }
 
+    bool hideNsfw = hideNsfwPreviews && (postView?.post.nsfw ?? true);
+
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
@@ -44,69 +49,90 @@ class MediaView extends StatelessWidget {
           builder: (context) => ImageViewer(url: postView!.media.first.mediaUrl!),
         )),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: Stack(
-            children: [
-              CachedNetworkImage(
-                imageUrl: postView!.media.first.mediaUrl!,
-                height: showFullHeightImages ? postView!.media.first.height : 150,
-                width: postView!.media.first.width ?? MediaQuery.of(context).size.width - 24,
-                memCacheWidth: (postView!.media.first.width ?? (MediaQuery.of(context).size.width - 24) * MediaQuery.of(context).devicePixelRatio).toInt(),
-                fit: BoxFit.fitWidth,
-                progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                  color: Colors.grey.shade900,
-                  child: Center(
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(value: downloadProgress.progress),
-                    ),
-                  ),
-                ),
-                errorWidget: (context, url, error) => Container(
-                  color: Colors.grey.shade900,
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                    child: InkWell(
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(6), // Image border
-                        child: Stack(
-                          alignment: Alignment.bottomRight,
-                          fit: StackFit.passthrough,
-                          children: [
-                            Container(
-                              color: Colors.grey.shade900,
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                              child: Row(
+              borderRadius: BorderRadius.circular(6),
+              child: Stack(
+                children: [
+                  ImageFiltered(
+                    imageFilter: hideNsfw
+                        ? ImageFilter.blur(sigmaX: 20, sigmaY: 20)
+                        : ImageFilter.blur(),
+                    child: CachedNetworkImage(
+                      imageUrl: postView!.media.first.mediaUrl!,
+                      height: showFullHeightImages ? postView!.media.first.height : 150,
+                      width: postView!.media.first.width ?? MediaQuery.of(context).size.width - 24,
+                      memCacheWidth: (postView!.media.first.width ?? (MediaQuery.of(context).size.width - 24) * MediaQuery.of(context).devicePixelRatio).toInt(),
+                      fit: BoxFit.fitWidth,
+                      progressIndicatorBuilder: (context, url, downloadProgress) => Container(
+                        color: Colors.grey.shade900,
+                        child: Center(
+                          child: SizedBox(
+                            width: 40,
+                            height: 40,
+                            child: CircularProgressIndicator(value: downloadProgress.progress),
+                          ),
+                        ),
+                      ),
+                      errorWidget: (context, url, error) => Container(
+                        color: Colors.grey.shade900,
+                        child: Padding(
+                          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                          child: InkWell(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(6), // Image border
+                              child: Stack(
+                                alignment: Alignment.bottomRight,
+                                fit: StackFit.passthrough,
                                 children: [
-                                  const Padding(
-                                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: Icon(
-                                      Icons.link,
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: Text(
-                                      post?.url ?? '',
-                                      overflow: TextOverflow.ellipsis,
-                                      style: theme.textTheme.bodyMedium!.copyWith(
-                                        color: Colors.white60,
-                                      ),
+                                  Container(
+                                    color: Colors.grey.shade900,
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                                    child: Row(
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                          child: Icon(
+                                            Icons.link,
+                                            color: Colors.white60,
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            post?.url ?? '',
+                                            overflow: TextOverflow.ellipsis,
+                                            style: theme.textTheme.bodyMedium!.copyWith(
+                                              color: Colors.white60,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
                             ),
-                          ],
+                            onTap: () => _launchURL(post?.url!),
+                          ),
                         ),
                       ),
-                      onTap: () => _launchURL(post?.url!),
                     ),
                   ),
-                ),
-              ),
-            ],
+                  if (hideNsfw) Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.all(20),
+                      child: const Column(
+                        children: [
+                          Icon(
+                            Icons.warning_rounded,
+                            size: 55,
+                          ),
+                          Text(
+                            "NSFW - Tap to unhide",
+                            textScaleFactor: 1.5,
+                          ),
+                        ]
+                    )
+                  )
+                ],
           ),
         ),
       ),
