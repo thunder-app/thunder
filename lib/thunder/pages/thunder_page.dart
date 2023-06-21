@@ -27,6 +27,7 @@ class _ThunderState extends State<Thunder> {
   PageController pageController = PageController(initialPage: 0);
 
   bool hasShownUpdateDialog = false;
+  bool hasShownSentryDialog = false;
 
   @override
   void initState() {
@@ -80,11 +81,20 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
+                          bool? enableSentryErrorTracking = thunderBlocState.preferences?.getBool('setting_error_tracking_enable_sentry');
 
                           if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
                               setState(() => hasShownUpdateDialog = true);
+                            });
+                          }
+
+                          // Ask user if they want to opt-in to Sentry for the first time (based on if setting_error_tracking_enable_sentry is null)
+                          if (enableSentryErrorTracking == null && hasShownSentryDialog == false) {
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              showSentryNotification(context);
+                              setState(() => hasShownSentryDialog = true);
                             });
                           }
 
@@ -189,6 +199,75 @@ class _ThunderState extends State<Thunder> {
       background: theme.colorScheme.onSecondary,
       autoDismiss: false,
       slideDismissDirection: DismissDirection.vertical,
+    );
+  }
+
+  // Sentry opt-in notification
+  void showSentryNotification(BuildContext thunderBlocContext) {
+    final theme = Theme.of(context);
+
+    showOverlay(
+      (context, t) {
+        return Container(
+          color: Color.lerp(Colors.transparent, Colors.black54, t),
+          child: FractionalTranslation(
+            translation: Offset.lerp(const Offset(0, 1), const Offset(0, 0), t)!,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Card(
+                  child: SafeArea(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Enable Sentry Error Reporting?',
+                            style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
+                          ),
+                          const SizedBox(height: 12.0),
+                          Text(
+                            'By opting in, any errors that you encounter will be automatically sent to Sentry to improve Thunder.',
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(
+                            'You may opt out at any time in the Settings.',
+                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              TextButton(
+                                child: const Text('Allow'),
+                                onPressed: () {
+                                  thunderBlocContext.read<ThunderBloc>().state.preferences?.setBool('setting_error_tracking_enable_sentry', true);
+                                  OverlaySupportEntry.of(context)!.dismiss();
+                                },
+                              ),
+                              TextButton(
+                                child: const Text('Do not allow'),
+                                onPressed: () {
+                                  thunderBlocContext.read<ThunderBloc>().state.preferences?.setBool('setting_error_tracking_enable_sentry', false);
+                                  OverlaySupportEntry.of(context)!.dismiss();
+                                },
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      duration: Duration.zero,
     );
   }
 }

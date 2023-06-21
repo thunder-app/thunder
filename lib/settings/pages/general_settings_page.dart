@@ -28,6 +28,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
 
+  // Error Reporting
+  bool enableSentryErrorTracking = false;
+
   TextEditingController instanceController = TextEditingController();
 
   // Loading
@@ -70,6 +73,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_notifications_show_inapp_update', value);
         setState(() => showInAppUpdateNotification = value);
         break;
+      case 'setting_error_tracking_enable_sentry':
+        await prefs.setBool('setting_error_tracking_enable_sentry', value);
+        setState(() => enableSentryErrorTracking = value);
+
+        SnackBar snackBar = const SnackBar(
+          content: Text('Restart Thunder to apply the new settings'),
+          behavior: SnackBarBehavior.floating,
+        );
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+        break;
     }
 
     if (context.mounted) {
@@ -93,6 +110,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+
+      // Error Tracking
+      enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
 
       isLoading = false;
     });
@@ -241,6 +261,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
                           onToggle: (bool value) => setPreferences('setting_notifications_show_inapp_update', value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Error Reporting',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Enable Sentry error tracking',
+                          value: enableSentryErrorTracking,
+                          iconEnabled: Icons.error_rounded,
+                          iconDisabled: Icons.error_rounded,
+                          onToggle: (bool value) => setPreferences('setting_error_tracking_enable_sentry', value),
                         ),
                       ],
                     ),

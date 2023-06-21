@@ -3,6 +3,10 @@
 - Added settings option to enable or disable the in-app update notifications
 - Added instance name to feeds and subscriptions to allow you to distinguish between similar communities on different instances
 - Added blur to NSFW images - contribution from @guigs4
+- Added fastlane config for Android - contribution from @IzzySoft
+- Initial support for opening links for lemmy communities within the app rather than through the browser
+- Added community information when opening up a community
+- Added ability to opt-in/opt-out of Sentry error reporting
 
 ### Fixed
 - Fixed issue where selecting the light theme would revert back to dark theme on app relaunch
