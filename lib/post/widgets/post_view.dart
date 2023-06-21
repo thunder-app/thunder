@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -78,14 +79,19 @@ class PostSubview extends StatelessWidget {
               ),
             ],
           ),
-          MediaView(post: postView.post, postView: postView, hideNsfwPreviews: hideNsfwPreviews,),
+          MediaView(
+            post: postView.post,
+            postView: postView,
+            hideNsfwPreviews: hideNsfwPreviews,
+          ),
           if (postView.post.body != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: MarkdownBody(
                 data: postView.post.body!,
                 onTapLink: (text, url, title) {
-                  if (text.contains('@')) {
+                  String? communityName = checkLemmyInstanceUrl(text);
+                  if (communityName != null) {
                     // Push navigation
                     AccountBloc accountBloc = context.read<AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
@@ -99,7 +105,7 @@ class PostSubview extends StatelessWidget {
                             BlocProvider.value(value: authBloc),
                             BlocProvider.value(value: thunderBloc),
                           ],
-                          child: CommunityPage(communityName: text),
+                          child: CommunityPage(communityName: communityName),
                         ),
                       ),
                     );

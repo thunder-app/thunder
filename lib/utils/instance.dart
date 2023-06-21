@@ -16,3 +16,9 @@ String? generateCommunityInstanceUrl(String? url) {
   final communityName = uri.pathSegments[1];
   return '$communityName@${uri.host}';
 }
+
+String? checkLemmyInstanceUrl(String text) {
+  if (text.contains('@')) return text;
+  if (text.contains('/c/')) return generateCommunityInstanceUrl(text);
+  return null;
+}

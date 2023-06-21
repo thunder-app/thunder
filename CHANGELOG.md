@@ -1,6 +1,8 @@
 ## Unreleased
 ### Added
 - Added settings option to enable or disable the in-app update notifications
+- Added instance name to feeds and subscriptions to allow you to distinguish between similar communities on different instances
+- Added blur to NSFW images - contribution from @guigs4
 
 ### Fixed
 - Fixed issue where selecting the light theme would revert back to dark theme on app relaunch

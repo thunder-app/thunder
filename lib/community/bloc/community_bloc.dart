@@ -143,14 +143,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             emit(state.copyWith(status: CommunityStatus.loading));
 
             int? communityId = event.communityId;
-            ListingType? listingType = communityId != null ? null : (event.listingType ?? defaultListingType);
+            String? communityName = event.communityName;
+            ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
             SortType sortType = event.sortType ?? defaultSortType;
 
             // Fetch community's information
             SubscribedType? subscribedType;
             GetCommunityResponse? getCommunityResponse;
 
-            if (communityId != null) {
+            if (communityId != null || communityName != null) {
               getCommunityResponse = await lemmy.getCommunity(
                 GetCommunity(
                   auth: account?.jwt,
@@ -170,7 +171,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 limit: 15,
                 sort: sortType,
                 type_: listingType,
-                communityId: communityId,
+                communityId: communityId ?? getCommunityResponse?.communityView.community.id,
                 communityName: event.communityName,
               ),
             );

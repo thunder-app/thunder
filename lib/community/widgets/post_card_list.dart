@@ -17,6 +17,7 @@ import 'package:thunder/utils/numbers.dart';
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
+  final String? communityName;
   final bool? hasReachedEnd;
   final ListingType? listingType;
   final GetCommunityResponse? communityInfo;
@@ -28,6 +29,7 @@ class PostCardList extends StatefulWidget {
     this.hasReachedEnd,
     this.listingType,
     this.communityInfo,
+    this.communityName,
   });
 
   @override
@@ -78,7 +80,7 @@ class _PostCardListState extends State<PostCardList> {
           controller: _scrollController,
           child: Column(
             children: [
-              if (widget.communityId != null) CommunityHeader(communityInfo: widget.communityInfo),
+              if (widget.communityId != null || widget.communityName != null) CommunityHeader(communityInfo: widget.communityInfo),
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),

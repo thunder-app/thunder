@@ -6,6 +6,7 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -109,7 +110,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (state.communityId != null && isUserLoggedIn)
+                    if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
                       IconButton(
                         icon: Icon(
                           (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
@@ -132,15 +133,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 )
               ],
             ),
-            drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
-            // floatingActionButton: (state.communityId != null)
-            //     ? FloatingActionButton(
-            //         onPressed: () {
-            //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
-            //         },
-            //         child: const Icon(Icons.add),
-            //       )
-            //     : null,
+            drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+            floatingActionButton: (state.communityId != null || widget.communityName != null)
+                ? FloatingActionButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+                    },
+                    child: const Icon(Icons.add),
+                  )
+                : null,
             body: SafeArea(child: _getBody(context, state)),
           );
         },
@@ -165,6 +166,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           postViews: state.postViews,
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,
+          communityName: widget.communityName ?? state.communityName,
           hasReachedEnd: state.hasReachedEnd,
           communityInfo: state.communityInfo,
         );
