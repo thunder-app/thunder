@@ -34,11 +34,6 @@ class SavePostEvent extends PostEvent {
 
   const SavePostEvent({required this.postId, required this.save});
 }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class VoteCommentEvent extends PostEvent {
   final int commentId;
@@ -53,7 +48,3 @@ class SaveCommentEvent extends PostEvent {
 
   const SaveCommentEvent({required this.commentId, required this.save});
 }
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

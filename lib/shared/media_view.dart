@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import 'package:thunder/shared/image_viewer.dart';
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-import 'package:thunder/shared/image_viewer.dart';
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/shared/link_preview_card.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -46,74 +39,6 @@ class MediaView extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-<<<<<<< HEAD
-<<<<<<< HEAD
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(6),
-        child: Stack(
-          children: [
-            CachedNetworkImage(
-              imageUrl: postView!.media.first.mediaUrl!,
-              height: showFullHeightImages ? postView!.media.first.height : 150,
-              width: postView!.media.first.width ?? MediaQuery.of(context).size.width - 24,
-              fit: BoxFit.fitWidth,
-              progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-                color: Colors.grey.shade900,
-                child: Center(
-                  child: SizedBox(
-                    width: 40,
-                    height: 40,
-                    child: CircularProgressIndicator(value: downloadProgress.progress),
-                  ),
-                ),
-              ),
-              errorWidget: (context, url, error) => Container(
-                color: Colors.grey.shade900,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: InkWell(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6), // Image border
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        fit: StackFit.passthrough,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade900,
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Icon(
-                                    Icons.link,
-                                    color: Colors.white60,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    post?.url ?? '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () => _launchURL(post?.url!),
-                  ),
-                ),
-              ),
-            ),
-          ],
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (context) => ImageViewer(url: postView!.media.first.mediaUrl!),
@@ -183,10 +108,6 @@ class MediaView extends StatelessWidget {
               ),
             ],
           ),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         ),
       ),
     );

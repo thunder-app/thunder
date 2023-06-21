@@ -1,16 +1,4 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import 'package:flutter_markdown/flutter_markdown.dart';
-
-import 'package:thunder/core/models/comment_view_tree.dart';
-
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/numbers.dart';
-import 'package:url_launcher/url_launcher.dart';
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,10 +12,6 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
 enum SwipeAction { upvote, downvote, reply, save }
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class CommentCard extends StatefulWidget {
   const CommentCard({
@@ -63,19 +47,10 @@ class _CommentCardState extends State<CommentCard> {
   bool isHidden = true;
   GlobalKey childKey = GlobalKey();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   double dismissThreshold = 0;
   DismissDirection? dismissDirection;
   SwipeAction? swipeAction;
 
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   @override
   void initState() {
     isHidden = widget.collapsed;
@@ -86,21 +61,12 @@ class _CommentCardState extends State<CommentCard> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     int? myVote = widget.commentViewTree.myVote;
     bool saved = widget.commentViewTree.saved;
     int score = widget.commentViewTree.counts.score;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     return Container(
       decoration: BoxDecoration(
         border: widget.level > 0
@@ -118,84 +84,6 @@ class _CommentCardState extends State<CommentCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           const Divider(height: 1),
-<<<<<<< HEAD
-<<<<<<< HEAD
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => setState(() => isHidden = !isHidden),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Row(
-                          children: [
-                            Text(
-                              widget.commentViewTree.creator.name,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: widget.commentViewTree.creator.admin
-                                    ? theme.colorScheme.tertiary
-                                    : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
-                                        ? Colors.amber
-                                        : theme.colorScheme.onSecondaryContainer,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            const Icon(Icons.north, size: 12.0),
-                            const SizedBox(width: 2.0),
-                            Text(
-                              formatNumberToK(widget.commentViewTree.counts.upvotes),
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                color: theme.colorScheme.onBackground,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Text(
-                        formatTimeToString(dateTime: widget.commentViewTree.comment.published),
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onBackground,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              AnimatedSize(
-                duration: const Duration(milliseconds: 200),
-                curve: Curves.fastOutSlowIn,
-                child: AnimatedOpacity(
-                  opacity: isHidden ? 0.0 : 1.0,
-                  curve: Curves.fastOutSlowIn,
-                  duration: const Duration(milliseconds: 200),
-                  child: isHidden
-                      ? Container()
-                      : Padding(
-                          padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: MarkdownBody(
-                            data: widget.commentViewTree.comment.content,
-                            onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
-                            styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                              p: theme.textTheme.bodyMedium,
-                              blockquoteDecoration: const BoxDecoration(
-                                color: Colors.transparent,
-                                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-                              ),
-                            ),
-                          ),
-                        ),
-                ),
-              ),
-            ],
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
@@ -385,10 +273,6 @@ class _CommentCardState extends State<CommentCard> {
                 ],
               ),
             ),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           ),
           AnimatedContainer(
             key: childKey,
@@ -410,15 +294,6 @@ class _CommentCardState extends State<CommentCard> {
               ),
             ),
           ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-          // (widget.comment.children.length > 0 && isHidden == false)
-          //     ? CommentCardMoreReplies(level: widget.level + 1, submissionId: widget.comment.submissionId, commentId: widget.comment.id)
-          //     : Container(),
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         ],
       ),
     );

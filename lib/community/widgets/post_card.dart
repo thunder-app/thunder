@@ -1,21 +1,9 @@
 import 'package:flutter/material.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:lemmy/lemmy.dart';
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
@@ -70,22 +58,6 @@ class PostCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(
-<<<<<<< HEAD
-<<<<<<< HEAD
-                              child: Text(
-                                postView.community.name,
-                                style: theme.textTheme.titleSmall?.copyWith(
-                                  fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                                  color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                                ),
-                              ),
-                              onTap: () => Navigator.of(context).push(MaterialPageRoute(
-                                builder: (_) => CommunityPage(communityId: postView.community.id),
-                              )),
-                            ),
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                                 child: Text(
                                   postView.community.name,
                                   style: theme.textTheme.titleSmall?.copyWith(
@@ -111,10 +83,6 @@ class PostCard extends StatelessWidget {
                                     ),
                                   );
                                 }),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                             const SizedBox(height: 8.0),
                             Row(
                               mainAxisSize: MainAxisSize.min,
@@ -159,37 +127,6 @@ class PostCard extends StatelessWidget {
                           ],
                         ),
                       ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          if (showVoteActions)
-                            IconButton(
-                              icon: const Icon(Icons.arrow_upward),
-                              color: postView.myVote == 1 ? Colors.orange : null,
-                              visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1)) : null,
-                            ),
-                          if (showVoteActions)
-                            IconButton(
-                              icon: const Icon(Icons.arrow_downward),
-                              color: postView.myVote == -1 ? Colors.blue : null,
-                              visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1)) : null,
-                            ),
-                          if (showSaveAction)
-                            IconButton(
-                              icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
-                              color: postView.saved ? Colors.purple : null,
-                              visualDensity: VisualDensity.compact,
-                              onPressed: isUserLoggedIn ? () => context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true)) : null,
-                            ),
-                        ],
-                      ),
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                       if (isUserLoggedIn)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -232,10 +169,6 @@ class PostCard extends StatelessWidget {
                               ),
                           ],
                         ),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                     ],
                   ),
                 )
@@ -243,25 +176,6 @@ class PostCard extends StatelessWidget {
             ),
           ),
           onTap: () async {
-<<<<<<< HEAD
-<<<<<<< HEAD
-            CommunityBloc bloc = BlocProvider.of<CommunityBloc>(context);
-            AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) {
-                  return BlocProvider.value(
-                    value: bloc,
-                    child: BlocProvider.value(
-                      value: authBloc,
-                      child: PostPage(postView: postView),
-                    ),
-                  );
-                },
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
             AccountBloc accountBloc = context.read<AccountBloc>();
             AuthBloc authBloc = context.read<AuthBloc>();
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -278,10 +192,6 @@ class PostCard extends StatelessWidget {
                   ],
                   child: PostPage(postView: postView),
                 ),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               ),
             );
             if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());

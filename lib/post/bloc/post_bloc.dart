@@ -7,16 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/utils/comment.dart';
@@ -28,14 +20,7 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 const timeout = Duration(seconds: 3);
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-const timeout = Duration(seconds: 3);
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -59,11 +44,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _savePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     on<VoteCommentEvent>(
       _voteCommentEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -72,36 +52,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _saveCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   }
 
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
       emit(state.copyWith(status: PostStatus.loading));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      LemmyClient lemmyClient = LemmyClient.instance;
-      Lemmy lemmy = lemmyClient.lemmy;
-
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? jwt = prefs.getString('jwt');
-
-      PostViewMedia postView = event.postView;
-
-      // GetPostResponse getPostResponse = await lemmy.getPost(GetPost(id: event.id, auth: jwt));
-      // List<PostViewMedia> posts = await parsePostViews([postView]);
-
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
-        GetComments(
-          page: 1,
-          auth: jwt,
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
 
@@ -112,29 +68,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         GetComments(
           page: 1,
           auth: account?.jwt,
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           communityId: postView.post.communityId,
           postId: postView.post.id,
           sort: CommentSortType.Hot,
           limit: 50,
         ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-      );
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       )
           .timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to fetch comments');
       });
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -161,61 +103,26 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(event, emit) async {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    LemmyClient lemmyClient = LemmyClient.instance;
-    Lemmy lemmy = lemmyClient.lemmy;
-
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? jwt = prefs.getString('jwt');
-=======
     Account? account = await fetchActiveProfileAccount();
     Lemmy lemmy = LemmyClient.instance.lemmy;
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-    Account? account = await fetchActiveProfileAccount();
-    Lemmy lemmy = LemmyClient.instance.lemmy;
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      GetCommentsResponse getCommentsResponse = await lemmy.getComments(
-        GetComments(
-          auth: jwt,
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       GetCommentsResponse getCommentsResponse = await lemmy
           .getComments(
         GetComments(
           auth: account?.jwt,
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           communityId: state.communityId,
           postId: state.postId,
           sort: CommentSortType.Hot,
           limit: 50,
           page: 1,
         ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-      );
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       )
           .timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to fetch comments');
       });
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       // Build the tree view from the flattened comments
       List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -234,42 +141,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     if (state.commentCount >= state.postView!.counts.comments) return;
     emit(state.copyWith(status: PostStatus.refreshing));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-    GetCommentsResponse getCommentsResponse = await lemmy.getComments(
-      GetComments(
-        auth: jwt,
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     GetCommentsResponse getCommentsResponse = await lemmy
         .getComments(
       GetComments(
         auth: account?.jwt,
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         communityId: state.communityId,
         postId: state.postId,
         sort: CommentSortType.Hot,
         limit: 50,
         page: state.commentPage,
       ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-    );
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     )
         .timeout(timeout, onTimeout: () {
       throw Exception('Error: Timeout when attempting to fetch more comments');
     });
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     // Build the tree view from the flattened comments
     List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
@@ -291,19 +176,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      PostView postView = await votePost(event.postId, event.score);
-=======
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to vote post');
       });
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to vote post');
-      });
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -312,33 +187,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      }
-=======
       if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-<<<<<<< HEAD
-<<<<<<< HEAD
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-=======
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }
 
@@ -346,19 +201,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-      PostView postView = await savePost(event.postId, event.save);
-=======
       PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to save post');
       });
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-      PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to save post');
-      });
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       state.postView?.counts = postView.counts;
       state.postView?.post = postView.post;
@@ -367,27 +212,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
-      }
-=======
       if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
@@ -450,10 +279,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

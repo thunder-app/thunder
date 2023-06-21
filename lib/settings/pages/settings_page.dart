@@ -1,21 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
-<<<<<<< HEAD
-<<<<<<< HEAD
-import 'package:go_router/go_router.dart';
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class SettingTopic {
   final String title;
@@ -44,23 +34,6 @@ class SettingsPage extends StatelessWidget {
         centerTitle: false,
         title: AutoSizeText('Settings', style: theme.textTheme.titleLarge),
       ),
-<<<<<<< HEAD
-<<<<<<< HEAD
-      body: SingleChildScrollView(
-        child: ListView(
-          shrinkWrap: true,
-          children: topics
-              .map((topic) => ListTile(
-                    title: Text(topic.title),
-                    leading: Icon(topic.icon),
-                    trailing: const Icon(Icons.chevron_right_rounded),
-                    onTap: () => GoRouter.of(context).push(topic.path),
-                  ))
-              .toList(),
-        ),
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -89,10 +62,6 @@ class SettingsPage extends StatelessWidget {
             ),
           )
         ],
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       ),
     );
   }

@@ -4,24 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/community/widgets/post_card_list.dart';
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class SortTypeItem {
   const SortTypeItem({required this.sortType, required this.icon, required this.label});
@@ -81,26 +69,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-    final theme = Theme.of(context);
-=======
     super.build(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-    super.build(context);
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
             context.read<AccountBloc>().add(GetAccountInformation());
@@ -114,10 +88,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
           return true;
         },
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         listener: (context, state) {
           if (state.status == CommunityStatus.networkFailure) {
             SnackBar snackBar = SnackBar(
@@ -128,104 +98,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
         },
         builder: (context, state) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-          return BlocBuilder<CommunityBloc, CommunityState>(
-            builder: (context, state) {
-              return Scaffold(
-                appBar: AppBar(
-                  title: Text(
-                    (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
-                        ? ''
-                        : (state.communityId != null)
-                            ? (state.postViews?.firstOrNull?.community.name ?? '')
-                            : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
-                  ),
-                  centerTitle: false,
-                  toolbarHeight: 70.0,
-                  actions: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        IconButton(
-                          icon: Icon(sortTypeIcon),
-                          onPressed: () {
-                            showModalBottomSheet<void>(
-                              showDragHandle: true,
-                              context: context,
-                              builder: (BuildContext bottomSheetContext) {
-                                return SingleChildScrollView(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Text(
-                                            'Sort Options',
-                                            style: theme.textTheme.titleLarge!.copyWith(),
-                                          ),
-                                        ),
-                                      ),
-                                      ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const NeverScrollableScrollPhysics(),
-                                        itemCount: sortTypeItems.length,
-                                        itemBuilder: (BuildContext itemBuilderContext, int index) {
-                                          return ListTile(
-                                            title: Text(
-                                              sortTypeItems[index].label,
-                                              style: theme.textTheme.bodyMedium,
-                                            ),
-                                            leading: Icon(sortTypeItems[index].icon),
-                                            onTap: () {
-                                              setState(() {
-                                                sortType = sortTypeItems[index].sortType;
-                                                sortTypeIcon = sortTypeItems[index].icon;
-                                              });
-
-                                              context.read<CommunityBloc>().add(
-                                                    GetCommunityPostsEvent(
-                                                      sortType: sortTypeItems[index].sortType,
-                                                      reset: true,
-                                                      communityId: widget.communityId ?? state.communityId,
-                                                    ),
-                                                  );
-                                              Navigator.of(context).pop();
-                                            },
-                                          );
-                                        },
-                                      ),
-                                      const SizedBox(height: 16.0),
-                                    ],
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        const SizedBox(width: 8.0),
-                      ],
-                    )
-                  ],
-                ),
-                drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
-                // floatingActionButton: (state.communityId != null)
-                //     ? FloatingActionButton(
-                //         onPressed: () {
-                //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
-                //         },
-                //         child: const Icon(Icons.add),
-                //       )
-                //     : null,
-                body: SafeArea(child: _getBody(context, state)),
-              );
-            },
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -274,10 +146,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
             //       )
             //     : null,
             body: SafeArea(child: _getBody(context, state)),
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           );
         },
       ),
@@ -298,57 +166,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.success:
         return PostCardList(
           postViews: state.postViews,
-<<<<<<< HEAD
-<<<<<<< HEAD
-          communityId: widget.communityId,
-=======
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
-          listingType: state.communityId != null ? null : state.listingType,
-          communityId: widget.communityId ?? state.communityId,
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           hasReachedEnd: state.hasReachedEnd,
         );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
-<<<<<<< HEAD
-<<<<<<< HEAD
-        return Center(
-          child: Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.warning_rounded,
-                  size: 100,
-                  color: Colors.red.shade300,
-                ),
-                const SizedBox(height: 32.0),
-                Text('Oops, something went wrong!', style: theme.textTheme.titleLarge),
-                const SizedBox(height: 8.0),
-                Text(
-                  state.errorMessage ?? 'No error message available',
-                  style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                ),
-                const SizedBox(height: 32.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
-                  onPressed: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
-                  child: const Text('Refresh Content'),
-                ),
-              ],
-            ),
-          ),
-        );
-    }
-  }
-=======
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         return ErrorMessage(
           message: state.errorMessage,
           action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
@@ -416,8 +239,4 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       },
     );
   }
-<<<<<<< HEAD
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
-=======
->>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 }
