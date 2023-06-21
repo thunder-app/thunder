@@ -4,9 +4,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
 
+<<<<<<< HEAD
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+=======
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/widgets/community_drawer.dart';
+import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/error_message.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class SortTypeItem {
   const SortTypeItem({required this.sortType, required this.icon, required this.label});
@@ -66,11 +75,32 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     final theme = Theme.of(context);
+=======
+    super.build(context);
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
+<<<<<<< HEAD
+=======
+        listenWhen: (previousState, currentState) {
+          if (previousState.subscribedType != currentState.subscribedType) {
+            context.read<AccountBloc>().add(GetAccountInformation());
+          }
+
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              sortTypeIcon = sortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+            });
+          }
+          return true;
+        },
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         listener: (context, state) {
           if (state.status == CommunityStatus.networkFailure) {
             SnackBar snackBar = SnackBar(
@@ -81,6 +111,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
         },
         builder: (context, state) {
+<<<<<<< HEAD
           return BlocBuilder<CommunityBloc, CommunityState>(
             builder: (context, state) {
               return Scaffold(
@@ -174,6 +205,56 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 body: SafeArea(child: _getBody(context, state)),
               );
             },
+=======
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
+                    ? ''
+                    : (state.communityId != null)
+                        ? (state.postViews?.firstOrNull?.community.name ?? '')
+                        : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
+              ),
+              centerTitle: false,
+              toolbarHeight: 70.0,
+              actions: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (state.communityId != null && isUserLoggedIn)
+                      IconButton(
+                        icon: Icon(
+                          (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                        ),
+                        onPressed: () => {
+                          context.read<CommunityBloc>().add(
+                                ChangeCommunitySubsciptionStatusEvent(
+                                  communityId: state.communityId!,
+                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.NotSubscribed ? true : false),
+                                ),
+                              )
+                        },
+                      ),
+                    IconButton(
+                      icon: Icon(sortTypeIcon),
+                      onPressed: () => showSortBottomSheet(context, state),
+                    ),
+                    const SizedBox(width: 8.0),
+                  ],
+                )
+              ],
+            ),
+            drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
+            // floatingActionButton: (state.communityId != null)
+            //     ? FloatingActionButton(
+            //         onPressed: () {
+            //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
+            //         },
+            //         child: const Icon(Icons.add),
+            //       )
+            //     : null,
+            body: SafeArea(child: _getBody(context, state)),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           );
         },
       ),
@@ -194,11 +275,17 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.success:
         return PostCardList(
           postViews: state.postViews,
+<<<<<<< HEAD
           communityId: widget.communityId,
+=======
+          listingType: state.communityId != null ? null : state.listingType,
+          communityId: widget.communityId ?? state.communityId,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           hasReachedEnd: state.hasReachedEnd,
         );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
+<<<<<<< HEAD
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -230,4 +317,73 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         );
     }
   }
+=======
+        return ErrorMessage(
+          message: state.errorMessage,
+          action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
+          actionText: 'Refresh Content',
+        );
+    }
+  }
+
+  void showSortBottomSheet(BuildContext context, CommunityState state) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (BuildContext bottomSheetContext) {
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort Options',
+                    style: theme.textTheme.titleLarge!.copyWith(),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: sortTypeItems.length,
+                itemBuilder: (BuildContext itemBuilderContext, int index) {
+                  return ListTile(
+                    title: Text(
+                      sortTypeItems[index].label,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    leading: Icon(sortTypeItems[index].icon),
+                    onTap: () {
+                      setState(() {
+                        sortType = sortTypeItems[index].sortType;
+                        sortTypeIcon = sortTypeItems[index].icon;
+                      });
+
+                      context.read<CommunityBloc>().add(
+                            GetCommunityPostsEvent(
+                              sortType: sortTypeItems[index].sortType,
+                              reset: true,
+                              listingType: state.communityId != null ? null : state.listingType,
+                              communityId: widget.communityId ?? state.communityId,
+                            ),
+                          );
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+            ],
+          ),
+        );
+      },
+    );
+  }
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 }

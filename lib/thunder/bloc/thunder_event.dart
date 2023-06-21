@@ -7,6 +7,7 @@ abstract class ThunderEvent extends Equatable {
   List<Object> get props => [];
 }
 
+<<<<<<< HEAD
 class ThemeChangeEvent extends ThunderEvent {
   final ThemeType themeType;
 
@@ -14,3 +15,8 @@ class ThemeChangeEvent extends ThunderEvent {
 }
 
 class UserPreferencesChangeEvent extends ThunderEvent {}
+=======
+class UserPreferencesChangeEvent extends ThunderEvent {}
+
+class InitializeAppEvent extends ThunderEvent {}
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

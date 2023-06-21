@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
+=======
+import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:lemmy/lemmy.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
@@ -56,6 +64,7 @@ class PostCard extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             GestureDetector(
+<<<<<<< HEAD
                               child: Text(
                                 postView.community.name,
                                 style: theme.textTheme.titleSmall?.copyWith(
@@ -67,6 +76,33 @@ class PostCard extends StatelessWidget {
                                 builder: (_) => CommunityPage(communityId: postView.community.id),
                               )),
                             ),
+=======
+                                child: Text(
+                                  postView.community.name,
+                                  style: theme.textTheme.titleSmall?.copyWith(
+                                    fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
+                                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                                  ),
+                                ),
+                                onTap: () {
+                                  AccountBloc accountBloc = context.read<AccountBloc>();
+                                  AuthBloc authBloc = context.read<AuthBloc>();
+                                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider.value(value: accountBloc),
+                                          BlocProvider.value(value: authBloc),
+                                          BlocProvider.value(value: thunderBloc),
+                                        ],
+                                        child: CommunityPage(communityId: postView.community.id),
+                                      ),
+                                    ),
+                                  );
+                                }),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                             const SizedBox(height: 8.0),
                             Row(
                               mainAxisSize: MainAxisSize.min,
@@ -111,6 +147,7 @@ class PostCard extends StatelessWidget {
                           ],
                         ),
                       ),
+<<<<<<< HEAD
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -137,6 +174,50 @@ class PostCard extends StatelessWidget {
                             ),
                         ],
                       ),
+=======
+                      if (isUserLoggedIn)
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            if (showVoteActions)
+                              IconButton(
+                                icon: const Icon(Icons.arrow_upward),
+                                color: postView.myVote == 1 ? Colors.orange : null,
+                                visualDensity: VisualDensity.compact,
+                                onPressed: isUserLoggedIn
+                                    ? () {
+                                        HapticFeedback.mediumImpact();
+                                        context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1));
+                                      }
+                                    : null,
+                              ),
+                            if (showVoteActions)
+                              IconButton(
+                                icon: const Icon(Icons.arrow_downward),
+                                color: postView.myVote == -1 ? Colors.blue : null,
+                                visualDensity: VisualDensity.compact,
+                                onPressed: isUserLoggedIn
+                                    ? () {
+                                        HapticFeedback.mediumImpact();
+                                        context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1));
+                                      }
+                                    : null,
+                              ),
+                            if (showSaveAction)
+                              IconButton(
+                                icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                                color: postView.saved ? Colors.purple : null,
+                                visualDensity: VisualDensity.compact,
+                                onPressed: isUserLoggedIn
+                                    ? () {
+                                        HapticFeedback.mediumImpact();
+                                        context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true));
+                                      }
+                                    : null,
+                              ),
+                          ],
+                        ),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                     ],
                   ),
                 )
@@ -144,6 +225,7 @@ class PostCard extends StatelessWidget {
             ),
           ),
           onTap: () async {
+<<<<<<< HEAD
             CommunityBloc bloc = BlocProvider.of<CommunityBloc>(context);
             AuthBloc authBloc = BlocProvider.of<AuthBloc>(context);
             await Navigator.push(
@@ -158,6 +240,24 @@ class PostCard extends StatelessWidget {
                     ),
                   );
                 },
+=======
+            AccountBloc accountBloc = context.read<AccountBloc>();
+            AuthBloc authBloc = context.read<AuthBloc>();
+            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+            CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (context) => MultiBlocProvider(
+                  providers: [
+                    BlocProvider.value(value: accountBloc),
+                    BlocProvider.value(value: authBloc),
+                    BlocProvider.value(value: thunderBloc),
+                    BlocProvider.value(value: communityBloc),
+                  ],
+                  child: PostPage(postView: postView),
+                ),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               ),
             );
             if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());

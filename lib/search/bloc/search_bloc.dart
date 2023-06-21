@@ -7,6 +7,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
+<<<<<<< HEAD
+=======
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -43,6 +48,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
 
+<<<<<<< HEAD
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
 
@@ -52,6 +58,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       SearchResponse searchResponse = await lemmy.search(
         Search(
           auth: jwt,
+=======
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      SearchResponse searchResponse = await lemmy.search(
+        Search(
+          auth: account?.jwt,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           q: event.query,
         ),
       );
@@ -61,14 +75,24 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
       if (e.type == DioExceptionType.receiveTimeout) {
+<<<<<<< HEAD
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+=======
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
+      } else {
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
+<<<<<<< HEAD
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+=======
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }
 
@@ -76,6 +100,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     try {
       emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
 
+<<<<<<< HEAD
       LemmyClient lemmyClient = LemmyClient.instance;
       Lemmy lemmy = lemmyClient.lemmy;
 
@@ -86,6 +111,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
         auth: jwt,
+=======
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) return;
+
+      CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
+        auth: account!.jwt!,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         communityId: event.communityId,
         follow: event.follow,
       ));
@@ -99,6 +133,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       await Sentry.captureException(e, stackTrace: s);
 
       if (e.type == DioExceptionType.receiveTimeout) {
+<<<<<<< HEAD
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
       } else {
         emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
@@ -106,6 +141,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+=======
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
+      } else {
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
     }
   }
 }

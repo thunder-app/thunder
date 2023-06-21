@@ -6,6 +6,10 @@ import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
+<<<<<<< HEAD
+=======
+import 'package:thunder/shared/error_message.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
 class PostPage extends StatelessWidget {
   final PostViewMedia postView;
@@ -26,12 +30,41 @@ class PostPage extends StatelessWidget {
               if (state.status == PostStatus.success) {
                 // Update the community's post
                 int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView.post.id);
+<<<<<<< HEAD
                 if (postIdIndex != null) {
+=======
+                if (postIdIndex != null && state.postView != null) {
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                   context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
                 }
               }
             },
             builder: (context, state) {
+<<<<<<< HEAD
+=======
+              if (state.status == PostStatus.failure) {
+                SnackBar snackBar = SnackBar(
+                  content: Expanded(
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.warning_rounded,
+                          color: theme.colorScheme.errorContainer,
+                        ),
+                        const SizedBox(width: 8.0),
+                        Flexible(
+                          child: Text(state.errorMessage ?? 'No error message available'),
+                        )
+                      ],
+                    ),
+                  ),
+                  backgroundColor: theme.colorScheme.onErrorContainer,
+                  behavior: SnackBarBehavior.floating,
+                );
+                WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+              }
+
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               switch (state.status) {
                 case PostStatus.initial:
                   context.read<PostBloc>().add(GetPostEvent(postView: postView));
@@ -40,6 +73,7 @@ class PostPage extends StatelessWidget {
                   return const Center(child: CircularProgressIndicator());
                 case PostStatus.refreshing:
                 case PostStatus.success:
+<<<<<<< HEAD
                   return PostPageSuccess(postView: state.postView!, comments: state.comments);
                 case PostStatus.failure:
                   return Center(
@@ -73,6 +107,18 @@ class PostPage extends StatelessWidget {
                   );
                 case PostStatus.empty:
                   return const Center(child: Text('Empty'));
+=======
+                  if (state.postView != null) return PostPageSuccess(postView: state.postView!, comments: state.comments);
+                  return const Center(child: Text('Empty'));
+                case PostStatus.empty:
+                  return const Center(child: Text('Empty'));
+                case PostStatus.failure:
+                  return ErrorMessage(
+                    message: state.errorMessage,
+                    action: () => {context.read<PostBloc>().add(GetPostEvent(postView: postView))},
+                    actionText: 'Refresh Content',
+                  );
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
               }
             },
           ),

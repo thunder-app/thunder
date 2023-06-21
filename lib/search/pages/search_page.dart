@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
+=======
+
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'package:lemmy/lemmy.dart';
+
+import 'package:thunder/account/bloc/account_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
+<<<<<<< HEAD
+=======
+import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/utils/debounce.dart';
 
 class SearchPage extends StatefulWidget {
@@ -76,6 +91,10 @@ class _SearchPageState extends State<SearchPage> {
 
   Widget _getSearchBody(BuildContext context, SearchState state) {
     final theme = Theme.of(context);
+<<<<<<< HEAD
+=======
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     switch (state.status) {
       case SearchStatus.initial:
@@ -119,6 +138,7 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return ListTile(
+<<<<<<< HEAD
               title: Text(communityView.community.title),
               subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
               trailing: IconButton(
@@ -156,12 +176,65 @@ class _SearchPageState extends State<SearchPage> {
                 ),
               )),
             );
+=======
+                title: Text(communityView.community.title),
+                subtitle: Text('${communityView.community.name} · ${communityView.counts.subscribers} subscribers'),
+                trailing: isUserLoggedIn
+                    ? IconButton(
+                        onPressed: communityView.subscribed == SubscribedType.Pending
+                            ? null
+                            : () {
+                                context.read<SearchBloc>().add(
+                                      ChangeCommunitySubsciptionStatusEvent(
+                                        communityId: communityView.community.id,
+                                        follow: communityView.subscribed == SubscribedType.NotSubscribed ? true : false,
+                                      ),
+                                    );
+                                SnackBar snackBar = SnackBar(
+                                  content: Text('${communityView.subscribed == SubscribedType.NotSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
+                                  behavior: SnackBarBehavior.floating,
+                                );
+                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                  ScaffoldMessenger.of(context).clearSnackBars();
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                });
+                              },
+                        icon: Icon(
+                          switch (communityView.subscribed) {
+                            SubscribedType.NotSubscribed => Icons.add,
+                            SubscribedType.Pending => Icons.pending_rounded,
+                            SubscribedType.Subscribed => Icons.remove,
+                          },
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      )
+                    : null,
+                onTap: () {
+                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: CommunityPage(communityId: communityView.community.id),
+                      ),
+                    ),
+                  );
+                });
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
           },
         );
       case SearchStatus.empty:
         return const Center(child: Text('Empty'));
       case SearchStatus.networkFailure:
       case SearchStatus.failure:
+<<<<<<< HEAD
         return Center(
           child: Padding(
             padding: const EdgeInsets.all(12.0),
@@ -190,10 +263,17 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
           ),
+=======
+        return ErrorMessage(
+          message: state.errorMessage,
+          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text))},
+          actionText: 'Retry',
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
         );
     }
   }
 }
+<<<<<<< HEAD
 
 // import 'package:auto_size_text/auto_size_text.dart';
 // import 'package:flutter/material.dart';
@@ -357,3 +437,5 @@ class _SearchPageState extends State<SearchPage> {
 //     );
 //   }
 // }
+=======
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a

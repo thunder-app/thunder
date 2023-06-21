@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+<<<<<<< HEAD
+=======
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/shared/image_preview.dart';
@@ -20,6 +26,10 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+<<<<<<< HEAD
+=======
+    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
     if (mediaURL != null && mediaHeight != null && mediaWidth != null) {
       return Padding(
@@ -34,7 +44,11 @@ class LinkPreviewCard extends StatelessWidget {
               children: [
                 if (showLinkPreviews) ImagePreview(url: mediaURL!, height: mediaHeight, width: mediaWidth, isExpandable: false),
                 Container(
+<<<<<<< HEAD
                   color: Colors.grey.shade900,
+=======
+                  color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade700,
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                   child: Row(
                     children: [
@@ -50,8 +64,13 @@ class LinkPreviewCard extends StatelessWidget {
                           originURL!,
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
+<<<<<<< HEAD
                             color: Colors.white60,
                           ),
+=======
+                              // color: Colors.white60,
+                              ),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                         ),
                       ),
                     ],
@@ -74,6 +93,7 @@ class LinkPreviewCard extends StatelessWidget {
               fit: StackFit.passthrough,
               children: [
                 Container(
+<<<<<<< HEAD
                   color: Colors.grey.shade900,
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                   child: Row(
@@ -83,6 +103,17 @@ class LinkPreviewCard extends StatelessWidget {
                         child: Icon(
                           Icons.link,
                           color: Colors.white60,
+=======
+                  color: useDarkTheme ? Colors.grey.shade900 : theme.colorScheme.primary.withOpacity(0.2),
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Icon(
+                          Icons.link,
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                         ),
                       ),
                       Expanded(
@@ -90,7 +121,11 @@ class LinkPreviewCard extends StatelessWidget {
                           originURL ?? '',
                           overflow: TextOverflow.ellipsis,
                           style: theme.textTheme.bodyMedium!.copyWith(
+<<<<<<< HEAD
                             color: Colors.white60,
+=======
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                           ),
                         ),
                       ),

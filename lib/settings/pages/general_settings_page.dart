@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+<<<<<<< HEAD
 import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
+=======
+
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -23,6 +30,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showFullHeightImages = false;
 
   String defaultInstance = 'lemmy.world';
+<<<<<<< HEAD
+=======
+  String themeType = 'dark';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
 
   TextEditingController instanceController = TextEditingController();
 
@@ -53,9 +64,22 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+<<<<<<< HEAD
     }
 
     if (context.mounted) context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+=======
+      case 'setting_theme_type':
+        await prefs.setString('setting_theme_type', value);
+        setState(() => themeType = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+    }
+
+    if (context.mounted) {
+      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    }
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
   }
 
   void _initPreferences() async {
@@ -66,6 +90,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+<<<<<<< HEAD
+=======
+      themeType = prefs.getString('setting_theme_type') ?? 'dark';
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
       isLoading = false;
     });
   }
@@ -140,10 +168,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
+<<<<<<< HEAD
                             'Instances',
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
+=======
+                            'Theme',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Use dark theme',
+                          value: themeType == 'dark',
+                          iconEnabled: Icons.dark_mode_rounded,
+                          iconDisabled: Icons.dark_mode_outlined,
+                          onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
+                        ),
+>>>>>>> 43f111d9fe14159bd16fa9a4fc713ef08f62762a
                         // TextFormField(
                         //   // initialValue: defaultInstance ?? '',
 
