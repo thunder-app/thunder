@@ -54,7 +54,9 @@ const sortTypeItems = [
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
-  const CommunityPage({super.key, this.communityId});
+  final String? communityName;
+
+  const CommunityPage({super.key, this.communityId, this.communityName});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -100,13 +102,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
-                    ? ''
-                    : (state.communityId != null)
-                        ? (state.postViews?.firstOrNull?.community.name ?? '')
-                        : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
-              ),
+              title: Text(getCommunityName(state)),
               centerTitle: false,
               toolbarHeight: 70.0,
               actions: [
@@ -157,7 +153,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
     switch (state.status) {
       case CommunityStatus.initial:
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId));
+        // communityId and communityName are mutually exclusive - only one of the two should be passed in
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId, communityName: widget.communityName));
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
@@ -169,6 +166,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,
           hasReachedEnd: state.hasReachedEnd,
+          communityInfo: state.communityInfo,
         );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
@@ -238,5 +236,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         );
       },
     );
+  }
+
+  String getCommunityName(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return '';
+    }
+
+    if (state.communityId != null || state.communityName != null) {
+      // return state.postViews?.firstOrNull?.community.name ?? '';
+      return '';
+    }
+
+    return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
   }
 }

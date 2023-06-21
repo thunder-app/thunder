@@ -13,6 +13,8 @@ class CommunityState extends Equatable {
     this.hasReachedEnd = false,
     this.subscribedType,
     this.sortType = SortType.Hot,
+    this.communityName,
+    this.communityInfo,
   });
 
   final CommunityStatus status;
@@ -26,6 +28,8 @@ class CommunityState extends Equatable {
 
   // Specifies the community we are loading for
   final int? communityId;
+  final String? communityName;
+  final GetCommunityResponse? communityInfo;
 
   final bool hasReachedEnd;
   final SubscribedType? subscribedType;
@@ -40,6 +44,8 @@ class CommunityState extends Equatable {
     bool? hasReachedEnd,
     SubscribedType? subscribedType,
     SortType? sortType,
+    String? communityName,
+    GetCommunityResponse? communityInfo,
   }) {
     return CommunityState(
       status: status ?? this.status,
@@ -48,9 +54,11 @@ class CommunityState extends Equatable {
       errorMessage: errorMessage ?? this.errorMessage,
       listingType: listingType,
       communityId: communityId,
+      communityName: communityName,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       subscribedType: subscribedType ?? this.subscribedType,
       sortType: sortType ?? this.sortType,
+      communityInfo: communityInfo ?? this.communityInfo,
     );
   }
 

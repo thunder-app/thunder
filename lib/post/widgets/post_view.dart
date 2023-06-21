@@ -83,7 +83,29 @@ class PostSubview extends StatelessWidget {
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: MarkdownBody(
                 data: postView.post.body!,
-                onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                onTapLink: (text, url, title) {
+                  if (text.contains('@')) {
+                    // Push navigation
+                    AccountBloc accountBloc = context.read<AccountBloc>();
+                    AuthBloc authBloc = context.read<AuthBloc>();
+                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: accountBloc),
+                            BlocProvider.value(value: authBloc),
+                            BlocProvider.value(value: thunderBloc),
+                          ],
+                          child: CommunityPage(communityName: text),
+                        ),
+                      ),
+                    );
+                  } else {
+                    launchUrl(Uri.parse(url!));
+                  }
+                },
                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                   p: theme.textTheme.bodyMedium,
                   blockquoteDecoration: const BoxDecoration(

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -258,7 +261,29 @@ class _CommentCardState extends State<CommentCard> {
                               padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
                               child: MarkdownBody(
                                 data: widget.commentViewTree.comment.content,
-                                onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                                onTapLink: (text, url, title) {
+                                  if (text.contains('@')) {
+                                    // Push navigation
+                                    AccountBloc accountBloc = context.read<AccountBloc>();
+                                    AuthBloc authBloc = context.read<AuthBloc>();
+                                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider.value(value: accountBloc),
+                                            BlocProvider.value(value: authBloc),
+                                            BlocProvider.value(value: thunderBloc),
+                                          ],
+                                          child: CommunityPage(communityName: text),
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    launchUrl(Uri.parse(url!));
+                                  }
+                                },
                                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                                   p: theme.textTheme.bodyMedium,
                                   blockquoteDecoration: const BoxDecoration(

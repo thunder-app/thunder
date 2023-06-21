@@ -81,7 +81,7 @@ class _ThunderState extends State<Thunder> {
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
 
-                          if (version?.hasUpdate == false && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                          if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
                               setState(() => hasShownUpdateDialog = true);

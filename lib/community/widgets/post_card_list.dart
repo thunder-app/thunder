@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -6,17 +7,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/numbers.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
   final bool? hasReachedEnd;
   final ListingType? listingType;
+  final GetCommunityResponse? communityInfo;
 
-  const PostCardList({super.key, this.postViews, this.communityId, this.hasReachedEnd, this.listingType});
+  const PostCardList({
+    super.key,
+    this.postViews,
+    this.communityId,
+    this.hasReachedEnd,
+    this.listingType,
+    this.communityInfo,
+  });
 
   @override
   State<PostCardList> createState() => _PostCardListState();
@@ -62,39 +74,49 @@ class _PostCardListState extends State<PostCardList> {
                 communityId: widget.listingType != null ? null : widget.communityId,
               ));
         },
-        child: ListView.builder(
+        child: SingleChildScrollView(
           controller: _scrollController,
-          itemCount: widget.postViews!.length + 1,
-          itemBuilder: (context, index) {
-            if (index == widget.postViews!.length) {
-              if (widget.hasReachedEnd == true) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      color: theme.dividerColor.withOpacity(0.1),
-                      padding: const EdgeInsets.symmetric(vertical: 32.0),
-                      child: Text(
-                        'Hmmm. It seems like you\'ve reached the bottom.',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.titleSmall,
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: const CircularProgressIndicator(),
-                    ),
-                  ],
-                );
-              }
-            }
-            return PostCard(postView: widget.postViews![index]);
-          },
+          child: Column(
+            children: [
+              if (widget.communityId != null) CommunityHeader(communityInfo: widget.communityInfo),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: widget.postViews?.length != null ? widget.postViews!.length + 1 : 1,
+                itemBuilder: (context, index) {
+                  if (index == widget.postViews!.length) {
+                    if (widget.hasReachedEnd == true) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            color: theme.dividerColor.withOpacity(0.1),
+                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            child: Text(
+                              'Hmmm. It seems like you\'ve reached the bottom.',
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.titleSmall,
+                            ),
+                          ),
+                        ],
+                      );
+                    } else {
+                      return Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            child: const CircularProgressIndicator(),
+                          ),
+                        ],
+                      );
+                    }
+                  } else {
+                    return PostCard(postView: widget.postViews![index]);
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

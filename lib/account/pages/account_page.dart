@@ -52,7 +52,7 @@ class _AccountPageState extends State<AccountPage> {
                           children: [
                             CircleAvatar(
                               backgroundColor: Colors.transparent,
-                              foregroundImage: accountState.personView!.person.avatar != null ? CachedNetworkImageProvider(accountState.personView!.person.avatar!) : null,
+                              foregroundImage: accountState.personView?.person.avatar != null ? CachedNetworkImageProvider(accountState.personView!.person.avatar!) : null,
                               maxRadius: 70,
                             ),
                             const SizedBox(height: 24),
