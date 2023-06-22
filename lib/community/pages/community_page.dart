@@ -134,7 +134,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               ],
             ),
             drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-            floatingActionButton: (state.communityId != null || widget.communityName != null)
+            floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
                 ? FloatingActionButton(
                     onPressed: () {
                       CommunityBloc communityBloc = context.read<CommunityBloc>();

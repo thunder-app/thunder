@@ -1,7 +1,7 @@
 ## Unreleased
 ### Added
 - Added basic ability to post to a community with Markdown
-- Added basic ability to create a comment in a post
+- Added basic ability to create a comment in a post and to reply to other comments
 - Added settings option to enable or disable the in-app update notifications
 - Added the instance name to various parts of the app to distinguish communities across instances
 - Added blur to NSFW images - contribution from @guigs4

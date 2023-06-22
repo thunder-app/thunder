@@ -53,7 +53,7 @@ class CommunityHeader extends StatelessWidget {
                       const SizedBox(width: 8.0),
                       IconText(
                         icon: const Icon(Icons.sensors_rounded),
-                        text: communityInfo?.online.toString() ?? '0',
+                        text: (communityInfo?.online != null) ? '${communityInfo?.online}' : '-',
                       ),
                     ],
                   ),

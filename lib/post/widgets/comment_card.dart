@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -124,12 +125,25 @@ class _CommentCardState extends State<CommentCard> {
               }
 
               if (swipeAction == SwipeAction.reply) {
-                SnackBar snackBar = const SnackBar(
-                  content: Text('Replying is not yet available'),
-                  behavior: SnackBarBehavior.floating,
+                PostBloc postBloc = context.read<PostBloc>();
+
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.7,
+                        child: BlocProvider<PostBloc>.value(
+                          value: postBloc,
+                          child: CreateCommentModal(commentView: widget.commentViewTree),
+                        ),
+                      ),
+                    );
+                  },
                 );
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
 
               if (swipeAction == SwipeAction.save) {

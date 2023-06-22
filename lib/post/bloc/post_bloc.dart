@@ -307,6 +307,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           auth: account!.jwt!,
           content: event.content,
           postId: state.postView!.post.id,
+          parentId: event.parentCommentId,
         ),
       );
 

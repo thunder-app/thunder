@@ -51,7 +51,7 @@ class SaveCommentEvent extends PostEvent {
 
 class CreateCommentEvent extends PostEvent {
   final String content;
-  final String? parentCommentId;
+  final int? parentCommentId;
 
   const CreateCommentEvent({required this.content, this.parentCommentId});
 }

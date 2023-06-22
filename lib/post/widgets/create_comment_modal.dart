@@ -8,14 +8,16 @@ import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 
 const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
 class CreateCommentModal extends StatefulWidget {
   final PostView? postView;
+  final CommentViewTree? commentView;
 
-  const CreateCommentModal({super.key, this.postView});
+  const CreateCommentModal({super.key, this.postView, this.commentView});
 
   @override
   State<CreateCommentModal> createState() => _CreateCommentModalState();
@@ -25,6 +27,8 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   bool showPreview = false;
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
+
+  final ScrollController _scrollController = ScrollController();
 
   // final List<bool> _selectedPostType = <bool>[true, false, false];
 
@@ -52,7 +56,35 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
           children: <Widget>[
             Text('Create Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12.0),
-            // Text(widget.communityInfo?.communityView.community.name ?? 'N/A', style: theme.textTheme.titleLarge),
+            if (widget.commentView != null) Text('Replying to ${widget.commentView?.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+            if (widget.commentView != null)
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                margin: const EdgeInsets.symmetric(vertical: 8.0),
+                constraints: const BoxConstraints(maxHeight: 150.0),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0), color: theme.cardColor),
+                child: Scrollbar(
+                  controller: _scrollController,
+                  trackVisibility: true,
+                  radius: const Radius.circular(16.0),
+                  child: SingleChildScrollView(
+                    controller: _scrollController,
+                    child: MarkdownBody(
+                      data: widget.commentView?.comment.content ?? 'N/A',
+                      onTapLink: (text, url, title) {},
+                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                        a: theme.textTheme.bodyMedium,
+                        p: theme.textTheme.bodyMedium,
+                        blockquoteDecoration: const BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             // Text(
             //   fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
             //   style: theme.textTheme.titleMedium?.copyWith(
@@ -154,7 +186,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
               onPressed: isSubmitButtonDisabled
                   ? null
                   : () {
-                      context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text));
+                      context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
                       Navigator.of(context).pop();
                     },
               child: const Text('Submit'),

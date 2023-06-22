@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -17,33 +18,36 @@ class PostPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return Scaffold(
       appBar: AppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          PostBloc postBloc = context.read<PostBloc>();
+      floatingActionButton: isUserLoggedIn
+          ? FloatingActionButton(
+              onPressed: () {
+                PostBloc postBloc = context.read<PostBloc>();
 
-          showModalBottomSheet(
-            isScrollControlled: true,
-            context: context,
-            showDragHandle: true,
-            builder: (context) {
-              return Padding(
-                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                child: FractionallySizedBox(
-                  heightFactor: 0.6,
-                  child: BlocProvider<PostBloc>.value(
-                    value: postBloc,
-                    child: CreateCommentModal(postView: postView),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        child: const Icon(Icons.reply_rounded),
-      ),
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.6,
+                        child: BlocProvider<PostBloc>.value(
+                          value: postBloc,
+                          child: CreateCommentModal(postView: postView),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              child: const Icon(Icons.reply_rounded),
+            )
+          : null,
       body: SafeArea(
         child: BlocConsumer<PostBloc, PostState>(
           listener: (context, state) {
