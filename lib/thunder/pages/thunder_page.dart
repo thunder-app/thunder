@@ -222,7 +222,7 @@ class _ThunderState extends State<Thunder> {
                 Card(
                   child: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0, bottom: 8.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,

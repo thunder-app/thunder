@@ -9,8 +9,9 @@ import 'package:thunder/core/models/version.dart';
 Future<String?> getCurrentVersion() async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
+  String build = packageInfo.buildNumber;
 
-  return 'v$version';
+  return 'v$version+$build';
 }
 
 Future<Version> fetchVersion() async {
@@ -24,10 +25,9 @@ Future<Version> fetchVersion() async {
       final release = json.decode(response.body);
       String latestVersion = release['tag_name'];
 
-      // Ignore the alpha version since ios only allows numeric values
-      String latestVersionBuild = latestVersion.replaceAll('-alpha', '');
+      print('$currentVersion, $latestVersion');
 
-      if (currentVersion != null && currentVersion.compareTo(latestVersionBuild) < 0) {
+      if (currentVersion != null && currentVersion.compareTo(latestVersion) < 0) {
         return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {
         return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
