@@ -52,6 +52,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _saveCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CreateCommentEvent>(
+      _createCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
@@ -280,6 +284,52 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       await Sentry.captureException(e, stackTrace: s);
 
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _createCommentEvent(CreateCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.'));
+      }
+
+      if (state.postView?.post.id == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.'));
+      }
+
+      CommentResponse createComment = await lemmy.createComment(
+        CreateComment(
+          auth: account!.jwt!,
+          content: event.content,
+          postId: state.postView!.post.id,
+        ),
+      );
+
+      // for now, refresh the post and refetch the comments
+      // @todo: insert the new comment in place without requiring a refetch
+      add(GetPostEvent(postView: state.postView!));
+      return emit(state.copyWith(status: PostStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: 'Error: Network timeout when attempting to create a comment',
+          ),
+        );
+      } else {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
 }

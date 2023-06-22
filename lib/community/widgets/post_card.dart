@@ -9,6 +9,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
@@ -196,6 +197,7 @@ class PostCard extends StatelessWidget {
                     BlocProvider.value(value: authBloc),
                     BlocProvider.value(value: thunderBloc),
                     BlocProvider.value(value: communityBloc),
+                    BlocProvider(create: (context) => post_bloc.PostBloc()),
                   ],
                   child: PostPage(postView: postView),
                 ),
