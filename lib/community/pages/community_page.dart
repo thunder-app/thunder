@@ -6,6 +6,7 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -54,7 +55,9 @@ const sortTypeItems = [
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
-  const CommunityPage({super.key, this.communityId});
+  final String? communityName;
+
+  const CommunityPage({super.key, this.communityId, this.communityName});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -100,20 +103,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text(
-                (state.status == CommunityStatus.loading || state.status == CommunityStatus.initial)
-                    ? ''
-                    : (state.communityId != null)
-                        ? (state.postViews?.firstOrNull?.community.name ?? '')
-                        : ((state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : ''),
-              ),
+              title: Text(getCommunityName(state)),
               centerTitle: false,
               toolbarHeight: 70.0,
               actions: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (state.communityId != null && isUserLoggedIn)
+                    if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
                       IconButton(
                         icon: Icon(
                           (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
@@ -136,15 +133,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 )
               ],
             ),
-            drawer: (widget.communityId != null) ? null : const CommunityDrawer(),
-            // floatingActionButton: (state.communityId != null)
-            //     ? FloatingActionButton(
-            //         onPressed: () {
-            //           Navigator.of(context).push(MaterialPageRoute(builder: (context) => CreatePostPage(communityId: state.communityId!)));
-            //         },
-            //         child: const Icon(Icons.add),
-            //       )
-            //     : null,
+            drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+            floatingActionButton: (state.communityId != null || widget.communityName != null)
+                ? FloatingActionButton(
+                    onPressed: () {
+                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) {
+                            return BlocProvider<CommunityBloc>.value(
+                              value: communityBloc,
+                              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                            );
+                          },
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.add),
+                  )
+                : null,
             body: SafeArea(child: _getBody(context, state)),
           );
         },
@@ -157,7 +165,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
     switch (state.status) {
       case CommunityStatus.initial:
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId));
+        // communityId and communityName are mutually exclusive - only one of the two should be passed in
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId, communityName: widget.communityName));
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
@@ -168,7 +177,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           postViews: state.postViews,
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,
+          communityName: widget.communityName ?? state.communityName,
           hasReachedEnd: state.hasReachedEnd,
+          communityInfo: state.communityInfo,
         );
       case CommunityStatus.empty:
       case CommunityStatus.failure:
@@ -238,5 +249,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         );
       },
     );
+  }
+
+  String getCommunityName(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return '';
+    }
+
+    if (state.communityId != null || state.communityName != null) {
+      // return state.postViews?.firstOrNull?.community.name ?? '';
+      return '';
+    }
+
+    return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
   }
 }

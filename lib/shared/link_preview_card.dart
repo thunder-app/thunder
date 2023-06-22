@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/shared/image_preview.dart';
 
 class LinkPreviewCard extends StatelessWidget {
-  const LinkPreviewCard({super.key, this.originURL, this.mediaURL, this.mediaHeight, this.mediaWidth, this.showLinkPreviews = true});
+  const LinkPreviewCard({super.key, this.originURL, this.mediaURL, this.mediaHeight, this.mediaWidth, this.showLinkPreviews = true, this.showFullHeightImages = false});
 
   final String? originURL;
   final String? mediaURL;
   final double? mediaHeight;
   final double? mediaWidth;
   final bool showLinkPreviews;
+  final bool showFullHeightImages;
 
   Future<void> _launchURL(url) async {
     Uri uri = Uri.parse(url);
@@ -25,7 +30,7 @@ class LinkPreviewCard extends StatelessWidget {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    if (mediaURL != null && mediaHeight != null && mediaWidth != null) {
+    if (mediaURL != null) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -36,7 +41,13 @@ class LinkPreviewCard extends StatelessWidget {
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
               children: [
-                if (showLinkPreviews) ImagePreview(url: mediaURL!, height: mediaHeight, width: mediaWidth, isExpandable: false),
+                if (showLinkPreviews)
+                  ImagePreview(
+                    url: mediaURL!,
+                    height: showFullHeightImages ? mediaHeight : null,
+                    width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
+                    isExpandable: false,
+                  ),
                 Container(
                   color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade700,
                   padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
@@ -64,7 +75,7 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => triggerOnTap(context),
         ),
       );
     } else {
@@ -104,9 +115,35 @@ class LinkPreviewCard extends StatelessWidget {
               ],
             ),
           ),
-          onTap: () => _launchURL(originURL),
+          onTap: () => triggerOnTap(context),
         ),
       );
+    }
+  }
+
+  void triggerOnTap(BuildContext context) {
+    if (originURL != null && originURL!.contains('/c/')) {
+      // Push navigation
+      AccountBloc accountBloc = context.read<AccountBloc>();
+      AuthBloc authBloc = context.read<AuthBloc>();
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+      String? communityName = generateCommunityInstanceUrl(originURL);
+
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: accountBloc),
+              BlocProvider.value(value: authBloc),
+              BlocProvider.value(value: thunderBloc),
+            ],
+            child: CommunityPage(communityName: communityName),
+          ),
+        ),
+      );
+    } else {
+      _launchURL(originURL);
     }
   }
 }

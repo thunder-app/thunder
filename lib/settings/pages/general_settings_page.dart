@@ -15,14 +15,21 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
-  // General settings
+  // Post Settings
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+  bool hideNsfwPreviews = true;
+
+  // Notification Settings
+  bool showInAppUpdateNotification = true;
 
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
+
+  // Error Reporting
+  bool enableSentryErrorTracking = false;
 
   TextEditingController instanceController = TextEditingController();
 
@@ -49,6 +56,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
         break;
+      case 'setting_general_hide_nsfw_previews':
+        await prefs.setBool('setting_general_hide_nsfw_previews', value);
+        setState(() => hideNsfwPreviews = value);
+        break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
@@ -57,6 +68,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_theme_type', value);
         setState(() => themeType = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+      case 'setting_notifications_show_inapp_update':
+        await prefs.setBool('setting_notifications_show_inapp_update', value);
+        setState(() => showInAppUpdateNotification = value);
+        break;
+      case 'setting_error_tracking_enable_sentry':
+        await prefs.setBool('setting_error_tracking_enable_sentry', value);
+        setState(() => enableSentryErrorTracking = value);
+
+        SnackBar snackBar = const SnackBar(
+          content: Text('Restart Thunder to apply the new settings'),
+          behavior: SnackBarBehavior.floating,
+        );
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).clearSnackBars();
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
         break;
     }
 
@@ -69,11 +98,22 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
+      // Post Settings
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+
+      // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
+
+      // Notification Settings
+      showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+
+      // Error Tracking
+      enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
+
       isLoading = false;
     });
   }
@@ -136,6 +176,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconDisabled: Icons.view_compact_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
                         ),
+                        ToggleOption(
+                          description: 'Hide NSFW previews',
+                          value: hideNsfwPreviews,
+                          iconEnabled: Icons.no_adult_content,
+                          iconDisabled: Icons.no_adult_content,
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
                       ],
                     ),
                   ),
@@ -192,6 +239,52 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         //   iconDisabled: Icons.photo_size_select_actual_rounded,
                         //   onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
                         // ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Notifications',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Show in-app update notification',
+                          value: showInAppUpdateNotification,
+                          iconEnabled: Icons.update_rounded,
+                          iconDisabled: Icons.update_disabled_rounded,
+                          onToggle: (bool value) => setPreferences('setting_notifications_show_inapp_update', value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Error Reporting',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Enable Sentry error tracking',
+                          value: enableSentryErrorTracking,
+                          iconEnabled: Icons.error_rounded,
+                          iconDisabled: Icons.error_rounded,
+                          onToggle: (bool value) => setPreferences('setting_error_tracking_enable_sentry', value),
+                        ),
                       ],
                     ),
                   ),

@@ -38,6 +38,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               ),
             );
 
+            // Sort subscriptions by their name
+            List<CommunityView> communities = listCommunitiesResponse.communities;
+            communities.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
+
             GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.getPersonDetails(
               GetPersonDetails(
                 auth: account?.jwt,
@@ -47,7 +51,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
             return emit(state.copyWith(
               status: AccountStatus.success,
-              subsciptions: listCommunitiesResponse.communities,
+              subsciptions: communities,
               comments: getPersonDetailsResponse.comments,
               moderates: getPersonDetailsResponse.moderates,
               personView: getPersonDetailsResponse.personView,

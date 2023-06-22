@@ -1,5 +1,24 @@
 ## Unreleased
 ### Added
+- Added basic ability to post to a community with Markdown
+- Added basic ability to create a comment in a post
+- Added settings option to enable or disable the in-app update notifications
+- Added the instance name to various parts of the app to distinguish communities across instances
+- Added blur to NSFW images - contribution from @guigs4
+- Added fastlane config for Android - contribution from @IzzySoft
+- Initial support for opening links for lemmy communities within the app rather than through the browser
+- Added community information when opening up a community
+- Added ability to opt-in/opt-out of Sentry error reporting
+
+### Changed
+- Searching now fetches more results as you scroll down
+
+### Fixed
+- Fixed issue where selecting the light theme would revert back to dark theme on app relaunch
+- Fixed issue where link previews were not being shown properly
+
+## 0.2.0-alpha - 2023-06-20
+### Added
 - New update in-app notification to notify you of new GitHub releases
 - Autofill options for logging into your account (tested on iOS, untested on Android physical device)
 - Added an option to switch to a light theme

@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 
+import 'package:lemmy/lemmy.dart';
+
+import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/utils/instance.dart';
+
 const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
 class CreatePostPage extends StatefulWidget {
   final int communityId;
+  final GetCommunityResponse? communityInfo;
 
-  const CreatePostPage({super.key, required this.communityId});
+  const CreatePostPage({super.key, required this.communityId, this.communityInfo});
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -23,16 +30,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
   // final List<bool> _selectedPostType = <bool>[true, false, false];
 
   String description = '';
-  TextEditingController controller = TextEditingController();
+  TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    controller.addListener(() {
-      if (controller.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
-      if (controller.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
+    _bodyTextController.addListener(() {
+      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
+      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
     });
 
     _titleTextController.addListener(() {
@@ -54,7 +61,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                const Text('Create Post', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                Text('Create Post', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12.0),
+                Text(widget.communityInfo?.communityView.community.name ?? 'N/A', style: theme.textTheme.titleLarge),
+                Text(
+                  fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.textTheme.titleMedium?.color?.withOpacity(0.7),
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+
                 const SizedBox(height: 12.0),
                 // Center(
                 //   child: ToggleButtons(
@@ -96,6 +113,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   child: MarkdownBody(
                                     data: description,
                                     shrinkWrap: true,
+                                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                      p: theme.textTheme.bodyLarge,
+                                      blockquoteDecoration: const BoxDecoration(
+                                        color: Colors.transparent,
+                                        border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               )
@@ -105,7 +129,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 label: 'Post Body',
                                 maxLines: 5,
                                 actions: const [
-                                  MarkdownType.image,
                                   MarkdownType.link,
                                   MarkdownType.bold,
                                   MarkdownType.italic,
@@ -116,7 +139,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   MarkdownType.separator,
                                   MarkdownType.code,
                                 ],
-                                controller: controller,
+                                controller: _bodyTextController,
                                 textStyle: theme.textTheme.bodyLarge,
                                 // textStyle: const TextStyle(fontSize: 16),
                               ),
@@ -129,7 +152,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             onPressed: isClearButtonDisabled
                                 ? null
                                 : () {
-                                    controller.clear();
+                                    _bodyTextController.clear();
                                     setState(() => showPreview = false);
                                   },
                             child: const Text('Clear'),
@@ -151,6 +174,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   onPressed: isSubmitButtonDisabled
                       ? null
                       : () {
+                          context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
                           Navigator.of(context).pop();
                         },
                   child: const Text('Submit'),

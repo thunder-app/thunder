@@ -35,6 +35,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _resetSearch,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<ContinueSearchEvent>(
+      _continueSearchEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
@@ -52,10 +56,62 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         Search(
           auth: account?.jwt,
           q: event.query,
+          page: 1,
+          limit: 15,
         ),
       );
 
-      return emit(state.copyWith(status: SearchStatus.success, results: searchResponse));
+      return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
+      } else {
+        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _continueSearchEvent(ContinueSearchEvent event, Emitter<SearchState> emit) async {
+    int attemptCount = 0;
+
+    try {
+      var exception;
+
+      while (attemptCount < 2) {
+        try {
+          emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
+
+          Account? account = await fetchActiveProfileAccount();
+          Lemmy lemmy = LemmyClient.instance.lemmy;
+
+          SearchResponse searchResponse = await lemmy.search(
+            Search(
+              auth: account?.jwt,
+              q: event.query,
+              page: state.page,
+              limit: 15,
+            ),
+          );
+
+          // Append the search results
+          state.results?.communities.addAll(searchResponse.communities);
+          state.results?.comments.addAll(searchResponse.comments);
+          state.results?.posts.addAll(searchResponse.posts);
+          state.results?.users.addAll(searchResponse.users);
+
+          return emit(state.copyWith(status: SearchStatus.success, results: state.results, page: state.page + 1));
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
+      }
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 

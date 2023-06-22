@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:http/http.dart' as http;
 
 bool isImageUrl(String url) {
-  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg'];
+  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp'];
 
   final uri = Uri.parse(url);
   final path = uri.path.toLowerCase();
@@ -26,7 +26,7 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
     // We'll just retrieve the first part of the image
     final rangeResponse = await http.get(
       Uri.parse(imageUrl),
-      headers: {'Range': 'bytes=0-100'},
+      headers: {'Range': 'bytes=0-1000'},
     );
 
     // Read the response body as bytes

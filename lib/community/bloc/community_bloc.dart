@@ -45,6 +45,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _changeCommunitySubsciptionStatusEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CreatePostEvent>(
+      _createPostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
@@ -78,31 +82,18 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      return emit(state.copyWith(
-        status: CommunityStatus.networkFailure,
-        errorMessage: e.toString(),
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      return emit(
+          state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(
-        status: CommunityStatus.failure,
-        errorMessage: e.toString(),
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     }
   }
 
   Future<void> _savePostEvent(SavePostEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(
-        status: CommunityStatus.refreshing,
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
 
       PostView postView = await savePost(event.postId, event.save);
 
@@ -112,11 +103,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].post = postView.post;
       state.postViews![existingPostViewIndex].saved = postView.saved;
 
-      return emit(state.copyWith(
-        status: CommunityStatus.success,
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       if (e.type == DioExceptionType.receiveTimeout) {
@@ -130,21 +117,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      return emit(state.copyWith(
-        status: CommunityStatus.networkFailure,
-        errorMessage: e.toString(),
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      return emit(
+          state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(
-        status: CommunityStatus.failure,
-        errorMessage: e.toString(),
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     }
   }
 
@@ -169,17 +147,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             emit(state.copyWith(status: CommunityStatus.loading));
 
             int? communityId = event.communityId;
-            ListingType? listingType = communityId != null ? null : (event.listingType ?? defaultListingType);
+            String? communityName = event.communityName;
+            ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
             SortType sortType = event.sortType ?? defaultSortType;
 
             // Fetch community's information
             SubscribedType? subscribedType;
+            GetCommunityResponse? getCommunityResponse;
 
-            if (communityId != null) {
-              GetCommunityResponse getCommunityResponse = await lemmy.getCommunity(
+            if (communityId != null || communityName != null) {
+              getCommunityResponse = await lemmy.getCommunity(
                 GetCommunity(
                   auth: account?.jwt,
                   id: communityId,
+                  name: event.communityName,
                 ),
               );
 
@@ -194,7 +175,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 limit: 15,
                 sort: sortType,
                 type_: listingType,
-                communityId: communityId,
+                communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+                communityName: event.communityName,
               ),
             );
 
@@ -208,18 +190,20 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 postViews: posts,
                 listingType: listingType,
                 communityId: communityId,
+                communityName: event.communityName,
                 hasReachedEnd: posts.isEmpty || posts.length < 15,
                 subscribedType: subscribedType,
                 sortType: sortType,
+                communityInfo: getCommunityResponse,
               ),
             );
           } else {
             if (state.hasReachedEnd) {
               // Stop extra requests if we've reached the end
-              return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId));
+              return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
             }
 
-            emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId));
+            emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
 
             int? communityId = event.communityId ?? state.communityId;
             ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
@@ -234,6 +218,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 sort: sortType,
                 type_: state.listingType,
                 communityId: state.communityId,
+                communityName: state.communityName,
               ),
             );
 
@@ -248,6 +233,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 page: state.page + 1,
                 postViews: postViews,
                 communityId: communityId,
+                communityName: state.communityName,
                 listingType: listingType,
                 hasReachedEnd: posts.isEmpty,
                 subscribedType: state.subscribedType,
@@ -262,23 +248,19 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         }
       }
 
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString(), listingType: state.listingType, communityId: state.communityId));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message, listingType: state.listingType, communityId: state.communityId));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.message, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId));
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }
   }
 
   Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<CommunityState> emit) async {
     try {
-      emit(state.copyWith(
-        status: CommunityStatus.refreshing,
-        communityId: state.communityId,
-        listingType: state.listingType,
-      ));
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
@@ -295,6 +277,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         status: CommunityStatus.success,
         communityId: state.communityId,
         listingType: state.listingType,
+        communityName: state.communityName,
         subscribedType: communityResponse.communityView.subscribed,
       ));
     } on DioException catch (e, s) {
@@ -305,6 +288,92 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           state.copyWith(
             status: CommunityStatus.networkFailure,
             errorMessage: 'Error: Network timeout when attempting to subscribe to community',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      } else {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: e.toString(),
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(
+        state.copyWith(
+          status: CommunityStatus.failure,
+          errorMessage: e.toString(),
+          communityId: state.communityId,
+          listingType: state.listingType,
+        ),
+      );
+    }
+  }
+
+  Future<void> _createPostEvent(CreatePostEvent event, Emitter<CommunityState> emit) async {
+    try {
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.failure,
+            errorMessage: 'You are not logged in. Cannot create a post.',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+
+      if (state.communityId == null) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.failure,
+            errorMessage: 'Could not determine community to post to.',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+
+      PostResponse createPostResponse = await lemmy.createPost(
+        CreatePost(
+          auth: account!.jwt!,
+          communityId: state.communityId!,
+          name: event.name,
+          body: event.body,
+        ),
+      );
+
+      // Parse the posts, and append them to the existing list
+      List<PostViewMedia> posts = await parsePostViews([createPostResponse.postView]);
+      List<PostViewMedia> postViews = List.from(state.postViews ?? []);
+      postViews.addAll(posts);
+
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        postViews: postViews,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.networkFailure,
+            errorMessage: 'Error: Network timeout when attempting to create a post',
             communityId: state.communityId,
             listingType: state.listingType,
           ),

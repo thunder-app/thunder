@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -24,6 +25,7 @@ class PostSubview extends StatelessWidget {
     final theme = Theme.of(context);
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -77,13 +79,40 @@ class PostSubview extends StatelessWidget {
               ),
             ],
           ),
-          MediaView(post: postView.post, postView: postView),
+          MediaView(
+            post: postView.post,
+            postView: postView,
+            hideNsfwPreviews: hideNsfwPreviews,
+          ),
           if (postView.post.body != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: MarkdownBody(
                 data: postView.post.body!,
-                onTapLink: (text, url, title) => launchUrl(Uri.parse(url!)),
+                onTapLink: (text, url, title) {
+                  String? communityName = checkLemmyInstanceUrl(text);
+                  if (communityName != null) {
+                    // Push navigation
+                    AccountBloc accountBloc = context.read<AccountBloc>();
+                    AuthBloc authBloc = context.read<AuthBloc>();
+                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: accountBloc),
+                            BlocProvider.value(value: authBloc),
+                            BlocProvider.value(value: thunderBloc),
+                          ],
+                          child: CommunityPage(communityName: communityName),
+                        ),
+                      ),
+                    );
+                  } else {
+                    launchUrl(Uri.parse(url!));
+                  }
+                },
                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
                   p: theme.textTheme.bodyMedium,
                   blockquoteDecoration: const BoxDecoration(

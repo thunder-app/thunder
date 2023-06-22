@@ -48,3 +48,10 @@ class SaveCommentEvent extends PostEvent {
 
   const SaveCommentEvent({required this.commentId, required this.save});
 }
+
+class CreateCommentEvent extends PostEvent {
+  final String content;
+  final String? parentCommentId;
+
+  const CreateCommentEvent({required this.content, this.parentCommentId});
+}

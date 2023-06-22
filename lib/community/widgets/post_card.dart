@@ -9,17 +9,20 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCard extends StatelessWidget {
   final PostViewMedia postView;
+  final bool showInstanceName;
 
-  const PostCard({super.key, required this.postView});
+  const PostCard({super.key, required this.postView, this.showInstanceName = true});
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class PostCard extends StatelessWidget {
     final bool showFullHeightImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_full_height_images') ?? false;
     final bool showVoteActions = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_vote_actions') ?? true;
     final bool showSaveAction = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_save_action') ?? true;
+    final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -47,7 +51,11 @@ class PostCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.start,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                MediaView(postView: postView, showFullHeightImages: showFullHeightImages),
+                MediaView(
+                  postView: postView,
+                  showFullHeightImages: showFullHeightImages,
+                  hideNsfwPreviews: hideNsfwPreviews,
+                ),
                 Text(post.name, style: theme.textTheme.titleMedium, softWrap: true),
                 Padding(
                   padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
@@ -59,7 +67,7 @@ class PostCard extends StatelessWidget {
                           children: [
                             GestureDetector(
                                 child: Text(
-                                  postView.community.name,
+                                  '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
                                   style: theme.textTheme.titleSmall?.copyWith(
                                     fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
@@ -189,6 +197,7 @@ class PostCard extends StatelessWidget {
                     BlocProvider.value(value: authBloc),
                     BlocProvider.value(value: thunderBloc),
                     BlocProvider.value(value: communityBloc),
+                    BlocProvider(create: (context) => post_bloc.PostBloc()),
                   ],
                   child: PostPage(postView: postView),
                 ),
