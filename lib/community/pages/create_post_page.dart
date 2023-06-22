@@ -52,7 +52,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 70.0),
+      appBar: AppBar(
+        toolbarHeight: 70.0,
+        actions: [
+          IconButton(
+            onPressed: isSubmitButtonDisabled
+                ? null
+                : () {
+                    context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
+                    Navigator.of(context).pop();
+                  },
+            icon: const Icon(Icons.send_rounded),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -166,19 +179,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     ],
                   ),
                 ]),
-                const SizedBox(height: 32.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                  ),
-                  onPressed: isSubmitButtonDisabled
-                      ? null
-                      : () {
-                          context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
-                          Navigator.of(context).pop();
-                        },
-                  child: const Text('Submit'),
-                ),
               ],
             ),
           ),

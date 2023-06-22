@@ -54,7 +54,22 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Text('Create Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Create Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                IconButton(
+                  onPressed: isSubmitButtonDisabled
+                      ? null
+                      : () {
+                          context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
+                          Navigator.of(context).pop();
+                        },
+                  icon: const Icon(Icons.send_rounded),
+                ),
+              ],
+            ),
             const SizedBox(height: 12.0),
             if (widget.commentView != null) Text('Replying to ${widget.commentView?.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
             if (widget.commentView != null)
@@ -180,17 +195,6 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                 ],
               ),
             ]),
-            const SizedBox(height: 32.0),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50), backgroundColor: theme.colorScheme.onSecondary),
-              onPressed: isSubmitButtonDisabled
-                  ? null
-                  : () {
-                      context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
-                      Navigator.of(context).pop();
-                    },
-              child: const Text('Submit'),
-            ),
           ],
         ),
       ),
