@@ -52,6 +52,7 @@ dependencies:
   package_info_plus: ^4.0.2
   photo_view: ^0.14.0
   flutter_native_splash: ^2.3.1
+  sqflite_common_ffi: ^2.2.5
 
 dev_dependencies:
   flutter_test:
