@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy/lemmy.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/community.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -96,7 +96,7 @@ class PostCard extends StatelessWidget {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 IconText(
-                                  text: formatNumberToK(postView.counts.upvotes),
+                                  text: formatNumberToK(postView.counts.score),
                                   icon: Icon(
                                     Icons.arrow_upward,
                                     size: 18.0,

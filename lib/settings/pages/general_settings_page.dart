@@ -27,6 +27,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
+  bool useBlackTheme = false;
 
   // Error Reporting
   bool enableSentryErrorTracking = false;
@@ -69,6 +70,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         setState(() => themeType = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case 'setting_theme_use_black_theme':
+        await prefs.setBool('setting_theme_use_black_theme', value);
+        setState(() => useBlackTheme = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case 'setting_notifications_show_inapp_update':
         await prefs.setBool('setting_notifications_show_inapp_update', value);
         setState(() => showInAppUpdateNotification = value);
@@ -107,6 +113,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
       // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
+      useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -205,6 +212,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.dark_mode_rounded,
                           iconDisabled: Icons.dark_mode_outlined,
                           onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
+                        ),
+                        ToggleOption(
+                          description: 'Pure black theme',
+                          value: useBlackTheme,
+                          iconEnabled: Icons.dark_mode_outlined,
+                          iconDisabled: Icons.dark_mode_outlined,
+                          onToggle: (bool value) => setPreferences('setting_theme_use_black_theme', value),
                         ),
                         // TextFormField(
                         //   // initialValue: defaultInstance ?? '',

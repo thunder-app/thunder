@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:go_router/go_router.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -85,7 +84,7 @@ class _ThunderState extends State<Thunder> {
                           bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
                           bool? enableSentryErrorTracking = thunderBlocState.preferences?.getBool('setting_error_tracking_enable_sentry');
 
-                          if (version?.hasUpdate == false && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                          if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
 
@@ -197,14 +196,17 @@ class _ThunderState extends State<Thunder> {
               'Update released: ${version?.latestVersion}',
               style: theme.textTheme.titleMedium,
             ),
-            Icon(Icons.arrow_forward, color: theme.colorScheme.tertiary),
+            Icon(
+              Icons.arrow_forward,
+              color: theme.colorScheme.onBackground,
+            ),
           ],
         ),
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder/releases/latest')));
         },
       ),
-      background: theme.colorScheme.onSecondary,
+      background: theme.cardColor,
       autoDismiss: true,
       duration: const Duration(seconds: 5),
       slideDismissDirection: DismissDirection.vertical,

@@ -26,7 +26,7 @@ class CommunityHeader extends StatelessWidget {
           Row(
             children: [
               CircleAvatar(
-                backgroundColor: communityInfo?.communityView.community.icon != null ? Colors.transparent : theme.colorScheme.secondary,
+                backgroundColor: communityInfo?.communityView.community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
                 foregroundImage: communityInfo?.communityView.community.icon != null ? CachedNetworkImageProvider(communityInfo!.communityView.community.icon!) : null,
                 maxRadius: 45,
               ),

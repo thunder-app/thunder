@@ -1,8 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/webview.dart';
@@ -70,6 +72,7 @@ class MediaView extends StatelessWidget {
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
+    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return CachedNetworkImage(
       imageUrl: postView!.media.first.mediaUrl!,
@@ -78,7 +81,7 @@ class MediaView extends StatelessWidget {
       memCacheWidth: (postView!.media.first.width ?? (MediaQuery.of(context).size.width - 24) * MediaQuery.of(context).devicePixelRatio).toInt(),
       fit: BoxFit.fitWidth,
       progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-        color: Colors.grey.shade900,
+        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
         child: Center(
           child: SizedBox(
             width: 40,
@@ -88,7 +91,7 @@ class MediaView extends StatelessWidget {
         ),
       ),
       errorWidget: (context, url, error) => Container(
-        color: Colors.grey.shade900,
+        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
         child: Padding(
           padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
           child: InkWell(

@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -196,7 +195,7 @@ class _CommentCardState extends State<CommentCard> {
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: dismissThreshold < 0.3 ? theme.colorScheme.onSecondary : theme.colorScheme.onPrimary,
+                      color: dismissThreshold < 0.3 ? Colors.green.shade700 : Colors.purple.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -224,7 +223,7 @@ class _CommentCardState extends State<CommentCard> {
                                         ? theme.colorScheme.tertiary
                                         : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
                                             ? Colors.amber
-                                            : theme.colorScheme.onSecondaryContainer,
+                                            : theme.colorScheme.onBackground,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
