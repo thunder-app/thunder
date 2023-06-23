@@ -16,6 +16,7 @@ class GeneralSettingsPage extends StatefulWidget {
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   // Post Settings
+  bool useCompactView = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
@@ -41,6 +42,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     switch (attribute) {
+      case 'setting_general_use_compact_view':
+        await prefs.setBool('setting_general_use_compact_view', value);
+        setState(() => useCompactView = value);
+        break;
       case 'setting_general_show_link_previews':
         await prefs.setBool('setting_general_show_link_previews', value);
         setState(() => showLinkPreviews = value);
@@ -105,6 +110,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
     setState(() {
       // Post Settings
+      useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -154,6 +160,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             'Posts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Compact view',
+                          value: useCompactView,
+                          iconEnabled: Icons.density_small_rounded,
+                          iconDisabled: Icons.density_small_rounded,
+                          onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
                         ),
                         ToggleOption(
                           description: 'Show link previews',

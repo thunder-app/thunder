@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -20,6 +21,7 @@ class LinkPreviewCard extends StatelessWidget {
     this.mediaWidth,
     this.showLinkPreviews = true,
     this.showFullHeightImages = false,
+    this.viewMode = ViewMode.comfortable,
   });
 
   final String? originURL;
@@ -31,9 +33,11 @@ class LinkPreviewCard extends StatelessWidget {
   final bool showLinkPreviews;
   final bool showFullHeightImages;
 
+  final ViewMode viewMode;
+
   @override
   Widget build(BuildContext context) {
-    if (mediaURL != null) {
+    if (mediaURL != null && viewMode == ViewMode.comfortable) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -106,27 +110,42 @@ class LinkPreviewCard extends StatelessWidget {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    return Container(
-      color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: Icon(
-              Icons.link,
-              color: useDarkTheme ? Colors.white60 : Colors.black54,
-            ),
+    if (viewMode == ViewMode.compact) {
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(6),
+        child: Container(
+          color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+          child: const SizedBox(
+            height: 75.0,
+            width: 75.0,
+            child: Icon(Icons.link_rounded),
           ),
-          Expanded(
-            child: Text(
-              originURL!,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium,
+        ),
+      );
+    } else {
+      return Container(
+        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: Icon(
+                Icons.link,
+                color: useDarkTheme ? Colors.white60 : Colors.black54,
+              ),
             ),
-          ),
-        ],
-      ),
-    );
+            if (viewMode != ViewMode.compact)
+              Expanded(
+                child: Text(
+                  originURL!,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+          ],
+        ),
+      );
+    }
   }
 }
