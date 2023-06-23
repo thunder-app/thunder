@@ -7,7 +7,6 @@ import 'package:markdown_editable_textinput/markdown_text_input.dart';
 
 import 'package:lemmy/lemmy.dart';
 
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 
@@ -126,75 +125,79 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
             //     children: postTypes,
             //   ),
             // ),
-            ListView(shrinkWrap: true, children: <Widget>[
-              Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  SizedBox(
-                    height: 150,
-                    child: showPreview
-                        ? Container(
-                            decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.all(12),
-                            child: SingleChildScrollView(
-                              child: MarkdownBody(
-                                data: description,
-                                shrinkWrap: true,
-                                styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                                  p: theme.textTheme.bodyLarge,
-                                  blockquoteDecoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+            ListView(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              children: <Widget>[
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 150,
+                      child: showPreview
+                          ? Container(
+                              decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                              padding: const EdgeInsets.all(12),
+                              child: SingleChildScrollView(
+                                child: MarkdownBody(
+                                  data: description,
+                                  shrinkWrap: true,
+                                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                    p: theme.textTheme.bodyLarge,
+                                    blockquoteDecoration: const BoxDecoration(
+                                      color: Colors.transparent,
+                                      border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                                    ),
                                   ),
                                 ),
                               ),
+                            )
+                          : MarkdownTextInput(
+                              (String value) => setState(() => description = value),
+                              description,
+                              label: 'Comment',
+                              maxLines: 3,
+                              actions: const [
+                                MarkdownType.link,
+                                MarkdownType.bold,
+                                MarkdownType.italic,
+                                MarkdownType.blockquote,
+                                MarkdownType.strikethrough,
+                                MarkdownType.title,
+                                MarkdownType.list,
+                                MarkdownType.separator,
+                                MarkdownType.code,
+                              ],
+                              controller: _bodyTextController,
+                              textStyle: theme.textTheme.bodyLarge,
+                              // textStyle: const TextStyle(fontSize: 16),
                             ),
-                          )
-                        : MarkdownTextInput(
-                            (String value) => setState(() => description = value),
-                            description,
-                            label: 'Comment',
-                            maxLines: 3,
-                            actions: const [
-                              MarkdownType.link,
-                              MarkdownType.bold,
-                              MarkdownType.italic,
-                              MarkdownType.blockquote,
-                              MarkdownType.strikethrough,
-                              MarkdownType.title,
-                              MarkdownType.list,
-                              MarkdownType.separator,
-                              MarkdownType.code,
-                            ],
-                            controller: _bodyTextController,
-                            textStyle: theme.textTheme.bodyLarge,
-                            // textStyle: const TextStyle(fontSize: 16),
-                          ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        onPressed: isClearButtonDisabled
-                            ? null
-                            : () {
-                                _bodyTextController.clear();
-                                setState(() => showPreview = false);
-                              },
-                        child: const Text('Clear'),
-                      ),
-                      TextButton(
-                        onPressed: () => setState(() => showPreview = !showPreview),
-                        child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ]),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: isClearButtonDisabled
+                              ? null
+                              : () {
+                                  _bodyTextController.clear();
+                                  setState(() => showPreview = false);
+                                },
+                          child: const Text('Clear'),
+                        ),
+                        TextButton(
+                          onPressed: () => setState(() => showPreview = !showPreview),
+                          child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ],
         ),
       ),

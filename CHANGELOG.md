@@ -1,5 +1,13 @@
 ## Unreleased
 ### Added
+- External links can now be opened in an external browser, and also shared using the system's sharing options
+- Improved GIF support - contribution from @MrAntonS
+
+### Fixed
+- Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
+
+## 0.2.1+5 - 2023-06-22
+### Added
 - Added basic ability to post to a community with Markdown
 - Added basic ability to create a comment in a post and to reply to other comments
 - Added settings option to enable or disable the in-app update notifications
