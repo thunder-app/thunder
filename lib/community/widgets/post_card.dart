@@ -382,7 +382,10 @@ class _PostCardState extends State<PostCard> {
       children: [
         if (showVoteActions)
           IconButton(
-              icon: const Icon(Icons.arrow_upward),
+              icon: Icon(
+                Icons.arrow_upward,
+                semanticLabel: widget.postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+              ),
               color: widget.postView.myVote == 1 ? Colors.orange : null,
               visualDensity: VisualDensity.compact,
               onPressed: () {
@@ -391,7 +394,10 @@ class _PostCardState extends State<PostCard> {
               }),
         if (showVoteActions)
           IconButton(
-            icon: const Icon(Icons.arrow_downward),
+            icon: Icon(
+              Icons.arrow_downward,
+              semanticLabel: widget.postView.myVote == -1 ? 'Downvoted' : 'Downvote',
+            ),
             color: widget.postView.myVote == -1 ? Colors.blue : null,
             visualDensity: VisualDensity.compact,
             onPressed: () {
@@ -401,7 +407,10 @@ class _PostCardState extends State<PostCard> {
           ),
         if (showSaveAction)
           IconButton(
-            icon: Icon(widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+            icon: Icon(
+              widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
+              semanticLabel: widget.postView.saved ? 'Saved' : 'Save',
+            ),
             color: widget.postView.saved ? Colors.purple : null,
             visualDensity: VisualDensity.compact,
             onPressed: () {

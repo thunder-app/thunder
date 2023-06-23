@@ -87,7 +87,10 @@ class ProfileSelect extends StatelessWidget {
                           context.pop();
                         },
                   trailing: IconButton(
-                      icon: const Icon(Icons.delete),
+                      icon: const Icon(
+                        Icons.delete,
+                        semanticLabel: 'Remove Account',
+                      ),
                       onPressed: () {
                         context.read<AuthBloc>().add(RemoveAccount(accountId: snapshot.data![index].id));
                         context.pop();

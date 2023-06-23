@@ -108,7 +108,10 @@ class _LoginPageState extends State<LoginPage> {
                         suffixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: IconButton(
-                            icon: Icon(showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded),
+                            icon: Icon(
+                              showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                              semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
+                            ),
                             onPressed: () {
                               setState(() {
                                 showPassword = !showPassword;

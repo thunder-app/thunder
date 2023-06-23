@@ -125,7 +125,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         },
                       ),
                     IconButton(
-                      icon: Icon(sortTypeIcon),
+                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
                       onPressed: () => showSortBottomSheet(context, state),
                     ),
                     const SizedBox(width: 8.0),
