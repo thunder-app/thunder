@@ -35,7 +35,7 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
     // We'll just retrieve the first part of the image
     final rangeResponse = await http.get(
       Uri.parse(imageUrl),
-      headers: {'Accept': '*/*', 'Accept-Encoding': 'gzip, deflate, br'},
+      headers: {'Range': 'bytes=0-1000'},
     );
 
     // Read the response body as bytes
