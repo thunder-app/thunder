@@ -2,6 +2,9 @@
 ### Added
 - External links can now be opened in an external browser, and also shared using the system's sharing options
 - Improved GIF support - contribution from @MrAntonS
+- Improved accessibility labels for icons and actions
+- New compact view for posts in the feed
+- New OLED black theme
 
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment

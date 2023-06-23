@@ -70,15 +70,24 @@ class NavigationControls extends StatelessWidget {
     return Row(
       children: <Widget>[
         IconButton(
-          icon: const Icon(Icons.replay_rounded),
+          icon: const Icon(
+            Icons.replay_rounded,
+            semanticLabel: 'Refresh',
+          ),
           onPressed: () async => await webViewController.reload(),
         ),
         IconButton(
-          icon: const Icon(Icons.open_in_browser_rounded),
+          icon: const Icon(
+            Icons.open_in_browser_rounded,
+            semanticLabel: 'Open in Browser',
+          ),
           onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
         ),
         IconButton(
-          icon: const Icon(Icons.share_rounded),
+          icon: const Icon(
+            Icons.share_rounded,
+            semanticLabel: 'Share',
+          ),
           onPressed: () => Share.share(url),
         ),
         const SizedBox(width: 8.0),

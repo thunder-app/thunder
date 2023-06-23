@@ -31,7 +31,10 @@ class _AccountPageState extends State<AccountPage> {
           if (authState.isLoggedIn)
             IconButton(
               onPressed: () => showProfileModalSheet(context),
-              icon: const Icon(Icons.people_alt_rounded),
+              icon: const Icon(
+                Icons.people_alt_rounded,
+                semanticLabel: 'Profiles',
+              ),
             )
         ],
       ),

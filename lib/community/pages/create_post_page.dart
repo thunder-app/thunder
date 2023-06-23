@@ -62,7 +62,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
                     Navigator.of(context).pop();
                   },
-            icon: const Icon(Icons.send_rounded),
+            icon: const Icon(
+              Icons.send_rounded,
+              semanticLabel: 'Create Post',
+            ),
           ),
         ],
       ),

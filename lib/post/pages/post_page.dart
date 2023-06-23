@@ -45,7 +45,10 @@ class PostPage extends StatelessWidget {
                   },
                 );
               },
-              child: const Icon(Icons.reply_rounded),
+              child: const Icon(
+                Icons.reply_rounded,
+                semanticLabel: 'Reply to Post',
+              ),
             )
           : null,
       body: SafeArea(

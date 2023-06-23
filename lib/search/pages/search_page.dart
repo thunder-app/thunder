@@ -75,7 +75,10 @@ class _SearchPageState extends State<SearchPage> {
                       resetTextField();
                       context.read<SearchBloc>().add(ResetSearch());
                     },
-                    icon: const Icon(Icons.close),
+                    icon: const Icon(
+                      Icons.close,
+                      semanticLabel: 'Clear Search',
+                    ),
                   )
               ],
               hintText: 'Search for communities',

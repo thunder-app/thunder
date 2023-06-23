@@ -65,7 +65,10 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
                           Navigator.of(context).pop();
                         },
-                  icon: const Icon(Icons.send_rounded),
+                  icon: const Icon(
+                    Icons.send_rounded,
+                    semanticLabel: 'Reply',
+                  ),
                 ),
               ],
             ),

@@ -25,7 +25,10 @@ class ImageViewer extends StatelessWidget {
             IconButton(
               color: theme.textTheme.titleLarge?.color,
               onPressed: () => Navigator.pop(context),
-              icon: const Icon(Icons.close),
+              icon: const Icon(
+                Icons.close,
+                semanticLabel: 'Close Preview',
+              ),
             ),
           ],
         ),

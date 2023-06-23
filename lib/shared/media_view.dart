@@ -44,7 +44,10 @@ class MediaView extends StatelessWidget {
             child: const SizedBox(
               height: 75.0,
               width: 75.0,
-              child: Icon(Icons.article_rounded),
+              child: Icon(
+                Icons.article_rounded,
+                semanticLabel: 'Article Link',
+              ),
             ),
           ),
         );
@@ -84,10 +87,10 @@ class MediaView extends StatelessWidget {
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(20),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      Icon(Icons.warning_rounded, size: 55),
-                      Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
+                      const Icon(Icons.warning_rounded, size: 55),
+                      if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
                     ],
                   ),
                 ),

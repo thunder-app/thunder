@@ -150,7 +150,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         ),
                       );
                     },
-                    child: const Icon(Icons.add),
+                    child: const Icon(
+                      Icons.add,
+                      semanticLabel: 'Create Post',
+                    ),
                   )
                 : null,
             body: SafeArea(child: _getBody(context, state)),
