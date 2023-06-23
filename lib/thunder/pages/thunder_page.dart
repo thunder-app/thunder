@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:go_router/go_router.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import 'package:thunder/account/account.dart';
@@ -84,9 +85,10 @@ class _ThunderState extends State<Thunder> {
                           bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
                           bool? enableSentryErrorTracking = thunderBlocState.preferences?.getBool('setting_error_tracking_enable_sentry');
 
-                          if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                          if (version?.hasUpdate == false && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
+
                               setState(() => hasShownUpdateDialog = true);
                             });
                           }
@@ -198,10 +200,13 @@ class _ThunderState extends State<Thunder> {
             Icon(Icons.arrow_forward, color: theme.colorScheme.tertiary),
           ],
         ),
-        onTap: () => launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest')),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder/releases/latest')));
+        },
       ),
       background: theme.colorScheme.onSecondary,
-      autoDismiss: false,
+      autoDismiss: true,
+      duration: const Duration(seconds: 5),
       slideDismissDirection: DismissDirection.vertical,
     );
   }

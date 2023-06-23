@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -109,8 +110,8 @@ class PostSubview extends StatelessWidget {
                         ),
                       ),
                     );
-                  } else {
-                    launchUrl(Uri.parse(url!));
+                  } else if (url != null) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
                   }
                 },
                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(

@@ -5,6 +5,7 @@ import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/link_preview_card.dart';
+import 'package:thunder/shared/webview.dart';
 
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -18,11 +19,6 @@ class MediaView extends StatelessWidget {
   final bool hideNsfwPreviews;
 
   const MediaView({super.key, this.post, this.postView, this.showFullHeightImages = true, required this.hideNsfwPreviews});
-
-  Future<void> _launchURL(url) async {
-    Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri)) throw 'Could not launch $url';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,7 +125,9 @@ class MediaView extends StatelessWidget {
                 ],
               ),
             ),
-            onTap: () => _launchURL(post?.url!),
+            onTap: () {
+              if (post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: post!.url!)));
+            },
           ),
         ),
       ),

@@ -4,6 +4,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -19,11 +20,6 @@ class LinkPreviewCard extends StatelessWidget {
   final double? mediaWidth;
   final bool showLinkPreviews;
   final bool showFullHeightImages;
-
-  Future<void> _launchURL(url) async {
-    Uri uri = Uri.parse(url);
-    if (!await launchUrl(uri)) throw Exception('Error: Could not launch $url');
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -142,8 +138,8 @@ class LinkPreviewCard extends StatelessWidget {
           ),
         ),
       );
-    } else {
-      _launchURL(originURL);
+    } else if (originURL != null) {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
     }
   }
 }
