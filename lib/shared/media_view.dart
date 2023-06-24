@@ -73,28 +73,34 @@ class MediaView extends StatelessWidget {
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ImageViewer(url: postView!.media.first.mediaUrl!),
+          PageRouteBuilder(
+            pageBuilder: (_, __, ___) => ImageViewer(url: postView!.media.first.mediaUrl!),
+            opaque: false,
+            reverseTransitionDuration: const Duration(milliseconds: 150),
+            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
           ),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
-              if (hideNsfw)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Icon(Icons.warning_rounded, size: viewMode != ViewMode.compact ? 55 : 30),
-                      if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
-                    ],
+        child: Hero(
+          tag: postView!.media.first.mediaUrl!,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
+                if (hideNsfw)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(20),
+                    child: Column(
+                      children: [
+                        Icon(Icons.warning_rounded, size: viewMode != ViewMode.compact ? 55 : 30),
+                        if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
+                      ],
+                    ),
                   ),
-                ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
