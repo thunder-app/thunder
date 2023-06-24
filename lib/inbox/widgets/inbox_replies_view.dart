@@ -10,6 +10,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -81,6 +82,40 @@ class InboxRepliesView extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   CommonMarkdownBody(body: replies[index].comment.content),
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          InboxBloc inboxBloc = context.read<InboxBloc>();
+
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            showDragHandle: true,
+                            builder: (context) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                                child: FractionallySizedBox(
+                                  heightFactor: 0.8,
+                                  child: BlocProvider<InboxBloc>.value(
+                                    value: inboxBloc,
+                                    child: CreateCommentModal(comment: replies[index].comment, parentCommentAuthor: replies[index].creator.name),
+                                  ),
+                                ),
+                              );
+                            },
+                          );
+                        },
+                        icon: const Icon(
+                          Icons.reply_rounded,
+                          semanticLabel: 'Reply',
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),

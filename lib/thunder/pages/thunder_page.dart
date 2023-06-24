@@ -189,6 +189,11 @@ class _ThunderState extends State<Thunder> {
             selectedPageIndex = index;
             pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
           });
+
+          // @todo Change this from integer to enum or some other type
+          if (index == 3) {
+            context.read<InboxBloc>().add(const GetInboxEvent());
+          }
         },
       ),
     );

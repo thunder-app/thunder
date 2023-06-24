@@ -8,6 +8,7 @@ import 'package:markdown_editable_textinput/markdown_text_input.dart';
 import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 
@@ -17,7 +18,10 @@ class CreateCommentModal extends StatefulWidget {
   final PostView? postView;
   final CommentViewTree? commentView;
 
-  const CreateCommentModal({super.key, this.postView, this.commentView});
+  final Comment? comment; // This is passed in from inbox
+  final String? parentCommentAuthor; // This is passed in from inbox
+
+  const CreateCommentModal({super.key, this.postView, this.commentView, this.comment, this.parentCommentAuthor});
 
   @override
   State<CreateCommentModal> createState() => _CreateCommentModalState();
@@ -63,7 +67,9 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   onPressed: isSubmitButtonDisabled
                       ? null
                       : () {
-                          context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
+                          if (widget.commentView != null) context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
+                          if (widget.comment != null)
+                            context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                           Navigator.of(context).pop();
                         },
                   icon: const Icon(
@@ -75,7 +81,9 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
             ),
             const SizedBox(height: 12.0),
             if (widget.commentView != null) Text('Replying to ${widget.commentView?.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-            if (widget.commentView != null)
+            if (widget.comment != null) Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+
+            if (widget.commentView != null || widget.comment != null)
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -89,7 +97,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: CommonMarkdownBody(
-                      body: widget.commentView?.comment.content ?? 'N/A',
+                      body: widget.commentView != null ? (widget.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
                       isSelectableText: true,
                     ),
                   ),

@@ -48,6 +48,8 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   InboxType? _inboxType = inboxCategories[0].type;
 
+  bool showUnread = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -58,6 +60,18 @@ class _InboxPageState extends State<InboxPage> {
         centerTitle: false,
         title: AutoSizeText('Inbox', style: theme.textTheme.titleLarge),
         actions: [
+          IconButton(
+            icon: Icon(
+              showUnread ? Icons.mail : Icons.mail_outline_rounded,
+              semanticLabel: 'Show Unread',
+            ),
+            onPressed: () {
+              setState(() {
+                showUnread = !showUnread;
+              });
+              context.read<InboxBloc>().add(GetInboxEvent(showAll: !showUnread));
+            },
+          ),
           IconButton(
             icon: const Icon(
               Icons.refresh_rounded,

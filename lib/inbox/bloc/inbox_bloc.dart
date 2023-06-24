@@ -29,6 +29,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       _markReplyAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<CreateInboxCommentReplyEvent>(
+      _createCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -44,16 +48,18 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       // Fetch all the things
       PrivateMessagesResponse privateMessagesResponse = await lemmy.getPrivateMessages(
-        GetPrivateMessages(auth: account!.jwt!),
+        GetPrivateMessages(auth: account!.jwt!, unreadOnly: event.showAll),
       );
 
       GetPersonMentionsResponse personMentions = await lemmy.getPersonMentions(GetPersonMentions(
         auth: account.jwt!,
+        unreadOnly: event.showAll,
         sort: CommentSortType.New,
       ));
 
       GetRepliesResponse repliesResponse = await lemmy.getReplies(GetReplies(
         auth: account.jwt!,
+        unreadOnly: event.showAll,
       ));
 
       return emit(state.copyWith(
@@ -99,6 +105,46 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
+    try {
+      emit(state.copyWith(status: InboxStatus.refreshing));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
+      }
+
+      CommentResponse createComment = await lemmy.createComment(
+        CreateComment(
+          auth: account!.jwt!,
+          content: event.content,
+          postId: event.postId,
+          parentId: event.parentCommentId,
+        ),
+      );
+
+      return emit(state.copyWith(status: InboxStatus.success));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      if (e.type == DioExceptionType.receiveTimeout) {
+        return emit(
+          state.copyWith(
+            status: InboxStatus.failure,
+            errorMessage: 'Error: Network timeout when attempting to create a comment',
+          ),
+        );
+      } else {
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));

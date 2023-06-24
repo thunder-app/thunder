@@ -10,6 +10,7 @@
 - Added sharing option to posts
 - Added reply action to posts
 - Posts on the feed can now be voted on and saved through swipe gestures
+- Swiping down or up on a full screen photo will now dismiss it
 
 ### Changed
 - Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment
