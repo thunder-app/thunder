@@ -89,7 +89,7 @@ class MediaView extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      const Icon(Icons.warning_rounded, size: 55),
+                      Icon(Icons.warning_rounded, size: viewMode != ViewMode.compact ? 55 : 30),
                       if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
                     ],
                   ),

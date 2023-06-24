@@ -86,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: <Widget>[
                     TextField(
+                      autocorrect: false,
                       controller: _usernameTextEditingController,
                       autofillHints: const [AutofillHints.username],
                       decoration: const InputDecoration(
@@ -97,6 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 12.0),
                     TextField(
+                      autocorrect: false,
                       controller: _passwordTextEditingController,
                       obscureText: !showPassword,
                       enableSuggestions: false,
@@ -126,6 +128,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 12.0),
               TextField(
+                autocorrect: false,
                 controller: _instanceTextEditingController,
                 inputFormatters: [LowerCaseTextFormatter()],
                 decoration: const InputDecoration(
@@ -138,7 +141,13 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 32.0),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60), backgroundColor: theme.colorScheme.primary),
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(60),
+                  backgroundColor: theme.colorScheme.primary,
+                  textStyle: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
                 onPressed: (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                     ? () {
                         TextInput.finishAutofillContext();

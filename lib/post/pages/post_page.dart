@@ -35,7 +35,7 @@ class PostPage extends StatelessWidget {
                     return Padding(
                       padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                       child: FractionallySizedBox(
-                        heightFactor: 0.6,
+                        heightFactor: 0.8,
                         child: BlocProvider<PostBloc>.value(
                           value: postBloc,
                           child: CreateCommentModal(postView: postView),

@@ -88,6 +88,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: MarkdownBody(
+                      selectable: true,
                       data: widget.commentView?.comment.content ?? 'N/A',
                       onTapLink: (text, url, title) {},
                       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
@@ -138,7 +139,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     SizedBox(
-                      height: 150,
+                      height: 200,
                       child: showPreview
                           ? Container(
                               decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
@@ -161,7 +162,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               (String value) => setState(() => description = value),
                               description,
                               label: 'Comment',
-                              maxLines: 3,
+                              maxLines: 5,
                               actions: const [
                                 MarkdownType.link,
                                 MarkdownType.bold,

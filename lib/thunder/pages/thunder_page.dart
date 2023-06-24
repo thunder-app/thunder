@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:overlay_support/overlay_support.dart';
 
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/inbox/inbox.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -43,8 +45,11 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThunderBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(create: (context) => InboxBloc()),
+      ],
       child: BlocBuilder<ThunderBloc, ThunderState>(
         builder: (context, thunderBlocState) {
           FlutterNativeSplash.remove();
@@ -70,6 +75,7 @@ class _ThunderState extends State<Thunder> {
                     },
                     listener: (context, state) {
                       context.read<AccountBloc>().add(GetAccountInformation());
+                      context.read<InboxBloc>().add(const GetInboxEvent());
                     },
                     builder: (context, state) {
                       switch (state.status) {
@@ -111,6 +117,7 @@ class _ThunderState extends State<Thunder> {
                                 child: const SearchPage(),
                               ),
                               const AccountPage(),
+                              const InboxPage(),
                               SettingsPage(),
                             ],
                           );
@@ -167,6 +174,10 @@ class _ThunderState extends State<Thunder> {
           BottomNavigationBarItem(
             icon: Icon(Icons.person_rounded),
             label: 'Account',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.inbox_rounded),
+            label: 'Inbox',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings_rounded),

@@ -5,6 +5,8 @@
 - Improved accessibility labels for icons and actions
 - New compact view for posts in the feed
 - New OLED black theme
+- Added initial inbox feature to see your replies, mentions, and private messages
+- Added about page with links to lemmy and github repository
 
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
