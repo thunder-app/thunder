@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 
@@ -30,9 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     _instanceTextEditingController = TextEditingController();
 
     _usernameTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -40,9 +40,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _passwordTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -50,9 +48,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _instanceTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -90,6 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   children: <Widget>[
                     TextField(
+                      autocorrect: false,
                       controller: _usernameTextEditingController,
                       autofillHints: const [AutofillHints.username],
                       decoration: const InputDecoration(
@@ -101,9 +98,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 12.0),
                     TextField(
+                      autocorrect: false,
                       controller: _passwordTextEditingController,
                       obscureText: !showPassword,
                       enableSuggestions: false,
+                      maxLength: 60, // This is what lemmy retricts password length to
                       autofillHints: const [AutofillHints.password],
                       decoration: InputDecoration(
                         isDense: true,
@@ -112,9 +111,10 @@ class _LoginPageState extends State<LoginPage> {
                         suffixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 4.0),
                           child: IconButton(
-                            icon: Icon(showPassword
-                                ? Icons.visibility_rounded
-                                : Icons.visibility_off_rounded),
+                            icon: Icon(
+                              showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                              semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
+                            ),
                             onPressed: () {
                               setState(() {
                                 showPassword = !showPassword;
@@ -129,6 +129,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 12.0),
               TextField(
+                autocorrect: false,
                 controller: _instanceTextEditingController,
                 inputFormatters: [LowerCaseTextFormatter()],
                 decoration: const InputDecoration(
@@ -142,22 +143,21 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 32.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(60),
-                    backgroundColor: theme.colorScheme.onSecondary),
-                onPressed: (_usernameTextEditingController.text.isNotEmpty &&
-                        _passwordTextEditingController.text.isNotEmpty &&
-                        _instanceTextEditingController.text.isNotEmpty)
+                  minimumSize: const Size.fromHeight(60),
+                  backgroundColor: theme.colorScheme.primary,
+                  textStyle: theme.textTheme.titleMedium?.copyWith(
+                    color: theme.colorScheme.onPrimary,
+                  ),
+                ),
+                onPressed: (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                     ? () {
                         TextInput.finishAutofillContext();
                         // Perform login authentication
                         context.read<AuthBloc>().add(
                               LoginAttempt(
-                                username:
-                                    _usernameTextEditingController.text.trim(),
-                                password:
-                                    _passwordTextEditingController.text.trim(),
-                                instance:
-                                    _instanceTextEditingController.text.trim(),
+                                username: _usernameTextEditingController.text,
+                                password: _passwordTextEditingController.text,
+                                instance: _instanceTextEditingController.text.trim(),
                               ),
                             );
                         context.pop();
@@ -166,8 +166,7 @@ class _LoginPageState extends State<LoginPage> {
                 child: Text('Login', style: theme.textTheme.titleMedium),
               ),
               TextButton(
-                style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(60)),
+                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                 onPressed: () => widget.popRegister(),
                 child: Text('Cancel', style: theme.textTheme.titleMedium),
               ),

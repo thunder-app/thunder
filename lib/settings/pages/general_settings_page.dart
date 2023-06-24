@@ -16,6 +16,7 @@ class GeneralSettingsPage extends StatefulWidget {
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   // Post Settings
+  bool useCompactView = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
@@ -27,6 +28,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
   String defaultInstance = 'lemmy.world';
   String themeType = 'dark';
+  bool useBlackTheme = false;
 
   // Error Reporting
   bool enableSentryErrorTracking = false;
@@ -40,6 +42,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     switch (attribute) {
+      case 'setting_general_use_compact_view':
+        await prefs.setBool('setting_general_use_compact_view', value);
+        setState(() => useCompactView = value);
+        break;
       case 'setting_general_show_link_previews':
         await prefs.setBool('setting_general_show_link_previews', value);
         setState(() => showLinkPreviews = value);
@@ -67,6 +73,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_theme_type':
         await prefs.setString('setting_theme_type', value);
         setState(() => themeType = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+      case 'setting_theme_use_black_theme':
+        await prefs.setBool('setting_theme_use_black_theme', value);
+        setState(() => useBlackTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case 'setting_notifications_show_inapp_update':
@@ -99,6 +110,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
     setState(() {
       // Post Settings
+      useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -107,6 +119,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
       // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
+      useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -147,6 +160,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             'Posts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Compact view',
+                          value: useCompactView,
+                          iconEnabled: Icons.density_small_rounded,
+                          iconDisabled: Icons.density_small_rounded,
+                          onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
                         ),
                         ToggleOption(
                           description: 'Show link previews',
@@ -205,6 +225,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.dark_mode_rounded,
                           iconDisabled: Icons.dark_mode_outlined,
                           onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
+                        ),
+                        ToggleOption(
+                          description: 'Pure black theme',
+                          value: useBlackTheme,
+                          iconEnabled: Icons.dark_mode_outlined,
+                          iconDisabled: Icons.dark_mode_outlined,
+                          onToggle: (bool value) => setPreferences('setting_theme_use_black_theme', value),
                         ),
                         // TextFormField(
                         //   // initialValue: defaultInstance ?? '',

@@ -1,6 +1,9 @@
+import 'package:flutter/material.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -15,7 +18,11 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
-  ThemeBloc() : super(const ThemeState()) {
+  ThemeBloc()
+      : super(ThemeState(
+          theme: FlexThemeData.light(useMaterial3: true),
+          darkTheme: FlexThemeData.dark(useMaterial3: true),
+        )) {
     on<ThemeChangeEvent>(
       _themeChangeEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -28,9 +35,17 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String themeType = prefs.getString('setting_theme_type') ?? 'dark';
+      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+
+      // OLED Theme
+      ThemeData? oledThemeData = FlexThemeData.dark(
+        useMaterial3: true,
+        scheme: FlexScheme.deepPurple,
+        darkIsTrueBlack: true,
+      );
 
       if (themeType == 'dark') {
-        return emit(state.copyWith(status: ThemeStatus.success, useDarkTheme: true));
+        return emit(state.copyWith(status: ThemeStatus.success, useDarkTheme: true, darkTheme: useBlackTheme ? oledThemeData : ThemeData.dark(useMaterial3: true)));
       } else {
         return emit(state.copyWith(status: ThemeStatus.success, useDarkTheme: false));
       }

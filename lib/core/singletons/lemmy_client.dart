@@ -3,7 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lemmy/lemmy.dart';
 
 class LemmyClient {
-  Lemmy lemmy = Lemmy(baseUrl: dotenv.env['LEMMY_BASE_URL']!);
+  Lemmy lemmy = Lemmy(baseUrl: dotenv.env['LEMMY_BASE_URL'] ?? 'https://lemmy.world');
 
   LemmyClient._initialize();
 

@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:lemmy/lemmy.dart';
@@ -307,6 +306,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           auth: account!.jwt!,
           content: event.content,
           postId: state.postView!.post.id,
+          parentId: event.parentCommentId,
         ),
       );
 

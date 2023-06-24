@@ -52,7 +52,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      appBar: AppBar(toolbarHeight: 70.0),
+      appBar: AppBar(
+        toolbarHeight: 70.0,
+        actions: [
+          IconButton(
+            onPressed: isSubmitButtonDisabled
+                ? null
+                : () {
+                    context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
+                    Navigator.of(context).pop();
+                  },
+            icon: const Icon(
+              Icons.send_rounded,
+              semanticLabel: 'Create Post',
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -90,94 +106,85 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 //     children: postTypes,
                 //   ),
                 // ),
-                ListView(shrinkWrap: true, children: <Widget>[
-                  TextFormField(
-                    controller: _titleTextController,
-                    decoration: const InputDecoration(
-                      hintText: 'Title',
+                ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: <Widget>[
+                    TextFormField(
+                      controller: _titleTextController,
+                      decoration: const InputDecoration(
+                        hintText: 'Title',
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
-                  Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 200,
-                        child: showPreview
-                            ? Container(
-                                decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                padding: const EdgeInsets.all(12),
-                                child: SingleChildScrollView(
-                                  child: MarkdownBody(
-                                    data: description,
-                                    shrinkWrap: true,
-                                    styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                                      p: theme.textTheme.bodyLarge,
-                                      blockquoteDecoration: const BoxDecoration(
-                                        color: Colors.transparent,
-                                        border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                    const SizedBox(height: 20),
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 200,
+                          child: showPreview
+                              ? Container(
+                                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                                  padding: const EdgeInsets.all(12),
+                                  child: SingleChildScrollView(
+                                    child: MarkdownBody(
+                                      data: description,
+                                      shrinkWrap: true,
+                                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+                                        p: theme.textTheme.bodyLarge,
+                                        blockquoteDecoration: const BoxDecoration(
+                                          color: Colors.transparent,
+                                          border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                                        ),
                                       ),
                                     ),
                                   ),
+                                )
+                              : MarkdownTextInput(
+                                  (String value) => setState(() => description = value),
+                                  description,
+                                  label: 'Post Body',
+                                  maxLines: 5,
+                                  actions: const [
+                                    MarkdownType.link,
+                                    MarkdownType.bold,
+                                    MarkdownType.italic,
+                                    MarkdownType.blockquote,
+                                    MarkdownType.strikethrough,
+                                    MarkdownType.title,
+                                    MarkdownType.list,
+                                    MarkdownType.separator,
+                                    MarkdownType.code,
+                                  ],
+                                  controller: _bodyTextController,
+                                  textStyle: theme.textTheme.bodyLarge,
+                                  // textStyle: const TextStyle(fontSize: 16),
                                 ),
-                              )
-                            : MarkdownTextInput(
-                                (String value) => setState(() => description = value),
-                                description,
-                                label: 'Post Body',
-                                maxLines: 5,
-                                actions: const [
-                                  MarkdownType.link,
-                                  MarkdownType.bold,
-                                  MarkdownType.italic,
-                                  MarkdownType.blockquote,
-                                  MarkdownType.strikethrough,
-                                  MarkdownType.title,
-                                  MarkdownType.list,
-                                  MarkdownType.separator,
-                                  MarkdownType.code,
-                                ],
-                                controller: _bodyTextController,
-                                textStyle: theme.textTheme.bodyLarge,
-                                // textStyle: const TextStyle(fontSize: 16),
-                              ),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: isClearButtonDisabled
-                                ? null
-                                : () {
-                                    _bodyTextController.clear();
-                                    setState(() => showPreview = false);
-                                  },
-                            child: const Text('Clear'),
-                          ),
-                          TextButton(
-                            onPressed: () => setState(() => showPreview = !showPreview),
-                            child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ]),
-                const SizedBox(height: 32.0),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size.fromHeight(50),
-                  ),
-                  onPressed: isSubmitButtonDisabled
-                      ? null
-                      : () {
-                          context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text));
-                          Navigator.of(context).pop();
-                        },
-                  child: const Text('Submit'),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            TextButton(
+                              onPressed: isClearButtonDisabled
+                                  ? null
+                                  : () {
+                                      _bodyTextController.clear();
+                                      setState(() => showPreview = false);
+                                    },
+                              child: const Text('Clear'),
+                            ),
+                            TextButton(
+                              onPressed: () => setState(() => showPreview = !showPreview),
+                              child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
-
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -124,12 +125,25 @@ class _CommentCardState extends State<CommentCard> {
               }
 
               if (swipeAction == SwipeAction.reply) {
-                SnackBar snackBar = const SnackBar(
-                  content: Text('Replying is not yet available'),
-                  behavior: SnackBarBehavior.floating,
+                PostBloc postBloc = context.read<PostBloc>();
+
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: BlocProvider<PostBloc>.value(
+                          value: postBloc,
+                          child: CreateCommentModal(commentView: widget.commentViewTree),
+                        ),
+                      ),
+                    );
+                  },
                 );
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
               }
 
               if (swipeAction == SwipeAction.save) {
@@ -181,7 +195,7 @@ class _CommentCardState extends State<CommentCard> {
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: dismissThreshold < 0.3 ? theme.colorScheme.onSecondary : theme.colorScheme.onPrimary,
+                      color: dismissThreshold < 0.3 ? Colors.green.shade700 : Colors.purple.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
@@ -209,7 +223,7 @@ class _CommentCardState extends State<CommentCard> {
                                         ? theme.colorScheme.tertiary
                                         : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
                                             ? Colors.amber
-                                            : theme.colorScheme.onSecondaryContainer,
+                                            : theme.colorScheme.onBackground,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -282,8 +296,8 @@ class _CommentCardState extends State<CommentCard> {
                                         ),
                                       ),
                                     );
-                                  } else {
-                                    launchUrl(Uri.parse(url!));
+                                  } else if (url != null) {
+                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
                                   }
                                 },
                                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(

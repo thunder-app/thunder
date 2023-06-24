@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:overlay_support/overlay_support.dart';
 
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/inbox/inbox.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -43,8 +45,11 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThunderBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(create: (context) => InboxBloc()),
+      ],
       child: BlocBuilder<ThunderBloc, ThunderState>(
         builder: (context, thunderBlocState) {
           FlutterNativeSplash.remove();
@@ -70,6 +75,7 @@ class _ThunderState extends State<Thunder> {
                     },
                     listener: (context, state) {
                       context.read<AccountBloc>().add(GetAccountInformation());
+                      context.read<InboxBloc>().add(const GetInboxEvent());
                     },
                     builder: (context, state) {
                       switch (state.status) {
@@ -87,6 +93,7 @@ class _ThunderState extends State<Thunder> {
                           if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(version);
+
                               setState(() => hasShownUpdateDialog = true);
                             });
                           }
@@ -110,6 +117,7 @@ class _ThunderState extends State<Thunder> {
                                 child: const SearchPage(),
                               ),
                               const AccountPage(),
+                              const InboxPage(),
                               SettingsPage(),
                             ],
                           );
@@ -168,6 +176,10 @@ class _ThunderState extends State<Thunder> {
             label: 'Account',
           ),
           BottomNavigationBarItem(
+            icon: Icon(Icons.inbox_rounded),
+            label: 'Inbox',
+          ),
+          BottomNavigationBarItem(
             icon: Icon(Icons.settings_rounded),
             label: 'Settings',
           ),
@@ -195,13 +207,19 @@ class _ThunderState extends State<Thunder> {
               'Update released: ${version?.latestVersion}',
               style: theme.textTheme.titleMedium,
             ),
-            Icon(Icons.arrow_forward, color: theme.colorScheme.tertiary),
+            Icon(
+              Icons.arrow_forward,
+              color: theme.colorScheme.onBackground,
+            ),
           ],
         ),
-        onTap: () => launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest')),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder/releases/latest')));
+        },
       ),
-      background: theme.colorScheme.onSecondary,
-      autoDismiss: false,
+      background: theme.cardColor,
+      autoDismiss: true,
+      duration: const Duration(seconds: 5),
       slideDismissDirection: DismissDirection.vertical,
     );
   }
@@ -222,7 +240,7 @@ class _ThunderState extends State<Thunder> {
                 Card(
                   child: SafeArea(
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0, bottom: 8.0),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.start,

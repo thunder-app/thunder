@@ -1,7 +1,25 @@
 ## Unreleased
 ### Added
+- External links can now be opened in an external browser, and also shared using the system's sharing options
+- Improved GIF support - contribution from @MrAntonS
+- Improved accessibility labels for icons and actions
+- New compact view for posts in the feed
+- New OLED black theme
+- Added initial inbox feature to see your replies, mentions, and private messages
+- Added about page with links to lemmy and github repository
+
+### Changed
+- Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment
+- Slight improvements to account/profile selection to show which profile is currently active
+
+### Fixed
+- Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
+- Fixed issue where usernames/passwords containing leading or trailing spaces may fail to login - contribution from @MrAntonS
+
+## 0.2.1+5 - 2023-06-22
+### Added
 - Added basic ability to post to a community with Markdown
-- Added basic ability to create a comment in a post
+- Added basic ability to create a comment in a post and to reply to other comments
 - Added settings option to enable or disable the in-app update notifications
 - Added the instance name to various parts of the app to distinguish communities across instances
 - Added blur to NSFW images - contribution from @guigs4

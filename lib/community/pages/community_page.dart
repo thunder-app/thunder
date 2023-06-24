@@ -125,7 +125,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         },
                       ),
                     IconButton(
-                      icon: Icon(sortTypeIcon),
+                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
                       onPressed: () => showSortBottomSheet(context, state),
                     ),
                     const SizedBox(width: 8.0),
@@ -134,7 +134,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               ],
             ),
             drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-            floatingActionButton: (state.communityId != null || widget.communityName != null)
+            floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
                 ? FloatingActionButton(
                     onPressed: () {
                       CommunityBloc communityBloc = context.read<CommunityBloc>();
@@ -150,7 +150,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         ),
                       );
                     },
-                    child: const Icon(Icons.add),
+                    child: const Icon(
+                      Icons.add,
+                      semanticLabel: 'Create Post',
+                    ),
                   )
                 : null,
             body: SafeArea(child: _getBody(context, state)),

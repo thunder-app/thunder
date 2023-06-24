@@ -1,13 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -33,7 +31,10 @@ class _AccountPageState extends State<AccountPage> {
           if (authState.isLoggedIn)
             IconButton(
               onPressed: () => showProfileModalSheet(context),
-              icon: const Icon(Icons.people_alt_rounded),
+              icon: const Icon(
+                Icons.people_alt_rounded,
+                semanticLabel: 'Profiles',
+              ),
             )
         ],
       ),

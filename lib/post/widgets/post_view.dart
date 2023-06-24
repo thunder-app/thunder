@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -109,8 +110,8 @@ class PostSubview extends StatelessWidget {
                         ),
                       ),
                     );
-                  } else {
-                    launchUrl(Uri.parse(url!));
+                  } else if (url != null) {
+                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
                   }
                 },
                 styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
@@ -133,7 +134,10 @@ class PostSubview extends StatelessWidget {
                         context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == 1 ? 0 : 1));
                       }
                     : null,
-                icon: const Icon(Icons.arrow_upward),
+                icon: Icon(
+                  Icons.arrow_upward,
+                  semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+                ),
                 color: postView.myVote == 1 ? Colors.orange : null,
               ),
               IconButton(
@@ -143,7 +147,10 @@ class PostSubview extends StatelessWidget {
                         context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == -1 ? 0 : -1));
                       }
                     : null,
-                icon: const Icon(Icons.arrow_downward),
+                icon: Icon(
+                  Icons.arrow_downward,
+                  semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
+                ),
                 color: postView.myVote == -1 ? Colors.blue : null,
               ),
               IconButton(
@@ -153,7 +160,10 @@ class PostSubview extends StatelessWidget {
                         context.read<PostBloc>().add(SavePostEvent(postId: postView.post.id, save: !postView.saved));
                       }
                     : null,
-                icon: Icon(postView.saved ? Icons.star_rounded : Icons.star_border_rounded),
+                icon: Icon(
+                  postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
+                  semanticLabel: postView.saved ? 'Saved' : 'Save',
+                ),
                 color: postView.saved ? Colors.purple : null,
               ),
               // IconButton(

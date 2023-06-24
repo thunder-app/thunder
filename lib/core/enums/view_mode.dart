@@ -1,0 +1,1 @@
+enum ViewMode { compact, comfortable }
