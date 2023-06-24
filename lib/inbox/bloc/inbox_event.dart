@@ -10,3 +10,10 @@ abstract class InboxEvent extends Equatable {
 class GetInboxEvent extends InboxEvent {
   const GetInboxEvent();
 }
+
+class MarkReplyAsReadEvent extends InboxEvent {
+  final int commentReplyId;
+  final bool read;
+
+  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read});
+}

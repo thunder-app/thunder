@@ -25,6 +25,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       _getInboxEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkReplyAsReadEvent>(
+      _markReplyAsReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -57,6 +61,40 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         privateMessages: privateMessagesResponse.privateMessages,
         mentions: personMentions.mentions,
         replies: repliesResponse.replies,
+      ));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markReplyAsReadEvent(MarkReplyAsReadEvent event, emit) async {
+    try {
+      emit(state.copyWith(status: InboxStatus.loading));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: InboxStatus.success));
+      }
+
+      CommentReplyResponse response = await lemmy.markCommentReplyAsRead(
+        MarkCommentReplyAsRead(
+          auth: account!.jwt!,
+          commentReplyId: event.commentReplyId,
+          read: event.read,
+        ),
+      );
+
+      return emit(state.copyWith(
+        status: InboxStatus.success,
+        privateMessages: state.privateMessages,
+        mentions: state.mentions,
+        replies: state.replies,
       ));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);

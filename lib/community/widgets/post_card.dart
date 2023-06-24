@@ -64,7 +64,17 @@ class _PostCardState extends State<PostCard> {
           context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postView.post.id, score: vote));
         }
 
-        if (swipeAction == SwipeAction.reply) {}
+        if (swipeAction == SwipeAction.reply) {
+          SnackBar snackBar = const SnackBar(
+            content: Text('Replying from this view is currently not supported yet'),
+            behavior: SnackBarBehavior.floating,
+          );
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        }
 
         if (swipeAction == SwipeAction.save) {
           context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postView.post.id, save: !saved));

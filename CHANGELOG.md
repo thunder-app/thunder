@@ -9,6 +9,7 @@
 - Added about page with links to lemmy and github repository
 - Added sharing option to posts
 - Added reply action to posts
+- Posts on the feed can now be voted on and saved through swipe gestures
 
 ### Changed
 - Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment

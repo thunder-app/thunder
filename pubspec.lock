@@ -368,14 +368,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.17"
-  intl:
-    dependency: transitive
-    description:
-      name: intl
-      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.18.1"
   js:
     dependency: transitive
     description:
@@ -392,30 +384,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.1"
-  json_class:
-    dependency: transitive
-    description:
-      name: json_class
-      sha256: c40fa382860f472e79b18f603e9fe1159c7ed3bfc6998a4bbd331825b42ae17a
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.2.1+3"
-  json_schema:
-    dependency: transitive
-    description:
-      name: json_schema
-      sha256: d9325bc3033934e6da6f1a2cd592533dc867dd1c0f740c6ae69c31d6756838d9
-      url: "https://pub.dev"
-    source: hosted
-    version: "5.1.1"
-  json_theme:
-    dependency: "direct main"
-    description:
-      name: json_theme
-      sha256: "40d524c455287ac019f5d1c370ddd76c5d61c6390b67de149ee0bdb33912c4a5"
-      url: "https://pub.dev"
-    source: hosted
-    version: "6.0.0"
   lemmy:
     dependency: "direct main"
     description:
@@ -650,22 +618,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.5"
-  quiver:
-    dependency: transitive
-    description:
-      name: quiver
-      sha256: b1c1ac5ce6688d77f65f3375a9abb9319b3cb32486bdc7a1e0fdf004d7ba4e47
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.2.1"
-  rfc_6901:
-    dependency: transitive
-    description:
-      name: rfc_6901
-      sha256: "8d97680dada633146cf75ab9382f2ce2b7e4bd63ceecd867416cf43b5832b988"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.1"
   rxdart:
     dependency: transitive
     description:
@@ -895,14 +847,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.2.2"
-  uri:
-    dependency: transitive
-    description:
-      name: uri
-      sha256: "889eea21e953187c6099802b7b4cf5219ba8f3518f604a1033064d45b1b8268a"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.0"
   url_launcher:
     dependency: "direct main"
     description:
