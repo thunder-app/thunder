@@ -57,7 +57,9 @@ class ProfileSelect extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     String? currentAccountId = context.read<ThunderBloc>().state.preferences?.getString('active_profile_id');
+
     return FutureBuilder(
       future: fetchAccounts(),
       builder: (context, snapshot) {
@@ -77,8 +79,14 @@ class ProfileSelect extends StatelessWidget {
                 );
               } else {
                 return ListTile(
-                  leading: const Icon(Icons.person),
-                  title: Text(snapshot.data![index].username ?? 'N/A'),
+                  leading: Icon(
+                    Icons.person,
+                    color: currentAccountId == snapshot.data![index].id ? Colors.amber : null,
+                  ),
+                  title: Text(
+                    snapshot.data![index].username ?? 'N/A',
+                    style: theme.textTheme.titleMedium?.copyWith(),
+                  ),
                   subtitle: Text(snapshot.data![index].instance?.replaceAll('https://', '') ?? 'N/A'),
                   onTap: (currentAccountId == snapshot.data![index].id)
                       ? null
@@ -86,15 +94,20 @@ class ProfileSelect extends StatelessWidget {
                           context.read<AuthBloc>().add(SwitchAccount(accountId: snapshot.data![index].id));
                           context.pop();
                         },
-                  trailing: IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        semanticLabel: 'Remove Account',
-                      ),
-                      onPressed: () {
-                        context.read<AuthBloc>().add(RemoveAccount(accountId: snapshot.data![index].id));
-                        context.pop();
-                      }),
+                  trailing: (currentAccountId == snapshot.data![index].id)
+                      ? const InputChip(
+                          label: Text('Active'),
+                          visualDensity: VisualDensity.compact,
+                        )
+                      : IconButton(
+                          icon: const Icon(
+                            Icons.delete,
+                            semanticLabel: 'Remove Account',
+                          ),
+                          onPressed: () {
+                            context.read<AuthBloc>().add(RemoveAccount(accountId: snapshot.data![index].id));
+                            context.pop();
+                          }),
                 );
               }
             },

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
@@ -58,7 +59,10 @@ class _InboxPageState extends State<InboxPage> {
         title: AutoSizeText('Inbox', style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh_rounded),
+            icon: const Icon(
+              Icons.refresh_rounded,
+              semanticLabel: 'Refresh',
+            ),
             onPressed: () {
               context.read<InboxBloc>().add(const GetInboxEvent());
             },
@@ -94,11 +98,21 @@ class _InboxPageState extends State<InboxPage> {
           children: [
             const SizedBox(height: 10),
             BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
+              if (context.read<AuthBloc>().state.isLoggedIn == false) {
+                return const Text('Log in to see your inbox');
+              }
+
               switch (state.status) {
                 case InboxStatus.initial:
                 case InboxStatus.loading:
                 case InboxStatus.refreshing:
-                  return const CircularProgressIndicator();
+                  return const Center(
+                    child: SizedBox(
+                      width: 40,
+                      height: 40,
+                      child: CircularProgressIndicator(),
+                    ),
+                  );
                 case InboxStatus.success:
                   if (_inboxType == InboxType.mentions) return const InboxMentionsView();
                   if (_inboxType == InboxType.messages) return const InboxPrivateMessagesView();

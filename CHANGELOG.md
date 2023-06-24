@@ -8,8 +8,13 @@
 - Added initial inbox feature to see your replies, mentions, and private messages
 - Added about page with links to lemmy and github repository
 
+### Changed
+- Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment
+- Slight improvements to account/profile selection to show which profile is currently active
+
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
+- Fixed issue where usernames/passwords containing leading or trailing spaces may fail to login - contribution from @MrAntonS
 
 ## 0.2.1+5 - 2023-06-22
 ### Added
