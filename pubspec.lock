@@ -420,8 +420,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.1.10-alpha"
-      resolved-ref: "637c6497e4a62e527936deb57df3c5cc83b73a1b"
+      ref: "0.1.11-alpha"
+      resolved-ref: ae1b53cba2ce408dcae82529fba913ed38544c15
       url: "https://github.com/hjiangsu/lemmy-dart.git"
     source: git
     version: "1.0.0"

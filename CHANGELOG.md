@@ -15,6 +15,7 @@
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
 - Fixed issue where usernames/passwords containing leading or trailing spaces may fail to login - contribution from @MrAntonS
+- Fixed issue where passwords with a length > 60 would throw an error "incorrect password"
 
 ## 0.2.1+5 - 2023-06-22
 ### Added

@@ -20,7 +20,7 @@ dependencies:
   lemmy:
     git:
       url: https://github.com/hjiangsu/lemmy-dart.git
-      ref: 0.1.10-alpha
+      ref: 0.1.11-alpha
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git

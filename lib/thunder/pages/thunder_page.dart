@@ -70,7 +70,7 @@ class _ThunderState extends State<Thunder> {
                   ],
                   child: BlocConsumer<AuthBloc, AuthState>(
                     listenWhen: (AuthState previous, AuthState current) {
-                      if (previous.isLoggedIn != current.isLoggedIn) return true;
+                      if (previous.account == null && current.account != null) return true;
                       return false;
                     },
                     listener: (context, state) {

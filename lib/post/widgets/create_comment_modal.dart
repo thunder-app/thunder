@@ -9,6 +9,7 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 
 const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
@@ -87,22 +88,14 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   radius: const Radius.circular(16.0),
                   child: SingleChildScrollView(
                     controller: _scrollController,
-                    child: MarkdownBody(
-                      selectable: true,
-                      data: widget.commentView?.comment.content ?? 'N/A',
-                      onTapLink: (text, url, title) {},
-                      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                        a: theme.textTheme.bodyMedium,
-                        p: theme.textTheme.bodyMedium,
-                        blockquoteDecoration: const BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-                        ),
-                      ),
+                    child: CommonMarkdownBody(
+                      body: widget.commentView?.comment.content ?? 'N/A',
+                      isSelectableText: true,
                     ),
                   ),
                 ),
               ),
+
             // Text(
             //   fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
             //   style: theme.textTheme.titleMedium?.copyWith(
@@ -145,17 +138,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                               padding: const EdgeInsets.all(12),
                               child: SingleChildScrollView(
-                                child: MarkdownBody(
-                                  data: description,
-                                  shrinkWrap: true,
-                                  styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                                    p: theme.textTheme.bodyLarge,
-                                    blockquoteDecoration: const BoxDecoration(
-                                      color: Colors.transparent,
-                                      border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-                                    ),
-                                  ),
-                                ),
+                                child: CommonMarkdownBody(body: description),
                               ),
                             )
                           : MarkdownTextInput(

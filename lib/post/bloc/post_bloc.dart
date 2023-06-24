@@ -64,15 +64,37 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
 
-      PostViewMedia postView = event.postView;
+      GetPostResponse? getPostResponse;
+
+      if (event.postId != null) {
+        getPostResponse = await lemmy
+            .getPost(
+          GetPost(
+            id: event.postId,
+            auth: account?.jwt,
+          ),
+        )
+            .timeout(timeout, onTimeout: () {
+          throw Exception('Error: Timeout when attempting to fetch post');
+        });
+      }
+
+      PostViewMedia? postView = event.postView;
+
+      if (getPostResponse != null) {
+        // Parse the posts and add in media information which is used elsewhere in the app
+        List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+
+        postView = posts.first;
+      }
 
       GetCommentsResponse getCommentsResponse = await lemmy
           .getComments(
         GetComments(
           page: 1,
           auth: account?.jwt,
-          communityId: postView.post.communityId,
-          postId: postView.post.id,
+          communityId: postView?.post.communityId,
+          postId: postView?.post.id,
           sort: CommentSortType.Hot,
           limit: 50,
         ),
@@ -87,12 +109,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(
         state.copyWith(
           status: PostStatus.success,
-          postId: postView.post.id,
+          postId: postView?.post.id,
           postView: postView,
           comments: commentTree,
           commentPage: state.commentPage + 1,
           commentCount: getCommentsResponse.comments.length,
-          communityId: postView.post.communityId,
+          communityId: postView?.post.communityId,
         ),
       );
     } on DioException catch (e, s) {

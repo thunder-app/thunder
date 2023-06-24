@@ -11,9 +11,10 @@ import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/error_message.dart';
 
 class PostPage extends StatelessWidget {
-  final PostViewMedia postView;
+  final PostViewMedia? postView;
+  final int? postId;
 
-  const PostPage({super.key, required this.postView});
+  const PostPage({super.key, this.postView, this.postId});
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +55,9 @@ class PostPage extends StatelessWidget {
       body: SafeArea(
         child: BlocConsumer<PostBloc, PostState>(
           listener: (context, state) {
-            if (state.status == PostStatus.success) {
+            if (state.status == PostStatus.success && postView != null) {
               // Update the community's post
-              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView.post.id);
+              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == postView?.post.id);
               if (postIdIndex != null && state.postView != null) {
                 context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
               }
@@ -85,7 +86,7 @@ class PostPage extends StatelessWidget {
 
             switch (state.status) {
               case PostStatus.initial:
-                context.read<PostBloc>().add(GetPostEvent(postView: postView));
+                context.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId));
                 return const Center(child: CircularProgressIndicator());
               case PostStatus.loading:
                 return const Center(child: CircularProgressIndicator());
@@ -98,7 +99,9 @@ class PostPage extends StatelessWidget {
               case PostStatus.failure:
                 return ErrorMessage(
                   message: state.errorMessage,
-                  action: () => {context.read<PostBloc>().add(GetPostEvent(postView: postView))},
+                  action: () {
+                    context.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId));
+                  },
                   actionText: 'Refresh Content',
                 );
             }
