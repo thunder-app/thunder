@@ -24,7 +24,7 @@ dependencies:
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git
-      ref: 2.2.1+1
+      ref: 2.2.1+2
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

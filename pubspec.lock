@@ -453,8 +453,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2.2.1+1"
-      resolved-ref: "41153745ba31cdf7f35425a376de41afd7e0d85b"
+      ref: "2.2.1+2"
+      resolved-ref: "4ca167ef880d860358e34df3463bc2d50c59b996"
       url: "https://github.com/hjiangsu/markdown-editable-textinput.git"
     source: git
     version: "2.2.1"
