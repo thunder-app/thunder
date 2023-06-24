@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -132,18 +134,36 @@ class PostSubview extends StatelessWidget {
                 ),
                 color: postView.saved ? Colors.purple : null,
               ),
-              // IconButton(
-              //   onPressed: null,
-              //   icon: Icon(
-              //     Icons.reply_rounded,
-              //   ),
-              // ),
-              // IconButton(
-              //   onPressed: null,
-              //   icon: Icon(
-              //     Icons.ios_share_rounded,
-              //   ),
-              // )
+              IconButton(
+                onPressed: isUserLoggedIn
+                    ? () {
+                        PostBloc postBloc = context.read<PostBloc>();
+
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          showDragHandle: true,
+                          builder: (context) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                              child: FractionallySizedBox(
+                                heightFactor: 0.8,
+                                child: BlocProvider<PostBloc>.value(
+                                  value: postBloc,
+                                  child: CreateCommentModal(postView: postView),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    : null,
+                icon: const Icon(Icons.reply_rounded),
+              ),
+              IconButton(
+                icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                onPressed: () => Share.share(postView.post.apId),
+              )
             ],
           )
         ],

@@ -7,10 +7,13 @@
 - New OLED black theme
 - Added initial inbox feature to see your replies, mentions, and private messages
 - Added about page with links to lemmy and github repository
+- Added sharing option to posts
+- Added reply action to posts
 
 ### Changed
 - Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment
 - Slight improvements to account/profile selection to show which profile is currently active
+- When scrolling to the bottom of comments, the FAB for replying will automatically disappear so that the comment is not obstructed
 
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment

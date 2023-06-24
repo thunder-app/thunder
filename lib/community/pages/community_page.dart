@@ -114,6 +114,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       IconButton(
                         icon: Icon(
                           (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                          semanticLabel: (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
                         onPressed: () => {
                           context.read<CommunityBloc>().add(
