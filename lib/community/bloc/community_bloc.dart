@@ -132,7 +132,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // This is a temp placeholder for when we add the option to select default types
     ListingType defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
     SortType defaultSortType = SortType.Hot;
 
