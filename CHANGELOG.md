@@ -1,9 +1,11 @@
 ## Unreleased
 ### Added
 - Added adaptive icons for Android - contribution from @coslu
+- Inbox mentions and replies can now be marked as read
 
 ### Changed
 - Moved theming options into a separate section in settings
+- Adjusted inbox show all toggle to be a button to be more descriptive
 
 ## 0.2.1+7 - 2023-06-25
 ### Fixed

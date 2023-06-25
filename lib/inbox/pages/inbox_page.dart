@@ -56,22 +56,10 @@ class _InboxPageState extends State<InboxPage> {
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70.0,
+        toolbarHeight: 80.0,
         centerTitle: false,
         title: AutoSizeText('Inbox', style: theme.textTheme.titleLarge),
         actions: [
-          IconButton(
-            icon: Icon(
-              showUnread ? Icons.mail : Icons.mail_outline_rounded,
-              semanticLabel: 'Show Unread',
-            ),
-            onPressed: () {
-              setState(() {
-                showUnread = !showUnread;
-              });
-              context.read<InboxBloc>().add(GetInboxEvent(showAll: showUnread));
-            },
-          ),
           IconButton(
             icon: const Icon(
               Icons.refresh_rounded,
@@ -80,7 +68,18 @@ class _InboxPageState extends State<InboxPage> {
             onPressed: () {
               context.read<InboxBloc>().add(const GetInboxEvent());
             },
-          )
+          ),
+          FilterChip(
+            shape: const StadiumBorder(),
+            visualDensity: VisualDensity.compact,
+            label: const Text(' Show All'),
+            selected: !showUnread,
+            onSelected: (bool selected) {
+              setState(() => showUnread = !selected);
+              context.read<InboxBloc>().add(GetInboxEvent(showAll: selected));
+            },
+          ),
+          const SizedBox(width: 16.0),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(45.0),

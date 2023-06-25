@@ -85,6 +85,16 @@ class InboxMentionsView extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
+                          context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: mentions[index].personMention.id, read: true));
+                        },
+                        icon: const Icon(
+                          Icons.check,
+                          semanticLabel: 'Mark as read',
+                        ),
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      IconButton(
+                        onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
 
                           showModalBottomSheet(
