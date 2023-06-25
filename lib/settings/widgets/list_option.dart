@@ -48,17 +48,19 @@ class ListOption<T> extends StatelessWidget {
           ],
         ),
         DropdownButton(
-            value: value,
-            items: options.map<DropdownMenuItem<T>>((T value) {
-              return DropdownMenuItem<T>(
-                value: value,
-                child: Text(_transformLabel(value)),
-              );
-            }).toList(),
-            onChanged: (T? value) {
-              HapticFeedback.lightImpact();
-              onChanged(value ?? this.value);
-            },
+          borderRadius: const BorderRadius.all(Radius.circular(8.0)),
+          underline: Container(),
+          value: value,
+          items: options.map<DropdownMenuItem<T>>((T value) {
+            return DropdownMenuItem<T>(
+              value: value,
+              child: Text(_transformLabel(value)),
+            );
+          }).toList(),
+          onChanged: (T? value) {
+            HapticFeedback.lightImpact();
+            onChanged(value ?? this.value);
+          },
         )
       ],
     );
