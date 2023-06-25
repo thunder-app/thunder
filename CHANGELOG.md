@@ -2,6 +2,7 @@
 ### Added
 - Added adaptive icons for Android - contribution from @coslu
 - Inbox mentions and replies can now be marked as read
+- Added default feed type in settings - contribution from @JulianPaulus
 
 ### Changed
 - Moved theming options into a separate section in settings
