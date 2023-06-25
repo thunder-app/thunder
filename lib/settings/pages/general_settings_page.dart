@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -27,8 +26,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showInAppUpdateNotification = true;
 
   String defaultInstance = 'lemmy.world';
-  String themeType = 'dark';
-  bool useBlackTheme = false;
 
   // Error Reporting
   bool enableSentryErrorTracking = false;
@@ -70,16 +67,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
-      case 'setting_theme_type':
-        await prefs.setString('setting_theme_type', value);
-        setState(() => themeType = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
-        break;
-      case 'setting_theme_use_black_theme':
-        await prefs.setBool('setting_theme_use_black_theme', value);
-        setState(() => useBlackTheme = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
-        break;
       case 'setting_notifications_show_inapp_update':
         await prefs.setBool('setting_notifications_show_inapp_update', value);
         setState(() => showInAppUpdateNotification = value);
@@ -116,10 +103,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-
-      // Theme Settings
-      themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -203,69 +186,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Theme',
-                            style: theme.textTheme.titleLarge,
-                          ),
-                        ),
-                        ToggleOption(
-                          description: 'Use dark theme',
-                          value: themeType == 'dark',
-                          iconEnabled: Icons.dark_mode_rounded,
-                          iconDisabled: Icons.dark_mode_outlined,
-                          onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
-                        ),
-                        ToggleOption(
-                          description: 'Pure black theme',
-                          value: useBlackTheme,
-                          iconEnabled: Icons.dark_mode_outlined,
-                          iconDisabled: Icons.dark_mode_outlined,
-                          onToggle: (bool value) => setPreferences('setting_theme_use_black_theme', value),
-                        ),
-                        // TextFormField(
-                        //   // initialValue: defaultInstance ?? '',
-
-                        //   controller: instanceController,
-                        //   decoration: const InputDecoration(
-                        //     prefix: Text('https://'),
-                        //     isDense: true,
-                        //     hintText: 'lemmy.ml',
-                        //   ),
-                        // ),
-                        // const SizedBox(height: 16.0),
-                        // ElevatedButton(
-                        //   onPressed: () {
-                        //     setPreferences('setting_instance_default_instance', 'https://${instanceController.text}');
-
-                        //     LemmyClient lemmyClient = LemmyClient.instance;
-                        //     lemmyClient.changeBaseUrl('https://${instanceController.text}');
-                        //     SnackBar snackBar = SnackBar(
-                        //       content: Text('Default instance changed to ${instanceController.text}'),
-                        //       behavior: SnackBarBehavior.floating,
-                        //     );
-                        //     ScaffoldMessenger.of(context).clearSnackBars();
-                        //     ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        //   },
-                        //   child: const Text('Change default instance'),
-                        // ),
-                        // ToggleOption(
-                        //   description: 'Change default instance',
-                        //   value: defaultInstance,
-                        //   iconEnabled: Icons.computer_rounded,
-                        //   iconDisabled: Icons.photo_size_select_actual_rounded,
-                        //   onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
-                        // ),
                       ],
                     ),
                   ),
