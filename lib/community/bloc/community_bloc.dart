@@ -151,7 +151,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             int? communityId = event.communityId;
             String? communityName = event.communityName;
             ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
-            SortType sortType = event.sortType ?? defaultSortType;
+            SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
             // Fetch community's information
             SubscribedType? subscribedType;

@@ -67,8 +67,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   @override
   bool get wantKeepAlive => true;
 
-  SortType? sortType = SortType.Hot;
-  IconData sortTypeIcon = Icons.local_fire_department_rounded;
+  SortType? sortType;
+  IconData? sortTypeIcon;
 
   @override
   Widget build(BuildContext context) {
