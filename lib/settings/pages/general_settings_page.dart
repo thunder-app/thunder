@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -22,6 +24,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
+  ListingType defaultListingType = ListingType.Local;
 
   // Notification Settings
   bool showInAppUpdateNotification = true;
@@ -65,6 +68,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
         setState(() => hideNsfwPreviews = value);
+        break;
+      case 'setting_general_default_listing_type':
+        await prefs.setString('setting_general_default_listing_type', value);
+        setState(() => defaultListingType = ListingType.values.byName(value ?? ListingType.Local.name));
         break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
@@ -116,6 +123,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
 
       // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
@@ -203,6 +211,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
+                        ListOption(
+                          description: 'Default Feed Type',
+                          value: defaultListingType,
+                          options: const [ListingType.Subscribed, ListingType.All, ListingType.Local],
+                          icon: Icons.feed,
+                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
+                          labelTransformer: (value) => value.name,
+                        )
                       ],
                     ),
                   ),
