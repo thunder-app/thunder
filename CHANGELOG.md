@@ -1,4 +1,10 @@
 ## Unreleased
+### Fixed
+- Fixed issue where creating a comment on a post would not work
+- Added back icon to image preview for edge cases where the swipe down gesture does not work
+- Fixed issue where inbox shows all replies and comments first, rather than just unread messages
+
+## 0.2.1+6 - 2023-06-25
 ### Added
 - External links can now be opened in an external browser, and also shared using the system's sharing options
 - Improved GIF support - contribution from @MrAntonS

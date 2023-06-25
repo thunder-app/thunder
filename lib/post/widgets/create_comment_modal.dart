@@ -67,9 +67,11 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   onPressed: isSubmitButtonDisabled
                       ? null
                       : () {
-                          if (widget.commentView != null) context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
-                          if (widget.comment != null)
+                          if (widget.comment != null) {
                             context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
+                          } else {
+                            context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
+                          }
                           Navigator.of(context).pop();
                         },
                   icon: const Icon(

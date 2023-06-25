@@ -57,14 +57,14 @@ class _ImageViewerState extends State<ImageViewer> {
                 backgroundDecoration: BoxDecoration(color: theme.cardColor),
                 heroAttributes: PhotoViewHeroAttributes(tag: widget.url),
               ),
-              // IconButton(
-              //   color: theme.textTheme.titleLarge?.color,
-              //   onPressed: () => Navigator.pop(context),
-              //   icon: const Icon(
-              //     Icons.close,
-              //     semanticLabel: 'Close Preview',
-              //   ),
-              // ),
+              IconButton(
+                color: theme.textTheme.titleLarge?.color,
+                onPressed: () => Navigator.pop(context),
+                icon: const Icon(
+                  Icons.close,
+                  semanticLabel: 'Close Preview',
+                ),
+              ),
             ],
           ),
         ),

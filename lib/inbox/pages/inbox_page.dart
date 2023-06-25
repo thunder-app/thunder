@@ -69,7 +69,7 @@ class _InboxPageState extends State<InboxPage> {
               setState(() {
                 showUnread = !showUnread;
               });
-              context.read<InboxBloc>().add(GetInboxEvent(showAll: !showUnread));
+              context.read<InboxBloc>().add(GetInboxEvent(showAll: showUnread));
             },
           ),
           IconButton(
