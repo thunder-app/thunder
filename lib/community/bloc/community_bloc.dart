@@ -12,6 +12,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/post.dart';
 
 part 'community_event.dart';
@@ -132,8 +133,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    ListingType defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
-    SortType defaultSortType = SortType.Hot;
+    ListingType defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+    SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
     try {
       var exception;
