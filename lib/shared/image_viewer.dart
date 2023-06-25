@@ -44,7 +44,7 @@ class _ImageViewerState extends State<ImageViewer> {
       body: SafeArea(
         child: Dismissible(
           behavior: HitTestBehavior.translucent,
-          direction: scale < 1 ? DismissDirection.vertical : DismissDirection.none,
+          direction: scale < 1.1 ? DismissDirection.vertical : DismissDirection.none,
           dismissThresholds: const {DismissDirection.vertical: 0.2},
           onDismissed: (direction) => Navigator.pop(context),
           key: Key(widget.url),

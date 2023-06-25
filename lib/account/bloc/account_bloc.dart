@@ -35,7 +35,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               ListCommunities(
                 auth: account?.jwt,
                 type_: ListingType.Subscribed,
-                limit: 100, // Temporarily increasing this to address issue of missing subscriptions
+                limit: 50, // Temporarily increasing this to address issue of missing subscriptions
               ),
             );
 

@@ -17,7 +17,7 @@
 - Slight improvements to account/profile selection to show which profile is currently active
 - When scrolling to the bottom of comments, the FAB for replying will automatically disappear so that the comment is not obstructed
 - Search now sorts by Active rather than the default provided by lemmy - contribution from @Benjamint22
-- Subscriptions list on the sidebar will now load up to 100 rather than 10
+- Subscriptions list on the sidebar will now load up to 50 rather than 10
 
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment

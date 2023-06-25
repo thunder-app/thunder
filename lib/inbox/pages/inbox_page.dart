@@ -113,7 +113,7 @@ class _InboxPageState extends State<InboxPage> {
             const SizedBox(height: 10),
             BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
               if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                return const Text('Log in to see your inbox');
+                return Center(child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
               }
 
               switch (state.status) {
