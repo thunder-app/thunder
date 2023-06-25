@@ -59,7 +59,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       GetRepliesResponse repliesResponse = await lemmy.getReplies(GetReplies(
         auth: account.jwt!,
-        unreadOnly: event.showAll,
+        unreadOnly: !event.showAll,
       ));
 
       return emit(state.copyWith(
