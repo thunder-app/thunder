@@ -17,14 +17,16 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
-  // Post Settings
+  // Feed Settings
   bool useCompactView = false;
+  ListingType defaultListingType = ListingType.Local;
+
+  // Post Settings
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
-  ListingType defaultListingType = ListingType.Local;
 
   // Notification Settings
   bool showInAppUpdateNotification = true;
@@ -43,10 +45,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     switch (attribute) {
+      // Feed Settings
       case 'setting_general_use_compact_view':
         await prefs.setBool('setting_general_use_compact_view', value);
         setState(() => useCompactView = value);
         break;
+      case 'setting_general_default_listing_type':
+        await prefs.setString('setting_general_default_listing_type', value);
+        setState(() => defaultListingType = ListingType.values.byName(value ?? ListingType.Local.name));
+        break;
+
+      // Post Settings
       case 'setting_general_show_link_previews':
         await prefs.setBool('setting_general_show_link_previews', value);
         setState(() => showLinkPreviews = value);
@@ -67,18 +76,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
         setState(() => hideNsfwPreviews = value);
         break;
-      case 'setting_general_default_listing_type':
-        await prefs.setString('setting_general_default_listing_type', value);
-        setState(() => defaultListingType = ListingType.values.byName(value ?? ListingType.Local.name));
-        break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+
+      // Notification Settings
       case 'setting_notifications_show_inapp_update':
         await prefs.setBool('setting_notifications_show_inapp_update', value);
         setState(() => showInAppUpdateNotification = value);
         break;
+
+      // Error Reporting
       case 'setting_error_tracking_enable_sentry':
         await prefs.setBool('setting_error_tracking_enable_sentry', value);
         setState(() => enableSentryErrorTracking = value);
@@ -104,14 +113,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     setState(() {
-      // Post Settings
+      // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
+      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
+
+      // Post Settings
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -159,6 +170,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.density_small_rounded,
                           iconDisabled: Icons.density_small_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
+                        ),
+                        ListOption(
+                          description: 'Default Feed Type',
+                          value: defaultListingType,
+                          options: const [ListingType.Subscribed, ListingType.All, ListingType.Local],
+                          icon: Icons.feed,
+                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
+                          labelTransformer: (value) => value.name,
                         ),
                       ],
                     ),
@@ -211,14 +230,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
-                        ListOption(
-                          description: 'Default Feed Type',
-                          value: defaultListingType,
-                          options: const [ListingType.Subscribed, ListingType.All, ListingType.Local],
-                          icon: Icons.feed,
-                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
-                          labelTransformer: (value) => value.name,
-                        )
                       ],
                     ),
                   ),
