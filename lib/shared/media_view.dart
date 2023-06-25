@@ -15,7 +15,7 @@ import 'package:thunder/shared/webview.dart';
 
 import 'package:lemmy/lemmy.dart';
 
-class MediaView extends StatelessWidget {
+class MediaView extends StatefulWidget {
   final Post? post;
   final PostViewMedia? postView;
   final bool showFullHeightImages;
@@ -32,11 +32,16 @@ class MediaView extends StatelessWidget {
   });
 
   @override
+  State<MediaView> createState() => _MediaViewState();
+}
+
+class _MediaViewState extends State<MediaView> {
+  @override
   Widget build(BuildContext context) {
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    if (postView == null || postView!.media.isEmpty) {
-      if (viewMode == ViewMode.compact) {
+    if (widget.postView == null || widget.postView!.media.isEmpty) {
+      if (widget.viewMode == ViewMode.compact) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(6),
           child: Container(
@@ -56,51 +61,56 @@ class MediaView extends StatelessWidget {
       }
     }
 
-    if (postView!.media.firstOrNull?.mediaType == MediaType.link) {
+    if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
-        originURL: postView!.media.first.originalUrl,
-        mediaURL: postView!.media.first.mediaUrl,
-        mediaHeight: postView!.media.first.height,
-        mediaWidth: postView!.media.first.width,
-        showFullHeightImages: viewMode == ViewMode.comfortable ? showFullHeightImages : false,
-        viewMode: viewMode,
+        originURL: widget.postView!.media.first.originalUrl,
+        mediaURL: widget.postView!.media.first.mediaUrl,
+        mediaHeight: widget.postView!.media.first.height,
+        mediaWidth: widget.postView!.media.first.width,
+        showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
+        viewMode: widget.viewMode,
       );
     }
 
-    bool hideNsfw = hideNsfwPreviews && (postView?.post.nsfw ?? true);
+    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(
           PageRouteBuilder(
-            pageBuilder: (_, __, ___) => ImageViewer(url: postView!.media.first.mediaUrl!),
-            opaque: false,
-            reverseTransitionDuration: const Duration(milliseconds: 150),
-            transitionsBuilder: (_, a, __, c) => FadeTransition(opacity: a, child: c),
+            transitionDuration: const Duration(milliseconds: 400),
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return ImageViewer(url: widget.postView!.media.first.mediaUrl!);
+            },
+            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+              return Align(
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
+            },
           ),
         ),
-        child: Hero(
-          tag: postView!.media.first.mediaUrl!,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6),
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-                hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
-                if (hideNsfw)
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(20),
-                    child: Column(
-                      children: [
-                        Icon(Icons.warning_rounded, size: viewMode != ViewMode.compact ? 55 : 30),
-                        if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
-                      ],
-                    ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(6),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
+              if (hideNsfw)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
+                    ],
                   ),
-              ],
-            ),
+                ),
+            ],
           ),
         ),
       ),
@@ -111,63 +121,66 @@ class MediaView extends StatelessWidget {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    return CachedNetworkImage(
-      imageUrl: postView!.media.first.mediaUrl!,
-      height: viewMode == ViewMode.compact ? 75 : (showFullHeightImages ? postView!.media.first.height : 150),
-      width: viewMode == ViewMode.compact ? 75 : (postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
-      memCacheWidth: viewMode == ViewMode.compact ? 150 : (postView!.media.first.width ?? (MediaQuery.of(context).size.width - 24) * MediaQuery.of(context).devicePixelRatio).toInt(),
-      fit: viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-      progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-        child: Center(
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: CircularProgressIndicator(value: downloadProgress.progress),
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-          child: InkWell(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6), // Image border
-              child: Stack(
-                alignment: Alignment.bottomRight,
-                fit: StackFit.passthrough,
-                children: [
-                  Container(
-                    color: Colors.grey.shade900,
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(
-                            Icons.link,
-                            color: Colors.white60,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            post?.url ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium!.copyWith(
+    return Hero(
+      tag: widget.postView!.media.first.mediaUrl!,
+      child: Image(
+        height: widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150),
+        width: widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
+        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+        image: CachedNetworkImageProvider(widget.postView!.media.first.mediaUrl!),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+            child: SizedBox(
+              width: widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
+              height: widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150),
+              child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
+            ),
+          );
+        },
+        errorBuilder: (context, error, stackTrace) => Container(
+          color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+            child: InkWell(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(6), // Image border
+                child: Stack(
+                  alignment: Alignment.bottomRight,
+                  fit: StackFit.passthrough,
+                  children: [
+                    Container(
+                      color: Colors.grey.shade900,
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                      child: Row(
+                        children: [
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Icon(
+                              Icons.link,
                               color: Colors.white60,
                             ),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            child: Text(
+                              widget.post?.url ?? '',
+                              overflow: TextOverflow.ellipsis,
+                              style: theme.textTheme.bodyMedium!.copyWith(
+                                color: Colors.white60,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
+              onTap: () {
+                if (widget.post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+              },
             ),
-            onTap: () {
-              if (post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: post!.url!)));
-            },
           ),
         ),
       ),
