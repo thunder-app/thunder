@@ -1,4 +1,11 @@
 ## Unreleased
+### Added
+- Added adaptive icons for Android - contribution from @coslu
+
+### Changed
+- Moved theming options into a separate section in settings
+
+## 0.2.1+7 - 2023-06-25
 ### Fixed
 - Fixed issue where creating a comment on a post would not work
 - Added back icon to image preview for edge cases where the swipe down gesture does not work

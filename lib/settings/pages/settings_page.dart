@@ -20,9 +20,8 @@ class SettingsPage extends StatelessWidget {
 
   final List<SettingTopic> topics = [
     SettingTopic(title: 'General', icon: Icons.settings, path: '/settings/general'),
+    SettingTopic(title: 'Theming', icon: Icons.text_fields, path: '/settings/themes'),
     SettingTopic(title: 'About', icon: Icons.info_rounded, path: '/settings/about'),
-
-    // SettingTopic(title: 'Appearance', icon: Icons.text_fields, path: '/settings/appearance'),
     // SettingTopic(title: 'Developer', icon: Icons.developer_mode, path: '/settings/developer'),
   ];
 
