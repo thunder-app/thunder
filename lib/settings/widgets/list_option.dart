@@ -37,8 +37,6 @@ class ListOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    print(options);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
