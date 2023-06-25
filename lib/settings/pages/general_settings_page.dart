@@ -140,7 +140,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
                           child: Text(
-                            'Posts',
+                            'Feed',
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
@@ -150,6 +150,22 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.density_small_rounded,
                           iconDisabled: Icons.density_small_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Posts',
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                         ToggleOption(
                           description: 'Show link previews',

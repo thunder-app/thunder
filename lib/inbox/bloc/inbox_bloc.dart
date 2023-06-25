@@ -29,6 +29,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       _markReplyAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkMentionAsReadEvent>(
+      _markMentionAsReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<CreateInboxCommentReplyEvent>(
       _createCommentEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -48,12 +52,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       // Fetch all the things
       PrivateMessagesResponse privateMessagesResponse = await lemmy.getPrivateMessages(
-        GetPrivateMessages(auth: account!.jwt!, unreadOnly: event.showAll),
+        GetPrivateMessages(auth: account!.jwt!, unreadOnly: !event.showAll),
       );
 
       GetPersonMentionsResponse personMentions = await lemmy.getPersonMentions(GetPersonMentions(
         auth: account.jwt!,
-        unreadOnly: event.showAll,
+        unreadOnly: !event.showAll,
         sort: CommentSortType.New,
       ));
 
@@ -67,6 +71,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         privateMessages: privateMessagesResponse.privateMessages,
         mentions: personMentions.mentions,
         replies: repliesResponse.replies,
+        showUnreadOnly: !event.showAll,
       ));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
@@ -79,7 +84,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   Future<void> _markReplyAsReadEvent(MarkReplyAsReadEvent event, emit) async {
     try {
-      emit(state.copyWith(status: InboxStatus.loading));
+      emit(state.copyWith(
+        status: InboxStatus.loading,
+        privateMessages: state.privateMessages,
+        mentions: state.mentions,
+        replies: state.replies,
+      ));
 
       Account? account = await fetchActiveProfileAccount();
       Lemmy lemmy = LemmyClient.instance.lemmy;
@@ -96,12 +106,41 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         ),
       );
 
-      return emit(state.copyWith(
-        status: InboxStatus.success,
+      add(GetInboxEvent(showAll: !state.showUnreadOnly));
+    } on DioException catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markMentionAsReadEvent(MarkMentionAsReadEvent event, emit) async {
+    try {
+      emit(state.copyWith(
+        status: InboxStatus.loading,
         privateMessages: state.privateMessages,
         mentions: state.mentions,
         replies: state.replies,
       ));
+
+      Account? account = await fetchActiveProfileAccount();
+      Lemmy lemmy = LemmyClient.instance.lemmy;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: InboxStatus.success));
+      }
+
+      PersonMentionResponse response = await lemmy.markPersonMentionAsRead(
+        MarkPersonMentionAsRead(
+          auth: account!.jwt!,
+          personMentionId: event.personMentionId,
+          read: event.read,
+        ),
+      );
+
+      add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));

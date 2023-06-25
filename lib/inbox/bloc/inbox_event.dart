@@ -20,6 +20,13 @@ class MarkReplyAsReadEvent extends InboxEvent {
   const MarkReplyAsReadEvent({required this.commentReplyId, required this.read});
 }
 
+class MarkMentionAsReadEvent extends InboxEvent {
+  final int personMentionId;
+  final bool read;
+
+  const MarkMentionAsReadEvent({required this.personMentionId, required this.read});
+}
+
 class CreateInboxCommentReplyEvent extends InboxEvent {
   final String content;
   final int postId;
