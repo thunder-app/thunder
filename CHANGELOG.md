@@ -9,6 +9,8 @@
 ### Changed
 - Moved theming options into a separate section in settings
 - Adjusted inbox show all toggle to be a button to be more descriptive
+- Adjusted logic for fetching and caching images to bring better performance
+- Changed slide to dismiss images to use a new library
 
 ### Fixed
 - Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus

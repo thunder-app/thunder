@@ -25,6 +25,10 @@ dependencies:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git
       ref: 2.2.1+2
+  extended_image:
+    git:
+      url: https://github.com/hjiangsu/extended_image.git
+      ref: 8.0.3
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

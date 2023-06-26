@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
@@ -57,34 +58,44 @@ class _ImagePreviewState extends State<ImagePreview> {
       borderRadius: BorderRadius.circular(6), // Image border
       child: Stack(
         children: [
-          CachedNetworkImage(
-            imageUrl: widget.url,
-            height: widget.height ?? 150,
-            width: widget.width ?? MediaQuery.of(context).size.width - 24,
-            memCacheHeight: widget.height?.toInt(),
-            memCacheWidth: widget.width?.toInt(),
-            fit: BoxFit.cover,
-            progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-              color: Colors.grey.shade900,
-              child: Center(
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: CircularProgressIndicator(value: downloadProgress.progress),
-                ),
-              ),
-            ),
-            errorWidget: (context, url, error) => Container(
-              color: Colors.grey.shade900,
-              child: const Center(
-                child: SizedBox(
-                  width: 40,
-                  height: 40,
-                  child: Icon(Icons.error),
-                ),
-              ),
-            ),
-          ),
+          // ExtendedImage.network(
+          //   widget.url,
+          //   width: widget.height ?? 150,
+          //   height: widget.width ?? MediaQuery.of(context).size.width - 24,
+          //   fit: BoxFit.fill,
+          //   cache: true,
+          //   border: Border.all(color: Colors.red, width: 1.0),
+          //   borderRadius: const BorderRadius.all(Radius.circular(30.0)),
+          //   //cancelToken: cancellationToken,
+          // ),
+//           CachedNetworkImage(
+//             imageUrl: widget.url,
+//             height: widget.height ?? 150,
+//             width: widget.width ?? MediaQuery.of(context).size.width - 24,
+//             memCacheHeight: widget.height?.toInt(),
+//             memCacheWidth: widget.width?.toInt(),
+//             fit: BoxFit.cover,
+//             progressIndicatorBuilder: (context, url, downloadProgress) => Container(
+//               color: Colors.grey.shade900,
+//               child: Center(
+//                 child: SizedBox(
+//                   width: 40,
+//                   height: 40,
+//                   child: CircularProgressIndicator(value: downloadProgress.progress),
+//                 ),
+//               ),
+//             ),
+//             errorWidget: (context, url, error) => Container(
+//               color: Colors.grey.shade900,
+//               child: const Center(
+//                 child: SizedBox(
+//                   width: 40,
+//                   height: 40,
+//                   child: Icon(Icons.error),
+//                 ),
+//               ),
+//             ),
+//           ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),

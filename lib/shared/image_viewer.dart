@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:photo_view/photo_view.dart';
+import 'package:extended_image/extended_image.dart';
+
+import 'package:thunder/shared/hero.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -13,59 +14,47 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  late PhotoViewControllerBase controller;
-
-  double defScale = 0.1;
-  double scale = 0;
-
-  @override
-  void initState() {
-    controller = PhotoViewController(initialScale: defScale)..outputStateStream.listen(onController);
-    super.initState();
-  }
-
-  void onController(PhotoViewControllerValue value) {
-    setState(() {
-      scale = value.scale ?? 0;
-    });
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      body: SafeArea(
-        child: Dismissible(
-          behavior: HitTestBehavior.translucent,
-          direction: scale < 1.1 ? DismissDirection.vertical : DismissDirection.none,
-          dismissThresholds: const {DismissDirection.vertical: 0.2},
-          onDismissed: (direction) => Navigator.pop(context),
-          key: Key(widget.url),
-          child: Stack(
-            alignment: Alignment.topRight,
-            children: [
-              PhotoView(
-                controller: controller,
-                imageProvider: CachedNetworkImageProvider(widget.url),
-                backgroundDecoration: BoxDecoration(color: theme.cardColor),
-                heroAttributes: PhotoViewHeroAttributes(tag: widget.url),
+      backgroundColor: Colors.black87,
+      body: Center(
+        child: ExtendedImageSlidePage(
+          key: slidePagekey,
+          slideAxis: SlideAxis.both,
+          slideType: SlideType.onlyImage,
+          child: GestureDetector(
+            child: HeroWidget(
+              tag: widget.url,
+              slideType: SlideType.onlyImage,
+              slidePagekey: slidePagekey,
+              child: ExtendedImage.network(
+                widget.url,
+                enableSlideOutPage: true,
+                mode: ExtendedImageMode.gesture,
+                initGestureConfigHandler: (ExtendedImageState state) {
+                  return GestureConfig(
+                    minScale: 0.9,
+                    animationMinScale: 0.7,
+                    maxScale: 4.0,
+                    animationMaxScale: 4.5,
+                    speed: 1.0,
+                    inertialSpeed: 100.0,
+                    initialScale: 1.0,
+                    inPageView: false,
+                    initialAlignment: InitialAlignment.center,
+                    reverseMousePointerScrollDirection: true,
+                    gestureDetailsIsChanged: (GestureDetails? details) {},
+                  );
+                },
               ),
-              IconButton(
-                color: theme.textTheme.titleLarge?.color,
-                onPressed: () => Navigator.pop(context),
-                icon: const Icon(
-                  Icons.close,
-                  semanticLabel: 'Close Preview',
-                ),
-              ),
-            ],
+            ),
+            onTap: () {
+              slidePagekey.currentState!.popPage();
+              Navigator.pop(context);
+            },
           ),
         ),
       ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,21 @@ class MediaView extends StatefulWidget {
   State<MediaView> createState() => _MediaViewState();
 }
 
-class _MediaViewState extends State<MediaView> {
+class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
@@ -79,6 +94,7 @@ class _MediaViewState extends State<MediaView> {
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(
           PageRouteBuilder(
+            opaque: false,
             transitionDuration: const Duration(milliseconds: 400),
             pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
               return ImageViewer(url: widget.postView!.media.first.mediaUrl!);
@@ -121,68 +137,95 @@ class _MediaViewState extends State<MediaView> {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
+    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
+    double width = widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24);
+
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
-      child: Image(
-        height: widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150),
-        width: widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
+      child: ExtendedImage.network(
+        widget.postView!.media.first.mediaUrl!,
+        height: height,
+        width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-        image: CachedNetworkImageProvider(widget.postView!.media.first.mediaUrl!),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-            child: SizedBox(
-              width: widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
-              height: widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150),
-              child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-            ),
-          );
-        },
-        errorBuilder: (context, error, stackTrace) => Container(
-          color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-            child: InkWell(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(6), // Image border
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  fit: StackFit.passthrough,
-                  children: [
-                    Container(
-                      color: Colors.grey.shade900,
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                      child: Row(
+        cache: true,
+        clearMemoryCacheWhenDispose: true,
+        cacheWidth: widget.viewMode == ViewMode.compact
+            ? (75 * View.of(context).devicePixelRatio.ceil())
+            : ((widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+        loadStateChanged: (ExtendedImageState state) {
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              _controller.reset();
+
+              return Container(
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
+                ),
+              );
+            case LoadState.completed:
+              if (state.wasSynchronouslyLoaded) {
+                return state.completedWidget;
+              }
+              _controller.forward();
+
+              return FadeTransition(
+                opacity: _controller,
+                child: state.completedWidget,
+              );
+            case LoadState.failed:
+              _controller.reset();
+
+              state.imageProvider.evict();
+
+              return Container(
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                  child: InkWell(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6), // Image border
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        fit: StackFit.passthrough,
                         children: [
-                          const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Icon(
-                              Icons.link,
-                              color: Colors.white60,
-                            ),
-                          ),
-                          Expanded(
-                            child: Text(
-                              widget.post?.url ?? '',
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium!.copyWith(
-                                color: Colors.white60,
-                              ),
+                          Container(
+                            color: Colors.grey.shade900,
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Icon(
+                                    Icons.link,
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    widget.post?.url ?? '',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: Colors.white60,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ],
+                    onTap: () {
+                      if (widget.post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                    },
+                  ),
                 ),
-              ),
-              onTap: () {
-                if (widget.post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
-              },
-            ),
-          ),
-        ),
+              );
+          }
+        },
       ),
     );
   }
