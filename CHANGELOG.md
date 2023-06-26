@@ -3,10 +3,16 @@
 - Added adaptive icons for Android - contribution from @coslu
 - Inbox mentions and replies can now be marked as read
 - Added default feed type in settings - contribution from @JulianPaulus
+- Added default sort type in settings - contribution from @JulianPaulus
+- Added ability to switch thumbnail previews in compact mode to the right
 
 ### Changed
 - Moved theming options into a separate section in settings
 - Adjusted inbox show all toggle to be a button to be more descriptive
+
+### Fixed
+- Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
+- Fixed issue where comment upvote/downvote did not display properly
 
 ## 0.2.1+7 - 2023-06-25
 ### Fixed
