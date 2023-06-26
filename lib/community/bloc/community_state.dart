@@ -12,7 +12,7 @@ class CommunityState extends Equatable {
     this.communityId,
     this.hasReachedEnd = false,
     this.subscribedType,
-    this.sortType = SortType.Hot,
+    this.sortType,
     this.communityName,
     this.communityInfo,
   });

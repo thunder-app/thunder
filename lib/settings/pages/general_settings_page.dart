@@ -4,10 +4,10 @@ import 'package:lemmy/lemmy.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/constants.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -19,7 +19,8 @@ class GeneralSettingsPage extends StatefulWidget {
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   // Feed Settings
   bool useCompactView = false;
-  ListingType defaultListingType = ListingType.Local;
+  ListingType defaultListingType = DEFAULT_LISTING_TYPE;
+  SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
   bool showLinkPreviews = true;
@@ -52,7 +53,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
       case 'setting_general_default_listing_type':
         await prefs.setString('setting_general_default_listing_type', value);
-        setState(() => defaultListingType = ListingType.values.byName(value ?? ListingType.Local.name));
+        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        break;
+      case 'setting_general_default_sort_type':
+        await prefs.setString('setting_general_default_sort_type', value);
+        setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
         break;
 
       // Post Settings
@@ -115,7 +120,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? ListingType.Local.name);
+      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
@@ -177,6 +183,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           options: const [ListingType.Subscribed, ListingType.All, ListingType.Local],
                           icon: Icons.feed,
                           onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
+                          labelTransformer: (value) => value.name,
+                        ),
+                        ListOption(
+                          description: 'Default Sort Type',
+                          value: defaultSortType,
+                          options: const [SortType.Hot, SortType.Active, SortType.New, SortType.Old, SortType.MostComments, SortType.NewComments],
+                          icon: Icons.sort,
+                          onChanged: (value) => setPreferences('setting_general_default_sort_type', value.name),
                           labelTransformer: (value) => value.name,
                         ),
                       ],
