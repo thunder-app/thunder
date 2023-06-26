@@ -17,6 +17,7 @@ class ThemeSettingsPage extends StatefulWidget {
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   String themeType = 'dark';
   bool useBlackTheme = false;
+  bool useMaterialYouTheme = false;
 
   // Loading
   bool isLoading = true;
@@ -35,6 +36,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         setState(() => useBlackTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case 'setting_theme_use_material_you':
+        await prefs.setBool('setting_theme_use_material_you', value);
+        setState(() => useMaterialYouTheme = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
     }
 
     if (context.mounted) {
@@ -49,6 +55,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       // Theme Settings
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
       useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+
+      useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       isLoading = false;
     });
@@ -97,6 +105,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           iconEnabled: Icons.dark_mode_outlined,
                           iconDisabled: Icons.dark_mode_outlined,
                           onToggle: (bool value) => setPreferences('setting_theme_use_black_theme', value),
+                        ),
+                        ToggleOption(
+                          description: 'Use Material You theme',
+                          value: useMaterialYouTheme,
+                          iconEnabled: Icons.color_lens_rounded,
+                          iconDisabled: Icons.color_lens_rounded,
+                          onToggle: (bool value) => setPreferences('setting_theme_use_material_you', value),
                         ),
                       ],
                     ),

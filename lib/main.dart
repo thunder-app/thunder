@@ -1,5 +1,7 @@
 import 'dart:async';
 
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -70,15 +72,35 @@ class ThunderApp extends StatelessWidget {
           if (state.status == ThemeStatus.initial) {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
-          return OverlaySupport.global(
-            child: MaterialApp.router(
-              title: 'Thunder',
-              routerConfig: router,
-              themeMode: state.useDarkTheme ? ThemeMode.dark : ThemeMode.light,
-              theme: state.theme,
-              darkTheme: state.darkTheme,
-              debugShowCheckedModeBanner: false,
-            ),
+          return DynamicColorBuilder(
+            builder: (lightColorScheme, darkColorScheme) {
+              ThemeData theme = FlexThemeData.light(useMaterial3: true);
+              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepPurple, darkIsTrueBlack: state.useBlackTheme);
+
+              if (state.useMaterialYouTheme == true) {
+                theme = ThemeData(
+                  colorScheme: lightColorScheme,
+                  useMaterial3: true,
+                );
+
+                darkTheme = FlexThemeData.dark(
+                  useMaterial3: true,
+                  colorScheme: darkColorScheme,
+                  darkIsTrueBlack: state.useBlackTheme,
+                );
+              }
+
+              return OverlaySupport.global(
+                child: MaterialApp.router(
+                  title: 'Thunder',
+                  routerConfig: router,
+                  themeMode: state.useDarkTheme ? ThemeMode.dark : ThemeMode.light,
+                  theme: theme,
+                  darkTheme: darkTheme,
+                  debugShowCheckedModeBanner: false,
+                ),
+              );
+            },
           );
         },
       ),

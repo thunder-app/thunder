@@ -5,6 +5,7 @@
 - Added default feed type in settings - contribution from @JulianPaulus
 - Added default sort type in settings - contribution from @JulianPaulus
 - Added ability to switch thumbnail previews in compact mode to the right
+- Added Material You dynamic colour theming
 
 ### Changed
 - Moved theming options into a separate section in settings
