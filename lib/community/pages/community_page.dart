@@ -11,6 +11,7 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/utils/sort_picker.dart';
 
 class SortTypeItem {
   const SortTypeItem({required this.sortType, required this.icon, required this.label});
@@ -198,61 +199,68 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   void showSortBottomSheet(BuildContext context, CommunityState state) {
     final theme = Theme.of(context);
 
-    showModalBottomSheet<void>(
-      showDragHandle: true,
-      context: context,
-      builder: (BuildContext bottomSheetContext) {
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Sort Options',
-                    style: theme.textTheme.titleLarge!.copyWith(),
-                  ),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: sortTypeItems.length,
-                itemBuilder: (BuildContext itemBuilderContext, int index) {
-                  return ListTile(
-                    title: Text(
-                      sortTypeItems[index].label,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    leading: Icon(sortTypeItems[index].icon),
-                    onTap: () {
-                      setState(() {
-                        sortType = sortTypeItems[index].sortType;
-                        sortTypeIcon = sortTypeItems[index].icon;
-                      });
+    showModalBottomSheet(context: context,
+        showDragHandle: true, builder: (builderContext) => SortPicker());
 
-                      context.read<CommunityBloc>().add(
-                            GetCommunityPostsEvent(
-                              sortType: sortTypeItems[index].sortType,
-                              reset: true,
-                              listingType: state.communityId != null ? null : state.listingType,
-                              communityId: widget.communityId ?? state.communityId,
-                            ),
-                          );
-                      Navigator.of(context).pop();
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 16.0),
-            ],
-          ),
-        );
-      },
-    );
+    // showModalBottomSheet<void>(
+    //   showDragHandle: true,
+    //   context: context,
+    //   builder: (BuildContext bottomSheetContext) {
+    //     return SingleChildScrollView(
+    //       child: Column(
+    //         mainAxisAlignment: MainAxisAlignment.start,
+    //         mainAxisSize: MainAxisSize.max,
+    //         children: [
+    //           Padding(
+    //             padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+    //             child: Align(
+    //               alignment: Alignment.centerLeft,
+    //               child: Text(
+    //                 'Sort Options',
+    //                 style: theme.textTheme.titleLarge!.copyWith(),
+    //               ),
+    //             ),
+    //           ),
+    //           ListView(
+    //             shrinkWrap: true,
+    //             physics: const NeverScrollableScrollPhysics(),
+    //             children: [
+    //               ...sortTypeItems.map((item) => ListTile(
+    //               title: Text(
+    //                 item.label,
+    //                 style: theme.textTheme.bodyMedium,
+    //               ),
+    //               leading: Icon(item.icon),
+    //               onTap: () {
+    //                 setState(() {
+    //                   sortType = item.sortType;
+    //                   sortTypeIcon = item.icon;
+    //                 });
+    //
+    //                 context.read<CommunityBloc>().add(
+    //                   GetCommunityPostsEvent(
+    //                     sortType: item.sortType,
+    //                     reset: true,
+    //                     listingType: state.communityId != null ? null : state.listingType,
+    //                     communityId: widget.communityId ?? state.communityId,
+    //                   ),
+    //                 );
+    //                 Navigator.of(context).pop();
+    //               },
+    //             )).toList(),
+    //               const ListTile(
+    //                 leading: Icon(Icons.military_tech),
+    //                 title: Text("Top"),
+    //                 trailing: Icon(Icons.chevron_right),
+    //               ),
+    //             ],
+    //           ),
+    //           const SizedBox(height: 16.0),
+    //         ],
+    //       ),
+    //     );
+    //   },
+    // );
   }
 
   String getCommunityName(CommunityState state) {
