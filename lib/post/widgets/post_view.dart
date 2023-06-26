@@ -158,7 +158,7 @@ class PostSubview extends StatelessWidget {
                         );
                       }
                     : null,
-                icon: const Icon(Icons.reply_rounded),
+                icon: const Icon(Icons.reply_rounded, semanticLabel: 'Reply'),
               ),
               IconButton(
                 icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
