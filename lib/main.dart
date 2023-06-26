@@ -4,6 +4,7 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +34,9 @@ FutureOr<SentryEvent?> beforeSend(SentryEvent event, {Hint? hint}) async {
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+
+  //Setting SystmeUIMode
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Load up environment variables
   await dotenv.load(fileName: ".env");
@@ -89,6 +93,13 @@ class ThunderApp extends StatelessWidget {
                   darkIsTrueBlack: state.useBlackTheme,
                 );
               }
+
+              // Set navigation bar color on Android to be transparent
+              SystemChrome.setSystemUIOverlayStyle(
+                SystemUiOverlayStyle(
+                  systemNavigationBarColor: Colors.black.withOpacity(0.0001),
+                ),
+              );
 
               return OverlaySupport.global(
                 child: MaterialApp.router(
