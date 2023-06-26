@@ -23,6 +23,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
+  bool showThumbnailPreviewOnRight = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
@@ -61,6 +62,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
 
       // Post Settings
+      case 'setting_compact_show_thumbnail_on_right':
+        await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
+        setState(() => showThumbnailPreviewOnRight = value);
+        break;
       case 'setting_general_show_link_previews':
         await prefs.setBool('setting_general_show_link_previews', value);
         setState(() => showLinkPreviews = value);
@@ -124,6 +129,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
+      showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -208,6 +214,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             'Posts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Show thumbnail on right',
+                          value: showThumbnailPreviewOnRight,
+                          iconEnabled: Icons.photo_size_select_large_rounded,
+                          iconDisabled: Icons.photo_size_select_large_rounded,
+                          onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                         ),
                         ToggleOption(
                           description: 'Show link previews',
