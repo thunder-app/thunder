@@ -267,16 +267,9 @@ class _CommentCardState extends State<CommentCard> {
                   AnimatedSize(
                     duration: const Duration(milliseconds: 200),
                     curve: Curves.fastOutSlowIn,
-                    child: AnimatedOpacity(
-                      opacity: isHidden ? 0.0 : 1.0,
-                      curve: Curves.fastOutSlowIn,
-                      duration: const Duration(milliseconds: 200),
-                      child: isHidden
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                              child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
-                            ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                      child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
                     ),
                   ),
                 ],
