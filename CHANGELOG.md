@@ -11,6 +11,7 @@
 - Adjusted inbox show all toggle to be a button to be more descriptive
 - Adjusted logic for fetching and caching images to bring better performance
 - Changed slide to dismiss images to use a new library
+- Tapping on a comment will only collapse the replies to that comment - contribution from @vbh
 
 ### Fixed
 - Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
