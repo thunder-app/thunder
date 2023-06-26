@@ -6,6 +6,7 @@
 - Added default sort type in settings - contribution from @JulianPaulus
 - Added ability to switch thumbnail previews in compact mode to the right
 - Added Material You dynamic colour theming
+- Added system theme option
 
 ### Changed
 - Moved theming options into a separate section in settings
@@ -17,6 +18,7 @@
 ### Fixed
 - Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
 - Fixed issue where comment upvote/downvote did not display properly
+- Fixed issue where navigation bar was black on Android devices
 
 ## 0.2.1+7 - 2023-06-25
 ### Fixed

@@ -29,6 +29,9 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       emit(state.copyWith(status: ThemeStatus.loading));
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
+
       String themeType = prefs.getString('setting_theme_type') ?? 'dark';
       bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
 
@@ -37,6 +40,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       if (themeType == 'dark') {
         return emit(state.copyWith(
           status: ThemeStatus.success,
+          useSystemTheme: useSystemTheme,
           useMaterialYouTheme: useMaterialYouTheme,
           useDarkTheme: true,
           useBlackTheme: useBlackTheme,
@@ -44,8 +48,10 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       } else {
         return emit(state.copyWith(
           status: ThemeStatus.success,
-          useDarkTheme: false,
+          useSystemTheme: useSystemTheme,
           useMaterialYouTheme: useMaterialYouTheme,
+          useDarkTheme: false,
+          useBlackTheme: useBlackTheme,
         ));
       }
     } catch (e, s) {

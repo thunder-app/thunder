@@ -15,6 +15,7 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
+  bool useSystemTheme = false;
   String themeType = 'dark';
   bool useBlackTheme = false;
   bool useMaterialYouTheme = false;
@@ -26,6 +27,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final prefs = await SharedPreferences.getInstance();
 
     switch (attribute) {
+      case 'setting_theme_use_system_theme':
+        await prefs.setBool('setting_theme_use_system_theme', value);
+        setState(() => useSystemTheme = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case 'setting_theme_type':
         await prefs.setString('setting_theme_type', value);
         setState(() => themeType = value);
@@ -53,6 +59,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
     setState(() {
       // Theme Settings
+      useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
+
       themeType = prefs.getString('setting_theme_type') ?? 'dark';
       useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
 
@@ -91,6 +99,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             'Theme',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Use system theme',
+                          value: useSystemTheme,
+                          iconEnabled: Icons.wallpaper,
+                          iconDisabled: Icons.wallpaper,
+                          onToggle: (bool value) => setPreferences('setting_theme_use_system_theme', value),
                         ),
                         ToggleOption(
                           description: 'Use dark theme',
