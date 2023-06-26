@@ -1,15 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
-import 'package:thunder/shared/webview.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -39,7 +34,7 @@ class CommentCard extends StatefulWidget {
   State<CommentCard> createState() => _CommentCardState();
 }
 
-class _CommentCardState extends State<CommentCard> {
+class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
   List<Color> colors = [
     Colors.red.shade300,
     Colors.orange.shade300,
@@ -56,10 +51,30 @@ class _CommentCardState extends State<CommentCard> {
   DismissDirection? dismissDirection;
   SwipeAction? swipeAction;
 
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 100),
+    vsync: this,
+  );
+
+  // Animation for comment collapse
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
   @override
   void initState() {
     isHidden = widget.collapsed;
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -209,131 +224,99 @@ class _CommentCardState extends State<CommentCard> {
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => setState(() => isHidden = !isHidden),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Text(
-                                  widget.commentViewTree.creator.name,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: widget.commentViewTree.creator.admin
-                                        ? theme.colorScheme.tertiary
-                                        : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
-                                            ? Colors.amber
-                                            : theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                Icon(
-                                  myVote == -1 ? Icons.south_rounded : Icons.north_rounded,
-                                  size: 12.0,
-                                  color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
-                                ),
-                                const SizedBox(width: 2.0),
-                                Text(
-                                  formatNumberToK(score),
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                          child: Row(
                             children: [
-                              Icon(
-                                saved ? Icons.star_rounded : null,
-                                color: saved ? Colors.purple : null,
-                                size: 18.0,
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                formatTimeToString(dateTime: widget.commentViewTree.comment.published),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onBackground,
-                                ),
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.fastOutSlowIn,
-                    child: AnimatedOpacity(
-                      opacity: isHidden ? 0.0 : 1.0,
-                      curve: Curves.fastOutSlowIn,
-                      duration: const Duration(milliseconds: 200),
-                      child: isHidden
-                          ? Container()
-                          : Padding(
-                              padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                              child: MarkdownBody(
-                                data: widget.commentViewTree.comment.content,
-                                onTapLink: (text, url, title) {
-                                  String? communityName = checkLemmyInstanceUrl(text);
-                                  if (communityName != null) {
-                                    // Push navigation
-                                    AccountBloc accountBloc = context.read<AccountBloc>();
-                                    AuthBloc authBloc = context.read<AuthBloc>();
-                                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider.value(value: accountBloc),
-                                            BlocProvider.value(value: authBloc),
-                                            BlocProvider.value(value: thunderBloc),
-                                          ],
-                                          child: CommunityPage(communityName: communityName),
-                                        ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      widget.commentViewTree.creator.name,
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: widget.commentViewTree.creator.admin
+                                            ? theme.colorScheme.tertiary
+                                            : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
+                                                ? Colors.amber
+                                                : theme.colorScheme.onBackground,
+                                        fontWeight: FontWeight.w500,
                                       ),
-                                    );
-                                  } else if (url != null) {
-                                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
-                                  }
-                                },
-                                styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                                  p: theme.textTheme.bodyMedium,
-                                  blockquoteDecoration: const BoxDecoration(
-                                    color: Colors.transparent,
-                                    border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-                                  ),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Icon(
+                                      myVote == -1 ? Icons.south_rounded : Icons.north_rounded,
+                                      size: 12.0,
+                                      color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                    ),
+                                    const SizedBox(width: 2.0),
+                                    Text(
+                                      formatNumberToK(score),
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ),
+                              Row(
+                                children: [
+                                  Icon(
+                                    saved ? Icons.star_rounded : null,
+                                    color: saved ? Colors.purple : null,
+                                    size: 18.0,
+                                  ),
+                                  const SizedBox(width: 8.0),
+                                  Text(
+                                    formatTimeToString(dateTime: widget.commentViewTree.comment.published),
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.colorScheme.onBackground,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                          child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
+                        ),
+                      ],
                     ),
                   ),
                 ],
               ),
             ),
           ),
-          AnimatedContainer(
-            key: childKey,
-            duration: const Duration(milliseconds: 200),
-            curve: Curves.fastOutSlowIn,
-            child: AnimatedOpacity(
-              opacity: isHidden ? 0.0 : 1.0,
-              curve: Curves.fastOutSlowIn,
-              duration: const Duration(milliseconds: 200),
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) => CommentCard(
-                  commentViewTree: widget.commentViewTree.replies[index],
-                  level: widget.level + 1,
-                  collapsed: widget.level > 2,
+          AnimatedSwitcher(
+            duration: const Duration(milliseconds: 130),
+            switchInCurve: Curves.easeInOut,
+            switchOutCurve: Curves.easeInOut,
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return SizeTransition(
+                sizeFactor: animation,
+                child: SlideTransition(
+                  position: _offsetAnimation,
+                  child: child,
                 ),
-                itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
-              ),
-            ),
+              );
+            },
+            child: isHidden
+                ? Container()
+                : ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) => CommentCard(
+                      commentViewTree: widget.commentViewTree.replies[index],
+                      level: widget.level + 1,
+                      collapsed: widget.level > 2,
+                    ),
+                    itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
+                  ),
           ),
         ],
       ),

@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,7 +16,7 @@ import 'package:thunder/shared/webview.dart';
 
 import 'package:lemmy/lemmy.dart';
 
-class MediaView extends StatelessWidget {
+class MediaView extends StatefulWidget {
   final Post? post;
   final PostViewMedia? postView;
   final bool showFullHeightImages;
@@ -32,11 +33,30 @@ class MediaView extends StatelessWidget {
   });
 
   @override
+  State<MediaView> createState() => _MediaViewState();
+}
+
+class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    if (postView == null || postView!.media.isEmpty) {
-      if (viewMode == ViewMode.compact) {
+    if (widget.postView == null || widget.postView!.media.isEmpty) {
+      if (widget.viewMode == ViewMode.compact) {
         return ClipRRect(
           borderRadius: BorderRadius.circular(6),
           child: Container(
@@ -56,25 +76,37 @@ class MediaView extends StatelessWidget {
       }
     }
 
-    if (postView!.media.firstOrNull?.mediaType == MediaType.link) {
+    if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
-        originURL: postView!.media.first.originalUrl,
-        mediaURL: postView!.media.first.mediaUrl,
-        mediaHeight: postView!.media.first.height,
-        mediaWidth: postView!.media.first.width,
-        showFullHeightImages: viewMode == ViewMode.comfortable ? showFullHeightImages : false,
-        viewMode: viewMode,
+        originURL: widget.postView!.media.first.originalUrl,
+        mediaURL: widget.postView!.media.first.mediaUrl,
+        mediaHeight: widget.postView!.media.first.height,
+        mediaWidth: widget.postView!.media.first.width,
+        showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
+        viewMode: widget.viewMode,
       );
     }
 
-    bool hideNsfw = hideNsfwPreviews && (postView?.post.nsfw ?? true);
+    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ImageViewer(url: postView!.media.first.mediaUrl!),
+          PageRouteBuilder(
+            opaque: false,
+            transitionDuration: const Duration(milliseconds: 400),
+            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              return ImageViewer(url: widget.postView!.media.first.mediaUrl!);
+            },
+            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+              return Align(
+                child: FadeTransition(
+                  opacity: animation,
+                  child: child,
+                ),
+              );
+            },
           ),
         ),
         child: ClipRRect(
@@ -89,8 +121,8 @@ class MediaView extends StatelessWidget {
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Icon(Icons.warning_rounded, size: viewMode != ViewMode.compact ? 55 : 30),
-                      if (viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
+                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
                     ],
                   ),
                 ),
@@ -105,65 +137,95 @@ class MediaView extends StatelessWidget {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    return CachedNetworkImage(
-      imageUrl: postView!.media.first.mediaUrl!,
-      height: viewMode == ViewMode.compact ? 75 : (showFullHeightImages ? postView!.media.first.height : 150),
-      width: viewMode == ViewMode.compact ? 75 : (postView!.media.first.width ?? MediaQuery.of(context).size.width - 24),
-      memCacheWidth: viewMode == ViewMode.compact ? 150 : (postView!.media.first.width ?? (MediaQuery.of(context).size.width - 24) * MediaQuery.of(context).devicePixelRatio).toInt(),
-      fit: viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-      progressIndicatorBuilder: (context, url, downloadProgress) => Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-        child: Center(
-          child: SizedBox(
-            width: 40,
-            height: 40,
-            child: CircularProgressIndicator(value: downloadProgress.progress),
-          ),
-        ),
-      ),
-      errorWidget: (context, url, error) => Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-        child: Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-          child: InkWell(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(6), // Image border
-              child: Stack(
-                alignment: Alignment.bottomRight,
-                fit: StackFit.passthrough,
-                children: [
-                  Container(
-                    color: Colors.grey.shade900,
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                    child: Row(
-                      children: [
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Icon(
-                            Icons.link,
-                            color: Colors.white60,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            post?.url ?? '',
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium!.copyWith(
-                              color: Colors.white60,
+    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
+    double width = widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24);
+
+    return Hero(
+      tag: widget.postView!.media.first.mediaUrl!,
+      child: ExtendedImage.network(
+        widget.postView!.media.first.mediaUrl!,
+        height: height,
+        width: width,
+        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+        cache: true,
+        clearMemoryCacheWhenDispose: true,
+        cacheWidth: widget.viewMode == ViewMode.compact
+            ? (75 * View.of(context).devicePixelRatio.ceil())
+            : ((widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+        loadStateChanged: (ExtendedImageState state) {
+          switch (state.extendedImageLoadState) {
+            case LoadState.loading:
+              _controller.reset();
+
+              return Container(
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                child: SizedBox(
+                  height: height,
+                  width: width,
+                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
+                ),
+              );
+            case LoadState.completed:
+              if (state.wasSynchronouslyLoaded) {
+                return state.completedWidget;
+              }
+              _controller.forward();
+
+              return FadeTransition(
+                opacity: _controller,
+                child: state.completedWidget,
+              );
+            case LoadState.failed:
+              _controller.reset();
+
+              state.imageProvider.evict();
+
+              return Container(
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                  child: InkWell(
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(6), // Image border
+                      child: Stack(
+                        alignment: Alignment.bottomRight,
+                        fit: StackFit.passthrough,
+                        children: [
+                          Container(
+                            color: Colors.grey.shade900,
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                            child: Row(
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  child: Icon(
+                                    Icons.link,
+                                    color: Colors.white60,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    widget.post?.url ?? '',
+                                    overflow: TextOverflow.ellipsis,
+                                    style: theme.textTheme.bodyMedium!.copyWith(
+                                      color: Colors.white60,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
+                    onTap: () {
+                      if (widget.post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                    },
                   ),
-                ],
-              ),
-            ),
-            onTap: () {
-              if (post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: post!.url!)));
-            },
-          ),
-        ),
+                ),
+              );
+          }
+        },
       ),
     );
   }

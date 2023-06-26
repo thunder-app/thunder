@@ -64,7 +64,17 @@ class _PostCardState extends State<PostCard> {
           context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postView.post.id, score: vote));
         }
 
-        if (swipeAction == SwipeAction.reply) {}
+        if (swipeAction == SwipeAction.reply) {
+          SnackBar snackBar = const SnackBar(
+            content: Text('Replying from this view is currently not supported yet'),
+            behavior: SnackBarBehavior.floating,
+          );
+
+          if (context.mounted) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }
+        }
 
         if (swipeAction == SwipeAction.save) {
           context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postView.post.id, save: !saved));
@@ -165,6 +175,7 @@ class _PostCardState extends State<PostCard> {
     final ThemeData theme = Theme.of(context);
 
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
+    final bool showThumbnailPreviewOnRight = context.read<ThunderBloc>().state.preferences?.getBool('setting_compact_show_thumbnail_on_right') ?? false;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -174,13 +185,14 @@ class _PostCardState extends State<PostCard> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          MediaView(
-            postView: widget.postView,
-            showFullHeightImages: false,
-            hideNsfwPreviews: hideNsfwPreviews,
-            viewMode: ViewMode.compact,
-          ),
-          const SizedBox(width: 8.0),
+          if (!showThumbnailPreviewOnRight)
+            MediaView(
+              postView: widget.postView,
+              showFullHeightImages: false,
+              hideNsfwPreviews: hideNsfwPreviews,
+              viewMode: ViewMode.compact,
+            ),
+          if (!showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -208,6 +220,14 @@ class _PostCardState extends State<PostCard> {
               ],
             ),
           ),
+          if (showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
+          if (showThumbnailPreviewOnRight)
+            MediaView(
+              postView: widget.postView,
+              showFullHeightImages: false,
+              hideNsfwPreviews: hideNsfwPreviews,
+              viewMode: ViewMode.compact,
+            ),
         ],
       ),
     );

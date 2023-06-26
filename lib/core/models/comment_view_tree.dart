@@ -13,6 +13,7 @@ class CommentViewTree extends CommentView {
     required super.post,
     required super.saved,
     required super.subscribed,
+    required super.myVote,
     this.replies = const [],
   });
 }

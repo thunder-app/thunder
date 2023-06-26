@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                         context.pop();
                       }
                     : null,
-                child: Text('Login', style: theme.textTheme.titleMedium),
+                child: Text('Login', style: theme.textTheme.titleMedium?.copyWith(color: fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
               ),
               TextButton(
                 style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),

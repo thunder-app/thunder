@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/shared/webview.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:share_plus/share_plus.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -88,39 +87,8 @@ class PostSubview extends StatelessWidget {
           if (postView.post.body != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: MarkdownBody(
-                data: postView.post.body!,
-                onTapLink: (text, url, title) {
-                  String? communityName = checkLemmyInstanceUrl(text);
-                  if (communityName != null) {
-                    // Push navigation
-                    AccountBloc accountBloc = context.read<AccountBloc>();
-                    AuthBloc authBloc = context.read<AuthBloc>();
-                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: accountBloc),
-                            BlocProvider.value(value: authBloc),
-                            BlocProvider.value(value: thunderBloc),
-                          ],
-                          child: CommunityPage(communityName: communityName),
-                        ),
-                      ),
-                    );
-                  } else if (url != null) {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
-                  }
-                },
-                styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-                  p: theme.textTheme.bodyMedium,
-                  blockquoteDecoration: const BoxDecoration(
-                    color: Colors.transparent,
-                    border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-                  ),
-                ),
+              child: CommonMarkdownBody(
+                body: postView.post.body ?? '',
               ),
             ),
           const Divider(),
@@ -166,18 +134,36 @@ class PostSubview extends StatelessWidget {
                 ),
                 color: postView.saved ? Colors.purple : null,
               ),
-              // IconButton(
-              //   onPressed: null,
-              //   icon: Icon(
-              //     Icons.reply_rounded,
-              //   ),
-              // ),
-              // IconButton(
-              //   onPressed: null,
-              //   icon: Icon(
-              //     Icons.ios_share_rounded,
-              //   ),
-              // )
+              IconButton(
+                onPressed: isUserLoggedIn
+                    ? () {
+                        PostBloc postBloc = context.read<PostBloc>();
+
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          showDragHandle: true,
+                          builder: (context) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                              child: FractionallySizedBox(
+                                heightFactor: 0.8,
+                                child: BlocProvider<PostBloc>.value(
+                                  value: postBloc,
+                                  child: CreateCommentModal(postView: postView),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    : null,
+                icon: const Icon(Icons.reply_rounded, semanticLabel: 'Reply'),
+              ),
+              IconButton(
+                icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
+                onPressed: () => Share.share(postView.post.apId),
+              )
             ],
           )
         ],

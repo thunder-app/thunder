@@ -12,29 +12,34 @@ class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
   final List<CommentViewTree> comments;
 
-  const PostPageSuccess({super.key, required this.postView, this.comments = const []});
+  final ScrollController scrollController;
+
+  const PostPageSuccess({
+    super.key,
+    required this.postView,
+    this.comments = const [],
+    required this.scrollController,
+  });
 
   @override
   State<PostPageSuccess> createState() => _PostPageSuccessState();
 }
 
 class _PostPageSuccessState extends State<PostPageSuccess> {
-  final _scrollController = ScrollController(initialScrollOffset: 0);
-
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
+    widget.scrollController.addListener(_onScroll);
     super.initState();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    widget.scrollController.removeListener(_onScroll);
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+    if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.8) {
       context.read<PostBloc>().add(const GetPostCommentsEvent());
     }
   }
@@ -42,7 +47,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      controller: _scrollController,
+      controller: widget.scrollController,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,

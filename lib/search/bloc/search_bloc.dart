@@ -58,6 +58,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           q: event.query,
           page: 1,
           limit: 15,
+          sort: SortType.Active,
         ),
       );
 
@@ -96,6 +97,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
               q: event.query,
               page: state.page,
               limit: 15,
+              sort: SortType.Active,
             ),
           );
 

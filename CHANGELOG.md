@@ -1,5 +1,33 @@
 ## Unreleased
 ### Added
+- Added adaptive icons for Android - contribution from @coslu
+- Inbox mentions and replies can now be marked as read
+- Added default feed type in settings - contribution from @JulianPaulus
+- Added default sort type in settings - contribution from @JulianPaulus
+- Added ability to switch thumbnail previews in compact mode to the right
+- Added Material You dynamic colour theming
+- Added system theme option
+
+### Changed
+- Moved theming options into a separate section in settings
+- Adjusted inbox show all toggle to be a button to be more descriptive
+- Adjusted logic for fetching and caching images to bring better performance
+- Changed slide to dismiss images to use a new library
+- Tapping on a comment will only collapse the replies to that comment - contribution from @vbh
+
+### Fixed
+- Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
+- Fixed issue where comment upvote/downvote did not display properly
+- Fixed issue where navigation bar was black on Android devices
+
+## 0.2.1+7 - 2023-06-25
+### Fixed
+- Fixed issue where creating a comment on a post would not work
+- Added back icon to image preview for edge cases where the swipe down gesture does not work
+- Fixed issue where inbox shows all replies and comments first, rather than just unread messages
+
+## 0.2.1+6 - 2023-06-25
+### Added
 - External links can now be opened in an external browser, and also shared using the system's sharing options
 - Improved GIF support - contribution from @MrAntonS
 - Improved accessibility labels for icons and actions
@@ -7,14 +35,22 @@
 - New OLED black theme
 - Added initial inbox feature to see your replies, mentions, and private messages
 - Added about page with links to lemmy and github repository
+- Added sharing option to posts
+- Added reply action to posts
+- Posts on the feed can now be voted on and saved through swipe gestures
+- Swiping down or up on a full screen photo will now dismiss it
 
 ### Changed
 - Adjusted size of create comment bottom modal, and enabled text selection within the modal for the parent's comment
 - Slight improvements to account/profile selection to show which profile is currently active
+- When scrolling to the bottom of comments, the FAB for replying will automatically disappear so that the comment is not obstructed
+- Search now sorts by Active rather than the default provided by lemmy - contribution from @Benjamint22
+- Subscriptions list on the sidebar will now load up to 50 rather than 10
 
 ### Fixed
 - Potentially fixed issue where scrolling behaviour is weird when creating a new post or comment
 - Fixed issue where usernames/passwords containing leading or trailing spaces may fail to login - contribution from @MrAntonS
+- Fixed issue where passwords with a length > 60 would throw an error "incorrect password"
 
 ## 0.2.1+5 - 2023-06-22
 ### Added

@@ -5,34 +5,38 @@ enum ThemeStatus { initial, loading, refreshing, success, failure }
 class ThemeState extends Equatable {
   const ThemeState({
     this.status = ThemeStatus.initial,
+    this.useSystemTheme = false,
     this.useDarkTheme = true,
-    required this.theme,
-    required this.darkTheme,
+    this.useBlackTheme = false,
+    this.useMaterialYouTheme = false,
   });
 
   final ThemeStatus status;
 
   // Theming options
+  final bool useSystemTheme;
   final bool useDarkTheme;
+  final bool useBlackTheme;
 
-  // Specific themes
-  final ThemeData theme;
-  final ThemeData darkTheme;
+  final bool useMaterialYouTheme;
 
   ThemeState copyWith({
     required ThemeStatus status,
+    bool? useSystemTheme,
     bool? useDarkTheme,
-    ThemeData? theme,
+    bool? useBlackTheme,
+    bool? useMaterialYouTheme,
     ThemeData? darkTheme,
   }) {
     return ThemeState(
       status: status,
+      useSystemTheme: useSystemTheme ?? false,
       useDarkTheme: useDarkTheme ?? true,
-      theme: theme ?? this.theme,
-      darkTheme: darkTheme ?? this.darkTheme,
+      useBlackTheme: useBlackTheme ?? false,
+      useMaterialYouTheme: useMaterialYouTheme ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [status, useDarkTheme, theme, darkTheme];
+  List<Object?> get props => [status, useDarkTheme, useMaterialYouTheme, useBlackTheme, useSystemTheme];
 }

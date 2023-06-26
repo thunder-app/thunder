@@ -48,13 +48,15 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   InboxType? _inboxType = inboxCategories[0].type;
 
+  bool showUnread = false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 70.0,
+        toolbarHeight: 80.0,
         centerTitle: false,
         title: AutoSizeText('Inbox', style: theme.textTheme.titleLarge),
         actions: [
@@ -66,7 +68,18 @@ class _InboxPageState extends State<InboxPage> {
             onPressed: () {
               context.read<InboxBloc>().add(const GetInboxEvent());
             },
-          )
+          ),
+          FilterChip(
+            shape: const StadiumBorder(),
+            visualDensity: VisualDensity.compact,
+            label: const Text(' Show All'),
+            selected: !showUnread,
+            onSelected: (bool selected) {
+              setState(() => showUnread = !selected);
+              context.read<InboxBloc>().add(GetInboxEvent(showAll: selected));
+            },
+          ),
+          const SizedBox(width: 16.0),
         ],
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(45.0),
@@ -99,7 +112,7 @@ class _InboxPageState extends State<InboxPage> {
             const SizedBox(height: 10),
             BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
               if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                return const Text('Log in to see your inbox');
+                return Center(child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
               }
 
               switch (state.status) {

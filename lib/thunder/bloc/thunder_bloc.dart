@@ -44,13 +44,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Check for any updates from GitHub
       Version version = await fetchVersion();
 
-      // Get theme preferences
+      // Get Preferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
 
-      bool useDarkTheme = themeType == 'dark';
-
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, useDarkTheme: useDarkTheme, preferences: prefs));
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, preferences: prefs));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

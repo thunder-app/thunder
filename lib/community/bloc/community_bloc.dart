@@ -12,6 +12,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/post.dart';
 
 part 'community_event.dart';
@@ -130,9 +131,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int attemptCount = 0;
 
-    // This is a temp placeholder for when we add the option to select default types
-    ListingType defaultListingType = ListingType.Local;
-    SortType defaultSortType = SortType.Hot;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    ListingType defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+    SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
     try {
       var exception;
@@ -149,7 +151,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             int? communityId = event.communityId;
             String? communityName = event.communityName;
             ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
-            SortType sortType = event.sortType ?? defaultSortType;
+            SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
             // Fetch community's information
             SubscribedType? subscribedType;

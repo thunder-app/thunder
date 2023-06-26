@@ -58,6 +58,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
       creatorBlocked: commentView.creatorBlocked,
       post: commentView.post,
       saved: commentView.saved,
+      myVote: commentView.myVote,
       subscribed: commentView.subscribed,
       replies: [],
     );
