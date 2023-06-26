@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -19,6 +20,7 @@ class CommonMarkdownBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
     return MarkdownBody(
       data: body,
@@ -44,7 +46,11 @@ class CommonMarkdownBody extends StatelessWidget {
             ),
           );
         } else if (url != null) {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
+          if (openInExternalBrowser) {
+            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
+          }
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(

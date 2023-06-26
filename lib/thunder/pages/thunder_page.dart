@@ -17,6 +17,7 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -92,7 +93,7 @@ class _ThunderState extends State<Thunder> {
 
                           if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
-                              showUpdateNotification(version);
+                              showUpdateNotification(context, version);
 
                               setState(() => hasShownUpdateDialog = true);
                             });
@@ -200,11 +201,13 @@ class _ThunderState extends State<Thunder> {
   }
 
   // Update notification
-  void showUpdateNotification(Version? version) {
+  void showUpdateNotification(BuildContext context, Version? version) {
     final theme = Theme.of(context);
+    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
     showSimpleNotification(
       GestureDetector(
+        behavior: HitTestBehavior.opaque,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -219,7 +222,11 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder/releases/latest')));
+          if (openInExternalBrowser) {
+            launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest'), mode: LaunchMode.externalApplication);
+          } else {
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder/releases/latest')));
+          }
         },
       ),
       background: theme.cardColor,

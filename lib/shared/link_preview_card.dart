@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -81,6 +82,8 @@ class LinkPreviewCard extends StatelessWidget {
   }
 
   void triggerOnTap(BuildContext context) {
+    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation
       AccountBloc accountBloc = context.read<AccountBloc>();
@@ -102,7 +105,11 @@ class LinkPreviewCard extends StatelessWidget {
         ),
       );
     } else if (originURL != null) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
+      if (openInExternalBrowser) {
+        launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
+      } else {
+        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
+      }
     }
   }
 
