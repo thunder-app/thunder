@@ -210,67 +210,73 @@ class _CommentCardState extends State<CommentCard> {
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: () => setState(() => isHidden = !isHidden),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Row(
-                              children: [
-                                Text(
-                                  widget.commentViewTree.creator.name,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: widget.commentViewTree.creator.admin
-                                        ? theme.colorScheme.tertiary
-                                        : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
-                                            ? Colors.amber
-                                            : theme.colorScheme.onBackground,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(width: 8.0),
-                                Icon(
-                                  myVote == -1 ? Icons.south_rounded : Icons.north_rounded,
-                                  size: 12.0,
-                                  color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
-                                ),
-                                const SizedBox(width: 2.0),
-                                Text(
-                                  formatNumberToK(score),
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+                          child: Row(
                             children: [
-                              Icon(
-                                saved ? Icons.star_rounded : null,
-                                color: saved ? Colors.purple : null,
-                                size: 18.0,
-                              ),
-                              const SizedBox(width: 8.0),
-                              Text(
-                                formatTimeToString(dateTime: widget.commentViewTree.comment.published),
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: theme.colorScheme.onBackground,
-                                ),
-                              ),
+                              Expanded(
+                               child: Row(
+                                 children: [
+                                   Text(
+                                     widget.commentViewTree.creator.name,
+                                     style: theme.textTheme.bodyMedium?.copyWith(
+                                       color: widget.commentViewTree.creator.admin
+                                           ? theme.colorScheme.tertiary
+                                           : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
+                                           ? Colors.amber
+                                           : theme.colorScheme.onBackground,
+                                       fontWeight: FontWeight.w500,
+                                     ),
+                                   ),
+                                   const SizedBox(width: 8.0),
+                                   Icon(
+                                     myVote == -1 ? Icons.south_rounded : Icons.north_rounded,
+                                     size: 12.0,
+                                     color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                   ),
+                                   const SizedBox(width: 2.0),
+                                   Text(
+                                     formatNumberToK(score),
+                                     style: theme.textTheme.bodyMedium?.copyWith(
+                                       color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                     ),
+                                   ),
+                                 ],
+                               ),
+                             ),
+                              Row(
+                               children: [
+                                 Icon(
+                                   saved ? Icons.star_rounded : null,
+                                   color: saved ? Colors.purple : null,
+                                   size: 18.0,
+                                 ),
+                                 const SizedBox(width: 8.0),
+                                 Text(
+                                   formatTimeToString(dateTime: widget.commentViewTree.comment.published),
+                                   style: theme.textTheme.bodyMedium?.copyWith(
+                                     color: theme.colorScheme.onBackground,
+                                   ),
+                                 ),
+                               ],
+                             )
                             ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                  AnimatedSize(
-                    duration: const Duration(milliseconds: 200),
-                    curve: Curves.fastOutSlowIn,
-                    child: Padding(
-                      padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                      child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
-                    ),
+                          ),
+                        ),
+                        AnimatedSize(
+                          duration: const Duration(milliseconds: 200),
+                          curve: Curves.fastOutSlowIn,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                            child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
+                          ),
+                        ),
+                      ],
+                    )
                   ),
                 ],
               ),
