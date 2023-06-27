@@ -10,48 +10,7 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
-import 'package:thunder/utils/sort_picker.dart';
-
-class SortTypeItem {
-  const SortTypeItem({required this.sortType, required this.icon, required this.label});
-
-  final SortType sortType;
-  final IconData icon;
-  final String label;
-}
-
-const sortTypeItems = [
-  SortTypeItem(
-    sortType: SortType.hot,
-    icon: Icons.local_fire_department_rounded,
-    label: 'Hot',
-  ),
-  SortTypeItem(
-    sortType: SortType.active,
-    icon: Icons.rocket_launch_rounded,
-    label: 'Active',
-  ),
-  SortTypeItem(
-    sortType: SortType.new_,
-    icon: Icons.auto_awesome_rounded,
-    label: 'New',
-  ),
-  // SortTypeItem(
-  //   sortType: SortType.,
-  //   icon: Icons.history_toggle_off_rounded,
-  //   label: 'Old',
-  // ),
-  SortTypeItem(
-    sortType: SortType.mostComments,
-    icon: Icons.comment_bank_rounded,
-    label: 'Most Comments',
-  ),
-  SortTypeItem(
-    sortType: SortType.newComments,
-    icon: Icons.add_comment_rounded,
-    label: 'New Comments',
-  ),
-];
+import 'package:thunder/shared/sort_picker.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -63,7 +22,8 @@ class CommunityPage extends StatefulWidget {
   State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveClientMixin<CommunityPage> {
+class _CommunityPageState extends State<CommunityPage>
+    with AutomaticKeepAliveClientMixin<CommunityPage> {
   @override
   bool get wantKeepAlive => true;
 
@@ -86,7 +46,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = sortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+              sortTypeIcon = allSortTypeItems
+                  .firstWhere((sortTypeItem) =>
+                      sortTypeItem.sortType == currentState.sortType)
+                  .icon;
             });
           }
           return true;
@@ -97,7 +60,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               content: Text(state.errorMessage ?? 'No error message available'),
               behavior: SnackBarBehavior.floating,
             );
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
+                ScaffoldMessenger.of(context).showSnackBar(snackBar));
           }
         },
         builder: (context, state) {
@@ -110,17 +74,32 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
+                    if ((state.communityId != null ||
+                            state.communityName != null) &&
+                        isUserLoggedIn)
                       IconButton(
                         icon: Icon(
-                          (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
-                          semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                          (state.subscribedType ==
+                                      SubscribedType.notSubscribed ||
+                                  state.subscribedType == null)
+                              ? Icons.library_add_check_outlined
+                              : Icons.library_add_check_rounded,
+                          semanticLabel: (state.subscribedType ==
+                                      SubscribedType.notSubscribed ||
+                                  state.subscribedType == null)
+                              ? 'Subscribe'
+                              : 'Unsubscribe',
                         ),
                         onPressed: () => {
                           context.read<CommunityBloc>().add(
                                 ChangeCommunitySubsciptionStatusEvent(
                                   communityId: state.communityId!,
-                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                  follow: (state.subscribedType == null)
+                                      ? true
+                                      : (state.subscribedType ==
+                                              SubscribedType.notSubscribed
+                                          ? true
+                                          : false),
                                 ),
                               )
                         },
@@ -134,29 +113,36 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 )
               ],
             ),
-            drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-            floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
-                ? FloatingActionButton(
-                    onPressed: () {
-                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+            drawer: (widget.communityId != null || widget.communityName != null)
+                ? null
+                : const CommunityDrawer(),
+            floatingActionButton:
+                ((state.communityId != null || widget.communityName != null) &&
+                        isUserLoggedIn)
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          CommunityBloc communityBloc =
+                              context.read<CommunityBloc>();
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return BlocProvider<CommunityBloc>.value(
-                              value: communityBloc,
-                              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                            );
-                          },
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return BlocProvider<CommunityBloc>.value(
+                                  value: communityBloc,
+                                  child: CreatePostPage(
+                                      communityId: state.communityId!,
+                                      communityInfo: state.communityInfo),
+                                );
+                              },
+                            ),
+                          );
+                        },
+                        child: const Icon(
+                          Icons.add,
+                          semanticLabel: 'Create Post',
                         ),
-                      );
-                    },
-                    child: const Icon(
-                      Icons.add,
-                      semanticLabel: 'Create Post',
-                    ),
-                  )
-                : null,
+                      )
+                    : null,
             body: SafeArea(child: _getBody(context, state)),
           );
         },
@@ -168,7 +154,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     switch (state.status) {
       case CommunityStatus.initial:
         // communityId and communityName are mutually exclusive - only one of the two should be passed in
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId, communityName: widget.communityName));
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+            reset: true,
+            communityId: widget.communityId,
+            communityName: widget.communityName));
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
@@ -187,81 +176,41 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
+          action: () => context.read<CommunityBloc>().add(
+              GetCommunityPostsEvent(
+                  reset: true, communityId: widget.communityId)),
           actionText: 'Refresh Content',
         );
     }
   }
 
   void showSortBottomSheet(BuildContext context, CommunityState state) {
-    final theme = Theme.of(context);
+    showModalBottomSheet(
+      context: context,
+      showDragHandle: true,
+      builder: (builderContext) => SortPicker(
+        onSelect: (selected) {
+          setState(() {
+                sortType = selected.sortType;
+                sortTypeIcon = selected.icon;
+              });
 
-    showModalBottomSheet(context: context,
-        showDragHandle: true, builder: (builderContext) => SortPicker());
-
-    // showModalBottomSheet<void>(
-    //   showDragHandle: true,
-    //   context: context,
-    //   builder: (BuildContext bottomSheetContext) {
-    //     return SingleChildScrollView(
-    //       child: Column(
-    //         mainAxisAlignment: MainAxisAlignment.start,
-    //         mainAxisSize: MainAxisSize.max,
-    //         children: [
-    //           Padding(
-    //             padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-    //             child: Align(
-    //               alignment: Alignment.centerLeft,
-    //               child: Text(
-    //                 'Sort Options',
-    //                 style: theme.textTheme.titleLarge!.copyWith(),
-    //               ),
-    //             ),
-    //           ),
-    //           ListView(
-    //             shrinkWrap: true,
-    //             physics: const NeverScrollableScrollPhysics(),
-    //             children: [
-    //               ...sortTypeItems.map((item) => ListTile(
-    //               title: Text(
-    //                 item.label,
-    //                 style: theme.textTheme.bodyMedium,
-    //               ),
-    //               leading: Icon(item.icon),
-    //               onTap: () {
-    //                 setState(() {
-    //                   sortType = item.sortType;
-    //                   sortTypeIcon = item.icon;
-    //                 });
-    //
-    //                 context.read<CommunityBloc>().add(
-    //                   GetCommunityPostsEvent(
-    //                     sortType: item.sortType,
-    //                     reset: true,
-    //                     listingType: state.communityId != null ? null : state.listingType,
-    //                     communityId: widget.communityId ?? state.communityId,
-    //                   ),
-    //                 );
-    //                 Navigator.of(context).pop();
-    //               },
-    //             )).toList(),
-    //               const ListTile(
-    //                 leading: Icon(Icons.military_tech),
-    //                 title: Text("Top"),
-    //                 trailing: Icon(Icons.chevron_right),
-    //               ),
-    //             ],
-    //           ),
-    //           const SizedBox(height: 16.0),
-    //         ],
-    //       ),
-    //     );
-    //   },
-    // );
+              context.read<CommunityBloc>().add(
+                GetCommunityPostsEvent(
+                  sortType: selected.sortType,
+                  reset: true,
+                  listingType: state.communityId != null ? null : state.listingType,
+                  communityId: widget.communityId ?? state.communityId,
+                ),
+              );
+        },
+      ),
+    );
   }
 
   String getCommunityName(CommunityState state) {
-    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+    if (state.status == CommunityStatus.initial ||
+        state.status == CommunityStatus.loading) {
       return '';
     }
 
@@ -270,6 +219,11 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       return '';
     }
 
-    return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+    return (state.listingType != null)
+        ? (destinations
+            .firstWhere(
+                (destination) => destination.listingType == state.listingType)
+            .label)
+        : '';
   }
 }

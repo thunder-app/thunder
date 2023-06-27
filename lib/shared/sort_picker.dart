@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 class SortTypeItem {
   const SortTypeItem({
@@ -15,32 +15,27 @@ class SortTypeItem {
 
 const defaultSortTypeItems = [
   SortTypeItem(
-    sortType: SortType.Hot,
+    sortType: SortType.hot,
     icon: Icons.local_fire_department_rounded,
     label: 'Hot',
   ),
   SortTypeItem(
-    sortType: SortType.Active,
+    sortType: SortType.active,
     icon: Icons.rocket_launch_rounded,
     label: 'Active',
   ),
   SortTypeItem(
-    sortType: SortType.New,
+    sortType: SortType.new_,
     icon: Icons.auto_awesome_rounded,
     label: 'New',
   ),
   SortTypeItem(
-    sortType: SortType.Old,
-    icon: Icons.history_toggle_off_rounded,
-    label: 'Old',
-  ),
-  SortTypeItem(
-    sortType: SortType.MostComments,
+    sortType: SortType.mostComments,
     icon: Icons.comment_bank_rounded,
     label: 'Most Comments',
   ),
   SortTypeItem(
-    sortType: SortType.NewComments,
+    sortType: SortType.newComments,
     icon: Icons.add_comment_rounded,
     label: 'New Comments',
   ),
@@ -48,27 +43,27 @@ const defaultSortTypeItems = [
 
 const topSortTypeItems = [
   SortTypeItem(
-    sortType: SortType.TopDay,
+    sortType: SortType.topDay,
     icon: Icons.today,
     label: 'Top Today',
   ),
   SortTypeItem(
-    sortType: SortType.TopWeek,
+    sortType: SortType.topWeek,
     icon: Icons.view_week_sharp,
     label: 'Top Week',
   ),
   SortTypeItem(
-    sortType: SortType.TopMonth,
+    sortType: SortType.topMonth,
     icon: Icons.calendar_month,
     label: 'Top Month',
   ),
   SortTypeItem(
-    sortType: SortType.TopYear,
+    sortType: SortType.topYear,
     icon: Icons.calendar_today,
     label: 'Top Month',
   ),
   SortTypeItem(
-    sortType: SortType.TopAll,
+    sortType: SortType.topAll,
     icon: Icons.military_tech,
     label: 'Top of all time',
   ),
@@ -80,6 +75,10 @@ const allSortTypeItems = [
 ];
 
 class SortPicker extends StatefulWidget {
+  final Function(SortTypeItem) onSelect;
+
+  const SortPicker({super.key, required this.onSelect});
+
   @override
   State<StatefulWidget> createState() => _SortPickerState();
 }
@@ -179,6 +178,7 @@ class _SortPickerState extends State<SortPicker> {
           //   ),
           // );
           Navigator.of(context).pop();
+          widget.onSelect(item);
           },
           ))
           .toList();
