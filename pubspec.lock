@@ -169,14 +169,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.2.1+1"
-  dotenv:
-    dependency: transitive
-    description:
-      name: dotenv
-      sha256: e169b516bc7b88801919e1c508772bcb8e3d0d1776a43f74ab692c57e741cd8a
-      url: "https://pub.dev"
-    source: hosted
-    version: "4.1.0"
   dynamic_color:
     dependency: "direct main"
     description:
@@ -353,6 +345,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: aeac15850ef1b38ee368d4c53ba9a847e900bb2c53a4db3f6881cbb3cb684338
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.2.0"
   go_router:
     dependency: "direct main"
     description:
@@ -417,15 +417,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.8.1"
-  lemmy:
+  lemmy_api_client:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0.1.11-alpha"
-      resolved-ref: ae1b53cba2ce408dcae82529fba913ed38544c15
-      url: "https://github.com/hjiangsu/lemmy-dart.git"
+      ref: e211fc4
+      resolved-ref: e211fc4e304f7999711d0c0ee753043a5b54eeb1
+      url: "https://github.com/liftoff-app/lemmy_api_client"
     source: git
-    version: "1.0.0"
+    version: "0.21.0"
   lints:
     dependency: transitive
     description:

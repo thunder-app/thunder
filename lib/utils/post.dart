@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -14,40 +14,36 @@ import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
 /// Logic to vote on a post
-Future<PostView> votePost(int postId, int score) async {
+Future<PostView> votePost(int postId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();
-  Lemmy lemmy = LemmyClient.instance.lemmy;
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostResponse postResponse = await lemmy.likePost(
-    CreatePostLike(
-      auth: account!.jwt!,
-      postId: postId,
-      score: score,
-    ),
-  );
+  PostView postResponse = await lemmy.run(CreatePostLike(
+    auth: account!.jwt!,
+    postId: postId,
+    score: score,
+  ));
 
-  PostView updatedPostView = postResponse.postView;
+  PostView updatedPostView = postResponse;
   return updatedPostView;
 }
 
 /// Logic to save a post
 Future<PostView> savePost(int postId, bool save) async {
   Account? account = await fetchActiveProfileAccount();
-  Lemmy lemmy = LemmyClient.instance.lemmy;
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostResponse postResponse = await lemmy.savePost(
-    SavePost(
-      auth: account!.jwt!,
-      postId: postId,
-      save: save,
-    ),
-  );
+  PostView postResponse = await lemmy.run(SavePost(
+    auth: account!.jwt!,
+    postId: postId,
+    save: save,
+  ));
 
-  PostView updatedPostView = postResponse.postView;
+  PostView updatedPostView = postResponse;
   return updatedPostView;
 }
 
@@ -110,17 +106,20 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   }
 
   return PostViewMedia(
-    community: postView.community,
-    counts: postView.counts,
-    creator: postView.creator,
-    creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
-    creatorBlocked: postView.creatorBlocked,
-    myVote: postView.myVote,
-    post: postView.post,
-    read: postView.read,
-    saved: postView.saved,
-    subscribed: postView.subscribed,
-    unreadComments: postView.unreadComments,
+    postView: PostView(
+      community: postView.community,
+      counts: postView.counts,
+      creator: postView.creator,
+      creatorBannedFromCommunity: postView.creatorBannedFromCommunity,
+      creatorBlocked: postView.creatorBlocked,
+      myVote: postView.myVote,
+      post: postView.post,
+      read: postView.read,
+      saved: postView.saved,
+      subscribed: postView.subscribed,
+      unreadComments: postView.unreadComments,
+      instanceHost: postView.instanceHost,
+    ),
     media: media,
   );
 }

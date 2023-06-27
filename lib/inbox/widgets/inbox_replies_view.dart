@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -22,7 +22,7 @@ class InboxRepliesView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<CommentReplyView> replies = context.read<InboxBloc>().state.replies;
+    List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
     if (replies.isEmpty) {
       return const Center(child: Text('No replies'));
@@ -68,7 +68,7 @@ class InboxRepliesView extends StatelessWidget {
                         replies[index].creator.name,
                         style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                       ),
-                      Text(formatTimeToString(dateTime: replies[index].comment.published))
+                      Text(formatTimeToString(dateTime: replies[index].comment.published.toIso8601String()))
                     ],
                   ),
                   GestureDetector(
@@ -88,7 +88,7 @@ class InboxRepliesView extends StatelessWidget {
                     children: [
                       IconButton(
                         onPressed: () {
-                          context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: replies[index].commentReply.id, read: true));
+                          context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: replies[index].commentReply!.id, read: true));
                         },
                         icon: const Icon(
                           Icons.check,

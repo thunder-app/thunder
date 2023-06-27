@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -16,13 +17,16 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
-  final PostViewMedia postView;
+  final PostViewMedia postViewMedia;
 
-  const PostSubview({super.key, required this.postView});
+  const PostSubview({super.key, required this.postViewMedia});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final PostView postView = postViewMedia.postView;
+    final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
@@ -35,7 +39,7 @@ class PostSubview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(postView.post.name, style: theme.textTheme.titleMedium),
+            child: Text(post.name, style: theme.textTheme.titleMedium),
           ),
           Row(
             children: [
@@ -66,7 +70,7 @@ class PostSubview extends StatelessWidget {
                 ),
               ),
               Text(
-                ' · ${formatTimeToString(dateTime: postView.post.published)} · ',
+                ' · ${formatTimeToString(dateTime: post.published.toIso8601String())} · ',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                 ),
@@ -80,15 +84,15 @@ class PostSubview extends StatelessWidget {
             ],
           ),
           MediaView(
-            post: postView.post,
-            postView: postView,
+            post: post,
+            postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
           ),
-          if (postView.post.body != null)
+          if (postViewMedia.postView.post.body != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: CommonMarkdownBody(
-                body: postView.post.body ?? '',
+                body: post.body ?? '',
               ),
             ),
           const Divider(),
@@ -99,33 +103,33 @@ class PostSubview extends StatelessWidget {
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
-                        context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == 1 ? 0 : 1));
+                        context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
                       }
                     : null,
                 icon: Icon(
                   Icons.arrow_upward,
-                  semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+                  semanticLabel: postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
                 ),
-                color: postView.myVote == 1 ? Colors.orange : null,
+                color: postView.myVote == VoteType.up ? Colors.orange : null,
               ),
               IconButton(
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
-                        context.read<PostBloc>().add(VotePostEvent(postId: postView.post.id, score: postView.myVote == -1 ? 0 : -1));
+                        context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
                       }
                     : null,
                 icon: Icon(
                   Icons.arrow_downward,
-                  semanticLabel: postView.myVote == -1 ? 'Downvoted' : 'Downvote',
+                  semanticLabel: postView.myVote == VoteType.down ? 'Downvoted' : 'Downvote',
                 ),
-                color: postView.myVote == -1 ? Colors.blue : null,
+                color: postView.myVote == VoteType.down ? Colors.blue : null,
               ),
               IconButton(
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
-                        context.read<PostBloc>().add(SavePostEvent(postId: postView.post.id, save: !postView.saved));
+                        context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: !postView.saved));
                       }
                     : null,
                 icon: Icon(
@@ -162,7 +166,7 @@ class PostSubview extends StatelessWidget {
               ),
               IconButton(
                 icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                onPressed: () => Share.share(postView.post.apId),
+                onPressed: () => Share.share(post.apId),
               )
             ],
           )

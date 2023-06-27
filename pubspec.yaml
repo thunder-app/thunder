@@ -17,10 +17,10 @@ dependencies:
     sdk: flutter
   sqflite: ^2.2.8+4
   path: ^1.8.3
-  lemmy:
-    git:
-      url: https://github.com/hjiangsu/lemmy-dart.git
-      ref: 0.1.11-alpha
+  # lemmy:
+  #   git:
+  #     url: https://github.com/hjiangsu/lemmy-dart.git
+  #     ref: 0.1.11-alpha
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git
@@ -29,6 +29,10 @@ dependencies:
     git:
       url: https://github.com/hjiangsu/extended_image.git
       ref: 8.0.3
+  lemmy_api_client:
+    git:
+      url: https://github.com/liftoff-app/lemmy_api_client
+      ref: e211fc4
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

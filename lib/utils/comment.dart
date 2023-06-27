@@ -1,4 +1,4 @@
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
@@ -6,19 +6,17 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 /// Logic to vote on a comment
-Future<CommentView> voteComment(int commentId, int score) async {
+Future<CommentView> voteComment(int commentId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();
-  Lemmy lemmy = LemmyClient.instance.lemmy;
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  CommentResponse commentResponse = await lemmy.likeComment(
-    CreateCommentLike(
-      auth: account!.jwt!,
-      commentId: commentId,
-      score: score,
-    ),
-  );
+  FullCommentView commentResponse = await lemmy.run(CreateCommentLike(
+    auth: account!.jwt!,
+    commentId: commentId,
+    score: score,
+  ));
 
   CommentView updatedCommentView = commentResponse.commentView;
   return updatedCommentView;
@@ -27,17 +25,15 @@ Future<CommentView> voteComment(int commentId, int score) async {
 /// Logic to save a comment
 Future<CommentView> saveComment(int commentId, bool save) async {
   Account? account = await fetchActiveProfileAccount();
-  Lemmy lemmy = LemmyClient.instance.lemmy;
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  CommentResponse commentResponse = await lemmy.saveComment(
-    SaveComment(
-      auth: account!.jwt!,
-      commentId: commentId,
-      save: save,
-    ),
-  );
+  FullCommentView commentResponse = await lemmy.run(SaveComment(
+    auth: account!.jwt!,
+    commentId: commentId,
+    save: save,
+  ));
 
   CommentView updatedCommentView = commentResponse.commentView;
   return updatedCommentView;
@@ -50,23 +46,14 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
   for (CommentView commentView in comments) {
     // commentMap[commentView.comment.path] = CommentViewTree(comment: commentView.comment, );
     commentMap[commentView.comment.path] = CommentViewTree(
-      comment: commentView.comment,
-      community: commentView.community,
-      counts: commentView.counts,
-      creator: commentView.creator,
-      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
-      creatorBlocked: commentView.creatorBlocked,
-      post: commentView.post,
-      saved: commentView.saved,
-      myVote: commentView.myVote,
-      subscribed: commentView.subscribed,
+      comment: commentView,
       replies: [],
     );
   }
 
   // Build the tree structure by assigning children to their parent comments
   for (CommentViewTree commentView in commentMap.values) {
-    List<String> pathIds = commentView.comment.path.split('.');
+    List<String> pathIds = commentView.comment!.comment.path.split('.');
     String parentPath = pathIds.getRange(0, pathIds.length - 1).join('.');
 
     CommentViewTree? parentCommentView = commentMap[parentPath];
@@ -77,14 +64,14 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
   }
 
   // Return the root comments (those with an empty or "0" path)
-  return commentMap.values.where((commentView) => commentView.comment.path.isEmpty || commentView.comment.path == '0.${commentView.comment.id}').toList();
+  return commentMap.values.where((commentView) => commentView.comment!.comment.path.isEmpty || commentView.comment!.comment.path == '0.${commentView.comment!.comment.id}').toList();
 }
 
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
   for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].comment.id == commentId) {
+    if (commentTrees[i].comment!.comment.id == commentId) {
       return [...indexes, i]; // Return a copy of the indexes list with the current index added
     }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -65,7 +66,7 @@ class InboxMentionsView extends StatelessWidget {
                         mentions[index].creator.name,
                         style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                       ),
-                      Text(formatTimeToString(dateTime: mentions[index].comment.published))
+                      Text(formatTimeToString(dateTime: mentions[index].comment.published.toIso8601String()))
                     ],
                   ),
                   GestureDetector(

@@ -1,10 +1,11 @@
 import 'dart:ui';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -13,8 +14,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/webview.dart';
-
-import 'package:lemmy/lemmy.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class MediaView extends StatefulWidget {
   final Post? post;
@@ -87,7 +87,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       );
     }
 
-    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.post.nsfw ?? true);
+    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
@@ -136,9 +136,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
-    double width = widget.viewMode == ViewMode.compact ? 75 : (widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24);
+    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
@@ -149,9 +150,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
         clearMemoryCacheWhenDispose: true,
-        cacheWidth: widget.viewMode == ViewMode.compact
-            ? (75 * View.of(context).devicePixelRatio.ceil())
-            : ((widget.postView!.media.first.width ?? MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+        cacheWidth:
+            widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
         loadStateChanged: (ExtendedImageState state) {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
@@ -219,7 +219,13 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       ),
                     ),
                     onTap: () {
-                      if (widget.post?.url != null) Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                      if (widget.post?.url != null) {
+                        if (openInExternalBrowser) {
+                          launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
+                        } else {
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                        }
+                      }
                     },
                   ),
                 ),

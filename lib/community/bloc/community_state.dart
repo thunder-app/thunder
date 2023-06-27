@@ -8,7 +8,7 @@ class CommunityState extends Equatable {
     this.postViews = const [],
     this.page = 1,
     this.errorMessage,
-    this.listingType = ListingType.Local,
+    this.listingType = PostListingType.local,
     this.communityId,
     this.hasReachedEnd = false,
     this.subscribedType,
@@ -18,7 +18,7 @@ class CommunityState extends Equatable {
   });
 
   final CommunityStatus status;
-  final ListingType? listingType;
+  final PostListingType? listingType;
   final SortType? sortType;
 
   final int page;
@@ -29,7 +29,7 @@ class CommunityState extends Equatable {
   // Specifies the community we are loading for
   final int? communityId;
   final String? communityName;
-  final GetCommunityResponse? communityInfo;
+  final FullCommunityView? communityInfo;
 
   final bool hasReachedEnd;
   final SubscribedType? subscribedType;
@@ -39,13 +39,13 @@ class CommunityState extends Equatable {
     int? page,
     List<PostViewMedia>? postViews,
     String? errorMessage,
-    ListingType? listingType,
+    PostListingType? listingType,
     int? communityId,
     bool? hasReachedEnd,
     SubscribedType? subscribedType,
     SortType? sortType,
     String? communityName,
-    GetCommunityResponse? communityInfo,
+    FullCommunityView? communityInfo,
   }) {
     return CommunityState(
       status: status ?? this.status,

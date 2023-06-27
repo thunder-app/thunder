@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,7 +19,7 @@ class GeneralSettingsPage extends StatefulWidget {
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   // Feed Settings
   bool useCompactView = false;
-  ListingType defaultListingType = DEFAULT_LISTING_TYPE;
+  PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
@@ -29,6 +29,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
+
+  // Link Settings
+  bool openInExternalBrowser = false;
 
   // Notification Settings
   bool showInAppUpdateNotification = true;
@@ -54,7 +57,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
       case 'setting_general_default_listing_type':
         await prefs.setString('setting_general_default_listing_type', value);
-        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case 'setting_general_default_sort_type':
         await prefs.setString('setting_general_default_sort_type', value);
@@ -65,10 +68,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_compact_show_thumbnail_on_right':
         await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
         setState(() => showThumbnailPreviewOnRight = value);
-        break;
-      case 'setting_general_show_link_previews':
-        await prefs.setBool('setting_general_show_link_previews', value);
-        setState(() => showLinkPreviews = value);
         break;
       case 'setting_general_show_vote_actions':
         await prefs.setBool('setting_general_show_vote_actions', value);
@@ -89,6 +88,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
+        break;
+
+      // Link Settings
+      case 'setting_general_show_link_previews':
+        await prefs.setBool('setting_general_show_link_previews', value);
+        setState(() => showLinkPreviews = value);
+        break;
+      case 'setting_links_open_in_external_browser':
+        await prefs.setBool('setting_links_open_in_external_browser', value);
+        setState(() => openInExternalBrowser = value);
         break;
 
       // Notification Settings
@@ -125,16 +134,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-      showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+
+      // Links
+      openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
+      showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -185,8 +197,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ListOption(
                           description: 'Default Feed Type',
-                          value: defaultListingType,
-                          options: const [ListingType.Subscribed, ListingType.All, ListingType.Local],
+                          value: defaultPostListingType,
+                          options: const [PostListingType.subscribed, PostListingType.all, PostListingType.local],
                           icon: Icons.feed,
                           onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
                           labelTransformer: (value) => value.name,
@@ -194,7 +206,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ListOption(
                           description: 'Default Sort Type',
                           value: defaultSortType,
-                          options: const [SortType.Hot, SortType.Active, SortType.New, SortType.Old, SortType.MostComments, SortType.NewComments],
+                          options: const [SortType.hot, SortType.active, SortType.new_, SortType.mostComments, SortType.newComments],
                           icon: Icons.sort,
                           onChanged: (value) => setPreferences('setting_general_default_sort_type', value.name),
                           labelTransformer: (value) => value.name,
@@ -223,13 +235,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                         ),
                         ToggleOption(
-                          description: 'Show link previews',
-                          value: showLinkPreviews,
-                          iconEnabled: Icons.photo_size_select_actual_rounded,
-                          iconDisabled: Icons.photo_size_select_actual_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
-                        ),
-                        ToggleOption(
                           description: 'Show voting on posts',
                           value: showVoteActions,
                           iconEnabled: Icons.import_export_rounded,
@@ -256,6 +261,36 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Links',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Show link previews',
+                          value: showLinkPreviews,
+                          iconEnabled: Icons.photo_size_select_actual_rounded,
+                          iconDisabled: Icons.photo_size_select_actual_rounded,
+                          onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
+                        ),
+                        ToggleOption(
+                          description: 'Open links in external browser',
+                          value: openInExternalBrowser,
+                          iconEnabled: Icons.link_rounded,
+                          iconDisabled: Icons.link_rounded,
+                          onToggle: (bool value) => setPreferences('setting_links_open_in_external_browser', value),
                         ),
                       ],
                     ),

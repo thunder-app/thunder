@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -23,32 +22,32 @@ class SortTypeItem {
 
 const sortTypeItems = [
   SortTypeItem(
-    sortType: SortType.Hot,
+    sortType: SortType.hot,
     icon: Icons.local_fire_department_rounded,
     label: 'Hot',
   ),
   SortTypeItem(
-    sortType: SortType.Active,
+    sortType: SortType.active,
     icon: Icons.rocket_launch_rounded,
     label: 'Active',
   ),
   SortTypeItem(
-    sortType: SortType.New,
+    sortType: SortType.new_,
     icon: Icons.auto_awesome_rounded,
     label: 'New',
   ),
+  // SortTypeItem(
+  //   sortType: SortType.,
+  //   icon: Icons.history_toggle_off_rounded,
+  //   label: 'Old',
+  // ),
   SortTypeItem(
-    sortType: SortType.Old,
-    icon: Icons.history_toggle_off_rounded,
-    label: 'Old',
-  ),
-  SortTypeItem(
-    sortType: SortType.MostComments,
+    sortType: SortType.mostComments,
     icon: Icons.comment_bank_rounded,
     label: 'Most Comments',
   ),
   SortTypeItem(
-    sortType: SortType.NewComments,
+    sortType: SortType.newComments,
     icon: Icons.add_comment_rounded,
     label: 'New Comments',
   ),
@@ -114,14 +113,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
                       IconButton(
                         icon: Icon(
-                          (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
-                          semanticLabel: (state.subscribedType == SubscribedType.NotSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                          (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                          semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
                         onPressed: () => {
                           context.read<CommunityBloc>().add(
                                 ChangeCommunitySubsciptionStatusEvent(
                                   communityId: state.communityId!,
-                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.NotSubscribed ? true : false),
+                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
                                 ),
                               )
                         },
@@ -166,8 +165,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
-    final theme = Theme.of(context);
-
     switch (state.status) {
       case CommunityStatus.initial:
         // communityId and communityName are mutually exclusive - only one of the two should be passed in

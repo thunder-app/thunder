@@ -1,14 +1,14 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 class LemmyClient {
-  Lemmy lemmy = Lemmy(baseUrl: dotenv.env['LEMMY_BASE_URL'] ?? 'https://lemmy.world');
+  LemmyApiV3 lemmyApiV3 = LemmyApiV3(dotenv.env['LEMMY_BASE_URL'] ?? 'lemmy.world');
 
   LemmyClient._initialize();
 
   void changeBaseUrl(String baseUrl) {
-    lemmy = Lemmy(baseUrl: baseUrl);
+    lemmyApiV3 = LemmyApiV3(baseUrl);
   }
 
   static final LemmyClient _instance = LemmyClient._initialize();

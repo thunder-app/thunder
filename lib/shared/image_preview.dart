@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-
-import 'package:cached_network_image/cached_network_image.dart';
+import 'package:path/path.dart';
+import 'package:thunder/shared/image_viewer.dart';
 
 class ImagePreview extends StatefulWidget {
   final String url;
@@ -12,8 +12,9 @@ class ImagePreview extends StatefulWidget {
   final double? width;
   final bool isGallery;
   final bool isExpandable;
+  final bool showFullHeightImages;
 
-  const ImagePreview({super.key, required this.url, this.height, this.width, this.nsfw = false, this.isGallery = false, this.isExpandable = true});
+  const ImagePreview({super.key, required this.url, this.height, this.width, this.nsfw = false, this.isGallery = false, this.isExpandable = true, this.showFullHeightImages = false});
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -30,7 +31,25 @@ class _ImagePreviewState extends State<ImagePreview> {
     setState(() => blur = widget.nsfw);
   }
 
-  void onImageTap() {}
+  void onImageTap(BuildContext context) {
+    Navigator.of(context).push(
+      PageRouteBuilder(
+        opaque: false,
+        transitionDuration: const Duration(milliseconds: 400),
+        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+          return ImageViewer(url: widget.url);
+        },
+        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+          return Align(
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,28 +58,28 @@ class _ImagePreviewState extends State<ImagePreview> {
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: widget.isExpandable
             ? InkWell(
-                child: imagePreview(),
+                child: imagePreview(context),
                 onTap: () {
                   if (widget.nsfw && blur) {
                     setState(() => blur = false);
                   } else {
-                    onImageTap();
+                    onImageTap(context);
                   }
                 },
               )
-            : imagePreview(),
+            : imagePreview(context),
       ),
     );
   }
 
-  Widget imagePreview() {
+  Widget imagePreview(BuildContext context) {
     return ClipRRect(
       borderRadius: BorderRadius.circular(6), // Image border
       child: Stack(
         children: [
           ExtendedImage.network(
             widget.url,
-            height: widget.height ?? 150,
+            height: widget.showFullHeightImages ? widget.height : 150,
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,
