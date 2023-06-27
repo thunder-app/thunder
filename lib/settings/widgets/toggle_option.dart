@@ -8,6 +8,7 @@ class ToggleOption extends StatelessWidget {
 
   // General
   final String description;
+  final String? subtitle;
   final bool value;
 
   // Callback
@@ -16,6 +17,7 @@ class ToggleOption extends StatelessWidget {
   const ToggleOption({
     super.key,
     required this.description,
+    this.subtitle,
     required this.value,
     required this.iconEnabled,
     required this.iconDisabled,
@@ -33,7 +35,13 @@ class ToggleOption extends StatelessWidget {
           children: [
             Icon(value ? iconEnabled : iconDisabled),
             const SizedBox(width: 8.0),
-            Text(description, style: theme.textTheme.bodyMedium),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(description, style: theme.textTheme.bodyMedium),
+                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+              ],
+            ),
           ],
         ),
         Switch(

@@ -229,6 +229,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show thumbnail on right',
+                          subtitle: 'Applies to compact view only',
                           value: showThumbnailPreviewOnRight,
                           iconEnabled: Icons.photo_size_select_large_rounded,
                           iconDisabled: Icons.photo_size_select_large_rounded,
@@ -236,6 +237,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show voting on posts',
+                          subtitle: 'Applies to normal view only',
                           value: showVoteActions,
                           iconEnabled: Icons.import_export_rounded,
                           iconDisabled: Icons.import_export_rounded,
@@ -243,6 +245,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show save action on post',
+                          subtitle: 'Applies to normal view only',
                           value: showSaveAction,
                           iconEnabled: Icons.star_rounded,
                           iconDisabled: Icons.star_rounded,
@@ -250,6 +253,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'View full height images',
+                          subtitle: 'Applies to normal view only',
                           value: showFullHeightImages,
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
@@ -280,6 +284,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show link previews',
+                          subtitle: 'Applies to normal view only',
                           value: showLinkPreviews,
                           iconEnabled: Icons.photo_size_select_actual_rounded,
                           iconDisabled: Icons.photo_size_select_actual_rounded,
