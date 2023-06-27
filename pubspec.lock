@@ -429,9 +429,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: e211fc4
-      resolved-ref: e211fc4e304f7999711d0c0ee753043a5b54eeb1
-      url: "https://github.com/liftoff-app/lemmy_api_client"
+      ref: HEAD
+      resolved-ref: bc099daf43ef1d2125cfd6f58b75acc656d20310
+      url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"
   lints:
