@@ -27,14 +27,15 @@ class ImageViewer extends StatefulWidget {
 class _ImageViewerState extends State<ImageViewer> {
   GlobalKey<ExtendedImageSlidePageState> slidePagekey =
       GlobalKey<ExtendedImageSlidePageState>();
-
-  _requestPermission() async {
+  bool downloaded = false;
+  Future<bool> _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.photos,
     ].request();
 
     final info2 = statuses[Permission.photos].toString();
     print(info2);
+    return Permission.photos.isGranted;
   }
 
   @override
@@ -45,14 +46,15 @@ class _ImageViewerState extends State<ImageViewer> {
       body: Stack(
         children: [
           Positioned(
-            top: 0,
+            top: 20,
             left: 0,
             child: IconButton(
               color: theme.textTheme.titleLarge?.color,
               onPressed: () async {
-                File file = await DefaultCacheManager().getSingleFile(widget.url);
+                File file =
+                    await DefaultCacheManager().getSingleFile(widget.url);
                 if ((Platform.isAndroid || Platform.isIOS) &&
-                    await Permission.contacts.request().isGranted) {
+                    await _requestPermission()) {
                   final result = await ImageGallerySaver.saveFile(file.path);
                 } else if (Platform.isLinux || Platform.isWindows) {
                   final filePath =
@@ -61,11 +63,13 @@ class _ImageViewerState extends State<ImageViewer> {
                     ..createSync(recursive: true)
                     ..writeAsBytesSync(file.readAsBytesSync());
                 }
+                setState(() {
+                  downloaded = true;
+                });
               },
-              icon: const Icon(
-                Icons.download,
-                semanticLabel: 'Download',
-              ),
+              icon: downloaded
+                  ? Icon(Icons.check_circle, semanticLabel: 'Downloaded')
+                  : Icon(Icons.download, semanticLabel: "Download"),
             ),
           ),
           Center(
