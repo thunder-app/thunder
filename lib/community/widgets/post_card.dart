@@ -45,6 +45,7 @@ class _PostCardState extends State<PostCard> {
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
+    final bool disableSwipeActionsOnPost = context.read<ThunderBloc>().state.preferences?.getBool('setting_post_disable_swipe_actions') ?? false;
 
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -79,7 +80,7 @@ class _PostCardState extends State<PostCard> {
       },
       onPointerCancel: (event) => {},
       child: Dismissible(
-        direction: isUserLoggedIn ? DismissDirection.horizontal : DismissDirection.none,
+        direction: (isUserLoggedIn && !disableSwipeActionsOnPost) ? DismissDirection.horizontal : DismissDirection.none,
         key: ObjectKey(widget.postViewMedia.postView.post.id),
         resizeDuration: Duration.zero,
         dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
