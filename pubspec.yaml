@@ -31,8 +31,7 @@ dependencies:
       ref: 8.0.3
   lemmy_api_client:
     git:
-      url: https://github.com/liftoff-app/lemmy_api_client
-      ref: e211fc4
+      url: https://github.com/hjiangsu/lemmy_api_client.git
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

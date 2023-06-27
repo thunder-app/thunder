@@ -145,6 +145,9 @@ class _PostCardState extends State<PostCard> {
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
                 CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
 
+                // Mark post as read when tapped
+                context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
+
                 await Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => MultiBlocProvider(
@@ -169,7 +172,8 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget compactPostLayout(BuildContext context) {
-    final Post post = widget.postViewMedia.postView.post;
+    final PostView postView = widget.postViewMedia.postView;
+    final Post post = postView.post;
     final ThemeData theme = Theme.of(context);
 
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
@@ -198,13 +202,17 @@ class _PostCardState extends State<PostCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(post.name, style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600)),
+                    Text(post.name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                        )),
                     const SizedBox(height: 4.0),
                     GestureDetector(
                       child: Text(
                         '${widget.postViewMedia.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)}' : ''}',
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                          color: postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
                       onTap: () => onTapCommunityName(context),
