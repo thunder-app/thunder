@@ -56,16 +56,19 @@ class _ImageViewerState extends State<ImageViewer> {
                 if ((Platform.isAndroid || Platform.isIOS) &&
                     await _requestPermission()) {
                   final result = await ImageGallerySaver.saveFile(file.path);
+                  setState(() {
+                    downloaded = true;
+                  });
                 } else if (Platform.isLinux || Platform.isWindows) {
                   final filePath =
                       '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
                   File(filePath)
                     ..createSync(recursive: true)
                     ..writeAsBytesSync(file.readAsBytesSync());
+                  setState(() {
+                    downloaded = true;
+                  });
                 }
-                setState(() {
-                  downloaded = true;
-                });
               },
               icon: downloaded
                   ? Icon(Icons.check_circle, semanticLabel: 'Downloaded')
