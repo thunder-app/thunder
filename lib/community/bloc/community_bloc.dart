@@ -198,8 +198,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    PostListingType defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-    SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+    PostListingType defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
+    SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
 
     try {
       var exception;
