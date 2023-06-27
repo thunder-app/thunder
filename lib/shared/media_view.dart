@@ -57,8 +57,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+        return Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Container(
             color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
             child: const SizedBox(
@@ -109,8 +110,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             },
           ),
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(6),
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -185,8 +187,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
                   child: InkWell(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(6), // Image border
+                    child: Container(
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,

@@ -36,8 +36,13 @@ class _PostCardState extends State<PostCard> {
   DismissDirection? dismissDirection;
   SwipeAction? swipeAction;
 
+  int rebuildCount = 0;
+
   @override
   Widget build(BuildContext context) {
+    rebuildCount++; // Increment the rebuild count
+    print('Rebuild Count: $rebuildCount');
+
     final ThemeData theme = Theme.of(context);
 
     VoteType? myVote = widget.postViewMedia.postView.myVote;
