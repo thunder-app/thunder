@@ -55,8 +55,9 @@ const sortTypeItems = [
 class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const CommunityPage({super.key, this.communityId, this.communityName});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -101,6 +102,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         },
         builder: (context, state) {
           return Scaffold(
+            key: widget.scaffoldKey,
             appBar: AppBar(
               title: Text(getCommunityName(state)),
               centerTitle: false,
