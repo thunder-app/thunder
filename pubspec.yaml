@@ -66,6 +66,10 @@ dependencies:
   share_plus: ^7.0.2
   flex_color_scheme: ^7.1.2
   dynamic_color: ^1.6.5
+  image_gallery_saver: ^2.0.2
+  flutter_cache_manager: ^3.3.0
+  permission_handler: ^10.3.0
+  path_provider: ^2.0.15
 
 dev_dependencies:
   flutter_test:
