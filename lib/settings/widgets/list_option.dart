@@ -30,6 +30,7 @@ class ListOption<T> extends StatelessWidget {
     final theme = Theme.of(context);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTap: () {
         showModalBottomSheet(
             context: context,
