@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/shared/image_preview.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -28,6 +29,14 @@ class CommonMarkdownBody extends StatelessWidget {
 
     return MarkdownBody(
       data: body,
+      imageBuilder: (uri, title, alt) {
+        return ImagePreview(
+          url: uri.toString(),
+          width: MediaQuery.of(context).size.width - 24,
+          isExpandable: true,
+          showFullHeightImages: true,
+        );
+      },
       selectable: isSelectableText,
       onTapLink: (text, url, title) {
         String? communityName = checkLemmyInstanceUrl(text);

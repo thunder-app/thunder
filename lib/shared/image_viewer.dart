@@ -34,6 +34,8 @@ class _ImageViewerState extends State<ImageViewer> {
                 widget.url,
                 enableSlideOutPage: true,
                 mode: ExtendedImageMode.gesture,
+                cache: true,
+                clearMemoryCacheWhenDispose: true,
                 initGestureConfigHandler: (ExtendedImageState state) {
                   return GestureConfig(
                     minScale: 0.9,

@@ -75,7 +75,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (activeAccount.username != null && activeAccount.jwt != null && activeAccount.instance != null) {
         // Set lemmy client to use the instance
-        LemmyClient.instance.changeBaseUrl(activeAccount.instance!);
+        LemmyClient.instance.changeBaseUrl(activeAccount.instance!.replaceAll('https://', ''));
         return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true));
       }
     });

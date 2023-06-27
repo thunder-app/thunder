@@ -10,6 +10,7 @@
 - Added option to open up links in external browser by default
 - Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy_api_client!
   - This change will make it easier to work with future features, and also allows a chance for collaboration on a unified dart-based lemmy api
+- Added ability to tap on images within comments/posts to zoom in
 
 ### Changed
 - Moved theming options into a separate section in settings

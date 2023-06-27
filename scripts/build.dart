@@ -26,7 +26,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release', '--no-tree-shake-icons']);
+  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 
@@ -39,7 +39,7 @@ void buildRelease() {
 
   // Build for iOS
   print('\nStarting iOS build...');
-  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release', '--no-tree-shake-icons']);
+  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release']);
   stdout.write(iosResult.stdout);
   stderr.write(iosResult.stderr);
 
