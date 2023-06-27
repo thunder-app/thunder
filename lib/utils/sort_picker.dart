@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:lemmy/lemmy.dart';
 
 class SortTypeItem {
-  const SortTypeItem(
-      {required this.sortType, required this.icon, required this.label});
+  const SortTypeItem({
+    required this.sortType,
+    required this.icon,
+    required this.label
+  });
 
   final SortType sortType;
   final IconData icon;
@@ -71,6 +74,11 @@ const topSortTypeItems = [
   ),
 ];
 
+const allSortTypeItems = [
+  ...defaultSortTypeItems,
+  ...topSortTypeItems
+];
+
 class SortPicker extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -106,26 +114,7 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ...defaultSortTypeItems
-                .map((item) => ListTile(
-                      title: Text(
-                        item.label,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      leading: Icon(item.icon),
-                      onTap: () {
-                        // context.read<CommunityBloc>().add(
-                        //   GetCommunityPostsEvent(
-                        //     sortType: item.sortType,
-                        //     reset: true,
-                        //     listingType: state.communityId != null ? null : state.listingType,
-                        //     communityId: widget.communityId ?? state.communityId,
-                        //   ),
-                        // );
-                        Navigator.of(context).pop();
-                      },
-                    ))
-                .toList(),
+            ..._generateList(defaultSortTypeItems, theme),
             ListTile(
               leading: const Icon(Icons.military_tech),
               title: const Text("Top"),
@@ -164,30 +153,34 @@ class _SortPickerState extends State<SortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ...topSortTypeItems
-                .map((item) => ListTile(
-                      title: Text(
-                        item.label,
-                        style: theme.textTheme.bodyMedium,
-                      ),
-                      leading: Icon(item.icon),
-                      onTap: () {
-                        // context.read<CommunityBloc>().add(
-                        //   GetCommunityPostsEvent(
-                        //     sortType: item.sortType,
-                        //     reset: true,
-                        //     listingType: state.communityId != null ? null : state.listingType,
-                        //     communityId: widget.communityId ?? state.communityId,
-                        //   ),
-                        // );
-                        Navigator.of(context).pop();
-                      },
-                    ))
-                .toList(),
+            ..._generateList(topSortTypeItems, theme),
           ],
         ),
         const SizedBox(height: 16.0),
       ],
     );
+  }
+
+  List<ListTile> _generateList(List<SortTypeItem> items, ThemeData theme) {
+    return items
+        .map((item) => ListTile(
+          title: Text(
+          item.label,
+          style: theme.textTheme.bodyMedium,
+          ),
+          leading: Icon(item.icon),
+          onTap: () {
+          // context.read<CommunityBloc>().add(
+          //   GetCommunityPostsEvent(
+          //     sortType: item.sortType,
+          //     reset: true,
+          //     listingType: state.communityId != null ? null : state.listingType,
+          //     communityId: widget.communityId ?? state.communityId,
+          //   ),
+          // );
+          Navigator.of(context).pop();
+          },
+          ))
+          .toList();
   }
 }
