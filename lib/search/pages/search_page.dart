@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -98,10 +97,9 @@ class _SearchPageState extends State<SearchPage> {
     switch (state.status) {
       case SearchStatus.initial:
         LemmyClient lemmyClient = LemmyClient.instance;
-        Lemmy lemmy = lemmyClient.lemmy;
 
         // Obtains the base URL for the instance
-        Uri uri = Uri.parse(lemmy.baseUrl);
+        Uri uri = Uri.parse(lemmyClient.lemmyApiV3.host);
         String host = uri.host;
         String baseUrl = host.startsWith('www.') ? host.substring(4) : host;
 
@@ -152,17 +150,17 @@ class _SearchPageState extends State<SearchPage> {
                 ]),
                 trailing: isUserLoggedIn
                     ? IconButton(
-                        onPressed: communityView.subscribed == SubscribedType.Pending
+                        onPressed: communityView.subscribed == SubscribedType.pending
                             ? null
                             : () {
                                 context.read<SearchBloc>().add(
                                       ChangeCommunitySubsciptionStatusEvent(
                                         communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.NotSubscribed ? true : false,
+                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
                                       ),
                                     );
                                 SnackBar snackBar = SnackBar(
-                                  content: Text('${communityView.subscribed == SubscribedType.NotSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
+                                  content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
                                   behavior: SnackBarBehavior.floating,
                                 );
                                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -172,9 +170,9 @@ class _SearchPageState extends State<SearchPage> {
                               },
                         icon: Icon(
                           switch (communityView.subscribed) {
-                            SubscribedType.NotSubscribed => Icons.add,
-                            SubscribedType.Pending => Icons.pending_rounded,
-                            SubscribedType.Subscribed => Icons.remove,
+                            SubscribedType.notSubscribed => Icons.add,
+                            SubscribedType.pending => Icons.pending_rounded,
+                            SubscribedType.subscribed => Icons.remove,
                           },
                         ),
                         visualDensity: VisualDensity.compact,

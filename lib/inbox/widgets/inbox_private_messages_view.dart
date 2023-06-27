@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:http/http.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class InboxPrivateMessagesView extends StatelessWidget {
@@ -50,7 +49,7 @@ class InboxPrivateMessagesView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(formatTimeToString(dateTime: privateMessages[index].privateMessage.published))
+                    Text(formatTimeToString(dateTime: privateMessages[index].privateMessage.published.toIso8601String()))
                   ],
                 ),
                 const SizedBox(height: 10),

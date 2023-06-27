@@ -25,8 +25,6 @@ Future<Version> fetchVersion() async {
       final release = json.decode(response.body);
       String latestVersion = release['tag_name'];
 
-      print('$currentVersion, $latestVersion');
-
       if (currentVersion != null && currentVersion.compareTo(latestVersion) < 0) {
         return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {

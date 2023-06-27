@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
-
-import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -15,7 +13,7 @@ const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link'
 
 class CreatePostPage extends StatefulWidget {
   final int communityId;
-  final GetCommunityResponse? communityInfo;
+  final FullCommunityView? communityInfo;
 
   const CreatePostPage({super.key, required this.communityId, this.communityInfo});
 
@@ -31,7 +29,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   // final List<bool> _selectedPostType = <bool>[true, false, false];
 
   String description = '';
-  TextEditingController _bodyTextController = TextEditingController();
+  final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
 
   @override

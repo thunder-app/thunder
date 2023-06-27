@@ -1,26 +1,22 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/numbers.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
   final String? communityName;
   final bool? hasReachedEnd;
-  final ListingType? listingType;
-  final GetCommunityResponse? communityInfo;
+  final PostListingType? listingType;
+  final FullCommunityView? communityInfo;
 
   const PostCardList({
     super.key,
@@ -114,7 +110,7 @@ class _PostCardListState extends State<PostCardList> {
                     }
                   } else {
                     return PostCard(
-                      postView: widget.postViews![index],
+                      postViewMedia: widget.postViews![index],
                       showInstanceName: widget.communityId == null,
                     );
                   }

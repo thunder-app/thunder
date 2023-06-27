@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -10,14 +10,14 @@ class Destination {
   const Destination(this.label, this.listingType, this.icon);
 
   final String label;
-  final ListingType listingType;
+  final PostListingType listingType;
   final IconData icon;
 }
 
 const List<Destination> destinations = <Destination>[
-  Destination('Subscriptions', ListingType.Subscribed, Icons.view_list_rounded),
-  Destination('Local Posts', ListingType.Local, Icons.home_rounded),
-  Destination('All Posts', ListingType.All, Icons.grid_view_rounded),
+  Destination('Subscriptions', PostListingType.subscribed, Icons.view_list_rounded),
+  Destination('Local Posts', PostListingType.local, Icons.home_rounded),
+  Destination('All Posts', PostListingType.all, Icons.grid_view_rounded),
 ];
 
 class DrawerItem extends StatelessWidget {
@@ -104,7 +104,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
             Column(
               children: destinations.map((Destination destination) {
                 return DrawerItem(
-                  disabled: destination.listingType == ListingType.Subscribed && isLoggedIn == false,
+                  disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
                   onTap: () {
                     context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                           reset: true,

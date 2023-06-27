@@ -2,15 +2,14 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/post.dart';
@@ -64,10 +63,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       PostView postView = await votePost(event.postId, event.score);
 
       // Find the specific post to update
-      int existingPostViewIndex = state.postViews!.indexWhere((postView) => postView.post.id == event.postId);
-      state.postViews![existingPostViewIndex].counts = postView.counts;
-      state.postViews![existingPostViewIndex].post = postView.post;
-      state.postViews![existingPostViewIndex].myVote = postView.myVote;
+      int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } on DioException catch (e, s) {
@@ -83,12 +80,23 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      return emit(
-          state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      return emit(state.copyWith(
+        status: CommunityStatus.networkFailure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      return emit(state.copyWith(
+        status: CommunityStatus.failure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
     }
   }
 
@@ -99,10 +107,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       PostView postView = await savePost(event.postId, event.save);
 
       // Find the specific post to update
-      int existingPostViewIndex = state.postViews!.indexWhere((postView) => postView.post.id == event.postId);
-      state.postViews![existingPostViewIndex].counts = postView.counts;
-      state.postViews![existingPostViewIndex].post = postView.post;
-      state.postViews![existingPostViewIndex].saved = postView.saved;
+      int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     } on DioException catch (e, s) {
@@ -118,12 +124,23 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      return emit(
-          state.copyWith(status: CommunityStatus.networkFailure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      return emit(state.copyWith(
+        status: CommunityStatus.networkFailure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
-      return emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+      return emit(state.copyWith(
+        status: CommunityStatus.failure,
+        errorMessage: e.toString(),
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+      ));
     }
   }
 
@@ -133,7 +150,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    ListingType defaultListingType = ListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+    PostListingType defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
     SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
 
     try {
@@ -143,53 +160,49 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       while (attemptCount < 2) {
         try {
-          Lemmy lemmy = LemmyClient.instance.lemmy;
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           if (event.reset) {
             emit(state.copyWith(status: CommunityStatus.loading));
 
             int? communityId = event.communityId;
             String? communityName = event.communityName;
-            ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
+            PostListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
             SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
             // Fetch community's information
             SubscribedType? subscribedType;
-            GetCommunityResponse? getCommunityResponse;
+            FullCommunityView? getCommunityResponse;
 
             if (communityId != null || communityName != null) {
-              getCommunityResponse = await lemmy.getCommunity(
-                GetCommunity(
-                  auth: account?.jwt,
-                  id: communityId,
-                  name: event.communityName,
-                ),
-              );
+              getCommunityResponse = await lemmy.run(GetCommunity(
+                auth: account?.jwt,
+                id: communityId,
+                name: event.communityName,
+              ));
 
-              subscribedType = getCommunityResponse.communityView.subscribed;
+              subscribedType = getCommunityResponse?.communityView.subscribed;
             }
 
             // Fetch community's posts
-            GetPostsResponse getPostsResponse = await lemmy.getPosts(
-              GetPosts(
-                auth: account?.jwt,
-                page: 1,
-                limit: 15,
-                sort: sortType,
-                type_: listingType,
-                communityId: communityId ?? getCommunityResponse?.communityView.community.id,
-                communityName: event.communityName,
-              ),
-            );
+            List<PostView> posts = await lemmy.run(GetPosts(
+              auth: account?.jwt,
+              page: 1,
+              limit: 15,
+              sort: sortType,
+              type: listingType,
+              communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+              communityName: event.communityName,
+            ));
 
             // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
+            List<PostViewMedia> formattedPosts = await parsePostViews(posts);
 
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
                 page: 2,
-                postViews: posts,
+                postViews: formattedPosts,
                 listingType: listingType,
                 communityId: communityId,
                 communityName: event.communityName,
@@ -208,26 +221,24 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
 
             int? communityId = event.communityId ?? state.communityId;
-            ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
+            PostListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
             SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
             // Fetch more posts from the community
-            GetPostsResponse getPostsResponse = await lemmy.getPosts(
-              GetPosts(
-                auth: account?.jwt,
-                page: state.page,
-                limit: 15,
-                sort: sortType,
-                type_: state.listingType,
-                communityId: state.communityId,
-                communityName: state.communityName,
-              ),
-            );
+            List<PostView> posts = await lemmy.run(GetPosts(
+              auth: account?.jwt,
+              page: state.page,
+              limit: 15,
+              sort: sortType,
+              type: state.listingType,
+              communityId: state.communityId,
+              communityName: state.communityName,
+            ));
 
             // Parse the posts, and append them to the existing list
-            List<PostViewMedia> posts = await parsePostViews(getPostsResponse.posts);
+            List<PostViewMedia> postMedias = await parsePostViews(posts);
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
-            postViews.addAll(posts);
+            postViews.addAll(postMedias);
 
             return emit(
               state.copyWith(
@@ -265,11 +276,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) return;
 
-      CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
+      CommunityView communityView = await lemmy.run(FollowCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,
@@ -280,7 +291,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        subscribedType: communityResponse.communityView.subscribed,
+        subscribedType: communityView.subscribed,
       ));
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
@@ -323,7 +334,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(
@@ -347,17 +358,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      PostResponse createPostResponse = await lemmy.createPost(
-        CreatePost(
-          auth: account!.jwt!,
-          communityId: state.communityId!,
-          name: event.name,
-          body: event.body,
-        ),
-      );
+      PostView postView = await lemmy.run(CreatePost(
+        auth: account!.jwt!,
+        communityId: state.communityId!,
+        name: event.name,
+        body: event.body,
+      ));
 
       // Parse the posts, and append them to the existing list
-      List<PostViewMedia> posts = await parsePostViews([createPostResponse.postView]);
+      List<PostViewMedia> posts = await parsePostViews([postView]);
       List<PostViewMedia> postViews = List.from(state.postViews ?? []);
       postViews.addAll(posts);
 

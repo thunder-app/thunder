@@ -48,7 +48,7 @@ class InboxPage extends StatefulWidget {
 class _InboxPageState extends State<InboxPage> {
   InboxType? _inboxType = inboxCategories[0].type;
 
-  bool showUnread = false;
+  bool showAll = false;
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +73,9 @@ class _InboxPageState extends State<InboxPage> {
             shape: const StadiumBorder(),
             visualDensity: VisualDensity.compact,
             label: const Text(' Show All'),
-            selected: !showUnread,
+            selected: showAll,
             onSelected: (bool selected) {
-              setState(() => showUnread = !selected);
+              setState(() => showAll = !showAll);
               context.read<InboxBloc>().add(GetInboxEvent(showAll: selected));
             },
           ),

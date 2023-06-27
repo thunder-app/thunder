@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -22,10 +22,10 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCard extends StatefulWidget {
-  final PostViewMedia postView;
+  final PostViewMedia postViewMedia;
   final bool showInstanceName;
 
-  const PostCard({super.key, required this.postView, this.showInstanceName = true});
+  const PostCard({super.key, required this.postViewMedia, this.showInstanceName = true});
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -40,9 +40,8 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    int? myVote = widget.postView.myVote;
-    bool saved = widget.postView.saved;
-    int score = widget.postView.counts.score;
+    VoteType? myVote = widget.postViewMedia.postView.myVote;
+    bool saved = widget.postViewMedia.postView.saved;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
@@ -54,14 +53,12 @@ class _PostCardState extends State<PostCard> {
         // Check to see what the swipe action is
         if (swipeAction == SwipeAction.upvote) {
           // @todo: optimistic update
-          int vote = myVote == 1 ? 0 : 1;
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postView.post.id, score: vote));
+          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.up ? VoteType.none : VoteType.up));
         }
 
         if (swipeAction == SwipeAction.downvote) {
           // @todo: optimistic update
-          int vote = myVote == -1 ? 0 : -1;
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postView.post.id, score: vote));
+          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.down ? VoteType.none : VoteType.down));
         }
 
         if (swipeAction == SwipeAction.reply) {
@@ -77,13 +74,13 @@ class _PostCardState extends State<PostCard> {
         }
 
         if (swipeAction == SwipeAction.save) {
-          context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postView.post.id, save: !saved));
+          context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postViewMedia.postView.post.id, save: !saved));
         }
       },
       onPointerCancel: (event) => {},
       child: Dismissible(
         direction: isUserLoggedIn ? DismissDirection.horizontal : DismissDirection.none,
-        key: ObjectKey(widget.postView.post.id),
+        key: ObjectKey(widget.postViewMedia.postView.post.id),
         resizeDuration: Duration.zero,
         dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
         confirmDismiss: (DismissDirection direction) async {
@@ -157,7 +154,7 @@ class _PostCardState extends State<PostCard> {
                         BlocProvider.value(value: communityBloc),
                         BlocProvider(create: (context) => post_bloc.PostBloc()),
                       ],
-                      child: PostPage(postView: widget.postView),
+                      child: PostPage(postView: widget.postViewMedia),
                     ),
                   ),
                 );
@@ -171,13 +168,11 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget compactPostLayout(BuildContext context) {
-    final Post post = widget.postView.post;
+    final Post post = widget.postViewMedia.postView.post;
     final ThemeData theme = Theme.of(context);
 
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
     final bool showThumbnailPreviewOnRight = context.read<ThunderBloc>().state.preferences?.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -187,7 +182,7 @@ class _PostCardState extends State<PostCard> {
         children: [
           if (!showThumbnailPreviewOnRight)
             MediaView(
-              postView: widget.postView,
+              postView: widget.postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               viewMode: ViewMode.compact,
@@ -206,7 +201,7 @@ class _PostCardState extends State<PostCard> {
                     const SizedBox(height: 4.0),
                     GestureDetector(
                       child: Text(
-                        '${widget.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postView.community.actorId)}' : ''}',
+                        '${widget.postViewMedia.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)}' : ''}',
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
@@ -223,7 +218,7 @@ class _PostCardState extends State<PostCard> {
           if (showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
           if (showThumbnailPreviewOnRight)
             MediaView(
-              postView: widget.postView,
+              postView: widget.postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
               viewMode: ViewMode.compact,
@@ -234,7 +229,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   Widget comfortablePostLayout(BuildContext context) {
-    final Post post = widget.postView.post;
+    final Post post = widget.postViewMedia.postView.post;
     final ThemeData theme = Theme.of(context);
 
     final bool showFullHeightImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_full_height_images') ?? false;
@@ -249,7 +244,7 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           MediaView(
-            postView: widget.postView,
+            postView: widget.postViewMedia,
             showFullHeightImages: showFullHeightImages,
             hideNsfwPreviews: hideNsfwPreviews,
           ),
@@ -264,7 +259,7 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       GestureDetector(
                           child: Text(
-                            '${widget.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postView.community.actorId)}' : ''}',
+                            '${widget.postViewMedia.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)}' : ''}',
                             style: theme.textTheme.titleSmall?.copyWith(
                               fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                               color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
@@ -283,7 +278,7 @@ class _PostCardState extends State<PostCard> {
                                     BlocProvider.value(value: authBloc),
                                     BlocProvider.value(value: thunderBloc),
                                   ],
-                                  child: CommunityPage(communityId: widget.postView.community.id),
+                                  child: CommunityPage(communityId: widget.postViewMedia.postView.community.id),
                                 ),
                               ),
                             );
@@ -315,7 +310,7 @@ class _PostCardState extends State<PostCard> {
             BlocProvider.value(value: authBloc),
             BlocProvider.value(value: thunderBloc),
           ],
-          child: CommunityPage(communityId: widget.postView.community.id),
+          child: CommunityPage(communityId: widget.postViewMedia.postView.community.id),
         ),
       ),
     );
@@ -325,9 +320,11 @@ class _PostCardState extends State<PostCard> {
   Widget postMetadata(BuildContext context) {
     final ThemeData theme = Theme.of(context);
 
-    final Post post = widget.postView.post;
-    final int? myVote = widget.postView.myVote;
-    final bool saved = widget.postView.saved;
+    final PostView postView = widget.postViewMedia.postView;
+    final Post post = postView.post;
+
+    final VoteType? myVote = postView.myVote;
+    final bool saved = postView.saved;
 
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
 
@@ -338,13 +335,13 @@ class _PostCardState extends State<PostCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconText(
-              text: formatNumberToK(widget.postView.counts.score),
+              text: formatNumberToK(postView.counts.score),
               icon: Icon(
                 Icons.arrow_upward,
                 size: 18.0,
-                color: myVote == 1
+                color: myVote == VoteType.up
                     ? Colors.orange
-                    : myVote == -1
+                    : myVote == VoteType.down
                         ? Colors.blue
                         : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
               ),
@@ -357,7 +354,7 @@ class _PostCardState extends State<PostCard> {
                 size: 17.0,
                 color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
               ),
-              text: formatNumberToK(widget.postView.counts.comments),
+              text: formatNumberToK(postView.counts.comments),
               padding: 5.0,
             ),
             const SizedBox(width: 10.0),
@@ -367,15 +364,15 @@ class _PostCardState extends State<PostCard> {
                 size: 19.0,
                 color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
               ),
-              text: formatTimeToString(dateTime: post.published),
+              text: formatTimeToString(dateTime: post.published.toIso8601String()),
             ),
             const SizedBox(width: 14.0),
-            if (post.featuredCommunity == true || post.featuredLocal == true)
-              Icon(
-                Icons.campaign_rounded,
-                size: 24.0,
-                color: Colors.green.shade800,
-              ),
+            // if (postView.post.distinguised)
+            // Icon(
+            //   Icons.campaign_rounded,
+            //   size: 24.0,
+            //   color: Colors.green.shade800,
+            // ),
           ],
         ),
         if (useCompactView)
@@ -395,7 +392,8 @@ class _PostCardState extends State<PostCard> {
     final bool showVoteActions = prefs?.getBool('setting_general_show_vote_actions') ?? true;
     final bool showSaveAction = prefs?.getBool('setting_general_show_save_action') ?? true;
 
-    final Post post = widget.postView.post;
+    final PostView postView = widget.postViewMedia.postView;
+    final Post post = postView.post;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -404,41 +402,38 @@ class _PostCardState extends State<PostCard> {
           IconButton(
               icon: Icon(
                 Icons.arrow_upward,
-                semanticLabel: widget.postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+                semanticLabel: postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
               ),
-              color: widget.postView.myVote == 1 ? Colors.orange : null,
+              color: postView.myVote == VoteType.up ? Colors.orange : null,
               visualDensity: VisualDensity.compact,
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: widget.postView.myVote == 1 ? 0 : 1));
+                context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
               }),
         if (showVoteActions)
           IconButton(
             icon: Icon(
               Icons.arrow_downward,
-              semanticLabel: widget.postView.myVote == -1 ? 'Downvoted' : 'Downvote',
+              semanticLabel: postView.myVote == VoteType.down ? 'Downvoted' : 'Downvote',
             ),
-            color: widget.postView.myVote == -1 ? Colors.blue : null,
+            color: postView.myVote == VoteType.down ? Colors.blue : null,
             visualDensity: VisualDensity.compact,
             onPressed: () {
               HapticFeedback.mediumImpact();
-              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: widget.postView.myVote == -1 ? 0 : -1));
+              context.read<CommunityBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
             },
           ),
         if (showSaveAction)
           IconButton(
             icon: Icon(
-              widget.postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
-              semanticLabel: widget.postView.saved ? 'Saved' : 'Save',
+              postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
+              semanticLabel: postView.saved ? 'Saved' : 'Save',
             ),
-            color: widget.postView.saved ? Colors.purple : null,
+            color: postView.saved ? Colors.purple : null,
             visualDensity: VisualDensity.compact,
             onPressed: () {
               HapticFeedback.mediumImpact();
-              context.read<CommunityBloc>().add(SavePostEvent(
-                    postId: post.id,
-                    save: widget.postView.saved ? false : true,
-                  ));
+              context.read<CommunityBloc>().add(SavePostEvent(postId: post.id, save: postView.saved ? false : true));
             },
           ),
       ],

@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -62,19 +62,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.loading));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      GetPostResponse? getPostResponse;
+      FullPostView? getPostResponse;
 
       if (event.postId != null) {
-        getPostResponse = await lemmy
-            .getPost(
-          GetPost(
-            id: event.postId,
-            auth: account?.jwt,
-          ),
-        )
-            .timeout(timeout, onTimeout: () {
+        getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
           throw Exception('Error: Timeout when attempting to fetch post');
         });
       }
@@ -88,33 +81,31 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         postView = posts.first;
       }
 
-      GetCommentsResponse getCommentsResponse = await lemmy
-          .getComments(
-        GetComments(
-          page: 1,
-          auth: account?.jwt,
-          communityId: postView?.post.communityId,
-          postId: postView?.post.id,
-          sort: CommentSortType.Hot,
-          limit: 50,
-        ),
-      )
+      List<CommentView> getCommentsResponse = await lemmy
+          .run(GetComments(
+        page: 1,
+        auth: account?.jwt,
+        communityId: postView?.postView.post.communityId,
+        postId: postView?.postView.post.id,
+        sort: SortType.hot,
+        limit: 50,
+      ))
           .timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to fetch comments');
       });
 
       // Build the tree view from the flattened comments
-      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
       emit(
         state.copyWith(
           status: PostStatus.success,
-          postId: postView?.post.id,
+          postId: postView?.postView.post.id,
           postView: postView,
           comments: commentTree,
           commentPage: state.commentPage + 1,
-          commentCount: getCommentsResponse.comments.length,
-          communityId: postView?.post.communityId,
+          commentCount: getCommentsResponse.length,
+          communityId: postView?.postView.post.communityId,
         ),
       );
     } on DioException catch (e, s) {
@@ -129,60 +120,56 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(event, emit) async {
     Account? account = await fetchActiveProfileAccount();
-    Lemmy lemmy = LemmyClient.instance.lemmy;
+    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
     if (event.reset) {
       emit(state.copyWith(status: PostStatus.loading));
 
-      GetCommentsResponse getCommentsResponse = await lemmy
-          .getComments(
-        GetComments(
-          auth: account?.jwt,
-          communityId: state.communityId,
-          postId: state.postId,
-          sort: CommentSortType.Hot,
-          limit: 50,
-          page: 1,
-        ),
-      )
+      List<CommentView> getCommentsResponse = await lemmy
+          .run(GetComments(
+        auth: account?.jwt,
+        communityId: state.communityId,
+        postId: state.postId,
+        sort: SortType.hot,
+        limit: 50,
+        page: 1,
+      ))
           .timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to fetch comments');
       });
 
       // Build the tree view from the flattened comments
-      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
       return emit(
         state.copyWith(
           status: PostStatus.success,
           comments: commentTree,
           commentPage: 1,
-          commentCount: getCommentsResponse.comments.length,
+          commentCount: getCommentsResponse.length,
         ),
       );
     }
 
     // Prevent duplicate requests if we're done fetching comments
-    if (state.commentCount >= state.postView!.counts.comments) return;
+    if (state.commentCount >= state.postView!.postView.counts.comments) return;
     emit(state.copyWith(status: PostStatus.refreshing));
 
-    GetCommentsResponse getCommentsResponse = await lemmy
-        .getComments(
-      GetComments(
-        auth: account?.jwt,
-        communityId: state.communityId,
-        postId: state.postId,
-        sort: CommentSortType.Hot,
-        limit: 50,
-        page: state.commentPage,
-      ),
-    )
+    List<CommentView> getCommentsResponse = await lemmy
+        .run(GetComments(
+      auth: account?.jwt,
+      communityId: state.communityId,
+      postId: state.postId,
+      sort: SortType.hot,
+      limit: 50,
+      page: state.commentPage,
+    ))
         .timeout(timeout, onTimeout: () {
       throw Exception('Error: Timeout when attempting to fetch more comments');
     });
 
     // Build the tree view from the flattened comments
-    List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
+    List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
     // Append the new comments
     List<CommentViewTree> commentViewTree = List.from(state.comments);
@@ -193,7 +180,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       status: PostStatus.success,
       comments: commentViewTree,
       commentPage: state.commentPage + 1,
-      commentCount: state.commentCount + (getCommentsResponse.comments.isEmpty ? 50 : getCommentsResponse.comments.length),
+      commentCount: state.commentCount + (getCommentsResponse.isEmpty ? 50 : getCommentsResponse.length),
     ));
   }
 
@@ -205,9 +192,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         throw Exception('Error: Timeout when attempting to vote post');
       });
 
-      state.postView?.counts = postView.counts;
-      state.postView?.post = postView.post;
-      state.postView?.myVote = postView.myVote;
+      state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
@@ -230,9 +215,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         throw Exception('Error: Timeout when attempting to save post');
       });
 
-      state.postView?.counts = postView.counts;
-      state.postView?.post = postView.post;
-      state.postView?.saved = postView.saved;
+      state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
@@ -262,8 +245,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
-      currentTree.myVote = commentView.myVote; // Update the comment's information
-      currentTree.counts.score = commentView.counts.score;
+      currentTree.comment = commentView;
 
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
@@ -293,7 +275,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
-      currentTree.saved = commentView.saved; // Update the comment's information
+      currentTree.comment = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
     } on DioException catch (e, s) {
@@ -313,24 +295,22 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.'));
       }
 
-      if (state.postView?.post.id == null) {
+      if (state.postView?.postView.post.id == null) {
         return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.'));
       }
 
-      CommentResponse createComment = await lemmy.createComment(
-        CreateComment(
-          auth: account!.jwt!,
-          content: event.content,
-          postId: state.postView!.post.id,
-          parentId: event.parentCommentId,
-        ),
-      );
+      FullCommentView createComment = await lemmy.run(CreateComment(
+        auth: account!.jwt!,
+        content: event.content,
+        postId: state.postView!.postView.post.id,
+        parentId: event.parentCommentId,
+      ));
 
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch

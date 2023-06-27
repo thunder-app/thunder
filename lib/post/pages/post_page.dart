@@ -71,7 +71,7 @@ class _PostPageState extends State<PostPage> {
                         heightFactor: 0.8,
                         child: BlocProvider<PostBloc>.value(
                           value: postBloc,
-                          child: CreateCommentModal(postView: widget.postView),
+                          child: CreateCommentModal(postView: widget.postView?.postView),
                         ),
                       ),
                     );
@@ -89,7 +89,7 @@ class _PostPageState extends State<PostPage> {
           listener: (context, state) {
             if (state.status == PostStatus.success && widget.postView != null) {
               // Update the community's post
-              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.post.id == widget.postView?.post.id);
+              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.postView.post.id == widget.postView?.postView.post.id);
               if (postIdIndex != null && state.postView != null) {
                 context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
               }

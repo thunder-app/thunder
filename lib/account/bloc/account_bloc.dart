@@ -1,12 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'account_event.dart';
@@ -22,42 +21,45 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
         while (attemptCount < 2) {
           try {
-            Lemmy lemmy = LemmyClient.instance.lemmy;
+            LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
             if (account == null || account.jwt == null) {
-              return emit(state.copyWith(
-                status: AccountStatus.success,
-                subsciptions: [],
-              ));
+              return emit(
+                state.copyWith(
+                  status: AccountStatus.success,
+                  subsciptions: [],
+                ),
+              );
             }
 
-            ListCommunitiesResponse listCommunitiesResponse = await lemmy.listCommunities(
+            List<CommunityView> communityViews = await lemmy.run(
               ListCommunities(
-                auth: account?.jwt,
-                type_: ListingType.Subscribed,
+                auth: account.jwt,
+                type: PostListingType.subscribed,
                 limit: 50, // Temporarily increasing this to address issue of missing subscriptions
               ),
             );
 
             // Sort subscriptions by their name
-            List<CommunityView> communities = listCommunitiesResponse.communities;
-            communities.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
+            communityViews.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
-            GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.getPersonDetails(
+            FullPersonView fullPersonView = await lemmy.run(
               GetPersonDetails(
-                auth: account?.jwt,
-                username: account?.username,
+                auth: account.jwt,
+                username: account.username,
               ),
             );
 
-            return emit(state.copyWith(
-              status: AccountStatus.success,
-              subsciptions: communities,
-              comments: getPersonDetailsResponse.comments,
-              moderates: getPersonDetailsResponse.moderates,
-              personView: getPersonDetailsResponse.personView,
-              posts: getPersonDetailsResponse.posts,
-            ));
+            return emit(
+              state.copyWith(
+                status: AccountStatus.success,
+                subsciptions: communityViews,
+                comments: fullPersonView.comments,
+                moderates: fullPersonView.moderates,
+                personView: fullPersonView.personView,
+                posts: fullPersonView.posts,
+              ),
+            );
           } catch (e, s) {
             await Sentry.captureException(e, stackTrace: s);
 
@@ -66,11 +68,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         }
       } on DioException catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
-
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
-
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });

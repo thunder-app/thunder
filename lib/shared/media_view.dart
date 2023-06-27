@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -88,7 +87,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       );
     }
 
-    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.post.nsfw ?? true);
+    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),

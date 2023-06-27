@@ -1,5 +1,5 @@
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
-const ListingType DEFAULT_LISTING_TYPE = ListingType.Local;
+const PostListingType DEFAULT_LISTING_TYPE = PostListingType.local;
 
-const SortType DEFAULT_SORT_TYPE = SortType.Hot;
+const SortType DEFAULT_SORT_TYPE = SortType.hot;

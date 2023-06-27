@@ -2,11 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
-import 'package:lemmy/lemmy.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
@@ -50,17 +49,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(status: SearchStatus.loading));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      SearchResponse searchResponse = await lemmy.search(
-        Search(
-          auth: account?.jwt,
-          q: event.query,
-          page: 1,
-          limit: 15,
-          sort: SortType.Active,
-        ),
-      );
+      SearchResults searchResponse = await lemmy.run(Search(
+        auth: account?.jwt,
+        q: event.query,
+        page: 1,
+        limit: 15,
+        sort: SortType.active,
+      ));
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
     } on DioException catch (e, s) {
@@ -89,17 +86,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
 
           Account? account = await fetchActiveProfileAccount();
-          Lemmy lemmy = LemmyClient.instance.lemmy;
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          SearchResponse searchResponse = await lemmy.search(
-            Search(
-              auth: account?.jwt,
-              q: event.query,
-              page: state.page,
-              limit: 15,
-              sort: SortType.Active,
-            ),
-          );
+          SearchResults searchResponse = await lemmy.run(Search(
+            auth: account?.jwt,
+            q: event.query,
+            page: state.page,
+            limit: 15,
+            sort: SortType.active,
+          ));
 
           // Append the search results
           state.results?.communities.addAll(searchResponse.communities);
@@ -134,19 +129,19 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) return;
 
-      CommunityResponse communityResponse = await lemmy.followCommunity(FollowCommunity(
+      CommunityView communityResponse = await lemmy.run(FollowCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,
       ));
 
       // Search for the community that was updated and update it with the response
-      int communityToUpdateIndex = state.results!.communities.indexWhere((CommunityView communityView) => communityView.community.id == communityResponse.communityView.community.id);
-      state.results!.communities[communityToUpdateIndex] = communityResponse.communityView;
+      int communityToUpdateIndex = state.results!.communities.indexWhere((CommunityView communityView) => communityView.community.id == communityResponse.community.id);
+      state.results!.communities[communityToUpdateIndex] = communityResponse;
 
       return emit(state.copyWith(status: SearchStatus.success, results: state.results));
     } on DioException catch (e, s) {
