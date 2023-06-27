@@ -1,83 +1,68 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
-class SortTypeItem {
-  const SortTypeItem({
-    required this.sortType,
-    required this.icon,
-    required this.label
-  });
-
-  final SortType sortType;
-  final IconData icon;
-  final String label;
-}
-
-const defaultSortTypeItems = [
-  SortTypeItem(
-    sortType: SortType.hot,
+const List<ListPickerItem<SortType>> defaultSortTypeItems = [
+  ListPickerItem(
+    payload: SortType.hot,
     icon: Icons.local_fire_department_rounded,
     label: 'Hot',
   ),
-  SortTypeItem(
-    sortType: SortType.active,
+  ListPickerItem(
+    payload: SortType.active,
     icon: Icons.rocket_launch_rounded,
     label: 'Active',
   ),
-  SortTypeItem(
-    sortType: SortType.new_,
+  ListPickerItem(
+    payload: SortType.new_,
     icon: Icons.auto_awesome_rounded,
     label: 'New',
   ),
-  SortTypeItem(
-    sortType: SortType.mostComments,
+  ListPickerItem(
+    payload: SortType.mostComments,
     icon: Icons.comment_bank_rounded,
     label: 'Most Comments',
   ),
-  SortTypeItem(
-    sortType: SortType.newComments,
+  ListPickerItem(
+    payload: SortType.newComments,
     icon: Icons.add_comment_rounded,
     label: 'New Comments',
   ),
 ];
 
-const topSortTypeItems = [
-  SortTypeItem(
-    sortType: SortType.topDay,
+const List<ListPickerItem<SortType>> topSortTypeItems = [
+  ListPickerItem(
+    payload: SortType.topDay,
     icon: Icons.today,
     label: 'Top Today',
   ),
-  SortTypeItem(
-    sortType: SortType.topWeek,
+  ListPickerItem(
+    payload: SortType.topWeek,
     icon: Icons.view_week_sharp,
     label: 'Top Week',
   ),
-  SortTypeItem(
-    sortType: SortType.topMonth,
+  ListPickerItem(
+    payload: SortType.topMonth,
     icon: Icons.calendar_month,
     label: 'Top Month',
   ),
-  SortTypeItem(
-    sortType: SortType.topYear,
+  ListPickerItem(
+    payload: SortType.topYear,
     icon: Icons.calendar_today,
-    label: 'Top Month',
+    label: 'Top Year',
   ),
-  SortTypeItem(
-    sortType: SortType.topAll,
+  ListPickerItem(
+    payload: SortType.topAll,
     icon: Icons.military_tech,
     label: 'Top of all time',
   ),
 ];
 
-const allSortTypeItems = [
-  ...defaultSortTypeItems,
-  ...topSortTypeItems
-];
+const List<ListPickerItem<SortType>> allSortTypeItems = [...defaultSortTypeItems, ...topSortTypeItems];
 
-class SortPicker extends StatefulWidget {
-  final Function(SortTypeItem) onSelect;
+class SortPicker extends BottomSheetListPicker<SortType> {
 
-  const SortPicker({super.key, required this.onSelect});
+  const SortPicker({super.key, required super.onSelect, required super.title, super.items = defaultSortTypeItems});
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -89,7 +74,8 @@ class _SortPickerState extends State<SortPicker> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        child: topSelected ? topSortPicker() : defaultSortPicker());
+      child: topSelected ? topSortPicker() : defaultSortPicker(),
+    );
   }
 
   Widget defaultSortPicker() {
@@ -104,7 +90,7 @@ class _SortPickerState extends State<SortPicker> {
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
-              'Sort Options',
+              widget.title,
               style: theme.textTheme.titleLarge!.copyWith(),
             ),
           ),
@@ -116,7 +102,7 @@ class _SortPickerState extends State<SortPicker> {
             ..._generateList(defaultSortTypeItems, theme),
             ListTile(
               leading: const Icon(Icons.military_tech),
-              title: const Text("Top"),
+              title: const Text('Top'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
                 setState(() {
@@ -160,27 +146,21 @@ class _SortPickerState extends State<SortPicker> {
     );
   }
 
-  List<ListTile> _generateList(List<SortTypeItem> items, ThemeData theme) {
+  List<ListTile> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
     return items
-        .map((item) => ListTile(
-          title: Text(
-          item.label,
-          style: theme.textTheme.bodyMedium,
+        .map(
+          (item) => ListTile(
+            title: Text(
+              item.label,
+              style: theme.textTheme.bodyMedium,
+            ),
+            leading: Icon(item.icon),
+            onTap: () {
+              Navigator.of(context).pop();
+              widget.onSelect(item);
+            },
           ),
-          leading: Icon(item.icon),
-          onTap: () {
-          // context.read<CommunityBloc>().add(
-          //   GetCommunityPostsEvent(
-          //     sortType: item.sortType,
-          //     reset: true,
-          //     listingType: state.communityId != null ? null : state.listingType,
-          //     communityId: widget.communityId ?? state.communityId,
-          //   ),
-          // );
-          Navigator.of(context).pop();
-          widget.onSelect(item);
-          },
-          ))
-          .toList();
+        )
+        .toList();
   }
 }

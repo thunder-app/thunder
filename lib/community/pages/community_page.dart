@@ -48,7 +48,7 @@ class _CommunityPageState extends State<CommunityPage>
               sortType = currentState.sortType;
               sortTypeIcon = allSortTypeItems
                   .firstWhere((sortTypeItem) =>
-                      sortTypeItem.sortType == currentState.sortType)
+                      sortTypeItem.payload == currentState.sortType)
                   .icon;
             });
           }
@@ -189,15 +189,16 @@ class _CommunityPageState extends State<CommunityPage>
       context: context,
       showDragHandle: true,
       builder: (builderContext) => SortPicker(
+        title: 'Sort Options',
         onSelect: (selected) {
           setState(() {
-                sortType = selected.sortType;
+                sortType = selected.payload;
                 sortTypeIcon = selected.icon;
               });
 
               context.read<CommunityBloc>().add(
                 GetCommunityPostsEvent(
-                  sortType: selected.sortType,
+                  sortType: selected.payload,
                   reset: true,
                   listingType: state.communityId != null ? null : state.listingType,
                   communityId: widget.communityId ?? state.communityId,
