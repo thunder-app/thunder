@@ -29,6 +29,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     switch (attribute) {
       case 'setting_theme_use_system_theme':
         await prefs.setBool('setting_theme_use_system_theme', value);
+
         setState(() => useSystemTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -102,6 +103,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Use system theme',
+                          subtitle: 'Overrides dark/black theme options',
                           value: useSystemTheme,
                           iconEnabled: Icons.wallpaper,
                           iconDisabled: Icons.wallpaper,
