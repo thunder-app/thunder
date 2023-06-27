@@ -146,7 +146,7 @@ class _PostCardState extends State<PostCard> {
                 CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
 
                 // Mark post as read when tapped
-                context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
+                if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
 
                 await Navigator.of(context).push(
                   MaterialPageRoute(
