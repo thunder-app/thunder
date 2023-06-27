@@ -61,6 +61,7 @@ class _ThunderState extends State<Thunder> {
               return const Center(child: CircularProgressIndicator());
             case ThunderStatus.loading:
               return const Center(child: CircularProgressIndicator());
+            case ThunderStatus.refreshing:
             case ThunderStatus.success:
               return Scaffold(
                 bottomNavigationBar: _getScaffoldBottomNavigationBar(context),

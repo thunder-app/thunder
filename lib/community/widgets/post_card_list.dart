@@ -58,7 +58,7 @@ class _PostCardListState extends State<PostCardList> {
     final theme = Theme.of(context);
 
     return BlocListener<ThunderBloc, ThunderState>(
-      listenWhen: (previous, current) => (previous.status == ThunderStatus.loading && current.status == ThunderStatus.success),
+      listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
       listener: (context, state) {
         // Force a rebuild when the thunderbloc status changes
         setState(() {});

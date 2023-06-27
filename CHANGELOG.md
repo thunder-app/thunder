@@ -22,6 +22,7 @@
 - Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
 - Fixed issue where comment upvote/downvote did not display properly
 - Fixed issue where navigation bar was black on Android devices
+- Fixed issue where Thunder would redirect you to the feed page after changing settings
 
 ## 0.2.1+7 - 2023-06-25
 ### Fixed

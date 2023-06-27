@@ -54,13 +54,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
   Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
     try {
-      emit(state.copyWith(status: ThunderStatus.loading));
+      emit(state.copyWith(status: ThunderStatus.refreshing));
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      await Future.delayed(const Duration(seconds: 1), () {
-        return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
-      });
+      return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
