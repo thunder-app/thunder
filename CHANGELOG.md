@@ -7,6 +7,7 @@
 - Added ability to switch thumbnail previews in compact mode to the right
 - Added Material You dynamic colour theming
 - Added system theme option
+- Added option to open up links in external browser by default
 
 ### Changed
 - Moved theming options into a separate section in settings

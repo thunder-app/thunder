@@ -30,6 +30,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
 
+  // Link Settings
+  bool openInExternalBrowser = false;
+
   // Notification Settings
   bool showInAppUpdateNotification = true;
 
@@ -66,10 +69,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
         setState(() => showThumbnailPreviewOnRight = value);
         break;
-      case 'setting_general_show_link_previews':
-        await prefs.setBool('setting_general_show_link_previews', value);
-        setState(() => showLinkPreviews = value);
-        break;
       case 'setting_general_show_vote_actions':
         await prefs.setBool('setting_general_show_vote_actions', value);
         setState(() => showVoteActions = value);
@@ -89,6 +88,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
+        break;
+
+      // Link Settings
+      case 'setting_general_show_link_previews':
+        await prefs.setBool('setting_general_show_link_previews', value);
+        setState(() => showLinkPreviews = value);
+        break;
+      case 'setting_links_open_in_external_browser':
+        await prefs.setBool('setting_links_open_in_external_browser', value);
+        setState(() => openInExternalBrowser = value);
         break;
 
       // Notification Settings
@@ -130,11 +139,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
       // Post Settings
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-      showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+
+      // Links
+      openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
+      showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
@@ -223,13 +235,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                         ),
                         ToggleOption(
-                          description: 'Show link previews',
-                          value: showLinkPreviews,
-                          iconEnabled: Icons.photo_size_select_actual_rounded,
-                          iconDisabled: Icons.photo_size_select_actual_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
-                        ),
-                        ToggleOption(
                           description: 'Show voting on posts',
                           value: showVoteActions,
                           iconEnabled: Icons.import_export_rounded,
@@ -256,6 +261,36 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Links',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Show link previews',
+                          value: showLinkPreviews,
+                          iconEnabled: Icons.photo_size_select_actual_rounded,
+                          iconDisabled: Icons.photo_size_select_actual_rounded,
+                          onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
+                        ),
+                        ToggleOption(
+                          description: 'Open links in external browser',
+                          value: openInExternalBrowser,
+                          iconEnabled: Icons.link_rounded,
+                          iconDisabled: Icons.link_rounded,
+                          onToggle: (bool value) => setPreferences('setting_links_open_in_external_browser', value),
                         ),
                       ],
                     ),

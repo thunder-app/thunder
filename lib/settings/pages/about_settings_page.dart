@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
+
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/shared/webview.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   const AboutSettingsPage({super.key});
@@ -9,6 +13,7 @@ class AboutSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),
@@ -42,7 +47,11 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('github.com/hjiangsu/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder')));
+                    if (openInExternalBrowser) {
+                      launchUrl(Uri.parse('https://github.com/hjiangsu/thunder'), mode: LaunchMode.externalApplication);
+                    } else {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder')));
+                    }
                   },
                 ),
                 ListTile(
@@ -53,7 +62,11 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://lemmy.world/c/thunder_app')));
+                    if (openInExternalBrowser) {
+                      launchUrl(Uri.parse('https://lemmy.world/c/thunder_app'), mode: LaunchMode.externalApplication);
+                    } else {
+                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://lemmy.world/c/thunder_app')));
+                    }
                   },
                 ),
               ],
