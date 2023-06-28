@@ -1,42 +1,31 @@
-import 'dart:ui';
-
-import 'package:flutter/material.dart';
-
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:url_launcher/url_launcher.dart';
-
-import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/shared/image_viewer.dart';
-import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class MediaView extends StatefulWidget {
-  final Post? post;
-  final PostViewMedia? postView;
-  final bool showFullHeightImages;
-  final bool hideNsfwPreviews;
+class PreviewImage extends StatefulWidget {
   final ViewMode viewMode;
+  final bool showFullHeightImages;
+  final String mediaUrl;
+  final double? height;
 
-  const MediaView({
+  const PreviewImage({
     super.key,
-    this.post,
-    this.postView,
-    this.showFullHeightImages = true,
-    required this.hideNsfwPreviews,
-    this.viewMode = ViewMode.comfortable,
+    required this.viewMode,
+    required this.showFullHeightImages,
+    required this.mediaUrl,
+    this.height,
   });
 
   @override
-  State<MediaView> createState() => _MediaViewState();
+  State<PreviewImage> createState() => _PreviewImageState();
 }
 
-class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMixin {
+class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
@@ -53,100 +42,17 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-
-    if (widget.postView == null || widget.postView!.media.isEmpty) {
-      if (widget.viewMode == ViewMode.compact) {
-        return Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-          child: Container(
-            color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-            child: const SizedBox(
-              height: 75.0,
-              width: 75.0,
-              child: Icon(
-                Icons.article_rounded,
-                semanticLabel: 'Article Link',
-              ),
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
-    }
-
-    if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
-      return LinkPreviewCard(
-        originURL: widget.postView!.media.first.originalUrl,
-        mediaURL: widget.postView!.media.first.mediaUrl,
-        mediaHeight: widget.postView!.media.first.height,
-        mediaWidth: widget.postView!.media.first.width,
-        showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
-        viewMode: widget.viewMode,
-      );
-    }
-
-    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
-
-    return Padding(
-      padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-      child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            transitionDuration: const Duration(milliseconds: 400),
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-              return ImageViewer(url: widget.postView!.media.first.mediaUrl!);
-            },
-            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-              return Align(
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-              );
-            },
-          ),
-        ),
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
-              if (hideNsfw)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
-                    ],
-                  ),
-                ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
     final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
+    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
     return Hero(
-      tag: widget.postView!.media.first.mediaUrl!,
+      tag: widget.mediaUrl!,
       child: ExtendedImage.network(
-        widget.postView!.media.first.mediaUrl!,
+        widget.mediaUrl!,
         height: height,
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
@@ -208,7 +114,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                                 ),
                                 Expanded(
                                   child: Text(
-                                    widget.post?.url ?? '',
+                                    widget.mediaUrl ?? '',
                                     overflow: TextOverflow.ellipsis,
                                     style: theme.textTheme.bodyMedium!.copyWith(
                                       color: Colors.white60,
@@ -222,11 +128,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       ),
                     ),
                     onTap: () {
-                      if (widget.post?.url != null) {
+                      if (widget.mediaUrl != null) {
                         if (openInExternalBrowser) {
-                          launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
+                          launchUrl(Uri.parse(widget.mediaUrl!), mode: LaunchMode.externalApplication);
                         } else {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.mediaUrl!)));
                         }
                       }
                     },

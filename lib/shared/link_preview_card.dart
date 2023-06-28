@@ -43,8 +43,9 @@ class LinkPreviewCard extends StatelessWidget {
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
           borderRadius: BorderRadius.circular(6), // Image border
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6), // Image border
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
             child: Stack(
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
@@ -67,8 +68,9 @@ class LinkPreviewCard extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6), // Image border
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
             child: Stack(
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
@@ -118,8 +120,9 @@ class LinkPreviewCard extends StatelessWidget {
     final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (viewMode == ViewMode.compact) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
           color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
           child: const SizedBox(
