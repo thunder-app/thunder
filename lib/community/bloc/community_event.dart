@@ -10,7 +10,7 @@ abstract class CommunityEvent extends Equatable {
 class GetCommunityPostsEvent extends CommunityEvent {
   final bool reset;
   final SortType? sortType;
-  final ListingType? listingType;
+  final PostListingType? listingType;
   final int? communityId;
   final String? communityName;
 
@@ -19,7 +19,7 @@ class GetCommunityPostsEvent extends CommunityEvent {
 
 class VotePostEvent extends CommunityEvent {
   final int postId;
-  final int score;
+  final VoteType score;
 
   const VotePostEvent({required this.postId, required this.score});
 }
@@ -45,4 +45,11 @@ class CreatePostEvent extends CommunityEvent {
   final String body;
 
   const CreatePostEvent({required this.name, required this.body});
+}
+
+class MarkPostAsReadEvent extends CommunityEvent {
+  final int postId;
+  final bool read;
+
+  const MarkPostAsReadEvent({required this.postId, required this.read});
 }

@@ -8,6 +8,11 @@
 - Added Material You dynamic colour theming
 - Added system theme option
 - Added option to open up links in external browser by default
+- Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy_api_client!
+  - This change will make it easier to work with future features, and also allows a chance for collaboration on a unified dart-based lemmy api
+- Added ability to tap on images within comments/posts to zoom in
+- Added swipe gesture on botton nav bar to open up drawer in Feed
+- Added settings option to disable swipe gestures on posts
 
 ### Changed
 - Moved theming options into a separate section in settings
@@ -20,6 +25,7 @@
 - Fixed issue with sort type not being respected on refresh - contribution from @JulianPaulus
 - Fixed issue where comment upvote/downvote did not display properly
 - Fixed issue where navigation bar was black on Android devices
+- Fixed issue where Thunder would redirect you to the feed page after changing settings
 
 ## 0.2.1+7 - 2023-06-25
 ### Fixed

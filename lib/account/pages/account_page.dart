@@ -63,7 +63,7 @@ class _AccountPageState extends State<AccountPage> {
                             ),
                             const SizedBox(height: 8),
                             Text(
-                              '${formatNumberToK(accountState.personView!.counts.postScore)} · ${formatNumberToK(accountState.personView!.counts.commentScore)} · ${formatTimeToString(dateTime: accountState.personView!.person.published)}',
+                              '${formatNumberToK(accountState.personView!.counts.postScore)} · ${formatNumberToK(accountState.personView!.counts.commentScore)} · ${formatTimeToString(dateTime: accountState.personView!.person.published.toIso8601String())}',
                               style: theme.textTheme.labelMedium?.copyWith(color: theme.textTheme.labelMedium?.color?.withAlpha(200)),
                             ),
                             const SizedBox(height: 24),

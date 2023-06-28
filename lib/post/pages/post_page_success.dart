@@ -52,7 +52,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          PostSubview(postView: widget.postView),
+          PostSubview(postViewMedia: widget.postView),
           CommentSubview(comments: widget.comments),
         ],
       ),

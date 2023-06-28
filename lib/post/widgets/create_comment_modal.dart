@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
-
-import 'package:lemmy/lemmy.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -70,7 +68,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           if (widget.comment != null) {
                             context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                           } else {
-                            context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment.id));
+                            context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment!.comment.id));
                           }
                           Navigator.of(context).pop();
                         },
@@ -82,7 +80,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
               ],
             ),
             const SizedBox(height: 12.0),
-            if (widget.commentView != null) Text('Replying to ${widget.commentView?.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+            if (widget.commentView != null) Text('Replying to ${widget.commentView?.comment!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
             if (widget.comment != null) Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
             if (widget.commentView != null || widget.comment != null)
@@ -99,7 +97,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   child: SingleChildScrollView(
                     controller: _scrollController,
                     child: CommonMarkdownBody(
-                      body: widget.commentView != null ? (widget.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
+                      body: widget.commentView != null ? (widget.commentView?.comment?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
                       isSelectableText: true,
                     ),
                   ),

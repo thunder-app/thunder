@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommunityHeader extends StatelessWidget {
-  final GetCommunityResponse? communityInfo;
+  final FullCommunityView? communityInfo;
 
   const CommunityHeader({super.key, this.communityInfo});
 

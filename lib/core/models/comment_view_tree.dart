@@ -1,19 +1,11 @@
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 
-class CommentViewTree extends CommentView {
-  final List<CommentViewTree> replies;
+class CommentViewTree {
+  CommentView? comment;
+  List<CommentViewTree> replies;
 
   CommentViewTree({
-    required super.comment,
-    required super.community,
-    required super.counts,
-    required super.creator,
-    required super.creatorBannedFromCommunity,
-    required super.creatorBlocked,
-    required super.post,
-    required super.saved,
-    required super.subscribed,
-    required super.myVote,
+    this.comment,
     this.replies = const [],
   });
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -81,9 +82,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    int? myVote = widget.commentViewTree.myVote;
-    bool saved = widget.commentViewTree.saved;
-    int score = widget.commentViewTree.counts.score;
+    VoteType? myVote = widget.commentViewTree.comment?.myVote;
+    bool? saved = widget.commentViewTree.comment?.saved;
+    int score = widget.commentViewTree.comment?.counts.score ?? 0;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -111,7 +112,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               // Check to see what the swipe action is
               if (swipeAction == SwipeAction.upvote) {
                 // @todo: optimistic update
-                int vote = myVote == 1 ? 0 : 1;
+                VoteType vote = myVote == VoteType.up ? VoteType.none : VoteType.up;
                 // int _score = score;
 
                 // if (myVote == 0 && vote == 1) {
@@ -121,12 +122,13 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 // }
 
                 // setState(() => {myVote = vote, score = _score});
-                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment.id, score: vote));
+                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, score: vote));
               }
 
               if (swipeAction == SwipeAction.downvote) {
                 // @todo: optimistic update
-                int vote = myVote == -1 ? 0 : -1;
+                VoteType vote = myVote == VoteType.down ? VoteType.none : VoteType.down;
+
                 // int _score = score;
 
                 // if (myVote == 0 && vote == -1) {
@@ -136,7 +138,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 // }
 
                 // setState(() => {myVote = vote, score = _score});
-                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment.id, score: vote));
+                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, score: vote));
               }
 
               if (swipeAction == SwipeAction.reply) {
@@ -162,40 +164,39 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               }
 
               if (swipeAction == SwipeAction.save) {
-                context.read<PostBloc>().add(SaveCommentEvent(commentId: widget.commentViewTree.comment.id, save: !saved));
+                context.read<PostBloc>().add(SaveCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, save: !(saved ?? false)));
               }
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
               direction: isUserLoggedIn ? DismissDirection.horizontal : DismissDirection.none,
-              key: ObjectKey(widget.commentViewTree.comment.id),
+              key: ObjectKey(widget.commentViewTree.comment!.comment.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
               confirmDismiss: (DismissDirection direction) async {
                 return false;
               },
               onUpdate: (DismissUpdateDetails details) {
-                SwipeAction? _swipeAction;
                 if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.startToEnd) {
-                  _swipeAction = SwipeAction.upvote;
-                  if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+                  swipeAction = SwipeAction.upvote;
+                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.3 && details.direction == DismissDirection.startToEnd) {
-                  _swipeAction = SwipeAction.downvote;
-                  if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+                  swipeAction = SwipeAction.downvote;
+                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.endToStart) {
-                  _swipeAction = SwipeAction.reply;
-                  if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+                  swipeAction = SwipeAction.reply;
+                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.3 && details.direction == DismissDirection.endToStart) {
-                  _swipeAction = SwipeAction.save;
-                  if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+                  swipeAction = SwipeAction.save;
+                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
-                  _swipeAction = null;
+                  swipeAction = null;
                 }
 
                 setState(() {
                   dismissThreshold = details.progress;
                   dismissDirection = details.direction;
-                  swipeAction = _swipeAction;
+                  swipeAction = swipeAction;
                 });
               },
               background: dismissDirection == DismissDirection.startToEnd
@@ -236,11 +237,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 child: Row(
                                   children: [
                                     Text(
-                                      widget.commentViewTree.creator.name,
+                                      widget.commentViewTree.comment!.creator.name,
                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: widget.commentViewTree.creator.admin
+                                        color: widget.commentViewTree.comment!.creator.admin
                                             ? theme.colorScheme.tertiary
-                                            : widget.commentViewTree.post.creatorId == widget.commentViewTree.comment.creatorId
+                                            : widget.commentViewTree.comment!.post.creatorId == widget.commentViewTree.comment!.comment.creatorId
                                                 ? Colors.amber
                                                 : theme.colorScheme.onBackground,
                                         fontWeight: FontWeight.w500,
@@ -248,15 +249,15 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                     ),
                                     const SizedBox(width: 8.0),
                                     Icon(
-                                      myVote == -1 ? Icons.south_rounded : Icons.north_rounded,
+                                      myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
                                       size: 12.0,
-                                      color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                      color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
                                     ),
                                     const SizedBox(width: 2.0),
                                     Text(
                                       formatNumberToK(score),
                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: myVote == 1 ? Colors.orange : (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground),
+                                        color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
                                       ),
                                     ),
                                   ],
@@ -265,13 +266,13 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               Row(
                                 children: [
                                   Icon(
-                                    saved ? Icons.star_rounded : null,
-                                    color: saved ? Colors.purple : null,
+                                    saved == true ? Icons.star_rounded : null,
+                                    color: saved == true ? Colors.purple : null,
                                     size: 18.0,
                                   ),
                                   const SizedBox(width: 8.0),
                                   Text(
-                                    formatTimeToString(dateTime: widget.commentViewTree.comment.published),
+                                    formatTimeToString(dateTime: widget.commentViewTree.comment!.comment.published.toIso8601String()),
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       color: theme.colorScheme.onBackground,
                                     ),
@@ -283,7 +284,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         ),
                         Padding(
                           padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: CommonMarkdownBody(body: widget.commentViewTree.comment.content),
+                          child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
                         ),
                       ],
                     ),

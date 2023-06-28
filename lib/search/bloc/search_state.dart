@@ -11,7 +11,7 @@ class SearchState extends Equatable {
   });
 
   final SearchStatus status;
-  final SearchResponse? results;
+  final SearchResults? results;
 
   final String? errorMessage;
 
@@ -19,7 +19,7 @@ class SearchState extends Equatable {
 
   SearchState copyWith({
     SearchStatus? status,
-    SearchResponse? results,
+    SearchResults? results,
     String? errorMessage,
     int? page,
   }) {

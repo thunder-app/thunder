@@ -1,6 +1,6 @@
 part of 'thunder_bloc.dart';
 
-enum ThunderStatus { initial, loading, success, failure }
+enum ThunderStatus { initial, loading, refreshing, success, failure }
 
 class ThunderState extends Equatable {
   const ThunderState({

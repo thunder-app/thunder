@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:lemmy/lemmy.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
@@ -44,33 +44,31 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       emit(state.copyWith(status: InboxStatus.loading));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
       // Fetch all the things
-      PrivateMessagesResponse privateMessagesResponse = await lemmy.getPrivateMessages(
-        GetPrivateMessages(auth: account!.jwt!, unreadOnly: !event.showAll),
-      );
+      List<PrivateMessageView> privateMessageViews = await lemmy.run(GetPrivateMessages(auth: account!.jwt!, unreadOnly: !event.showAll));
 
-      GetPersonMentionsResponse personMentions = await lemmy.getPersonMentions(GetPersonMentions(
+      List<PersonMentionView> personMentionViews = await lemmy.run(GetPersonMentions(
         auth: account.jwt!,
         unreadOnly: !event.showAll,
-        sort: CommentSortType.New,
+        sort: SortType.new_,
       ));
 
-      GetRepliesResponse repliesResponse = await lemmy.getReplies(GetReplies(
+      List<CommentView> commentViews = await lemmy.run(GetReplies(
         auth: account.jwt!,
         unreadOnly: !event.showAll,
       ));
 
       return emit(state.copyWith(
         status: InboxStatus.success,
-        privateMessages: privateMessagesResponse.privateMessages,
-        mentions: personMentions.mentions,
-        replies: repliesResponse.replies,
+        privateMessages: privateMessageViews,
+        mentions: personMentionViews,
+        replies: commentViews,
         showUnreadOnly: !event.showAll,
       ));
     } on DioException catch (e, s) {
@@ -92,19 +90,17 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      CommentReplyResponse response = await lemmy.markCommentReplyAsRead(
-        MarkCommentReplyAsRead(
-          auth: account!.jwt!,
-          commentReplyId: event.commentReplyId,
-          read: event.read,
-        ),
-      );
+      FullCommentReplyView response = await lemmy.run(MarkCommentAsRead(
+        auth: account!.jwt!,
+        commentReplyId: event.commentReplyId,
+        read: event.read,
+      ));
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } on DioException catch (e, s) {
@@ -126,19 +122,17 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      PersonMentionResponse response = await lemmy.markPersonMentionAsRead(
-        MarkPersonMentionAsRead(
-          auth: account!.jwt!,
-          personMentionId: event.personMentionId,
-          read: event.read,
-        ),
-      );
+      PersonMentionView personMentionView = await lemmy.run(MarkPersonMentionAsRead(
+        auth: account!.jwt!,
+        personMentionId: event.personMentionId,
+        read: event.read,
+      ));
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } on DioException catch (e, s) {
@@ -155,20 +149,18 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       emit(state.copyWith(status: InboxStatus.refreshing));
 
       Account? account = await fetchActiveProfileAccount();
-      Lemmy lemmy = LemmyClient.instance.lemmy;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
         return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
       }
 
-      CommentResponse createComment = await lemmy.createComment(
-        CreateComment(
-          auth: account!.jwt!,
-          content: event.content,
-          postId: event.postId,
-          parentId: event.parentCommentId,
-        ),
-      );
+      FullCommentView fullCommentView = await lemmy.run(CreateComment(
+        auth: account!.jwt!,
+        content: event.content,
+        postId: event.postId,
+        parentId: event.parentCommentId,
+      ));
 
       return emit(state.copyWith(status: InboxStatus.success));
     } on DioException catch (e, s) {
