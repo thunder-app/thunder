@@ -1,8 +1,11 @@
 ## Unreleased
+
+### Added
+- Added ability to download images - contribution from @MrAntonS
 ### Fixed
 - Fixed issue where you could not exit app when swiping back or using the back button
 - Potentially fixed some issues with performance, yet to be tested widely
-- Fixed issue where an error would be thrown if trying to access http pages
+- Fixed issue where an error would be thrown if trying to access http pages - contribution from @vbh
 
 ## 0.2.1+8 - 2023-06-28
 ### Added
