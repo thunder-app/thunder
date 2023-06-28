@@ -1,4 +1,4 @@
-## Unreleased
+## 0.2.1+8 - 2023-06-28
 ### Added
 - Added adaptive icons for Android - contribution from @coslu
 - Inbox mentions and replies can now be marked as read
@@ -8,7 +8,7 @@
 - Added Material You dynamic colour theming
 - Added system theme option
 - Added option to open up links in external browser by default
-- Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy_api_client!
+- Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy\_api\_client!
   - This change will make it easier to work with future features, and also allows a chance for collaboration on a unified dart-based lemmy api
 - Added ability to tap on images within comments/posts to zoom in
 - Added swipe gesture on botton nav bar to open up drawer in Feed

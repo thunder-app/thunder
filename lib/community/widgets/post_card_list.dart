@@ -75,7 +75,7 @@ class _PostCardListState extends State<PostCardList> {
         child: ListView.builder(
           cacheExtent: 500,
           controller: _scrollController,
-          itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length) : 1,
+          itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
           itemBuilder: (context, index) {
             if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
               return CommunityHeader(communityInfo: widget.communityInfo);
