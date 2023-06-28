@@ -4,6 +4,9 @@
 - Added ability to download images - contribution from @MrAntonS
 - Added settings option to collapse parent comment on tap
 - Added pull to refresh on posts
+- Long pressing the post will bring up a modal to perform more actions such as visit community, user profile, sharing
+- An additional button now shows up for each post in comfortable view to open the more actions modal
+- Added initial support for viewing user profiles - including their posts and comments
 
 ### Fixed
 - Fixed issue where you could not exit app when swiping back or using the back button

@@ -14,6 +14,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
@@ -75,10 +76,30 @@ class PostSubview extends StatelessWidget {
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                 ),
               ),
-              Text(
-                postView.creator.name,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+              GestureDetector(
+                onTap: () {
+                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserPage(userId: postView.creator.id),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  postView.creator.name,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
                 ),
               ),
             ],

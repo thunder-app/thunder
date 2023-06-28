@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
@@ -66,7 +64,7 @@ class PostCardViewComfortable extends StatelessWidget {
                             color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                           ),
                         ),
-                        onTap: () => onTapCommunityName(context),
+                        onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
                       ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
@@ -79,6 +77,16 @@ class PostCardViewComfortable extends StatelessWidget {
                     ],
                   ),
                 ),
+                IconButton(
+                    icon: const Icon(
+                      Icons.more_horiz_rounded,
+                      semanticLabel: 'Actions',
+                    ),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      showPostActionBottomModalSheet(context, postViewMedia);
+                      HapticFeedback.mediumImpact();
+                    }),
                 if (isUserLoggedIn)
                   PostCardActions(
                     postId: postViewMedia.postView.post.id,
@@ -89,25 +97,6 @@ class PostCardViewComfortable extends StatelessWidget {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  void onTapCommunityName(BuildContext context) {
-    AccountBloc accountBloc = context.read<AccountBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: accountBloc),
-            BlocProvider.value(value: authBloc),
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: CommunityPage(communityId: postViewMedia.postView.community.id),
-        ),
       ),
     );
   }

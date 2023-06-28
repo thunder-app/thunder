@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -117,19 +118,22 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
                           semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
-                        onPressed: () => {
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
                           context.read<CommunityBloc>().add(
                                 ChangeCommunitySubsciptionStatusEvent(
                                   communityId: state.communityId!,
                                   follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
                                 ),
-                              )
+                              );
                         },
                       ),
                     IconButton(
-                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                      onPressed: () => showSortBottomSheet(context, state),
-                    ),
+                        icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          showSortBottomSheet(context, state);
+                        }),
                     const SizedBox(width: 8.0),
                   ],
                 )

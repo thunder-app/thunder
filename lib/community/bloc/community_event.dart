@@ -53,3 +53,9 @@ class MarkPostAsReadEvent extends CommunityEvent {
 
   const MarkPostAsReadEvent({required this.postId, required this.read});
 }
+
+class UpdatePostEvent extends CommunityEvent {
+  final PostViewMedia postViewMedia;
+
+  const UpdatePostEvent({required this.postViewMedia});
+}

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
@@ -89,10 +89,7 @@ class _PostPageState extends State<PostPage> {
           listener: (context, state) {
             if (state.status == PostStatus.success && widget.postView != null) {
               // Update the community's post
-              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.postView.post.id == widget.postView?.postView.post.id);
-              if (postIdIndex != null && state.postView != null) {
-                context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
-              }
+              context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
             }
           },
           builder: (context, state) {

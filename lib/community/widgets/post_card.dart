@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:provider/provider.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -158,27 +160,30 @@ class _PostCardState extends State<PostCard> {
                       showSaveAction: showSaveAction,
                       isUserLoggedIn: isUserLoggedIn,
                     ),
+              onLongPress: () => showPostActionBottomModalSheet(context, widget.postViewMedia),
               onTap: () async {
                 AccountBloc accountBloc = context.read<AccountBloc>();
                 AuthBloc authBloc = context.read<AuthBloc>();
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+                CommunityBloc communityBloc = context.read<CommunityBloc>();
 
                 // Mark post as read when tapped
                 if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
 
                 await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: accountBloc),
-                        BlocProvider.value(value: authBloc),
-                        BlocProvider.value(value: thunderBloc),
-                        BlocProvider.value(value: communityBloc),
-                        BlocProvider(create: (context) => post_bloc.PostBloc()),
-                      ],
-                      child: PostPage(postView: widget.postViewMedia),
-                    ),
+                    builder: (context) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                          BlocProvider.value(value: communityBloc),
+                          BlocProvider(create: (context) => post_bloc.PostBloc()),
+                        ],
+                        child: PostPage(postView: widget.postViewMedia),
+                      );
+                    },
                   ),
                 );
                 if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());

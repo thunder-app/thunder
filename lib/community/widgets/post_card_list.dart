@@ -9,10 +9,12 @@ import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
+  final int? personId;
   final String? communityName;
   final bool? hasReachedEnd;
   final PostListingType? listingType;
@@ -26,6 +28,7 @@ class PostCardList extends StatefulWidget {
     this.listingType,
     this.communityInfo,
     this.communityName,
+    this.personId,
   });
 
   @override
@@ -48,8 +51,12 @@ class _PostCardListState extends State<PostCardList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      if (widget.personId != null) {
+        context.read<UserBloc>().add(const GetUserEvent());
+      } else {
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+      }
     }
   }
 

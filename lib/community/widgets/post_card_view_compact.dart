@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -66,7 +67,7 @@ class PostCardViewCompact extends StatelessWidget {
                           color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
-                      onTap: () => onTapCommunityName(context),
+                      onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
                     ),
                     const SizedBox(height: 8.0),
                   ],
@@ -90,25 +91,6 @@ class PostCardViewCompact extends StatelessWidget {
               viewMode: ViewMode.compact,
             ),
         ],
-      ),
-    );
-  }
-
-  void onTapCommunityName(BuildContext context) {
-    AccountBloc accountBloc = context.read<AccountBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: accountBloc),
-            BlocProvider.value(value: authBloc),
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: CommunityPage(communityId: postViewMedia.postView.community.id),
-        ),
       ),
     );
   }

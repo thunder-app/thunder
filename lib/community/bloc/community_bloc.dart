@@ -53,6 +53,23 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _createPostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<UpdatePostEvent>(
+      _updatePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+  }
+  Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
+    emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
+
+    List<PostViewMedia> updatedPostViews = state.postViews!.map((communityPostView) {
+      if (communityPostView.postView.post.id == event.postViewMedia.postView.post.id) {
+        return event.postViewMedia;
+      } else {
+        return communityPostView;
+      }
+    }).toList();
+
+    emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, postViews: updatedPostViews));
   }
 
   Future<void> _forceRefreshEvent(ForceRefreshEvent event, Emitter<CommunityState> emit) async {
@@ -195,6 +212,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
   /// Get community posts
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
     int attemptCount = 0;
+    int limit = 20;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -236,7 +254,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             List<PostView> posts = await lemmy.run(GetPosts(
               auth: account?.jwt,
               page: 1,
-              limit: 15,
+              limit: limit,
               sort: sortType,
               type: listingType,
               communityId: communityId ?? getCommunityResponse?.communityView.community.id,
@@ -254,7 +272,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
                 listingType: listingType,
                 communityId: communityId,
                 communityName: event.communityName,
-                hasReachedEnd: posts.isEmpty || posts.length < 15,
+                hasReachedEnd: posts.isEmpty || posts.length < limit,
                 subscribedType: subscribedType,
                 sortType: sortType,
                 communityInfo: getCommunityResponse,
@@ -276,7 +294,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             List<PostView> posts = await lemmy.run(GetPosts(
               auth: account?.jwt,
               page: state.page,
-              limit: 15,
+              limit: limit,
               sort: sortType,
               type: state.listingType,
               communityId: state.communityId,
