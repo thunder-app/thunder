@@ -177,26 +177,28 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 return false;
               },
               onUpdate: (DismissUpdateDetails details) {
+                SwipeAction? updatedSwipeAction;
+
                 if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.startToEnd) {
-                  swipeAction = SwipeAction.upvote;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  updatedSwipeAction = SwipeAction.upvote;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.3 && details.direction == DismissDirection.startToEnd) {
-                  swipeAction = SwipeAction.downvote;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  updatedSwipeAction = SwipeAction.downvote;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.endToStart) {
-                  swipeAction = SwipeAction.reply;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  updatedSwipeAction = SwipeAction.reply;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > 0.3 && details.direction == DismissDirection.endToStart) {
-                  swipeAction = SwipeAction.save;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  updatedSwipeAction = SwipeAction.save;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
-                  swipeAction = null;
+                  updatedSwipeAction = null;
                 }
 
                 setState(() {
                   dismissThreshold = details.progress;
                   dismissDirection = details.direction;
-                  swipeAction = swipeAction;
+                  swipeAction = updatedSwipeAction;
                 });
               },
               background: dismissDirection == DismissDirection.startToEnd

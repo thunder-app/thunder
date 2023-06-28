@@ -25,54 +25,50 @@ class ImageViewer extends StatefulWidget {
 }
 
 class _ImageViewerState extends State<ImageViewer> {
-  GlobalKey<ExtendedImageSlidePageState> slidePagekey =
-      GlobalKey<ExtendedImageSlidePageState>();
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
   bool downloaded = false;
+
   Future<bool> _requestPermission() async {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.photos,
+      Permission.photosAddOnly,
     ].request();
 
-    final info2 = statuses[Permission.photos].toString();
-    print(info2);
-    return Permission.photos.isGranted;
+    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+
+    return hasPermission;
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Scaffold(
-      backgroundColor: Colors.black87,
+      backgroundColor: Colors.black.withOpacity(0.95),
       body: Stack(
         children: [
           Positioned(
-            top: 20,
-            left: 0,
+            top: 50,
+            right: 15,
             child: IconButton(
               color: theme.textTheme.titleLarge?.color,
               onPressed: () async {
-                File file =
-                    await DefaultCacheManager().getSingleFile(widget.url);
-                if ((Platform.isAndroid || Platform.isIOS) &&
-                    await _requestPermission()) {
+                File file = await DefaultCacheManager().getSingleFile(widget.url);
+
+                if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
                   final result = await ImageGallerySaver.saveFile(file.path);
-                  setState(() {
-                    downloaded = true;
-                  });
+
+                  setState(() => downloaded = result['isSuccess'] == true);
                 } else if (Platform.isLinux || Platform.isWindows) {
-                  final filePath =
-                      '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                  final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+
                   File(filePath)
                     ..createSync(recursive: true)
                     ..writeAsBytesSync(file.readAsBytesSync());
-                  setState(() {
-                    downloaded = true;
-                  });
+
+                  setState(() => downloaded = true);
                 }
               },
-              icon: downloaded
-                  ? Icon(Icons.check_circle, semanticLabel: 'Downloaded')
-                  : Icon(Icons.download, semanticLabel: "Download"),
+              icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
             ),
           ),
           Center(
