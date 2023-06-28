@@ -10,47 +10,7 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
-
-class SortTypeItem {
-  const SortTypeItem({required this.sortType, required this.icon, required this.label});
-
-  final SortType sortType;
-  final IconData icon;
-  final String label;
-}
-
-const sortTypeItems = [
-  SortTypeItem(
-    sortType: SortType.hot,
-    icon: Icons.local_fire_department_rounded,
-    label: 'Hot',
-  ),
-  SortTypeItem(
-    sortType: SortType.active,
-    icon: Icons.rocket_launch_rounded,
-    label: 'Active',
-  ),
-  SortTypeItem(
-    sortType: SortType.new_,
-    icon: Icons.auto_awesome_rounded,
-    label: 'New',
-  ),
-  // SortTypeItem(
-  //   sortType: SortType.,
-  //   icon: Icons.history_toggle_off_rounded,
-  //   label: 'Old',
-  // ),
-  SortTypeItem(
-    sortType: SortType.mostComments,
-    icon: Icons.comment_bank_rounded,
-    label: 'Most Comments',
-  ),
-  SortTypeItem(
-    sortType: SortType.newComments,
-    icon: Icons.add_comment_rounded,
-    label: 'New Comments',
-  ),
-];
+import 'package:thunder/shared/SortTypes.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -86,7 +46,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = sortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+              sortTypeIcon = PostSortTypes.Items.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
             });
           }
           return true;
@@ -219,23 +179,23 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: sortTypeItems.length,
+                itemCount: PostSortTypes.Items.length,
                 itemBuilder: (BuildContext itemBuilderContext, int index) {
                   return ListTile(
                     title: Text(
-                      sortTypeItems[index].label,
+                      PostSortTypes.Items[index].label,
                       style: theme.textTheme.bodyMedium,
                     ),
-                    leading: Icon(sortTypeItems[index].icon),
+                    leading: Icon(PostSortTypes.Items[index].icon),
                     onTap: () {
                       setState(() {
-                        sortType = sortTypeItems[index].sortType;
-                        sortTypeIcon = sortTypeItems[index].icon;
+                        sortType = PostSortTypes.Items[index].sortType;
+                        sortTypeIcon = PostSortTypes.Items[index].icon;
                       });
 
                       context.read<CommunityBloc>().add(
                             GetCommunityPostsEvent(
-                              sortType: sortTypeItems[index].sortType,
+                              sortType: PostSortTypes.Items[index].sortType,
                               reset: true,
                               listingType: state.communityId != null ? null : state.listingType,
                               communityId: widget.communityId ?? state.communityId,
