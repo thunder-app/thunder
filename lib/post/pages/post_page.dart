@@ -124,7 +124,14 @@ class _PostPageState extends State<PostPage> {
                 return const Center(child: CircularProgressIndicator());
               case PostStatus.refreshing:
               case PostStatus.success:
-                if (state.postView != null) return PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController);
+                if (state.postView != null) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                    },
+                    child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController),
+                  );
+                }
                 return const Center(child: Text('Empty'));
               case PostStatus.empty:
                 return const Center(child: Text('Empty'));

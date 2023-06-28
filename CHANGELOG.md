@@ -3,6 +3,7 @@
 ### Added
 - Added ability to download images - contribution from @MrAntonS
 - Added settings option to collapse parent comment on tap
+- Added pull to refresh on posts
 
 ### Fixed
 - Fixed issue where you could not exit app when swiping back or using the back button
