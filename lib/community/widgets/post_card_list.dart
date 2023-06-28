@@ -61,7 +61,7 @@ class _PostCardListState extends State<PostCardList> {
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
       listener: (context, state) {
         // Force a rebuild when the thunderbloc status changes
-        setState(() {});
+        // setState(() {});
       },
       child: RefreshIndicator(
         onRefresh: () async {
@@ -72,52 +72,47 @@ class _PostCardListState extends State<PostCardList> {
                 communityId: widget.listingType != null ? null : widget.communityId,
               ));
         },
-        child: SingleChildScrollView(
+        child: ListView.builder(
+          cacheExtent: 500,
           controller: _scrollController,
-          child: Column(
-            children: [
-              if (widget.communityId != null || widget.communityName != null) CommunityHeader(communityInfo: widget.communityInfo),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.postViews?.length != null ? widget.postViews!.length + 1 : 1,
-                itemBuilder: (context, index) {
-                  if (index == widget.postViews!.length) {
-                    if (widget.hasReachedEnd == true) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            color: theme.dividerColor.withOpacity(0.1),
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
-                            child: Text(
-                              'Hmmm. It seems like you\'ve reached the bottom.',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            child: const CircularProgressIndicator(),
-                          ),
-                        ],
-                      );
-                    }
-                  } else {
-                    return PostCard(
-                      postViewMedia: widget.postViews![index],
-                      showInstanceName: widget.communityId == null,
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+          itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length) : 1,
+          itemBuilder: (context, index) {
+            if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
+              return CommunityHeader(communityInfo: widget.communityInfo);
+            }
+            if (index == widget.postViews!.length) {
+              if (widget.hasReachedEnd == true) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      color: theme.dividerColor.withOpacity(0.1),
+                      padding: const EdgeInsets.symmetric(vertical: 32.0),
+                      child: Text(
+                        'Hmmm. It seems like you\'ve reached the bottom.',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: const CircularProgressIndicator(),
+                    ),
+                  ],
+                );
+              }
+            } else {
+              return PostCard(
+                postViewMedia: widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index],
+                showInstanceName: widget.communityId == null,
+              );
+            }
+          },
         ),
       ),
     );
