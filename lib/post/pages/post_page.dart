@@ -22,12 +22,12 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
-  bool hasScrolledToBottom = false;
+  bool hasScrolledToBottom = true;
 
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
     super.initState();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
