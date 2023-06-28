@@ -117,24 +117,26 @@ class LinkPreviewCard extends StatelessWidget {
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (viewMode == ViewMode.compact) {
       return Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-          child: const SizedBox(
+          color: theme.colorScheme.secondary.withOpacity(0.3),
+          child: SizedBox(
             height: 75.0,
             width: 75.0,
-            child: Icon(Icons.link_rounded),
+            child: Icon(
+              Icons.link_rounded,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
           ),
         ),
       );
     } else {
       return Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+        color: theme.colorScheme.secondary.withOpacity(0.3),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [
@@ -142,7 +144,7 @@ class LinkPreviewCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Icon(
                 Icons.link,
-                color: useDarkTheme ? Colors.white60 : Colors.black54,
+                color: theme.colorScheme.onSecondaryContainer,
               ),
             ),
             if (viewMode != ViewMode.compact)

@@ -140,8 +140,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+
+      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
       disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
