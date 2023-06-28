@@ -86,16 +86,17 @@ class InboxRepliesView extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      IconButton(
-                        onPressed: () {
-                          context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: replies[index].commentReply!.id, read: true));
-                        },
-                        icon: const Icon(
-                          Icons.check,
-                          semanticLabel: 'Mark as read',
+                      if (replies[index].commentReply?.read == false)
+                        IconButton(
+                          onPressed: () {
+                            context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: replies[index].commentReply!.id, read: true));
+                          },
+                          icon: const Icon(
+                            Icons.check,
+                            semanticLabel: 'Mark as read',
+                          ),
+                          visualDensity: VisualDensity.compact,
                         ),
-                        visualDensity: VisualDensity.compact,
-                      ),
                       IconButton(
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();

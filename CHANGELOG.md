@@ -11,6 +11,7 @@
 - Fixed issue where an error would be thrown if trying to access http pages - contribution from @vbh
 - Fixed issue with haptic feedback on comment actions
 - Fixed issue where reply button would cover actions and comments for short posts
+- Removed mark as read for mentions and replies that have already been read
 
 ## 0.2.1+8 - 2023-06-28
 ### Added
