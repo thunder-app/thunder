@@ -24,6 +24,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
+  bool collapseParentCommentOnGesture = true;
   bool disableSwipeActionsOnPost = false;
   bool showThumbnailPreviewOnRight = false;
   bool showLinkPreviews = true;
@@ -67,6 +68,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
 
       // Post Settings
+      case 'setting_comments_collapse_parent_comment_on_gesture':
+        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
+        setState(() => collapseParentCommentOnGesture = value);
+        break;
       case 'setting_post_disable_swipe_actions':
         await prefs.setBool('setting_post_disable_swipe_actions', value);
         setState(() => disableSwipeActionsOnPost = value);
@@ -145,6 +150,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
+      collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
       disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
@@ -236,6 +242,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             'Posts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Hide parent comment on collapse',
+                          value: collapseParentCommentOnGesture,
+                          iconEnabled: Icons.mode_comment_rounded,
+                          iconDisabled: Icons.mode_comment_rounded,
+                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
                         ),
                         ToggleOption(
                           description: 'Show thumbnail on right',

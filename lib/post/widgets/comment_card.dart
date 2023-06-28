@@ -9,6 +9,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -87,6 +88,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     int score = widget.commentViewTree.comment?.counts.score ?? 0;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
+    bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
 
     return Container(
       decoration: BoxDecoration(
@@ -284,9 +287,25 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 130),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(
+                                position: _offsetAnimation,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: (isHidden && collapseParentCommentOnGesture)
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                                  child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                                ),
                         ),
                       ],
                     ),
