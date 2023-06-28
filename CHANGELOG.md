@@ -1,3 +1,9 @@
+## Unreleased
+### Fixed
+- Fixed issue where you could not exit app when swiping back or using the back button
+- Potentially fixed some issues with performance, yet to be tested widely
+- Fixed issue where an error would be thrown if trying to access http pages
+
 ## 0.2.1+8 - 2023-06-28
 ### Added
 - Added adaptive icons for Android - contribution from @coslu
