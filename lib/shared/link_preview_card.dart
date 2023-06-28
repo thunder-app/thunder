@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -123,7 +124,7 @@ class LinkPreviewCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: theme.colorScheme.secondary.withOpacity(0.3),
+          color: theme.cardColor.darken(3),
           child: SizedBox(
             height: 75.0,
             width: 75.0,
@@ -136,7 +137,7 @@ class LinkPreviewCard extends StatelessWidget {
       );
     } else {
       return Container(
-        color: theme.colorScheme.secondary.withOpacity(0.3),
+        color: theme.cardColor.darken(3),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [

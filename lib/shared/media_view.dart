@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -61,7 +62,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Container(
-            color: theme.colorScheme.secondary.withOpacity(0.3),
+            color: theme.cardColor.darken(3),
             child: SizedBox(
               height: 75.0,
               width: 75.0,
@@ -161,7 +162,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               _controller.reset();
 
               return Container(
-                color: theme.colorScheme.secondary.withOpacity(0.3),
+                color: theme.cardColor.darken(3),
                 child: SizedBox(
                   height: height,
                   width: width,
@@ -184,7 +185,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               state.imageProvider.evict();
 
               return Container(
-                color: theme.colorScheme.secondary.withOpacity(0.3),
+                color: theme.cardColor.darken(3),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
                   child: InkWell(
