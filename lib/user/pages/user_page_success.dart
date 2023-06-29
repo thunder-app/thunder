@@ -102,7 +102,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                   )
                 : SingleChildScrollView(
                     controller: _scrollController,
-                    child: CommentSubview(comments: widget.comments ?? []),
+                    child: CommentSubview(
+                      comments: widget.comments ?? [],
+                      onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                      onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                    ),
                   ),
           ),
         ],

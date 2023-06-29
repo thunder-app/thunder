@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/widgets/post_view.dart';
@@ -53,7 +54,11 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           PostSubview(postViewMedia: widget.postView),
-          CommentSubview(comments: widget.comments),
+          CommentSubview(
+            comments: widget.comments,
+            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+            onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+          ),
         ],
       ),
     );

@@ -227,16 +227,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
-      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to vote on comment');
-      });
-
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
 
       for (int i = 1; i < commentIndexes.length; i++) {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
+
+      // Optimistically update the comment
+      CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
+      currentTree.comment = updatedCommentView;
+
+      // Immediately set the status, and continue
+      emit(state.copyWith(status: PostStatus.success));
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote on comment');
+      });
 
       currentTree.comment = commentView;
 

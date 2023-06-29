@@ -97,7 +97,11 @@ class _AccountPageSuccessState extends State<AccountPageSuccess> {
                         : selectedUserOption == 1
                             ? SingleChildScrollView(
                                 controller: _scrollController,
-                                child: CommentSubview(comments: widget.accountState.comments ?? []),
+                                child: CommentSubview(
+                                  comments: widget.accountState.comments ?? [],
+                                  onVoteAction: (int commentId, VoteType voteType) => context.read<AccountBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                                  onSaveAction: (int commentId, bool save) => context.read<AccountBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                                ),
                               )
                             : Container(),
                   ),

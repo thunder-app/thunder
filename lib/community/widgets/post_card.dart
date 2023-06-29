@@ -67,18 +67,12 @@ class _PostCardState extends State<PostCard> {
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) {
-        // Check to see what the swipe action is
         if (swipeAction == SwipeAction.upvote) {
-          // @todo: optimistic update
           widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
-
-          // context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.up ? VoteType.none : VoteType.up));
         }
 
         if (swipeAction == SwipeAction.downvote) {
-          // @todo: optimistic update
           widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
-          // context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.down ? VoteType.none : VoteType.down));
         }
 
         if (swipeAction == SwipeAction.reply) {
@@ -95,7 +89,6 @@ class _PostCardState extends State<PostCard> {
 
         if (swipeAction == SwipeAction.save) {
           widget.onSaveAction(!saved);
-          // context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postViewMedia.postView.post.id, save: !saved));
         }
       },
       onPointerCancel: (event) => {},

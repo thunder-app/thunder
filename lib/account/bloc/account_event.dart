@@ -28,3 +28,17 @@ class SavePostEvent extends AccountEvent {
 
   const SavePostEvent({required this.postId, required this.save});
 }
+
+class VoteCommentEvent extends AccountEvent {
+  final int commentId;
+  final VoteType score;
+
+  const VoteCommentEvent({required this.commentId, required this.score});
+}
+
+class SaveCommentEvent extends AccountEvent {
+  final int commentId;
+  final bool save;
+
+  const SaveCommentEvent({required this.commentId, required this.save});
+}
