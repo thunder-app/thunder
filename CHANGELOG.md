@@ -8,6 +8,9 @@
 - An additional button now shows up for each post in comfortable view to open the more actions modal
 - Added initial support for viewing user profiles - including their posts and comments
 
+### Changed
+- Adjusted thickness of divider between posts to help differentiate
+
 ### Fixed
 - Fixed issue where you could not exit app when swiping back or using the back button
 - Potentially fixed some issues with performance, yet to be tested widely
