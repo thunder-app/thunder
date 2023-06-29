@@ -8,6 +8,7 @@
 - An additional button now shows up for each post in comfortable view to open the more actions modal
 - Added initial support for viewing user profiles - including their posts and comments
 - Added top sort options - contribution from @JulianPaulus
+- Upvoting and downvoting posts now provides you with immediate feedback rather than waiting for the instance to respond back
 
 ### Changed
 - Adjusted thickness of divider between posts to help differentiate

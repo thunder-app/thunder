@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -104,6 +105,7 @@ class PostSubview extends StatelessWidget {
               ),
             ],
           ),
+          const SizedBox(height: 8.0),
           MediaView(
             post: post,
             postView: postViewMedia,
@@ -116,6 +118,16 @@ class PostSubview extends StatelessWidget {
                 body: post.body ?? '',
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: PostCardMetaData(
+              score: postView.counts.score,
+              voteType: postView.myVote ?? VoteType.none,
+              comments: postView.counts.comments,
+              published: post.published,
+              saved: postView.saved,
+            ),
+          ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
