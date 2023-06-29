@@ -185,6 +185,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     try {
       emit(state.copyWith(status: PostStatus.refreshing));
 
+      // Optimistically update the post
+      PostView updatedPostView = optimisticallyVotePost(state.postView!, event.score);
+      state.postView?.postView = updatedPostView;
+
+      // Immediately set the status, and continue
+      emit(state.copyWith(status: PostStatus.success));
+      emit(state.copyWith(status: PostStatus.refreshing));
+
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting to vote post');
       });
@@ -194,7 +202,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -212,7 +219,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -237,7 +243,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -262,7 +267,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

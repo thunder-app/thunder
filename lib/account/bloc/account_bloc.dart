@@ -208,10 +208,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     try {
       emit(state.copyWith(status: AccountStatus.refreshing));
 
+      // Optimistically update the post
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
+
+      PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
+      state.posts[existingPostViewIndex].postView = updatedPostView;
+
+      // Immediately set the status, and continue
+      emit(state.copyWith(status: AccountStatus.success));
+      emit(state.copyWith(status: AccountStatus.refreshing));
+
       PostView postView = await votePost(event.postId, event.score);
 
       // Find the specific post to update
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
       state.posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: AccountStatus.success));
