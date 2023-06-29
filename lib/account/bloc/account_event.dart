@@ -8,3 +8,9 @@ abstract class AccountEvent extends Equatable {
 }
 
 class GetAccountInformation extends AccountEvent {}
+
+class GetAccountContent extends AccountEvent {
+  final bool reset;
+
+  const GetAccountContent({this.reset = false});
+}

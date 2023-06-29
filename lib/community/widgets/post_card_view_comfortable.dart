@@ -47,7 +47,11 @@ class PostCardViewComfortable extends StatelessWidget {
             showFullHeightImages: showFullHeightImages,
             hideNsfwPreviews: hideNsfwPreviews,
           ),
-          Text(postViewMedia.postView.post.name, style: theme.textTheme.titleMedium, softWrap: true),
+          Text(postViewMedia.postView.post.name,
+              style: theme.textTheme.titleMedium?.copyWith(
+                color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+              ),
+              softWrap: true),
           Padding(
             padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
             child: Row(
@@ -61,7 +65,8 @@ class PostCardViewComfortable extends StatelessWidget {
                           '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                            // color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : null,
                           ),
                         ),
                         onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
