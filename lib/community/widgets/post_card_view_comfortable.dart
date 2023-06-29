@@ -11,6 +11,9 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
@@ -30,6 +33,8 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.showVoteActions,
     required this.showSaveAction,
     required this.isUserLoggedIn,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   @override
@@ -97,6 +102,8 @@ class PostCardViewComfortable extends StatelessWidget {
                     postId: postViewMedia.postView.post.id,
                     voteType: postViewMedia.postView.myVote ?? VoteType.none,
                     saved: postViewMedia.postView.saved,
+                    onVoteAction: onVoteAction,
+                    onSaveAction: onSaveAction,
                   ),
               ],
             ),

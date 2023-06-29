@@ -92,7 +92,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
           const SizedBox(height: 12.0),
           Expanded(
             child: selectedUserOption == 0
-                ? PostCardList(postViews: widget.posts, personId: widget.userId, hasReachedEnd: widget.hasReachedPostEnd)
+                ? PostCardList(
+                    postViews: widget.posts,
+                    personId: widget.userId,
+                    hasReachedEnd: widget.hasReachedPostEnd,
+                    onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
+                    onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
+                    onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                  )
                 : SingleChildScrollView(
                     controller: _scrollController,
                     child: CommentSubview(comments: widget.comments ?? []),

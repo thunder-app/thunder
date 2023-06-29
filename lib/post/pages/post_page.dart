@@ -14,7 +14,9 @@ class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
 
-  const PostPage({super.key, this.postView, this.postId});
+  final VoidCallback onPostUpdated;
+
+  const PostPage({super.key, this.postView, this.postId, required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -121,6 +123,7 @@ class _PostPageState extends State<PostPage> {
                 return const Center(child: CircularProgressIndicator());
               case PostStatus.refreshing:
               case PostStatus.success:
+              case PostStatus.failure:
                 if (state.postView != null) {
                   return RefreshIndicator(
                     onRefresh: () async {
@@ -132,14 +135,15 @@ class _PostPageState extends State<PostPage> {
                 return const Center(child: Text('Empty'));
               case PostStatus.empty:
                 return const Center(child: Text('Empty'));
-              case PostStatus.failure:
-                return ErrorMessage(
-                  message: state.errorMessage,
-                  action: () {
-                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                  },
-                  actionText: 'Refresh Content',
-                );
+              // case PostStatus.failure:
+
+              // return ErrorMessage(
+              //   message: state.errorMessage,
+              //   action: () {
+              //     context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+              //   },
+              //   actionText: 'Refresh Content',
+              // );
             }
           },
         ),

@@ -30,6 +30,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _getUserEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VotePostEvent>(
+      _votePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SavePostEvent>(
+      _savePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -135,6 +143,40 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      PostView postView = await votePost(event.postId, event.score);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      PostView postView = await savePost(event.postId, event.save);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 }

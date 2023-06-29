@@ -20,6 +20,10 @@ class PostCardList extends StatefulWidget {
   final PostListingType? listingType;
   final FullCommunityView? communityInfo;
 
+  final VoidCallback onScrollEndReached;
+  final Function(int, VoteType) onVoteAction;
+  final Function(int, bool) onSaveAction;
+
   const PostCardList({
     super.key,
     this.postViews,
@@ -29,6 +33,9 @@ class PostCardList extends StatefulWidget {
     this.communityInfo,
     this.communityName,
     this.personId,
+    required this.onScrollEndReached,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   @override
@@ -52,11 +59,7 @@ class _PostCardListState extends State<PostCardList> {
 
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
-      if (widget.personId != null) {
-        context.read<UserBloc>().add(const GetUserEvent());
-      } else {
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
-      }
+      widget.onScrollEndReached();
     }
   }
 
@@ -66,10 +69,7 @@ class _PostCardListState extends State<PostCardList> {
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
-      listener: (context, state) {
-        // Force a rebuild when the thunderbloc status changes
-        // setState(() {});
-      },
+      listener: (context, state) {},
       child: RefreshIndicator(
         onRefresh: () async {
           HapticFeedback.mediumImpact();
@@ -118,9 +118,12 @@ class _PostCardListState extends State<PostCardList> {
                 );
               }
             } else {
+              PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
               return PostCard(
-                postViewMedia: widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index],
+                postViewMedia: postViewMedia,
                 showInstanceName: widget.communityId == null,
+                onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
               );
             }
           },

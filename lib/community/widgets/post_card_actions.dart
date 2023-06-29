@@ -7,6 +7,9 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardActions extends StatelessWidget {
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
   final int postId;
   final VoteType voteType;
   final bool saved;
@@ -16,6 +19,8 @@ class PostCardActions extends StatelessWidget {
     required this.postId,
     required this.voteType,
     required this.saved,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -45,7 +50,9 @@ class PostCardActions extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.up ? VoteType.none : VoteType.up));
+                    onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
+
+                    // context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.up ? VoteType.none : VoteType.up));
                   }),
             if (showVoteActions)
               IconButton(
@@ -57,7 +64,9 @@ class PostCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.down ? VoteType.none : VoteType.down));
+                  onVoteAction(voteType == VoteType.down ? VoteType.none : VoteType.down);
+
+                  // context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: VoteType.down ? VoteType.none : VoteType.down));
                 },
               ),
             if (showSaveAction)
@@ -70,7 +79,7 @@ class PostCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: saved ? false : true));
+                  onSaveAction(saved ? false : true);
                 },
               ),
           ],

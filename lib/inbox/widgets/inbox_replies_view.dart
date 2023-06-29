@@ -51,7 +51,10 @@ class InboxRepliesView extends StatelessWidget {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(postId: replies[index].post.id),
+                    child: PostPage(
+                      postId: replies[index].post.id,
+                      onPostUpdated: () => {},
+                    ),
                   ),
                 ),
               );
