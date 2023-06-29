@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/widgets/account_header.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/numbers.dart';
 
 const List<Widget> userOptionTypes = <Widget>[
   Padding(padding: EdgeInsets.all(8.0), child: Text('Posts')),
@@ -58,22 +56,7 @@ class _AccountPageSuccessState extends State<AccountPageSuccess> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          CircleAvatar(
-            backgroundColor: theme.primaryColor,
-            foregroundImage: widget.accountState.personView?.person.avatar != null ? ExtendedNetworkImageProvider(widget.accountState.personView!.person.avatar!) : null,
-            maxRadius: 60,
-          ),
-          const SizedBox(height: 24),
-          Text(
-            widget.accountState.personView?.person.displayName ?? widget.accountState.personView!.person.name,
-            style: theme.textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            '${formatNumberToK(widget.accountState.personView!.counts.postScore)} · ${formatNumberToK(widget.accountState.personView!.counts.commentScore)} · ${formatTimeToString(dateTime: widget.accountState.personView!.person.published.toIso8601String())}',
-            style: theme.textTheme.labelMedium?.copyWith(color: theme.textTheme.labelMedium?.color?.withAlpha(200)),
-          ),
-          const SizedBox(height: 8),
+          AccountHeader(accountInfo: widget.accountState.personView),
           ToggleButtons(
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             direction: Axis.horizontal,

@@ -70,6 +70,7 @@ dependencies:
   flutter_cache_manager: ^3.3.0
   permission_handler: ^10.3.0
   path_provider: ^2.0.15
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

@@ -31,16 +31,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _getPostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<GetPostCommentsEvent>(
-      _getPostCommentsEvent,
-      transformer: throttleDroppable(throttleDuration),
-    );
     on<VotePostEvent>(
       _votePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
     on<SavePostEvent>(
       _savePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<GetPostCommentsEvent>(
+      _getPostCommentsEvent,
       transformer: throttleDroppable(throttleDuration),
     );
     on<VoteCommentEvent>(

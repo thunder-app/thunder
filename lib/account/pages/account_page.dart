@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/pages/account_page_success.dart';
 import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/numbers.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});

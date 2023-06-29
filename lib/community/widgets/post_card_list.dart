@@ -73,11 +73,15 @@ class _PostCardListState extends State<PostCardList> {
       child: RefreshIndicator(
         onRefresh: () async {
           HapticFeedback.mediumImpact();
-          context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                reset: true,
-                listingType: widget.communityId != null ? null : widget.listingType,
-                communityId: widget.listingType != null ? null : widget.communityId,
-              ));
+          if (widget.personId != null) {
+            context.read<UserBloc>().add(const GetUserEvent(reset: true));
+          } else {
+            context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                  reset: true,
+                  listingType: widget.communityId != null ? null : widget.listingType,
+                  communityId: widget.listingType != null ? null : widget.communityId,
+                ));
+          }
         },
         child: ListView.builder(
           cacheExtent: 500,
