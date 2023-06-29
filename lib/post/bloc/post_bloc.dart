@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -130,7 +131,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         auth: account?.jwt,
         communityId: state.communityId,
         postId: state.postId,
-        sort: SortType.hot,
+        sort: state.sortType,
         limit: 50,
         page: 1,
       ))

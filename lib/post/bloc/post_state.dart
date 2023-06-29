@@ -12,9 +12,14 @@ class PostState extends Equatable {
     this.commentCount = 0,
     this.communityId,
     this.errorMessage,
+    this.sortType,
+    this.sortTypeIcon
   });
 
   final PostStatus status;
+
+  final SortType? sortType;
+  final IconData? sortTypeIcon;
 
   final int? postId;
   final int? communityId;

@@ -46,7 +46,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = PostSortTypes.Items.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+              sortTypeIcon = PostSortTypes.items.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
             });
           }
           return true;
@@ -179,23 +179,23 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: PostSortTypes.Items.length,
+                itemCount: PostSortTypes.items.length,
                 itemBuilder: (BuildContext itemBuilderContext, int index) {
                   return ListTile(
                     title: Text(
-                      PostSortTypes.Items[index].label,
+                      PostSortTypes.items[index].label,
                       style: theme.textTheme.bodyMedium,
                     ),
-                    leading: Icon(PostSortTypes.Items[index].icon),
+                    leading: Icon(PostSortTypes.items[index].icon),
                     onTap: () {
                       setState(() {
-                        sortType = PostSortTypes.Items[index].sortType;
-                        sortTypeIcon = PostSortTypes.Items[index].icon;
+                        sortType = PostSortTypes.items[index].sortType;
+                        sortTypeIcon = PostSortTypes.items[index].icon;
                       });
 
                       context.read<CommunityBloc>().add(
                             GetCommunityPostsEvent(
-                              sortType: PostSortTypes.Items[index].sortType,
+                              sortType: PostSortTypes.items[index].sortType,
                               reset: true,
                               listingType: state.communityId != null ? null : state.listingType,
                               communityId: widget.communityId ?? state.communityId,

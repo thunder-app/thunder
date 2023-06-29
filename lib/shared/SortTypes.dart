@@ -11,7 +11,7 @@ class SortTypeItem {
 }
 
 class PostSortTypes {
-  static get Items => sortTypeItems;
+  static get items => sortTypeItems;
 
   static const sortTypeItems = [
     SortTypeItem(
@@ -44,5 +44,32 @@ class PostSortTypes {
       icon: Icons.add_comment_rounded,
       label: 'New Comments',
     ),
+  ];
+}
+
+class CommentSortTypes {
+  static get items => sortTypeItems;
+
+  static const sortTypeItems = [
+    SortTypeItem(
+      sortType: SortType.hot,
+      icon: Icons.local_fire_department_rounded,
+      label: 'Hot',
+    ),
+    SortTypeItem(
+      sortType: SortType.topAll,
+      icon: Icons.vertical_align_top,
+      label: 'top',
+    ),
+    SortTypeItem(
+      sortType: SortType.new_,
+      icon: Icons.auto_awesome_rounded,
+      label: 'New',
+    ),
+    // SortTypeItem(
+    //   sortType: SortType.Old,
+    //   icon: Icons.history_toggle_off_rounded,
+    //   label: 'Old',
+    // ),
   ];
 }
