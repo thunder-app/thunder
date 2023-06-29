@@ -1,7 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -14,8 +14,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/post.dart';
 
-part 'account_event.dart';
-part 'account_state.dart';
+part 'user_event.dart';
+part 'user_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 3);
@@ -24,81 +24,15 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
-class AccountBloc extends Bloc<AccountEvent, AccountState> {
-  AccountBloc() : super(const AccountState()) {
-    on<GetAccountContent>(
-      _getAccountContent,
+class UserBloc extends Bloc<UserEvent, UserState> {
+  UserBloc() : super(const UserState()) {
+    on<GetUserEvent>(
+      _getUserEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<GetAccountInformation>((event, emit) async {
-      int attemptCount = 0;
-
-      try {
-        Account? account = await fetchActiveProfileAccount();
-
-        while (attemptCount < 2) {
-          try {
-            LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-
-            if (account == null || account.jwt == null) {
-              return emit(
-                state.copyWith(
-                  status: AccountStatus.success,
-                  subsciptions: [],
-                ),
-              );
-            }
-
-            List<CommunityView> communityViews = await lemmy.run(
-              ListCommunities(
-                auth: account.jwt,
-                type: PostListingType.subscribed,
-                limit: 50, // Temporarily increasing this to address issue of missing subscriptions
-              ),
-            );
-
-            // Sort subscriptions by their name
-            communityViews.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
-
-            FullPersonView fullPersonView = await lemmy.run(
-              GetPersonDetails(
-                auth: account.jwt,
-                username: account.username,
-                limit: 50,
-              ),
-            );
-
-            List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts);
-
-            List<CommentViewTree> comments = buildCommentViewTree(fullPersonView.comments);
-
-            return emit(
-              state.copyWith(
-                status: AccountStatus.success,
-                subsciptions: communityViews,
-                comments: comments,
-                moderates: fullPersonView.moderates,
-                personView: fullPersonView.personView,
-                posts: posts,
-              ),
-            );
-          } catch (e, s) {
-            await Sentry.captureException(e, stackTrace: s);
-
-            attemptCount += 1;
-          }
-        }
-      } on DioException catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
-        emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
-      } catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
-        emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
-      }
-    });
   }
 
-  Future<void> _getAccountContent(GetAccountContent event, emit) async {
+  Future<void> _getUserEvent(GetUserEvent event, emit) async {
     int attemptCount = 0;
     int limit = 30;
 
@@ -112,21 +46,21 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           if (event.reset) {
-            emit(state.copyWith(status: AccountStatus.loading));
+            emit(state.copyWith(status: UserStatus.loading));
 
             FullPersonView? fullPersonView;
 
-            if (account?.username != null) {
+            if (event.userId != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
-                username: account!.username,
-                auth: account.jwt,
+                personId: event.userId,
+                auth: account?.jwt,
                 sort: SortType.hot,
                 limit: limit,
                 page: 1,
               ))
                   .timeout(timeout, onTimeout: () {
-                throw Exception('Error: Timeout when attempting to fetch account details');
+                throw Exception('Error: Timeout when attempting to fetch user');
               });
             }
 
@@ -137,8 +71,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
 
             return emit(
               state.copyWith(
+                userId: event.userId,
                 personView: fullPersonView?.personView,
-                status: AccountStatus.success,
+                status: UserStatus.success,
                 comments: commentTree,
                 posts: posts,
                 page: 2,
@@ -149,24 +84,24 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           }
 
           if (state.hasReachedCommentEnd && state.hasReachedPostEnd) {
-            return emit(state.copyWith(status: AccountStatus.success));
+            return emit(state.copyWith(status: UserStatus.success));
           }
 
-          emit(state.copyWith(status: AccountStatus.refreshing));
+          emit(state.copyWith(status: UserStatus.refreshing));
 
           FullPersonView? fullPersonView = await lemmy
               .run(GetPersonDetails(
-            username: account!.username,
-            auth: account.jwt,
+            personId: state.userId,
+            auth: account?.jwt,
             sort: SortType.hot,
             limit: limit,
             page: state.page,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch account details');
+            throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
@@ -180,7 +115,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           commentViewTree.addAll(commentTree);
 
           return emit(state.copyWith(
-            status: AccountStatus.success,
+            userId: state.userId,
+            status: UserStatus.success,
             comments: commentViewTree,
             posts: postViewMedias,
             page: state.page + 1,
@@ -195,10 +131,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       }
     } on DioException catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 }

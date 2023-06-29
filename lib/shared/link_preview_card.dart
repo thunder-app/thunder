@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,8 +44,9 @@ class LinkPreviewCard extends StatelessWidget {
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
           borderRadius: BorderRadius.circular(6), // Image border
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6), // Image border
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
             child: Stack(
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
@@ -67,8 +69,9 @@ class LinkPreviewCard extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(6), // Image border
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
             child: Stack(
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,
@@ -115,23 +118,26 @@ class LinkPreviewCard extends StatelessWidget {
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (viewMode == ViewMode.compact) {
-      return ClipRRect(
-        borderRadius: BorderRadius.circular(6),
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-          child: const SizedBox(
+          color: theme.cardColor.darken(3),
+          child: SizedBox(
             height: 75.0,
             width: 75.0,
-            child: Icon(Icons.link_rounded),
+            child: Icon(
+              Icons.link_rounded,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
           ),
         ),
       );
     } else {
       return Container(
-        color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+        color: theme.cardColor.darken(3),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [
@@ -139,7 +145,7 @@ class LinkPreviewCard extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Icon(
                 Icons.link,
-                color: useDarkTheme ? Colors.white60 : Colors.black54,
+                color: theme.colorScheme.onSecondaryContainer,
               ),
             ),
             if (viewMode != ViewMode.compact)

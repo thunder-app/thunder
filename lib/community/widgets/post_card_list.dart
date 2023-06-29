@@ -9,10 +9,12 @@ import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
+  final int? personId;
   final String? communityName;
   final bool? hasReachedEnd;
   final PostListingType? listingType;
@@ -26,6 +28,7 @@ class PostCardList extends StatefulWidget {
     this.listingType,
     this.communityInfo,
     this.communityName,
+    this.personId,
   });
 
   @override
@@ -48,8 +51,12 @@ class _PostCardListState extends State<PostCardList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      if (widget.personId != null) {
+        context.read<UserBloc>().add(const GetUserEvent());
+      } else {
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+      }
     }
   }
 
@@ -61,7 +68,7 @@ class _PostCardListState extends State<PostCardList> {
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
       listener: (context, state) {
         // Force a rebuild when the thunderbloc status changes
-        setState(() {});
+        // setState(() {});
       },
       child: RefreshIndicator(
         onRefresh: () async {
@@ -72,52 +79,47 @@ class _PostCardListState extends State<PostCardList> {
                 communityId: widget.listingType != null ? null : widget.communityId,
               ));
         },
-        child: SingleChildScrollView(
+        child: ListView.builder(
+          cacheExtent: 500,
           controller: _scrollController,
-          child: Column(
-            children: [
-              if (widget.communityId != null || widget.communityName != null) CommunityHeader(communityInfo: widget.communityInfo),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: widget.postViews?.length != null ? widget.postViews!.length + 1 : 1,
-                itemBuilder: (context, index) {
-                  if (index == widget.postViews!.length) {
-                    if (widget.hasReachedEnd == true) {
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            color: theme.dividerColor.withOpacity(0.1),
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
-                            child: Text(
-                              'Hmmm. It seems like you\'ve reached the bottom.',
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            child: const CircularProgressIndicator(),
-                          ),
-                        ],
-                      );
-                    }
-                  } else {
-                    return PostCard(
-                      postViewMedia: widget.postViews![index],
-                      showInstanceName: widget.communityId == null,
-                    );
-                  }
-                },
-              ),
-            ],
-          ),
+          itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
+          itemBuilder: (context, index) {
+            if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
+              return CommunityHeader(communityInfo: widget.communityInfo);
+            }
+            if (index == widget.postViews!.length) {
+              if (widget.hasReachedEnd == true) {
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      color: theme.dividerColor.withOpacity(0.1),
+                      padding: const EdgeInsets.symmetric(vertical: 32.0),
+                      child: Text(
+                        'Hmmm. It seems like you\'ve reached the bottom.',
+                        textAlign: TextAlign.center,
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ),
+                  ],
+                );
+              } else {
+                return Column(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                      child: const CircularProgressIndicator(),
+                    ),
+                  ],
+                );
+              }
+            } else {
+              return PostCard(
+                postViewMedia: widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index],
+                showInstanceName: widget.communityId == null,
+              );
+            }
+          },
         ),
       ),
     );

@@ -288,7 +288,7 @@ packages:
     source: hosted
     version: "0.7.0"
   flutter_cache_manager:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: flutter_cache_manager
       sha256: "32cd900555219333326a2d0653aaaf8671264c29befa65bbd9856d204a4c9fb3"
@@ -401,6 +401,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.0.17"
+  image_gallery_saver:
+    dependency: "direct main"
+    description:
+      name: image_gallery_saver
+      sha256: "467de169167b5c4e1ddde65395e4653c336a82f760b6700ea295085b7f2dd248"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.2"
   js:
     dependency: transitive
     description:
@@ -421,9 +429,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: e211fc4
-      resolved-ref: e211fc4e304f7999711d0c0ee753043a5b54eeb1
-      url: "https://github.com/liftoff-app/lemmy_api_client"
+      ref: "03ffe34"
+      resolved-ref: "03ffe341d1d36d4fb25f132d8db9cb03ba30108a"
+      url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"
   lints:
@@ -540,7 +548,7 @@ packages:
     source: hosted
     version: "1.8.3"
   path_provider:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: path_provider
       sha256: "3087813781ab814e4157b172f1a11c46be20179fcc9bea043e0fba36bc0acaa2"
@@ -595,6 +603,46 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  permission_handler:
+    dependency: "direct main"
+    description:
+      name: permission_handler
+      sha256: "1b6b3e73f0bcbc856548bbdfb1c33084a401c4f143e220629a9055233d76c331"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.3.0"
+  permission_handler_android:
+    dependency: transitive
+    description:
+      name: permission_handler_android
+      sha256: "8f6a95ccbca13766882f95d32684d7c9bfe6c45650c32bedba948ef1c6a4ddf7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "10.2.3"
+  permission_handler_apple:
+    dependency: transitive
+    description:
+      name: permission_handler_apple
+      sha256: "08dcb6ce628ac0b257e429944b4c652c2a4e6af725bdf12b498daa2c6b2b1edb"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.1.0"
+  permission_handler_platform_interface:
+    dependency: transitive
+    description:
+      name: permission_handler_platform_interface
+      sha256: de20a5c3269229c1ae2e5a6b822f6cb59578b23e8255c93fbeebfc82116e6b11
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.0"
+  permission_handler_windows:
+    dependency: transitive
+    description:
+      name: permission_handler_windows
+      sha256: f67cab14b4328574938ecea2db3475dad7af7ead6afab6338772c5f88963e38b
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.2"
   petitparser:
     dependency: transitive
     description:

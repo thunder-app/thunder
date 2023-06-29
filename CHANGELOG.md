@@ -1,4 +1,25 @@
 ## Unreleased
+
+### Added
+- Added ability to download images - contribution from @MrAntonS
+- Added settings option to collapse parent comment on tap
+- Added pull to refresh on posts
+- Long pressing the post will bring up a modal to perform more actions such as visit community, user profile, sharing
+- An additional button now shows up for each post in comfortable view to open the more actions modal
+- Added initial support for viewing user profiles - including their posts and comments
+
+### Changed
+- Adjusted thickness of divider between posts to help differentiate
+
+### Fixed
+- Fixed issue where you could not exit app when swiping back or using the back button
+- Potentially fixed some issues with performance, yet to be tested widely
+- Fixed issue where an error would be thrown if trying to access http pages - contribution from @vbh
+- Fixed issue with haptic feedback on comment actions
+- Fixed issue where reply button would cover actions and comments for short posts
+- Removed mark as read for mentions and replies that have already been read
+
+## 0.2.1+8 - 2023-06-28
 ### Added
 - Added adaptive icons for Android - contribution from @coslu
 - Inbox mentions and replies can now be marked as read
@@ -8,9 +29,11 @@
 - Added Material You dynamic colour theming
 - Added system theme option
 - Added option to open up links in external browser by default
-- Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy_api_client!
+- Removed custom-made lemmy library, and replaced lemmy library with https://github.com/liftoff-app/lemmy\_api\_client!
   - This change will make it easier to work with future features, and also allows a chance for collaboration on a unified dart-based lemmy api
 - Added ability to tap on images within comments/posts to zoom in
+- Added swipe gesture on botton nav bar to open up drawer in Feed
+- Added settings option to disable swipe gestures on posts
 
 ### Changed
 - Moved theming options into a separate section in settings

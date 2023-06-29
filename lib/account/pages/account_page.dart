@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/pages/account_page_success.dart';
 import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -27,15 +28,28 @@ class _AccountPageState extends State<AccountPage> {
 
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
+        leading: authState.isLoggedIn
+            ? IconButton(
+                onPressed: () => context.read<AuthBloc>().add(RemoveAccount(accountId: context.read<AuthBloc>().state.account!.id)),
+                icon: const Icon(
+                  Icons.logout,
+                  semanticLabel: 'Log out',
+                ),
+              )
+            : null,
         actions: [
           if (authState.isLoggedIn)
-            IconButton(
-              onPressed: () => showProfileModalSheet(context),
-              icon: const Icon(
-                Icons.people_alt_rounded,
-                semanticLabel: 'Profiles',
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                onPressed: () => showProfileModalSheet(context),
+                icon: const Icon(
+                  Icons.people_alt_rounded,
+                  semanticLabel: 'Profiles',
+                ),
               ),
-            )
+            ),
         ],
       ),
       body: BlocConsumer<AuthBloc, AuthState>(
@@ -45,39 +59,7 @@ class _AccountPageState extends State<AccountPage> {
             child: Padding(
               padding: const EdgeInsets.all(12.0),
               child: authState.isLoggedIn && accountState.status == AccountStatus.success
-                  ? Center(
-                      child: SingleChildScrollView(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              foregroundImage: accountState.personView?.person.avatar != null ? CachedNetworkImageProvider(accountState.personView!.person.avatar!) : null,
-                              maxRadius: 70,
-                            ),
-                            const SizedBox(height: 24),
-                            Text(
-                              accountState.personView!.person.name,
-                              style: theme.textTheme.titleLarge,
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              '${formatNumberToK(accountState.personView!.counts.postScore)} · ${formatNumberToK(accountState.personView!.counts.commentScore)} · ${formatTimeToString(dateTime: accountState.personView!.person.published.toIso8601String())}',
-                              style: theme.textTheme.labelMedium?.copyWith(color: theme.textTheme.labelMedium?.color?.withAlpha(200)),
-                            ),
-                            const SizedBox(height: 24),
-                            ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                minimumSize: const Size.fromHeight(50),
-                              ),
-                              onPressed: () => context.read<AuthBloc>().add(RemoveAccount(accountId: context.read<AuthBloc>().state.account!.id)),
-                              child: const Text('Log out'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+                  ? AccountPageSuccess(accountState: accountState)
                   : Center(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,

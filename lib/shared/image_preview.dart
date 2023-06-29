@@ -73,8 +73,9 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   Widget imagePreview(BuildContext context) {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(6), // Image border
+    return Container(
+      clipBehavior: Clip.hardEdge,
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
       child: Stack(
         children: [
           ExtendedImage.network(

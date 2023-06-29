@@ -13,6 +13,23 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
+/// Logic to mark post as read
+Future<PostView> markPostAsRead(int postId, bool read) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  PostView postResponse = await lemmy.run(MarkPostAsRead(
+    auth: account!.jwt!,
+    postId: postId,
+    read: read,
+  ));
+
+  PostView updatedPostView = postResponse;
+  return updatedPostView;
+}
+
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();
@@ -80,12 +97,12 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       media.add(Media(originalUrl: url, mediaType: MediaType.link));
     }
   } else if (url != null) {
-    // For external links, attempt to fetch any media associated with it (image, title)
-    LinkInfo linkInfo = await getLinkInfo(url);
+    if (fetchImageDimensions) {
+      // For external links, attempt to fetch any media associated with it (image, title)
+      LinkInfo linkInfo = await getLinkInfo(url);
 
-    if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
       try {
-        if (fetchImageDimensions) {
+        if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
           Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
           int mediaHeight = result.height.toInt();

@@ -46,3 +46,16 @@ class CreatePostEvent extends CommunityEvent {
 
   const CreatePostEvent({required this.name, required this.body});
 }
+
+class MarkPostAsReadEvent extends CommunityEvent {
+  final int postId;
+  final bool read;
+
+  const MarkPostAsReadEvent({required this.postId, required this.read});
+}
+
+class UpdatePostEvent extends CommunityEvent {
+  final PostViewMedia postViewMedia;
+
+  const UpdatePostEvent({required this.postViewMedia});
+}

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -15,8 +16,9 @@ import 'package:thunder/shared/sort_picker.dart';
 class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const CommunityPage({super.key, this.communityId, this.communityName});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -66,6 +68,7 @@ class _CommunityPageState extends State<CommunityPage>
         },
         builder: (context, state) {
           return Scaffold(
+            key: widget.scaffoldKey,
             appBar: AppBar(
               title: Text(getCommunityName(state)),
               centerTitle: false,
@@ -90,7 +93,8 @@ class _CommunityPageState extends State<CommunityPage>
                               ? 'Subscribe'
                               : 'Unsubscribe',
                         ),
-                        onPressed: () => {
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
                           context.read<CommunityBloc>().add(
                                 ChangeCommunitySubsciptionStatusEvent(
                                   communityId: state.communityId!,
@@ -101,13 +105,15 @@ class _CommunityPageState extends State<CommunityPage>
                                           ? true
                                           : false),
                                 ),
-                              )
+                              );
                         },
                       ),
                     IconButton(
-                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                      onPressed: () => showSortBottomSheet(context, state),
-                    ),
+                        icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          showSortBottomSheet(context, state);
+                        }),
                     const SizedBox(width: 8.0),
                   ],
                 )

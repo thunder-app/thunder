@@ -44,6 +44,28 @@ class _ThunderState extends State<Thunder> {
     super.dispose();
   }
 
+  double _dragStartX = 0.0;
+
+  final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
+
+  void _handleDragStart(DragStartDetails details) {
+    _dragStartX = details.globalPosition.dx;
+  }
+
+  void _handleDragUpdate(DragUpdateDetails details) {
+    final currentPosition = details.globalPosition.dx;
+    final delta = currentPosition - _dragStartX;
+    if (delta > 0 && selectedPageIndex == 0) {
+      _feedScaffoldKey.currentState?.openDrawer();
+    } else if (delta < 0 && selectedPageIndex == 0) {
+      _feedScaffoldKey.currentState?.closeDrawer();
+    }
+  }
+
+  void _handleDragEnd(DragEndDetails details) {
+    _dragStartX = 0.0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -113,7 +135,7 @@ class _ThunderState extends State<Thunder> {
                             onPageChanged: (index) => setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
-                              const CommunityPage(),
+                              CommunityPage(scaffoldKey: _feedScaffoldKey),
                               BlocProvider(
                                 create: (context) => SearchBloc(),
                                 child: const SearchPage(),
@@ -155,48 +177,53 @@ class _ThunderState extends State<Thunder> {
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
-      child: BottomNavigationBar(
-        currentIndex: selectedPageIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        selectedItemColor: theme.colorScheme.primary,
-        type: BottomNavigationBarType.fixed,
-        unselectedFontSize: 20.0,
-        selectedFontSize: 20.0,
-        elevation: 1,
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_rounded),
-            label: 'Feed',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search_rounded),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_rounded),
-            label: 'Account',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.inbox_rounded),
-            label: 'Inbox',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_rounded),
-            label: 'Settings',
-          ),
-        ],
-        onTap: (index) {
-          setState(() {
-            selectedPageIndex = index;
-            pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-          });
+      child: GestureDetector(
+        onHorizontalDragStart: _handleDragStart,
+        onHorizontalDragUpdate: _handleDragUpdate,
+        onHorizontalDragEnd: _handleDragEnd,
+        child: BottomNavigationBar(
+          currentIndex: selectedPageIndex,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          selectedItemColor: theme.colorScheme.primary,
+          type: BottomNavigationBarType.fixed,
+          unselectedFontSize: 20.0,
+          selectedFontSize: 20.0,
+          elevation: 1,
+          items: const [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.dashboard_rounded),
+              label: 'Feed',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search_rounded),
+              label: 'Search',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person_rounded),
+              label: 'Account',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.inbox_rounded),
+              label: 'Inbox',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.settings_rounded),
+              label: 'Settings',
+            ),
+          ],
+          onTap: (index) {
+            setState(() {
+              selectedPageIndex = index;
+              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+            });
 
-          // @todo Change this from integer to enum or some other type
-          if (index == 3) {
-            context.read<InboxBloc>().add(const GetInboxEvent());
-          }
-        },
+            // @todo Change this from integer to enum or some other type
+            if (index == 3) {
+              context.read<InboxBloc>().add(const GetInboxEvent());
+            }
+          },
+        ),
       ),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -25,6 +26,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
+  bool collapseParentCommentOnGesture = true;
+  bool disableSwipeActionsOnPost = false;
   bool showThumbnailPreviewOnRight = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
@@ -67,6 +70,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
 
       // Post Settings
+      case 'setting_comments_collapse_parent_comment_on_gesture':
+        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
+        setState(() => collapseParentCommentOnGesture = value);
+        break;
+      case 'setting_post_disable_swipe_actions':
+        await prefs.setBool('setting_post_disable_swipe_actions', value);
+        setState(() => disableSwipeActionsOnPost = value);
+        break;
       case 'setting_compact_show_thumbnail_on_right':
         await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
         setState(() => showThumbnailPreviewOnRight = value);
@@ -136,10 +147,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+
+      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
+      collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+      disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -236,14 +250,30 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           ),
                         ),
                         ToggleOption(
+                          description: 'Hide parent comment on collapse',
+                          value: collapseParentCommentOnGesture,
+                          iconEnabled: Icons.mode_comment_rounded,
+                          iconDisabled: Icons.mode_comment_rounded,
+                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
+                        ),
+                        ToggleOption(
                           description: 'Show thumbnail on right',
+                          subtitle: 'Applies to compact view only',
                           value: showThumbnailPreviewOnRight,
                           iconEnabled: Icons.photo_size_select_large_rounded,
                           iconDisabled: Icons.photo_size_select_large_rounded,
                           onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                         ),
                         ToggleOption(
+                          description: 'Disable swipe actions',
+                          value: disableSwipeActionsOnPost,
+                          iconEnabled: Icons.swipe_rounded,
+                          iconDisabled: Icons.swipe_rounded,
+                          onToggle: (bool value) => setPreferences('setting_post_disable_swipe_actions', value),
+                        ),
+                        ToggleOption(
                           description: 'Show voting on posts',
+                          subtitle: 'Applies to normal view only',
                           value: showVoteActions,
                           iconEnabled: Icons.import_export_rounded,
                           iconDisabled: Icons.import_export_rounded,
@@ -251,6 +281,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show save action on post',
+                          subtitle: 'Applies to normal view only',
                           value: showSaveAction,
                           iconEnabled: Icons.star_rounded,
                           iconDisabled: Icons.star_rounded,
@@ -258,6 +289,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'View full height images',
+                          subtitle: 'Applies to normal view only',
                           value: showFullHeightImages,
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
@@ -288,6 +320,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Show link previews',
+                          subtitle: 'Applies to normal view only',
                           value: showLinkPreviews,
                           iconEnabled: Icons.photo_size_select_actual_rounded,
                           iconDisabled: Icons.photo_size_select_actual_rounded,
