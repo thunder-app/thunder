@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardActions extends StatelessWidget {
+  // Callback functions
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
 
   final int postId;
-  final VoteType voteType;
   final bool saved;
+  final VoteType voteType;
 
   const PostCardActions({
     super.key,
@@ -51,8 +53,6 @@ class PostCardActions extends StatelessWidget {
                   onPressed: () {
                     HapticFeedback.mediumImpact();
                     onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
-
-                    // context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.up ? VoteType.none : VoteType.up));
                   }),
             if (showVoteActions)
               IconButton(
@@ -65,8 +65,6 @@ class PostCardActions extends StatelessWidget {
                 onPressed: () {
                   HapticFeedback.mediumImpact();
                   onVoteAction(voteType == VoteType.down ? VoteType.none : VoteType.down);
-
-                  // context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: VoteType.down ? VoteType.none : VoteType.down));
                 },
               ),
             if (showSaveAction)

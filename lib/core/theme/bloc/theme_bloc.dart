@@ -38,7 +38,8 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
-      var brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      // Check what the system theme is (light/dark)
+      Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool useDarkTheme = (themeType == 'dark') || (useBlackTheme == true);
 
       // System theme overrides other settings

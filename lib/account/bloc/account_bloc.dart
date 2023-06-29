@@ -96,9 +96,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             attemptCount += 1;
           }
         }
-      } on DioException catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
-        emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
@@ -201,9 +198,6 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           await Sentry.captureException(e, stackTrace: s);
         }
       }
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));

@@ -137,9 +137,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await Sentry.captureException(e, stackTrace: s);
         }
       }
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));

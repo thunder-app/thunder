@@ -108,9 +108,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           communityId: postView?.postView.post.communityId,
         ),
       );
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
@@ -195,11 +192,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote'));
-
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -218,11 +210,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
-
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -248,11 +235,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.comment = commentView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to vote on comment'));
-
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -278,11 +260,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.comment = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      if (e.type == DioExceptionType.receiveTimeout) return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Error: Network timeout when attempting to save'));
-
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -316,19 +293,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(
-          state.copyWith(
-            status: PostStatus.failure,
-            errorMessage: 'Error: Network timeout when attempting to create a comment',
-          ),
-        );
-      } else {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
-      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
