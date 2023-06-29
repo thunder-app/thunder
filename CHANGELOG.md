@@ -7,6 +7,7 @@
 - Long pressing the post will bring up a modal to perform more actions such as visit community, user profile, sharing
 - An additional button now shows up for each post in comfortable view to open the more actions modal
 - Added initial support for viewing user profiles - including their posts and comments
+- Added top sort options - contribution from @JulianPaulus
 
 ### Changed
 - Adjusted thickness of divider between posts to help differentiate
