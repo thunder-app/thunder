@@ -7,7 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
@@ -211,21 +213,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ListOption(
                           description: 'Default Feed Type',
-                          value: defaultPostListingType,
-                          options: const [PostListingType.subscribed, PostListingType.all, PostListingType.local],
+                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
+                          options: [
+                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
+                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
+                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
+                          ],
                           icon: Icons.feed,
-                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
-                          labelTransformer: (value) => value.name.capitalize,
+                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.payload.name),
                         ),
                         ListOption(
                           description: 'Default Sort Type',
-                          value: defaultSortType,
-                          options: const [SortType.hot, SortType.active, SortType.new_, SortType.mostComments, SortType.newComments],
+                          value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                          options: allSortTypeItems,
                           icon: Icons.sort,
-                          onChanged: (value) => setPreferences('setting_general_default_sort_type', value.name),
-                          labelTransformer: (value) => value.name.capitalize.replaceAll('_', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                            return ' ${match.group(0)}';
-                          }),
+                          onChanged: (_) {},
+                          customListPicker: SortPicker(title: 'Default Sort Type', onSelect: (value) {
+                            setPreferences('setting_general_default_sort_type', value.payload.name);
+                          },
+                          ),
                         ),
                       ],
                     ),
