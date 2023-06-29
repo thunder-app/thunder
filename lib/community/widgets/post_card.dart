@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/theme.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
@@ -43,6 +45,7 @@ class _PostCardState extends State<PostCard> {
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
     final bool disableSwipeActionsOnPost = context.read<ThunderBloc>().state.preferences?.getBool('setting_post_disable_swipe_actions') ?? false;
+    final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
     final bool showThumbnailPreviewOnRight = context.read<ThunderBloc>().state.preferences?.getBool('setting_compact_show_thumbnail_on_right') ?? false;
@@ -139,8 +142,8 @@ class _PostCardState extends State<PostCard> {
           children: [
             Divider(
               height: 1.0,
-              thickness: 2.0,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.20),
+              thickness: 4.0,
+              color: useDarkTheme ? theme.colorScheme.background.lighten(5) : theme.colorScheme.background.darken(5),
             ),
             InkWell(
               child: useCompactView

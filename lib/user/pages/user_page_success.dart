@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
@@ -6,6 +7,7 @@ import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 
 const List<Widget> userOptionTypes = <Widget>[
@@ -40,6 +42,25 @@ class UserPageSuccess extends StatefulWidget {
 class _UserPageSuccessState extends State<UserPageSuccess> {
   int selectedUserOption = 0;
   final List<bool> _selectedUserOption = <bool>[true, false];
+  final _scrollController = ScrollController(initialScrollOffset: 0);
+
+  @override
+  void initState() {
+    _scrollController.addListener(_onScroll);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.removeListener(_onScroll);
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+      context.read<UserBloc>().add(const GetUserEvent());
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +91,12 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
           ),
           const SizedBox(height: 12.0),
           Expanded(
-            child: selectedUserOption == 0 ? PostCardList(postViews: widget.posts, personId: widget.userId, hasReachedEnd: widget.hasReachedPostEnd) : CommentSubview(comments: widget.comments ?? []),
+            child: selectedUserOption == 0
+                ? PostCardList(postViews: widget.posts, personId: widget.userId, hasReachedEnd: widget.hasReachedPostEnd)
+                : SingleChildScrollView(
+                    controller: _scrollController,
+                    child: CommentSubview(comments: widget.comments ?? []),
+                  ),
           ),
         ],
       ),
