@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
@@ -33,15 +34,17 @@ class ListOption<T> extends StatelessWidget {
       behavior: HitTestBehavior.opaque,
       onTap: () {
         showModalBottomSheet(
-            context: context,
-            showDragHandle: true,
-            builder: (context) => customListPicker ?? BottomSheetListPicker(
+          context: context,
+          showDragHandle: true,
+          builder: (context) =>
+              customListPicker ??
+              BottomSheetListPicker(
                 title: description,
                 items: options,
                 onSelect: (value) {
                   onChanged(value);
                 },
-            ),
+              ),
         );
       },
       child: Row(
@@ -56,9 +59,17 @@ class ListOption<T> extends StatelessWidget {
           ),
           Row(
             children: [
-              Text(value.label, style: theme.textTheme.titleSmall),
+              Text(
+                  value.label.capitalize
+                      .replaceAll('_', '')
+                      .replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                    return ' ${match.group(0)}';
+                  }),
+                  style: theme.textTheme.titleSmall),
               const Icon(Icons.chevron_right_rounded),
-              const SizedBox(height: 42.0,)
+              const SizedBox(
+                height: 42.0,
+              )
             ],
           )
         ],
