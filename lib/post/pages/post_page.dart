@@ -75,7 +75,6 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
-              title: Text('placeholder'),
               actions: [
                 IconButton(
                   icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
