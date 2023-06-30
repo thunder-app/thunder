@@ -134,9 +134,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           await Sentry.captureException(e, stackTrace: s);
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
         }
-        
+
         await Sentry.captureException(e, stackTrace: s);
-        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: errorMessage.toString()));
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });
   }
