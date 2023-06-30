@@ -382,6 +382,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 120,
+                  ),
                 ],
               ),
             ),
