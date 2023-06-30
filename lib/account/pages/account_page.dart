@@ -7,6 +7,7 @@ import 'package:thunder/account/pages/account_page_success.dart';
 import 'package:thunder/account/widgets/profile_modal_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/pages/user_page.dart';
 
 class AccountPage extends StatefulWidget {
   const AccountPage({super.key});
@@ -52,28 +53,22 @@ class _AccountPageState extends State<AccountPage> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {},
         builder: (context, state) {
-          return SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: authState.isLoggedIn && accountState.status == AccountStatus.success
-                  ? AccountPageSuccess(accountState: accountState)
-                  : Center(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.people_rounded, size: 100, color: theme.dividerColor),
-                          const SizedBox(height: 16),
-                          const Text('Add an account to see your profile', textAlign: TextAlign.center),
-                          const SizedBox(height: 24.0),
-                          ElevatedButton(
-                            style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
-                            child: const Text('Manage Accounts'),
-                            onPressed: () => showProfileModalSheet(context),
-                          )
-                        ],
-                      ),
-                    ),
+          if (authState.isLoggedIn && accountState.status == AccountStatus.success) return UserPage(userId: accountState.personView!.person.id);
+          return Center(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.people_rounded, size: 100, color: theme.dividerColor),
+                const SizedBox(height: 16),
+                const Text('Add an account to see your profile', textAlign: TextAlign.center),
+                const SizedBox(height: 24.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                  child: const Text('Manage Accounts'),
+                  onPressed: () => showProfileModalSheet(context),
+                )
+              ],
             ),
           );
         },
