@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -23,29 +24,37 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final TextEditingController _controller = TextEditingController();
   final _scrollController = ScrollController(initialScrollOffset: 0);
-
+  late FocusNode searchFocusNode;
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+    searchFocusNode = FocusNode();
     super.initState();
+
+    SchedulerBinding.instance.addPostFrameCallback((Duration _) {
+      FocusManager.instance.primaryFocus?.requestFocus(searchFocusNode);
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     _scrollController.dispose();
-
+    searchFocusNode.dispose();
     super.dispose();
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text));
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.8) {
+      context
+          .read<SearchBloc>()
+          .add(ContinueSearchEvent(query: _controller.text));
     }
   }
 
   void resetTextField() {
-    FocusScope.of(context).unfocus(); // Unfocus the search field
+    FocusManager.instance.primaryFocus?.unfocus(); // Unfocus the search field
     _controller.clear(); // Clear the search field
   }
 
@@ -62,6 +71,7 @@ class _SearchPageState extends State<SearchPage> {
             toolbarHeight: 90.0,
             scrolledUnderElevation: 0.0,
             title: SearchBar(
+              focusNode: searchFocusNode,
               controller: _controller,
               leading: const Padding(
                 padding: EdgeInsets.only(left: 8.0),
@@ -81,7 +91,8 @@ class _SearchPageState extends State<SearchPage> {
                   )
               ],
               hintText: 'Search for communities',
-              onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+              onChanged: (value) => debounce(const Duration(milliseconds: 300),
+                  _onChange, [context, value]),
             ),
           ),
           body: _getSearchBody(context, state),
@@ -114,7 +125,8 @@ class _SearchPageState extends State<SearchPage> {
               child: Text(
                 'Search for communities federated with $baseUrl',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: theme.dividerColor),
               ),
             )
           ],
@@ -128,7 +140,8 @@ class _SearchPageState extends State<SearchPage> {
             child: Text(
               'No communities found',
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(color: theme.dividerColor),
             ),
           );
         }
@@ -144,28 +157,37 @@ class _SearchPageState extends State<SearchPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Row(children: [
-                  Text('${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)} · ${communityView.counts.subscribers}'),
+                  Text(
+                      '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)} · ${communityView.counts.subscribers}'),
                   const SizedBox(width: 4),
                   const Icon(Icons.people_rounded, size: 16.0),
                 ]),
                 trailing: isUserLoggedIn
                     ? IconButton(
-                        onPressed: communityView.subscribed == SubscribedType.pending
+                        onPressed: communityView.subscribed ==
+                                SubscribedType.pending
                             ? null
                             : () {
                                 context.read<SearchBloc>().add(
                                       ChangeCommunitySubsciptionStatusEvent(
                                         communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+                                        follow: communityView.subscribed ==
+                                                SubscribedType.notSubscribed
+                                            ? true
+                                            : false,
                                       ),
                                     );
                                 SnackBar snackBar = SnackBar(
-                                  content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
+                                  content: Text(
+                                      '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
                                   behavior: SnackBarBehavior.floating,
                                 );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((timeStamp) {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 });
                               },
                         icon: Icon(
@@ -191,7 +213,8 @@ class _SearchPageState extends State<SearchPage> {
                           BlocProvider.value(value: authBloc),
                           BlocProvider.value(value: thunderBloc),
                         ],
-                        child: CommunityPage(communityId: communityView.community.id),
+                        child: CommunityPage(
+                            communityId: communityView.community.id),
                       ),
                     ),
                   );
@@ -204,7 +227,11 @@ class _SearchPageState extends State<SearchPage> {
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text))},
+          action: () => {
+            context
+                .read<SearchBloc>()
+                .add(StartSearchEvent(query: _controller.value.text))
+          },
           actionText: 'Retry',
         );
     }
