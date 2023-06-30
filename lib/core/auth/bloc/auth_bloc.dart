@@ -9,6 +9,7 @@ import 'package:uuid/uuid.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/account/pages/login_page.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
@@ -98,6 +99,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         LoginResponse loginResponse = await lemmy.run(Login(
           usernameOrEmail: event.username,
           password: event.password,
+          totp2faToken: event.totp,
         ));
 
         if (loginResponse.jwt?.raw == null) {
@@ -146,6 +148,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: errorMessage.toString()));
+      } on LemmyApiException catch (e, s) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e, s) {
         await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
