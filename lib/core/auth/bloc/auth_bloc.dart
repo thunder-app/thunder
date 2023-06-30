@@ -124,35 +124,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         prefs.setString('active_profile_id', accountId);
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
-      } on DioException catch (e, s) {
-        // Change the instance back to the previous one
+      } on LemmyApiException catch (e, s) {
+        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
+      } catch (e, s) {
         try {
+          // Restore the original baseUrl
           lemmyClient.changeBaseUrl(originalBaseUrl);
         } catch (e, s) {
           await Sentry.captureException(e, stackTrace: s);
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
         }
-
-        String? errorMessage;
-
-        if (e.response?.data != null && e.response?.data is Map<String, dynamic>) {
-          Map<String, dynamic> data = e.response?.data as Map<String, dynamic>;
-
-          errorMessage = data.containsKey('error') ? data['error'] : e.message;
-          errorMessage = errorMessage?.replaceAll('_', ' ');
-        } else if (e.response?.statusCode != null) {
-          errorMessage = e.message;
-        } else {
-          errorMessage = e.error.toString();
-        }
-
+        
         await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: errorMessage.toString()));
-      } on LemmyApiException catch (e, s) {
-        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
-      } catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
-        return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });
   }

@@ -30,6 +30,31 @@ Future<PostView> markPostAsRead(int postId, bool read) async {
   return updatedPostView;
 }
 
+// Optimistically updates a post
+PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
+  int newScore = postViewMedia.postView.counts.score;
+  VoteType? existingVoteType = postViewMedia.postView.myVote;
+
+  switch (voteType) {
+    case VoteType.down:
+      newScore--;
+      break;
+    case VoteType.up:
+      newScore++;
+      break;
+    case VoteType.none:
+      // Determine score from existing
+      if (existingVoteType == VoteType.down) {
+        newScore++;
+      } else if (existingVoteType == VoteType.up) {
+        newScore--;
+      }
+      break;
+  }
+
+  return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
+}
+
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();

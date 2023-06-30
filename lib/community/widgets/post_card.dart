@@ -22,7 +22,16 @@ class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool showInstanceName;
 
-  const PostCard({super.key, required this.postViewMedia, this.showInstanceName = true});
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
+  const PostCard({
+    super.key,
+    required this.postViewMedia,
+    this.showInstanceName = true,
+    required this.onVoteAction,
+    required this.onSaveAction,
+  });
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -58,15 +67,12 @@ class _PostCardState extends State<PostCard> {
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) {
-        // Check to see what the swipe action is
         if (swipeAction == SwipeAction.upvote) {
-          // @todo: optimistic update
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.up ? VoteType.none : VoteType.up));
+          widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
         }
 
         if (swipeAction == SwipeAction.downvote) {
-          // @todo: optimistic update
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.down ? VoteType.none : VoteType.down));
+          widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
         }
 
         if (swipeAction == SwipeAction.reply) {
@@ -82,7 +88,7 @@ class _PostCardState extends State<PostCard> {
         }
 
         if (swipeAction == SwipeAction.save) {
-          context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postViewMedia.postView.post.id, save: !saved));
+          widget.onSaveAction(!saved);
         }
       },
       onPointerCancel: (event) => {},
@@ -143,7 +149,7 @@ class _PostCardState extends State<PostCard> {
             Divider(
               height: 1.0,
               thickness: 4.0,
-              color: useDarkTheme ? theme.colorScheme.background.lighten(5) : theme.colorScheme.background.darken(5),
+              color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
             ),
             InkWell(
               child: useCompactView
@@ -162,6 +168,8 @@ class _PostCardState extends State<PostCard> {
                       showVoteActions: showVoteActions,
                       showSaveAction: showSaveAction,
                       isUserLoggedIn: isUserLoggedIn,
+                      onVoteAction: widget.onVoteAction,
+                      onSaveAction: widget.onSaveAction,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(context, widget.postViewMedia),
               onTap: () async {
@@ -184,7 +192,10 @@ class _PostCardState extends State<PostCard> {
                           BlocProvider.value(value: communityBloc),
                           BlocProvider(create: (context) => post_bloc.PostBloc()),
                         ],
-                        child: PostPage(postView: widget.postViewMedia),
+                        child: PostPage(
+                          postView: widget.postViewMedia,
+                          onPostUpdated: () {},
+                        ),
                       );
                     },
                   ),

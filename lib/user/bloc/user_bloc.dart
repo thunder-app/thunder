@@ -30,6 +30,22 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _getUserEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VotePostEvent>(
+      _votePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SavePostEvent>(
+      _savePostEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<VoteCommentEvent>(
+      _voteCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<SaveCommentEvent>(
+      _saveCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -129,9 +145,106 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           await Sentry.captureException(e, stackTrace: s);
         }
       }
-    } on DioException catch (e, s) {
+    } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.message));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      // Optimistically update the post
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
+
+      PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
+      state.posts[existingPostViewIndex].postView = updatedPostView;
+
+      // Immediately set the status, and continue
+      emit(state.copyWith(status: UserStatus.success));
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      PostView postView = await votePost(event.postId, event.score);
+
+      // Find the specific post to update
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      PostView postView = await savePost(event.postId, event.save);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      // Optimistically update the comment
+      CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
+      currentTree.comment = updatedCommentView;
+
+      // Immediately set the status, and continue
+      emit(state.copyWith(status: UserStatus.success));
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting to vote on comment');
+      });
+
+      currentTree.comment = commentView;
+
+      return emit(state.copyWith(status: UserStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing));
+
+      CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception('Error: Timeout when attempting save a comment');
+      });
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      currentTree.comment = commentView; // Update the comment's information
+
+      return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));

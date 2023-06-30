@@ -5,6 +5,31 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
+// Optimistically updates a comment
+CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType voteType) {
+  int newScore = commentViewTree.comment!.counts.score;
+  VoteType? existingVoteType = commentViewTree.comment!.myVote;
+
+  switch (voteType) {
+    case VoteType.down:
+      newScore--;
+      break;
+    case VoteType.up:
+      newScore++;
+      break;
+    case VoteType.none:
+      // Determine score from existing
+      if (existingVoteType == VoteType.down) {
+        newScore++;
+      } else if (existingVoteType == VoteType.up) {
+        newScore--;
+      }
+      break;
+  }
+
+  return commentViewTree.comment!.copyWith(myVote: voteType, counts: commentViewTree.comment!.counts.copyWith(score: newScore));
+}
+
 /// Logic to vote on a comment
 Future<CommentView> voteComment(int commentId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();

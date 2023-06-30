@@ -13,3 +13,31 @@ class GetUserEvent extends UserEvent {
 
   const GetUserEvent({this.userId, this.reset = false});
 }
+
+class VotePostEvent extends UserEvent {
+  final int postId;
+  final VoteType score;
+
+  const VotePostEvent({required this.postId, required this.score});
+}
+
+class SavePostEvent extends UserEvent {
+  final int postId;
+  final bool save;
+
+  const SavePostEvent({required this.postId, required this.save});
+}
+
+class VoteCommentEvent extends UserEvent {
+  final int commentId;
+  final VoteType score;
+
+  const VoteCommentEvent({required this.commentId, required this.score});
+}
+
+class SaveCommentEvent extends UserEvent {
+  final int commentId;
+  final bool save;
+
+  const SaveCommentEvent({required this.commentId, required this.save});
+}

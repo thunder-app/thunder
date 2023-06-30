@@ -1,21 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardActions extends StatelessWidget {
+  // Callback functions
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
   final int postId;
-  final VoteType voteType;
   final bool saved;
+  final VoteType voteType;
 
   const PostCardActions({
     super.key,
     required this.postId,
     required this.voteType,
     required this.saved,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -45,7 +52,7 @@ class PostCardActions extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.up ? VoteType.none : VoteType.up));
+                    onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
                   }),
             if (showVoteActions)
               IconButton(
@@ -57,7 +64,7 @@ class PostCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType == VoteType.down ? VoteType.none : VoteType.down));
+                  onVoteAction(voteType == VoteType.down ? VoteType.none : VoteType.down);
                 },
               ),
             if (showSaveAction)
@@ -70,7 +77,7 @@ class PostCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: saved ? false : true));
+                  onSaveAction(saved ? false : true);
                 },
               ),
           ],

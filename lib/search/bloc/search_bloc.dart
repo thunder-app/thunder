@@ -60,14 +60,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
-      } else {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
-      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -109,14 +101,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           await Sentry.captureException(e, stackTrace: s);
         }
       }
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to search'));
-      } else {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
-      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
@@ -144,14 +128,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       state.results!.communities[communityToUpdateIndex] = communityResponse;
 
       return emit(state.copyWith(status: SearchStatus.success, results: state.results));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: 'Error: Network timeout when attempting to vote'));
-      } else {
-        return emit(state.copyWith(status: SearchStatus.networkFailure, errorMessage: e.toString()));
-      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 
