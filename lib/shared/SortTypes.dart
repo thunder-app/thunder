@@ -29,11 +29,11 @@ class PostSortTypes {
       icon: Icons.auto_awesome_rounded,
       label: 'New',
     ),
-    // SortTypeItem(
-    //   sortType: SortType.,
-    //   icon: Icons.history_toggle_off_rounded,
-    //   label: 'Old',
-    // ),
+    SortTypeItem(
+      sortType: SortType.old,
+      icon: Icons.history_toggle_off_rounded,
+      label: 'Old',
+    ),
     SortTypeItem(
       sortType: SortType.mostComments,
       icon: Icons.comment_bank_rounded,
@@ -57,19 +57,19 @@ class CommentSortTypes {
       label: 'Hot',
     ),
     SortTypeItem(
-      sortType: SortType.topAll,
+      sortType: SortType.top,
       icon: Icons.vertical_align_top,
-      label: 'top',
+      label: 'Top',
     ),
     SortTypeItem(
       sortType: SortType.new_,
       icon: Icons.auto_awesome_rounded,
       label: 'New',
     ),
-    // SortTypeItem(
-    //   sortType: SortType.Old,
-    //   icon: Icons.history_toggle_off_rounded,
-    //   label: 'Old',
-    // ),
+    SortTypeItem(
+      sortType: SortType.old,
+      icon: Icons.history_toggle_off_rounded,
+      label: 'Old',
+    ),
   ];
 }

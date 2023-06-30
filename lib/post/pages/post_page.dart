@@ -217,7 +217,12 @@ class _PostPageState extends State<PostPage> {
                       });
 
                       context.read<PostBloc>().add(
-                        GetPostCommentsEvent(postId: state.postId)
+                        //shouldn't this be GetPostCommentsEvent?
+                        GetPostEvent(
+                            postView: widget.postView,
+                            postId: widget.postId,
+                            sortType: sortType
+                        )
                       );
                       Navigator.of(context).pop();
                     },

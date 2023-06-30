@@ -61,6 +61,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
       emit(state.copyWith(status: PostStatus.loading));
+      SortType? sortType = event.sortType ?? state.sortType;
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -88,7 +89,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         auth: account?.jwt,
         communityId: postView?.postView.post.communityId,
         postId: postView?.postView.post.id,
-        sort: SortType.hot,
+        sort: sortType,
         limit: 50,
       ))
           .timeout(timeout, onTimeout: () {
@@ -107,6 +108,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           commentPage: state.commentPage + 1,
           commentCount: getCommentsResponse.length,
           communityId: postView?.postView.post.communityId,
+          sortType: sortType,
         ),
       );
     } on DioException catch (e, s) {
