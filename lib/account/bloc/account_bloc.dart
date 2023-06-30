@@ -46,6 +46,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       _saveCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<GetAccountSavedPosts>(
+      _getAccountSavedPosts,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<GetAccountInformation>((event, emit) async {
       int attemptCount = 0;
 
@@ -199,6 +203,108 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             page: state.page + 1,
             hasReachedPostEnd: posts.isEmpty || posts.length < limit,
             hasReachedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+          ));
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getAccountSavedPosts(GetAccountSavedPosts event, emit) async {
+    int attemptCount = 0;
+    int limit = 30;
+
+    try {
+      var exception;
+
+      Account? account = await fetchActiveProfileAccount();
+
+      while (attemptCount < 2) {
+        try {
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+          if (event.reset) {
+            emit(state.copyWith(status: AccountStatus.loading));
+
+            FullPersonView? fullPersonView;
+
+            if (account?.username != null) {
+              fullPersonView = await lemmy
+                  .run(
+                GetPersonDetails(
+                  username: account!.username,
+                  auth: account.jwt,
+                  sort: SortType.hot,
+                  limit: limit,
+                  page: 1,
+                  savedOnly: true,
+                ),
+              )
+                  .timeout(timeout, onTimeout: () {
+                throw Exception('Error: Timeout when attempting to fetch saved posts/comments');
+              });
+            }
+
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+
+            // Build the tree view from the flattened comments
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
+
+            return emit(
+              state.copyWith(
+                status: AccountStatus.success,
+                savedContentPage: 2,
+                savedPosts: posts,
+                savedComments: commentTree,
+              ),
+            );
+          }
+
+          if (state.savedCommentsHasReachedEnd && state.savedPostsHasReachedEnd) {
+            return emit(state.copyWith(status: AccountStatus.success));
+          }
+
+          emit(state.copyWith(status: AccountStatus.refreshing));
+
+          FullPersonView? fullPersonView = await lemmy
+              .run(GetPersonDetails(
+            username: account!.username,
+            auth: account.jwt,
+            sort: SortType.hot,
+            limit: limit,
+            page: state.page,
+            savedOnly: true,
+          ))
+              .timeout(timeout, onTimeout: () {
+            throw Exception('Error: Timeout when attempting to fetch saved posts/comments');
+          });
+
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+
+          // Append the new posts
+          List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
+          postViewMedias.addAll(posts);
+
+          // Build the tree view from the flattened comments
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? []);
+
+          // Append the new comments
+          List<CommentViewTree> commentViewTree = List.from(state.savedComments);
+          commentViewTree.addAll(commentTree);
+
+          return emit(state.copyWith(
+            status: AccountStatus.success,
+            savedComments: commentViewTree,
+            savedPosts: postViewMedias,
+            savedContentPage: state.savedContentPage + 1,
+            savedPostsHasReachedEnd: posts.isEmpty || posts.length < limit,
+            savedCommentsHasReachedEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
         } catch (e, s) {
           exception = e;

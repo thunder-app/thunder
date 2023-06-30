@@ -14,6 +14,11 @@ class AccountState extends Equatable {
     this.page = 1,
     this.hasReachedPostEnd = false,
     this.hasReachedCommentEnd = false,
+    this.savedPosts = const [],
+    this.savedComments = const [],
+    this.savedContentPage = 1,
+    this.savedPostsHasReachedEnd = false,
+    this.savedCommentsHasReachedEnd = false,
   });
 
   final AccountStatus status;
@@ -22,10 +27,21 @@ class AccountState extends Equatable {
   /// The user's subscriptions if logged in
   final List<CommunityView> subsciptions;
 
+  /// The user's comments, moderated communities, posts, and general information
   final List<CommentViewTree> comments;
   final List<CommunityModeratorView> moderates;
   final List<PostViewMedia> posts;
   final PersonViewSafe? personView;
+
+  /// The user's saved posts
+  final List<PostViewMedia> savedPosts;
+  final bool savedPostsHasReachedEnd;
+
+  /// The user's saved comments
+  final List<CommentViewTree> savedComments;
+  final bool savedCommentsHasReachedEnd;
+
+  final int savedContentPage;
 
   final bool hasReachedPostEnd;
   final bool hasReachedCommentEnd;
@@ -43,6 +59,11 @@ class AccountState extends Equatable {
     int? page,
     bool? hasReachedPostEnd,
     bool? hasReachedCommentEnd,
+    List<PostViewMedia>? savedPosts,
+    List<CommentViewTree>? savedComments,
+    int? savedContentPage,
+    bool? savedPostsHasReachedEnd,
+    bool? savedCommentsHasReachedEnd,
   }) {
     return AccountState(
       status: status ?? this.status,
@@ -55,9 +76,31 @@ class AccountState extends Equatable {
       page: page ?? this.page,
       hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
+      // Saved content
+      savedPosts: savedPosts ?? this.savedPosts,
+      savedComments: savedComments ?? this.savedComments,
+      savedContentPage: savedContentPage ?? this.savedContentPage,
+      savedPostsHasReachedEnd: savedPostsHasReachedEnd ?? this.savedPostsHasReachedEnd,
+      savedCommentsHasReachedEnd: savedCommentsHasReachedEnd ?? this.savedCommentsHasReachedEnd,
     );
   }
 
   @override
-  List<Object?> get props => [status, subsciptions, comments, moderates, posts, personView, errorMessage, page, hasReachedPostEnd, hasReachedCommentEnd];
+  List<Object?> get props => [
+        status,
+        subsciptions,
+        comments,
+        moderates,
+        posts,
+        personView,
+        errorMessage,
+        page,
+        hasReachedPostEnd,
+        hasReachedCommentEnd,
+        savedPosts,
+        savedComments,
+        savedContentPage,
+        savedPostsHasReachedEnd,
+        savedCommentsHasReachedEnd,
+      ];
 }

@@ -42,3 +42,9 @@ class SaveCommentEvent extends AccountEvent {
 
   const SaveCommentEvent({required this.commentId, required this.save});
 }
+
+class GetAccountSavedPosts extends AccountEvent {
+  final bool reset;
+
+  const GetAccountSavedPosts({this.reset = false});
+}

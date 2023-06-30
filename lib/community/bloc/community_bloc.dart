@@ -114,8 +114,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = updatedPostView;
 
       // Immediately set the status, and continue
-      emit(state.copyWith(status: CommunityStatus.success));
-      emit(state.copyWith(status: CommunityStatus.refreshing));
+      emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
 
       PostView postView = await votePost(event.postId, event.score);
 
