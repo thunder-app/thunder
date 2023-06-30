@@ -5,6 +5,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -15,6 +16,8 @@ import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/post.dart';
+
+import '../../utils/constants.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';
@@ -61,7 +64,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     try {
       emit(state.copyWith(status: PostStatus.loading));
-      SortType? sortType = event.sortType ?? state.sortType;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SortType defaultSortType = SortType.values.byName(prefs
+              .getString("setting_post_default_comment_sort_type")
+              ?.toLowerCase() ??
+          DEFAULT_COMMENT_SORT_TYPE.name);
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -82,6 +90,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
         postView = posts.first;
       }
+
+      SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
       List<CommentView> getCommentsResponse = await lemmy
           .run(GetComments(

@@ -64,7 +64,10 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = CommentSortTypes.items.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+              sortTypeIcon = CommentSortTypes.items
+                  .firstWhere((sortTypeItem) =>
+                      sortTypeItem.sortType == currentState.sortType)
+                  .icon;
             });
           }
           return true;
