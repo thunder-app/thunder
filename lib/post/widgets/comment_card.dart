@@ -9,17 +9,23 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
 enum SwipeAction { upvote, downvote, reply, save }
 
 class CommentCard extends StatefulWidget {
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
   const CommentCard({
     super.key,
     required this.commentViewTree,
     this.level = 0,
     this.collapsed = false,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   /// CommentViewTree containing relevant information
@@ -49,6 +55,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   GlobalKey childKey = GlobalKey();
 
   double dismissThreshold = 0;
+
+  double firstActionThreshold = 0.15; // This controls how far the first swipe action is triggered
+  double secondActionThreshold = 0.35; // This controls how far the second swipe action is triggered
   DismissDirection? dismissDirection;
   SwipeAction? swipeAction;
 
@@ -88,6 +97,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
+    bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+
     return Container(
       decoration: BoxDecoration(
         border: widget.level > 0
@@ -109,36 +120,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
             onPointerUp: (event) {
-              // Check to see what the swipe action is
               if (swipeAction == SwipeAction.upvote) {
-                // @todo: optimistic update
-                VoteType vote = myVote == VoteType.up ? VoteType.none : VoteType.up;
-                // int _score = score;
-
-                // if (myVote == 0 && vote == 1) {
-                //   _score = score + 1;
-                // } else if (myVote == 1 && vote == 0) {
-                //   _score = score - 1;
-                // }
-
-                // setState(() => {myVote = vote, score = _score});
-                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, score: vote));
+                widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
               }
 
               if (swipeAction == SwipeAction.downvote) {
-                // @todo: optimistic update
-                VoteType vote = myVote == VoteType.down ? VoteType.none : VoteType.down;
-
-                // int _score = score;
-
-                // if (myVote == 0 && vote == -1) {
-                //   _score = score - 1;
-                // } else if (myVote == -1 && vote == 0) {
-                //   _score = score + 1;
-                // }
-
-                // setState(() => {myVote = vote, score = _score});
-                context.read<PostBloc>().add(VoteCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, score: vote));
+                widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
               }
 
               if (swipeAction == SwipeAction.reply) {
@@ -164,7 +151,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               }
 
               if (swipeAction == SwipeAction.save) {
-                context.read<PostBloc>().add(SaveCommentEvent(commentId: widget.commentViewTree.comment!.comment.id, save: !(saved ?? false)));
+                widget.onSaveAction(!(saved ?? false));
               }
             },
             onPointerCancel: (event) => {},
@@ -177,45 +164,47 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 return false;
               },
               onUpdate: (DismissUpdateDetails details) {
-                if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.startToEnd) {
-                  swipeAction = SwipeAction.upvote;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > 0.3 && details.direction == DismissDirection.startToEnd) {
-                  swipeAction = SwipeAction.downvote;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.endToStart) {
-                  swipeAction = SwipeAction.reply;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
-                } else if (details.progress > 0.3 && details.direction == DismissDirection.endToStart) {
-                  swipeAction = SwipeAction.save;
-                  if (swipeAction != swipeAction) HapticFeedback.mediumImpact();
+                SwipeAction? updatedSwipeAction;
+
+                if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  updatedSwipeAction = SwipeAction.upvote;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  updatedSwipeAction = SwipeAction.downvote;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  updatedSwipeAction = SwipeAction.reply;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  updatedSwipeAction = SwipeAction.save;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
-                  swipeAction = null;
+                  updatedSwipeAction = null;
                 }
 
                 setState(() {
                   dismissThreshold = details.progress;
                   dismissDirection = details.direction;
-                  swipeAction = swipeAction;
+                  swipeAction = updatedSwipeAction;
                 });
               },
               background: dismissDirection == DismissDirection.startToEnd
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
-                      color: dismissThreshold < 0.3 ? Colors.orange.shade700 : Colors.blue.shade700,
+                      color: dismissThreshold < secondActionThreshold ? Colors.orange.shade700 : Colors.blue.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < 0.3 ? Icons.north : Icons.south),
+                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.north : Icons.south),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: dismissThreshold < 0.3 ? Colors.green.shade700 : Colors.purple.shade700,
+                      color: dismissThreshold < secondActionThreshold ? Colors.green.shade700 : Colors.purple.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < 0.3 ? Icons.reply : Icons.star_rounded),
+                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.reply : Icons.star_rounded),
                       ),
                     ),
               child: Column(
@@ -282,9 +271,25 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             ],
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                          child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 130),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(
+                                position: _offsetAnimation,
+                                child: child,
+                              ),
+                            );
+                          },
+                          child: (isHidden && collapseParentCommentOnGesture)
+                              ? Container()
+                              : Padding(
+                                  padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
+                                  child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                                ),
                         ),
                       ],
                     ),
@@ -315,6 +320,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       commentViewTree: widget.commentViewTree.replies[index],
                       level: widget.level + 1,
                       collapsed: widget.level > 2,
+                      onVoteAction: widget.onVoteAction,
+                      onSaveAction: widget.onSaveAction,
                     ),
                     itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                   ),

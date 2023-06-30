@@ -9,14 +9,20 @@ import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
+  final int? personId;
   final String? communityName;
   final bool? hasReachedEnd;
   final PostListingType? listingType;
   final FullCommunityView? communityInfo;
+
+  final VoidCallback onScrollEndReached;
+  final Function(int, VoteType) onVoteAction;
+  final Function(int, bool) onSaveAction;
 
   const PostCardList({
     super.key,
@@ -26,6 +32,10 @@ class PostCardList extends StatefulWidget {
     this.listingType,
     this.communityInfo,
     this.communityName,
+    this.personId,
+    required this.onScrollEndReached,
+    required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   @override
@@ -48,8 +58,8 @@ class _PostCardListState extends State<PostCardList> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
-      context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      widget.onScrollEndReached();
     }
   }
 
@@ -59,18 +69,19 @@ class _PostCardListState extends State<PostCardList> {
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
-      listener: (context, state) {
-        // Force a rebuild when the thunderbloc status changes
-        // setState(() {});
-      },
+      listener: (context, state) {},
       child: RefreshIndicator(
         onRefresh: () async {
           HapticFeedback.mediumImpact();
-          context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                reset: true,
-                listingType: widget.communityId != null ? null : widget.listingType,
-                communityId: widget.listingType != null ? null : widget.communityId,
-              ));
+          if (widget.personId != null) {
+            context.read<UserBloc>().add(const GetUserEvent(reset: true));
+          } else {
+            context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                  reset: true,
+                  listingType: widget.communityId != null ? null : widget.listingType,
+                  communityId: widget.listingType != null ? null : widget.communityId,
+                ));
+          }
         },
         child: ListView.builder(
           cacheExtent: 500,
@@ -107,9 +118,12 @@ class _PostCardListState extends State<PostCardList> {
                 );
               }
             } else {
+              PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
               return PostCard(
-                postViewMedia: widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index],
+                postViewMedia: postViewMedia,
                 showInstanceName: widget.communityId == null,
+                onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
               );
             }
           },

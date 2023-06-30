@@ -71,9 +71,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         replies: commentViews,
         showUnreadOnly: !event.showAll,
       ));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
@@ -103,9 +100,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
@@ -135,9 +129,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.message));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
@@ -163,19 +154,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       return emit(state.copyWith(status: InboxStatus.success));
-    } on DioException catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
-      if (e.type == DioExceptionType.receiveTimeout) {
-        return emit(
-          state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: 'Error: Network timeout when attempting to create a comment',
-          ),
-        );
-      } else {
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
-      }
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));

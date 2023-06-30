@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
@@ -14,7 +14,9 @@ class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
 
-  const PostPage({super.key, this.postView, this.postId});
+  final VoidCallback onPostUpdated;
+
+  const PostPage({super.key, this.postView, this.postId, required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -22,12 +24,12 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
-  bool hasScrolledToBottom = false;
+  bool hasScrolledToBottom = true;
 
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
     super.initState();
+    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -89,10 +91,7 @@ class _PostPageState extends State<PostPage> {
           listener: (context, state) {
             if (state.status == PostStatus.success && widget.postView != null) {
               // Update the community's post
-              int? postIdIndex = context.read<CommunityBloc>().state.postViews?.indexWhere((communityPostView) => communityPostView.postView.post.id == widget.postView?.postView.post.id);
-              if (postIdIndex != null && state.postView != null) {
-                context.read<CommunityBloc>().state.postViews![postIdIndex] = state.postView!;
-              }
+              context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
             }
           },
           builder: (context, state) {
@@ -124,18 +123,27 @@ class _PostPageState extends State<PostPage> {
                 return const Center(child: CircularProgressIndicator());
               case PostStatus.refreshing:
               case PostStatus.success:
-                if (state.postView != null) return PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController);
+              case PostStatus.failure:
+                if (state.postView != null) {
+                  return RefreshIndicator(
+                    onRefresh: () async {
+                      return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                    },
+                    child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController),
+                  );
+                }
                 return const Center(child: Text('Empty'));
               case PostStatus.empty:
                 return const Center(child: Text('Empty'));
-              case PostStatus.failure:
-                return ErrorMessage(
-                  message: state.errorMessage,
-                  action: () {
-                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                  },
-                  actionText: 'Refresh Content',
-                );
+              // case PostStatus.failure:
+
+              // return ErrorMessage(
+              //   message: state.errorMessage,
+              //   action: () {
+              //     context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+              //   },
+              //   actionText: 'Refresh Content',
+              // );
             }
           },
         ),

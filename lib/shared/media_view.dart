@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -53,7 +54,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   Widget build(BuildContext context) {
-    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    final theme = Theme.of(context);
 
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
@@ -61,12 +62,13 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Container(
-            color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-            child: const SizedBox(
+            color: theme.cardColor.darken(3),
+            child: SizedBox(
               height: 75.0,
               width: 75.0,
               child: Icon(
                 Icons.article_rounded,
+                color: theme.colorScheme.onSecondaryContainer,
                 semanticLabel: 'Article Link',
               ),
             ),
@@ -160,7 +162,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               _controller.reset();
 
               return Container(
-                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                color: theme.cardColor.darken(3),
                 child: SizedBox(
                   height: height,
                   width: width,
@@ -183,7 +185,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               state.imageProvider.evict();
 
               return Container(
-                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                color: theme.cardColor.darken(3),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
                   child: InkWell(
@@ -195,7 +197,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                         fit: StackFit.passthrough,
                         children: [
                           Container(
-                            color: Colors.grey.shade900,
+                            color: theme.colorScheme.secondary.withOpacity(0.4),
                             padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                             child: Row(
                               children: [
@@ -203,16 +205,13 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Icon(
                                     Icons.link,
-                                    color: Colors.white60,
                                   ),
                                 ),
                                 Expanded(
                                   child: Text(
                                     widget.post?.url ?? '',
                                     overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: Colors.white60,
-                                    ),
+                                    style: theme.textTheme.bodyMedium,
                                   ),
                                 ),
                               ],

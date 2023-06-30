@@ -49,5 +49,9 @@
 		<false/>
 		<key>UIStatusBarHidden</key>
 		<false/>
+
+		<!-- Permission options for the `photos` group -->
+		<key>NSPhotoLibraryUsageDescription</key>
+		<string>We need Photos access to allow you to save media.</string>
 	</dict>
 </plist>

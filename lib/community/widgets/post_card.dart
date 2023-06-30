@@ -1,14 +1,18 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:provider/provider.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/theme.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
@@ -18,7 +22,16 @@ class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool showInstanceName;
 
-  const PostCard({super.key, required this.postViewMedia, this.showInstanceName = true});
+  final Function(VoteType) onVoteAction;
+  final Function(bool) onSaveAction;
+
+  const PostCard({
+    super.key,
+    required this.postViewMedia,
+    this.showInstanceName = true,
+    required this.onVoteAction,
+    required this.onSaveAction,
+  });
 
   @override
   State<PostCard> createState() => _PostCardState();
@@ -41,6 +54,7 @@ class _PostCardState extends State<PostCard> {
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
     final bool disableSwipeActionsOnPost = context.read<ThunderBloc>().state.preferences?.getBool('setting_post_disable_swipe_actions') ?? false;
+    final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
     final bool showThumbnailPreviewOnRight = context.read<ThunderBloc>().state.preferences?.getBool('setting_compact_show_thumbnail_on_right') ?? false;
@@ -53,15 +67,12 @@ class _PostCardState extends State<PostCard> {
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) {
-        // Check to see what the swipe action is
         if (swipeAction == SwipeAction.upvote) {
-          // @todo: optimistic update
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.up ? VoteType.none : VoteType.up));
+          widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
         }
 
         if (swipeAction == SwipeAction.downvote) {
-          // @todo: optimistic update
-          context.read<CommunityBloc>().add(VotePostEvent(postId: widget.postViewMedia.postView.post.id, score: myVote == VoteType.down ? VoteType.none : VoteType.down));
+          widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
         }
 
         if (swipeAction == SwipeAction.reply) {
@@ -77,7 +88,7 @@ class _PostCardState extends State<PostCard> {
         }
 
         if (swipeAction == SwipeAction.save) {
-          context.read<CommunityBloc>().add(SavePostEvent(postId: widget.postViewMedia.postView.post.id, save: !saved));
+          widget.onSaveAction(!saved);
         }
       },
       onPointerCancel: (event) => {},
@@ -137,8 +148,8 @@ class _PostCardState extends State<PostCard> {
           children: [
             Divider(
               height: 1.0,
-              thickness: 2.0,
-              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.20),
+              thickness: 4.0,
+              color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
             ),
             InkWell(
               child: useCompactView
@@ -157,28 +168,36 @@ class _PostCardState extends State<PostCard> {
                       showVoteActions: showVoteActions,
                       showSaveAction: showSaveAction,
                       isUserLoggedIn: isUserLoggedIn,
+                      onVoteAction: widget.onVoteAction,
+                      onSaveAction: widget.onSaveAction,
                     ),
+              onLongPress: () => showPostActionBottomModalSheet(context, widget.postViewMedia),
               onTap: () async {
                 AccountBloc accountBloc = context.read<AccountBloc>();
                 AuthBloc authBloc = context.read<AuthBloc>();
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+                CommunityBloc communityBloc = context.read<CommunityBloc>();
 
                 // Mark post as read when tapped
                 if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
 
                 await Navigator.of(context).push(
                   MaterialPageRoute(
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: accountBloc),
-                        BlocProvider.value(value: authBloc),
-                        BlocProvider.value(value: thunderBloc),
-                        BlocProvider.value(value: communityBloc),
-                        BlocProvider(create: (context) => post_bloc.PostBloc()),
-                      ],
-                      child: PostPage(postView: widget.postViewMedia),
-                    ),
+                    builder: (context) {
+                      return MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                          BlocProvider.value(value: communityBloc),
+                          BlocProvider(create: (context) => post_bloc.PostBloc()),
+                        ],
+                        child: PostPage(
+                          postView: widget.postViewMedia,
+                          onPostUpdated: () {},
+                        ),
+                      );
+                    },
                   ),
                 );
                 if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());

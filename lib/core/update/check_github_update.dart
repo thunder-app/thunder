@@ -20,7 +20,8 @@ Future<Version> fetchVersion() async {
   try {
     String? currentVersion = await getCurrentVersion();
 
-    final response = await http.get(Uri.parse(url));
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 3));
+
     if (response.statusCode == 200) {
       final release = json.decode(response.body);
       String latestVersion = release['tag_name'];

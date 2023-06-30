@@ -7,7 +7,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
@@ -24,6 +26,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
   // Post Settings
+  bool collapseParentCommentOnGesture = true;
   bool disableSwipeActionsOnPost = false;
   bool showThumbnailPreviewOnRight = false;
   bool showLinkPreviews = true;
@@ -67,6 +70,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
 
       // Post Settings
+      case 'setting_comments_collapse_parent_comment_on_gesture':
+        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
+        setState(() => collapseParentCommentOnGesture = value);
+        break;
       case 'setting_post_disable_swipe_actions':
         await prefs.setBool('setting_post_disable_swipe_actions', value);
         setState(() => disableSwipeActionsOnPost = value);
@@ -140,10 +147,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+
+      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
 
       // Post Settings
+      collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
       disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
@@ -204,21 +213,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ListOption(
                           description: 'Default Feed Type',
-                          value: defaultPostListingType,
-                          options: const [PostListingType.subscribed, PostListingType.all, PostListingType.local],
+                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
+                          options: [
+                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
+                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
+                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
+                          ],
                           icon: Icons.feed,
-                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.name),
-                          labelTransformer: (value) => value.name.capitalize,
+                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.payload.name),
                         ),
                         ListOption(
                           description: 'Default Sort Type',
-                          value: defaultSortType,
-                          options: const [SortType.hot, SortType.active, SortType.new_, SortType.mostComments, SortType.newComments],
+                          value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                          options: allSortTypeItems,
                           icon: Icons.sort,
-                          onChanged: (value) => setPreferences('setting_general_default_sort_type', value.name),
-                          labelTransformer: (value) => value.name.capitalize.replaceAll('_', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                            return ' ${match.group(0)}';
-                          }),
+                          onChanged: (_) {},
+                          customListPicker: SortPicker(title: 'Default Sort Type', onSelect: (value) {
+                            setPreferences('setting_general_default_sort_type', value.payload.name);
+                          },
+                          ),
                         ),
                       ],
                     ),
@@ -235,6 +248,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             'Posts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ToggleOption(
+                          description: 'Hide parent comment on collapse',
+                          value: collapseParentCommentOnGesture,
+                          iconEnabled: Icons.mode_comment_rounded,
+                          iconDisabled: Icons.mode_comment_rounded,
+                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
                         ),
                         ToggleOption(
                           description: 'Show thumbnail on right',

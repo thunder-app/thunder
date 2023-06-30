@@ -5,7 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
@@ -45,7 +47,7 @@ class PostSubview extends StatelessWidget {
             children: [
               GestureDetector(
                 onTap: () {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
+                  account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                   AuthBloc authBloc = context.read<AuthBloc>();
                   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -75,14 +77,35 @@ class PostSubview extends StatelessWidget {
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                 ),
               ),
-              Text(
-                postView.creator.name,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+              GestureDetector(
+                onTap: () {
+                  account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserPage(userId: postView.creator.id),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  postView.creator.name,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
                 ),
               ),
             ],
           ),
+          const SizedBox(height: 8.0),
           MediaView(
             post: post,
             postView: postViewMedia,
@@ -95,6 +118,16 @@ class PostSubview extends StatelessWidget {
                 body: post.body ?? '',
               ),
             ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: PostCardMetaData(
+              score: postView.counts.score,
+              voteType: postView.myVote ?? VoteType.none,
+              comments: postView.counts.comments,
+              published: post.published,
+              saved: postView.saved,
+            ),
+          ),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -116,6 +149,7 @@ class PostSubview extends StatelessWidget {
                 onPressed: isUserLoggedIn
                     ? () {
                         HapticFeedback.mediumImpact();
+
                         context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
                       }
                     : null,

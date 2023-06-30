@@ -1,56 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
-
-class SortTypeItem {
-  const SortTypeItem({required this.sortType, required this.icon, required this.label});
-
-  final SortType sortType;
-  final IconData icon;
-  final String label;
-}
-
-const sortTypeItems = [
-  SortTypeItem(
-    sortType: SortType.hot,
-    icon: Icons.local_fire_department_rounded,
-    label: 'Hot',
-  ),
-  SortTypeItem(
-    sortType: SortType.active,
-    icon: Icons.rocket_launch_rounded,
-    label: 'Active',
-  ),
-  SortTypeItem(
-    sortType: SortType.new_,
-    icon: Icons.auto_awesome_rounded,
-    label: 'New',
-  ),
-  // SortTypeItem(
-  //   sortType: SortType.,
-  //   icon: Icons.history_toggle_off_rounded,
-  //   label: 'Old',
-  // ),
-  SortTypeItem(
-    sortType: SortType.mostComments,
-    icon: Icons.comment_bank_rounded,
-    label: 'Most Comments',
-  ),
-  SortTypeItem(
-    sortType: SortType.newComments,
-    icon: Icons.add_comment_rounded,
-    label: 'New Comments',
-  ),
-];
+import 'package:thunder/shared/sort_picker.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -80,13 +41,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
-            context.read<AccountBloc>().add(GetAccountInformation());
+            context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
           }
 
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = sortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.sortType == currentState.sortType).icon;
+              sortTypeIcon = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType).icon;
             });
           }
           return true;
@@ -117,19 +78,22 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
                           semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
-                        onPressed: () => {
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
                           context.read<CommunityBloc>().add(
                                 ChangeCommunitySubsciptionStatusEvent(
                                   communityId: state.communityId!,
                                   follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
                                 ),
-                              )
+                              );
                         },
                       ),
                     IconButton(
-                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                      onPressed: () => showSortBottomSheet(context, state),
-                    ),
+                        icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          showSortBottomSheet(context, state);
+                        }),
                     const SizedBox(width: 8.0),
                   ],
                 )
@@ -183,7 +147,11 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           communityName: widget.communityName ?? state.communityName,
           hasReachedEnd: state.hasReachedEnd,
           communityInfo: state.communityInfo,
+          onScrollEndReached: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId)),
+          onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
+          onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
         );
+
       case CommunityStatus.empty:
       case CommunityStatus.failure:
         return ErrorMessage(
@@ -195,62 +163,27 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   void showSortBottomSheet(BuildContext context, CommunityState state) {
-    final theme = Theme.of(context);
-
-    showModalBottomSheet<void>(
-      showDragHandle: true,
+    showModalBottomSheet(
       context: context,
-      builder: (BuildContext bottomSheetContext) {
-        return SingleChildScrollView(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Sort Options',
-                    style: theme.textTheme.titleLarge!.copyWith(),
-                  ),
-                ),
-              ),
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: sortTypeItems.length,
-                itemBuilder: (BuildContext itemBuilderContext, int index) {
-                  return ListTile(
-                    title: Text(
-                      sortTypeItems[index].label,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    leading: Icon(sortTypeItems[index].icon),
-                    onTap: () {
-                      setState(() {
-                        sortType = sortTypeItems[index].sortType;
-                        sortTypeIcon = sortTypeItems[index].icon;
-                      });
+      showDragHandle: true,
+      builder: (builderContext) => SortPicker(
+        title: 'Sort Options',
+        onSelect: (selected) {
+          setState(() {
+            sortType = selected.payload;
+            sortTypeIcon = selected.icon;
+          });
 
-                      context.read<CommunityBloc>().add(
-                            GetCommunityPostsEvent(
-                              sortType: sortTypeItems[index].sortType,
-                              reset: true,
-                              listingType: state.communityId != null ? null : state.listingType,
-                              communityId: widget.communityId ?? state.communityId,
-                            ),
-                          );
-                      Navigator.of(context).pop();
-                    },
-                  );
-                },
-              ),
-              const SizedBox(height: 16.0),
-            ],
-          ),
-        );
-      },
+          context.read<CommunityBloc>().add(
+                GetCommunityPostsEvent(
+                  sortType: selected.payload,
+                  reset: true,
+                  listingType: state.communityId != null ? null : state.listingType,
+                  communityId: widget.communityId ?? state.communityId,
+                ),
+              );
+        },
+      ),
     );
   }
 

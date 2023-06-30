@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
@@ -37,23 +38,22 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
-      if (themeType == 'dark') {
-        return emit(state.copyWith(
+      // Check what the system theme is (light/dark)
+      Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      bool useDarkTheme = (themeType == 'dark') || (useBlackTheme == true);
+
+      // System theme overrides other settings
+      if (useSystemTheme == true) useDarkTheme = brightness == Brightness.dark;
+
+      return emit(
+        state.copyWith(
           status: ThemeStatus.success,
           useSystemTheme: useSystemTheme,
           useMaterialYouTheme: useMaterialYouTheme,
-          useDarkTheme: true,
+          useDarkTheme: useDarkTheme,
           useBlackTheme: useBlackTheme,
-        ));
-      } else {
-        return emit(state.copyWith(
-          status: ThemeStatus.success,
-          useSystemTheme: useSystemTheme,
-          useMaterialYouTheme: useMaterialYouTheme,
-          useDarkTheme: false,
-          useBlackTheme: useBlackTheme,
-        ));
-      }
+        ),
+      );
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThemeStatus.failure));

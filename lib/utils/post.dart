@@ -30,6 +30,31 @@ Future<PostView> markPostAsRead(int postId, bool read) async {
   return updatedPostView;
 }
 
+// Optimistically updates a post
+PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
+  int newScore = postViewMedia.postView.counts.score;
+  VoteType? existingVoteType = postViewMedia.postView.myVote;
+
+  switch (voteType) {
+    case VoteType.down:
+      newScore--;
+      break;
+    case VoteType.up:
+      newScore++;
+      break;
+    case VoteType.none:
+      // Determine score from existing
+      if (existingVoteType == VoteType.down) {
+        newScore++;
+      } else if (existingVoteType == VoteType.up) {
+        newScore--;
+      }
+      break;
+  }
+
+  return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
+}
+
 /// Logic to vote on a post
 Future<PostView> votePost(int postId, VoteType score) async {
   Account? account = await fetchActiveProfileAccount();
@@ -97,12 +122,12 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       media.add(Media(originalUrl: url, mediaType: MediaType.link));
     }
   } else if (url != null) {
-    // For external links, attempt to fetch any media associated with it (image, title)
-    LinkInfo linkInfo = await getLinkInfo(url);
+    if (fetchImageDimensions) {
+      // For external links, attempt to fetch any media associated with it (image, title)
+      LinkInfo linkInfo = await getLinkInfo(url);
 
-    if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
       try {
-        if (fetchImageDimensions) {
+        if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
           Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
           int mediaHeight = result.height.toInt();
