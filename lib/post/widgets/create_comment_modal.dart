@@ -19,7 +19,16 @@ class CreateCommentModal extends StatefulWidget {
   final Comment? comment; // This is passed in from inbox
   final String? parentCommentAuthor; // This is passed in from inbox
 
-  const CreateCommentModal({super.key, this.postView, this.commentView, this.comment, this.parentCommentAuthor});
+  final bool isEdit;
+
+  const CreateCommentModal({
+    super.key,
+    this.postView,
+    this.commentView,
+    this.comment,
+    this.parentCommentAuthor,
+    this.isEdit = false,
+  });
 
   @override
   State<CreateCommentModal> createState() => _CreateCommentModalState();
@@ -41,6 +50,10 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   void initState() {
     super.initState();
 
+    if (widget.isEdit) {
+      _bodyTextController.text = widget.commentView?.comment?.comment.content ?? '';
+    }
+
     _bodyTextController.addListener(() {
       setState(() => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
     });
@@ -60,11 +73,15 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Text('Create Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                Text('${widget.isEdit ? 'Edit' : 'Create'} Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
                 IconButton(
                   onPressed: isSubmitButtonDisabled
                       ? null
                       : () {
+                          if (widget.isEdit) {
+                            context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.comment!.id));
+                          }
+
                           if (widget.comment != null) {
                             context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                           } else {
@@ -80,10 +97,11 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
               ],
             ),
             const SizedBox(height: 12.0),
-            if (widget.commentView != null) Text('Replying to ${widget.commentView?.comment!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-            if (widget.comment != null) Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+            if (widget.commentView != null && widget.isEdit == false)
+              Text('Replying to ${widget.commentView?.comment!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+            if (widget.comment != null && widget.isEdit == false) Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
-            if (widget.commentView != null || widget.comment != null)
+            if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                 margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -141,7 +159,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   children: <Widget>[
                     SizedBox(
                       height: 200,
-                      child: showPreview
+                      child: (showPreview && widget.isEdit == false)
                           ? Container(
                               decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                               padding: const EdgeInsets.all(12),

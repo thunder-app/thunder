@@ -18,6 +18,7 @@ part 'community_event.dart';
 part 'community_state.dart';
 
 const throttleDuration = Duration(milliseconds: 300);
+const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -110,6 +111,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
       PostViewMedia postViewMedia = state.postViews![existingPostViewIndex];
 
+      PostView originalPostView = state.postViews![existingPostViewIndex].postView;
+
       PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
       state.postViews![existingPostViewIndex].postView = updatedPostView;
 
@@ -117,7 +120,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
       emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
 
-      PostView postView = await votePost(event.postId, event.score);
+      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        state.postViews![existingPostViewIndex].postView = originalPostView;
+        throw Exception('Error: Timeout when attempting to vote post');
+      });
 
       // Find the specific post to update
       state.postViews![existingPostViewIndex].postView = postView;
@@ -167,8 +173,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    PostListingType defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
-    SortType defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
+    PostListingType defaultListingType;
+    SortType defaultSortType;
+
+    try {
+      defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+    } catch (e) {
+      defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+    }
 
     try {
       var exception;

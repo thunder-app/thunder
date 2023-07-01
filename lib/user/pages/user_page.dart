@@ -120,14 +120,15 @@ class _UserPageState extends State<UserPage> {
                     const SizedBox(height: 12.0),
                     if (selectedUserOption == 0)
                       Expanded(
-                          child: PostCardList(
-                        postViews: state.posts,
-                        personId: widget.userId,
-                        hasReachedEnd: state.hasReachedPostEnd,
-                        onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
-                        onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                        onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                      )),
+                        child: PostCardList(
+                          postViews: state.posts,
+                          personId: widget.userId,
+                          hasReachedEnd: state.hasReachedPostEnd,
+                          onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
+                          onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
+                          onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                        ),
+                      ),
                     if (selectedUserOption == 1)
                       Expanded(
                         child: ListView.builder(
@@ -137,14 +138,15 @@ class _UserPageState extends State<UserPage> {
                       ),
                     if (selectedUserOption == 2)
                       Expanded(
-                          child: PostCardList(
-                        postViews: state.savedPosts,
-                        personId: state.userId,
-                        hasReachedEnd: state.hasReachedSavedPostEnd,
-                        onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
-                        onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                        onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                      )),
+                        child: PostCardList(
+                          postViews: state.savedPosts,
+                          personId: state.userId,
+                          hasReachedEnd: state.hasReachedSavedPostEnd,
+                          onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
+                          onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
+                          onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                        ),
+                      ),
                   ],
                 ),
               );

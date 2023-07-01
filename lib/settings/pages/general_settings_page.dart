@@ -148,8 +148,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
 
-      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
+      try {
+        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      } catch (e) {
+        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+      }
 
       // Post Settings
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -228,9 +233,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           options: allSortTypeItems,
                           icon: Icons.sort,
                           onChanged: (_) {},
-                          customListPicker: SortPicker(title: 'Default Sort Type', onSelect: (value) {
-                            setPreferences('setting_general_default_sort_type', value.payload.name);
-                          },
+                          customListPicker: SortPicker(
+                            title: 'Default Sort Type',
+                            onSelect: (value) {
+                              setPreferences('setting_general_default_sort_type', value.payload.name);
+                            },
                           ),
                         ),
                       ],

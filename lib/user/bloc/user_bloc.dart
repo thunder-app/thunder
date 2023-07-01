@@ -265,6 +265,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
       PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
 
+      PostView originalPostView = state.posts[existingPostViewIndex].postView;
       PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
       state.posts[existingPostViewIndex].postView = updatedPostView;
 
@@ -272,7 +273,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      PostView postView = await votePost(event.postId, event.score);
+      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        state.posts[existingPostViewIndex].postView = originalPostView;
+        throw Exception('Error: Timeout when attempting to vote post');
+      });
 
       // Find the specific post to update
       state.posts[existingPostViewIndex].postView = postView;
@@ -313,6 +317,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       // Optimistically update the comment
+      CommentView? originalCommentView = currentTree.comment;
+
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
       currentTree.comment = updatedCommentView;
 
@@ -321,6 +327,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        currentTree.comment = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 

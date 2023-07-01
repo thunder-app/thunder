@@ -29,8 +29,8 @@ class CommentSubview extends StatelessWidget {
       itemBuilder: (context, index) {
         return CommentCard(
           commentViewTree: comments[index],
-          onSaveAction: (bool save) => onSaveAction(comments[index].comment!.comment.id, save),
-          onVoteAction: (VoteType voteType) => onVoteAction(comments[index].comment!.comment.id, voteType),
+          onSaveAction: (int commentId, bool save) => onSaveAction(commentId, save),
+          onVoteAction: (int commentId, VoteType voteType) => onVoteAction(commentId, voteType),
         );
       },
     );

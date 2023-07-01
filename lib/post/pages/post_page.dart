@@ -25,6 +25,7 @@ class PostPage extends StatefulWidget {
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = true;
+  bool resetFailureMessage = true;
 
   @override
   void initState() {
@@ -88,6 +89,12 @@ class _PostPageState extends State<PostPage> {
           : null,
       body: SafeArea(
         child: BlocConsumer<PostBloc, PostState>(
+          listenWhen: (previous, current) {
+            if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+              setState(() => resetFailureMessage = true);
+            }
+            return true;
+          },
           listener: (context, state) {
             if (state.status == PostStatus.success && widget.postView != null) {
               // Update the community's post
@@ -95,7 +102,7 @@ class _PostPageState extends State<PostPage> {
             }
           },
           builder: (context, state) {
-            if (state.status == PostStatus.failure) {
+            if (state.status == PostStatus.failure && resetFailureMessage == true) {
               SnackBar snackBar = SnackBar(
                 content: Row(
                   children: [
@@ -112,7 +119,12 @@ class _PostPageState extends State<PostPage> {
                 backgroundColor: theme.colorScheme.onErrorContainer,
                 behavior: SnackBarBehavior.floating,
               );
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+
+              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                ScaffoldMessenger.of(context).clearSnackBars();
+                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                setState(() => resetFailureMessage = false);
+              });
             }
 
             switch (state.status) {
