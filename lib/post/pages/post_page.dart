@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -139,6 +140,7 @@ class _PostPageState extends State<PostPage> {
                 if (state.postView != null) {
                   return RefreshIndicator(
                     onRefresh: () async {
+                      HapticFeedback.mediumImpact();
                       return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
                     },
                     child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController),
