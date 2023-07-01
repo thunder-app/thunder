@@ -97,8 +97,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
 
-    print(isOwnComment);
-
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -156,6 +154,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
               if (swipeAction == SwipeAction.edit) {
                 PostBloc postBloc = context.read<PostBloc>();
+
+                print('editing');
 
                 showModalBottomSheet(
                   isScrollControlled: true,
@@ -234,7 +234,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.reply : Icons.star_rounded),
+                        child: Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
                       ),
                     ),
               child: Column(

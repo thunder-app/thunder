@@ -9,6 +9,7 @@
 - Added initial support for viewing user profiles - including their posts and comments
 - Added top sort options - contribution from @JulianPaulus
 - Upvoting and downvoting posts/comments now provides you with immediate feedback rather than waiting for the instance to respond back
+- Added initial ability to edit comments. This action replaces the reply action when swiping on your own comment
 
 ### Changed
 - Adjusted thickness of divider between posts to help differentiate

@@ -54,9 +54,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
     if (widget.isEdit) {
       String content = widget.commentView?.comment?.comment.content ?? '';
 
-      setState(() {
-        description = content;
-      });
+      setState(() => description = content);
 
       _bodyTextController.value = TextEditingValue(
         text: content,
@@ -76,12 +74,16 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return BlocBuilder<PostBloc, PostState>(
-      builder: (context, state) {
+    return BlocConsumer<PostBloc, PostState>(
+      listenWhen: (previous, current) {
+        return previous.status != current.status;
+      },
+      listener: (context, state) {
         if (state.status == PostStatus.success) {
           Navigator.of(context).pop();
         }
-
+      },
+      builder: (context, state) {
         return SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -99,7 +101,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           ? null
                           : () {
                               if (widget.isEdit) {
-                                context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment!.comment.id));
+                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment!.comment.id));
                               }
 
                               if (widget.comment != null) {
