@@ -97,8 +97,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 comments: commentTree,
                 posts: posts,
                 page: 2,
-                hasReachedPostEnd: posts.isEmpty || posts.length < limit,
-                hasReachedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+                hasReachedPostEnd: posts.isEmpty && commentTree.isEmpty,
+                hasReachedCommentEnd: posts.isEmpty && commentTree.isEmpty,
               ),
             );
           }
@@ -140,8 +140,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             comments: commentViewTree,
             posts: postViewMedias,
             page: state.page + 1,
-            hasReachedPostEnd: posts.isEmpty || posts.length < limit,
-            hasReachedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+            hasReachedPostEnd: posts.isEmpty && commentTree.isEmpty,
+            hasReachedCommentEnd: posts.isEmpty && commentTree.isEmpty,
           ));
         } catch (e, s) {
           exception = e;
@@ -205,7 +205,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             );
           }
 
-          if (state.hasReachedCommentEnd && state.hasReachedPostEnd) {
+          if (state.hasReachedSavedCommentEnd && state.hasReachedSavedPostEnd) {
             return emit(state.copyWith(status: UserStatus.success));
           }
 
@@ -217,7 +217,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             auth: account?.jwt,
             sort: SortType.hot,
             limit: limit,
-            page: state.page,
+            page: state.savedContentPage,
             savedOnly: true,
           ))
               .timeout(timeout, onTimeout: () {
@@ -227,14 +227,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
-          List<PostViewMedia> postViewMedias = List.from(state.posts);
+          List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? []);
 
           // Append the new comments
-          List<CommentViewTree> commentViewTree = List.from(state.comments);
+          List<CommentViewTree> commentViewTree = List.from(state.savedComments);
           commentViewTree.addAll(commentTree);
 
           return emit(state.copyWith(
