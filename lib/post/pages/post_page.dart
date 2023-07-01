@@ -144,18 +144,22 @@ class _PostPageState extends State<PostPage> {
                     child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController),
                   );
                 }
-                return const Center(child: Text('Empty'));
-              case PostStatus.empty:
-                return const Center(child: Text('Empty'));
-              // case PostStatus.failure:
 
-              // return ErrorMessage(
-              //   message: state.errorMessage,
-              //   action: () {
-              //     context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-              //   },
-              //   actionText: 'Refresh Content',
-              // );
+                return ErrorMessage(
+                  message: state.errorMessage,
+                  action: () {
+                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                  },
+                  actionText: 'Refresh Content',
+                );
+              case PostStatus.empty:
+                return ErrorMessage(
+                  message: state.errorMessage,
+                  action: () {
+                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                  },
+                  actionText: 'Refresh Content',
+                );
             }
           },
         ),

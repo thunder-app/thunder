@@ -43,6 +43,8 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
                   subsciptions: [],
                 ),
               );
+            } else {
+              emit(state.copyWith(status: AccountStatus.loading));
             }
 
             List<CommunityView> communityViews = await lemmy.run(

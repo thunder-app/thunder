@@ -125,6 +125,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           await Sentry.captureException(e, stackTrace: s);
         }
       }
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
