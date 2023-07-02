@@ -33,6 +33,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+  bool showTextContent = false;
   bool hideNsfwPreviews = true;
 
   // Link Settings
@@ -93,6 +94,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_general_show_full_height_images':
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
+        break;
+      case 'setting_general_show_text_content':
+        await prefs.setBool('setting_general_show_text_content', value);
+        setState(() => showTextContent = value);
         break;
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
@@ -163,6 +168,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
 
       // Links
@@ -301,6 +307,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
+                        ),
+                        ToggleOption(
+                            description: 'Show text content',
+                            subtitle: 'Applies to normal view only',
+                            value: showTextContent,
+                            iconEnabled: Icons.notes_rounded,
+                            iconDisabled: Icons.notes_rounded,
+                            onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
                         ),
                         ToggleOption(
                           description: 'Hide NSFW previews',
