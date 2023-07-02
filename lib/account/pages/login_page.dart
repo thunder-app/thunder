@@ -129,18 +129,17 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
+              const SizedBox(height: 12.0),
               TextField(
                 autocorrect: false,
                 controller: _totpTextEditingController,
                 maxLength: 6,
                 keyboardType: TextInputType.number,
-                inputFormatters: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly
-                ],
+                inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                 decoration: const InputDecoration(
                   isDense: true,
                   border: OutlineInputBorder(),
-                  labelText: 'TOTP(optional)',
+                  labelText: 'TOTP (optional)',
                   hintText: '000000',
                 ),
                 enableSuggestions: false,
@@ -189,11 +188,12 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: () => widget.popRegister(),
                 child: Text('Cancel', style: theme.textTheme.titleMedium),
               ),
+              const SizedBox(height: 32.0),
             ],
           ),
         ),
       ),
     );
-  return loginWidget;
+    return loginWidget;
   }
 }
