@@ -11,8 +11,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
 class AccountHeader extends StatelessWidget {
 
   final PersonViewSafe? accountInfo;
@@ -25,9 +23,6 @@ class AccountHeader extends StatelessWidget {
 
     final DateFormat formatter = DateFormat('yyyy-MM-dd');
     final String formatted = formatter.format(accountInfo!.person.published);
-
-    final bool profileSettings = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_profile_score') ?? true;
-    final totalScore = accountInfo!.counts.commentScore + accountInfo!.counts.postScore;
 
     return Padding(
       padding: const EdgeInsets.only(top: 8.0, left: 24.0, right: 24.0, bottom: 24.0),
@@ -46,7 +41,7 @@ class AccountHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   Text(
                     accountInfo?.person.displayName ?? accountInfo!.person.name,
                     style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
@@ -66,26 +61,6 @@ class AccountHeader extends StatelessWidget {
                         text: (accountInfo?.person.published != null) ? '${formatted}' : '-',
                       ),
                     ],
-                  ),
-                  Row(
-                    children: [
-                    if (profileSettings == false)(
-                      IconText(
-                          icon: const Icon(
-                            Icons.arrow_upward_rounded,
-                            size: 16,
-                          ),
-                          text: '${(accountInfo?.counts.postScore).toString()} · ${(accountInfo?.counts.commentScore).toString()} · ${(totalScore).toString()}')
-                  )else if (profileSettings == true)(
-                        IconText(
-                          icon: const Icon(
-                            Icons.note_rounded,
-                            size:16,
-                          ),
-                          text: '${(accountInfo?.counts.postCount).toString()} · ${(accountInfo?.counts.commentCount)}'
-                        )
-                      )
-                    ]
                   ),
                 ],
               ),
