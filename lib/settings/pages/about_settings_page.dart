@@ -69,6 +69,14 @@ class AboutSettingsPage extends StatelessWidget {
                     }
                   },
                 ),
+                ListTile(
+                  title: Text(
+                    'Licenses',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () => showLicensePage(context: context),
+                )
               ],
             ),
           ],

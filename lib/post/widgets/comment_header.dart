@@ -33,7 +33,7 @@ class CommentHeader extends StatelessWidget {
                 Text(
                   commentViewTree.comment!.creator.name,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: fetchUsernameColor(isOwnComment) ?? theme.colorScheme.onBackground,
+                    color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -74,12 +74,13 @@ class CommentHeader extends StatelessWidget {
     );
   }
 
-  Color? fetchUsernameColor(isOwnComment) {
+  Color? fetchUsernameColor(BuildContext context, bool isOwnComment) {
     CommentView commentView = commentViewTree.comment!;
+    final theme = Theme.of(context);
 
-    if (isOwnComment) return Colors.greenAccent;
-    if (commentView.creator.admin == true) return Colors.deepPurple;
-    if (commentView.post.creatorId == commentView.comment.creatorId) return Colors.amber;
+    if (isOwnComment) return theme.colorScheme.primary;
+    if (commentView.creator.admin == true) return theme.colorScheme.tertiary;
+    if (commentView.post.creatorId == commentView.comment.creatorId) return theme.colorScheme.secondary;
 
     return null;
   }
