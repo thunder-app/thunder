@@ -10,6 +10,7 @@
 - Added top sort options - contribution from @JulianPaulus
 - Upvoting and downvoting posts/comments now provides you with immediate feedback rather than waiting for the instance to respond back
 - Added initial ability to edit comments. This action replaces the reply action when swiping on your own comment
+- Added support for TOTP - contribution from @MrAntonS 
 
 ### Changed
 - Adjusted thickness of divider between posts to help differentiate
@@ -24,6 +25,8 @@
 - Removed mark as read for mentions and replies that have already been read
 - Fixed issue where setting a default sort type would cause the app to infinitely load
 - Fixed issue where an error would pop up when subscribing to a community from the search page
+- Dockerfile for building Android builds - contribution from @Fmstrat
+- Fixing settings not reachable - contribution from @ggichure 
 
 ## 0.2.1+8 - 2023-06-28
 ### Added
