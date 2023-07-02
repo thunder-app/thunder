@@ -75,7 +75,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                   .run(GetPersonDetails(
                 personId: event.userId,
                 auth: account?.jwt,
-                sort: SortType.hot,
+                sort: SortType.new_,
                 limit: limit,
                 page: 1,
               ))
@@ -97,8 +97,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 comments: commentTree,
                 posts: posts,
                 page: 2,
-                hasReachedPostEnd: posts.isEmpty && commentTree.isEmpty,
-                hasReachedCommentEnd: posts.isEmpty && commentTree.isEmpty,
+                hasReachedPostEnd: posts.length == fullPersonView?.personView.counts.postCount,
+                hasReachedCommentEnd: posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
               ),
             );
           }
@@ -113,7 +113,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               .run(GetPersonDetails(
             personId: state.userId,
             auth: account?.jwt,
-            sort: SortType.hot,
+            sort: SortType.new_,
             limit: limit,
             page: state.page,
           ))
@@ -140,8 +140,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             comments: commentViewTree,
             posts: postViewMedias,
             page: state.page + 1,
-            hasReachedPostEnd: posts.isEmpty && commentTree.isEmpty,
-            hasReachedCommentEnd: posts.isEmpty && commentTree.isEmpty,
+            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
+            hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
         } catch (e, s) {
           exception = e;
@@ -178,7 +178,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                   .run(GetPersonDetails(
                 personId: event.userId,
                 auth: account?.jwt,
-                sort: SortType.hot,
+                sort: SortType.new_,
                 limit: limit,
                 page: 1,
                 savedOnly: true,
@@ -215,7 +215,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               .run(GetPersonDetails(
             personId: state.userId,
             auth: account?.jwt,
-            sort: SortType.hot,
+            sort: SortType.new_,
             limit: limit,
             page: state.savedContentPage,
             savedOnly: true,

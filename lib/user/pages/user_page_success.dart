@@ -11,12 +11,18 @@ import 'package:thunder/user/widgets/comment_card.dart';
 const List<Widget> userOptionTypes = <Widget>[
   Padding(padding: EdgeInsets.all(8.0), child: Text('Posts')),
   Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
+];
+
+const List<Widget> accountOptionTypes = <Widget>[
+  Padding(padding: EdgeInsets.all(8.0), child: Text('Posts')),
+  Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
   Padding(padding: EdgeInsets.all(8.0), child: Text('Saved')),
 ];
 
 class UserPageSuccess extends StatefulWidget {
   final int? userId;
   final PersonViewSafe? personView;
+  final bool isAccountUser;
 
   final List<CommentViewTree>? commentViewTrees;
   final List<PostViewMedia>? postViews;
@@ -28,6 +34,7 @@ class UserPageSuccess extends StatefulWidget {
   const UserPageSuccess({
     super.key,
     required this.userId,
+    this.isAccountUser = false,
     required this.personView,
     this.commentViewTrees,
     this.postViews,
@@ -45,11 +52,16 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
   bool hasScrolledToBottom = true;
 
   int selectedUserOption = 0;
-  final List<bool> _selectedUserOption = <bool>[true, false, false];
+  List<bool> _selectedUserOption = <bool>[true, false, false];
 
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+    if (!widget.isAccountUser) {
+      setState(() {
+        _selectedUserOption = <bool>[true, false];
+      });
+    }
     super.initState();
   }
 
@@ -91,9 +103,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
               }
             },
             borderRadius: const BorderRadius.all(Radius.circular(8)),
-            constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / userOptionTypes.length) - 12.0),
+            constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (widget.isAccountUser ? accountOptionTypes.length : userOptionTypes.length)) - 12.0),
             isSelected: _selectedUserOption,
-            children: userOptionTypes,
+            children: widget.isAccountUser ? accountOptionTypes : userOptionTypes,
           ),
           const SizedBox(height: 12.0),
           if (selectedUserOption == 0)

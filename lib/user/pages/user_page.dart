@@ -1,17 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/utils/profiles.dart';
 
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
-import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
-import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/user/widgets/comment_card.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;
@@ -69,6 +65,7 @@ class _UserPageState extends State<UserPage> {
             case UserStatus.success:
               return UserPageSuccess(
                 userId: widget.userId,
+                isAccountUser: widget.isAccountUser,
                 personView: state.personView,
                 commentViewTrees: state.comments,
                 postViews: state.posts,
