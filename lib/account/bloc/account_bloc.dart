@@ -7,8 +7,6 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'account_event.dart';
@@ -36,7 +34,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
             if (account == null || account.jwt == null) {
-              return emit(state.copyWith(status: AccountStatus.success, subsciptions: []));
+              return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));
             } else {
               emit(state.copyWith(status: AccountStatus.loading));
             }
@@ -52,7 +50,11 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             // Sort subscriptions by their name
             communityViews.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
-            return emit(state.copyWith(status: AccountStatus.success, subsciptions: communityViews));
+            FullPersonView? fullPersonView = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
+              throw Exception('Error: Timeout when attempting to fetch account details');
+            });
+
+            return emit(state.copyWith(status: AccountStatus.success, subsciptions: communityViews, personView: fullPersonView.personView));
           } catch (e, s) {
             exception = e;
             attemptCount++;
