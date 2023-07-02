@@ -34,7 +34,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
-  bool hideProfileScore = true;
   bool swipeGestures = true;
   bool doubleTapGestures = false;
 
@@ -100,10 +99,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
         setState(() => hideNsfwPreviews = value);
-        break;
-      case 'setting_general_hide_profile_score':
-        await prefs.setBool('setting_general_hide_profile_score', value);
-        setState(() => hideProfileScore = value);
         break;
       case 'setting_general_enable_swipe_gestures':
         await prefs.setBool('setting_general_enable_swipe_gestures', value);
@@ -174,7 +169,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      hideProfileScore = prefs.getBool('setting_general_hide_profile_score') ?? true;
+      swipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       doubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
       // Links
@@ -318,14 +313,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
-                        ),
-                        ToggleOption(
-                          description: 'Hide Profile Scores',
-                          subtitle: 'Only visible to you',
-                          value: hideProfileScore,
-                          iconEnabled: Icons.arrow_upward_rounded,
-                          iconDisabled: Icons.arrow_upward_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_hide_profile_score', value),
                         ),
                         ToggleOption(
                           description: 'Enable Swipe Gestures',
