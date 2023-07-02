@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/post/widgets/comment_header.dart';
 
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -10,8 +11,6 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/numbers.dart';
 
 enum SwipeAction { upvote, downvote, reply, save, edit }
 
@@ -42,6 +41,7 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
+  // @todo - make this themeable
   List<Color> colors = [
     Colors.red.shade300,
     Colors.orange.shade300,
@@ -54,12 +54,20 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   bool isHidden = true;
   GlobalKey childKey = GlobalKey();
 
+  /// The current point at which the user drags the comment
   double dismissThreshold = 0;
 
-  double firstActionThreshold = 0.15; // This controls how far the first swipe action is triggered
-  double secondActionThreshold = 0.35; // This controls how far the second swipe action is triggered
-  DismissDirection? dismissDirection;
+  /// The current swipe action that would be performed if the user let go off the screen
   SwipeAction? swipeAction;
+
+  /// Determines the direction that the user is allowed to drag (to enable/disable swipe gestures)
+  DismissDirection? dismissDirection;
+
+  /// The first action threshold to trigger the left or right actions (upvote/reply)
+  double firstActionThreshold = 0.15;
+
+  /// The second action threshold to trigger the left or right actions (downvote/save)
+  double secondActionThreshold = 0.35;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
@@ -89,11 +97,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
-    int score = widget.commentViewTree.comment?.counts.score ?? 0;
 
     final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
 
@@ -246,55 +251,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      widget.commentViewTree.comment!.creator.name,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: fetchUsernameColor(isOwnComment) ?? theme.colorScheme.onBackground,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Icon(
-                                      myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
-                                      size: 12.0,
-                                      color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
-                                    ),
-                                    const SizedBox(width: 2.0),
-                                    Text(
-                                      formatNumberToK(score),
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    saved == true ? Icons.star_rounded : null,
-                                    color: saved == true ? Colors.purple : null,
-                                    size: 18.0,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    formatTimeToString(dateTime: widget.commentViewTree.comment!.comment.published.toIso8601String()),
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onBackground,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,
@@ -329,10 +286,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             transitionBuilder: (Widget child, Animation<double> animation) {
               return SizeTransition(
                 sizeFactor: animation,
-                child: SlideTransition(
-                  position: _offsetAnimation,
-                  child: child,
-                ),
+                child: SlideTransition(position: _offsetAnimation, child: child),
               );
             },
             child: isHidden
@@ -353,15 +307,5 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
         ],
       ),
     );
-  }
-
-  Color? fetchUsernameColor(isOwnComment) {
-    CommentView commentView = widget.commentViewTree.comment!;
-
-    if (isOwnComment) return Colors.greenAccent;
-    if (commentView.creator.admin == true) return Colors.deepPurple;
-    if (commentView.post.creatorId == commentView.comment.creatorId) return Colors.amber;
-
-    return null;
   }
 }
