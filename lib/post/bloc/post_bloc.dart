@@ -19,7 +19,7 @@ part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-const timeout = Duration(seconds: 3);
+const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -55,59 +55,77 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _createCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<EditCommentEvent>(
+      _editCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
+    int attemptCount = 0;
+
     try {
-      emit(state.copyWith(status: PostStatus.loading));
+      var exception;
 
       Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      FullPostView? getPostResponse;
+      while (attemptCount < 2) {
+        try {
+          emit(state.copyWith(status: PostStatus.loading));
 
-      if (event.postId != null) {
-        getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
-          throw Exception('Error: Timeout when attempting to fetch post');
-        });
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+          FullPostView? getPostResponse;
+
+          if (event.postId != null) {
+            getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+              throw Exception('Error: Timeout when attempting to fetch post');
+            });
+          }
+
+          PostViewMedia? postView = event.postView;
+
+          if (getPostResponse != null) {
+            // Parse the posts and add in media information which is used elsewhere in the app
+            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+
+            postView = posts.first;
+          }
+
+          List<CommentView> getCommentsResponse = await lemmy
+              .run(GetComments(
+            page: 1,
+            auth: account?.jwt,
+            communityId: postView?.postView.post.communityId,
+            postId: postView?.postView.post.id,
+            sort: SortType.hot,
+            limit: 50,
+          ))
+              .timeout(timeout, onTimeout: () {
+            throw Exception('Error: Timeout when attempting to fetch post');
+          });
+
+          // Build the tree view from the flattened comments
+          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+
+          return emit(
+            state.copyWith(
+              status: PostStatus.success,
+              postId: postView?.postView.post.id,
+              postView: postView,
+              comments: commentTree,
+              commentPage: state.commentPage + 1,
+              commentCount: getCommentsResponse.length,
+              communityId: postView?.postView.post.communityId,
+            ),
+          );
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
       }
-
-      PostViewMedia? postView = event.postView;
-
-      if (getPostResponse != null) {
-        // Parse the posts and add in media information which is used elsewhere in the app
-        List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
-
-        postView = posts.first;
-      }
-
-      List<CommentView> getCommentsResponse = await lemmy
-          .run(GetComments(
-        page: 1,
-        auth: account?.jwt,
-        communityId: postView?.postView.post.communityId,
-        postId: postView?.postView.post.id,
-        sort: SortType.hot,
-        limit: 50,
-      ))
-          .timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to fetch comments');
-      });
-
-      // Build the tree view from the flattened comments
-      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
-
-      emit(
-        state.copyWith(
-          status: PostStatus.success,
-          postId: postView?.postView.post.id,
-          postView: postView,
-          comments: commentTree,
-          commentPage: state.commentPage + 1,
-          commentCount: getCommentsResponse.length,
-          communityId: postView?.postView.post.communityId,
-        ),
-      );
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
@@ -186,6 +204,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       // Optimistically update the post
+      PostView originalPostView = state.postView!.postView;
+
       PostView updatedPostView = optimisticallyVotePost(state.postView!, event.score);
       state.postView?.postView = updatedPostView;
 
@@ -194,6 +214,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        state.postView?.postView = originalPostView;
         throw Exception('Error: Timeout when attempting to vote post');
       });
 
@@ -230,11 +251,19 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
 
+      print(commentIndexes);
+
+      // if (commentIndexes.length == 1) {
+      //   currentTree = currentTree.replies.first; // Traverse to the next CommentViewTree
+      // }
+
       for (int i = 1; i < commentIndexes.length; i++) {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
       // Optimistically update the comment
+      CommentView? originalCommentView = currentTree.comment;
+
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
       currentTree.comment = updatedCommentView;
 
@@ -243,6 +272,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        currentTree.comment = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 
@@ -299,6 +329,37 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         content: event.content,
         postId: state.postView!.postView.post.id,
         parentId: event.parentCommentId,
+      ));
+
+      // for now, refresh the post and refetch the comments
+      // @todo: insert the new comment in place without requiring a refetch
+      add(GetPostEvent(postView: state.postView!));
+      return emit(state.copyWith(status: PostStatus.success));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _editCommentEvent(EditCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.'));
+      }
+
+      if (state.postView?.postView.post.id == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.'));
+      }
+
+      FullCommentView editComment = await lemmy.run(EditComment(
+        auth: account!.jwt!,
+        content: event.content,
+        commentId: event.commentId,
       ));
 
       // for now, refresh the post and refetch the comments

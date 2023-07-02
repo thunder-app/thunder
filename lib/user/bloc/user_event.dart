@@ -14,6 +14,13 @@ class GetUserEvent extends UserEvent {
   const GetUserEvent({this.userId, this.reset = false});
 }
 
+class GetUserSavedEvent extends UserEvent {
+  final int? userId;
+  final bool reset;
+
+  const GetUserSavedEvent({this.userId, this.reset = false});
+}
+
 class VotePostEvent extends UserEvent {
   final int postId;
   final VoteType score;

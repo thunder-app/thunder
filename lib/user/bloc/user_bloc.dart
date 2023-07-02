@@ -46,6 +46,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _saveCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<GetUserSavedEvent>(
+      _getUserSavedEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -71,7 +75,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                   .run(GetPersonDetails(
                 personId: event.userId,
                 auth: account?.jwt,
-                sort: SortType.hot,
+                sort: SortType.new_,
                 limit: limit,
                 page: 1,
               ))
@@ -93,8 +97,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 comments: commentTree,
                 posts: posts,
                 page: 2,
-                hasReachedPostEnd: posts.isEmpty || posts.length < limit,
-                hasReachedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+                hasReachedPostEnd: posts.length == fullPersonView?.personView.counts.postCount,
+                hasReachedCommentEnd: posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
               ),
             );
           }
@@ -109,7 +113,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               .run(GetPersonDetails(
             personId: state.userId,
             auth: account?.jwt,
-            sort: SortType.hot,
+            sort: SortType.new_,
             limit: limit,
             page: state.page,
           ))
@@ -136,8 +140,110 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             comments: commentViewTree,
             posts: postViewMedias,
             page: state.page + 1,
-            hasReachedPostEnd: posts.isEmpty || posts.length < limit,
-            hasReachedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
+            hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
+          ));
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getUserSavedEvent(GetUserSavedEvent event, emit) async {
+    int attemptCount = 0;
+    int limit = 30;
+
+    try {
+      var exception;
+
+      Account? account = await fetchActiveProfileAccount();
+
+      while (attemptCount < 2) {
+        try {
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+          if (event.reset) {
+            emit(state.copyWith(status: UserStatus.loading));
+
+            FullPersonView? fullPersonView;
+
+            if (event.userId != null) {
+              fullPersonView = await lemmy
+                  .run(GetPersonDetails(
+                personId: event.userId,
+                auth: account?.jwt,
+                sort: SortType.new_,
+                limit: limit,
+                page: 1,
+                savedOnly: true,
+              ))
+                  .timeout(timeout, onTimeout: () {
+                throw Exception('Error: Timeout when attempting to fetch user');
+              });
+            }
+
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+
+            // Build the tree view from the flattened comments
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
+
+            return emit(
+              state.copyWith(
+                status: UserStatus.success,
+                savedComments: commentTree,
+                savedPosts: posts,
+                savedContentPage: 2,
+                hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
+                hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
+              ),
+            );
+          }
+
+          if (state.hasReachedSavedCommentEnd && state.hasReachedSavedPostEnd) {
+            return emit(state.copyWith(status: UserStatus.success));
+          }
+
+          emit(state.copyWith(status: UserStatus.refreshing));
+
+          FullPersonView? fullPersonView = await lemmy
+              .run(GetPersonDetails(
+            personId: state.userId,
+            auth: account?.jwt,
+            sort: SortType.new_,
+            limit: limit,
+            page: state.savedContentPage,
+            savedOnly: true,
+          ))
+              .timeout(timeout, onTimeout: () {
+            throw Exception('Error: Timeout when attempting to fetch user saved content');
+          });
+
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+
+          // Append the new posts
+          List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
+          postViewMedias.addAll(posts);
+
+          // Build the tree view from the flattened comments
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? []);
+
+          // Append the new comments
+          List<CommentViewTree> commentViewTree = List.from(state.savedComments);
+          commentViewTree.addAll(commentTree);
+
+          return emit(state.copyWith(
+            status: UserStatus.success,
+            savedComments: commentViewTree,
+            savedPosts: postViewMedias,
+            savedContentPage: state.savedContentPage + 1,
+            hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
+            hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
         } catch (e, s) {
           exception = e;
@@ -159,6 +265,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
       PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
 
+      PostView originalPostView = state.posts[existingPostViewIndex].postView;
       PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
       state.posts[existingPostViewIndex].postView = updatedPostView;
 
@@ -166,7 +273,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      PostView postView = await votePost(event.postId, event.score);
+      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+        state.posts[existingPostViewIndex].postView = originalPostView;
+        throw Exception('Error: Timeout when attempting to vote post');
+      });
 
       // Find the specific post to update
       state.posts[existingPostViewIndex].postView = postView;
@@ -207,6 +317,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       // Optimistically update the comment
+      CommentView? originalCommentView = currentTree.comment;
+
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
       currentTree.comment = updatedCommentView;
 
@@ -215,6 +327,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        currentTree.comment = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 

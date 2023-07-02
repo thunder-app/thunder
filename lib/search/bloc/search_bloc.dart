@@ -123,11 +123,25 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         follow: event.follow,
       ));
 
-      // Search for the community that was updated and update it with the response
-      int communityToUpdateIndex = state.results!.communities.indexWhere((CommunityView communityView) => communityView.community.id == communityResponse.community.id);
-      state.results!.communities[communityToUpdateIndex] = communityResponse;
+      // Refetch the status of the community - communityResponse does not return back with the proper subscription status
+      FullCommunityView fullCommunityView = await lemmy.run(GetCommunity(
+        auth: account.jwt,
+        id: event.communityId,
+      ));
 
-      return emit(state.copyWith(status: SearchStatus.success, results: state.results));
+      List<CommunityView> communities = state.results?.communities ?? [];
+
+      communities = state.results?.communities.map((CommunityView communityView) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
+              return fullCommunityView.communityView;
+            }
+            return communityView;
+          }).toList() ??
+          [];
+
+      SearchResults updatedResults = state.results!.copyWith(communities: communities);
+
+      return emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
 

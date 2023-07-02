@@ -19,6 +19,7 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   late TextEditingController _usernameTextEditingController;
   late TextEditingController _passwordTextEditingController;
+  late TextEditingController _totpTextEditingController;
   late TextEditingController _instanceTextEditingController;
 
   bool showPassword = false;
@@ -29,6 +30,7 @@ class _LoginPageState extends State<LoginPage> {
     super.initState();
     _usernameTextEditingController = TextEditingController();
     _passwordTextEditingController = TextEditingController();
+    _totpTextEditingController = TextEditingController();
     _instanceTextEditingController = TextEditingController();
 
     _usernameTextEditingController.addListener(() {
@@ -60,6 +62,7 @@ class _LoginPageState extends State<LoginPage> {
   void dispose() {
     _usernameTextEditingController.dispose();
     _passwordTextEditingController.dispose();
+    _totpTextEditingController.dispose();
     _instanceTextEditingController.dispose();
     super.dispose();
   }
@@ -67,8 +70,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return Padding(
+    Padding loginWidget = Padding(
       padding: EdgeInsets.only(
         left: 12.0,
         right: 12.0,
@@ -127,6 +129,22 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
+              TextField(
+                autocorrect: false,
+                controller: _totpTextEditingController,
+                maxLength: 6,
+                keyboardType: TextInputType.number,
+                inputFormatters: <TextInputFormatter>[
+                  FilteringTextInputFormatter.digitsOnly
+                ],
+                decoration: const InputDecoration(
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                  labelText: 'TOTP(optional)',
+                  hintText: '000000',
+                ),
+                enableSuggestions: false,
+              ),
               const SizedBox(height: 12.0),
               TextField(
                 autocorrect: false,
@@ -158,6 +176,7 @@ class _LoginPageState extends State<LoginPage> {
                                 username: _usernameTextEditingController.text,
                                 password: _passwordTextEditingController.text,
                                 instance: _instanceTextEditingController.text.trim(),
+                                totp: _totpTextEditingController.text,
                               ),
                             );
                         context.pop();
@@ -175,5 +194,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  return loginWidget;
   }
 }

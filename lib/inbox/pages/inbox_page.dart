@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 
 enum InboxType { replies, mentions, messages }
@@ -104,44 +105,47 @@ class _InboxPageState extends State<InboxPage> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            const SizedBox(height: 10),
-            BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
-              if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                return Center(child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
-              }
+      body: BlocProvider(
+        create: (context) => PostBloc(),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
+              BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
+                if (context.read<AuthBloc>().state.isLoggedIn == false) {
+                  return Center(child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
+                }
 
-              switch (state.status) {
-                case InboxStatus.initial:
-                case InboxStatus.loading:
-                case InboxStatus.refreshing:
-                  return const Center(
-                    child: SizedBox(
-                      width: 40,
-                      height: 40,
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                case InboxStatus.success:
-                  if (_inboxType == InboxType.mentions) return const InboxMentionsView();
-                  if (_inboxType == InboxType.messages) return const InboxPrivateMessagesView();
-                  if (_inboxType == InboxType.replies) return const InboxRepliesView();
-                  return Container();
-                case InboxStatus.empty:
-                  return const Center(child: Text('Empty Inbox'));
-                case InboxStatus.failure:
-                  return ErrorMessage(
-                    message: state.errorMessage,
-                    actionText: 'Refresh Content',
-                    action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
-                  );
-              }
-            })
-          ],
+                switch (state.status) {
+                  case InboxStatus.initial:
+                  case InboxStatus.loading:
+                  case InboxStatus.refreshing:
+                    return const Center(
+                      child: SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(),
+                      ),
+                    );
+                  case InboxStatus.success:
+                    if (_inboxType == InboxType.mentions) return const InboxMentionsView();
+                    if (_inboxType == InboxType.messages) return const InboxPrivateMessagesView();
+                    if (_inboxType == InboxType.replies) return const InboxRepliesView();
+                    return Container();
+                  case InboxStatus.empty:
+                    return const Center(child: Text('Empty Inbox'));
+                  case InboxStatus.failure:
+                    return ErrorMessage(
+                      message: state.errorMessage,
+                      actionText: 'Refresh Content',
+                      action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                    );
+                }
+              })
+            ],
+          ),
         ),
       ),
     );

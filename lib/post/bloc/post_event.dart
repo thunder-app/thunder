@@ -55,3 +55,10 @@ class CreateCommentEvent extends PostEvent {
 
   const CreateCommentEvent({required this.content, this.parentCommentId});
 }
+
+class EditCommentEvent extends PostEvent {
+  final String content;
+  final int commentId;
+
+  const EditCommentEvent({required this.content, required this.commentId});
+}
