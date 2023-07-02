@@ -1,7 +1,4 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:intl/intl.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -12,7 +9,6 @@ import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 
 class AccountHeader extends StatelessWidget {
-
   final PersonViewSafe? accountInfo;
 
   const AccountHeader({super.key, this.accountInfo});
@@ -41,7 +37,7 @@ class AccountHeader extends StatelessWidget {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
+                children: [
                   Text(
                     accountInfo?.person.displayName ?? accountInfo!.person.name,
                     style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
