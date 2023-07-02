@@ -105,30 +105,31 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
             }
           },
         ),
-        BlocListener<InboxBloc, InboxState>(
-          listenWhen: (previous, current) {
-            return previous.status != current.status;
-          },
-          listener: (context, state) {
-            if (state.status == InboxStatus.success) {
-              return Navigator.of(context).pop();
-            }
-            if (state.status == InboxStatus.loading || state.status == InboxStatus.refreshing) {
-              setState(() {
-                isLoading = true;
-                isFailure = true;
-                errorMessage = '';
-              });
-            }
-            if (state.status == InboxStatus.failure) {
-              setState(() {
-                isLoading = false;
-                isFailure = true;
-                errorMessage = 'Unexpected Error';
-              });
-            }
-          },
-        ),
+        if (widget.comment != null)
+          BlocListener<InboxBloc, InboxState>(
+            listenWhen: (previous, current) {
+              return previous.status != current.status;
+            },
+            listener: (context, state) {
+              if (state.status == InboxStatus.success) {
+                return Navigator.of(context).pop();
+              }
+              if (state.status == InboxStatus.loading || state.status == InboxStatus.refreshing) {
+                setState(() {
+                  isLoading = true;
+                  isFailure = true;
+                  errorMessage = '';
+                });
+              }
+              if (state.status == InboxStatus.failure) {
+                setState(() {
+                  isLoading = false;
+                  isFailure = true;
+                  errorMessage = 'Unexpected Error';
+                });
+              }
+            },
+          ),
       ],
       child: SingleChildScrollView(
         child: Padding(
