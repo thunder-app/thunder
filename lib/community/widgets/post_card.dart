@@ -167,6 +167,7 @@ class _PostCardState extends State<PostCard> {
                       showFullHeightImages: showFullHeightImages,
                       showVoteActions: showVoteActions,
                       showSaveAction: showSaveAction,
+                      showTextContent: true,
                       isUserLoggedIn: isUserLoggedIn,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
