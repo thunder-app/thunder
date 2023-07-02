@@ -155,8 +155,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               if (swipeAction == SwipeAction.edit) {
                 PostBloc postBloc = context.read<PostBloc>();
 
-                print('editing');
-
                 showModalBottomSheet(
                   isScrollControlled: true,
                   context: context,
@@ -258,11 +256,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                     Text(
                                       widget.commentViewTree.comment!.creator.name,
                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: widget.commentViewTree.comment!.creator.admin
-                                            ? theme.colorScheme.tertiary
-                                            : widget.commentViewTree.comment!.post.creatorId == widget.commentViewTree.comment!.comment.creatorId
-                                                ? Colors.amber
-                                                : theme.colorScheme.onBackground,
+                                        color: fetchUsernameColor(isOwnComment) ?? theme.colorScheme.onBackground,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
@@ -359,5 +353,15 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
         ],
       ),
     );
+  }
+
+  Color? fetchUsernameColor(isOwnComment) {
+    CommentView commentView = widget.commentViewTree.comment!;
+
+    if (isOwnComment) return Colors.greenAccent;
+    if (commentView.creator.admin == true) return Colors.deepPurple;
+    if (commentView.post.creatorId == commentView.comment.creatorId) return Colors.amber;
+
+    return null;
   }
 }
