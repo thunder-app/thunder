@@ -24,7 +24,7 @@ class CommonMarkdownBody extends StatelessWidget {
     bool openInExternalBrowser = false;
 
     try {
-      context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+      openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
     } catch (e) {}
 
     return MarkdownBody(
