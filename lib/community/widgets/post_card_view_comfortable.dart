@@ -21,6 +21,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showFullHeightImages;
   final bool showVoteActions;
   final bool showSaveAction;
+  final bool showTextContent;
   final bool isUserLoggedIn;
 
   const PostCardViewComfortable({
@@ -32,6 +33,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.showFullHeightImages,
     required this.showVoteActions,
     required this.showSaveAction,
+    required this.showTextContent,
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
@@ -40,6 +42,7 @@ class PostCardViewComfortable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final String textContent = postViewMedia.postView.post.body ?? "";
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
@@ -57,6 +60,19 @@ class PostCardViewComfortable extends StatelessWidget {
                 color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
               ),
               softWrap: true),
+          Visibility(
+            visible: showTextContent && textContent.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
+              child: Text(textContent,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                ),
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
             child: Row(

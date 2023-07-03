@@ -62,6 +62,7 @@ class _PostCardState extends State<PostCard> {
     final bool showVoteActions = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_vote_actions') ?? true;
     final bool showSaveAction = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_save_action') ?? true;
     final bool showFullHeightImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_full_height_images') ?? false;
+    final bool showTextContent = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_text_content') ?? false;
 
     return Listener(
       behavior: HitTestBehavior.opaque,
@@ -167,6 +168,7 @@ class _PostCardState extends State<PostCard> {
                       showFullHeightImages: showFullHeightImages,
                       showVoteActions: showVoteActions,
                       showSaveAction: showSaveAction,
+                      showTextContent: showTextContent,
                       isUserLoggedIn: isUserLoggedIn,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
