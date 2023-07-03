@@ -96,11 +96,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
-        onLongPress: () {
-          if (widget.postView!.media.first.mediaUrl != null) {
-            Share.share(widget.postView!.media.first.mediaUrl!);
-          }
-        },
         onTap: () => Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
