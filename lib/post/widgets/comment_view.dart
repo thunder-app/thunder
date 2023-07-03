@@ -17,6 +17,8 @@ class CommentSubview extends StatelessWidget {
   final PostViewMedia? postViewMedia;
   final ScrollController? scrollController;
 
+  final bool hasReachedCommentEnd;
+
   const CommentSubview({
     super.key,
     required this.comments,
@@ -25,21 +27,51 @@ class CommentSubview extends StatelessWidget {
     required this.onSaveAction,
     this.postViewMedia,
     this.scrollController,
+    this.hasReachedCommentEnd = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return ListView.builder(
       controller: scrollController,
       itemCount: postViewMedia != null ? comments.length + 1 : comments.length,
       itemBuilder: (context, index) {
         if (postViewMedia != null && index == 0) return PostSubview(postViewMedia: postViewMedia!);
-
-        return CommentCard(
-          commentViewTree: comments[index - 1],
-          onSaveAction: (int commentId, bool save) => onSaveAction(commentId, save),
-          onVoteAction: (int commentId, VoteType voteType) => onVoteAction(commentId, voteType),
-        );
+        if (index == comments.length) {
+          if (hasReachedCommentEnd == true) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  color: theme.dividerColor.withOpacity(0.1),
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  child: Text(
+                    'Hmmm. It seems like you\'ve reached the bottom.',
+                    textAlign: TextAlign.center,
+                    style: theme.textTheme.titleSmall,
+                  ),
+                ),
+              ],
+            );
+          } else {
+            return Column(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  child: const CircularProgressIndicator(),
+                ),
+              ],
+            );
+          }
+        } else {
+          return CommentCard(
+            commentViewTree: comments[index - 1],
+            onSaveAction: (int commentId, bool save) => onSaveAction(commentId, save),
+            onVoteAction: (int commentId, VoteType voteType) => onVoteAction(commentId, voteType),
+          );
+        }
       },
     );
   }

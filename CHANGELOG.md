@@ -8,6 +8,8 @@
 - Adjusted visual feedback in comment swipe gestures
 - Added option in settings to enable/disable swipe on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
 - Added option in settings to enable/disable double-tap on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
+- Decreased scroll distance needed in order to fetch more comments from a thread
+- Improved error messages when more comments fail to fetch within a post
 
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled

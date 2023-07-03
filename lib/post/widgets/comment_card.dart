@@ -3,14 +3,12 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
-
-import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum SwipeAction { upvote, downvote, reply, save, edit }
