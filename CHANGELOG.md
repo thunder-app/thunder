@@ -2,6 +2,7 @@
 ### Added
 - Added colour to username in comments to distinguish your own comments
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
+- Added option to share media link or external URL links int the dialog popup on post long press
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures

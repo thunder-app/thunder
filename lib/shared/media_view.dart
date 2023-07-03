@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/core/enums/media_type.dart';
@@ -95,6 +96,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
+        onLongPress: () {
+          if (widget.postView!.media.first.mediaUrl != null) {
+            Share.share(widget.postView!.media.first.mediaUrl!);
+          }
+        },
         onTap: () => Navigator.of(context).push(
           PageRouteBuilder(
             opaque: false,
