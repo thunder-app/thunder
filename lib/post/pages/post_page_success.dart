@@ -47,20 +47,18 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      controller: widget.scrollController,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          PostSubview(postViewMedia: widget.postView),
-          CommentSubview(
+    return Column(
+      children: [
+        Expanded(
+          child: CommentSubview(
+            scrollController: widget.scrollController,
+            postViewMedia: widget.postView,
             comments: widget.comments,
             onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

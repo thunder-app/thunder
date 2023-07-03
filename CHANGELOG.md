@@ -11,6 +11,7 @@
 
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
+- Improved performance for comment threads with a lot of comments
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
