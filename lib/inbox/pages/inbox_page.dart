@@ -50,6 +50,7 @@ class _InboxPageState extends State<InboxPage> {
   InboxType? _inboxType = inboxCategories[0].type;
 
   bool showAll = false;
+  int inboxCount = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,7 @@ class _InboxPageState extends State<InboxPage> {
           FilterChip(
             shape: const StadiumBorder(),
             visualDensity: VisualDensity.compact,
-            label: const Text(' Show All'),
+            label: const Text('Show All'),
             selected: showAll,
             onSelected: (bool selected) {
               setState(() => showAll = !showAll);
@@ -113,9 +114,12 @@ class _InboxPageState extends State<InboxPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               const SizedBox(height: 10),
-              BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
+              BlocBuilder<InboxBloc, InboxState>(
+                  builder: (context, InboxState state) {
                 if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                  return Center(child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
+                  return Center(
+                      child: Text('Log in to see your inbox',
+                          style: theme.textTheme.titleMedium));
                 }
 
                 switch (state.status) {
@@ -130,17 +134,37 @@ class _InboxPageState extends State<InboxPage> {
                       ),
                     );
                   case InboxStatus.success:
-                    if (_inboxType == InboxType.mentions) return const InboxMentionsView();
-                    if (_inboxType == InboxType.messages) return const InboxPrivateMessagesView();
-                    if (_inboxType == InboxType.replies) return const InboxRepliesView();
+                    // Count the number of each type of notification
+                    // At the moment this just gets the number currently
+                    // displayed.
+                    // Showing read results in this being the count of all read
+                    // and vice versa
+                    final repliesCount = state.replies.length;
+                    final mentionsCount = state.mentions.length;
+                    final messagesCount = state.privateMessages.length;
+                    inboxCount = repliesCount + mentionsCount + messagesCount;
+                    print(inboxCount);
+                    if (_inboxType == InboxType.mentions) {
+                      return const InboxMentionsView();
+                    }
+                    if (_inboxType == InboxType.messages) {
+                      return const InboxPrivateMessagesView();
+                    }
+                    if (_inboxType == InboxType.replies) {
+                      return const InboxRepliesView();
+                    }
                     return Container();
                   case InboxStatus.empty:
+                    setState(() {
+                      inboxCount = 0;
+                    });
                     return const Center(child: Text('Empty Inbox'));
                   case InboxStatus.failure:
                     return ErrorMessage(
                       message: state.errorMessage,
                       actionText: 'Refresh Content',
-                      action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                      action: () =>
+                          context.read<InboxBloc>().add(const GetInboxEvent()),
                     );
                 }
               })
