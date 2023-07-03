@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 
 import 'package:permission_handler/permission_handler.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -29,12 +30,21 @@ class _ImageViewerState extends State<ImageViewer> {
   bool downloaded = false;
 
   Future<bool> _requestPermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
-      Permission.photos,
-      Permission.photosAddOnly,
-    ].request();
+    bool androidVersionBelow33 = false;
+    if(Platform.isAndroid){
+      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
+    }
 
-    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    if(androidVersionBelow33){
+      await Permission.storage.request();
+    }
+    else{
+      Map<Permission, PermissionStatus> statuses = await [
+        Permission.photos,
+        Permission.photosAddOnly,
+      ].request();
+    }
+    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
 
     return hasPermission;
   }
