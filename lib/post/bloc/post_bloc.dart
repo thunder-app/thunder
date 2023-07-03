@@ -20,7 +20,7 @@ part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 10);
-int commentLimit = 50;
+int commentLimit = 20;
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -86,6 +86,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           PostViewMedia? postView = event.postView;
+
+          emit(
+            state.copyWith(
+              status: PostStatus.success,
+              postId: postView?.postView.post.id,
+              postView: postView,
+              communityId: postView?.postView.post.communityId,
+            ),
+          );
+
+          emit(state.copyWith(status: PostStatus.refreshing));
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app

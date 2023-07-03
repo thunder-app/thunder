@@ -113,7 +113,7 @@ class _PostPageState extends State<PostPage> {
                     ),
                     const SizedBox(width: 8.0),
                     Flexible(
-                      child: Text(state.errorMessage ?? 'No error message available'),
+                      child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
                     )
                   ],
                 ),

@@ -11,6 +11,8 @@
 - Added option in settings to enable/disable double-tap on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
 - Decreased scroll distance needed in order to fetch more comments from a thread
 - Improved error messages when more comments fail to fetch within a post
+- Decreased number of comments to fetch at a time to improve loading performance
+- Posts now load first before comment threads to make viewing posts more responsive
 
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled

@@ -36,10 +36,20 @@ class CommentSubview extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
-      itemCount: postViewMedia != null ? comments.length + 1 : comments.length,
+      itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
-        if (postViewMedia != null && index == 0) return PostSubview(postViewMedia: postViewMedia!);
-        if (index == comments.length) {
+        if (postViewMedia != null && index == 0) {
+          return PostSubview(postViewMedia: postViewMedia!);
+        } else if (hasReachedCommentEnd == false && comments.isEmpty) {
+          return Column(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                child: const CircularProgressIndicator(),
+              ),
+            ],
+          );
+        } else if (index == comments.length + 1) {
           if (hasReachedCommentEnd == true) {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -74,5 +84,13 @@ class CommentSubview extends StatelessWidget {
         }
       },
     );
+  }
+
+  int getCommentsListLength() {
+    if (comments.isEmpty && hasReachedCommentEnd == false) {
+      return 2; // Show post and loading indicator since no comments have been fetched yet
+    }
+
+    return postViewMedia != null ? comments.length + 2 : comments.length + 1;
   }
 }
