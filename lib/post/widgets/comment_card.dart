@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
 
 import 'package:thunder/post/widgets/create_comment_modal.dart';
@@ -126,62 +127,16 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
-            onPointerUp: (event) {
-              if (swipeAction == SwipeAction.upvote) {
-                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.up ? VoteType.none : VoteType.up);
-              }
-
-              if (swipeAction == SwipeAction.downvote) {
-                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.down ? VoteType.none : VoteType.down);
-              }
-
-              if (swipeAction == SwipeAction.reply) {
-                PostBloc postBloc = context.read<PostBloc>();
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: BlocProvider<PostBloc>.value(
-                          value: postBloc,
-                          child: CreateCommentModal(commentView: widget.commentViewTree),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-
-              if (swipeAction == SwipeAction.edit) {
-                PostBloc postBloc = context.read<PostBloc>();
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: BlocProvider<PostBloc>.value(
-                          value: postBloc,
-                          child: CreateCommentModal(commentView: widget.commentViewTree, isEdit: true),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-
-              if (swipeAction == SwipeAction.save) {
-                widget.onSaveAction(widget.commentViewTree.comment!.comment.id, !(saved ?? false));
-              }
+            onPointerUp: (event) => {
+              triggerCommentAction(
+                context: context,
+                swipeAction: swipeAction,
+                onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                voteType: myVote ?? VoteType.none,
+                saved: saved,
+                commentViewTree: widget.commentViewTree,
+              ),
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
