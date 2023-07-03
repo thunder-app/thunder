@@ -34,8 +34,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool hideNsfwPreviews = true;
-  bool swipeGestures = true;
-  bool doubleTapGestures = false;
+  bool bottomNavBarSwipeGestures = true;
+  bool bottomNavBarDoubleTapGestures = false;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -102,11 +102,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
       case 'setting_general_enable_swipe_gestures':
         await prefs.setBool('setting_general_enable_swipe_gestures', value);
-        setState(() => swipeGestures = value);
+        setState(() => bottomNavBarSwipeGestures = value);
         break;
       case 'setting_general_enable_doubletap_gestures':
         await prefs.setBool('setting_general_enable_doubletap_gestures', value);
-        setState(() => doubleTapGestures = value);
+        setState(() => bottomNavBarDoubleTapGestures = value);
         break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
@@ -169,8 +169,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      swipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
-      doubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -317,7 +317,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ToggleOption(
                           description: 'Enable Swipe Gestures',
                           subtitle: 'Swipe on nav bar',
-                          value: swipeGestures,
+                          value: bottomNavBarSwipeGestures,
                           iconEnabled: Icons.swipe_right_rounded,
                           iconDisabled: Icons.swipe_right_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_enable_swipe_gestures', value),
@@ -325,7 +325,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ToggleOption(
                           description: 'Enable Double-Tap Gestures',
                           subtitle: 'Double-tap on nav bar',
-                          value: doubleTapGestures,
+                          value: bottomNavBarDoubleTapGestures,
                           iconEnabled: Icons.touch_app_rounded,
                           iconDisabled: Icons.touch_app_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_enable_doubletap_gestures', value),
