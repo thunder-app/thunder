@@ -32,9 +32,10 @@ class _ImageViewerState extends State<ImageViewer> {
     Map<Permission, PermissionStatus> statuses = await [
       Permission.photos,
       Permission.photosAddOnly,
+      Permission.storage,
     ].request();
 
-    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted;
 
     return hasPermission;
   }
