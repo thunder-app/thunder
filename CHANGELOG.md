@@ -5,6 +5,7 @@
 - Added option to share media link or external URL links in the dialog popup on post long press
 - Added back featured post icon on posts within a community
 - Added ability to customize swipe gestures on comments and posts
+- Added ability to develop with hot reload using docker - contribution from @Fmstrat
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
@@ -19,6 +20,9 @@
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
 - Improved performance for comment threads with a lot of comments
 - Fixed issue where the last comment on a thread could potentially not show up
+- Fixed issue where markdown links were not respecting "open in external browser" option - contribution from @Fmstrat
+- Fixed issue with download media not working on Android for some users - contribution from @minicit
+- Fixed issue where media download button appearance in light mode - contribution from @coslu
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
