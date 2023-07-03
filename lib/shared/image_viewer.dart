@@ -30,7 +30,12 @@ class _ImageViewerState extends State<ImageViewer> {
   bool downloaded = false;
 
   Future<bool> _requestPermission() async {
-    if(Platform.isAndroid && (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32){
+    bool androidVersionBelow33 = false;
+    if(Platform.isAndroid){
+      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
+    }
+
+    if(androidVersionBelow33){
       await Permission.storage.request();
     }
     else{
