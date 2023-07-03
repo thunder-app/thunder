@@ -11,6 +11,7 @@ class PostState extends Equatable {
     this.commentPage = 1,
     this.commentCount = 0,
     this.communityId,
+    this.hasReachedCommentEnd = false,
     this.errorMessage,
   });
 
@@ -24,6 +25,7 @@ class PostState extends Equatable {
   final List<CommentViewTree> comments;
   final int commentPage;
   final int commentCount;
+  final bool hasReachedCommentEnd;
 
   final String? errorMessage;
 
@@ -34,6 +36,7 @@ class PostState extends Equatable {
     List<CommentViewTree>? comments,
     int? commentPage,
     int? commentCount,
+    bool? hasReachedCommentEnd,
     int? communityId,
     String? errorMessage,
   }) {
@@ -44,11 +47,12 @@ class PostState extends Equatable {
       comments: comments ?? this.comments,
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
+      hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       communityId: communityId ?? this.communityId,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage];
+  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd];
 }

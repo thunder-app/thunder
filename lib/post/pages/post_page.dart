@@ -113,7 +113,7 @@ class _PostPageState extends State<PostPage> {
                     ),
                     const SizedBox(width: 8.0),
                     Flexible(
-                      child: Text(state.errorMessage ?? 'No error message available'),
+                      child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
                     )
                   ],
                 ),
@@ -143,7 +143,7 @@ class _PostPageState extends State<PostPage> {
                       HapticFeedback.mediumImpact();
                       return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
                     },
-                    child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController),
+                    child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
                   );
                 }
 

@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -52,18 +54,35 @@ class _ThunderState extends State<Thunder> {
     _dragStartX = details.globalPosition.dx;
   }
 
-  void _handleDragUpdate(DragUpdateDetails details) {
-    final currentPosition = details.globalPosition.dx;
-    final delta = currentPosition - _dragStartX;
-    if (delta > 0 && selectedPageIndex == 0) {
-      _feedScaffoldKey.currentState?.openDrawer();
-    } else if (delta < 0 && selectedPageIndex == 0) {
-      _feedScaffoldKey.currentState?.closeDrawer();
+  void _handleDragUpdate(DragUpdateDetails details) async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+
+    if(bottomNavBarSwipeGestures == true){
+      final currentPosition = details.globalPosition.dx;
+      final delta = currentPosition - _dragStartX;
+      if (delta > 0 && selectedPageIndex == 0) {
+        _feedScaffoldKey.currentState?.openDrawer();
+      } else if (delta < 0 && selectedPageIndex == 0) {
+        _feedScaffoldKey.currentState?.closeDrawer();
+      }
     }
   }
 
   void _handleDragEnd(DragEndDetails details) {
     _dragStartX = 0.0;
+  }
+
+  void _handleDoubleTap() async {
+    final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
+    final prefs = await SharedPreferences.getInstance();
+    final bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+
+    if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
+      _feedScaffoldKey.currentState?.closeDrawer();
+    } else if (bottomNavBarDoubleTapGestures == true && scaffoldState == false) {
+      _feedScaffoldKey.currentState?.openDrawer();
+    }
   }
 
   @override
@@ -181,6 +200,7 @@ class _ThunderState extends State<Thunder> {
         onHorizontalDragStart: _handleDragStart,
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
+        onDoubleTap: _handleDoubleTap,
         child: BottomNavigationBar(
           currentIndex: selectedPageIndex,
           showSelectedLabels: false,

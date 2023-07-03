@@ -1,5 +1,24 @@
 ## Unreleased
+### Added
+- Added colour to username in comments to distinguish your own comments
+- Added option to allow text preview on text posts in normal view - contribution from @coslu
+- Added option to share media link or external URL links in the dialog popup on post long press
+- Added back featured post icon on posts within a community
 
+### Changed
+- Adjusted visual feedback in comment swipe gestures
+- Added option in settings to enable/disable swipe on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
+- Added option in settings to enable/disable double-tap on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
+- Decreased scroll distance needed in order to fetch more comments from a thread
+- Improved error messages when more comments fail to fetch within a post
+- Decreased number of comments to fetch at a time to improve loading performance
+- Posts now load first before comment threads to make viewing posts more responsive
+
+### Fixed
+- Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
+- Improved performance for comment threads with a lot of comments
+
+## 0.2.1+10 - 2023-07-02
 ### Added
 - Added ability to download images - contribution from @MrAntonS
 - Added settings option to collapse parent comment on tap
@@ -10,7 +29,7 @@
 - Added top sort options - contribution from @JulianPaulus
 - Upvoting and downvoting posts/comments now provides you with immediate feedback rather than waiting for the instance to respond back
 - Added initial ability to edit comments. This action replaces the reply action when swiping on your own comment
-- Added support for TOTP - contribution from @MrAntonS 
+- Added support for TOTP - contribution from @MrAntonS
 
 ### Changed
 - Adjusted thickness of divider between posts to help differentiate
@@ -26,7 +45,7 @@
 - Fixed issue where setting a default sort type would cause the app to infinitely load
 - Fixed issue where an error would pop up when subscribing to a community from the search page
 - Dockerfile for building Android builds - contribution from @Fmstrat
-- Fixing settings not reachable - contribution from @ggichure 
+- Fixing settings not reachable - contribution from @ggichure
 
 ## 0.2.1+8 - 2023-06-28
 ### Added
