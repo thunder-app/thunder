@@ -70,6 +70,13 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// The second action threshold to trigger the left or right actions (downvote/save)
   double secondActionThreshold = 0.35;
 
+  Map<String, SwipeAction> swipeActions = {
+    'leftPrimary': SwipeAction.upvote,
+    'leftSecondary': SwipeAction.downvote,
+    'rightPrimary': SwipeAction.reply,
+    'rightSecondary': SwipeAction.save,
+  };
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -151,23 +158,24 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 SwipeAction? updatedSwipeAction;
 
                 if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = SwipeAction.upvote;
+                  updatedSwipeAction = swipeActions['leftPrimary'];
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = SwipeAction.downvote;
+                  updatedSwipeAction = swipeActions['leftSecondary'];
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  if (isOwnComment) {
-                    updatedSwipeAction = SwipeAction.edit;
-                  } else {
-                    updatedSwipeAction = SwipeAction.reply;
-                  }
+                  updatedSwipeAction = swipeActions['rightPrimary'];
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = SwipeAction.save;
+                  updatedSwipeAction = swipeActions['rightSecondary'];
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
                   updatedSwipeAction = null;
+                }
+
+                // Change the swipe action to edit for comments
+                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                  updatedSwipeAction = SwipeAction.edit;
                 }
 
                 setState(() {
@@ -179,20 +187,28 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               background: dismissDirection == DismissDirection.startToEnd
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
-                      color: dismissThreshold < secondActionThreshold ? Colors.orange.shade700 : Colors.blue.shade700,
+                      color: swipeAction == null
+                          ? Colors.orange.shade700.withOpacity(dismissThreshold / firstActionThreshold)
+                          : dismissThreshold < secondActionThreshold
+                              ? Colors.orange.shade700
+                              : Colors.blue.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.north : Icons.south),
+                        child: swipeAction == null ? Container() : Icon(dismissThreshold < secondActionThreshold ? Icons.north : Icons.south),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: dismissThreshold < secondActionThreshold ? Colors.green.shade700 : Colors.purple.shade700,
+                      color: swipeAction == null
+                          ? Colors.green.shade700.withOpacity(dismissThreshold / firstActionThreshold)
+                          : dismissThreshold < secondActionThreshold
+                              ? Colors.green.shade700
+                              : Colors.purple.shade700,
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
+                        child: swipeAction == null ? Container() : Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
                       ),
                     ),
               child: Column(
