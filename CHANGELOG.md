@@ -1,6 +1,15 @@
 ## Unreleased
 ### Added
 - Added colour to username in comments to distinguish your own comments
+- Added option to allow text preview on text posts in normal view - contribution from @coslu
+
+### Changed
+- Adjusted visual feedback in comment swipe gestures
+- Added option in settings to enable/disable swipe on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
+- Added option in settings to enable/disable double-tap on bottom navigation bar to open sidebar on feed page - contribution from @bactaholic
+
+### Fixed
+- Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
