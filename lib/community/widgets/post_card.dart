@@ -3,19 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/theme.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
-import 'package:thunder/post/widgets/comment_card.dart';
+import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCard extends StatefulWidget {
@@ -38,11 +40,61 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  /// The current point at which the user drags the comment
   double dismissThreshold = 0;
-  DismissDirection? dismissDirection;
+
+  /// The current swipe action that would be performed if the user let go off the screen
   SwipeAction? swipeAction;
 
-  int rebuildCount = 0;
+  /// Determines the direction that the user is allowed to drag (to enable/disable swipe gestures)
+  DismissDirection? dismissDirection;
+
+  /// The first action threshold to trigger the left or right actions (upvote/reply)
+  double firstActionThreshold = 0.15;
+
+  /// The second action threshold to trigger the left or right actions (downvote/save)
+  double secondActionThreshold = 0.35;
+
+  Map<String, SwipeAction> swipeActions = {
+    'leftPrimary': SwipeAction.upvote,
+    'leftSecondary': SwipeAction.downvote,
+    'rightPrimary': SwipeAction.reply,
+    'rightSecondary': SwipeAction.save,
+  };
+
+  @override
+  void initState() {
+    // Set the correct swipe actions from settings
+    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+
+    if (prefs != null) {
+      swipeActions = {
+        'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
+        'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
+        'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
+        'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
+      };
+    }
+
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant PostCard oldWidget) {
+    // Set the correct swipe actions from settings
+    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+
+    if (prefs != null) {
+      swipeActions = {
+        'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
+        'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
+        'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
+        'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
+      };
+    }
+
+    super.didUpdateWidget(oldWidget);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,30 +119,16 @@ class _PostCardState extends State<PostCard> {
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
-      onPointerUp: (event) {
-        if (swipeAction == SwipeAction.upvote) {
-          widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
-        }
-
-        if (swipeAction == SwipeAction.downvote) {
-          widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
-        }
-
-        if (swipeAction == SwipeAction.reply) {
-          SnackBar snackBar = const SnackBar(
-            content: Text('Replying from this view is currently not supported yet'),
-            behavior: SnackBarBehavior.floating,
-          );
-
-          if (context.mounted) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }
-        }
-
-        if (swipeAction == SwipeAction.save) {
-          widget.onSaveAction(!saved);
-        }
+      onPointerUp: (event) => {
+        triggerPostAction(
+          context: context,
+          swipeAction: swipeAction,
+          onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
+          onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+          voteType: myVote ?? VoteType.none,
+          saved: saved,
+          postViewMedia: widget.postViewMedia,
+        ),
       },
       onPointerCancel: (event) => {},
       child: Dismissible(
@@ -102,47 +140,51 @@ class _PostCardState extends State<PostCard> {
           return false;
         },
         onUpdate: (DismissUpdateDetails details) {
-          SwipeAction? _swipeAction;
+          SwipeAction? updatedSwipeAction;
 
-          if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.startToEnd) {
-            _swipeAction = SwipeAction.upvote;
-            if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
-          } else if (details.progress > 0.3 && details.direction == DismissDirection.startToEnd) {
-            _swipeAction = SwipeAction.downvote;
-            if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
-          } else if (details.progress > 0.1 && details.progress < 0.3 && details.direction == DismissDirection.endToStart) {
-            _swipeAction = SwipeAction.reply;
-            if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
-          } else if (details.progress > 0.3 && details.direction == DismissDirection.endToStart) {
-            _swipeAction = SwipeAction.save;
-            if (swipeAction != _swipeAction) HapticFeedback.mediumImpact();
+          if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+            updatedSwipeAction = swipeActions['leftPrimary'];
+            if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+          } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+            updatedSwipeAction = swipeActions['leftSecondary'];
+            if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+          } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+            updatedSwipeAction = swipeActions['rightPrimary'];
+            if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+          } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+            updatedSwipeAction = swipeActions['rightSecondary'];
+            if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
           } else {
-            _swipeAction = null;
+            updatedSwipeAction = null;
           }
 
           setState(() {
             dismissThreshold = details.progress;
             dismissDirection = details.direction;
-            swipeAction = _swipeAction;
+            swipeAction = updatedSwipeAction;
           });
         },
         background: dismissDirection == DismissDirection.startToEnd
             ? AnimatedContainer(
                 alignment: Alignment.centerLeft,
-                color: dismissThreshold < 0.3 ? Colors.orange.shade700 : Colors.blue.shade700,
+                color: swipeAction == null
+                    ? getSwipeActionColor(swipeActions['leftPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                    : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                 duration: const Duration(milliseconds: 200),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * dismissThreshold,
-                  child: Icon(dismissThreshold < 0.3 ? Icons.north : Icons.south),
+                  child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                 ),
               )
             : AnimatedContainer(
                 alignment: Alignment.centerRight,
-                color: dismissThreshold < 0.3 ? Colors.green.shade700 : Colors.purple.shade700,
+                color: swipeAction == null
+                    ? getSwipeActionColor(swipeActions['rightPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                    : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                 duration: const Duration(milliseconds: 200),
                 child: SizedBox(
                   width: MediaQuery.of(context).size.width * dismissThreshold,
-                  child: Icon(dismissThreshold < 0.3 ? Icons.reply : Icons.star_rounded),
+                  child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                 ),
               ),
         child: Column(

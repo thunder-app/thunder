@@ -4,6 +4,7 @@
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
 - Added option to share media link or external URL links in the dialog popup on post long press
 - Added back featured post icon on posts within a community
+- Added ability to customize swipe gestures on comments and posts
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
@@ -17,6 +18,7 @@
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
 - Improved performance for comment threads with a lot of comments
+- Fixed issue where the last comment on a thread could potentially not show up
 
 ## 0.2.1+10 - 2023-07-02
 ### Added

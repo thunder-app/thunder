@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -52,5 +53,39 @@ void triggerCommentAction({
       break;
     default:
       break;
+  }
+}
+
+IconData? getSwipeActionIcon(SwipeAction swipeAction) {
+  switch (swipeAction) {
+    case SwipeAction.upvote:
+      return Icons.north_rounded;
+    case SwipeAction.downvote:
+      return Icons.south_rounded;
+    case SwipeAction.reply:
+      return Icons.reply_rounded;
+    case SwipeAction.edit:
+      return Icons.edit;
+    case SwipeAction.save:
+      return Icons.save;
+    default:
+      return null;
+  }
+}
+
+Color getSwipeActionColor(SwipeAction swipeAction) {
+  switch (swipeAction) {
+    case SwipeAction.upvote:
+      return Colors.orange.shade700;
+    case SwipeAction.downvote:
+      return Colors.blue.shade700;
+    case SwipeAction.reply:
+      return Colors.green.shade700;
+    case SwipeAction.edit:
+      return Colors.green.shade700;
+    case SwipeAction.save:
+      return Colors.purple.shade700;
+    default:
+      return Colors.transparent;
   }
 }

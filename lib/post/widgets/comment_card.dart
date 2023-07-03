@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
@@ -10,8 +12,6 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
-enum SwipeAction { upvote, downvote, reply, save, edit }
 
 class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
@@ -92,6 +92,21 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   @override
   void initState() {
     isHidden = widget.collapsed;
+
+    // Set the correct swipe actions from settings
+    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+
+    if (prefs != null) {
+      setState(() {
+        swipeActions = {
+          'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name),
+          'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name),
+          'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name),
+          'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name),
+        };
+      });
+    }
+
     super.initState();
   }
 
@@ -186,27 +201,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
                       color: swipeAction == null
-                          ? Colors.orange.shade700.withOpacity(dismissThreshold / firstActionThreshold)
-                          : dismissThreshold < secondActionThreshold
-                              ? Colors.orange.shade700
-                              : Colors.blue.shade700,
+                          ? getSwipeActionColor(swipeActions['leftPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(dismissThreshold < secondActionThreshold ? Icons.north : Icons.south),
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
                       color: swipeAction == null
-                          ? Colors.green.shade700.withOpacity(dismissThreshold / firstActionThreshold)
-                          : dismissThreshold < secondActionThreshold
-                              ? Colors.green.shade700
-                              : Colors.purple.shade700,
+                          ? getSwipeActionColor(swipeActions['rightPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                       ),
                     ),
               child: Column(
