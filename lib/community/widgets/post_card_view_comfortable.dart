@@ -64,7 +64,8 @@ class PostCardViewComfortable extends StatelessWidget {
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
               padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
-              child: Text(textContent,
+              child: Text(
+                textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
@@ -99,6 +100,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         comments: postViewMedia.postView.counts.comments,
                         published: postViewMedia.postView.post.published,
                         saved: postViewMedia.postView.saved,
+                        distinguised: postViewMedia.postView.post.featuredCommunity,
                       )
                     ],
                   ),

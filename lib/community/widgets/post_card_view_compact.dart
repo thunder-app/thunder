@@ -74,6 +74,7 @@ class PostCardViewCompact extends StatelessWidget {
                   comments: postViewMedia.postView.counts.comments,
                   published: postViewMedia.postView.post.published,
                   saved: postViewMedia.postView.saved,
+                  distinguised: postViewMedia.postView.post.featuredCommunity,
                 )
               ],
             ),

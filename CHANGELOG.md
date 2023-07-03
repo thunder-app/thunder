@@ -3,6 +3,7 @@
 - Added colour to username in comments to distinguish your own comments
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
 - Added option to share media link or external URL links in the dialog popup on post long press
+- Added back featured post icon on posts within a community
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures

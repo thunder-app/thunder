@@ -126,6 +126,7 @@ class PostSubview extends StatelessWidget {
               comments: postView.counts.comments,
               published: post.published,
               saved: postView.saved,
+              distinguised: postViewMedia.postView.post.featuredCommunity,
             ),
           ),
           const Divider(),
