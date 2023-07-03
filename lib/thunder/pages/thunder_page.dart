@@ -56,9 +56,9 @@ class _ThunderState extends State<Thunder> {
 
   void _handleDragUpdate(DragUpdateDetails details) async {
     final prefs = await SharedPreferences.getInstance();
-    final bool swipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+    final bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
-    if(swipeGestures == true){
+    if(bottomNavBarSwipeGestures == true){
       final currentPosition = details.globalPosition.dx;
       final delta = currentPosition - _dragStartX;
       if (delta > 0 && selectedPageIndex == 0) {
@@ -76,11 +76,11 @@ class _ThunderState extends State<Thunder> {
   void _handleDoubleTap() async {
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
     final prefs = await SharedPreferences.getInstance();
-    final bool doubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+    final bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
-    if (doubleTapGestures == true && scaffoldState == true) {
+    if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
       _feedScaffoldKey.currentState?.closeDrawer();
-    } else if (doubleTapGestures == true && scaffoldState == false) {
+    } else if (bottomNavBarDoubleTapGestures == true && scaffoldState == false) {
       _feedScaffoldKey.currentState?.openDrawer();
     }
   }
