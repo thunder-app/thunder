@@ -32,7 +32,7 @@ dependencies:
   lemmy_api_client:
     git:
       url: https://github.com/hjiangsu/lemmy_api_client.git
-      ref: 03ffe34
+      ref: e08c0b7
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

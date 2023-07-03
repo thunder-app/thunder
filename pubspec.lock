@@ -437,8 +437,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "03ffe34"
-      resolved-ref: "03ffe341d1d36d4fb25f132d8db9cb03ba30108a"
+      ref: e08c0b7
+      resolved-ref: e08c0b764aabf1ba41a1da47d917bd4e09972c54
       url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"

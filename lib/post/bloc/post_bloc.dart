@@ -100,7 +100,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
             postId: postView?.postView.post.id,
-            sort: SortType.hot,
+            sort: CommentSortType.hot,
             limit: commentLimit,
           ))
               .timeout(timeout, onTimeout: () {
@@ -156,7 +156,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               auth: account?.jwt,
               communityId: state.communityId,
               postId: state.postId,
-              sort: SortType.hot,
+              sort: CommentSortType.hot,
               limit: commentLimit,
               page: 1,
             ))
@@ -187,7 +187,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             auth: account?.jwt,
             communityId: state.communityId,
             postId: state.postId,
-            sort: SortType.hot,
+            sort: CommentSortType.hot,
             limit: commentLimit,
             page: state.commentPage,
           ))
