@@ -1,7 +1,8 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -74,7 +75,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      SortType defaultSortType = SortType.values.byName(prefs
+      CommentSortType defaultSortType = CommentSortType.values.byName(prefs
               .getString("setting_post_default_comment_sort_type")
               ?.toLowerCase() ??
           DEFAULT_COMMENT_SORT_TYPE.name);
@@ -115,13 +116,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
           }
 
+          CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
           List<CommentView> getCommentsResponse = await lemmy
               .run(GetComments(
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
             postId: postView?.postView.post.id,
-            sort: CommentSortType.hot,
+            sort: sortType,
             limit: commentLimit,
           ))
               .timeout(timeout, onTimeout: () {
@@ -141,6 +144,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               commentCount: getCommentsResponse.length,
               hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
               communityId: postView?.postView.post.communityId,
+              sortType: sortType
             ),
           );
         } catch (e, s) {
@@ -160,6 +164,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
   Future<void> _getPostCommentsEvent(event, emit) async {
     int attemptCount = 0;
 
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    CommentSortType defaultSortType = CommentSortType.values.byName(prefs
+        .getString("setting_post_default_comment_sort_type")
+        ?.toLowerCase() ??
+        DEFAULT_COMMENT_SORT_TYPE.name);
+
+    CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
     try {
       var exception;
 
@@ -177,7 +189,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               auth: account?.jwt,
               communityId: state.communityId,
               postId: state.postId,
-              sort: CommentSortType.hot,
+              sort: sortType,
               limit: commentLimit,
               page: 1,
             ))
@@ -195,6 +207,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 commentPage: 1,
                 commentCount: getCommentsResponse.length,
                 hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                sortType: sortType
               ),
             );
           }
@@ -208,7 +221,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             auth: account?.jwt,
             communityId: state.communityId,
             postId: state.postId,
-            sort: CommentSortType.hot,
+            sort: sortType,
             limit: commentLimit,
             page: state.commentPage,
           ))
