@@ -230,11 +230,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> formattedPosts = await parsePostViews(posts);
 
+            Set<int> postIds = {};
+            for (PostViewMedia post in formattedPosts) {
+              postIds.add(post.postView.post.id);
+            }
+
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
                 page: 2,
                 postViews: formattedPosts,
+                postIds: postIds,
                 listingType: listingType,
                 communityId: communityId,
                 communityName: event.communityName,
@@ -270,13 +276,25 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             // Parse the posts, and append them to the existing list
             List<PostViewMedia> postMedias = await parsePostViews(posts);
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
-            postViews.addAll(postMedias);
+            Set<int> postIds = Set.from(state.postIds ?? {});
+
+            // Insure we don't add existing posts to view
+            for (PostViewMedia postMedia in postMedias) {
+              int id = postMedia.postView.post.id;
+              if (postIds.contains(id)) {
+                continue;
+              }
+
+              postIds.add(id);
+              postViews.add(postMedia);
+            }
 
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
                 page: state.page + 1,
                 postViews: postViews,
+                postIds: postIds,
                 communityId: communityId,
                 communityName: state.communityName,
                 listingType: listingType,
