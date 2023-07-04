@@ -7,9 +7,10 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/utils/font_size.dart';
 import 'package:thunder/utils/instance.dart';
 
-class PostCardViewCompact extends StatelessWidget {
+class PostCardViewCompact extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
@@ -24,6 +25,35 @@ class PostCardViewCompact extends StatelessWidget {
   });
 
   @override
+  State<PostCardViewCompact> createState() => _PostCardViewCompactState();
+}
+
+class _PostCardViewCompactState extends State<PostCardViewCompact> {
+  double titleFontSizeScaleFactor = 1.0;
+  double contentFontSizeScaleFactor = 1.0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant PostCardViewCompact oldWidget) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.didUpdateWidget(oldWidget);
+  }
+
+  Future<void> _initPreferences() async {
+    Map<String, double> textScaleFactor = await getTextScaleFactor();
+
+    setState(() {
+      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? 1.0;
+      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? 1.0;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
@@ -33,14 +63,14 @@ class PostCardViewCompact extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!showThumbnailPreviewOnRight)
+          if (!widget.showThumbnailPreviewOnRight)
             MediaView(
-              postView: postViewMedia,
+              postView: widget.postViewMedia,
               showFullHeightImages: false,
-              hideNsfwPreviews: hideNsfwPreviews,
+              hideNsfwPreviews: widget.hideNsfwPreviews,
               viewMode: ViewMode.compact,
             ),
-          if (!showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
+          if (!widget.showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -50,41 +80,43 @@ class PostCardViewCompact extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    Text(postViewMedia.postView.post.name,
+                    Text(widget.postViewMedia.postView.post.name,
+                        textScaleFactor: titleFontSizeScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                          color: widget.postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                         )),
                     const SizedBox(height: 4.0),
                     GestureDetector(
                       child: Text(
-                        '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
+                        '${widget.postViewMedia.postView.community.name}${widget.showInstanceName ? ' · ${fetchInstanceNameFromUrl(widget.postViewMedia.postView.community.actorId)}' : ''}',
+                        textScaleFactor: contentFontSizeScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                          color: widget.postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
-                      onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
+                      onTap: () => onTapCommunityName(context, widget.postViewMedia.postView.community.id),
                     ),
                     const SizedBox(height: 8.0),
                   ],
                 ),
                 PostCardMetaData(
-                  score: postViewMedia.postView.counts.score,
-                  voteType: postViewMedia.postView.myVote ?? VoteType.none,
-                  comments: postViewMedia.postView.counts.comments,
-                  published: postViewMedia.postView.post.published,
-                  saved: postViewMedia.postView.saved,
-                  distinguised: postViewMedia.postView.post.featuredCommunity,
+                  score: widget.postViewMedia.postView.counts.score,
+                  voteType: widget.postViewMedia.postView.myVote ?? VoteType.none,
+                  comments: widget.postViewMedia.postView.counts.comments,
+                  published: widget.postViewMedia.postView.post.published,
+                  saved: widget.postViewMedia.postView.saved,
+                  distinguised: widget.postViewMedia.postView.post.featuredCommunity,
                 )
               ],
             ),
           ),
-          if (showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
-          if (showThumbnailPreviewOnRight)
+          if (widget.showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
+          if (widget.showThumbnailPreviewOnRight)
             MediaView(
-              postView: postViewMedia,
+              postView: widget.postViewMedia,
               showFullHeightImages: false,
-              hideNsfwPreviews: hideNsfwPreviews,
+              hideNsfwPreviews: widget.hideNsfwPreviews,
               viewMode: ViewMode.compact,
             ),
         ],

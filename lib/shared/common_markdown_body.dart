@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/font_size.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -12,11 +13,40 @@ import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
-class CommonMarkdownBody extends StatelessWidget {
+class CommonMarkdownBody extends StatefulWidget {
   final String body;
   final bool isSelectableText;
 
   const CommonMarkdownBody({super.key, required this.body, String? data, this.isSelectableText = false});
+
+  @override
+  State<CommonMarkdownBody> createState() => _CommonMarkdownBodyState();
+}
+
+class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
+  double titleFontSizeScaleFactor = 1.0;
+  double contentFontSizeScaleFactor = 1.0;
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.initState();
+  }
+
+  @override
+  void didUpdateWidget(covariant CommonMarkdownBody oldWidget) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    super.didUpdateWidget(oldWidget);
+  }
+
+  Future<void> _initPreferences() async {
+    Map<String, double> textScaleFactor = await getTextScaleFactor();
+
+    setState(() {
+      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? 1.0;
+      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? 1.0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +58,7 @@ class CommonMarkdownBody extends StatelessWidget {
     } catch (e) {}
 
     return MarkdownBody(
-      data: body,
+      data: widget.body,
       imageBuilder: (uri, title, alt) {
         return ImagePreview(
           url: uri.toString(),
@@ -37,7 +67,7 @@ class CommonMarkdownBody extends StatelessWidget {
           showFullHeightImages: true,
         );
       },
-      selectable: isSelectableText,
+      selectable: widget.isSelectableText,
       onTapLink: (text, url, title) {
         String? communityName = checkLemmyInstanceUrl(text);
         if (communityName != null) {
@@ -67,6 +97,7 @@ class CommonMarkdownBody extends StatelessWidget {
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+        textScaleFactor: contentFontSizeScaleFactor,
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,
