@@ -229,8 +229,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> formattedPosts = await parsePostViews(posts);
 
-            var postIds = <int>{};
-            for (var post in formattedPosts) {
+            Set<int> postIds = {};
+            for (PostViewMedia post in formattedPosts) {
               postIds.add(post.postView.post.id);
             }
 
@@ -278,8 +278,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             Set<int> postIds = Set.from(state.postIds ?? {});
 
             // Insure we don't add existing posts to view
-            for (var postMedia in postMedias) {
-              var id = postMedia.postView.post.id;
+            for (PostViewMedia postMedia in postMedias) {
+              int id = postMedia.postView.post.id;
               if (postIds.contains(id)) {
                 continue;
               }
