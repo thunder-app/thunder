@@ -24,6 +24,7 @@ class MediaView extends StatefulWidget {
   final PostViewMedia? postView;
   final bool showFullHeightImages;
   final bool hideNsfwPreviews;
+  final bool edgeToEdgeImages;
   final ViewMode viewMode;
 
   const MediaView({
@@ -31,6 +32,7 @@ class MediaView extends StatefulWidget {
     this.post,
     this.postView,
     this.showFullHeightImages = true,
+    this.edgeToEdgeImages = false,
     required this.hideNsfwPreviews,
     this.viewMode = ViewMode.comfortable,
   });
@@ -88,6 +90,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         mediaHeight: widget.postView!.media.first.height,
         mediaWidth: widget.postView!.media.first.width,
         showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
+        // edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
         viewMode: widget.viewMode,
       );
     }
@@ -118,7 +121,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         ),
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -147,7 +150,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
-    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
+    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
@@ -159,7 +162,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         cache: true,
         clearMemoryCacheWhenDispose: true,
         cacheWidth:
-            widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+            widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
         loadStateChanged: (ExtendedImageState state) {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
