@@ -35,7 +35,7 @@ class CommentSubview extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListView.builder(
-      addSemanticIndexes: false,
+      // addSemanticIndexes: false,
       controller: scrollController,
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {

@@ -244,8 +244,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    excludeFromSemantics: true,
-                    behavior: HitTestBehavior.opaque,
+                    behavior: HitTestBehavior.translucent,
                     onTap: () => setState(() => isHidden = !isHidden),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +291,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             child: isHidden
                 ? Container()
                 : ListView.builder(
-                    addSemanticIndexes: false,
+                    // addSemanticIndexes: false,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => CommentCard(
