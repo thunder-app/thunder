@@ -47,8 +47,8 @@ class PostCardViewComfortable extends StatefulWidget {
 }
 
 class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
-  double titleFontSizeScaleFactor = 1.0;
-  double contentFontSizeScaleFactor = 1.0;
+  double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   @override
   void initState() {
@@ -66,8 +66,8 @@ class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
     Map<String, double> textScaleFactor = await getTextScaleFactor();
 
     setState(() {
-      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? 1.0;
-      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? 1.0;
+      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
+      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
     });
   }
 

@@ -4,6 +4,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
@@ -29,8 +30,8 @@ class PostCardViewCompact extends StatefulWidget {
 }
 
 class _PostCardViewCompactState extends State<PostCardViewCompact> {
-  double titleFontSizeScaleFactor = 1.0;
-  double contentFontSizeScaleFactor = 1.0;
+  double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   @override
   void initState() {
@@ -48,8 +49,8 @@ class _PostCardViewCompactState extends State<PostCardViewCompact> {
     Map<String, double> textScaleFactor = await getTextScaleFactor();
 
     setState(() {
-      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? 1.0;
-      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? 1.0;
+      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
+      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
     });
   }
 

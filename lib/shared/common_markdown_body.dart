@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/font_size.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -24,8 +25,8 @@ class CommonMarkdownBody extends StatefulWidget {
 }
 
 class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
-  double titleFontSizeScaleFactor = 1.0;
-  double contentFontSizeScaleFactor = 1.0;
+  double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   @override
   void initState() {
@@ -43,8 +44,8 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
     Map<String, double> textScaleFactor = await getTextScaleFactor();
 
     setState(() {
-      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? 1.0;
-      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? 1.0;
+      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
+      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
     });
   }
 

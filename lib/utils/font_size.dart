@@ -7,8 +7,8 @@ Future<Map<String, double>> getTextScaleFactor() async {
   String? titleFontSizeScaleString = prefs.getString("setting_theme_title_font_size_scale");
   String? contentFontSizeScaleString = prefs.getString("setting_theme_content_font_size_scale");
 
-  double _titleFontSizeScaleFactor = 1.0;
-  double _contentFontSizeScaleFactor = 1.0;
+  double _titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double _contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   if (titleFontSizeScaleString != null) {
     _titleFontSizeScaleFactor = FontScale.values.byName(titleFontSizeScaleString).textScaleFactor;
