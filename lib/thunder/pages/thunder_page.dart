@@ -5,6 +5,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
@@ -32,6 +33,8 @@ class _ThunderState extends State<Thunder> {
   int selectedPageIndex = 0;
   PageController pageController = PageController(initialPage: 0);
 
+  final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
+
   bool hasShownUpdateDialog = false;
   bool hasShownSentryDialog = false;
 
@@ -46,21 +49,26 @@ class _ThunderState extends State<Thunder> {
     super.dispose();
   }
 
+  /// This is used for the swipe drag gesture on the bottom nav bar
   double _dragStartX = 0.0;
-
-  final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
 
   void _handleDragStart(DragStartDetails details) {
     _dragStartX = details.globalPosition.dx;
   }
 
+  void _handleDragEnd(DragEndDetails details) {
+    _dragStartX = 0.0;
+  }
+
+  // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
-    final prefs = await SharedPreferences.getInstance();
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
     final bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
       final delta = currentPosition - _dragStartX;
+
       if (delta > 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.openDrawer();
       } else if (delta < 0 && selectedPageIndex == 0) {
@@ -69,13 +77,11 @@ class _ThunderState extends State<Thunder> {
     }
   }
 
-  void _handleDragEnd(DragEndDetails details) {
-    _dragStartX = 0.0;
-  }
-
+  // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
-    final prefs = await SharedPreferences.getInstance();
     final bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
@@ -87,6 +93,8 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThunderBloc()),
@@ -130,8 +138,8 @@ class _ThunderState extends State<Thunder> {
                           return const Center(child: CircularProgressIndicator());
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
-                          bool showInAppUpdateNotification = thunderBlocState.preferences?.getBool('setting_notifications_show_inapp_update') ?? true;
-                          bool? enableSentryErrorTracking = thunderBlocState.preferences?.getBool('setting_error_tracking_enable_sentry');
+                          bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+                          bool? enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry');
 
                           if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -251,7 +259,9 @@ class _ThunderState extends State<Thunder> {
   // Update notification
   void showUpdateNotification(BuildContext context, Version? version) {
     final theme = Theme.of(context);
-    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    final openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
 
     showSimpleNotification(
       GestureDetector(
@@ -287,6 +297,7 @@ class _ThunderState extends State<Thunder> {
   // Sentry opt-in notification
   void showSentryNotification(BuildContext thunderBlocContext) {
     final theme = Theme.of(context);
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
     showOverlay(
       (context, t) {
@@ -326,14 +337,14 @@ class _ThunderState extends State<Thunder> {
                               TextButton(
                                 child: const Text('Allow'),
                                 onPressed: () {
-                                  thunderBlocContext.read<ThunderBloc>().state.preferences?.setBool('setting_error_tracking_enable_sentry', true);
+                                  prefs.setBool('setting_error_tracking_enable_sentry', true);
                                   OverlaySupportEntry.of(context)!.dismiss();
                                 },
                               ),
                               TextButton(
                                 child: const Text('Do not allow'),
                                 onPressed: () {
-                                  thunderBlocContext.read<ThunderBloc>().state.preferences?.setBool('setting_error_tracking_enable_sentry', false);
+                                  prefs.setBool('setting_error_tracking_enable_sentry', false);
                                   OverlaySupportEntry.of(context)!.dismiss();
                                 },
                               ),

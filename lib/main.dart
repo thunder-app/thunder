@@ -13,6 +13,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -45,7 +46,9 @@ void main() async {
   await DB.instance.database;
 
   // Load up SharedPreferences to check if Sentry error tracking is enabled - it is disabled by default
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await UserPreferences.instance.refetchPreferences();
+
+  SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
   bool enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
   String? sentryDSN = enableSentryErrorTracking ? dotenv.env['SENTRY_DSN'] : null;
 
