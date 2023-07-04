@@ -121,7 +121,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
 
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -172,23 +172,42 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                 if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
                   updatedSwipeAction = swipeActions['leftPrimary'];
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
                   updatedSwipeAction = swipeActions['leftSecondary'];
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
                   updatedSwipeAction = swipeActions['rightPrimary'];
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
                   updatedSwipeAction = swipeActions['rightSecondary'];
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
                   updatedSwipeAction = null;
-                }
-
-                // Change the swipe action to edit for comments
-                if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                  updatedSwipeAction = SwipeAction.edit;
                 }
 
                 setState(() {

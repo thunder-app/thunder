@@ -24,6 +24,8 @@
 - Fixed issue where markdown links were not respecting "open in external browser" option - contribution from @Fmstrat
 - Fixed issue with download media not working on Android for some users - contribution from @minicit
 - Fixed issue where media download button appearance in light mode - contribution from @coslu
+- Fixed issue where commenting would bring you out of the post
+- Fixed issue where you could not edit your comment in some instances when using your display name
 
 ## 0.2.1+10 - 2023-07-02
 ### Added

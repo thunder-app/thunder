@@ -107,6 +107,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
+        // Fetch the account to get the id
+        FullPersonView person = await lemmy.run(GetPersonDetails(
+          auth: loginResponse.jwt!.raw,
+          username: event.username,
+        ));
+
         // Create a new account in the database
         Uuid uuid = const Uuid();
         String accountId = uuid.v4().replaceAll('-', '').substring(0, 13);
@@ -116,6 +122,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           username: event.username,
           jwt: loginResponse.jwt?.raw,
           instance: instance,
+          userId: person.personView.person.id,
         );
 
         await Account.insertAccount(account);

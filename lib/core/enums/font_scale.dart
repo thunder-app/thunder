@@ -9,9 +9,9 @@ extension FontScaleExtension on FontScale {
   double get textScaleFactor {
     switch (this) {
       case FontScale.small:
-        return 0.8;
-      case FontScale.base:
         return 0.9;
+      case FontScale.base:
+        return 1.0;
       case FontScale.large:
         return 1.2;
       case FontScale.extraLarge:

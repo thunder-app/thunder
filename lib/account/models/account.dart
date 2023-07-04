@@ -6,21 +6,23 @@ class Account {
   final String? username;
   final String? jwt;
   final String? instance;
+  final int? userId;
 
   const Account({
     required this.id,
     this.username,
     this.jwt,
     this.instance,
+    this.userId,
   });
 
   Map<String, dynamic> toMap() {
-    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance};
+    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance, 'userId': userId};
   }
 
   @override
   String toString() {
-    return 'Account{accountId: $id, username: $username, instance: $instance}';
+    return 'Account{accountId: $id, username: $username, instance: $instance, userId: $userId}';
   }
 
   static Future<void> insertAccount(Account account) async {
@@ -47,6 +49,7 @@ class Account {
         username: maps[i]['username'],
         jwt: maps[i]['jwt'],
         instance: maps[i]['instance'],
+        userId: maps[i]['userId'],
       );
     });
   }
@@ -62,6 +65,7 @@ class Account {
       username: maps.first['username'],
       jwt: maps.first['jwt'],
       instance: maps.first['instance'],
+      userId: maps.first['userId'],
     );
   }
 
