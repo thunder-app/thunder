@@ -89,6 +89,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         },
                       ),
                     IconButton(
+                        icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          return context.read<CommunityBloc>().add(const GetCommunityPostsEvent(reset: true));
+                        }),
+                    IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
                         onPressed: () {
                           HapticFeedback.mediumImpact();
