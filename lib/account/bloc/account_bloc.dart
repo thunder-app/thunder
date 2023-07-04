@@ -32,6 +32,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
         while (attemptCount < 2) {
           try {
             LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+            emit(state.copyWith(status: AccountStatus.loading));
 
             if (account == null || account.jwt == null) {
               return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));

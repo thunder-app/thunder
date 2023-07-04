@@ -58,7 +58,7 @@ class _ThunderState extends State<Thunder> {
     final prefs = await SharedPreferences.getInstance();
     final bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
-    if(bottomNavBarSwipeGestures == true){
+    if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
       final delta = currentPosition - _dragStartX;
       if (delta > 0 && selectedPageIndex == 0) {
@@ -113,7 +113,7 @@ class _ThunderState extends State<Thunder> {
                   ],
                   child: BlocConsumer<AuthBloc, AuthState>(
                     listenWhen: (AuthState previous, AuthState current) {
-                      if (previous.account == null && current.account != null) return true;
+                      if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
                       return false;
                     },
                     listener: (context, state) {
