@@ -200,7 +200,7 @@ class _ThunderState extends State<Thunder> {
         onHorizontalDragStart: _handleDragStart,
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
-        onDoubleTap: _handleDoubleTap,
+        // onDoubleTap: _handleDoubleTap,
         child: BottomNavigationBar(
           currentIndex: selectedPageIndex,
           showSelectedLabels: false,
