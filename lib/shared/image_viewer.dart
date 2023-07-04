@@ -18,8 +18,9 @@ import 'package:device_info_plus/device_info_plus.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
+  final String heroKey;
 
-  const ImageViewer({super.key, required this.url});
+  const ImageViewer({super.key, required this.url, required this.heroKey});
 
   @override
   State<ImageViewer> createState() => _ImageViewerState();
@@ -31,14 +32,13 @@ class _ImageViewerState extends State<ImageViewer> {
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
-    if(Platform.isAndroid){
+    if (Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
-    if(androidVersionBelow33){
+    if (androidVersionBelow33) {
       await Permission.storage.request();
-    }
-    else{
+    } else {
       Map<Permission, PermissionStatus> statuses = await [
         Permission.photos,
         Permission.photosAddOnly,
@@ -79,46 +79,45 @@ class _ImageViewerState extends State<ImageViewer> {
           ],
         ),
         backgroundColor: Colors.black,
-      body: Center(
-        child: ExtendedImageSlidePage(
-          key: slidePagekey,
-          slideAxis: SlideAxis.both,
-          slideType: SlideType.onlyImage,
-          child: GestureDetector(
-            child: HeroWidget(
-              tag: widget.url,
-              slideType: SlideType.onlyImage,
-              slidePagekey: slidePagekey,
-              child: ExtendedImage.network(
-                widget.url,
-                enableSlideOutPage: true,
-                mode: ExtendedImageMode.gesture,
-                cache: true,
-                clearMemoryCacheWhenDispose: true,
-                initGestureConfigHandler: (ExtendedImageState state) {
-                  return GestureConfig(
-                    minScale: 0.9,
-                    animationMinScale: 0.7,
-                    maxScale: 4.0,
-                    animationMaxScale: 4.5,
-                    speed: 1.0,
-                    inertialSpeed: 100.0,
-                    initialScale: 1.0,
-                    inPageView: false,
-                    initialAlignment: InitialAlignment.center,
-                    reverseMousePointerScrollDirection: true,
-                    gestureDetailsIsChanged: (GestureDetails? details) {},
-                  );
-                },
+        body: Center(
+          child: ExtendedImageSlidePage(
+            key: slidePagekey,
+            slideAxis: SlideAxis.both,
+            slideType: SlideType.onlyImage,
+            child: GestureDetector(
+              child: HeroWidget(
+                tag: widget.heroKey,
+                slideType: SlideType.onlyImage,
+                slidePagekey: slidePagekey,
+                child: ExtendedImage.network(
+                  widget.url,
+                  enableSlideOutPage: true,
+                  mode: ExtendedImageMode.gesture,
+                  cache: true,
+                  clearMemoryCacheWhenDispose: true,
+                  initGestureConfigHandler: (ExtendedImageState state) {
+                    return GestureConfig(
+                      minScale: 0.9,
+                      animationMinScale: 0.7,
+                      maxScale: 4.0,
+                      animationMaxScale: 4.5,
+                      speed: 1.0,
+                      inertialSpeed: 100.0,
+                      initialScale: 1.0,
+                      inPageView: false,
+                      initialAlignment: InitialAlignment.center,
+                      reverseMousePointerScrollDirection: true,
+                      gestureDetailsIsChanged: (GestureDetails? details) {},
+                    );
+                  },
+                ),
               ),
+              onTap: () {
+                slidePagekey.currentState!.popPage();
+                Navigator.pop(context);
+              },
             ),
-            onTap: () {
-              slidePagekey.currentState!.popPage();
-              Navigator.pop(context);
-            },
           ),
-        ),
-      )
-    );
+        ));
   }
 }

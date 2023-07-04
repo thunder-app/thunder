@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -39,7 +40,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   bool isLoading = true;
 
   void setPreferences(attribute, value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     switch (attribute) {
       case 'setting_theme_use_system_theme':
@@ -81,7 +82,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     setState(() {
       // Theme Settings

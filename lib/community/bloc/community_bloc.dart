@@ -11,6 +11,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/post.dart';
 
@@ -171,7 +172,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     int attemptCount = 0;
     int limit = 20;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
     PostListingType defaultListingType;
     SortType defaultSortType;

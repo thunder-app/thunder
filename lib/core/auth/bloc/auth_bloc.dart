@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -33,7 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (account == null) return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
 
       // Set this account as the active account
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
       await Future.delayed(const Duration(seconds: 1), () {
@@ -47,7 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       // Check to see what the current active account/profile is
       // The profile will match an account in the database (through the account's id)
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
       String? activeProfileId = prefs.getString('active_profile_id');
 
       // If there is an existing jwt, remove it from the prefs
@@ -120,7 +121,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         await Account.insertAccount(account);
 
         // Set this account as the active account
-        SharedPreferences prefs = await SharedPreferences.getInstance();
+        SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
         prefs.setString('active_profile_id', accountId);
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));

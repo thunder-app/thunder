@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -55,7 +56,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool isLoading = true;
 
   void setPreferences(attribute, value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     switch (attribute) {
       // Feed Settings
@@ -157,7 +158,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     setState(() {
       // Feed Settings

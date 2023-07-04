@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -42,7 +43,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
   ];
 
   void setPreferences(attribute, value) async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     switch (attribute) {
       // Post Gestures
@@ -96,7 +97,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = await SharedPreferences.getInstance();
+    final prefs = UserPreferences.instance.sharedPreferences;
 
     setState(() {
       SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);

@@ -8,6 +8,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 
 part 'thunder_event.dart';
@@ -43,7 +44,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       Version version = await fetchVersion();
 
       // Get Preferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
       emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, preferences: prefs));
     } catch (e, s) {
@@ -56,7 +57,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
       return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
     } catch (e, s) {

@@ -3,6 +3,13 @@ import 'dart:ui';
 
 import 'package:http/http.dart' as http;
 
+import 'dart:math';
+
+String generateRandomHeroString({int? len}) {
+  Random r = Random();
+  return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
+}
+
 bool isImageUrl(String url) {
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp'];
 
