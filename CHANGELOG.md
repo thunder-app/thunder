@@ -6,6 +6,7 @@
 - Added back featured post icon on posts within a community
 - Added ability to customize swipe gestures on comments and posts
 - Added ability to develop with hot reload using docker - contribution from @Fmstrat
+- Added initial implementation for font size scaling for titles and content
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
