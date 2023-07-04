@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -10,6 +9,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/SortTypes.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -52,15 +52,46 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  SortType? sortType;
+  IconData? sortTypeIcon;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
-          ? FloatingActionButton(
+    return BlocProvider<PostBloc>(
+      create: (context)=>PostBloc(),
+      child: BlocConsumer<PostBloc,PostState>(
+        listenWhen: (previousState, currentState) {
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              sortTypeIcon = CommentSortTypes.items
+                  .firstWhere((sortTypeItem) =>
+                      sortTypeItem.sortType == currentState.sortType)
+                  .icon;
+            });
+          }
+          return true;
+        },
+        listener: (context, state) {
+
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                  onPressed: () => showSortBottomSheet(context, state),
+                ),
+              ],
+              centerTitle: false,
+              toolbarHeight: 70.0,
+            ),
+            floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
+                ? FloatingActionButton(
               onPressed: () {
                 PostBloc postBloc = context.read<PostBloc>();
 
@@ -166,6 +197,67 @@ class _PostPageState extends State<PostPage> {
           },
         ),
       ),
+    );
+  }
+
+  //TODO: More or less duplicate from community_page.dart
+  void showSortBottomSheet(BuildContext context, PostState state) {
+    final theme = Theme.of(context);
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (BuildContext bottomSheetContext) {
+        return SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Sort Options',
+                    style: theme.textTheme.titleLarge!.copyWith(),
+                  ),
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: CommentSortTypes.items.length,
+                itemBuilder: (BuildContext itemBuilderContext, int index) {
+                  return ListTile(
+                    title: Text(
+                      CommentSortTypes.items[index].label,
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    leading: Icon(CommentSortTypes.items[index].icon),
+                    onTap: () {
+                      setState(() {
+                        sortType = CommentSortTypes.items[index].sortType;
+                        sortTypeIcon = CommentSortTypes.items[index].icon;
+                      });
+
+                      context.read<PostBloc>().add(
+                        //shouldn't this be GetPostCommentsEvent?
+                        GetPostEvent(
+                            postView: widget.postView,
+                            postId: widget.postId,
+                            sortType: sortType
+                        )
+                      );
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 16.0),
+            ],
+          ),
+        );
+      },
     );
   }
 }

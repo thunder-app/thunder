@@ -122,7 +122,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           child: Stack(
             alignment: Alignment.center,
             children: [
-              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 20, sigmaY: 20), child: previewImage(context)) : previewImage(context),
+              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: previewImage(context)) : previewImage(context),
               if (hideNsfw)
                 Container(
                   alignment: Alignment.center,
@@ -130,7 +130,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: Column(
                     children: [
                       Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to unhide", textScaleFactor: 1.5),
+                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
                     ],
                   ),
                 ),

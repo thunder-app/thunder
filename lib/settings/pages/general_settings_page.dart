@@ -25,6 +25,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool useCompactView = false;
   PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
   SortType defaultSortType = DEFAULT_SORT_TYPE;
+  SortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -118,6 +119,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+      case 'setting_post_default_comment_sort_type':
+        await prefs.setString('setting_post_default_comment_sort_type', value);
+        setState(() => defaultCommentSortType =
+            SortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        break;
 
       // Link Settings
       case 'setting_general_show_link_previews':
@@ -183,6 +189,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      defaultCommentSortType = SortType.values.byName(
+          prefs.getString("setting_post_default_comment_sort_type") ??
+              DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -336,6 +345,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                        ListOption(
+                          description: 'Default Comment Sort Type',
+                          value: defaultCommentSortType,
+                          options: const [
+                            SortType.top,
+                            SortType.old,
+                            SortType.new_,
+                            SortType.hot
+                          ],
+                          icon: Icons.sort,
+                          onChanged: (value) => setPreferences(
+                              'setting_post_default_comment_sort_type',
+                              value.name),
+                          labelTransformer: (value) => value.name.capitalize
+                              .replaceAll('_', '')
+                              .replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                            return ' ${match.group(0)}';
+                          }),
                         ),
                       ],
                     ),
