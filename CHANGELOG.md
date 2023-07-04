@@ -26,6 +26,7 @@
 - Fixed issue where media download button appearance in light mode - contribution from @coslu
 - Fixed issue where commenting would bring you out of the post
 - Fixed issue where you could not edit your comment in some instances when using your display name
+- Fixed issue with duplicate posts being shown on the feed - contribution from @ajsosa
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
