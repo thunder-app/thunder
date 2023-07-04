@@ -103,7 +103,7 @@ class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: contentFontSizeScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: widget.postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                  color: widget.postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                 ),
               ),
             ),
