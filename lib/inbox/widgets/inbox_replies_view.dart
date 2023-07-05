@@ -25,10 +25,10 @@ class InboxRepliesView extends StatelessWidget {
     List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
     if (replies.isEmpty) {
-      return const Center(child: Text('No replies'));
+      return const Align(alignment: Alignment.topCenter, child: Text('No replies'));
     }
 
-    return ListView.builder(
+   return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: replies.length,
@@ -103,7 +103,6 @@ class InboxRepliesView extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
-                          PostBloc postBloc = context.read<PostBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -114,11 +113,8 @@ class InboxRepliesView extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                    ],
+                                  child: BlocProvider<InboxBloc>.value(
+                                    value: inboxBloc,
                                     child: CreateCommentModal(comment: replies[index].comment, parentCommentAuthor: replies[index].creator.name),
                                   ),
                                 ),
