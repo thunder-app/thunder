@@ -21,6 +21,8 @@
 - Decreased number of comments to fetch at a time to improve loading performance
 - Posts now load first before comment threads to make viewing posts more responsive
 - Slight changes to contrast of text in posts - contribution from @Fmstrat
+- Changed BottomNavigationBar to use NavigationBar - contribution from @TomBursch
+- Changed default design to match the material 3 theme better - contribution from @TomBursch
 
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
