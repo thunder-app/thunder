@@ -34,6 +34,7 @@
 - Fixed issue where you could not edit your comment in some instances when using your display name
 - Fixed issue with duplicate posts being shown on the feed - contribution from @ajsosa
 - Increased NSFW blur - contribution from @guigs4
+- Fixed issue where longer comment threads would not show up properly
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
