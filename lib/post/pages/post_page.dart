@@ -51,6 +51,7 @@ class _PostPageState extends State<PostPage> {
 
   CommentSortType? sortType;
   IconData? sortTypeIcon;
+  String? sortTypeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +65,9 @@ class _PostPageState extends State<PostPage> {
               if (previousState.sortType != currentState.sortType) {
                 setState(() {
                   sortType = currentState.sortType;
-                  sortTypeIcon = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType).icon;
+                  final sortTypeItem = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+                  sortTypeIcon = sortTypeItem.icon;
+                  sortTypeLabel = sortTypeItem.label;
                 });
               }
               return true;
@@ -76,6 +79,7 @@ class _PostPageState extends State<PostPage> {
                   actions: [
                     IconButton(
                       icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                      tooltip: sortTypeLabel,
                       onPressed: () => showSortBottomSheet(context, state),
                     ),
                   ],
