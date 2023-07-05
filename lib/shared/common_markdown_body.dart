@@ -20,31 +20,6 @@ class CommonMarkdownBody extends StatelessWidget {
 
   const CommonMarkdownBody({super.key, required this.body, this.isSelectableText = false});
 
-  // final double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
-  // final double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   // WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-  // }
-
-  // @override
-  // void didUpdateWidget(covariant CommonMarkdownBody oldWidget) {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
-  // Future<void> _initPreferences() async {
-  //   Map<String, double> textScaleFactor = await getTextScaleFactor();
-
-  //   setState(() {
-  //     titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
-  //     contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -92,7 +67,7 @@ class CommonMarkdownBody extends StatelessWidget {
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        // textScaleFactor: contentFontSizeScaleFactor,
+        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,

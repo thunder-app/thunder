@@ -29,10 +29,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   // Font size
   List<ListPickerItem> fontScaleOptions = [
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.small.name, payload: FontScale.small),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.base.name, payload: FontScale.base),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.large.name, payload: FontScale.large),
-    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.extraLarge.name, payload: FontScale.extraLarge),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.small.label, payload: FontScale.small),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.base.label, payload: FontScale.base),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.large.label, payload: FontScale.large),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.extraLarge.label, payload: FontScale.extraLarge),
   ];
 
   // Loading

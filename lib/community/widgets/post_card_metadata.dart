@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -45,6 +46,7 @@ class PostCardMetaData extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   text: formatNumberToK(score),
                   icon: Icon(Icons.arrow_upward,
                       size: 18.0,
@@ -57,6 +59,7 @@ class PostCardMetaData extends StatelessWidget {
                 ),
                 const SizedBox(width: 12.0),
                 IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     Icons.chat,
                     size: 17.0,
@@ -67,6 +70,7 @@ class PostCardMetaData extends StatelessWidget {
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     Icons.history_rounded,
                     size: 19.0,

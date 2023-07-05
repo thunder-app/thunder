@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -18,6 +21,7 @@ class CommentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
@@ -32,6 +36,7 @@ class CommentHeader extends StatelessWidget {
               children: [
                 Text(
                   commentViewTree.comment!.creator.name,
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
                     fontWeight: FontWeight.w500,
@@ -40,12 +45,13 @@ class CommentHeader extends StatelessWidget {
                 const SizedBox(width: 8.0),
                 Icon(
                   myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
-                  size: 12.0,
+                  size: 12.0 * state.contentFontSizeScale.textScaleFactor,
                   color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
                 ),
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(score),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
                   ),
@@ -63,6 +69,7 @@ class CommentHeader extends StatelessWidget {
               const SizedBox(width: 8.0),
               Text(
                 formatTimeToString(dateTime: commentViewTree.comment!.comment.published.toIso8601String()),
+                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onBackground,
                 ),

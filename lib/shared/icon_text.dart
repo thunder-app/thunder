@@ -6,12 +6,14 @@ class IconText extends StatelessWidget {
     required this.icon,
     required this.text,
     this.textColor,
+    this.textScaleFactor = 1.0,
     this.padding = 3.0,
   });
 
   final Icon icon;
   final String text;
   final Color? textColor;
+  final double textScaleFactor;
 
   final double padding;
 
@@ -23,7 +25,11 @@ class IconText extends StatelessWidget {
       children: [
         icon,
         SizedBox(width: padding),
-        Text(text, style: theme.textTheme.bodyMedium?.copyWith(fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.95)),
+        Text(
+          text,
+          textScaleFactor: textScaleFactor,
+          style: theme.textTheme.bodyMedium?.copyWith(fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.95),
+        ),
       ],
     );
   }
