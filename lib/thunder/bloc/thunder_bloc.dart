@@ -7,9 +7,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
+
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
-
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
@@ -60,9 +60,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
       SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
-
-      // Active Profile
-      String? currentAccountId = prefs.getString('active_profile_id');
 
       // Feed Settings
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
@@ -118,10 +115,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Theme Settings
       bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-
       String themeType = prefs.getString('setting_theme_type') ?? 'dark';
       bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
-
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale

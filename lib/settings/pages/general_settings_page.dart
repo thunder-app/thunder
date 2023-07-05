@@ -1,19 +1,17 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
-
-import '../../shared/comment_sort_picker.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -133,8 +131,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         break;
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
-        setState(() => defaultCommentSortType =
-            CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
 
       // Link Settings
@@ -203,9 +200,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
-      defaultCommentSortType = CommentSortType.values.byName(
-          prefs.getString("setting_post_default_comment_sort_type") ??
-              DEFAULT_COMMENT_SORT_TYPE.name);
+      defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -378,18 +373,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',
-                          value: ListPickerItem(label: defaultCommentSortType.value,
-                              icon: Icons.local_fire_department_rounded,
-                              payload: defaultCommentSortType),
+                          value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                           options: commentSortTypeItems,
                           icon: Icons.sort,
-                            onChanged: (_) {},
-                            customListPicker: CommentSortPicker(
-                              title: 'Comment Sort Type',
-                              onSelect: (value) {
-                                setPreferences('setting_post_default_comment_sort_type', value.payload.name);
-                              },
-                            ),
+                          onChanged: (_) {},
+                          customListPicker: CommentSortPicker(
+                            title: 'Comment Sort Type',
+                            onSelect: (value) {
+                              setPreferences('setting_post_default_comment_sort_type', value.payload.name);
+                            },
+                          ),
                         ),
                       ],
                     ),

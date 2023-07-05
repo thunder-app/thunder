@@ -1,8 +1,7 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
