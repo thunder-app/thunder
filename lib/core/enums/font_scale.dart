@@ -11,7 +11,7 @@ extension FontScaleExtension on FontScale {
       case FontScale.small:
         return 0.9;
       case FontScale.base:
-        return 1.0;
+        return 0.95;
       case FontScale.large:
         return 1.2;
       case FontScale.extraLarge:
