@@ -3,9 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/core/enums/swipe_action.dart';
 
+import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -68,13 +67,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// The second action threshold to trigger the left or right actions (downvote/save)
   double secondActionThreshold = 0.35;
 
-  Map<String, SwipeAction> swipeActions = {
-    'leftPrimary': SwipeAction.upvote,
-    'leftSecondary': SwipeAction.downvote,
-    'rightPrimary': SwipeAction.reply,
-    'rightSecondary': SwipeAction.save,
-  };
-
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -94,17 +86,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     super.initState();
 
     isHidden = widget.collapsed;
-
-    final ThunderState state = context.read<ThunderBloc>().state;
-
-    setState(() {
-      swipeActions = {
-        'leftPrimary': state.leftPrimaryCommentGesture,
-        'leftSecondary': state.leftSecondaryCommentGesture,
-        'rightPrimary': state.rightPrimaryCommentGesture,
-        'rightSecondary': state.rightSecondaryCommentGesture,
-      };
-    });
   }
 
   @override
@@ -173,7 +154,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 SwipeAction? updatedSwipeAction;
 
                 if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = swipeActions['leftPrimary'];
+                  updatedSwipeAction = state.leftPrimaryCommentGesture;
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
@@ -182,7 +163,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = swipeActions['leftSecondary'];
+                  updatedSwipeAction = state.leftSecondaryCommentGesture;
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
@@ -191,7 +172,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = swipeActions['rightPrimary'];
+                  updatedSwipeAction = state.rightPrimaryCommentGesture;
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
@@ -200,7 +181,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = swipeActions['rightSecondary'];
+                  updatedSwipeAction = state.rightSecondaryCommentGesture;
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
@@ -222,7 +203,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
                       color: swipeAction == null
-                          ? getSwipeActionColor(swipeActions['leftPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? getSwipeActionColor(state.leftPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
                           : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
@@ -233,7 +214,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
                       color: swipeAction == null
-                          ? getSwipeActionColor(swipeActions['rightPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          ? getSwipeActionColor(state.rightPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
                           : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(

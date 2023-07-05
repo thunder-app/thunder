@@ -5,8 +5,8 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -62,8 +62,8 @@ class _ThunderState extends State<Thunder> {
 
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool bottomNavBarSwipeGestures = state.bottomNavBarSwipeGestures;
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
@@ -79,8 +79,8 @@ class _ThunderState extends State<Thunder> {
 
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool bottomNavBarDoubleTapGestures = state.bottomNavBarDoubleTapGestures;
+    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
 
@@ -195,6 +195,7 @@ class _ThunderState extends State<Thunder> {
   // Generates the BottomNavigationBar
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
@@ -205,7 +206,7 @@ class _ThunderState extends State<Thunder> {
         onHorizontalDragStart: _handleDragStart,
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
-        // onDoubleTap: _handleDoubleTap,
+        onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? _handleDoubleTap : null,
         child: BottomNavigationBar(
           currentIndex: selectedPageIndex,
           showSelectedLabels: false,

@@ -57,45 +57,12 @@ class _PostCardState extends State<PostCard> {
   /// User Settings
   bool isUserLoggedIn = false;
 
-  Map<String, SwipeAction> swipeActions = {
-    'leftPrimary': SwipeAction.upvote,
-    'leftSecondary': SwipeAction.downvote,
-    'rightPrimary': SwipeAction.reply,
-    'rightSecondary': SwipeAction.save,
-  };
-
   @override
   void initState() {
     super.initState();
 
-    // Set the correct swipe actions from settings
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    ThunderState state = context.read<ThunderBloc>().state;
-
-    swipeActions = {
-      'leftPrimary': state.leftPrimaryPostGesture,
-      'leftSecondary': state.leftSecondaryPostGesture,
-      'rightPrimary': state.rightPrimaryPostGesture,
-      'rightSecondary': state.rightSecondaryPostGesture,
-    };
   }
-
-  // @override
-  // void didUpdateWidget(covariant PostCard oldWidget) {
-  //   // Set the correct swipe actions from settings
-  //   SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
-
-  //   if (prefs != null) {
-  //     swipeActions = {
-  //       'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
-  //       'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
-  //       'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
-  //       'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
-  //     };
-  //   }
-
-  //   super.didUpdateWidget(oldWidget);
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -135,16 +102,16 @@ class _PostCardState extends State<PostCard> {
           SwipeAction? updatedSwipeAction;
 
           if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-            updatedSwipeAction = swipeActions['leftPrimary'];
+            updatedSwipeAction = state.leftPrimaryPostGesture;
             if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
           } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-            updatedSwipeAction = swipeActions['leftSecondary'];
+            updatedSwipeAction = state.leftSecondaryPostGesture;
             if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
           } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-            updatedSwipeAction = swipeActions['rightPrimary'];
+            updatedSwipeAction = state.rightPrimaryPostGesture;
             if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
           } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-            updatedSwipeAction = swipeActions['rightSecondary'];
+            updatedSwipeAction = state.rightSecondaryPostGesture;
             if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
           } else {
             updatedSwipeAction = null;
@@ -160,7 +127,7 @@ class _PostCardState extends State<PostCard> {
             ? AnimatedContainer(
                 alignment: Alignment.centerLeft,
                 color: swipeAction == null
-                    ? getSwipeActionColor(swipeActions['leftPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                    ? getSwipeActionColor(state.leftPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
                     : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                 duration: const Duration(milliseconds: 200),
                 child: SizedBox(
@@ -171,7 +138,7 @@ class _PostCardState extends State<PostCard> {
             : AnimatedContainer(
                 alignment: Alignment.centerRight,
                 color: swipeAction == null
-                    ? getSwipeActionColor(swipeActions['rightPrimary'] ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                    ? getSwipeActionColor(state.rightPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
                     : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                 duration: const Duration(milliseconds: 200),
                 child: SizedBox(

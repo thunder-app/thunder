@@ -67,7 +67,7 @@ IconData? getSwipeActionIcon(SwipeAction swipeAction) {
     case SwipeAction.edit:
       return Icons.edit;
     case SwipeAction.save:
-      return Icons.save;
+      return Icons.star_rounded;
     default:
       return null;
   }
