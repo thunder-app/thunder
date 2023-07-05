@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -79,22 +80,63 @@ class ThunderApp extends StatelessWidget {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
           return DynamicColorBuilder(
-            builder: (dynamicLightColorScheme, dynamicDarkColorScheme) {
-              ColorScheme colorScheme = ColorScheme.fromSeed(
-                seedColor: Colors.blueAccent,
-                brightness: Brightness.light,
+            builder: (lightColorScheme, darkColorScheme) {
+              const FlexSubThemesData subThemeData = FlexSubThemesData(
+                interactionEffects: false,
+                tintedDisabledControls: false,
+                inputDecoratorBorderType: FlexInputBorderType.underline,
+                inputDecoratorUnfocusedBorderIsColored: false,
+                tooltipRadius: 4,
+                tooltipSchemeColor: SchemeColor.inverseSurface,
+                tooltipOpacity: 0.9,
+                snackBarElevation: 6,
+                snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+                navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationBarMutedUnselectedLabel: false,
+                navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+                navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+                navigationBarMutedUnselectedIcon: false,
+                navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+                navigationBarIndicatorOpacity: 1.00,
+                navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationRailMutedUnselectedLabel: false,
+                navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
+                navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
+                navigationRailMutedUnselectedIcon: false,
+                navigationRailIndicatorSchemeColor: SchemeColor.secondaryContainer,
+                navigationRailIndicatorOpacity: 1.00,
+                navigationRailBackgroundSchemeColor: SchemeColor.surface,
+                navigationRailLabelType: NavigationRailLabelType.none,
               );
-              ColorScheme darkColorScheme = ColorScheme.fromSeed(
-                seedColor: Colors.lightBlue,
-                background: state.useBlackTheme ? Colors.black : null,
-                surface: state.useBlackTheme ? Colors.black : null,
-                brightness: Brightness.dark,
+
+              ThemeData theme = FlexThemeData.light(
+                scheme: FlexScheme.deepBlue,
+                useMaterial3: true, 
+                subThemesData: subThemeData,
+              );
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: FlexScheme.deepBlue,
+                darkIsTrueBlack: state.useBlackTheme,
+                useMaterial3: true,
+                subThemesData: subThemeData,
               );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
-                colorScheme = dynamicLightColorScheme?.harmonized() ?? colorScheme;
-                darkColorScheme = dynamicDarkColorScheme?.harmonized() ?? darkColorScheme;
+                theme = FlexThemeData.light(
+                  colorScheme: lightColorScheme,
+                  useMaterial3: true,
+                  subThemesData: subThemeData,
+                );
+
+                darkTheme = FlexThemeData.dark(
+                  colorScheme: darkColorScheme,
+                  darkIsTrueBlack: state.useBlackTheme,
+                  useMaterial3: true,
+                  subThemesData: subThemeData,
+                );
               }
 
               // Set navigation bar color on Android to be transparent
@@ -109,14 +151,8 @@ class ThunderApp extends StatelessWidget {
                   title: 'Thunder',
                   routerConfig: router,
                   themeMode: state.useSystemTheme ? ThemeMode.system : (state.useDarkTheme ? ThemeMode.dark : ThemeMode.light),
-                  theme: ThemeData.from(
-                    colorScheme: colorScheme, 
-                    useMaterial3: true,
-                  ),
-                  darkTheme: ThemeData.from(
-                    colorScheme: darkColorScheme,
-                    useMaterial3: true,
-                  ),
+                  theme: theme,
+                  darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
                 ),
               );
