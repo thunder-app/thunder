@@ -1,4 +1,3 @@
-
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
@@ -25,7 +24,7 @@ part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 10);
-int commentLimit = 20;
+int commentLimit = 50;
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -75,10 +74,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      CommentSortType defaultSortType = CommentSortType.values.byName(prefs
-              .getString("setting_post_default_comment_sort_type")
-              ?.toLowerCase() ??
-          DEFAULT_COMMENT_SORT_TYPE.name);
+      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -123,6 +119,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
+            maxDepth: 8,
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
@@ -136,16 +133,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(
             state.copyWith(
-              status: PostStatus.success,
-              postId: postView?.postView.post.id,
-              postView: postView,
-              comments: commentTree,
-              commentPage: state.commentPage + 1,
-              commentCount: getCommentsResponse.length,
-              hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
-              communityId: postView?.postView.post.communityId,
-              sortType: sortType
-            ),
+                status: PostStatus.success,
+                postId: postView?.postView.post.id,
+                postView: postView,
+                comments: commentTree,
+                commentResponseList: getCommentsResponse,
+                commentPage: state.commentPage + 1,
+                commentCount: getCommentsResponse.length,
+                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                communityId: postView?.postView.post.communityId,
+                sortType: sortType),
           );
         } catch (e, s) {
           exception = e;
@@ -165,10 +162,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    CommentSortType defaultSortType = CommentSortType.values.byName(prefs
-        .getString("setting_post_default_comment_sort_type")
-        ?.toLowerCase() ??
-        DEFAULT_COMMENT_SORT_TYPE.name);
+    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -191,6 +185,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postId: state.postId,
               sort: sortType,
               limit: commentLimit,
+              maxDepth: 8,
               page: 1,
             ))
                 .timeout(timeout, onTimeout: () {
@@ -202,18 +197,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             return emit(
               state.copyWith(
-                status: PostStatus.success,
-                comments: commentTree,
-                commentPage: 1,
-                commentCount: getCommentsResponse.length,
-                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
-                sortType: sortType
-              ),
+                  status: PostStatus.success,
+                  comments: commentTree,
+                  commentResponseList: getCommentsResponse,
+                  commentPage: 1,
+                  commentCount: getCommentsResponse.length,
+                  hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                  sortType: sortType),
             );
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || state.hasReachedCommentEnd) return;
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy
@@ -223,25 +218,26 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postId: state.postId,
             sort: sortType,
             limit: commentLimit,
+            maxDepth: 8,
             page: state.commentPage,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch more comments');
           });
 
-          // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+          // Combine all of the previous comments list
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseList)..addAll(getCommentsResponse);
 
-          // Append the new comments
-          List<CommentViewTree> commentViewTree = List.from(state.comments);
-          commentViewTree.addAll(commentTree);
+          // Build the tree view from the flattened comments
+          List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
 
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
             status: PostStatus.success,
             comments: commentViewTree,
+            commentResponseList: fullCommentResponseList,
             commentPage: state.commentPage + 1,
-            commentCount: state.commentCount + (getCommentsResponse.isEmpty ? commentLimit : getCommentsResponse.length),
+            commentCount: fullCommentResponseList.length,
             hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
           ));
         } catch (e, s) {
