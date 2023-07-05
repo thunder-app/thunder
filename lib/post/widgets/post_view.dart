@@ -129,7 +129,7 @@ class PostSubview extends StatelessWidget {
                     ),
                   ),
                 ),
-                Spacer(), // use Spacer
+                const Spacer(), // use Spacer
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
                   child: PostViewMetaData(
@@ -161,6 +161,7 @@ class PostSubview extends StatelessWidget {
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
                     foregroundColor: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
+                    padding: EdgeInsets.zero,
                   ),
                   child: Row(
                     children: [
@@ -200,6 +201,7 @@ class PostSubview extends StatelessWidget {
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
                     foregroundColor: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
+                    padding: EdgeInsets.zero,
                   ),
 
                   child: Row(
