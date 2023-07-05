@@ -156,7 +156,6 @@ class _ThunderState extends State<Thunder> {
 
                           return PageView(
                             controller: pageController,
-                            onPageChanged: (index) => setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
                               CommunityPage(scaffoldKey: _feedScaffoldKey),
