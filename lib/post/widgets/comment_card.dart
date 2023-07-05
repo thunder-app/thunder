@@ -93,7 +93,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
-    int score = widget.commentViewTree.comment?.counts.score ?? 0;
+    //int score = widget.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
+    int upvotes = widget.commentViewTree.comment?.counts.upvotes ?? 0;
+    int downvotes = widget.commentViewTree.comment?.counts.downvotes ?? 0;
 
     final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
 
@@ -268,15 +270,28 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                     ),
                                     const SizedBox(width: 8.0),
                                     Icon(
-                                      myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
+                                      Icons.north_rounded,
                                       size: 12.0,
-                                      color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                                      color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                                     ),
                                     const SizedBox(width: 2.0),
                                     Text(
-                                      formatNumberToK(score),
+                                      formatNumberToK(upvotes),
                                       style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                                        color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12.0),
+                                    Icon(
+                                      Icons.south_rounded,
+                                      size: 12.0,
+                                      color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                                    ),
+                                    const SizedBox(width: 2.0),
+                                    Text(
+                                      formatNumberToK(downvotes),
+                                      style: theme.textTheme.bodyMedium?.copyWith(
+                                        color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                                       ),
                                     ),
                                   ],
