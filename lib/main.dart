@@ -102,7 +102,6 @@ class ThunderApp extends StatelessWidget {
                   useMaterial3: true,
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.useBlackTheme,
-                  useMaterial3: true,
                 );
               }
 
