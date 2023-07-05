@@ -81,20 +81,61 @@ class ThunderApp extends StatelessWidget {
           }
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.useBlackTheme);
+              const FlexSubThemesData subThemeData = FlexSubThemesData(
+                interactionEffects: false,
+                tintedDisabledControls: false,
+                inputDecoratorBorderType: FlexInputBorderType.underline,
+                inputDecoratorUnfocusedBorderIsColored: false,
+                tooltipRadius: 4,
+                tooltipSchemeColor: SchemeColor.inverseSurface,
+                tooltipOpacity: 0.9,
+                snackBarElevation: 6,
+                snackBarBackgroundSchemeColor: SchemeColor.inverseSurface,
+                navigationBarSelectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationBarUnselectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationBarMutedUnselectedLabel: false,
+                navigationBarSelectedIconSchemeColor: SchemeColor.onSurface,
+                navigationBarUnselectedIconSchemeColor: SchemeColor.onSurface,
+                navigationBarMutedUnselectedIcon: false,
+                navigationBarIndicatorSchemeColor: SchemeColor.secondaryContainer,
+                navigationBarIndicatorOpacity: 1.00,
+                navigationRailSelectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationRailUnselectedLabelSchemeColor: SchemeColor.onSurface,
+                navigationRailMutedUnselectedLabel: false,
+                navigationRailSelectedIconSchemeColor: SchemeColor.onSurface,
+                navigationRailUnselectedIconSchemeColor: SchemeColor.onSurface,
+                navigationRailMutedUnselectedIcon: false,
+                navigationRailIndicatorSchemeColor: SchemeColor.secondaryContainer,
+                navigationRailIndicatorOpacity: 1.00,
+                navigationRailBackgroundSchemeColor: SchemeColor.surface,
+                navigationRailLabelType: NavigationRailLabelType.none,
+              );
+
+              ThemeData theme = FlexThemeData.light(
+                scheme: FlexScheme.deepBlue,
+                useMaterial3: true, 
+                subThemesData: subThemeData,
+              );
+              ThemeData darkTheme = FlexThemeData.dark(
+                scheme: FlexScheme.deepBlue,
+                darkIsTrueBlack: state.useBlackTheme,
+                useMaterial3: true,
+                subThemesData: subThemeData,
+              );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
-                theme = ThemeData(
+                theme = FlexThemeData.light(
                   colorScheme: lightColorScheme,
                   useMaterial3: true,
+                  subThemesData: subThemeData,
                 );
 
                 darkTheme = FlexThemeData.dark(
-                  useMaterial3: true,
                   colorScheme: darkColorScheme,
                   darkIsTrueBlack: state.useBlackTheme,
+                  useMaterial3: true,
+                  subThemesData: subThemeData,
                 );
               }
 
