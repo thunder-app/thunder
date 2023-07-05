@@ -153,6 +153,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         parentId: event.parentCommentId,
       ));
 
+      add(GetInboxEvent(showAll: !state.showUnreadOnly));
       return emit(state.copyWith(status: InboxStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);

@@ -33,6 +33,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+  bool showTextContent = false;
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
@@ -96,6 +97,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
         break;
+      case 'setting_general_show_text_content':
+        await prefs.setBool('setting_general_show_text_content', value);
+        setState(() => showTextContent = value);
+        break;
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
         setState(() => hideNsfwPreviews = value);
@@ -158,8 +163,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
 
-      defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type")?.toLowerCase() ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type")?.toLowerCase() ?? DEFAULT_SORT_TYPE.name);
+      try {
+        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      } catch (e) {
+        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+      }
 
       // Post Settings
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -168,6 +178,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
@@ -240,9 +251,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           options: allSortTypeItems,
                           icon: Icons.sort,
                           onChanged: (_) {},
-                          customListPicker: SortPicker(title: 'Default Sort Type', onSelect: (value) {
-                            setPreferences('setting_general_default_sort_type', value.payload.name);
-                          },
+                          customListPicker: SortPicker(
+                            title: 'Default Sort Type',
+                            onSelect: (value) {
+                              setPreferences('setting_general_default_sort_type', value.payload.name);
+                            },
                           ),
                         ),
                       ],
@@ -306,6 +319,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.view_compact_rounded,
                           iconDisabled: Icons.view_compact_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
+                        ),
+                        ToggleOption(
+                            description: 'Show text content',
+                            subtitle: 'Applies to normal view only',
+                            value: showTextContent,
+                            iconEnabled: Icons.notes_rounded,
+                            iconDisabled: Icons.notes_rounded,
+                            onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
                         ),
                         ToggleOption(
                           description: 'Hide NSFW previews',

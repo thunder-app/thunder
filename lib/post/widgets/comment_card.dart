@@ -13,11 +13,11 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
 
-enum SwipeAction { upvote, downvote, reply, save }
+enum SwipeAction { upvote, downvote, reply, save, edit }
 
 class CommentCard extends StatefulWidget {
-  final Function(VoteType) onVoteAction;
-  final Function(bool) onSaveAction;
+  final Function(int, VoteType) onVoteAction;
+  final Function(int, bool) onSaveAction;
 
   const CommentCard({
     super.key,
@@ -95,6 +95,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     bool? saved = widget.commentViewTree.comment?.saved;
     int score = widget.commentViewTree.comment?.counts.score ?? 0;
 
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
+
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -121,11 +123,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             onPointerDown: (event) => {},
             onPointerUp: (event) {
               if (swipeAction == SwipeAction.upvote) {
-                widget.onVoteAction(myVote == VoteType.up ? VoteType.none : VoteType.up);
+                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.up ? VoteType.none : VoteType.up);
               }
 
               if (swipeAction == SwipeAction.downvote) {
-                widget.onVoteAction(myVote == VoteType.down ? VoteType.none : VoteType.down);
+                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.down ? VoteType.none : VoteType.down);
               }
 
               if (swipeAction == SwipeAction.reply) {
@@ -150,8 +152,32 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 );
               }
 
+              if (swipeAction == SwipeAction.edit) {
+                PostBloc postBloc = context.read<PostBloc>();
+
+                print('editing');
+
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: BlocProvider<PostBloc>.value(
+                          value: postBloc,
+                          child: CreateCommentModal(commentView: widget.commentViewTree, isEdit: true),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+
               if (swipeAction == SwipeAction.save) {
-                widget.onSaveAction(!(saved ?? false));
+                widget.onSaveAction(widget.commentViewTree.comment!.comment.id, !(saved ?? false));
               }
             },
             onPointerCancel: (event) => {},
@@ -173,7 +199,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   updatedSwipeAction = SwipeAction.downvote;
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = SwipeAction.reply;
+                  if (isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  } else {
+                    updatedSwipeAction = SwipeAction.reply;
+                  }
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
                   updatedSwipeAction = SwipeAction.save;
@@ -204,7 +234,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.reply : Icons.star_rounded),
+                        child: Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
                       ),
                     ),
               child: Column(

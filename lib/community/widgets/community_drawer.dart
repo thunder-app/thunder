@@ -90,6 +90,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     final theme = Theme.of(context);
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
+    AccountStatus status = context.read<AccountBloc>().state.status;
+
+    print(status);
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.80,
       child: SafeArea(
@@ -122,64 +125,69 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
               padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
               child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
             ),
-            (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
-                ? Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                      child: Scrollbar(
-                        controller: _scrollController,
-                        child: SingleChildScrollView(
-                          controller: _scrollController,
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: context.read<AccountBloc>().state.subsciptions.length,
-                              itemBuilder: (context, index) {
-                                CommunitySafe community = context.read<AccountBloc>().state.subsciptions[index].community;
+            (status != AccountStatus.success && status != AccountStatus.failure)
+                ? const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                : (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
+                    ? Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: Scrollbar(
+                            controller: _scrollController,
+                            child: SingleChildScrollView(
+                              controller: _scrollController,
+                              child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: context.read<AccountBloc>().state.subsciptions.length,
+                                  itemBuilder: (context, index) {
+                                    CommunitySafe community = context.read<AccountBloc>().state.subsciptions[index].community;
 
-                                return TextButton(
-                                  style: TextButton.styleFrom(
-                                    alignment: Alignment.centerLeft,
-                                    minimumSize: const Size.fromHeight(50),
-                                  ),
-                                  onPressed: () {
-                                    context.read<CommunityBloc>().add(
-                                          GetCommunityPostsEvent(
-                                            reset: true,
-                                            communityId: context.read<AccountBloc>().state.subsciptions[index].community.id,
+                                    return TextButton(
+                                      style: TextButton.styleFrom(
+                                        alignment: Alignment.centerLeft,
+                                        minimumSize: const Size.fromHeight(50),
+                                      ),
+                                      onPressed: () {
+                                        context.read<CommunityBloc>().add(
+                                              GetCommunityPostsEvent(
+                                                reset: true,
+                                                communityId: context.read<AccountBloc>().state.subsciptions[index].community.id,
+                                              ),
+                                            );
+
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            community.title,
+                                            overflow: TextOverflow.ellipsis,
+                                            maxLines: 1,
                                           ),
-                                        );
-
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        community.title,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
+                                          Text(
+                                            '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                            style: theme.textTheme.bodyMedium,
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
-                                        style: theme.textTheme.bodyMedium,
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-                    child: Text(
-                      'No subscriptions available',
-                      style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                    ),
-                  )
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                        child: Text(
+                          'No subscriptions available',
+                          style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                        ),
+                      )
           ],
         ),
       ),

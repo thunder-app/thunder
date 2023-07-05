@@ -89,7 +89,7 @@ class PostCardMetaData extends StatelessWidget {
                 saved ? Icons.star_rounded : null,
                 color: saved ? savedColor : null,
                 size: 22.0,
-                semanticLabel: saved ? 'Saved' : 'Save',
+                semanticLabel: saved ? 'Saved' : '',
               ),
           ],
         );

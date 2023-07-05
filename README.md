@@ -41,7 +41,7 @@
 </p>
 
 <p align="center">
-   <a href="#contributing">Contributing</a> •
+  <a href="#contributing">Contributing</a> •
   <a href="#building-from-source">Building From Source</a> •
   <a href="#conventions">Conventions</a> •
   <a href="#related-packages">Related Packages</a>
@@ -144,6 +144,13 @@ To build the app from source, a few steps are required.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
 3. Generate an empty `.env` file. The `.env` file holds any credentials. At the time of writing, en empty `.env` file with a comment is all that is required.
 3. Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions
+
+### Building with Docker
+
+Alternatively, you can skip the prerequisite setup and build the Android application via docker with a single command:
+```
+./scripts/docker-build-android.sh
+```
 
 ### Environment File
 This is an example of the `.env` that can be used for Thunder.

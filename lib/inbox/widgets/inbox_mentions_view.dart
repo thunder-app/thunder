@@ -98,6 +98,7 @@ class InboxMentionsView extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
+                          PostBloc postBloc = context.read<PostBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -108,8 +109,11 @@ class InboxMentionsView extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
-                                  child: BlocProvider<InboxBloc>.value(
-                                    value: inboxBloc,
+                                  child: MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
+                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                    ],
                                     child: CreateCommentModal(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name),
                                   ),
                                 ),
