@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/models/post_view_media.dart';
 
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
@@ -35,7 +35,7 @@ class CommentSubview extends StatelessWidget {
     final theme = Theme.of(context);
 
     return ListView.builder(
-      // addSemanticIndexes: false,
+      addSemanticIndexes: false,
       controller: scrollController,
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {

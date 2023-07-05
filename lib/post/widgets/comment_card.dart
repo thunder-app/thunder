@@ -91,6 +91,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   void initState() {
+    super.initState();
+
     isHidden = widget.collapsed;
 
     // Set the correct swipe actions from settings
@@ -106,8 +108,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
         };
       });
     }
-
-    super.initState();
   }
 
   @override
@@ -148,15 +148,18 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
             onPointerUp: (event) => {
-              triggerCommentAction(
-                context: context,
-                swipeAction: swipeAction,
-                onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                voteType: myVote ?? VoteType.none,
-                saved: saved,
-                commentViewTree: widget.commentViewTree,
-              ),
+              if (swipeAction != null && swipeAction != SwipeAction.none)
+                {
+                  triggerCommentAction(
+                    context: context,
+                    swipeAction: swipeAction,
+                    onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                    voteType: myVote ?? VoteType.none,
+                    saved: saved,
+                    commentViewTree: widget.commentViewTree,
+                  ),
+                }
             },
             onPointerCancel: (event) => {},
             child: Dismissible(

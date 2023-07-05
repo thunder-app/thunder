@@ -42,15 +42,10 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.95) {
-      setState(() {
-        hasScrolledToBottom = true;
-      });
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
+      if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
     } else {
-      setState(() {
-        hasScrolledToBottom = false;
-      });
+      if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
   }
 
@@ -60,161 +55,142 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUserLoggedIn = context
-        .read<AuthBloc>()
-        .state
-        .isLoggedIn;
+    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<PostBloc>(
-      create: (context)=>PostBloc(),
-      child: BlocConsumer<PostBloc,PostState>(
-        listenWhen: (previousState, currentState) {
-          if (previousState.sortType != currentState.sortType) {
-            setState(() {
-              sortType = currentState.sortType;
-              sortTypeIcon = commentSortTypeItems
-                  .firstWhere((sortTypeItem) =>
-                      sortTypeItem.payload == currentState.sortType)
-                  .icon;
-            });
-          }
-          return true;
-        },
-        listener: (context, state) {
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              actions: [
-                IconButton(
-                  icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                  onPressed: () => showSortBottomSheet(context, state),
-                ),
-              ],
-              centerTitle: false,
-              toolbarHeight: 70.0,
-            ),
-            floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
-                ? FloatingActionButton(
-              onPressed: () {
-                PostBloc postBloc = context.read<PostBloc>();
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: BlocProvider<PostBloc>.value(
-                          value: postBloc,
-                          child: CreateCommentModal(postView: widget.postView?.postView),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-              child: const Icon(
-                Icons.reply_rounded,
-                semanticLabel: 'Reply to Post',
-              ),
-            )
-          : null,
-      body: SafeArea(
+        create: (context) => PostBloc(),
         child: BlocConsumer<PostBloc, PostState>(
-          listenWhen: (previous, current) {
-            if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
-              setState(() => resetFailureMessage = true);
-            }
-            return true;
-          },
-          listener: (context, state) {
-            if (state.status == PostStatus.success && widget.postView != null) {
-              // Update the community's post
-              context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
-            }
-          },
-          builder: (context, state) {
-            if (state.status == PostStatus.failure && resetFailureMessage == true) {
-              SnackBar snackBar = SnackBar(
-                content: Row(
-                  children: [
-                    Icon(
-                      Icons.warning_rounded,
-                      color: theme.colorScheme.errorContainer,
+            listenWhen: (previousState, currentState) {
+              if (previousState.sortType != currentState.sortType) {
+                setState(() {
+                  sortType = currentState.sortType;
+                  sortTypeIcon = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType).icon;
+                });
+              }
+              return true;
+            },
+            listener: (context, state) {},
+            builder: (context, state) {
+              return Scaffold(
+                appBar: AppBar(
+                  actions: [
+                    IconButton(
+                      icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                      onPressed: () => showSortBottomSheet(context, state),
                     ),
-                    const SizedBox(width: 8.0),
-                    Flexible(
-                      child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
-                    )
                   ],
+                  centerTitle: false,
+                  toolbarHeight: 70.0,
                 ),
-                backgroundColor: theme.colorScheme.onErrorContainer,
-                behavior: SnackBarBehavior.floating,
-              );
+                floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          PostBloc postBloc = context.read<PostBloc>();
 
-              WidgetsBinding.instance.addPostFrameCallback((
-                  timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                setState(() => resetFailureMessage = false);
-              });
-            }
-            switch (state.status) {
-              case PostStatus.initial:
-                context.read<PostBloc>().add(GetPostEvent(
-                    postView: widget.postView,
-                    postId: widget.postId));
-                return const Center(
-                    child: CircularProgressIndicator());
-                case PostStatus.loading:
-                  return const Center(
-                      child: CircularProgressIndicator());
-                  case PostStatus.refreshing:
-                    case PostStatus.success:
-                      case PostStatus.failure:
-                        if (state.postView != null) {
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              HapticFeedback.mediumImpact();
-                              return context.read<PostBloc>().add(
-                                  GetPostEvent(postView: widget.postView,
-                                      postId: widget.postId));},
-                            child: PostPageSuccess(postView: state.postView!,
-                                comments: state.comments,
-                                scrollController: _scrollController,
-                                hasReachedCommentEnd: state
-                                    .hasReachedCommentEnd),
+                          showModalBottomSheet(
+                            isScrollControlled: true,
+                            context: context,
+                            showDragHandle: true,
+                            builder: (context) {
+                              return Padding(
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                                child: FractionallySizedBox(
+                                  heightFactor: 0.8,
+                                  child: BlocProvider<PostBloc>.value(
+                                    value: postBloc,
+                                    child: CreateCommentModal(postView: widget.postView?.postView),
+                                  ),
+                                ),
+                              );
+                            },
                           );
-                        }
-                        return ErrorMessage(
-                          message: state.errorMessage,
-                          action: () {
-                            context.read<PostBloc>().add(GetPostEvent(
-                                postView: widget.postView,
-                                postId: widget.postId));},
-                          actionText: 'Refresh Content',
-                        );case PostStatus.empty:return ErrorMessage(
-              message: state.errorMessage,
-              action: () {
-                context.read<PostBloc>().add(GetPostEvent(
-                    postView: widget.postView,
-                    postId: widget.postId));
-                },
-              actionText: 'Refresh Content',
-            );
-            }
-          },
-        ),
-      ),
-    );
+                        },
+                        child: const Icon(
+                          Icons.reply_rounded,
+                          semanticLabel: 'Reply to Post',
+                        ),
+                      )
+                    : null,
+                body: SafeArea(
+                  child: BlocConsumer<PostBloc, PostState>(
+                    listenWhen: (previous, current) {
+                      if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                        setState(() => resetFailureMessage = true);
+                      }
+                      return true;
+                    },
+                    listener: (context, state) {
+                      if (state.status == PostStatus.success && widget.postView != null) {
+                        // Update the community's post
+                        context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                        SnackBar snackBar = SnackBar(
+                          content: Row(
+                            children: [
+                              Icon(
+                                Icons.warning_rounded,
+                                color: theme.colorScheme.errorContainer,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Flexible(
+                                child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
+                              )
+                            ],
+                          ),
+                          backgroundColor: theme.colorScheme.onErrorContainer,
+                          behavior: SnackBarBehavior.floating,
+                        );
+
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          setState(() => resetFailureMessage = false);
+                        });
+                      }
+                      switch (state.status) {
+                        case PostStatus.initial:
+                          context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                          return const Center(child: CircularProgressIndicator());
+                        case PostStatus.loading:
+                          return const Center(child: CircularProgressIndicator());
+                        case PostStatus.refreshing:
+                        case PostStatus.success:
+                        case PostStatus.failure:
+                          if (state.postView != null) {
+                            return RefreshIndicator(
+                              onRefresh: () async {
+                                HapticFeedback.mediumImpact();
+                                return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                              },
+                              child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            );
+                          }
+                          return ErrorMessage(
+                            message: state.errorMessage,
+                            action: () {
+                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            },
+                            actionText: 'Refresh Content',
+                          );
+                        case PostStatus.empty:
+                          return ErrorMessage(
+                            message: state.errorMessage,
+                            action: () {
+                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            },
+                            actionText: 'Refresh Content',
+                          );
+                      }
+                    },
+                  ),
+                ),
+              );
+            }));
   }
- )
-);
-}
+
 //TODO: More or less duplicate from community_page.dart
   void showSortBottomSheet(BuildContext context, PostState state) {
     showModalBottomSheet<void>(
@@ -228,13 +204,12 @@ class _PostPageState extends State<PostPage> {
             sortTypeIcon = selected.icon;
           });
           context.read<PostBloc>().add(
-            //shouldn't this be GetPostCommentsEvent?
-              GetPostEvent(
+                  //shouldn't this be GetPostCommentsEvent?
+                  GetPostEvent(
                 postView: widget.postView,
                 postId: widget.postId,
                 sortType: sortType,
-              )
-          );
+              ));
           //Navigator.of(context).pop();
         },
       ),

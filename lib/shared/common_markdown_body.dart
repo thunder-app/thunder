@@ -14,40 +14,36 @@ import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
-class CommonMarkdownBody extends StatefulWidget {
+class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
 
-  const CommonMarkdownBody({super.key, required this.body, String? data, this.isSelectableText = false});
+  const CommonMarkdownBody({super.key, required this.body, this.isSelectableText = false});
 
-  @override
-  State<CommonMarkdownBody> createState() => _CommonMarkdownBodyState();
-}
+  // final double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  // final double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
-class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
-  double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
-  double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  // @override
+  // void initState() {
+  //   super.initState();
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.initState();
-  }
+  //   // WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+  // }
 
-  @override
-  void didUpdateWidget(covariant CommonMarkdownBody oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.didUpdateWidget(oldWidget);
-  }
+  // @override
+  // void didUpdateWidget(covariant CommonMarkdownBody oldWidget) {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
-  Future<void> _initPreferences() async {
-    Map<String, double> textScaleFactor = await getTextScaleFactor();
+  // Future<void> _initPreferences() async {
+  //   Map<String, double> textScaleFactor = await getTextScaleFactor();
 
-    setState(() {
-      titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
-      contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
-    });
-  }
+  //   setState(() {
+  //     titleFontSizeScaleFactor = textScaleFactor['titleFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
+  //     contentFontSizeScaleFactor = textScaleFactor['contentFontSizeScaleFactor'] ?? FontScale.base.textScaleFactor;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +55,7 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
     } catch (e) {}
 
     return MarkdownBody(
-      data: widget.body,
+      data: body,
       imageBuilder: (uri, title, alt) {
         return ImagePreview(
           url: uri.toString(),
@@ -68,7 +64,7 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
           showFullHeightImages: true,
         );
       },
-      selectable: widget.isSelectableText,
+      selectable: isSelectableText,
       onTapLink: (text, url, title) {
         String? communityName = checkLemmyInstanceUrl(text);
         if (communityName != null) {
@@ -98,7 +94,7 @@ class _CommonMarkdownBodyState extends State<CommonMarkdownBody> {
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        textScaleFactor: contentFontSizeScaleFactor,
+        // textScaleFactor: contentFontSizeScaleFactor,
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,
