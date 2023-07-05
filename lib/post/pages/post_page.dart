@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 
 class PostPage extends StatefulWidget {
@@ -41,7 +42,8 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.95) {
       setState(() {
         hasScrolledToBottom = true;
       });
@@ -52,15 +54,48 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  CommentSortType? sortType;
+  IconData? sortTypeIcon;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final isUserLoggedIn = context
+        .read<AuthBloc>()
+        .state
+        .isLoggedIn;
 
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
-          ? FloatingActionButton(
+    return BlocProvider<PostBloc>(
+      create: (context)=>PostBloc(),
+      child: BlocConsumer<PostBloc,PostState>(
+        listenWhen: (previousState, currentState) {
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              sortTypeIcon = commentSortTypeItems
+                  .firstWhere((sortTypeItem) =>
+                      sortTypeItem.payload == currentState.sortType)
+                  .icon;
+            });
+          }
+          return true;
+        },
+        listener: (context, state) {
+        },
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                  onPressed: () => showSortBottomSheet(context, state),
+                ),
+              ],
+              centerTitle: false,
+              toolbarHeight: 70.0,
+            ),
+            floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
+                ? FloatingActionButton(
               onPressed: () {
                 PostBloc postBloc = context.read<PostBloc>();
 
@@ -121,50 +156,87 @@ class _PostPageState extends State<PostPage> {
                 behavior: SnackBarBehavior.floating,
               );
 
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              WidgetsBinding.instance.addPostFrameCallback((
+                  timeStamp) {
                 ScaffoldMessenger.of(context).clearSnackBars();
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                 setState(() => resetFailureMessage = false);
               });
             }
-
             switch (state.status) {
               case PostStatus.initial:
-                context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                return const Center(child: CircularProgressIndicator());
-              case PostStatus.loading:
-                return const Center(child: CircularProgressIndicator());
-              case PostStatus.refreshing:
-              case PostStatus.success:
-              case PostStatus.failure:
-                if (state.postView != null) {
-                  return RefreshIndicator(
-                    onRefresh: () async {
-                      HapticFeedback.mediumImpact();
-                      return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                    },
-                    child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
-                  );
-                }
-
-                return ErrorMessage(
-                  message: state.errorMessage,
-                  action: () {
-                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                  },
-                  actionText: 'Refresh Content',
-                );
-              case PostStatus.empty:
-                return ErrorMessage(
-                  message: state.errorMessage,
-                  action: () {
-                    context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                  },
-                  actionText: 'Refresh Content',
-                );
+                context.read<PostBloc>().add(GetPostEvent(
+                    postView: widget.postView,
+                    postId: widget.postId));
+                return const Center(
+                    child: CircularProgressIndicator());
+                case PostStatus.loading:
+                  return const Center(
+                      child: CircularProgressIndicator());
+                  case PostStatus.refreshing:
+                    case PostStatus.success:
+                      case PostStatus.failure:
+                        if (state.postView != null) {
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              HapticFeedback.mediumImpact();
+                              return context.read<PostBloc>().add(
+                                  GetPostEvent(postView: widget.postView,
+                                      postId: widget.postId));},
+                            child: PostPageSuccess(postView: state.postView!,
+                                comments: state.comments,
+                                scrollController: _scrollController,
+                                hasReachedCommentEnd: state
+                                    .hasReachedCommentEnd),
+                          );
+                        }
+                        return ErrorMessage(
+                          message: state.errorMessage,
+                          action: () {
+                            context.read<PostBloc>().add(GetPostEvent(
+                                postView: widget.postView,
+                                postId: widget.postId));},
+                          actionText: 'Refresh Content',
+                        );case PostStatus.empty:return ErrorMessage(
+              message: state.errorMessage,
+              action: () {
+                context.read<PostBloc>().add(GetPostEvent(
+                    postView: widget.postView,
+                    postId: widget.postId));
+                },
+              actionText: 'Refresh Content',
+            );
             }
           },
         ),
+      ),
+    );
+  }
+ )
+);
+}
+//TODO: More or less duplicate from community_page.dart
+  void showSortBottomSheet(BuildContext context, PostState state) {
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (builderContext) => CommentSortPicker(
+        title: 'Sort Options',
+        onSelect: (selected) {
+          setState(() {
+            sortType = selected.payload;
+            sortTypeIcon = selected.icon;
+          });
+          context.read<PostBloc>().add(
+            //shouldn't this be GetPostCommentsEvent?
+              GetPostEvent(
+                postView: widget.postView,
+                postId: widget.postId,
+                sortType: sortType,
+              )
+          );
+          //Navigator.of(context).pop();
+        },
       ),
     );
   }

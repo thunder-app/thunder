@@ -13,9 +13,14 @@ class PostState extends Equatable {
     this.communityId,
     this.hasReachedCommentEnd = false,
     this.errorMessage,
+    this.sortType,
+    this.sortTypeIcon
   });
 
   final PostStatus status;
+
+  final CommentSortType? sortType;
+  final IconData? sortTypeIcon;
 
   final int? postId;
   final int? communityId;
@@ -39,6 +44,8 @@ class PostState extends Equatable {
     bool? hasReachedCommentEnd,
     int? communityId,
     String? errorMessage,
+    CommentSortType? sortType,
+    IconData? sortTypeIcon,
   }) {
     return PostState(
       status: status,
@@ -50,9 +57,11 @@ class PostState extends Equatable {
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       communityId: communityId ?? this.communityId,
       errorMessage: errorMessage ?? this.errorMessage,
+      sortType: sortType,
+      sortTypeIcon: sortTypeIcon,
     );
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd];
+  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd, sortType, sortTypeIcon];
 }
