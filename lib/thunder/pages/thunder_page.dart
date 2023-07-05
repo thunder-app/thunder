@@ -62,8 +62,8 @@ class _ThunderState extends State<Thunder> {
 
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
-    final bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool bottomNavBarSwipeGestures = state.bottomNavBarSwipeGestures;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
@@ -79,10 +79,10 @@ class _ThunderState extends State<Thunder> {
 
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool bottomNavBarDoubleTapGestures = state.bottomNavBarDoubleTapGestures;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
-    final bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
       _feedScaffoldKey.currentState?.closeDrawer();
@@ -93,8 +93,6 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
-
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThunderBloc()),
@@ -138,9 +136,8 @@ class _ThunderState extends State<Thunder> {
                           return const Center(child: CircularProgressIndicator());
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
-                          bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
-                          bool? enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry');
-
+                          bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                          bool? enableSentryErrorTracking = thunderBlocState.enableSentryErrorTracking;
                           if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               showUpdateNotification(context, version);
@@ -260,8 +257,8 @@ class _ThunderState extends State<Thunder> {
   void showUpdateNotification(BuildContext context, Version? version) {
     final theme = Theme.of(context);
 
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
-    final openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool openInExternalBrowser = state.openInExternalBrowser;
 
     showSimpleNotification(
       GestureDetector(
