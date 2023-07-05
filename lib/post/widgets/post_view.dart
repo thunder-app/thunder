@@ -31,7 +31,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
+
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),

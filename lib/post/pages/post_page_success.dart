@@ -30,8 +30,8 @@ class PostPageSuccess extends StatefulWidget {
 class _PostPageSuccessState extends State<PostPageSuccess> {
   @override
   void initState() {
-    widget.scrollController.addListener(_onScroll);
     super.initState();
+    widget.scrollController.addListener(_onScroll);
   }
 
   @override

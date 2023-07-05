@@ -1,4 +1,3 @@
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 

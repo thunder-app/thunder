@@ -1,16 +1,14 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/account/pages/login_page.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';

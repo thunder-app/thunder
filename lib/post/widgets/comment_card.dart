@@ -91,23 +91,20 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   void initState() {
+    super.initState();
+
     isHidden = widget.collapsed;
 
-    // Set the correct swipe actions from settings
-    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+    final ThunderState state = context.read<ThunderBloc>().state;
 
-    if (prefs != null) {
-      setState(() {
-        swipeActions = {
-          'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name),
-          'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name),
-          'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name),
-          'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name),
-        };
-      });
-    }
-
-    super.initState();
+    setState(() {
+      swipeActions = {
+        'leftPrimary': state.leftPrimaryCommentGesture,
+        'leftSecondary': state.leftSecondaryCommentGesture,
+        'rightPrimary': state.rightPrimaryCommentGesture,
+        'rightSecondary': state.rightSecondaryCommentGesture,
+      };
+    });
   }
 
   @override
@@ -125,7 +122,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+    final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
     return Container(
       decoration: BoxDecoration(
@@ -148,15 +147,18 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
             onPointerUp: (event) => {
-              triggerCommentAction(
-                context: context,
-                swipeAction: swipeAction,
-                onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                voteType: myVote ?? VoteType.none,
-                saved: saved,
-                commentViewTree: widget.commentViewTree,
-              ),
+              if (swipeAction != null && swipeAction != SwipeAction.none)
+                {
+                  triggerCommentAction(
+                    context: context,
+                    swipeAction: swipeAction,
+                    onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                    voteType: myVote ?? VoteType.none,
+                    saved: saved,
+                    commentViewTree: widget.commentViewTree,
+                  ),
+                }
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
@@ -244,8 +246,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    excludeFromSemantics: true,
-                    behavior: HitTestBehavior.opaque,
+                    behavior: HitTestBehavior.translucent,
                     onTap: () => setState(() => isHidden = !isHidden),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -292,7 +293,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             child: isHidden
                 ? Container()
                 : ListView.builder(
-                    addSemanticIndexes: false,
+                    // addSemanticIndexes: false,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => CommentCard(

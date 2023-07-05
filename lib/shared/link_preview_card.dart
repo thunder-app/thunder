@@ -85,7 +85,9 @@ class LinkPreviewCard extends StatelessWidget {
   }
 
   void triggerOnTap(BuildContext context) {
-    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+    final ThunderState state = context.read<ThunderBloc>().state;
+
+    final openInExternalBrowser = state.openInExternalBrowser;
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation

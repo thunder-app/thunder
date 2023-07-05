@@ -1,9 +1,9 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -14,7 +14,6 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/theme/theme.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
@@ -55,6 +54,9 @@ class _PostCardState extends State<PostCard> {
   /// The second action threshold to trigger the left or right actions (downvote/save)
   double secondActionThreshold = 0.35;
 
+  /// User Settings
+  bool isUserLoggedIn = false;
+
   Map<String, SwipeAction> swipeActions = {
     'leftPrimary': SwipeAction.upvote,
     'leftSecondary': SwipeAction.downvote,
@@ -64,75 +66,65 @@ class _PostCardState extends State<PostCard> {
 
   @override
   void initState() {
-    // Set the correct swipe actions from settings
-    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
-
-    if (prefs != null) {
-      swipeActions = {
-        'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
-        'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
-        'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
-        'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
-      };
-    }
-
     super.initState();
-  }
 
-  @override
-  void didUpdateWidget(covariant PostCard oldWidget) {
     // Set the correct swipe actions from settings
-    SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+    isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    ThunderState state = context.read<ThunderBloc>().state;
 
-    if (prefs != null) {
-      swipeActions = {
-        'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
-        'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
-        'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
-        'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
-      };
-    }
-
-    super.didUpdateWidget(oldWidget);
+    swipeActions = {
+      'leftPrimary': state.leftPrimaryPostGesture,
+      'leftSecondary': state.leftSecondaryPostGesture,
+      'rightPrimary': state.rightPrimaryPostGesture,
+      'rightSecondary': state.rightSecondaryPostGesture,
+    };
   }
+
+  // @override
+  // void didUpdateWidget(covariant PostCard oldWidget) {
+  //   // Set the correct swipe actions from settings
+  //   SharedPreferences? prefs = context.read<ThunderBloc>().state.preferences;
+
+  //   if (prefs != null) {
+  //     swipeActions = {
+  //       'leftPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name),
+  //       'leftSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name),
+  //       'rightPrimary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name),
+  //       'rightSecondary': SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name),
+  //     };
+  //   }
+
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     VoteType? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
-
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
-    final bool disableSwipeActionsOnPost = context.read<ThunderBloc>().state.preferences?.getBool('setting_post_disable_swipe_actions') ?? false;
-    final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-
-    final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
-    final bool showThumbnailPreviewOnRight = context.read<ThunderBloc>().state.preferences?.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-
-    final bool showVoteActions = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_vote_actions') ?? true;
-    final bool showSaveAction = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_save_action') ?? true;
-    final bool showFullHeightImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_full_height_images') ?? false;
-    final bool showTextContent = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_text_content') ?? false;
 
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) => {
-        triggerPostAction(
-          context: context,
-          swipeAction: swipeAction,
-          onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-          onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
-          voteType: myVote ?? VoteType.none,
-          saved: saved,
-          postViewMedia: widget.postViewMedia,
-        ),
+        if (swipeAction != null && swipeAction != SwipeAction.none)
+          {
+            triggerPostAction(
+              context: context,
+              swipeAction: swipeAction,
+              onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
+              onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+              voteType: myVote ?? VoteType.none,
+              saved: saved,
+              postViewMedia: widget.postViewMedia,
+            ),
+          }
       },
       onPointerCancel: (event) => {},
       child: Dismissible(
-        direction: (isUserLoggedIn && !disableSwipeActionsOnPost) ? DismissDirection.horizontal : DismissDirection.none,
+        direction: (isUserLoggedIn && !state.disableSwipeActionsOnPost) ? DismissDirection.horizontal : DismissDirection.none,
         key: ObjectKey(widget.postViewMedia.postView.post.id),
         resizeDuration: Duration.zero,
         dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
@@ -199,22 +191,24 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             InkWell(
-              child: useCompactView
+              child: state.useCompactView
                   ? PostCardViewCompact(
                       postViewMedia: widget.postViewMedia,
-                      showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
-                      hideNsfwPreviews: hideNsfwPreviews,
+                      showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                      hideNsfwPreviews: state.hideNsfwPreviews,
                       showInstanceName: widget.showInstanceName,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
-                      showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
-                      hideNsfwPreviews: hideNsfwPreviews,
+                      showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                      hideNsfwPreviews: state.hideNsfwPreviews,
                       showInstanceName: widget.showInstanceName,
-                      showFullHeightImages: showFullHeightImages,
-                      showVoteActions: showVoteActions,
-                      showSaveAction: showSaveAction,
-                      showTextContent: showTextContent,
+                      showFullHeightImages: state.showFullHeightImages,
+                      edgeToEdgeImages: state.showEdgeToEdgeImages,
+                      showTitleFirst: state.showTitleFirst,
+                      showVoteActions: state.showVoteActions,
+                      showSaveAction: state.showSaveAction,
+                      showTextContent: state.showTextContent,
                       isUserLoggedIn: isUserLoggedIn,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,

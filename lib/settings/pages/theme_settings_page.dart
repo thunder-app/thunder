@@ -1,11 +1,10 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
