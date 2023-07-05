@@ -107,12 +107,12 @@ class _InboxPageState extends State<InboxPage> {
       body: RefreshIndicator(
         onRefresh: () async { context.read<InboxBloc>().add(const GetInboxEvent()); },
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 SizedBox(
-                    height: MediaQuery.of(context).size.height,
                 child: BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
                   if (context.read<AuthBloc>().state.isLoggedIn == false) {
                     return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
