@@ -36,10 +36,7 @@ class PostCardMetaData extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-        final SharedPreferences? prefs = state.preferences;
-
-        if (prefs == null) return Container();
-        final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
+        final bool useCompactView = state.useCompactView;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

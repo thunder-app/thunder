@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/core/update/check_github_update.dart';
@@ -13,7 +14,9 @@ class AboutSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final openInExternalBrowser = state.openInExternalBrowser;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),

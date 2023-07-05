@@ -35,15 +35,15 @@ class _PostCardViewCompactState extends State<PostCardViewCompact> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
   }
 
-  @override
-  void didUpdateWidget(covariant PostCardViewCompact oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.didUpdateWidget(oldWidget);
-  }
+  // @override
+  // void didUpdateWidget(covariant PostCardViewCompact oldWidget) {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   Future<void> _initPreferences() async {
     Map<String, double> textScaleFactor = await getTextScaleFactor();

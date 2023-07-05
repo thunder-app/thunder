@@ -48,11 +48,9 @@ class CommonMarkdownBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool openInExternalBrowser = false;
+    final ThunderState state = context.watch<ThunderBloc>().state;
 
-    try {
-      openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
-    } catch (e) {}
+    bool openInExternalBrowser = state.openInExternalBrowser;
 
     return MarkdownBody(
       data: body,

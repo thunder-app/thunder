@@ -56,15 +56,15 @@ class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
   }
 
-  @override
-  void didUpdateWidget(covariant PostCardViewComfortable oldWidget) {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-    super.didUpdateWidget(oldWidget);
-  }
+  // @override
+  // void didUpdateWidget(covariant PostCardViewComfortable oldWidget) {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+  //   super.didUpdateWidget(oldWidget);
+  // }
 
   Future<void> _initPreferences() async {
     Map<String, double> textScaleFactor = await getTextScaleFactor();
@@ -87,16 +87,15 @@ class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (widget.showTitleFirst)
-          Padding(
-            padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
-            child: Text(widget.postViewMedia.postView.post.name,
-              textScaleFactor: titleFontSizeScaleFactor,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: widget.postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
-              ),
-              softWrap: true
+            Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
+              child: Text(widget.postViewMedia.postView.post.name,
+                  textScaleFactor: titleFontSizeScaleFactor,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: widget.postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                  ),
+                  softWrap: true),
             ),
-          ),
           if (widget.edgeToEdgeImages)
             MediaView(
               postView: widget.postViewMedia,
@@ -115,16 +114,15 @@ class _PostCardViewComfortableState extends State<PostCardViewComfortable> {
               ),
             ),
           if (!widget.showTitleFirst)
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
-            child: Text(widget.postViewMedia.postView.post.name,
-              textScaleFactor: titleFontSizeScaleFactor,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: widget.postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
-              ),
-              softWrap: true
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+              child: Text(widget.postViewMedia.postView.post.name,
+                  textScaleFactor: titleFontSizeScaleFactor,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: widget.postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                  ),
+                  softWrap: true),
             ),
-          ),
           Visibility(
             visible: widget.showTextContent && textContent.isNotEmpty,
             child: Padding(
