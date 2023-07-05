@@ -158,6 +158,10 @@ class PostSubview extends StatelessWidget {
                                   : VoteType.up));
                         }
                       : null,
+                  style: TextButton.styleFrom(
+                    fixedSize: const Size.fromHeight(40),
+                    foregroundColor: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
+                  ),
                   child: Row(
                     children: [
                       const Spacer(),
@@ -165,13 +169,13 @@ class PostSubview extends StatelessWidget {
                         Icons.arrow_upward,
                         semanticLabel:
                         postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
-                        color: postView.myVote == VoteType.up ? Colors.orange : Colors.white,
+                        color: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.upvotes),
                         style: TextStyle(
-                          color: postView.myVote == VoteType.up ? Colors.orange : Colors.white,
+                          color: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
                         ),
                       ),
                       const Spacer(),
@@ -193,6 +197,11 @@ class PostSubview extends StatelessWidget {
                                   : VoteType.down));
                         }
                       : null,
+                  style: TextButton.styleFrom(
+                    fixedSize: const Size.fromHeight(40),
+                    foregroundColor: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
+                  ),
+
                   child: Row(
                     children: [
                       const Spacer(),
@@ -200,13 +209,13 @@ class PostSubview extends StatelessWidget {
                         Icons.arrow_downward,
                         semanticLabel:
                         postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
-                        color: postView.myVote == VoteType.down ? Colors.blue : Colors.white,
+                        color: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.downvotes),
                         style: TextStyle(
-                          color: postView.myVote == VoteType.down ? Colors.blue : Colors.white,
+                          color: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
                         ),
                       ),
                       const Spacer(),
