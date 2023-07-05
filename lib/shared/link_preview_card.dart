@@ -125,7 +125,11 @@ class LinkPreviewCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+          color: ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            1,
+          ),
           child: SizedBox(
             height: 75.0,
             width: 75.0,
@@ -138,7 +142,11 @@ class LinkPreviewCard extends StatelessWidget {
       );
     } else {
       return Container(
-        color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+        color: ElevationOverlay.applySurfaceTint(
+          Theme.of(context).colorScheme.surface,
+          Theme.of(context).colorScheme.surfaceTint,
+          1,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [
