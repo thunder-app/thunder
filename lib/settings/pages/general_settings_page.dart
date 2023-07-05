@@ -13,6 +13,8 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 
+import '../../shared/comment_sort_picker.dart';
+
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
 
@@ -23,8 +25,10 @@ class GeneralSettingsPage extends StatefulWidget {
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   // Feed Settings
   bool useCompactView = false;
+  bool showTitleFirst = false;
   PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
   SortType defaultSortType = DEFAULT_SORT_TYPE;
+  CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -34,6 +38,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showVoteActions = true;
   bool showSaveAction = true;
   bool showFullHeightImages = false;
+  bool showEdgeToEdgeImages = false;
   bool showTextContent = false;
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
@@ -63,6 +68,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_general_use_compact_view':
         await prefs.setBool('setting_general_use_compact_view', value);
         setState(() => useCompactView = value);
+        break;
+      case 'setting_general_show_title_first':
+        await prefs.setBool('setting_general_show_title_first', value);
+        setState(() => showTitleFirst = value);
         break;
       case 'setting_general_default_listing_type':
         await prefs.setString('setting_general_default_listing_type', value);
@@ -98,6 +107,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
         break;
+      case 'setting_general_show_edge_to_edge_images':
+        await prefs.setBool('setting_general_show_edge_to_edge_images', value);
+        setState(() => showEdgeToEdgeImages = value);
+        break;
       case 'setting_general_show_text_content':
         await prefs.setBool('setting_general_show_text_content', value);
         setState(() => showTextContent = value);
@@ -117,6 +130,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
+        break;
+      case 'setting_post_default_comment_sort_type':
+        await prefs.setString('setting_post_default_comment_sort_type', value);
+        setState(() => defaultCommentSortType =
+            CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
 
       // Link Settings
@@ -163,6 +181,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     setState(() {
       // Feed Settings
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
+      showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -179,10 +198,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      defaultCommentSortType = CommentSortType.values.byName(
+          prefs.getString("setting_post_default_comment_sort_type") ??
+              DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -323,6 +346,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
                         ),
                         ToggleOption(
+                          description: 'Edge-to-edge images',
+                          subtitle: 'Applies to normal view only',
+                          value: showEdgeToEdgeImages,
+                          iconEnabled: Icons.panorama_wide_angle_select,
+                          iconDisabled: Icons.panorama_wide_angle_outlined,
+                          onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
+                        ),
+                        ToggleOption(
                           description: 'Show text content',
                           subtitle: 'Applies to normal view only',
                           value: showTextContent,
@@ -331,11 +362,34 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
                         ),
                         ToggleOption(
+                          description: 'Show title first',
+                          subtitle: 'Applies to normal view only',
+                          value: showTitleFirst,
+                          iconEnabled: Icons.subtitles,
+                          iconDisabled: Icons.subtitles_off,
+                          onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
+                        ),
+                        ToggleOption(
                           description: 'Hide NSFW previews',
                           value: hideNsfwPreviews,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                        ListOption(
+                          description: 'Default Comment Sort Type',
+                          value: ListPickerItem(label: defaultCommentSortType.value,
+                              icon: Icons.local_fire_department_rounded,
+                              payload: defaultCommentSortType),
+                          options: commentSortTypeItems,
+                          icon: Icons.sort,
+                            onChanged: (_) {},
+                            customListPicker: CommentSortPicker(
+                              title: 'Comment Sort Type',
+                              onSelect: (value) {
+                                setPreferences('setting_post_default_comment_sort_type', value.payload.name);
+                              },
+                            ),
                         ),
                       ],
                     ),

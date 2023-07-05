@@ -105,6 +105,8 @@ class _PostCardState extends State<PostCard> {
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final bool useCompactView = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_use_compact_view') ?? false;
+    final bool showTitleFirst = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_title_first') ?? false;
+    final bool edgeToEdgeImages = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_show_edge_to_edge_images') ?? false;
     final bool disableSwipeActionsOnPost = context.read<ThunderBloc>().state.preferences?.getBool('setting_post_disable_swipe_actions') ?? false;
     final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
@@ -208,6 +210,8 @@ class _PostCardState extends State<PostCard> {
                       hideNsfwPreviews: hideNsfwPreviews,
                       showInstanceName: widget.showInstanceName,
                       showFullHeightImages: showFullHeightImages,
+                      edgeToEdgeImages: edgeToEdgeImages,
+                      showTitleFirst: showTitleFirst,
                       showVoteActions: showVoteActions,
                       showSaveAction: showSaveAction,
                       showTextContent: showTextContent,
