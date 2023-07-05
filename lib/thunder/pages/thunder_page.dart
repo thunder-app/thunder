@@ -197,61 +197,47 @@ class _ThunderState extends State<Thunder> {
 
   // Generates the BottomNavigationBar
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
-    final theme = Theme.of(context);
+    return GestureDetector(
+      onHorizontalDragStart: _handleDragStart,
+      onHorizontalDragUpdate: _handleDragUpdate,
+      onHorizontalDragEnd: _handleDragEnd,
+      // onDoubleTap: _handleDoubleTap,
+      child: NavigationBar(
+        selectedIndex: selectedPageIndex,
+        labelBehavior: NavigationDestinationLabelBehavior.alwaysHide,
+        destinations: const [
+          NavigationDestination(
+            icon: Icon(Icons.dashboard_rounded),
+            label: 'Feed',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.search_rounded),
+            label: 'Search',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_rounded),
+            label: 'Account',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.inbox_rounded),
+            label: 'Inbox',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_rounded),
+            label: 'Settings',
+          ),
+        ],
+        onDestinationSelected: (index) {
+          setState(() {
+            selectedPageIndex = index;
+            pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+          });
 
-    return Theme(
-      data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-      ),
-      child: GestureDetector(
-        onHorizontalDragStart: _handleDragStart,
-        onHorizontalDragUpdate: _handleDragUpdate,
-        onHorizontalDragEnd: _handleDragEnd,
-        // onDoubleTap: _handleDoubleTap,
-        child: BottomNavigationBar(
-          currentIndex: selectedPageIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: theme.colorScheme.primary,
-          type: BottomNavigationBarType.fixed,
-          unselectedFontSize: 20.0,
-          selectedFontSize: 20.0,
-          elevation: 1,
-          items: const [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_rounded),
-              label: 'Feed',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search_rounded),
-              label: 'Search',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: 'Account',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.inbox_rounded),
-              label: 'Inbox',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
-            ),
-          ],
-          onTap: (index) {
-            setState(() {
-              selectedPageIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-            });
-
-            // @todo Change this from integer to enum or some other type
-            if (index == 3) {
-              context.read<InboxBloc>().add(const GetInboxEvent());
-            }
-          },
-        ),
+          // @todo Change this from integer to enum or some other type
+          if (index == 3) {
+            context.read<InboxBloc>().add(const GetInboxEvent());
+          }
+        },
       ),
     );
   }

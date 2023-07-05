@@ -158,13 +158,9 @@ class _LoginPageState extends State<LoginPage> {
                 enableSuggestions: false,
               ),
               const SizedBox(height: 32.0),
-              ElevatedButton(
+              FilledButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(60),
-                  backgroundColor: theme.colorScheme.primary,
-                  textStyle: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.onPrimary,
-                  ),
                 ),
                 onPressed: (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                     ? () {

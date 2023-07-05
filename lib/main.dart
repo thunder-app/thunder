@@ -80,22 +80,22 @@ class ThunderApp extends StatelessWidget {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
           return DynamicColorBuilder(
-            builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.useBlackTheme);
+            builder: (dynamicLightColorScheme, dynamicDarkColorScheme) {
+              ColorScheme colorScheme = ColorScheme.fromSeed(
+                seedColor: Colors.blueAccent,
+                brightness: Brightness.light,
+              );
+              ColorScheme darkColorScheme = ColorScheme.fromSeed(
+                seedColor: Colors.lightBlue,
+                background: state.useBlackTheme ? Colors.black : null,
+                surface: state.useBlackTheme ? Colors.black : null,
+                brightness: Brightness.dark,
+              );
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
-                theme = ThemeData(
-                  colorScheme: lightColorScheme,
-                  useMaterial3: true,
-                );
-
-                darkTheme = FlexThemeData.dark(
-                  useMaterial3: true,
-                  colorScheme: darkColorScheme,
-                  darkIsTrueBlack: state.useBlackTheme,
-                );
+                colorScheme = dynamicLightColorScheme?.harmonized() ?? colorScheme;
+                darkColorScheme = dynamicDarkColorScheme?.harmonized() ?? darkColorScheme;
               }
 
               // Set navigation bar color on Android to be transparent
@@ -110,8 +110,14 @@ class ThunderApp extends StatelessWidget {
                   title: 'Thunder',
                   routerConfig: router,
                   themeMode: state.useSystemTheme ? ThemeMode.system : (state.useDarkTheme ? ThemeMode.dark : ThemeMode.light),
-                  theme: theme,
-                  darkTheme: darkTheme,
+                  theme: ThemeData.from(
+                    colorScheme: colorScheme, 
+                    useMaterial3: true,
+                  ),
+                  darkTheme: ThemeData.from(
+                    colorScheme: darkColorScheme,
+                    useMaterial3: true,
+                  ),
                   debugShowCheckedModeBanner: false,
                 ),
               );
