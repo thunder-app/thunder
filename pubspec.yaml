@@ -72,6 +72,7 @@ dependencies:
   path_provider: ^2.0.15
   intl: ^0.18.1
   device_info_plus: ^9.0.2
+  image_picker: ^1.0.0
 
 dev_dependencies:
   flutter_test:
