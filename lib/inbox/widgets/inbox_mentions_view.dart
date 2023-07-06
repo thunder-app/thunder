@@ -23,7 +23,7 @@ class InboxMentionsView extends StatelessWidget {
     List<PersonMentionView> mentions = context.read<InboxBloc>().state.mentions;
 
     if (mentions.isEmpty) {
-      return const Align(alignment: Alignment.topCenter, child: Text('No mentions'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No mentions'));
     }
 
     return ListView.builder(
@@ -98,6 +98,7 @@ class InboxMentionsView extends StatelessWidget {
                       IconButton(
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
+                          PostBloc postBloc = context.read<PostBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
