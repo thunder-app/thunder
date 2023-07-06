@@ -66,48 +66,60 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         },
         builder: (context, state) {
           return Scaffold(
-            key: widget.scaffoldKey,
-            appBar: AppBar(
-              title: Text(getCommunityName(state)),
-              centerTitle: false,
-              toolbarHeight: 70.0,
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
-                      IconButton(
-                        icon: Icon(
-                          (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
-                          semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
-                        ),
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          context.read<CommunityBloc>().add(
-                                ChangeCommunitySubsciptionStatusEvent(
-                                  communityId: state.communityId!,
-                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
-                                ),
-                              );
-                        },
-                      ),
-                    IconButton(
-                        icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
-                        }),
-                    IconButton(
-                        icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                        tooltip: sortTypeLabel,
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          showSortBottomSheet(context, state);
-                        }),
-                    const SizedBox(width: 8.0),
-                  ],
-                )
-              ],
+            // key: widget.scaffoldKey,
+            body: NestedScrollView(
+              floatHeaderSlivers: true,
+              headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+                return <Widget>[
+                  SliverAppBar(
+                    title: Text(getCommunityName(state)),
+                    pinned: false,
+                    floating: true,
+                    snap: false,
+                    forceElevated: innerBoxIsScrolled,
+                    centerTitle: false,
+                    toolbarHeight: 70.0,
+                    actions: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
+                            IconButton(
+                              icon: Icon(
+                                (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                                semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                              ),
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                context.read<CommunityBloc>().add(
+                                      ChangeCommunitySubsciptionStatusEvent(
+                                        communityId: state.communityId!,
+                                        follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                      ),
+                                    );
+                              },
+                            ),
+                          IconButton(
+                              icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
+                              }),
+                          IconButton(
+                              icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                              tooltip: sortTypeLabel,
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                showSortBottomSheet(context, state);
+                              }),
+                          const SizedBox(width: 8.0),
+                        ],
+                      )
+                    ],
+                  ),
+                ];
+              },
+              body: SafeArea(child: _getBody(context, state)),
             ),
             drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
             floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
@@ -132,7 +144,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     ),
                   )
                 : null,
-            body: SafeArea(child: _getBody(context, state)),
           );
         },
       ),
