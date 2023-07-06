@@ -48,13 +48,19 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   text: formatNumberToK(score),
-                  icon: Icon(Icons.arrow_upward,
+                  textColor: voteType == VoteType.up
+                    ? upVoteColor
+                    : voteType == VoteType.down
+                      ? downVoteColor
+                      : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  icon: Icon( voteType == VoteType.down ? Icons.arrow_downward : Icons.arrow_upward,
                       size: 18.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
                           : voteType == VoteType.down
                               ? downVoteColor
-                              : theme.textTheme.titleSmall?.color?.withOpacity(0.75)),
+                              : theme.textTheme.titleSmall?.color?.withOpacity(0.75)
+                  ),
                   padding: 2.0,
                 ),
                 const SizedBox(width: 12.0),
@@ -66,6 +72,7 @@ class PostCardMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatNumberToK(comments),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
@@ -77,6 +84,7 @@ class PostCardMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
                 const SizedBox(width: 14.0),
                 if (distinguised)
