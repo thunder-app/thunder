@@ -12,6 +12,7 @@ import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'dart:developer';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -27,6 +28,22 @@ class CommunityPage extends StatefulWidget {
 class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveClientMixin<CommunityPage> {
   @override
   bool get wantKeepAlive => true;
+
+  final GlobalKey<NestedScrollViewState> globalKey = GlobalKey();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      globalKey.currentState!.innerController.addListener(() {
+        if (globalKey.currentState!.innerController.position.pixels >= globalKey.currentState!.innerController.position.maxScrollExtent * 0.7) {
+          print('endScroll');
+          // How do we call this from here?
+          // context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId));
+        }
+      });
+    });
+  }
 
   SortType? sortType;
   IconData? sortTypeIcon;
@@ -68,6 +85,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           return Scaffold(
             // key: widget.scaffoldKey,
             body: NestedScrollView(
+              key: globalKey,
               floatHeaderSlivers: true,
               headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
                 return <Widget>[
