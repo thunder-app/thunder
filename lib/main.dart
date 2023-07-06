@@ -1,7 +1,5 @@
 import 'dart:async';
 
-import 'package:dynamic_color/dynamic_color.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,8 +11,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 // Internal Packages
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/routes.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -45,7 +46,9 @@ void main() async {
   await DB.instance.database;
 
   // Load up SharedPreferences to check if Sentry error tracking is enabled - it is disabled by default
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await UserPreferences.instance.refetchPreferences();
+
+  SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
   bool enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
   String? sentryDSN = enableSentryErrorTracking ? dotenv.env['SENTRY_DSN'] : null;
 
@@ -78,9 +81,10 @@ class ThunderApp extends StatelessWidget {
           }
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepPurple, darkIsTrueBlack: state.useBlackTheme);
+              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
+              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.useBlackTheme);
 
+              // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
                 theme = ThemeData(
                   colorScheme: lightColorScheme,

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/font_size.dart';
 import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
@@ -17,6 +22,8 @@ class PostCardViewComfortable extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
+  final bool edgeToEdgeImages;
+  final bool showTitleFirst;
   final bool showInstanceName;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -29,6 +36,8 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.postViewMedia,
     required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
+    required this.edgeToEdgeImages,
+    required this.showTitleFirst,
     required this.showInstanceName,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -42,39 +51,70 @@ class PostCardViewComfortable extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
+
     final String textContent = postViewMedia.postView.post.body ?? "";
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          MediaView(
-            postView: postViewMedia,
-            showFullHeightImages: showFullHeightImages,
-            hideNsfwPreviews: hideNsfwPreviews,
-          ),
-          Text(postViewMedia.postView.post.name,
-              style: theme.textTheme.titleMedium?.copyWith(
-                color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+          if (showTitleFirst)
+            Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
+              child: Text(postViewMedia.postView.post.name,
+                  textScaleFactor: state.titleFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                  ),
+                  softWrap: true),
+            ),
+          if (edgeToEdgeImages)
+            MediaView(
+              postView: postViewMedia,
+              showFullHeightImages: showFullHeightImages,
+              hideNsfwPreviews: hideNsfwPreviews,
+              edgeToEdgeImages: edgeToEdgeImages,
+            ),
+          if (!edgeToEdgeImages)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: MediaView(
+                postView: postViewMedia,
+                showFullHeightImages: showFullHeightImages,
+                hideNsfwPreviews: hideNsfwPreviews,
+                edgeToEdgeImages: edgeToEdgeImages,
               ),
-              softWrap: true),
+            ),
+          if (!showTitleFirst)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+              child: Text(postViewMedia.postView.post.name,
+                  textScaleFactor: state.titleFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                  ),
+                  softWrap: true),
+            ),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
-              padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
-              child: Text(textContent,
+              padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
+              child: Text(
+                textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
+                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                  color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(top: 6.0, bottom: 4.0),
+            padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
             child: Row(
               children: [
                 Expanded(
@@ -84,9 +124,9 @@ class PostCardViewComfortable extends StatelessWidget {
                       GestureDetector(
                         child: Text(
                           '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
+                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            // color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                             color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : null,
                           ),
                         ),
@@ -99,6 +139,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         comments: postViewMedia.postView.counts.comments,
                         published: postViewMedia.postView.post.published,
                         saved: postViewMedia.postView.saved,
+                        distinguised: postViewMedia.postView.post.featuredCommunity,
                       )
                     ],
                   ),

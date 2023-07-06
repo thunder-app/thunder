@@ -6,6 +6,7 @@ class CommunityState extends Equatable {
   const CommunityState({
     this.status = CommunityStatus.initial,
     this.postViews = const [],
+    this.postIds = const <int>{},
     this.page = 1,
     this.errorMessage,
     this.listingType = PostListingType.local,
@@ -23,6 +24,7 @@ class CommunityState extends Equatable {
 
   final int page;
   final List<PostViewMedia>? postViews;
+  final Set<int>? postIds;
 
   final String? errorMessage;
 
@@ -38,6 +40,7 @@ class CommunityState extends Equatable {
     CommunityStatus? status,
     int? page,
     List<PostViewMedia>? postViews,
+    Set<int>? postIds,
     String? errorMessage,
     PostListingType? listingType,
     int? communityId,
@@ -51,6 +54,7 @@ class CommunityState extends Equatable {
       status: status ?? this.status,
       page: page ?? this.page,
       postViews: postViews ?? this.postViews,
+      postIds: postIds ?? this.postIds,
       errorMessage: errorMessage ?? this.errorMessage,
       listingType: listingType,
       communityId: communityId,

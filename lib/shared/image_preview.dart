@@ -4,6 +4,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:thunder/shared/image_viewer.dart';
+import 'package:thunder/utils/image.dart';
 
 class ImagePreview extends StatefulWidget {
   final String url;
@@ -37,7 +38,9 @@ class _ImagePreviewState extends State<ImagePreview> {
         opaque: false,
         transitionDuration: const Duration(milliseconds: 400),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          return ImageViewer(url: widget.url);
+          String heroKey = generateRandomHeroString();
+
+          return ImageViewer(url: widget.url, heroKey: heroKey);
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return Align(

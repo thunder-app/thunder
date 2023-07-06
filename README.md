@@ -152,6 +152,13 @@ Alternatively, you can skip the prerequisite setup and build the Android applica
 ./scripts/docker-build-android.sh
 ```
 
+### Developing with Docker
+
+You can also run your local development environment for Android via the Docker container, including connecting to ADB on the host machine.
+```
+./scripts/docker-dev-android.sh
+```
+
 ### Environment File
 This is an example of the `.env` that can be used for Thunder.
 ```bash

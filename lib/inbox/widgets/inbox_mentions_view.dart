@@ -23,7 +23,7 @@ class InboxMentionsView extends StatelessWidget {
     List<PersonMentionView> mentions = context.read<InboxBloc>().state.mentions;
 
     if (mentions.isEmpty) {
-      return const Center(child: Text('No mentions'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No mentions'));
     }
 
     return ListView.builder(
@@ -109,11 +109,8 @@ class InboxMentionsView extends StatelessWidget {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                    ],
+                                  child: BlocProvider<InboxBloc>.value(
+                                    value: inboxBloc,
                                     child: CreateCommentModal(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name),
                                   ),
                                 ),

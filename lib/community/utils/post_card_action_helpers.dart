@@ -7,11 +7,12 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 
-enum PostCardAction { visitProfile, visitCommunity, share }
+enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink }
 
 class ExtendedPostCardActions {
   const ExtendedPostCardActions({required this.postCardAction, required this.icon, required this.label});
@@ -33,9 +34,19 @@ const postCardActionItems = [
     label: 'Visit User Profile',
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.share,
+    postCardAction: PostCardAction.sharePost,
     icon: Icons.share_rounded,
-    label: 'Share',
+    label: 'Share Post',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareMedia,
+    icon: Icons.image_rounded,
+    label: 'Share Media',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.shareLink,
+    icon: Icons.link_rounded,
+    label: 'Share Link',
   )
 ];
 
@@ -66,6 +77,14 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
               physics: const NeverScrollableScrollPhysics(),
               itemCount: postCardActionItems.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
+                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink && (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link))) {
+                  return Container();
+                }
+
+                if (postCardActionItems[index].postCardAction == PostCardAction.shareMedia && (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null)) {
+                  return Container();
+                }
+
                 return ListTile(
                   title: Text(
                     postCardActionItems[index].label,
@@ -99,8 +118,14 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                           ),
                         );
                         break;
-                      case PostCardAction.share:
+                      case PostCardAction.sharePost:
                         Share.share(postViewMedia.postView.post.apId);
+                        break;
+                      case PostCardAction.shareMedia:
+                        if (postViewMedia.media.first.mediaUrl != null) Share.share(postViewMedia.media.first.mediaUrl!);
+                        break;
+                      case PostCardAction.shareLink:
+                        if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
                         break;
                     }
                   },

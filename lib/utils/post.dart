@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
@@ -10,6 +11,8 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
@@ -91,7 +94,7 @@ Future<PostView> savePost(int postId, bool save) async {
 
 /// Parse a post with media
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
 

@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -31,12 +32,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final bool hideNsfwPreviews = context
-            .read<ThunderBloc>()
-            .state
-            .preferences
-            ?.getBool('setting_general_hide_nsfw_previews') ??
-        true;
+
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -46,8 +45,77 @@ class PostSubview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(post.name,
-                style: theme.textTheme.titleMedium), // Post view: title
+
+            child: Text(
+              post.name,
+              textScaleFactor: thunderState.titleFontSizeScale.textScaleFactor,
+              style: theme.textTheme.titleMedium,
+            ),
+          ),
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: CommunityPage(communityId: postView.community.id),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  postView.community.name,
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
+                ),
+              ),
+              Text(
+                ' · ${formatTimeToString(dateTime: post.published.toIso8601String())} · ',
+                textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                ),
+              ),
+              GestureDetector(
+                onTap: () {
+                  account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                  AuthBloc authBloc = context.read<AuthBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserPage(userId: postView.creator.id),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  postView.creator.name,
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
+                ),
+              ),
+            ],
           ),
           const SizedBox(height: 8.0),
           MediaView(

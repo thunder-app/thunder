@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -11,6 +10,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/post.dart';
 
@@ -171,7 +171,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     int attemptCount = 0;
     int limit = 20;
 
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+    SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
     PostListingType defaultListingType;
     SortType defaultSortType;
@@ -229,11 +229,17 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> formattedPosts = await parsePostViews(posts);
 
+            Set<int> postIds = {};
+            for (PostViewMedia post in formattedPosts) {
+              postIds.add(post.postView.post.id);
+            }
+
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
                 page: 2,
                 postViews: formattedPosts,
+                postIds: postIds,
                 listingType: listingType,
                 communityId: communityId,
                 communityName: event.communityName,
@@ -269,13 +275,25 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             // Parse the posts, and append them to the existing list
             List<PostViewMedia> postMedias = await parsePostViews(posts);
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
-            postViews.addAll(postMedias);
+            Set<int> postIds = Set.from(state.postIds ?? {});
+
+            // Insure we don't add existing posts to view
+            for (PostViewMedia postMedia in postMedias) {
+              int id = postMedia.postView.post.id;
+              if (postIds.contains(id)) {
+                continue;
+              }
+
+              postIds.add(id);
+              postViews.add(postMedia);
+            }
 
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
                 page: state.page + 1,
                 postViews: postViews,
+                postIds: postIds,
                 communityId: communityId,
                 communityName: state.communityName,
                 listingType: listingType,

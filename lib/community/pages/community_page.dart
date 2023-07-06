@@ -30,6 +30,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   SortType? sortType;
   IconData? sortTypeIcon;
+  String? sortTypeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +48,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType).icon;
+              final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              sortTypeIcon = sortTypeItem.icon;
+              sortTypeLabel = sortTypeItem.label;
             });
           }
           return true;
@@ -89,7 +92,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         },
                       ),
                     IconButton(
+                        icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
+                        }),
+                    IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                        tooltip: sortTypeLabel,
                         onPressed: () {
                           HapticFeedback.mediumImpact();
                           showSortBottomSheet(context, state);

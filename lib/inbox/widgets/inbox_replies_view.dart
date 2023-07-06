@@ -25,7 +25,7 @@ class InboxRepliesView extends StatelessWidget {
     List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
     if (replies.isEmpty) {
-      return const Center(child: Text('No replies'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No replies'));
     }
 
     return ListView.builder(

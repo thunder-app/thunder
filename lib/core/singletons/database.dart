@@ -25,10 +25,9 @@ class DB {
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
       onCreate: (db, version) {
-        return db.execute(
-            'CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
+        return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
       },
-      version: 1,
+      version: 2,
     );
   }
 }

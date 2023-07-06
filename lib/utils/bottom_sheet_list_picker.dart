@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetListPicker<T> extends StatefulWidget {
@@ -27,8 +28,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+            padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -44,7 +44,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                 .map(
                   (item) => ListTile(
                     title: Text(
-                      item.label,
+                      item.label.capitalize,
                       style: theme.textTheme.bodyMedium,
                     ),
                     leading: Icon(item.icon),
