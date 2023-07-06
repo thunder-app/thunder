@@ -244,7 +244,7 @@ class PostSubview extends StatelessWidget {
                         ? Icons.star_rounded
                         : Icons.star_border_rounded,
                     semanticLabel: postView.saved ? 'Saved' : 'Save',
-                    color: postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color,
+                    color: isUserLoggedIn ? (postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color) : null,
                   ),
                   style: IconButton.styleFrom(
                     foregroundColor: postView.saved ? null : Colors.purple,
