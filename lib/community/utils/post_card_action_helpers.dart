@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
+import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -77,7 +82,7 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
               physics: const NeverScrollableScrollPhysics(),
               itemCount: postCardActionItems.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
-                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink && (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link))) {
+                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink && (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
                   return Container();
                 }
 
@@ -91,7 +96,7 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                     style: theme.textTheme.bodyMedium,
                   ),
                   leading: Icon(postCardActionItems[index].icon),
-                  onTap: () {
+                  onTap: () async {
                     Navigator.of(context).pop();
 
                     PostCardAction postCardAction = postCardActionItems[index].postCardAction;
@@ -122,7 +127,22 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         Share.share(postViewMedia.postView.post.apId);
                         break;
                       case PostCardAction.shareMedia:
-                        if (postViewMedia.media.first.mediaUrl != null) Share.share(postViewMedia.media.first.mediaUrl!);
+                        if (postViewMedia.media.first.mediaUrl != null) {
+                          // Figure out where we're going to store the media temporarily
+                          final filename = basename(postViewMedia.media.first.mediaUrl!);
+                          final tempDirectoryPath = (await getTemporaryDirectory()).path;
+                          final temporaryMediaPath = '$tempDirectoryPath/$filename';
+
+                          // Download the media
+                          final media = await http.get(Uri.parse(postViewMedia.media.first.mediaUrl!));
+                          await File(temporaryMediaPath).writeAsBytes(media.bodyBytes);
+                          
+                          // Share
+                          await Share.shareXFiles([XFile(temporaryMediaPath)]);
+                          
+                          // Delete the temp file
+                          await File(temporaryMediaPath).delete();
+                        }
                         break;
                       case PostCardAction.shareLink:
                         if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
