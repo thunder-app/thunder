@@ -115,7 +115,13 @@ class _PostPageState extends State<PostPage> {
                         ),
                       )
                     : null,
-                body: SafeArea(
+                body: GestureDetector(
+                  onHorizontalDragEnd: (details) {
+                    if (details.primaryVelocity! > 0) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                child: SafeArea(
                   child: BlocConsumer<PostBloc, PostState>(
                     listenWhen: (previous, current) {
                       if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
@@ -191,6 +197,7 @@ class _PostPageState extends State<PostPage> {
                     },
                   ),
                 ),
+              ),
               );
             }));
   }
