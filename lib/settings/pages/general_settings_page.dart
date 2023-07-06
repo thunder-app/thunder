@@ -37,6 +37,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool showEdgeToEdgeImages = false;
+  bool tabletMode = false;
   bool showTextContent = false;
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
@@ -133,6 +134,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
+      case 'setting_post_tablet_mode':
+        await prefs.setBool('setting_post_tablet_mode', value);
+        setState(() => tabletMode = value);
+        break;
 
       // Link Settings
       case 'setting_general_show_link_previews':
@@ -201,6 +206,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -370,6 +376,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                        ToggleOption(
+                          description: '2-column Tablet Mode',
+                          value: tabletMode,
+                          iconEnabled: Icons.view_comfortable_rounded,
+                          iconDisabled: Icons.view_agenda,
+                          onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',

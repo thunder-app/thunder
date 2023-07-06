@@ -11,6 +11,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
@@ -66,6 +68,16 @@ class _PostCardListState extends State<PostCardList> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState state = context.watch<ThunderBloc>().state;
+
+    bool tabletMode = state.tabletMode;
+
+    const tabletGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 2,
+    );
+    const phoneGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 1,
+    );
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
@@ -83,7 +95,10 @@ class _PostCardListState extends State<PostCardList> {
                 ));
           }
         },
-        child: ListView.builder(
+        child: MasonryGridView.builder(
+          gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
+          crossAxisSpacing: 20,
+          mainAxisSpacing: 0,
           cacheExtent: 500,
           controller: _scrollController,
           itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
