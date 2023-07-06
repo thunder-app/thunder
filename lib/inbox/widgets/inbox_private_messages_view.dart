@@ -15,7 +15,7 @@ class InboxPrivateMessagesView extends StatelessWidget {
     List<PrivateMessageView> privateMessages = context.read<InboxBloc>().state.privateMessages;
 
     if (privateMessages.isEmpty) {
-      return const Align(alignment: Alignment.topCenter, child: Text('No replies'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No messages'));
     }
 
     return ListView.builder(
