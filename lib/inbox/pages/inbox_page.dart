@@ -123,7 +123,7 @@ class _InboxPageState extends State<InboxPage> {
                     case InboxStatus.loading:
                     case InboxStatus.refreshing:
                       return const Align(
-                        alignment: AlignmentDirectional(0, -.325),
+                        alignment: Alignment.center,
                         child: SizedBox(
                           width: 40,
                           height: 40,
