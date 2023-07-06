@@ -123,10 +123,6 @@ class PostViewMetaData extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-        final SharedPreferences? prefs = state.preferences;
-
-        if (prefs == null) return Container();
-
         return Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

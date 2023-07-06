@@ -25,7 +25,9 @@ class CommentHeader extends StatelessWidget {
 
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
-    int score = commentViewTree.comment?.counts.score ?? 0;
+    //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
+    int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
+    int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -44,16 +46,28 @@ class CommentHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Icon(
-                  myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
-                  size: 12.0 * state.contentFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                  Icons.north_rounded,
+                  size: 12.0,
+                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
-                  formatNumberToK(score),
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  formatNumberToK(upvotes),
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                    color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                  ),
+                ),
+                const SizedBox(width: 12.0),
+                Icon(
+                  Icons.south_rounded,
+                  size: 12.0,
+                  color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                ),
+                const SizedBox(width: 2.0),
+                Text(
+                  formatNumberToK(downvotes),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                   ),
                 ),
               ],

@@ -19,6 +19,8 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/numbers.dart';
 
+import '../../utils/date_time.dart';
+
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
 
@@ -228,7 +230,7 @@ class PostSubview extends StatelessWidget {
                       : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
+                    foregroundColor: postView.myVote == VoteType.up ? theme.textTheme.bodyMedium?.color : Colors.orange,
                     padding: EdgeInsets.zero,
                   ),
                   child: Row(
@@ -238,13 +240,13 @@ class PostSubview extends StatelessWidget {
                         Icons.arrow_upward,
                         semanticLabel:
                         postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
-                        color: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
+                        color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.upvotes),
                         style: TextStyle(
-                          color: postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color,
+                          color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
                       const Spacer(),
@@ -268,7 +270,7 @@ class PostSubview extends StatelessWidget {
                       : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
+                    foregroundColor: postView.myVote == VoteType.down ? theme.textTheme.bodyMedium?.color : Colors.blue,
                     padding: EdgeInsets.zero,
                   ),
 
@@ -279,13 +281,13 @@ class PostSubview extends StatelessWidget {
                         Icons.arrow_downward,
                         semanticLabel:
                         postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
-                        color: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
+                        color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.downvotes),
                         style: TextStyle(
-                          color: postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color,
+                          color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
                       const Spacer(),
@@ -308,8 +310,11 @@ class PostSubview extends StatelessWidget {
                         ? Icons.star_rounded
                         : Icons.star_border_rounded,
                     semanticLabel: postView.saved ? 'Saved' : 'Save',
+                    color: postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color,
                   ),
-                  color: postView.saved ? Colors.purple : null,
+                  style: IconButton.styleFrom(
+                    foregroundColor: postView.saved ? null : Colors.purple,
+                  ),
                 ),
               ),
               Expanded(
