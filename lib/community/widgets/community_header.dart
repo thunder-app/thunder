@@ -31,33 +31,35 @@ class CommunityHeader extends StatelessWidget {
                 maxRadius: 45,
               ),
               const SizedBox(width: 20.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    communityInfo?.communityView.community.name ?? 'N/A',
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                  ),
-                  Text(
-                    fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A',
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    children: [
-                      IconText(
-                        icon: const Icon(Icons.people_rounded),
-                        text: formatNumberToK(communityInfo?.communityView.counts.subscribers ?? 0),
-                      ),
-                      const SizedBox(width: 8.0),
-                      IconText(
-                        icon: const Icon(Icons.sensors_rounded),
-                        text: (communityInfo?.online != null) ? '${communityInfo?.online}' : '-',
-                      ),
-                    ],
-                  ),
-                ],
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      communityInfo?.communityView.community.title ?? communityInfo?.communityView.community.name ?? 'N/A',
+                      style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                    ),
+                    Text(
+                      fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A',
+                      style: theme.textTheme.titleSmall,
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      children: [
+                        IconText(
+                          icon: const Icon(Icons.people_rounded),
+                          text: formatNumberToK(communityInfo?.communityView.counts.subscribers ?? 0),
+                        ),
+                        const SizedBox(width: 8.0),
+                        IconText(
+                          icon: const Icon(Icons.sensors_rounded),
+                          text: (communityInfo?.online != null) ? '${communityInfo?.online}' : '-',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
