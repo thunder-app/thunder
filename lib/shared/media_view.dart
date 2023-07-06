@@ -90,7 +90,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         mediaHeight: widget.postView!.media.first.height,
         mediaWidth: widget.postView!.media.first.width,
         showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
-        // edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
+        edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
         viewMode: widget.viewMode,
       );
     }
