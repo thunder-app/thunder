@@ -73,6 +73,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
     commentMap[commentView.comment.path] = CommentViewTree(
       comment: commentView,
       replies: [],
+      level: commentView.comment.path.split('.').length - 2,
     );
   }
 

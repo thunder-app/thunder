@@ -7,6 +7,7 @@ import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -31,7 +32,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final bool hideNsfwPreviews = context.read<ThunderBloc>().state.preferences?.getBool('setting_general_hide_nsfw_previews') ?? true;
+
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+
+    final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -41,7 +45,11 @@ class PostSubview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(post.name, style: theme.textTheme.titleMedium),
+            child: Text(
+              post.name,
+              textScaleFactor: thunderState.titleFontSizeScale.textScaleFactor,
+              style: theme.textTheme.titleMedium,
+            ),
           ),
           Row(
             children: [
@@ -66,6 +74,7 @@ class PostSubview extends StatelessWidget {
                 },
                 child: Text(
                   postView.community.name,
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
@@ -73,6 +82,7 @@ class PostSubview extends StatelessWidget {
               ),
               Text(
                 ' · ${formatTimeToString(dateTime: post.published.toIso8601String())} · ',
+                textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                 ),
@@ -98,6 +108,7 @@ class PostSubview extends StatelessWidget {
                 },
                 child: Text(
                   postView.creator.name,
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
@@ -126,6 +137,7 @@ class PostSubview extends StatelessWidget {
               comments: postView.counts.comments,
               published: post.published,
               saved: postView.saved,
+              distinguised: postViewMedia.postView.post.featuredCommunity,
             ),
           ),
           const Divider(),

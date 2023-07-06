@@ -42,6 +42,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
 
   bool isLoading = false;
   bool isFailure = false;
+  bool hasExited = false;
 
   String errorMessage = '';
 
@@ -77,6 +78,13 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   }
 
   @override
+  void dispose() {
+    _bodyTextController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return MultiBlocListener(
@@ -85,9 +93,10 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
           listenWhen: (previous, current) {
             return previous.status != current.status;
           },
-          listener: (context, state) {
+          listener: (listenerContext, state) {
             if (state.status == PostStatus.success) {
-              return Navigator.of(context).pop();
+              if (hasExited == false) Navigator.pop(context);
+              setState(() => hasExited = true);
             }
             if (state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
               setState(() {
@@ -110,9 +119,10 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
             listenWhen: (previous, current) {
               return previous.status != current.status;
             },
-            listener: (context, state) {
+            listener: (listenerContext, state) {
               if (state.status == InboxStatus.success) {
-                return Navigator.of(context).pop();
+                if (hasExited == false) Navigator.pop(context);
+                setState(() => hasExited = true);
               }
               if (state.status == InboxStatus.loading || state.status == InboxStatus.refreshing) {
                 setState(() {

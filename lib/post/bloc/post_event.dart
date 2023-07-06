@@ -10,15 +10,17 @@ abstract class PostEvent extends Equatable {
 class GetPostEvent extends PostEvent {
   final int? postId;
   final PostViewMedia? postView;
+  final CommentSortType? sortType;
 
-  const GetPostEvent({this.postView, this.postId});
+  const GetPostEvent({this.sortType, this.postView, this.postId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
   final int? postId;
   final bool reset;
+  final CommentSortType? sortType;
 
-  const GetPostCommentsEvent({this.postId, this.reset = false});
+  const GetPostCommentsEvent({this.postId, this.reset = false, this.sortType});
 }
 
 class VotePostEvent extends PostEvent {

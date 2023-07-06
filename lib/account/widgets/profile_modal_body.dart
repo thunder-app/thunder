@@ -58,7 +58,7 @@ class ProfileSelect extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    String? currentAccountId = context.read<ThunderBloc>().state.preferences?.getString('active_profile_id');
+    String? currentAccountId = context.read<AuthBloc>().state.account?.id;
 
     return FutureBuilder(
       future: fetchAccounts(),

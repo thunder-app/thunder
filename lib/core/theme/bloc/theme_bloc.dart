@@ -7,6 +7,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 part 'theme_event.dart';
 part 'theme_state.dart';
@@ -29,7 +30,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     try {
       emit(state.copyWith(status: ThemeStatus.loading));
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
       bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
 

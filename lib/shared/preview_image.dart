@@ -43,8 +43,10 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
-    final openInExternalBrowser = context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final useDarkTheme = state.themeType == 'dark';
+
+    final openInExternalBrowser = state.openInExternalBrowser;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;

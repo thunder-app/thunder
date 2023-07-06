@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/font_size.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
@@ -16,16 +18,14 @@ class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
 
-  const CommonMarkdownBody({super.key, required this.body, String? data, this.isSelectableText = false});
+  const CommonMarkdownBody({super.key, required this.body, this.isSelectableText = false});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool openInExternalBrowser = false;
+    final ThunderState state = context.watch<ThunderBloc>().state;
 
-    try {
-      context.read<ThunderBloc>().state.preferences?.getBool('setting_links_open_in_external_browser') ?? false;
-    } catch (e) {}
+    bool openInExternalBrowser = state.openInExternalBrowser;
 
     return MarkdownBody(
       data: body,
@@ -67,6 +67,7 @@ class CommonMarkdownBody extends StatelessWidget {
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
+        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,
