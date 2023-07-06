@@ -2,8 +2,11 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/enums/post_view_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -25,7 +28,13 @@ class LinkPreviewCard extends StatelessWidget {
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
+    this.postId,
+    this.postViewContext,
+    required this.isUserLoggedIn,
+    required this.markPostReadOnMediaView,
   });
+
+  final int? postId;
 
   final String? originURL;
   final String? mediaURL;
@@ -36,7 +45,12 @@ class LinkPreviewCard extends StatelessWidget {
   final bool showLinkPreviews;
   final bool showFullHeightImages;
 
+
   final bool edgeToEdgeImages;
+
+  final bool markPostReadOnMediaView;
+  final PostViewContext? postViewContext;
+  final bool isUserLoggedIn;
 
   final ViewMode viewMode;
 
@@ -97,8 +111,18 @@ class LinkPreviewCard extends StatelessWidget {
 
   void triggerOnTap(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
-
     final openInExternalBrowser = state.openInExternalBrowser;
+
+    if (isUserLoggedIn && markPostReadOnMediaView) {
+      switch (postViewContext!) {
+        case PostViewContext.communityView:
+          context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId!, read: true));
+          break;
+        case PostViewContext.userView:
+          context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+          break;
+      }
+    }
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation

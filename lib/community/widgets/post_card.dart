@@ -12,12 +12,15 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/post_view_context.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+
+import '../../user/bloc/user_bloc.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -159,12 +162,15 @@ class _PostCardState extends State<PostCard> {
                       postViewMedia: widget.postViewMedia,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
+                      markPostReadOnMediaView: state.markPostReadOnMediaView,
                       showInstanceName: widget.showInstanceName,
+                      isUserLoggedIn: isUserLoggedIn,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
+                      markPostReadOnMediaView: state.markPostReadOnMediaView,
                       showInstanceName: widget.showInstanceName,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,
@@ -184,7 +190,17 @@ class _PostCardState extends State<PostCard> {
                 CommunityBloc communityBloc = context.read<CommunityBloc>();
 
                 // Mark post as read when tapped
-                if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
+                if (isUserLoggedIn) {
+                  int postId = widget.postViewMedia.postView.post.id;
+                  switch(widget.postViewMedia.postViewContext) {
+                    case PostViewContext.communityView:
+                      context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: true));
+                      break;
+                    case PostViewContext.userView:
+                      context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: true));
+                      break;
+                  }
+                }
 
                 await Navigator.of(context).push(
                   MaterialPageRoute(

@@ -14,6 +14,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/post.dart';
 
+import '../../core/enums/post_view_context.dart';
+
 part 'user_event.dart';
 part 'user_state.dart';
 
@@ -50,6 +52,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _getUserSavedEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkUserPostAsReadEvent>(
+      _markPostAsReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -84,7 +90,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
@@ -121,7 +127,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
@@ -188,7 +194,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
@@ -224,7 +230,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user saved content');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? [], PostViewContext.userView);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
@@ -285,6 +291,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markPostAsReadEvent(MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      PostView postView = await markPostAsRead(event.postId, event.read);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(
+        status: UserStatus.failure,
+        errorMessage: e.toString(),
+        userId: state.userId,
+      ));
     }
   }
 

@@ -107,7 +107,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView], postView!.postViewContext);
 
             postView = posts.first;
           }
