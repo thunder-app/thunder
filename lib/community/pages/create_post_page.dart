@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -34,7 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool isSubmitButtonDisabled = true;
 
   // final List<bool> _selectedPostType = <bool>[true, false, false];
-
+  String image = '';
   String description = '';
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
@@ -135,18 +137,36 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Row(children: <Widget>[
-                      IconButton(
-                        onPressed: () async{
-                          final ImagePicker picker = ImagePicker();
-                          XFile? file = await picker.pickImage(source: ImageSource.gallery);
-                        },
-                        icon: const Icon(
-                          Icons.attach_file,
-                          semanticLabel: "Attach File",
-                        ),
-                      )
-                    ]),
+                    FittedBox(
+                        child: Image.file(
+                      File(image),
+                      errorBuilder: (context, error, stackTrace) {
+                        return const SizedBox(height: 20);
+                      },
+                    )),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          IconButton(
+                            onPressed: () async {
+                              final ImagePicker picker = ImagePicker();
+                              XFile? file = await picker.pickImage(
+                                  source: ImageSource.gallery);
+                              try {
+                                String path = file!.path;
+                                setState(() {
+                                  image = path;
+                                });
+                              } catch (e, s) {
+                                null;
+                              }
+                            },
+                            icon: const Icon(
+                              Icons.attach_file,
+                              semanticLabel: "Attach File",
+                            ),
+                          )
+                        ]),
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.start,
