@@ -17,51 +17,74 @@ class UserHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0, left: 24.0, right: 24.0, bottom: 24.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
+    return Container(
+      decoration: userInfo?.person.banner != null ? BoxDecoration(
+        image: DecorationImage(
+            image: CachedNetworkImageProvider(userInfo!.person.banner!),
+            fit: BoxFit.cover
+        ),
+      ) : null,
+      child: Container(
+        decoration: userInfo?.person.banner != null ? BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+            colors: [
+              theme.colorScheme.background,
+              theme.colorScheme.background,
+              theme.colorScheme.background.withOpacity(0.85),
+              theme.colorScheme.background.withOpacity(0.4),
+              Colors.transparent,
+            ],
+          ),
+        ) : null,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
-              CircleAvatar(
-                backgroundColor: userInfo?.person.avatar != null ? Colors.transparent : theme.colorScheme.onBackground,
-                foregroundImage: userInfo?.person.avatar != null ? CachedNetworkImageProvider(userInfo!.person.avatar!) : null,
-                maxRadius: 45,
-              ),
-              const SizedBox(width: 20.0),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
+              Row(
                 children: [
-                  Text(
-                    userInfo?.person.name ?? '-',
-                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                  CircleAvatar(
+                    backgroundColor: userInfo?.person.avatar != null ? Colors.transparent : theme.colorScheme.onBackground,
+                    foregroundImage: userInfo?.person.avatar != null ? CachedNetworkImageProvider(userInfo!.person.avatar!) : null,
+                    maxRadius: 45,
                   ),
-                  Text(
-                    fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
-                    style: theme.textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
+                  const SizedBox(width: 20.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      // IconText(
-                      //   icon: const Icon(Icons.people_rounded),
-                      //   text: formatNumberToK(userInfo?.communityView.counts.subscribers ?? 0),
-                      // ),
-                      // const SizedBox(width: 8.0),
-                      // IconText(
-                      //   icon: const Icon(Icons.sensors_rounded),
-                      //   text: (userInfo?.online != null) ? '${userInfo?.online}' : '-',
-                      // ),
+                      Text(
+                        userInfo?.person.name ?? '-',
+                        style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                      ),
+                      Text(
+                        fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
+                        style: theme.textTheme.titleSmall,
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        children: [
+                          // IconText(
+                          //   icon: const Icon(Icons.people_rounded),
+                          //   text: formatNumberToK(userInfo?.communityView.counts.subscribers ?? 0),
+                          // ),
+                          // const SizedBox(width: 8.0),
+                          // IconText(
+                          //   icon: const Icon(Icons.sensors_rounded),
+                          //   text: (userInfo?.online != null) ? '${userInfo?.online}' : '-',
+                          // ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
