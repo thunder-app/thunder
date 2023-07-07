@@ -36,7 +36,7 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  commentViewTree.comment!.creator.name,
+                  commentViewTree.comment!.creator.displayName != null ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
