@@ -47,25 +47,27 @@ class CommentHeader extends StatelessWidget {
                 const SizedBox(width: 8.0),
                 Icon(
                   Icons.north_rounded,
-                  size: 12.0,
+                  size: 12.0 * state.contentFontSizeScale.textScaleFactor,
                   color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(upvotes),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                   ),
                 ),
-                const SizedBox(width: 12.0),
+                const SizedBox(width: 10.0),
                 Icon(
                   Icons.south_rounded,
-                  size: 12.0,
+                  size: 12.0 * state.contentFontSizeScale.textScaleFactor,
                   color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(downvotes),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                   ),

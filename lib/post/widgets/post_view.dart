@@ -94,6 +94,7 @@ class PostSubview extends StatelessWidget {
                   },
                   child: Text(
                     postView.creator.name,
+                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                     ),
@@ -101,6 +102,7 @@ class PostSubview extends StatelessWidget {
                 ),
                 Text(
                   ' to ',
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
@@ -128,6 +130,7 @@ class PostSubview extends StatelessWidget {
                   },
                   child: Text(
                     postView.community.name,
+                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                     ),

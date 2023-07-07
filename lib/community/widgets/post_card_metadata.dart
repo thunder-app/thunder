@@ -130,6 +130,7 @@ class PostViewMetaData extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     Icons.chat,
                     size: 17.0,
@@ -140,6 +141,7 @@ class PostViewMetaData extends StatelessWidget {
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     Icons.history_rounded,
                     size: 19.0,
