@@ -25,6 +25,7 @@ class CommentHeader extends StatelessWidget {
 
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
+    bool? hasBeenEdited = commentViewTree.comment!.comment.updated != null ? true : false;
     //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
     int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
     int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
@@ -82,9 +83,16 @@ class CommentHeader extends StatelessWidget {
                 color: saved == true ? Colors.purple : null,
                 size: 18.0,
               ),
-              const SizedBox(width: 8.0),
+              SizedBox(
+                width: hasBeenEdited ? 32.0 : 8,
+                child: Icon(
+                  hasBeenEdited ? Icons.create_rounded : null,
+                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                  size: 16.0,
+                ),
+              ),
               Text(
-                formatTimeToString(dateTime: commentViewTree.comment!.comment.published.toIso8601String()),
+                formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
                 textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onBackground,

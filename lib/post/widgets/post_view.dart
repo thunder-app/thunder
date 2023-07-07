@@ -47,7 +47,6 @@ class PostSubview extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-
             child: Text(
               post.name,
               textScaleFactor: thunderState.titleFontSizeScale.textScaleFactor,
@@ -146,6 +145,52 @@ class PostSubview extends StatelessWidget {
                   ),
                 ),
               ],
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: authBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserPage(userId: postView.creator.id),
+                      ),
+                    ),
+                  );
+                },
+                child: Text(
+                  postView.creator.name,
+                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          MediaView(
+            post: post,
+            postView: postViewMedia,
+            hideNsfwPreviews: hideNsfwPreviews,
+          ),
+          if (postViewMedia.postView.post.body != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: CommonMarkdownBody(
+                body: post.body ?? '',
+              ),
+            ),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: PostCardMetaData(
+              score: postView.counts.score,
+              voteType: postView.myVote ?? VoteType.none,
+              comments: postView.counts.comments,
+              hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+              published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
+              saved: postView.saved,
+              distinguised: postViewMedia.postView.post.featuredCommunity,
             ),
           ),
           const Divider(),
