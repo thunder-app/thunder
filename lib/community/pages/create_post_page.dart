@@ -137,17 +137,32 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    FittedBox(
-                        child: Image.file(
-                      File(image),
-                      errorBuilder: (context, error, stackTrace) {
-                        return const SizedBox(height: 20);
-                      },
-                    )),
+                    Stack(children: [
+                      Image.file(
+                        File(image),
+                        fit: BoxFit.fitWidth,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const SizedBox(height: 20);
+                        },
+                      ),
+                      image != '' ? Positioned(
+                        top: 0,
+                        right: 0,
+                        child: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              image = '';
+                            });
+                          },
+                          icon: const Icon(Icons.cancel, shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],),
+                        ),
+                      ) : const SizedBox(height: 20),
+                    ]),
                     Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          IconButton(
+                          TextButton(
+                            child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
                             onPressed: () async {
                               final ImagePicker picker = ImagePicker();
                               XFile? file = await picker.pickImage(
@@ -155,16 +170,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               try {
                                 String path = file!.path;
                                 setState(() {
-                                  image = path;
+                                  print(path);
+                                  if (image == '') {;
+                                    image = path;
+                                  } else {
+                                    _bodyTextController.text =
+                                        _bodyTextController.text + path;
+                                  }
                                 });
                               } catch (e, s) {
                                 null;
                               }
                             },
-                            icon: const Icon(
-                              Icons.attach_file,
-                              semanticLabel: "Attach File",
-                            ),
                           )
                         ]),
                     Column(

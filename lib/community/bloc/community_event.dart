@@ -43,8 +43,9 @@ class ChangeCommunitySubsciptionStatusEvent extends CommunityEvent {
 class CreatePostEvent extends CommunityEvent {
   final String name;
   final String body;
+  final String? url;
 
-  const CreatePostEvent({required this.name, required this.body});
+  const CreatePostEvent({required this.name, required this.body, this.url});
 }
 
 class MarkPostAsReadEvent extends CommunityEvent {
