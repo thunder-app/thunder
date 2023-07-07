@@ -52,33 +52,38 @@ class UserHeader extends StatelessWidget {
                     maxRadius: 45,
                   ),
                   const SizedBox(width: 20.0),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        userInfo?.person.name ?? '-',
-                        style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                      ),
-                      Text(
-                        fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
-                        style: theme.textTheme.titleSmall,
-                      ),
-                      const SizedBox(height: 8.0),
-                      Row(
-                        children: [
-                          // IconText(
-                          //   icon: const Icon(Icons.people_rounded),
-                          //   text: formatNumberToK(userInfo?.communityView.counts.subscribers ?? 0),
-                          // ),
-                          // const SizedBox(width: 8.0),
-                          // IconText(
-                          //   icon: const Icon(Icons.sensors_rounded),
-                          //   text: (userInfo?.online != null) ? '${userInfo?.online}' : '-',
-                          // ),
-                        ],
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Text(
+                          userInfo?.person.name ?? '-',
+                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                          softWrap: false,
+                          maxLines: 1,
+                          overflow: TextOverflow.fade,
+                        ),
+                        Text(
+                          fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
+                          style: theme.textTheme.titleSmall,
+                        ),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            // IconText(
+                            //   icon: const Icon(Icons.people_rounded),
+                            //   text: formatNumberToK(userInfo?.communityView.counts.subscribers ?? 0),
+                            // ),
+                            // const SizedBox(width: 8.0),
+                            // IconText(
+                            //   icon: const Icon(Icons.sensors_rounded),
+                            //   text: (userInfo?.online != null) ? '${userInfo?.online}' : '-',
+                            // ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
