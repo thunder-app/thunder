@@ -47,9 +47,9 @@ class CommentHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Icon(
-                  Icons.north_rounded,
+                  myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
                   size: 12.0 * state.contentFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                  color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
                 ),
                 const SizedBox(width: 2.0),
                 Text(

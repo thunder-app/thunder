@@ -18,7 +18,6 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/numbers.dart';
-
 import '../../utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
