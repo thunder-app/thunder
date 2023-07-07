@@ -13,6 +13,7 @@ class PostCardMetaData extends StatelessWidget {
   final int score;
   final VoteType voteType;
   final int comments;
+  final int unreadComments;
   final bool hasBeenEdited;
   final DateTime published;
   final bool saved;
@@ -22,6 +23,7 @@ class PostCardMetaData extends StatelessWidget {
     super.key,
     required this.score,
     required this.voteType,
+    required this.unreadComments,
     required this.comments,
     required this.hasBeenEdited,
     required this.published,
@@ -76,6 +78,25 @@ class PostCardMetaData extends StatelessWidget {
                   text: formatNumberToK(comments),
                   textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
+                ),
+                Container(
+                  child: unreadComments != 0 ? Row(
+                    children: [
+                      const SizedBox(width: 6.0),
+                      Text(formatNumberToK(unreadComments),
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: TextStyle(
+                          color: theme.textTheme.titleSmall?.color?.withOpacity(0.65),
+                        ),
+                      ),
+                      Text(' new',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: TextStyle(
+                          color: theme.textTheme.titleSmall?.color?.withOpacity(0.65),
+                        ),
+                      ),
+                    ],
+                  ) : null,
                 ),
                 const SizedBox(width: 10.0),
                 IconText(

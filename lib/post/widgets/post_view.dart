@@ -187,6 +187,7 @@ class PostSubview extends StatelessWidget {
               score: postView.counts.score,
               voteType: postView.myVote ?? VoteType.none,
               comments: postView.counts.comments,
+              unreadComments: postViewMedia.postView.unreadComments,
               hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
               published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
               saved: postView.saved,
