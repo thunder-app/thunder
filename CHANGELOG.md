@@ -13,6 +13,7 @@
 - Addition of manual refresh icons to different screens - contribution from @bactaholic
 - Addition of user and community banners - contribution from @CTalvio
 - Added ability to share media directly - contribution from @micahmo
+- Added initial ability to block community
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
