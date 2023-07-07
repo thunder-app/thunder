@@ -93,7 +93,7 @@ class PostCardMetaData extends StatelessWidget {
                 const SizedBox(width: 14.0),
                 if (distinguised)
                   Icon(
-                    Icons.campaign_rounded,
+                    Icons.push_pin_rounded,
                     size: 24.0,
                     color: Colors.green.shade800,
                   ),
