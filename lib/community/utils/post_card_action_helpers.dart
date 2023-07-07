@@ -15,7 +15,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 
-enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink }
+enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink, blockCommunity }
 
 class ExtendedPostCardActions {
   const ExtendedPostCardActions({required this.postCardAction, required this.icon, required this.label});
@@ -50,6 +50,11 @@ const postCardActionItems = [
     postCardAction: PostCardAction.shareLink,
     icon: Icons.link_rounded,
     label: 'Share Link',
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockCommunity,
+    icon: Icons.block_rounded,
+    label: 'Block Community',
   )
 ];
 
@@ -80,7 +85,8 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
               physics: const NeverScrollableScrollPhysics(),
               itemCount: postCardActionItems.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
-                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink && (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
+                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink &&
+                    (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
                   return Container();
                 }
 
@@ -168,6 +174,9 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         break;
                       case PostCardAction.shareLink:
                         if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
+                        break;
+                      case PostCardAction.blockCommunity:
+                        context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: postViewMedia.postView.community.id, block: true));
                         break;
                     }
                   },
