@@ -133,6 +133,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        break;
       case 'setting_general_mark_post_read_on_meda_view':
         await prefs.setBool('setting_general_mark_post_read_on_meda_view', value);
         setState(() => markPostReadOnMediaView = value);
