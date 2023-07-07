@@ -2,16 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/pictrs.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_text_input.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/utils/instance.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/models/account.dart';
 
 const List<Widget> postTypes = <Widget>[
   Text('Text'),
@@ -38,6 +43,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   // final List<bool> _selectedPostType = <bool>[true, false, false];
   String image = '';
   String description = '';
+  String url = '';
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
 
@@ -58,6 +64,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
       if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled)
         setState(() => isSubmitButtonDisabled = false);
     });
+  }
+
+  Future<PictrsUploadFile> sendImageToTheServer(
+      String uploadImage, String instance, String jwt) async {
+    PictrsApi pictrs = PictrsApi(instance);
+    print("Hereee");
+    PictrsUpload result = await pictrs.upload(filePath: uploadImage, auth: jwt);
+    print(result.files[0].file);
+    return result.files[0];
+  }
+
+  Future<void> deleteFile(
+      PictrsUploadFile fileToDelete, String instance) async {
+    PictrsApi pictrs = PictrsApi(instance);
+    pictrs.delete(fileToDelete);
   }
 
   @override
@@ -139,43 +160,64 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     const SizedBox(height: 20),
                     Stack(children: [
                       Image.file(
-                        File(image),
+                        File(image), //TODO change this to fetch uploaded image for verification
                         fit: BoxFit.fitWidth,
                         errorBuilder: (context, error, stackTrace) {
                           return const SizedBox(height: 20);
                         },
                       ),
-                      image != '' ? Positioned(
-                        top: 0,
-                        right: 0,
-                        child: IconButton(
-                          onPressed: () {
-                            setState(() {
-                              image = '';
-                            });
-                          },
-                          icon: const Icon(Icons.cancel, shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],),
-                        ),
-                      ) : const SizedBox(height: 20),
+                      image != ''
+                          ? Positioned(
+                              top: 0,
+                              right: 0,
+                              child: IconButton(
+                                onPressed: () {
+                                  setState(() {
+                                    image = '';
+                                  });
+                                },
+                                icon: const Icon(
+                                  Icons.cancel,
+                                  shadows: [
+                                    Shadow(
+                                        color: Colors.black, blurRadius: 15.0)
+                                  ],
+                                ),
+                              ),
+                            )
+                          : const SizedBox(height: 20),
                     ]),
                     Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
                           TextButton(
-                            child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
+                            child: image == ''
+                                ? const Text("Upload Image")
+                                : const Text("Upload Image to the Body"),
                             onPressed: () async {
                               final ImagePicker picker = ImagePicker();
                               XFile? file = await picker.pickImage(
                                   source: ImageSource.gallery);
                               try {
+                                Account? account =
+                                    await fetchActiveProfileAccount();
+                                String lemmyUploadURL =
+                                    "https://${account!.instance!}/pictrs/image/";
                                 String path = file!.path;
+                                print(path);
+                                PictrsUploadFile tokens =
+                                    await sendImageToTheServer(
+                                        path, account.instance!, account.jwt!);
+                                String upload_file = tokens.file;
+                                print(upload_file);
+                                String delete_token = tokens
+                                    .deleteToken; //Will need to implement a storage for those
                                 setState(() {
-                                  print(path);
-                                  if (image == '') {;
-                                    image = path;
+                                  if (image == '') {
+                                    image = "$lemmyUploadURL$upload_file";
                                   } else {
                                     _bodyTextController.text =
-                                        _bodyTextController.text + path;
+                                        "${_bodyTextController.text}![]($lemmyUploadURL$upload_file)";
                                   }
                                 });
                               } catch (e, s) {
