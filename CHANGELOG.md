@@ -11,6 +11,8 @@
 - Added option to show title before content - contribution from @Fmstrat
 - Added option to show images edge-to-edge - contribution from @Fmstrat
 - Addition of manual refresh icons to different screens - contribution from @bactaholic
+- Addition of user and community banners - contribution from @CTalvio
+- Added ability to share media directly - contribution from @micahmo
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
@@ -22,6 +24,8 @@
 - Posts now load first before comment threads to make viewing posts more responsive
 - Slight changes to contrast of text in posts - contribution from @Fmstrat
 - Added tooltip labels on sort types - contribution from @micahmo
+- UI improvements to vote indication in feed view - contribution from @CTalvio
+- Community pages now use their display name - contribution from @CTalvio
 
 ### Fixed
 - Potentially fixed issues with HTTPS certificate errors when running on Android using Adguard with HTTPS filtering enabled
@@ -35,6 +39,7 @@
 - Fixed issue with duplicate posts being shown on the feed - contribution from @ajsosa
 - Increased NSFW blur - contribution from @guigs4
 - Fixed issue where longer comment threads would not show up properly
+- Fixed a bug where the URI was not parsed to lowercase before checking extensions to parse image dimensions - contribution from @Fmstrat
 
 ## 0.2.1+10 - 2023-07-02
 ### Added
