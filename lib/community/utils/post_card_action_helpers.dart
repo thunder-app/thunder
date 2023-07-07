@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -128,20 +126,44 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         break;
                       case PostCardAction.shareMedia:
                         if (postViewMedia.media.first.mediaUrl != null) {
-                          // Figure out where we're going to store the media temporarily
-                          final filename = basename(postViewMedia.media.first.mediaUrl!);
-                          final tempDirectoryPath = (await getTemporaryDirectory()).path;
-                          final temporaryMediaPath = '$tempDirectoryPath/$filename';
+                          try {
+                            // Try to get the cached image first
+                            var media = await DefaultCacheManager().getFileFromCache(postViewMedia.media.first.mediaUrl!);
+                            File? mediaFile = media?.file;
 
-                          // Download the media
-                          final media = await http.get(Uri.parse(postViewMedia.media.first.mediaUrl!));
-                          await File(temporaryMediaPath).writeAsBytes(media.bodyBytes);
-                          
-                          // Share
-                          await Share.shareXFiles([XFile(temporaryMediaPath)]);
-                          
-                          // Delete the temp file
-                          await File(temporaryMediaPath).delete();
+                            if (media == null) {
+                              // Tell user we're downloading the image
+                              SnackBar snackBar = const SnackBar(
+                                content: Text('Downloading media to share...'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
+
+                              // Download
+                              mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
+
+                              // Hide snackbar
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                              });
+                            }
+
+                            // Share
+                            await Share.shareXFiles([XFile(mediaFile!.path)]);
+                          } catch (e) {
+                            // Tell the user that the download failed
+                            SnackBar snackBar = SnackBar(
+                              content: Text('There was an error downloading the media file to share: $e'),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                              ScaffoldMessenger.of(context).clearSnackBars();
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            });
+                          }
                         }
                         break;
                       case PostCardAction.shareLink:
