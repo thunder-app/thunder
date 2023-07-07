@@ -13,6 +13,7 @@ class PostCardMetaData extends StatelessWidget {
   final int score;
   final VoteType voteType;
   final int comments;
+  final bool hasBeenEdited;
   final DateTime published;
   final bool saved;
   final bool distinguised;
@@ -22,6 +23,7 @@ class PostCardMetaData extends StatelessWidget {
     required this.score,
     required this.voteType,
     required this.comments,
+    required this.hasBeenEdited,
     required this.published,
     required this.saved,
     required this.distinguised,
@@ -72,7 +74,7 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    Icons.history_rounded,
+                    hasBeenEdited ? Icons.create_rounded : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
