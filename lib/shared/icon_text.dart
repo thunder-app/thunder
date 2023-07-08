@@ -19,7 +19,6 @@ class IconText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
 
     return Row(
       children: [
@@ -28,7 +27,9 @@ class IconText extends StatelessWidget {
         Text(
           text,
           textScaleFactor: textScaleFactor,
-          style: theme.textTheme.bodyMedium?.copyWith(fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.95),
+          style: TextStyle(
+            color: textColor,
+          ),
         ),
       ],
     );

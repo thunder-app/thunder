@@ -41,6 +41,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
+  bool useDisplayNames = true;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -129,6 +130,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+      case 'setting_use_display_names_for_users':
+        await prefs.setBool('setting_use_display_names_for_users', value);
+        setState(() => useDisplayNames = value);
+        break;
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
@@ -200,6 +205,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Links
@@ -370,6 +376,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                        ToggleOption(
+                          description: 'Use display names for users',
+                          value: useDisplayNames,
+                          iconEnabled: Icons.person_rounded,
+                          iconDisabled: Icons.person_off_rounded,
+                          onToggle: (bool value) => setPreferences('setting_use_display_names_for_users', value),
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',

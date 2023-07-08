@@ -44,7 +44,7 @@ class CommentSubview extends StatelessWidget {
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (postViewMedia != null && index == 0) {
-          return PostSubview(postViewMedia: postViewMedia!);
+          return PostSubview(useDisplayNames: state.useDisplayNames, postViewMedia: postViewMedia!);
         } else if (hasReachedCommentEnd == false && comments.isEmpty) {
           return Column(
             children: [

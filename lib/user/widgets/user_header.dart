@@ -58,15 +58,21 @@ class UserHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          userInfo?.person.name ?? '-',
+                          userInfo?.person.displayName != null ? userInfo?.person.displayName ?? '-' : userInfo?.person.name ?? '-',
                           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                           softWrap: false,
                           maxLines: 1,
                           overflow: TextOverflow.fade,
                         ),
-                        Text(
-                          fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
-                          style: theme.textTheme.titleSmall,
+                        Row(
+                          children: [
+                            Text(userInfo?.person.name ?? '-'),
+                            Text('@'),
+                            Text(
+                              fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
+                              style: theme.textTheme.titleSmall,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 8.0),
                         Row(

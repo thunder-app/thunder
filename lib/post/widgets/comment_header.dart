@@ -10,11 +10,13 @@ import 'package:thunder/utils/numbers.dart';
 
 class CommentHeader extends StatelessWidget {
   final CommentViewTree commentViewTree;
+  final bool useDisplayNames;
   final bool isOwnComment;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
+    required this.useDisplayNames,
     this.isOwnComment = false,
   });
 
@@ -38,7 +40,7 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 Text(
-                  commentViewTree.comment!.creator.displayName != null ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                  commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
@@ -47,9 +49,9 @@ class CommentHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Icon(
-                  myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
+                  Icons.north_rounded,
                   size: 12.0 * state.contentFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(

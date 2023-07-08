@@ -29,6 +29,7 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.hideNsfwPreviews = true,
+    this.useDisplayNames = true,
     this.bottomNavBarSwipeGestures = true,
     this.bottomNavBarDoubleTapGestures = false,
 
@@ -92,6 +93,7 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool hideNsfwPreviews;
+  final bool useDisplayNames;
   final bool bottomNavBarSwipeGestures;
   final bool bottomNavBarDoubleTapGestures;
 
@@ -152,6 +154,7 @@ class ThunderState extends Equatable {
     bool? hideNsfwPreviews,
     bool? bottomNavBarSwipeGestures,
     bool? bottomNavBarDoubleTapGestures,
+    bool? useDisplayNames,
     // Link Settings
     bool? openInExternalBrowser,
     // Notification Settings
@@ -201,6 +204,7 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
+      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
       // Link Settings
@@ -254,6 +258,7 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         hideNsfwPreviews,
+        useDisplayNames,
         bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures,
         openInExternalBrowser,
