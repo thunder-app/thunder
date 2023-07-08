@@ -188,6 +188,7 @@ class PostSubview extends StatelessWidget {
                 onPressed: isUserLoggedIn
                     ? () {
                         PostBloc postBloc = context.read<PostBloc>();
+                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                         showModalBottomSheet(
                           isScrollControlled: true,
@@ -198,8 +199,11 @@ class PostSubview extends StatelessWidget {
                               padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                               child: FractionallySizedBox(
                                 heightFactor: 0.8,
-                                child: BlocProvider<PostBloc>.value(
-                                  value: postBloc,
+                                child: MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<PostBloc>.value(value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  ],
                                   child: CreateCommentModal(postView: postView),
                                 ),
                               ),
