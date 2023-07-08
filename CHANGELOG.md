@@ -14,6 +14,8 @@
 - Addition of user and community banners - contribution from @CTalvio
 - Added ability to share media directly - contribution from @micahmo
 - Added initial ability to block community
+- Comments now show the number of direct replies - contribution from @micahmo
+- Added minor UI changes to the post view - contribution from @CTalvio
 
 ### Changed
 - Adjusted visual feedback in comment swipe gestures
