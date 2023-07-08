@@ -95,7 +95,7 @@ class _PostPageState extends State<PostPage> {
                   children: [
                     Positioned(
                       bottom: 20,
-                      right: 16,
+                      right: 5,
                       child:
                       FloatingActionButton(
                         onPressed: () {
@@ -128,7 +128,7 @@ class _PostPageState extends State<PostPage> {
                     if (_showReturnToTopButton)
                     Positioned(
                       bottom: 20,
-                      right: 85,
+                      left: 40,
                       child: FloatingActionButton(
                         onPressed: () {
                           _scrollController.animateTo(

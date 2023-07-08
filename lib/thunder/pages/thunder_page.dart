@@ -117,18 +117,18 @@ class _ThunderState extends State<Thunder> {
                   bool shouldThunderClose = await showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                        title: Text('Confirm Close'),
-                        content: Text('Are you sure you want to exit thunder?'),
+                        title: const Text('Confirm Close'),
+                        content: const Text('Are you sure you want to exit thunder?'),
                         actions: [
                     TextButton(
-                    child: Text('No'),
+                    child: const Text('No'),
                     onPressed: () {
                       Navigator.of(context).pop(false);
                     },
 
                     ),
                           TextButton(
-                            child: Text('Yes'),
+                            child: const Text('Yes'),
                             onPressed: () {
                               Navigator.of(context).pop(true);
                               Navigator.of(context).pop(true); //2nd pop here is to force exit when sidebar is open
@@ -137,7 +137,7 @@ class _ThunderState extends State<Thunder> {
                         ]
                     )
                   );
-                  return shouldThunderClose ?? false;
+                  return shouldThunderClose;
                 },
                     child: MultiBlocProvider(
                       providers: [

@@ -137,8 +137,8 @@ class _PostCardListState extends State<PostCardList> {
             ),
             if (_showReturnToTopButton)
             Positioned(
-              bottom: 16.0,
-              right: 16.0,
+              bottom: 16,
+              left: 20,
               child: FloatingActionButton(
                 onPressed: () {
                   _scrollController.animateTo(
