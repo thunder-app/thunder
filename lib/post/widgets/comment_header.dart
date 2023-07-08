@@ -4,9 +4,13 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/user/pages/user_page.dart';
+
+import '../../core/auth/bloc/auth_bloc.dart';
 
 class CommentHeader extends StatelessWidget {
   final CommentViewTree commentViewTree;
@@ -39,12 +43,33 @@ class CommentHeader extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text(
-                  commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
-                    fontWeight: FontWeight.w500,
+                GestureDetector(
+                  onTap: () {
+                    account_bloc.AccountBloc accountBloc =
+                    context.read<account_bloc.AccountBloc>();
+                    AuthBloc authBloc = context.read<AuthBloc>();
+                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: accountBloc),
+                            BlocProvider.value(value: authBloc),
+                            BlocProvider.value(value: thunderBloc),
+                          ],
+                          child: UserPage(userId: commentViewTree.comment!.creator.id),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8.0),

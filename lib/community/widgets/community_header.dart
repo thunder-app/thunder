@@ -61,15 +61,8 @@ class CommunityHeader extends StatelessWidget {
                           communityInfo?.communityView.community.title ?? communityInfo?.communityView.community.name ?? 'N/A',
                           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                         ),
-                        Row(
-                          children: [
-                            Text(communityInfo?.communityView.community.name ?? 'N/A'),
-                            Text('@'),
-                            Text(
-                              fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A',
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ],
+                        Text(
+                          '${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'
                         ),
                         const SizedBox(height: 8.0),
                         Row(

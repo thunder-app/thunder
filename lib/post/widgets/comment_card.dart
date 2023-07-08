@@ -98,6 +98,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
+    DateTime now = DateTime.now().toUtc();
+    int sinceCreated = now.difference(widget.commentViewTree.comment!.comment.published).inMinutes;
+
+    final theme = Theme.of(context);
 
     final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
 
@@ -117,6 +121,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 ),
               )
             : const Border(),
+        color: sinceCreated < 15 ? theme.focusColor : null,
       ),
       margin: const EdgeInsets.only(left: 1.0),
       child: Column(
