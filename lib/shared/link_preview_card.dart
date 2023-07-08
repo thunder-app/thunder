@@ -2,7 +2,6 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/core/enums/post_view_context.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -29,7 +28,6 @@ class LinkPreviewCard extends StatelessWidget {
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
     this.postId,
-    this.postViewContext,
     required this.isUserLoggedIn,
     required this.markPostReadOnMediaView,
   });
@@ -49,7 +47,6 @@ class LinkPreviewCard extends StatelessWidget {
   final bool edgeToEdgeImages;
 
   final bool markPostReadOnMediaView;
-  final PostViewContext? postViewContext;
   final bool isUserLoggedIn;
 
   final ViewMode viewMode;
@@ -114,13 +111,12 @@ class LinkPreviewCard extends StatelessWidget {
     final openInExternalBrowser = state.openInExternalBrowser;
 
     if (isUserLoggedIn && markPostReadOnMediaView) {
-      switch (postViewContext!) {
-        case PostViewContext.communityView:
-          context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId!, read: true));
-          break;
-        case PostViewContext.userView:
-          context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId!, read: true));
-          break;
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      } catch(e){
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
       }
     }
 

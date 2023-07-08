@@ -14,8 +14,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/post.dart';
 
-import '../../core/enums/post_view_context.dart';
-
 part 'user_event.dart';
 part 'user_state.dart';
 
@@ -90,7 +88,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
@@ -127,7 +125,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
@@ -194,7 +192,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? [], PostViewContext.userView);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
@@ -230,7 +228,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user saved content');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? [], PostViewContext.userView);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.savedPosts);

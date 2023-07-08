@@ -1,4 +1,0 @@
-enum PostViewContext {
-  communityView,
-  userView
-}

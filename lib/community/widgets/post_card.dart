@@ -12,7 +12,6 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/post_view_context.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
@@ -192,13 +191,12 @@ class _PostCardState extends State<PostCard> {
                 // Mark post as read when tapped
                 if (isUserLoggedIn) {
                   int postId = widget.postViewMedia.postView.post.id;
-                  switch(widget.postViewMedia.postViewContext) {
-                    case PostViewContext.communityView:
-                      context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: true));
-                      break;
-                    case PostViewContext.userView:
-                      context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                      break;
+                  try {
+                    UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+                    userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+                  } catch(e){
+                    CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+                    communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
                   }
                 }
 

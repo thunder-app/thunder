@@ -8,7 +8,6 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/enums/post_view_context.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -232,7 +231,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             ));
 
             // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> formattedPosts = await parsePostViews(posts, PostViewContext.communityView);
+            List<PostViewMedia> formattedPosts = await parsePostViews(posts);
 
             Set<int> postIds = {};
             for (PostViewMedia post in formattedPosts) {
@@ -278,7 +277,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             ));
 
             // Parse the posts, and append them to the existing list
-            List<PostViewMedia> postMedias = await parsePostViews(posts, PostViewContext.communityView);
+            List<PostViewMedia> postMedias = await parsePostViews(posts);
             List<PostViewMedia> postViews = List.from(state.postViews ?? []);
             Set<int> postIds = Set.from(state.postIds ?? {});
 
@@ -395,7 +394,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       ));
 
       // Parse the posts, and append them to the existing list
-      List<PostViewMedia> posts = await parsePostViews([postView], PostViewContext.communityView);
+      List<PostViewMedia> posts = await parsePostViews([postView]);
       List<PostViewMedia> postViews = List.from(state.postViews ?? []);
       postViews.addAll(posts);
 

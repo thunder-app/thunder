@@ -16,8 +16,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
-import '../core/enums/post_view_context.dart';
-
 /// Logic to mark post as read
 Future<PostView> markPostAsRead(int postId, bool read) async {
   Account? account = await fetchActiveProfileAccount();
@@ -95,21 +93,21 @@ Future<PostView> savePost(int postId, bool save) async {
 }
 
 /// Parse a post with media
-Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews, PostViewContext viewContext) async {
+Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
   bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
 
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, viewContext));
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, PostViewContext postViewContext) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
@@ -155,7 +153,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
   }
 
   return PostViewMedia(
-    postViewContext: postViewContext,
     postView: PostView(
       community: postView.community,
       counts: postView.counts,
