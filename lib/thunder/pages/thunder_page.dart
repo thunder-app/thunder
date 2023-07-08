@@ -104,7 +104,7 @@ class _ThunderState extends State<Thunder> {
         behavior: SnackBarBehavior.floating,
         backgroundColor: theme.dividerColor,
         width: 190,
-        duration: const Duration(milliseconds: 3000),
+        duration: const Duration(milliseconds: 3500),
         content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
       ),
     );
@@ -114,7 +114,7 @@ class _ThunderState extends State<Thunder> {
     if (appExitCounter == 0) {
       appExitCounter++;
       _showExitWarning();
-      Timer(const Duration(milliseconds: 3000), () {
+      Timer(const Duration(milliseconds: 3500), () {
         appExitCounter = 0;
       });
       return Future.value(false);
