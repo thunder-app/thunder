@@ -119,7 +119,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
-            maxDepth: 8,
+            // maxDepth: 8,
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
@@ -185,7 +185,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postId: state.postId,
               sort: sortType,
               limit: commentLimit,
-              maxDepth: 8,
+              // maxDepth: 8,
               page: 1,
             ))
                 .timeout(timeout, onTimeout: () {
@@ -218,7 +218,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postId: state.postId,
             sort: sortType,
             limit: commentLimit,
-            maxDepth: 8,
+            // maxDepth: 8,
             page: state.commentPage,
           ))
               .timeout(timeout, onTimeout: () {
