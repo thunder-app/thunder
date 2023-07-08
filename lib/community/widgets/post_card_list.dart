@@ -97,7 +97,7 @@ class _PostCardListState extends State<PostCardList> {
         },
         child: MasonryGridView.builder(
           gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
-          crossAxisSpacing: 20,
+          crossAxisSpacing: 40,
           mainAxisSpacing: 0,
           cacheExtent: 500,
           controller: _scrollController,
