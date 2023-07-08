@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -31,6 +34,8 @@ class Thunder extends StatefulWidget {
 
 class _ThunderState extends State<Thunder> {
   int selectedPageIndex = 0;
+  int appExitCounter = 0;
+
   PageController pageController = PageController(initialPage: 0);
 
   final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
@@ -90,6 +95,34 @@ class _ThunderState extends State<Thunder> {
       _feedScaffoldKey.currentState?.openDrawer();
     }
   }
+  void _showExitWarning() {
+    final theme = Theme.of(context);
+    const snackBarTextColor = TextStyle(color: Colors.white);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        backgroundColor: theme.dividerColor,
+        width: 190,
+        duration: const Duration(milliseconds: 3000),
+        content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
+      ),
+    );
+  }
+
+  Future<bool> _handleBackButtonPress() async {
+    if (appExitCounter == 0) {
+      appExitCounter++;
+      _showExitWarning();
+      Timer(const Duration(milliseconds: 3000), () {
+        appExitCounter = 0;
+      });
+      return Future.value(false);
+    } else {
+      return Future.value(true);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +131,8 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => ThunderBloc()),
         BlocProvider(create: (context) => InboxBloc()),
       ],
+    child: WillPopScope(
+    onWillPop: () async { return _handleBackButtonPress(); },
       child: BlocBuilder<ThunderBloc, ThunderState>(
         builder: (context, thunderBlocState) {
           FlutterNativeSplash.remove();
@@ -112,34 +147,7 @@ class _ThunderState extends State<Thunder> {
             case ThunderStatus.success:
               return Scaffold(
                 bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
-                body: WillPopScope(
-                    onWillPop: () async {
-                  bool shouldThunderClose = await showDialog(
-                    context: context,
-                    builder: (context) => AlertDialog(
-                        title: const Text('Confirm Close'),
-                        content: const Text('Are you sure you want to exit thunder?'),
-                        actions: [
-                    TextButton(
-                    child: const Text('No'),
-                    onPressed: () {
-                      Navigator.of(context).pop(false);
-                    },
-
-                    ),
-                          TextButton(
-                            child: const Text('Yes'),
-                            onPressed: () {
-                              Navigator.of(context).pop(true);
-                              Navigator.of(context).pop(true); //2nd pop here is to force exit when sidebar is open
-                            },
-                          ),
-                        ]
-                    )
-                  );
-                  return shouldThunderClose;
-                },
-                    child: MultiBlocProvider(
+                  body: MultiBlocProvider(
                       providers: [
                         BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
                         BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
@@ -206,7 +214,7 @@ class _ThunderState extends State<Thunder> {
                         },
                       ),
                     )
-              ));
+              );
             case ThunderStatus.failure:
               return ErrorMessage(
                 message: thunderBlocState.errorMessage,
@@ -216,6 +224,7 @@ class _ThunderState extends State<Thunder> {
           }
         },
       ),
+    )
     );
   }
 
