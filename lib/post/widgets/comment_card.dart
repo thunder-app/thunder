@@ -99,7 +99,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
 
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
+    // Checks for either the same creator id to user id, or the same username
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
+        widget.commentViewTree.comment?.creator.name.toLowerCase() == context.read<AuthBloc>().state.account?.username?.toLowerCase();
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
