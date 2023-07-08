@@ -9,6 +9,7 @@ class InboxState extends Equatable {
     this.privateMessages = const [],
     this.mentions = const [],
     this.replies = const [],
+    this.unreadCount = 0,
     this.showUnreadOnly = false,
   });
 
@@ -19,6 +20,8 @@ class InboxState extends Equatable {
   final List<PersonMentionView> mentions;
   final List<CommentView> replies;
 
+  final int unreadCount;
+
   final bool showUnreadOnly;
 
   InboxState copyWith({
@@ -27,6 +30,7 @@ class InboxState extends Equatable {
     List<PrivateMessageView>? privateMessages,
     List<PersonMentionView>? mentions,
     List<CommentView>? replies,
+    int? unreadCount,
     bool? showUnreadOnly,
   }) {
     return InboxState(
@@ -35,10 +39,19 @@ class InboxState extends Equatable {
       privateMessages: privateMessages ?? [],
       mentions: mentions ?? [],
       replies: replies ?? [],
+      unreadCount: unreadCount ?? this.unreadCount,
       showUnreadOnly: showUnreadOnly ?? this.showUnreadOnly,
     );
   }
 
   @override
-  List<Object?> get props => [status, errorMessage, privateMessages, mentions, replies, showUnreadOnly];
+  List<Object?> get props => [
+        status,
+        errorMessage,
+        privateMessages,
+        mentions,
+        replies,
+        unreadCount,
+        showUnreadOnly
+      ];
 }

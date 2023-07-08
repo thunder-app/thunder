@@ -16,7 +16,8 @@ const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 3);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
@@ -51,9 +52,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       }
 
       // Fetch all the things
-      List<PrivateMessageView> privateMessageViews = await lemmy.run(GetPrivateMessages(auth: account!.jwt!, unreadOnly: !event.showAll));
+      List<PrivateMessageView> privateMessageViews =
+          await lemmy.run(GetPrivateMessages(
+        auth: account!.jwt!,
+        unreadOnly: !event.showAll,
+      ));
 
-      List<PersonMentionView> personMentionViews = await lemmy.run(GetPersonMentions(
+      List<PersonMentionView> personMentionViews =
+          await lemmy.run(GetPersonMentions(
         auth: account.jwt!,
         unreadOnly: !event.showAll,
         sort: SortType.new_,
@@ -64,16 +70,30 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         unreadOnly: !event.showAll,
       ));
 
+      // This depends on the fact that by default we request UNREAD by default.
+      // Might be problems if the user clicks "Show All" before the default
+      // unread completes the request
+      int unreadCount = 0;
+      if (!event.showAll) {
+        int unreadCount = privateMessageViews.length +
+            personMentionViews.length +
+            commentViews.length;
+      }
+
       return emit(state.copyWith(
         status: InboxStatus.success,
         privateMessages: privateMessageViews,
         mentions: personMentionViews,
         replies: commentViews,
+        unreadCount: unreadCount,
         showUnreadOnly: !event.showAll,
       ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: InboxStatus.failure,
+          errorMessage: e.toString()
+      ));
     }
   }
 
@@ -102,11 +122,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: InboxStatus.failure,
+          errorMessage: e.toString()
+      ));
     }
   }
 
-  Future<void> _markMentionAsReadEvent(MarkMentionAsReadEvent event, emit) async {
+  Future<void> _markMentionAsReadEvent(
+      MarkMentionAsReadEvent event, emit) async {
     try {
       emit(state.copyWith(
         status: InboxStatus.loading,
@@ -122,7 +146,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      PersonMentionView personMentionView = await lemmy.run(MarkPersonMentionAsRead(
+      PersonMentionView personMentionView =
+          await lemmy.run(MarkPersonMentionAsRead(
         auth: account!.jwt!,
         personMentionId: event.personMentionId,
         read: event.read,
@@ -131,11 +156,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: InboxStatus.failure,
+          errorMessage: e.toString()
+      ));
     }
   }
 
-  Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
+  Future<void> _createCommentEvent(
+      CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
     try {
       emit(state.copyWith(status: InboxStatus.refreshing));
 
@@ -143,7 +172,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
+        return emit(state.copyWith(
+            status: InboxStatus.failure,
+            errorMessage: 'You are not logged in. Cannot create a comment'));
       }
 
       FullCommentView fullCommentView = await lemmy.run(CreateComment(
@@ -157,7 +188,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       return emit(state.copyWith(status: InboxStatus.success));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 }

@@ -134,16 +134,6 @@ class _InboxPageState extends State<InboxPage> {
                       ),
                     );
                   case InboxStatus.success:
-                    // Count the number of each type of notification
-                    // At the moment this just gets the number currently
-                    // displayed.
-                    // Showing read results in this being the count of all read
-                    // and vice versa
-                    final repliesCount = state.replies.length;
-                    final mentionsCount = state.mentions.length;
-                    final messagesCount = state.privateMessages.length;
-                    inboxCount = repliesCount + mentionsCount + messagesCount;
-                    print(inboxCount);
                     if (_inboxType == InboxType.mentions) {
                       return const InboxMentionsView();
                     }
@@ -155,9 +145,6 @@ class _InboxPageState extends State<InboxPage> {
                     }
                     return Container();
                   case InboxStatus.empty:
-                    setState(() {
-                      inboxCount = 0;
-                    });
                     return const Center(child: Text('Empty Inbox'));
                   case InboxStatus.failure:
                     return ErrorMessage(

@@ -60,8 +60,8 @@ class _ThunderState extends State<Thunder> {
     final bool bottomNavBarSwipeGestures =
         prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
-        if (bottomNavBarSwipeGestures == true) {
-          final currentPosition = details.globalPosition.dx;
+    if (bottomNavBarSwipeGestures == true) {
+      final currentPosition = details.globalPosition.dx;
       final delta = currentPosition - _dragStartX;
       if (delta > 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.openDrawer();
@@ -79,12 +79,12 @@ class _ThunderState extends State<Thunder> {
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
     final prefs = await SharedPreferences.getInstance();
     final bool bottomNavBarDoubleTapGestures =
-    prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+        prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
       _feedScaffoldKey.currentState?.closeDrawer();
     } else if (bottomNavBarDoubleTapGestures == true &&
-      scaffoldState == false) {
+        scaffoldState == false) {
       _feedScaffoldKey.currentState?.openDrawer();
     }
   }
@@ -103,10 +103,12 @@ class _ThunderState extends State<Thunder> {
           switch (thunderBlocState.status) {
             case ThunderStatus.initial:
               context.read<ThunderBloc>().add(InitializeAppEvent());
+              // Add here for notification indicator in bottom bar
+              context.read<InboxBloc>().add(const GetInboxEvent());
               return const Center(child: CircularProgressIndicator());
-            case ThunderStatus.loading:
+              case ThunderStatus.loading:
               return const Center(child: CircularProgressIndicator());
-            case ThunderStatus.refreshing:
+             case ThunderStatus.refreshing:
             case ThunderStatus.success:
               return Scaffold(
                 bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
@@ -114,16 +116,18 @@ class _ThunderState extends State<Thunder> {
                   providers: [
                     BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
                     BlocProvider<AccountBloc>(
-                      create: (context) => AccountBloc()),
+                        create: (context) => AccountBloc()),
                   ],
                   child: BlocConsumer<AuthBloc, AuthState>(
                     listenWhen: (AuthState previous, AuthState current) {
-                      if (previous.account == null && current.account != null)
-                      return true;
+                      if (previous.account == null && current.account != null) {
+                        return true;
+                      }
                       return false;
                     },
                     listener: (context, state) {
                       context.read<AccountBloc>().add(GetAccountInformation());
+                      // May not need due to earlier one?
                       context.read<InboxBloc>().add(const GetInboxEvent());
                     },
                     builder: (context, state) {
@@ -131,14 +135,14 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.initial:
                           context.read<AuthBloc>().add(CheckAuth());
                           return const Center(
-                            child: CircularProgressIndicator());
+                              child: CircularProgressIndicator());
                         case AuthStatus.loading:
-                        WidgetsBinding.instance.addPostFrameCallback(
+                          WidgetsBinding.instance.addPostFrameCallback(
                               (_) => setState(() => selectedPageIndex = 0));
-                            return const Center(
+                          return const Center(
                               child: CircularProgressIndicator());
                         case AuthStatus.success:
-                        Version? version = thunderBlocState.version;
+                          Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification =
                               thunderBlocState.preferences?.getBool(
                                       'setting_notifications_show_inapp_update') ??
@@ -210,8 +214,10 @@ class _ThunderState extends State<Thunder> {
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
     final theme = Theme.of(context);
 
+    final unreadCount = context.read<InboxBloc>().state.unreadCount;
+
     return Theme(
-      data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
+        data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
       ),
@@ -229,7 +235,7 @@ class _ThunderState extends State<Thunder> {
           unselectedFontSize: 20.0,
           selectedFontSize: 20.0,
           elevation: 1,
-          items: const [
+          items: [
             BottomNavigationBarItem(
               icon: Icon(Icons.dashboard_rounded),
               label: 'Feed',
@@ -242,19 +248,26 @@ class _ThunderState extends State<Thunder> {
               icon: Icon(Icons.person_rounded),
               label: 'Account',
             ),
-            BottomNavigationBarItem(
-              icon: badges.Badge(
-                showBadge: true,
-                badgeContent: Text('1'),
-                badgeStyle: badges.BadgeStyle(
-                  shape: badges.BadgeShape.circle,
-                  badgeColor: Colors.red,
+            // If there is is unread notifications then show red badge
+            if (unreadCount == 0)
+              BottomNavigationBarItem(
+                icon: Icon(Icons.inbox_rounded),
+                label: 'Account',
+              )
+            else
+              BottomNavigationBarItem(
+                icon: badges.Badge(
+                  showBadge: true,
+                  badgeContent: Text(unreadCount.toString()),
+                  badgeStyle: badges.BadgeStyle(
+                    shape: badges.BadgeShape.circle,
+                    badgeColor: Colors.red,
+                  ),
+                  child: Icon(Icons.inbox_rounded),
                 ),
-                child: Icon(Icons.inbox_rounded),
+                label: 'Inbox',
               ),
-              label: 'Inbox',
-            ),
-            BottomNavigationBarItem(
+              BottomNavigationBarItem(
               icon: Icon(Icons.settings_rounded),
               label: 'Settings',
             ),
