@@ -23,6 +23,7 @@ class LinkPreviewCard extends StatelessWidget {
     this.mediaWidth,
     this.showLinkPreviews = true,
     this.showFullHeightImages = false,
+    this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
   });
 
@@ -34,6 +35,8 @@ class LinkPreviewCard extends StatelessWidget {
 
   final bool showLinkPreviews;
   final bool showFullHeightImages;
+
+  final bool edgeToEdgeImages;
 
   final ViewMode viewMode;
 
@@ -66,21 +69,29 @@ class LinkPreviewCard extends StatelessWidget {
         ),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: InkWell(
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              fit: StackFit.passthrough,
-              children: [linkInformation(context)],
-            ),
+      var inkWell = InkWell(
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            fit: StackFit.passthrough,
+            children: [linkInformation(context)],
           ),
-          onTap: () => triggerOnTap(context),
         ),
+        onTap: () => triggerOnTap(context),
       );
+      if (edgeToEdgeImages) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
+          child: inkWell,
+        );
+      } else {
+          return Padding(
+            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+            child: inkWell,
+        );
+      }
     }
   }
 

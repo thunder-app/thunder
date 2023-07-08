@@ -233,7 +233,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment),
+                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment, isHidden: isHidden),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,
