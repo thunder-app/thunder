@@ -94,6 +94,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           PostViewMedia? postView = event.postView;
 
+          if (getPostResponse != null) {
+            // Parse the posts and add in media information which is used elsewhere in the app
+            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+
+            postView = posts.first;
+          }
+
           emit(
             state.copyWith(
               status: PostStatus.success,
@@ -104,13 +111,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           );
 
           emit(state.copyWith(status: PostStatus.refreshing));
-
-          if (getPostResponse != null) {
-            // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
-
-            postView = posts.first;
-          }
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
