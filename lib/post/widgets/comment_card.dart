@@ -103,7 +103,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     final theme = Theme.of(context);
 
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
+    // Checks for either the same creator id to user id, or the same username
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
+        widget.commentViewTree.comment?.creator.name.toLowerCase() == context.read<AuthBloc>().state.account?.username?.toLowerCase();
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -238,7 +240,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CommentHeader(commentViewTree: widget.commentViewTree, useDisplayNames: state.useDisplayNames, isOwnComment: isOwnComment),
+                        CommentHeader(
+                          commentViewTree: widget.commentViewTree,
+                          useDisplayNames: state.useDisplayNames,
+                          isOwnComment: isOwnComment,
+                          isHidden: isHidden,
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,

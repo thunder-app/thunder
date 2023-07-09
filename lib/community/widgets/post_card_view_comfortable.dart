@@ -55,6 +55,13 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final String textContent = postViewMedia.postView.post.body ?? "";
 
+    var mediaView = MediaView(
+      postView: postViewMedia,
+      showFullHeightImages: showFullHeightImages,
+      hideNsfwPreviews: hideNsfwPreviews,
+      edgeToEdgeImages: edgeToEdgeImages,
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
@@ -72,21 +79,11 @@ class PostCardViewComfortable extends StatelessWidget {
                   softWrap: true),
             ),
           if (edgeToEdgeImages)
-            MediaView(
-              postView: postViewMedia,
-              showFullHeightImages: showFullHeightImages,
-              hideNsfwPreviews: hideNsfwPreviews,
-              edgeToEdgeImages: edgeToEdgeImages,
-            ),
+            mediaView,
           if (!edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: MediaView(
-                postView: postViewMedia,
-                showFullHeightImages: showFullHeightImages,
-                hideNsfwPreviews: hideNsfwPreviews,
-                edgeToEdgeImages: edgeToEdgeImages,
-              ),
+              child: mediaView,
             ),
           if (!showTitleFirst)
             Padding(

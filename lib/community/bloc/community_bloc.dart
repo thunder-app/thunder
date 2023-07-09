@@ -58,6 +58,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _updatePostEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<BlockCommunityEvent>(
+      _blockCommunityEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
@@ -400,6 +404,51 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
+      ));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(
+        state.copyWith(
+          status: CommunityStatus.failure,
+          errorMessage: e.toString(),
+          communityId: state.communityId,
+          listingType: state.listingType,
+        ),
+      );
+    }
+  }
+
+  Future<void> _blockCommunityEvent(BlockCommunityEvent event, Emitter<CommunityState> emit) async {
+    try {
+      emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(
+          state.copyWith(
+            status: CommunityStatus.failure,
+            errorMessage: 'You are not logged in. Cannot block community.',
+            communityId: state.communityId,
+            listingType: state.listingType,
+          ),
+        );
+      }
+
+      BlockedCommunity blockedCommunity = await lemmy.run(BlockCommunity(
+        auth: account!.jwt!,
+        communityId: event.communityId,
+        block: event.block,
+      ));
+
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+        blockedCommunity: blockedCommunity,
       ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);

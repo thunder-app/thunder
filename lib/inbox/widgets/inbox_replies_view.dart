@@ -13,6 +13,7 @@ import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -25,7 +26,7 @@ class InboxRepliesView extends StatelessWidget {
     List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
     if (replies.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No replies'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No replies'));
     }
 
     return ListView.builder(
@@ -104,6 +105,7 @@ class InboxRepliesView extends StatelessWidget {
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
                           PostBloc postBloc = context.read<PostBloc>();
+                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -118,6 +120,7 @@ class InboxRepliesView extends StatelessWidget {
                                     providers: [
                                       BlocProvider<InboxBloc>.value(value: inboxBloc),
                                       BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                     ],
                                     child: CreateCommentModal(comment: replies[index].comment, parentCommentAuthor: replies[index].creator.name),
                                   ),

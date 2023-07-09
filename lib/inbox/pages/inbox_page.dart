@@ -8,6 +8,7 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 
 enum InboxType { replies, mentions, messages }
@@ -104,16 +105,19 @@ class _InboxPageState extends State<InboxPage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async { context.read<InboxBloc>().add(const GetInboxEvent()); },
+      body: BlocProvider(
+        create: (context) => PostBloc(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            context.read<InboxBloc>().add(const GetInboxEvent());
+          },
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                child: BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
+                SizedBox(child: BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
                   if (context.read<AuthBloc>().state.isLoggedIn == false) {
                     return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
                   }
@@ -144,12 +148,11 @@ class _InboxPageState extends State<InboxPage> {
                         action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
                       );
                   }
-                }
-                )
-                )
+                }))
               ],
             ),
           ),
+        ),
       ),
     );
   }

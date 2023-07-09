@@ -70,11 +70,9 @@ class PostSubview extends StatelessWidget {
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
-
                 GestureDetector(
                   onTap: () {
-                    account_bloc.AccountBloc accountBloc =
-                        context.read<account_bloc.AccountBloc>();
+                    account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -108,8 +106,7 @@ class PostSubview extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    account_bloc.AccountBloc accountBloc =
-                        context.read<account_bloc.AccountBloc>();
+                    account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -121,8 +118,7 @@ class PostSubview extends StatelessWidget {
                             BlocProvider.value(value: authBloc),
                             BlocProvider.value(value: thunderBloc),
                           ],
-                          child:
-                              CommunityPage(communityId: postView.community.id),
+                          child: CommunityPage(communityId: postView.community.id),
                         ),
                       ),
                     );
@@ -159,11 +155,7 @@ class PostSubview extends StatelessWidget {
                   onPressed: isUserLoggedIn
                       ? () {
                           HapticFeedback.mediumImpact();
-                          context.read<PostBloc>().add(VotePostEvent(
-                              postId: post.id,
-                              score: postView.myVote == VoteType.up
-                                  ? VoteType.none
-                                  : VoteType.up));
+                          context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
                         }
                       : null,
                   style: TextButton.styleFrom(
@@ -176,8 +168,7 @@ class PostSubview extends StatelessWidget {
                       const Spacer(),
                       Icon(
                         Icons.arrow_upward,
-                        semanticLabel:
-                        postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
+                        semanticLabel: postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
                         color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
@@ -199,11 +190,7 @@ class PostSubview extends StatelessWidget {
                       ? () {
                           HapticFeedback.mediumImpact();
 
-                          context.read<PostBloc>().add(VotePostEvent(
-                              postId: post.id,
-                              score: postView.myVote == VoteType.down
-                                  ? VoteType.none
-                                  : VoteType.down));
+                          context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
                         }
                       : null,
                   style: TextButton.styleFrom(
@@ -211,14 +198,12 @@ class PostSubview extends StatelessWidget {
                     foregroundColor: postView.myVote == VoteType.down ? theme.textTheme.bodyMedium?.color : Colors.blue,
                     padding: EdgeInsets.zero,
                   ),
-
                   child: Row(
                     children: [
                       const Spacer(),
                       Icon(
                         Icons.arrow_downward,
-                        semanticLabel:
-                        postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
+                        semanticLabel: postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
                         color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
@@ -239,14 +224,11 @@ class PostSubview extends StatelessWidget {
                   onPressed: isUserLoggedIn
                       ? () {
                           HapticFeedback.mediumImpact();
-                          context.read<PostBloc>().add(SavePostEvent(
-                              postId: post.id, save: !postView.saved));
+                          context.read<PostBloc>().add(SavePostEvent(postId: post.id, save: !postView.saved));
                         }
                       : null,
                   icon: Icon(
-                    postView.saved
-                        ? Icons.star_rounded
-                        : Icons.star_border_rounded,
+                    postView.saved ? Icons.star_rounded : Icons.star_border_rounded,
                     semanticLabel: postView.saved ? 'Saved' : 'Save',
                     color: isUserLoggedIn ? (postView.saved ? Colors.purple : theme.textTheme.bodyMedium?.color) : null,
                   ),
@@ -261,6 +243,7 @@ class PostSubview extends StatelessWidget {
                   onPressed: isUserLoggedIn
                       ? () {
                           PostBloc postBloc = context.read<PostBloc>();
+                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -268,14 +251,14 @@ class PostSubview extends StatelessWidget {
                             showDragHandle: true,
                             builder: (context) {
                               return Padding(
-                                padding: EdgeInsets.only(
-                                    bottom:
-                                        MediaQuery.of(context).viewInsets.bottom +
-                                            40),
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
-                                  child: BlocProvider<PostBloc>.value(
-                                    value: postBloc,
+                                  child: MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    ],
                                     child: CreateCommentModal(postView: postView),
                                   ),
                                 ),

@@ -16,18 +16,22 @@ class CommentHeader extends StatelessWidget {
   final CommentViewTree commentViewTree;
   final bool useDisplayNames;
   final bool isOwnComment;
+  final bool isHidden;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
     required this.useDisplayNames,
     this.isOwnComment = false,
+    this.isHidden = false,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
@@ -105,10 +109,26 @@ class CommentHeader extends StatelessWidget {
           ),
           Row(
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+                ),
+                child: isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Text(
+                        '+${commentViewTree.replies.length}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      ),
+                    )
+                  : Container(),
+              ),
+              const SizedBox(width: 8.0),
               Icon(
                 saved == true ? Icons.star_rounded : null,
                 color: saved == true ? Colors.purple : null,
-                size: 18.0,
+                size: saved == true ? 18.0 : 0,
               ),
               SizedBox(
                 width: hasBeenEdited ? 32.0 : 8,
