@@ -15,6 +15,9 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onCollapseCommentChange;
+
+  final Set collapsedCommentSet;
 
   const CommentCard({
     super.key,
@@ -23,6 +26,8 @@ class CommentCard extends StatefulWidget {
     this.collapsed = false,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onCollapseCommentChange,
+    this.collapsedCommentSet = const {},
   });
 
   /// CommentViewTree containing relevant information
@@ -84,7 +89,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-
+    print('in here');
     isHidden = widget.collapsed;
   }
 
@@ -230,7 +235,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onTap: () => setState(() => isHidden = !isHidden),
+                    onTap: () {
+                      widget.onCollapseCommentChange(widget.commentViewTree.comment!.comment.id, !isHidden);
+                      setState(() => isHidden = !isHidden);
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -281,10 +289,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => CommentCard(
                       commentViewTree: widget.commentViewTree.replies[index],
+                      collapsedCommentSet: widget.collapsedCommentSet,
+                      collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].comment!.comment.id) || widget.level == 2,
                       level: widget.level + 1,
-                      collapsed: widget.level == 2,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
+                      onCollapseCommentChange: widget.onCollapseCommentChange,
                     ),
                     itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                   ),
