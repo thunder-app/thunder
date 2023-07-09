@@ -163,7 +163,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       child: Row(
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
+                                            backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
                                             foregroundImage: community.icon != null ? CachedNetworkImageProvider(community.icon!) : null,
                                             maxRadius: 16,
                                           ),

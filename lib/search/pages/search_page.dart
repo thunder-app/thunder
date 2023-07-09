@@ -141,7 +141,7 @@ class _SearchPageState extends State<SearchPage> {
 
             return ListTile(
                 leading: CircleAvatar(
-                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
+                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
                   foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
                   maxRadius: 25,
                 ),
