@@ -27,20 +27,23 @@ class _AccountPageState extends State<AccountPage> {
       builder: (context, state) {
         if (authState.isLoggedIn && accountState.status == AccountStatus.success) return UserPage(userId: accountState.personView!.person.id, isAccountUser: true);
         return Center(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.people_rounded, size: 100, color: theme.dividerColor),
-              const SizedBox(height: 16),
-              const Text('Add an account to see your profile', textAlign: TextAlign.center),
-              const SizedBox(height: 24.0),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
-                child: const Text('Manage Accounts'),
-                onPressed: () => showProfileModalSheet(context),
-              )
-            ],
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.people_rounded, size: 100, color: theme.dividerColor),
+                const SizedBox(height: 16),
+                const Text('Add an account to see your profile', textAlign: TextAlign.center),
+                const SizedBox(height: 24.0),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                  child: const Text('Manage Accounts'),
+                  onPressed: () => showProfileModalSheet(context),
+                )
+              ],
+            ),
           ),
         );
       },

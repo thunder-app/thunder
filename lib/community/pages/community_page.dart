@@ -30,10 +30,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
   SortType? sortType;
   IconData? sortTypeIcon;
+  String? sortTypeLabel;
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<CommunityBloc>(
@@ -47,15 +50,43 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              sortTypeIcon = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType).icon;
+              final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              sortTypeIcon = sortTypeItem.icon;
+              sortTypeLabel = sortTypeItem.label;
             });
           }
+
           return true;
         },
         listener: (context, state) {
           if (state.status == CommunityStatus.networkFailure) {
             SnackBar snackBar = SnackBar(
               content: Text(state.errorMessage ?? 'No error message available'),
+              behavior: SnackBarBehavior.floating,
+            );
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+          }
+
+          if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
+            SnackBar snackBar = SnackBar(
+              content: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}'),
+                  if (state.blockedCommunity?.blocked == true)
+                    IconButton(
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
+                      },
+                      icon: Icon(
+                        Icons.undo_rounded,
+                        color: theme.colorScheme.primary,
+                      ),
+                    )
+                ],
+              ),
               behavior: SnackBarBehavior.floating,
             );
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
@@ -89,7 +120,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         },
                       ),
                     IconButton(
+                        icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                        onPressed: () {
+                          HapticFeedback.mediumImpact();
+                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
+                        }),
+                    IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                        tooltip: sortTypeLabel,
                         onPressed: () {
                           HapticFeedback.mediumImpact();
                           showSortBottomSheet(context, state);

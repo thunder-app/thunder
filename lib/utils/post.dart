@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
@@ -10,6 +11,8 @@ import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
@@ -91,17 +94,18 @@ Future<PostView> savePost(int postId, bool save) async {
 
 /// Parse a post with media
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
-  SharedPreferences prefs = await SharedPreferences.getInstance();
+  SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
+  bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions));
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
@@ -112,7 +116,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       if (fetchImageDimensions) {
         Size result = await retrieveImageDimensions(url);
 
-        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24);
         media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       } else {
         media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
@@ -132,8 +136,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
           int mediaHeight = result.height.toInt();
           int mediaWidth = result.width.toInt();
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
-
+          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24);
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
         } else {
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));

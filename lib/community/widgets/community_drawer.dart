@@ -92,7 +92,6 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
     AccountStatus status = context.read<AccountBloc>().state.status;
 
-    print(status);
     return Drawer(
       width: MediaQuery.of(context).size.width * 0.80,
       child: SafeArea(

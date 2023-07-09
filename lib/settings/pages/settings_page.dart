@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:thunder/core/update/check_github_update.dart';
 
+import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class SettingTopic {
@@ -21,8 +21,8 @@ class SettingsPage extends StatelessWidget {
   final List<SettingTopic> topics = [
     SettingTopic(title: 'General', icon: Icons.settings, path: '/settings/general'),
     SettingTopic(title: 'Theming', icon: Icons.text_fields, path: '/settings/themes'),
+    SettingTopic(title: 'Gestures', icon: Icons.swipe, path: '/settings/gestures'),
     SettingTopic(title: 'About', icon: Icons.info_rounded, path: '/settings/about'),
-    // SettingTopic(title: 'Developer', icon: Icons.developer_mode, path: '/settings/developer'),
   ];
 
   @override
@@ -34,6 +34,7 @@ class SettingsPage extends StatelessWidget {
         toolbarHeight: 70.0,
         centerTitle: false,
         title: AutoSizeText('Settings', style: theme.textTheme.titleLarge),
+        scrolledUnderElevation: 0.0,
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,

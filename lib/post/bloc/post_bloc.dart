@@ -1,25 +1,30 @@
-import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
-import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:equatable/equatable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+
+import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/network_errors.dart';
 import 'package:thunder/utils/post.dart';
+
+import '../../utils/constants.dart';
 
 part 'post_event.dart';
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-const timeout = Duration(seconds: 5);
+const timeout = Duration(seconds: 10);
+int commentLimit = 50;
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -61,11 +66,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
   }
 
+  /// Fetches the post, along with the initial set of comments
   Future<void> _getPostEvent(GetPostEvent event, emit) async {
     int attemptCount = 0;
 
     try {
       var exception;
+
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -92,17 +101,31 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
           }
 
+          emit(
+            state.copyWith(
+              status: PostStatus.success,
+              postId: postView?.postView.post.id,
+              postView: postView,
+              communityId: postView?.postView.post.communityId,
+            ),
+          );
+
+          emit(state.copyWith(status: PostStatus.refreshing));
+
+          CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
           List<CommentView> getCommentsResponse = await lemmy
               .run(GetComments(
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
+            // maxDepth: 8,
             postId: postView?.postView.post.id,
-            sort: SortType.hot,
-            limit: 50,
+            sort: sortType,
+            limit: commentLimit,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch post');
+            throw Exception('Error: Timeout when attempting to fetch comments');
           });
 
           // Build the tree view from the flattened comments
@@ -110,14 +133,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           return emit(
             state.copyWith(
-              status: PostStatus.success,
-              postId: postView?.postView.post.id,
-              postView: postView,
-              comments: commentTree,
-              commentPage: state.commentPage + 1,
-              commentCount: getCommentsResponse.length,
-              communityId: postView?.postView.post.communityId,
-            ),
+                status: PostStatus.success,
+                postId: postView?.postView.post.id,
+                postView: postView,
+                comments: commentTree,
+                commentResponseList: getCommentsResponse,
+                commentPage: state.commentPage + 1,
+                commentCount: getCommentsResponse.length,
+                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                communityId: postView?.postView.post.communityId,
+                sortType: sortType),
           );
         } catch (e, s) {
           exception = e;
@@ -134,69 +159,103 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(event, emit) async {
-    Account? account = await fetchActiveProfileAccount();
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    int attemptCount = 0;
 
-    if (event.reset) {
-      emit(state.copyWith(status: PostStatus.loading));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
-      List<CommentView> getCommentsResponse = await lemmy
-          .run(GetComments(
-        auth: account?.jwt,
-        communityId: state.communityId,
-        postId: state.postId,
-        sort: SortType.hot,
-        limit: 50,
-        page: 1,
-      ))
-          .timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to fetch comments');
-      });
+    CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
-      // Build the tree view from the flattened comments
-      List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+    try {
+      var exception;
 
-      return emit(
-        state.copyWith(
-          status: PostStatus.success,
-          comments: commentTree,
-          commentPage: 1,
-          commentCount: getCommentsResponse.length,
-        ),
-      );
+      Account? account = await fetchActiveProfileAccount();
+
+      while (attemptCount < 2) {
+        try {
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+          if (event.reset) {
+            emit(state.copyWith(status: PostStatus.loading));
+
+            List<CommentView> getCommentsResponse = await lemmy
+                .run(GetComments(
+              auth: account?.jwt,
+              communityId: state.communityId,
+              postId: state.postId,
+              sort: sortType,
+              limit: commentLimit,
+              // maxDepth: 8,
+              page: 1,
+            ))
+                .timeout(timeout, onTimeout: () {
+              throw Exception('Error: Timeout when attempting to fetch comments');
+            });
+
+            // Build the tree view from the flattened comments
+            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+
+            return emit(
+              state.copyWith(
+                  status: PostStatus.success,
+                  comments: commentTree,
+                  commentResponseList: getCommentsResponse,
+                  commentPage: 1,
+                  commentCount: getCommentsResponse.length,
+                  hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                  sortType: sortType),
+            );
+          }
+
+          // Prevent duplicate requests if we're done fetching comments
+          if (state.commentCount >= state.postView!.postView.counts.comments || state.hasReachedCommentEnd) return;
+          emit(state.copyWith(status: PostStatus.refreshing));
+
+          List<CommentView> getCommentsResponse = await lemmy
+              .run(GetComments(
+            auth: account?.jwt,
+            communityId: state.communityId,
+            postId: state.postId,
+            sort: sortType,
+            limit: commentLimit,
+            // maxDepth: 8,
+            page: state.commentPage,
+          ))
+              .timeout(timeout, onTimeout: () {
+            throw Exception('Error: Timeout when attempting to fetch more comments');
+          });
+
+          // Combine all of the previous comments list
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseList)..addAll(getCommentsResponse);
+
+          // Build the tree view from the flattened comments
+          List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
+
+          // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
+          return emit(state.copyWith(
+            status: PostStatus.success,
+            comments: commentViewTree,
+            commentResponseList: fullCommentResponseList,
+            commentPage: state.commentPage + 1,
+            commentCount: fullCommentResponseList.length,
+            hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+          ));
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
+      }
+
+      if (exception != null && is50xError(exception.toString()) != null) {
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
+      } else {
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
+      }
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+      emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
-
-    // Prevent duplicate requests if we're done fetching comments
-    if (state.commentCount >= state.postView!.postView.counts.comments) return;
-    emit(state.copyWith(status: PostStatus.refreshing));
-
-    List<CommentView> getCommentsResponse = await lemmy
-        .run(GetComments(
-      auth: account?.jwt,
-      communityId: state.communityId,
-      postId: state.postId,
-      sort: SortType.hot,
-      limit: 50,
-      page: state.commentPage,
-    ))
-        .timeout(timeout, onTimeout: () {
-      throw Exception('Error: Timeout when attempting to fetch more comments');
-    });
-
-    // Build the tree view from the flattened comments
-    List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
-
-    // Append the new comments
-    List<CommentViewTree> commentViewTree = List.from(state.comments);
-    commentViewTree.addAll(commentTree);
-
-    // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
-    return emit(state.copyWith(
-      status: PostStatus.success,
-      comments: commentViewTree,
-      commentPage: state.commentPage + 1,
-      commentCount: state.commentCount + (getCommentsResponse.isEmpty ? 50 : getCommentsResponse.length),
-    ));
   }
 
   Future<void> _votePostEvent(VotePostEvent event, Emitter<PostState> emit) async {
@@ -250,8 +309,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
-
-      print(commentIndexes);
 
       // if (commentIndexes.length == 1) {
       //   currentTree = currentTree.replies.first; // Traverse to the next CommentViewTree

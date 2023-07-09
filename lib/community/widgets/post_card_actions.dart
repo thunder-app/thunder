@@ -33,11 +33,8 @@ class PostCardActions extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-        final SharedPreferences? prefs = state.preferences;
-
-        if (prefs == null) return Container();
-        final bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
-        final bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+        final bool showVoteActions = state.showVoteActions;
+        final bool showSaveAction = state.showSaveAction;
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.end,

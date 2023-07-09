@@ -1,14 +1,19 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:path/path.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
+import 'package:thunder/utils/constants.dart';
 
 part 'thunder_event.dart';
 part 'thunder_state.dart';
@@ -42,10 +47,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Check for any updates from GitHub
       Version version = await fetchVersion();
 
-      // Get Preferences
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version, preferences: prefs));
+      add(UserPreferencesChangeEvent());
+      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
@@ -56,9 +59,109 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = await SharedPreferences.getInstance();
+      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
-      return emit(state.copyWith(status: ThunderStatus.success, preferences: prefs));
+      // Feed Settings
+      bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
+      bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
+
+      PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+      SortType defaultSortType = DEFAULT_SORT_TYPE;
+      try {
+        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      } catch (e) {
+        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+      }
+
+      // Post Settings
+      bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+      bool disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
+      bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
+      bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
+      bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
+      bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
+      bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
+      bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+
+      // Links
+      bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
+      bool showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
+
+      // Notification Settings
+      bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+
+      // Error Tracking
+      bool enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
+
+      // Post Gestures
+      bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
+      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name);
+
+      // Comment Gestures
+      bool enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
+      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name);
+      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
+
+      // Theme Settings
+      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
+      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
+      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
+
+      // Font scale
+      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_title_font_size_scale') ?? FontScale.base.name);
+      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_content_font_size_scale') ?? FontScale.base.name);
+
+      return emit(state.copyWith(
+        status: ThunderStatus.success,
+        useCompactView: useCompactView,
+        showTitleFirst: showTitleFirst,
+        defaultPostListingType: defaultPostListingType,
+        defaultSortType: defaultSortType,
+        defaultCommentSortType: defaultCommentSortType,
+        collapseParentCommentOnGesture: collapseParentCommentOnGesture,
+        disableSwipeActionsOnPost: disableSwipeActionsOnPost,
+        showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
+        showVoteActions: showVoteActions,
+        showSaveAction: showSaveAction,
+        showFullHeightImages: showFullHeightImages,
+        showEdgeToEdgeImages: showEdgeToEdgeImages,
+        showTextContent: showTextContent,
+        hideNsfwPreviews: hideNsfwPreviews,
+        bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
+        bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
+        openInExternalBrowser: openInExternalBrowser,
+        showLinkPreviews: showLinkPreviews,
+        showInAppUpdateNotification: showInAppUpdateNotification,
+        enableSentryErrorTracking: enableSentryErrorTracking,
+        enablePostGestures: enablePostGestures,
+        leftPrimaryPostGesture: leftPrimaryPostGesture,
+        leftSecondaryPostGesture: leftSecondaryPostGesture,
+        rightPrimaryPostGesture: rightPrimaryPostGesture,
+        rightSecondaryPostGesture: rightSecondaryPostGesture,
+        enableCommentGestures: enableCommentGestures,
+        leftPrimaryCommentGesture: leftPrimaryCommentGesture,
+        leftSecondaryCommentGesture: leftSecondaryCommentGesture,
+        rightPrimaryCommentGesture: rightPrimaryCommentGesture,
+        rightSecondaryCommentGesture: rightSecondaryCommentGesture,
+        useSystemTheme: useSystemTheme,
+        themeType: themeType,
+        useBlackTheme: useBlackTheme,
+        useMaterialYouTheme: useMaterialYouTheme,
+        titleFontSizeScale: titleFontSizeScale,
+        contentFontSizeScale: contentFontSizeScale,
+      ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
