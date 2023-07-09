@@ -60,49 +60,72 @@ class _ImageViewerState extends State<ImageViewer> {
         body: Center(
           child: Column(
             children: [
-              Expanded(
-                child: ExtendedImageSlidePage(
-                  key: slidePagekey,
-                  slideAxis: SlideAxis.both,
-                  slideType: SlideType.onlyImage,
-                  child: GestureDetector(
-                    child: HeroWidget(
-                      tag: widget.heroKey,
-                      slideType: SlideType.onlyImage,
-                      slidePagekey: slidePagekey,
-                      child: ExtendedImage.network(
-                        widget.url,
-                        enableSlideOutPage: true,
-                        mode: ExtendedImageMode.gesture,
-                        cache: true,
-                        clearMemoryCacheWhenDispose: true,
-                        initGestureConfigHandler: (ExtendedImageState state) {
-                          return GestureConfig(
-                            minScale: 0.9,
-                            animationMinScale: 0.7,
-                            maxScale: 4.0,
-                            animationMaxScale: 4.5,
-                            speed: 1.0,
-                            inertialSpeed: 100.0,
-                            initialScale: 1.0,
-                            inPageView: false,
-                            initialAlignment: InitialAlignment.center,
-                            reverseMousePointerScrollDirection: true,
-                            gestureDetailsIsChanged: (GestureDetails? details) {},
-                          );
-                        },
-                      ),
+              const Spacer(),
+              ExtendedImageSlidePage(
+                key: slidePagekey,
+                slideAxis: SlideAxis.both,
+                slideType: SlideType.onlyImage,
+                child: GestureDetector(
+                  child: HeroWidget(
+                    tag: widget.heroKey,
+                    slideType: SlideType.onlyImage,
+                    slidePagekey: slidePagekey,
+                    child: ExtendedImage.network(
+                      widget.url,
+                      enableSlideOutPage: true,
+                      mode: ExtendedImageMode.gesture,
+                      cache: true,
+                      clearMemoryCacheWhenDispose: true,
+                      initGestureConfigHandler: (ExtendedImageState state) {
+                        return GestureConfig(
+                          minScale: 0.9,
+                          animationMinScale: 0.7,
+                          maxScale: 4.0,
+                          animationMaxScale: 4.5,
+                          speed: 1.0,
+                          inertialSpeed: 100.0,
+                          initialScale: 1.0,
+                          inPageView: false,
+                          initialAlignment: InitialAlignment.center,
+                          reverseMousePointerScrollDirection: true,
+                          gestureDetailsIsChanged: (GestureDetails? details) {},
+                        );
+                      },
                     ),
-                    onTap: () {
-                      slidePagekey.currentState!.popPage();
-                      Navigator.pop(context);
-                    },
                   ),
+                  onTap: () {
+                    slidePagekey.currentState!.popPage();
+                    Navigator.pop(context);
+                  },
                 ),
               ),
+              const Spacer(),
               Row(
                 children: [
                   const Spacer(),
+                  Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: IconButton(
+                      onPressed: () async {
+                        File file = await DefaultCacheManager().getSingleFile(widget.url);
+
+                        if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                          final result = await ImageGallerySaver.saveFile(file.path);
+
+                          setState(() => downloaded = result['isSuccess'] == true);
+                        } else if (Platform.isLinux || Platform.isWindows) {
+                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+
+                          File(filePath)
+                            ..createSync(recursive: true)
+                            ..writeAsBytesSync(file.readAsBytesSync());
+
+                          setState(() => downloaded = true);
+                        }
+                      },
+                      icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
+                    ),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: IconButton(
