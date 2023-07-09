@@ -4,20 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/post/utils/comment_actions.dart';
+import 'package:thunder/post/widgets/comment_header.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/numbers.dart';
-
-enum SwipeAction { upvote, downvote, reply, save, edit }
 
 class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onCollapseCommentChange;
+
+  final Set collapsedCommentSet;
 
   const CommentCard({
     super.key,
@@ -26,6 +26,8 @@ class CommentCard extends StatefulWidget {
     this.collapsed = false,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onCollapseCommentChange,
+    this.collapsedCommentSet = const {},
   });
 
   /// CommentViewTree containing relevant information
@@ -42,6 +44,7 @@ class CommentCard extends StatefulWidget {
 }
 
 class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
+  // @todo - make this themeable
   List<Color> colors = [
     Colors.red.shade300,
     Colors.orange.shade300,
@@ -54,12 +57,20 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   bool isHidden = true;
   GlobalKey childKey = GlobalKey();
 
+  /// The current point at which the user drags the comment
   double dismissThreshold = 0;
 
-  double firstActionThreshold = 0.15; // This controls how far the first swipe action is triggered
-  double secondActionThreshold = 0.35; // This controls how far the second swipe action is triggered
-  DismissDirection? dismissDirection;
+  /// The current swipe action that would be performed if the user let go off the screen
   SwipeAction? swipeAction;
+
+  /// Determines the direction that the user is allowed to drag (to enable/disable swipe gestures)
+  DismissDirection? dismissDirection;
+
+  /// The first action threshold to trigger the left or right actions (upvote/reply)
+  double firstActionThreshold = 0.15;
+
+  /// The second action threshold to trigger the left or right actions (downvote/save)
+  double secondActionThreshold = 0.35;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
@@ -77,8 +88,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   void initState() {
-    isHidden = widget.collapsed;
     super.initState();
+    print('in here');
+    isHidden = widget.collapsed;
   }
 
   @override
@@ -89,17 +101,18 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
-    int score = widget.commentViewTree.comment?.counts.score ?? 0;
 
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.name == context.read<AuthBloc>().state.account?.username;
+    // Checks for either the same creator id to user id, or the same username
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
+        widget.commentViewTree.comment?.creator.name.toLowerCase() == context.read<AuthBloc>().state.account?.username?.toLowerCase();
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    bool collapseParentCommentOnGesture = context.read<ThunderBloc>().state.preferences?.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+    final ThunderState state = context.read<ThunderBloc>().state;
+
+    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
     return Container(
       decoration: BoxDecoration(
@@ -121,64 +134,19 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
           Listener(
             behavior: HitTestBehavior.opaque,
             onPointerDown: (event) => {},
-            onPointerUp: (event) {
-              if (swipeAction == SwipeAction.upvote) {
-                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.up ? VoteType.none : VoteType.up);
-              }
-
-              if (swipeAction == SwipeAction.downvote) {
-                widget.onVoteAction(widget.commentViewTree.comment!.comment.id, myVote == VoteType.down ? VoteType.none : VoteType.down);
-              }
-
-              if (swipeAction == SwipeAction.reply) {
-                PostBloc postBloc = context.read<PostBloc>();
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: BlocProvider<PostBloc>.value(
-                          value: postBloc,
-                          child: CreateCommentModal(commentView: widget.commentViewTree),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-
-              if (swipeAction == SwipeAction.edit) {
-                PostBloc postBloc = context.read<PostBloc>();
-
-                print('editing');
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: BlocProvider<PostBloc>.value(
-                          value: postBloc,
-                          child: CreateCommentModal(commentView: widget.commentViewTree, isEdit: true),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }
-
-              if (swipeAction == SwipeAction.save) {
-                widget.onSaveAction(widget.commentViewTree.comment!.comment.id, !(saved ?? false));
-              }
+            onPointerUp: (event) => {
+              if (swipeAction != null && swipeAction != SwipeAction.none)
+                {
+                  triggerCommentAction(
+                    context: context,
+                    swipeAction: swipeAction,
+                    onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                    voteType: myVote ?? VoteType.none,
+                    saved: saved,
+                    commentViewTree: widget.commentViewTree,
+                  ),
+                }
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
@@ -193,20 +161,40 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 SwipeAction? updatedSwipeAction;
 
                 if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = SwipeAction.upvote;
+                  updatedSwipeAction = state.leftPrimaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = SwipeAction.downvote;
+                  updatedSwipeAction = state.leftSecondaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  if (isOwnComment) {
+                  updatedSwipeAction = state.rightPrimaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
                     updatedSwipeAction = SwipeAction.edit;
-                  } else {
-                    updatedSwipeAction = SwipeAction.reply;
                   }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = SwipeAction.save;
+                  updatedSwipeAction = state.rightSecondaryCommentGesture;
+
+                  // Change the swipe action to edit for comments
+                  if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                    updatedSwipeAction = SwipeAction.edit;
+                  }
+
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else {
                   updatedSwipeAction = null;
@@ -221,20 +209,24 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               background: dismissDirection == DismissDirection.startToEnd
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
-                      color: dismissThreshold < secondActionThreshold ? Colors.orange.shade700 : Colors.blue.shade700,
+                      color: swipeAction == null
+                          ? getSwipeActionColor(state.leftPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? Icons.north : Icons.south),
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: dismissThreshold < secondActionThreshold ? Colors.green.shade700 : Colors.purple.shade700,
+                      color: swipeAction == null
+                          ? getSwipeActionColor(state.rightPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: Icon(dismissThreshold < secondActionThreshold ? (isOwnComment ? Icons.edit : Icons.reply) : Icons.star_rounded),
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                       ),
                     ),
               child: Column(
@@ -242,65 +234,16 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () => setState(() => isHidden = !isHidden),
+                    behavior: HitTestBehavior.translucent,
+                    onTap: () {
+                      widget.onCollapseCommentChange(widget.commentViewTree.comment!.comment.id, !isHidden);
+                      setState(() => isHidden = !isHidden);
+                    },
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      widget.commentViewTree.comment!.creator.name,
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: widget.commentViewTree.comment!.creator.admin
-                                            ? theme.colorScheme.tertiary
-                                            : widget.commentViewTree.comment!.post.creatorId == widget.commentViewTree.comment!.comment.creatorId
-                                                ? Colors.amber
-                                                : theme.colorScheme.onBackground,
-                                        fontWeight: FontWeight.w500,
-                                      ),
-                                    ),
-                                    const SizedBox(width: 8.0),
-                                    Icon(
-                                      myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
-                                      size: 12.0,
-                                      color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
-                                    ),
-                                    const SizedBox(width: 2.0),
-                                    Text(
-                                      formatNumberToK(score),
-                                      style: theme.textTheme.bodyMedium?.copyWith(
-                                        color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  Icon(
-                                    saved == true ? Icons.star_rounded : null,
-                                    color: saved == true ? Colors.purple : null,
-                                    size: 18.0,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Text(
-                                    formatTimeToString(dateTime: widget.commentViewTree.comment!.comment.published.toIso8601String()),
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.colorScheme.onBackground,
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
+                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment, isHidden: isHidden),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,
@@ -335,23 +278,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             transitionBuilder: (Widget child, Animation<double> animation) {
               return SizeTransition(
                 sizeFactor: animation,
-                child: SlideTransition(
-                  position: _offsetAnimation,
-                  child: child,
-                ),
+                child: SlideTransition(position: _offsetAnimation, child: child),
               );
             },
             child: isHidden
                 ? Container()
                 : ListView.builder(
+                    // addSemanticIndexes: false,
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) => CommentCard(
                       commentViewTree: widget.commentViewTree.replies[index],
+                      collapsedCommentSet: widget.collapsedCommentSet,
+                      collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].comment!.comment.id) || widget.level == 2,
                       level: widget.level + 1,
-                      collapsed: widget.level > 2,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
+                      onCollapseCommentChange: widget.onCollapseCommentChange,
                     ),
                     itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                   ),

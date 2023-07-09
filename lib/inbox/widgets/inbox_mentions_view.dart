@@ -11,19 +11,21 @@ import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
 class InboxMentionsView extends StatelessWidget {
-  const InboxMentionsView({super.key});
+  final List<PersonMentionView> mentions;
+
+  const InboxMentionsView({super.key, this.mentions = const []});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<PersonMentionView> mentions = context.read<InboxBloc>().state.mentions;
 
     if (mentions.isEmpty) {
-      return const Center(child: Text('No mentions'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No mentions'));
     }
 
     return ListView.builder(
@@ -99,6 +101,7 @@ class InboxMentionsView extends StatelessWidget {
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
                           PostBloc postBloc = context.read<PostBloc>();
+                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -112,7 +115,7 @@ class InboxMentionsView extends StatelessWidget {
                                   child: MultiBlocProvider(
                                     providers: [
                                       BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                     ],
                                     child: CreateCommentModal(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name),
                                   ),

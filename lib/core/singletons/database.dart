@@ -21,14 +21,28 @@ class DB {
     return _database;
   }
 
+  /// Update Accounts table V1 to V2
+  void _updateTableAccountsV1toV2(Batch batch) {
+    batch.execute('DROP TABLE accounts');
+    batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+  }
+
   Future<Database> _init() async {
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
+      version: 2,
       onCreate: (db, version) {
-        return db.execute(
-            'CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT)');
+        return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
       },
-      version: 1,
+      onUpgrade: (db, oldVersion, newVersion) async {
+        var batch = db.batch();
+
+        if (oldVersion == 1) {
+          _updateTableAccountsV1toV2(batch);
+        }
+
+        await batch.commit();
+      },
     );
   }
 }
