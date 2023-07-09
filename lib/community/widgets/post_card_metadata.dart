@@ -57,7 +57,7 @@ class PostCardMetaData extends StatelessWidget {
                     : voteType == VoteType.down
                       ? downVoteColor
                       : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                  icon: Icon( voteType == VoteType.down ? Icons.arrow_downward : Icons.arrow_upward,
+                  icon: Icon( voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                       size: 18.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
