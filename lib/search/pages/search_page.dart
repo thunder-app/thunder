@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -139,6 +140,11 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
+                  foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                  maxRadius: 25,
+                ),
                 title: Text(
                   communityView.community.title,
                   overflow: TextOverflow.ellipsis,
