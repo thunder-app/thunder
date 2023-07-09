@@ -60,3 +60,10 @@ class UpdatePostEvent extends CommunityEvent {
 
   const UpdatePostEvent({required this.postViewMedia});
 }
+
+class BlockCommunityEvent extends CommunityEvent {
+  final int communityId;
+  final bool block;
+
+  const BlockCommunityEvent({required this.communityId, this.block = false});
+}

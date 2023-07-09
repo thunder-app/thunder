@@ -11,11 +11,13 @@ import 'package:thunder/utils/numbers.dart';
 class CommentHeader extends StatelessWidget {
   final CommentViewTree commentViewTree;
   final bool isOwnComment;
+  final bool isHidden;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
     this.isOwnComment = false,
+    this.isHidden = false,
   });
 
   @override
@@ -23,9 +25,13 @@ class CommentHeader extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
+    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
-    int score = commentViewTree.comment?.counts.score ?? 0;
+    //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
+    int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
+    int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -44,16 +50,30 @@ class CommentHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Icon(
-                  myVote == VoteType.down ? Icons.south_rounded : Icons.north_rounded,
+                  Icons.north_rounded,
                   size: 12.0 * state.contentFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
-                  formatNumberToK(score),
+                  formatNumberToK(upvotes),
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == VoteType.up ? Colors.orange : (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground),
+                    color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                  ),
+                ),
+                const SizedBox(width: 10.0),
+                Icon(
+                  Icons.south_rounded,
+                  size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                  color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                ),
+                const SizedBox(width: 2.0),
+                Text(
+                  formatNumberToK(downvotes),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                   ),
                 ),
               ],
@@ -61,10 +81,26 @@ class CommentHeader extends StatelessWidget {
           ),
           Row(
             children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primaryContainer,
+                  borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+                ),
+                child: isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty)
+                  ? Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Text(
+                        '+${commentViewTree.replies.length}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      ),
+                    )
+                  : Container(),
+              ),
+              const SizedBox(width: 8.0),
               Icon(
                 saved == true ? Icons.star_rounded : null,
                 color: saved == true ? Colors.purple : null,
-                size: 18.0,
+                size: saved == true ? 18.0 : 0,
               ),
               const SizedBox(width: 8.0),
               Text(

@@ -94,6 +94,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           PostViewMedia? postView = event.postView;
 
+          if (getPostResponse != null) {
+            // Parse the posts and add in media information which is used elsewhere in the app
+            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
+
+            postView = posts.first;
+          }
+
           emit(
             state.copyWith(
               status: PostStatus.success,
@@ -105,13 +112,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           emit(state.copyWith(status: PostStatus.refreshing));
 
-          if (getPostResponse != null) {
-            // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
-
-            postView = posts.first;
-          }
-
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
           List<CommentView> getCommentsResponse = await lemmy
@@ -119,7 +119,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
-            maxDepth: 8,
+            // maxDepth: 8,
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
@@ -185,7 +185,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postId: state.postId,
               sort: sortType,
               limit: commentLimit,
-              maxDepth: 8,
+              // maxDepth: 8,
               page: 1,
             ))
                 .timeout(timeout, onTimeout: () {
@@ -218,7 +218,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postId: state.postId,
             sort: sortType,
             limit: commentLimit,
-            maxDepth: 8,
+            // maxDepth: 8,
             page: state.commentPage,
           ))
               .timeout(timeout, onTimeout: () {
@@ -309,8 +309,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
-
-      print(commentIndexes);
 
       // if (commentIndexes.length == 1) {
       //   currentTree = currentTree.replies.first; // Traverse to the next CommentViewTree
