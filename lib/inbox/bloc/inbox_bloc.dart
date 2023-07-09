@@ -171,12 +171,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
   Future<void> _markReplyAsReadEvent(MarkReplyAsReadEvent event, emit) async {
     try {
-      emit(state.copyWith(
-        status: InboxStatus.loading,
-        privateMessages: state.privateMessages,
-        mentions: state.mentions,
-        replies: state.replies,
-      ));
+      emit(state.copyWith(status: InboxStatus.refreshing));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -191,7 +186,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         read: event.read,
       ));
 
-      add(GetInboxEvent(showAll: !state.showUnreadOnly));
+      // Remove the post from the current reply list
+      List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
+
+      emit(state.copyWith(status: InboxStatus.success, replies: replies));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));

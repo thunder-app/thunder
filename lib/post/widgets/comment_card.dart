@@ -282,7 +282,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     itemBuilder: (context, index) => CommentCard(
                       commentViewTree: widget.commentViewTree.replies[index],
                       level: widget.level + 1,
-                      collapsed: widget.level > 2,
+                      collapsed: widget.level == 2,
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                     ),
