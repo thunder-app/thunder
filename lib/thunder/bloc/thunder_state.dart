@@ -31,6 +31,7 @@ class ThunderState extends Equatable {
     this.hideNsfwPreviews = true,
     this.bottomNavBarSwipeGestures = true,
     this.bottomNavBarDoubleTapGestures = false,
+    this.markPostReadOnMediaView = false,
 
     // Link Settings
     this.openInExternalBrowser = false,
@@ -94,6 +95,7 @@ class ThunderState extends Equatable {
   final bool hideNsfwPreviews;
   final bool bottomNavBarSwipeGestures;
   final bool bottomNavBarDoubleTapGestures;
+  final bool markPostReadOnMediaView;
 
   // Link Settings
   final bool openInExternalBrowser;
@@ -152,6 +154,7 @@ class ThunderState extends Equatable {
     bool? hideNsfwPreviews,
     bool? bottomNavBarSwipeGestures,
     bool? bottomNavBarDoubleTapGestures,
+    bool? markPostReadOnMediaView,
     // Link Settings
     bool? openInExternalBrowser,
     // Notification Settings
@@ -203,6 +206,7 @@ class ThunderState extends Equatable {
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       // Link Settings
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
@@ -256,6 +260,7 @@ class ThunderState extends Equatable {
         hideNsfwPreviews,
         bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures,
+        markPostReadOnMediaView,
         openInExternalBrowser,
         showInAppUpdateNotification,
         enableSentryErrorTracking,

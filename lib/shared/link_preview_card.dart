@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -25,7 +27,12 @@ class LinkPreviewCard extends StatelessWidget {
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
+    this.postId,
+    required this.isUserLoggedIn,
+    required this.markPostReadOnMediaView,
   });
+
+  final int? postId;
 
   final String? originURL;
   final String? mediaURL;
@@ -36,7 +43,11 @@ class LinkPreviewCard extends StatelessWidget {
   final bool showLinkPreviews;
   final bool showFullHeightImages;
 
+
   final bool edgeToEdgeImages;
+
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
 
   final ViewMode viewMode;
 
@@ -97,8 +108,17 @@ class LinkPreviewCard extends StatelessWidget {
 
   void triggerOnTap(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
-
     final openInExternalBrowser = state.openInExternalBrowser;
+
+    if (isUserLoggedIn && markPostReadOnMediaView) {
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      } catch(e){
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
+      }
+    }
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation

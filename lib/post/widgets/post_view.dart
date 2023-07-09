@@ -34,10 +34,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
+    final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -57,6 +57,8 @@ class PostSubview extends StatelessWidget {
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
+            markPostReadOnMediaView: markPostReadOnMediaView,
+            isUserLoggedIn: isUserLoggedIn,
           ),
           if (postViewMedia.postView.post.body != null)
             Padding(

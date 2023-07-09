@@ -50,6 +50,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _getUserSavedEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkUserPostAsReadEvent>(
+      _markPostAsReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -285,6 +289,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markPostAsReadEvent(MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      PostView postView = await markPostAsRead(event.postId, event.read);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
+    } catch (e, s) {
+      await Sentry.captureException(e, stackTrace: s);
+
+      return emit(state.copyWith(
+        status: UserStatus.failure,
+        errorMessage: e.toString(),
+        userId: state.userId,
+      ));
     }
   }
 

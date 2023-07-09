@@ -99,11 +99,13 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
   bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
 
+
   Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
+
 
 Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages) async {
   List<Media> media = [];
