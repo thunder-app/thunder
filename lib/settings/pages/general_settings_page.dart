@@ -134,8 +134,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
-      case 'setting_general_mark_post_read_on_meda_view':
-        await prefs.setBool('setting_general_mark_post_read_on_meda_view', value);
+      case 'setting_general_mark_post_read_on_media_view':
+        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
         setState(() => markPostReadOnMediaView = value);
         break;
 
@@ -206,7 +206,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_meda_view') ?? false;
+      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -382,7 +382,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           value: markPostReadOnMediaView,
                           iconEnabled: Icons.visibility,
                           iconDisabled: Icons.visibility,
-                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_meda_view", value),
+                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',
