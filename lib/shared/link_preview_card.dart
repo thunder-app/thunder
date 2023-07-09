@@ -2,6 +2,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -25,6 +26,7 @@ class LinkPreviewCard extends StatelessWidget {
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
+    this.postId = 0,
   });
 
   final String? originURL;
@@ -39,6 +41,7 @@ class LinkPreviewCard extends StatelessWidget {
   final bool edgeToEdgeImages;
 
   final ViewMode viewMode;
+  final int postId;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +63,7 @@ class LinkPreviewCard extends StatelessWidget {
                     height: showFullHeightImages ? mediaHeight : null,
                     width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
                     isExpandable: false,
+                    postId: postId,
                   ),
                 linkInformation(context),
               ],

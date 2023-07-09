@@ -14,8 +14,17 @@ class ImagePreview extends StatefulWidget {
   final bool isGallery;
   final bool isExpandable;
   final bool showFullHeightImages;
+  final int postId;
 
-  const ImagePreview({super.key, required this.url, this.height, this.width, this.nsfw = false, this.isGallery = false, this.isExpandable = true, this.showFullHeightImages = false});
+  const ImagePreview({
+    super.key, required this.url,
+    this.height, this.width,
+    this.nsfw = false,
+    this.isGallery = false,
+    this.isExpandable = true,
+    this.showFullHeightImages = false,
+    this.postId = 0,
+  });
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -40,7 +49,11 @@ class _ImagePreviewState extends State<ImagePreview> {
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
-          return ImageViewer(url: widget.url, heroKey: heroKey);
+          return ImageViewer(
+            url: widget.url,
+            heroKey: heroKey,
+            postId: widget.postId,
+          );
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return Align(
