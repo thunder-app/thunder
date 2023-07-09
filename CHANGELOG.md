@@ -1,4 +1,8 @@
 ## Unreleased
+### Fixed
+- Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
+
+## 0.2.1+11 - 2023-07-09
 ### Added
 - Added colour to username in comments to distinguish your own comments
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
