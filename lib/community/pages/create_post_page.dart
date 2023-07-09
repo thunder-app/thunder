@@ -36,6 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool showPreview = false;
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
+  bool isNSFW = false;
 
   // final List<bool> _selectedPostType = <bool>[true, false, false];
   String image = '';
@@ -66,6 +67,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       appBar: AppBar(
         toolbarHeight: 70.0,
         actions: [
+          IconButton(onPressed: () => setState(() => isNSFW = !isNSFW), icon: isNSFW ? const Icon(Icons.eighteen_up_rating) : const Icon(Icons.eighteen_up_rating_outlined)),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
@@ -74,10 +76,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     context.read<CommunityBloc>().add(CreatePostEvent(
                         name: _titleTextController.text,
                         body: _bodyTextController.text,
+                        nsfw: isNSFW,
                         url: image)) : 
                       context.read<CommunityBloc>().add(CreatePostEvent(
                         name: _titleTextController.text,
-                        body: _bodyTextController.text
+                        body: _bodyTextController.text,
+                        nsfw: isNSFW
                         ));
                     Navigator.of(context).pop();
                   },

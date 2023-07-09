@@ -392,6 +392,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         name: event.name,
         body: event.body,
         url: event.url,
+        nsfw: event.nsfw
       ));
 
       // Parse the posts, and append them to the existing list
