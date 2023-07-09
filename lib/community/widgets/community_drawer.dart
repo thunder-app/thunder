@@ -166,6 +166,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                             backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
                                             foregroundImage: community.icon != null ? CachedNetworkImageProvider(community.icon!) : null,
                                             maxRadius: 16,
+                                            child: Text( community.name[0].toUpperCase(),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
                                           const SizedBox(width: 16.0),
                                           Column(
