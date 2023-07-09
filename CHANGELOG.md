@@ -4,6 +4,7 @@
 - Added ability to return to homescreen when swiping from post body - contribution from @bactaholic
 - Added scroll to top buttons on various pages - contribution from @bactaholic
 - Added double swipe to exit - contribution from @bactaholic
+- Added ability to set post as read when opening media - contribution from @ajsosa
 
 ### Fixed
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
