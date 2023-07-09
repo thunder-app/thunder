@@ -15,3 +15,6 @@ class ImageUploadEvent extends ImageEvent {
   const ImageUploadEvent({required this.imageFile, required this.instance, required this.jwt});
 }
 
+class ImageDeleteEvent extends ImageEvent {
+  const ImageDeleteEvent();
+}

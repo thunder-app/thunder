@@ -1,5 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -12,11 +11,29 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
       _uploadImageToServer,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<ImageDeleteEvent>(
+      _imageDelete,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
-  Future<void> _uploadImageToServer(ImageUploadEvent event, Emitter<ImageState> emit) async {
+  Future<void> _uploadImageToServer(
+      ImageUploadEvent event, Emitter<ImageState> emit) async {
     PictrsApi pictrs = PictrsApi(event.instance);
     emit(state.copyWith(status: ImageStatus.uploading));
-    PictrsUpload result = await pictrs.upload(filePath: event.imageFile, auth: event.jwt);
-    emit(state.copyWith(status: ImageStatus.success, imageUrl: "https://${event.instance}/pictrs/image/${result.files[0]}"));
+    // print("Uploading image ${event.imageFile}");
+    PictrsUpload result =
+        await pictrs.upload(filePath: event.imageFile, auth: event.jwt);
+    String url =
+        "https://${event.instance}/pictrs/image/${result.files[0].file}";
+    if (state.imageUrl == '') {
+      emit(state.copyWith(status: ImageStatus.success, imageUrl: url));
+    } else {
+      emit(state.copyWith(status: ImageStatus.success, bodyImage: url));
+    }
+  }
+
+  Future<void> _imageDelete(
+      ImageDeleteEvent event, Emitter<ImageState> emit) async {
+    emit(state.copyWith(status: ImageStatus.deleting, imageUrl: ''));
   }
 }
