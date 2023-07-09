@@ -148,12 +148,15 @@ class _InboxPageState extends State<InboxPage> {
                       case InboxStatus.initial:
                         context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                       case InboxStatus.loading:
-                        return const Align(
-                          alignment: Alignment.center,
-                          child: SizedBox(
-                            width: 40,
-                            height: 40,
-                            child: CircularProgressIndicator(),
+                        return const Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: CircularProgressIndicator(),
+                            ),
                           ),
                         );
                       case InboxStatus.refreshing:
