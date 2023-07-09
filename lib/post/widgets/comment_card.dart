@@ -12,6 +12,8 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+import '../utils/comment_action_helpers.dart';
+
 class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -231,6 +233,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () => setState(() => isHidden = !isHidden),
+                    onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
