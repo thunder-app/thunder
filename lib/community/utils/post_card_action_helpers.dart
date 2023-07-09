@@ -15,7 +15,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 
-enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink }
+enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink, blockCommunity }
 
 class ExtendedPostCardActions {
   const ExtendedPostCardActions({required this.postCardAction, required this.icon, required this.label});
