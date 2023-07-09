@@ -30,9 +30,12 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
     bool isImage = isImageUrl(imageUrl);
     if (!isImage) throw Exception('The URL provided was not an image');
 
+    final uri = Uri.parse(imageUrl);
+    final path = uri.path.toLowerCase();
+
     // We'll just retrieve the first part of the image
     final rangeResponse = await http.get(
-      Uri.parse(imageUrl),
+      uri,
       headers: {'Range': 'bytes=0-1000'},
     );
 
@@ -40,13 +43,13 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
     final imageData = rangeResponse.bodyBytes;
 
     // Get the image dimensions
-    if (imageUrl.endsWith('jpg') || imageUrl.endsWith('jpeg')) {
+    if (path.endsWith('jpg') || path.endsWith('jpeg')) {
       return getJPEGImageDimensions(imageData);
     }
-    if (imageUrl.endsWith('gif')) {
+    if (path.endsWith('gif')) {
       return getGIFImageDimensions(imageData);
     }
-    if (imageUrl.endsWith('png')) {
+    if (path.endsWith('png')) {
       return getPNGImageDimensions(imageData);
     }
   } catch (e) {

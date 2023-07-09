@@ -87,7 +87,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? [], flatten: true);
 
             return emit(
               state.copyWith(
@@ -128,7 +128,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? []);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
 
           // Append the new comments
           List<CommentViewTree> commentViewTree = List.from(state.comments);
@@ -191,7 +191,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? []);
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? [], flatten: true);
 
             return emit(
               state.copyWith(
@@ -231,7 +231,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? []);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
 
           // Append the new comments
           List<CommentViewTree> commentViewTree = List.from(state.savedComments);

@@ -78,7 +78,7 @@ class _PostCardListState extends State<PostCardList> {
         onRefresh: () async {
           HapticFeedback.mediumImpact();
           if (widget.personId != null) {
-            context.read<UserBloc>().add(const GetUserEvent(reset: true));
+            context.read<UserBloc>().add(GetUserEvent(userId: widget.personId, reset: true));
           } else {
             context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                   reset: true,

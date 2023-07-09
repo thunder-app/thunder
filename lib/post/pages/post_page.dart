@@ -11,6 +11,8 @@ import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -100,6 +102,7 @@ class _PostPageState extends State<PostPage> {
                       FloatingActionButton(
                         onPressed: () {
                           PostBloc postBloc = context.read<PostBloc>();
+                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                           showModalBottomSheet(
                             isScrollControlled: true,
@@ -110,8 +113,11 @@ class _PostPageState extends State<PostPage> {
                                 padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
-                                  child: BlocProvider<PostBloc>.value(
-                                    value: postBloc,
+                                  child: MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    ],
                                     child: CreateCommentModal(postView: widget.postView?.postView),
                                   ),
                                 ),
