@@ -124,7 +124,7 @@ class _ThunderState extends State<Thunder> {
                     },
                     listener: (context, state) {
                       context.read<AccountBloc>().add(GetAccountInformation());
-                      context.read<InboxBloc>().add(const GetInboxEvent());
+                      context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                     },
                     builder: (context, state) {
                       switch (state.status) {
@@ -246,7 +246,7 @@ class _ThunderState extends State<Thunder> {
 
             // @todo Change this from integer to enum or some other type
             if (index == 3) {
-              context.read<InboxBloc>().add(const GetInboxEvent());
+              context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
             }
           },
         ),

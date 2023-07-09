@@ -4,6 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -40,40 +41,131 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
+    int attemptCount = 0;
+    int limit = 20;
+
     try {
-      emit(state.copyWith(status: InboxStatus.loading));
+      var exception;
 
       Account? account = await fetchActiveProfileAccount();
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.success));
+      while (attemptCount < 2) {
+        try {
+          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+          if (event.reset) {
+            emit(state.copyWith(status: InboxStatus.loading));
+            // Fetch all the things
+            List<PrivateMessageView> privateMessageViews = await lemmy.run(
+              GetPrivateMessages(
+                auth: account!.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                page: 1,
+              ),
+            );
+
+            List<PersonMentionView> personMentionViews = await lemmy.run(
+              GetPersonMentions(
+                auth: account.jwt!,
+                unreadOnly: !event.showAll,
+                sort: SortType.new_,
+                limit: limit,
+                page: 1,
+              ),
+            );
+
+            List<CommentView> commentViews = await lemmy.run(
+              GetReplies(
+                auth: account.jwt!,
+                unreadOnly: !event.showAll,
+                limit: limit,
+                sort: SortType.new_,
+                page: 1,
+              ),
+            );
+
+            return emit(
+              state.copyWith(
+                status: InboxStatus.success,
+                privateMessages: privateMessageViews,
+                mentions: personMentionViews,
+                replies: commentViews,
+                showUnreadOnly: !event.showAll,
+                inboxMentionPage: 2,
+                inboxReplyPage: 2,
+                inboxPrivateMessagePage: 2,
+                hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
+                hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
+                hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
+              ),
+            );
+          }
+
+          // Prevent duplicate requests if we're done fetching
+          if (state.hasReachedInboxReplyEnd && state.hasReachedInboxMentionEnd && state.hasReachedInboxPrivateMessageEnd) return;
+          emit(state.copyWith(status: InboxStatus.refreshing));
+
+          // Fetch all the things
+          List<PrivateMessageView> privateMessageViews = await lemmy.run(
+            GetPrivateMessages(
+              auth: account!.jwt!,
+              unreadOnly: !event.showAll,
+              limit: limit,
+              page: state.inboxPrivateMessagePage,
+            ),
+          );
+
+          List<PersonMentionView> personMentionViews = await lemmy.run(
+            GetPersonMentions(
+              auth: account.jwt!,
+              unreadOnly: !event.showAll,
+              sort: SortType.new_,
+              limit: limit,
+              page: state.inboxMentionPage,
+            ),
+          );
+
+          List<CommentView> commentViews = await lemmy.run(
+            GetReplies(
+              auth: account.jwt!,
+              unreadOnly: !event.showAll,
+              limit: limit,
+              sort: SortType.new_,
+              page: state.inboxReplyPage,
+            ),
+          );
+
+          List<CommentView> replies = List.from(state.replies)..addAll(commentViews);
+          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(personMentionViews);
+          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessageViews);
+
+          return emit(
+            state.copyWith(
+              status: InboxStatus.success,
+              privateMessages: privateMessages,
+              mentions: mentions,
+              replies: replies,
+              showUnreadOnly: state.showUnreadOnly,
+              inboxMentionPage: state.inboxMentionPage + 1,
+              inboxReplyPage: state.inboxReplyPage + 1,
+              inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
+              hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
+              hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
+              hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
+            ),
+          );
+        } catch (e, s) {
+          exception = e;
+          attemptCount++;
+          await Sentry.captureException(e, stackTrace: s);
+        }
       }
 
-      // Fetch all the things
-      List<PrivateMessageView> privateMessageViews = await lemmy.run(GetPrivateMessages(auth: account!.jwt!, unreadOnly: !event.showAll));
-
-      List<PersonMentionView> personMentionViews = await lemmy.run(GetPersonMentions(
-        auth: account.jwt!,
-        unreadOnly: !event.showAll,
-        sort: SortType.new_,
-      ));
-
-      List<CommentView> commentViews = await lemmy.run(GetReplies(
-        auth: account.jwt!,
-        unreadOnly: !event.showAll,
-      ));
-
-      return emit(state.copyWith(
-        status: InboxStatus.success,
-        privateMessages: privateMessageViews,
-        mentions: personMentionViews,
-        replies: commentViews,
-        showUnreadOnly: !event.showAll,
-      ));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
-      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 

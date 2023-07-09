@@ -18,12 +18,13 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
 class InboxRepliesView extends StatelessWidget {
-  const InboxRepliesView({super.key});
+  final List<CommentView> replies;
+
+  const InboxRepliesView({super.key, this.replies = const []});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
     if (replies.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No replies'));

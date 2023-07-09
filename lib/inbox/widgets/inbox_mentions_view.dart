@@ -16,12 +16,13 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
 class InboxMentionsView extends StatelessWidget {
-  const InboxMentionsView({super.key});
+  final List<PersonMentionView> mentions;
+
+  const InboxMentionsView({super.key, this.mentions = const []});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<PersonMentionView> mentions = context.read<InboxBloc>().state.mentions;
 
     if (mentions.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No mentions'));
