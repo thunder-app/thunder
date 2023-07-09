@@ -64,6 +64,8 @@ class _PostCardState extends State<PostCard> {
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   }
 
+  final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -72,7 +74,13 @@ class _PostCardState extends State<PostCard> {
     VoteType? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
 
-    return Listener(
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! > 0) {
+          _feedScaffoldKey.currentState?.openDrawer();
+        }
+      },
+    child: Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) => {
@@ -211,6 +219,7 @@ class _PostCardState extends State<PostCard> {
           ],
         ),
       ),
+    ),
     );
   }
 }
