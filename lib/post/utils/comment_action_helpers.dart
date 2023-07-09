@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/comment_view_tree.dart';
 
-enum CommentCardAction { copyText }
+enum CommentCardAction { copyText, shareLink }
 
 class ExtendedCommentCardActions {
   const ExtendedCommentCardActions(
@@ -21,6 +22,11 @@ const commentCardActionItems = [
     commentCardAction: CommentCardAction.copyText,
     icon: Icons.copy_rounded,
     label: 'Copy Text',
+  ),
+  ExtendedCommentCardActions(
+      commentCardAction: CommentCardAction.shareLink,
+      icon: Icons.share_rounded,
+      label: 'Share Link'
   ),
 ];
 
@@ -75,6 +81,9 @@ void showCommentActionBottomModalSheet(
                                   content: Text("Copied to clipboard"),
                                   behavior: SnackBarBehavior.floating));
                         });
+                        break;
+                      case CommentCardAction.shareLink:
+                        Share.share(commentViewTree.comment!.comment.apId);
                         break;
                     }
                   },
