@@ -17,11 +17,13 @@ class CommentHeader extends StatelessWidget {
   final bool useDisplayNames;
   final bool isOwnComment;
   final bool isHidden;
+  final int sinceCreated;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
     required this.useDisplayNames,
+    required this.sinceCreated,
     this.isOwnComment = false,
     this.isHidden = false,
   });
@@ -138,11 +140,27 @@ class CommentHeader extends StatelessWidget {
                   size: 16.0,
                 ),
               ),
-              Text(
-                formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
-                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onBackground,
+              Container(
+                decoration: sinceCreated < 15 ? BoxDecoration(
+                    color: theme.primaryColorLight,
+                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+                ) : null,
+                child: sinceCreated < 15 ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    'New!',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.background,
+                    )
+                  ),
+                ) : Text(
+                  formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onBackground,
+                  ),
                 ),
               ),
             ],

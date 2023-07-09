@@ -123,7 +123,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 ),
               )
             : const Border(),
-        color: sinceCreated < 15 ? theme.focusColor : null,
       ),
       margin: const EdgeInsets.only(left: 1.0),
       child: Column(
@@ -243,6 +242,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         CommentHeader(
                           commentViewTree: widget.commentViewTree,
                           useDisplayNames: state.useDisplayNames,
+                          sinceCreated: sinceCreated,
                           isOwnComment: isOwnComment,
                           isHidden: isHidden,
                         ),
