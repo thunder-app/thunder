@@ -112,7 +112,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
             setState (() => image = 'loading');
           }
           if (state.status == ImageStatus.failure) {
-            setState(() => error = true);
+            setState(() {
+              error = true;
+              image = '';
+          });
           }
           if (state.status == ImageStatus.deleting) {
             setState(() => image = '');
