@@ -108,6 +108,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
           if (state.status == ImageStatus.success && image != state.imageUrl) {
             setState(() => image = state.imageUrl!);
           }
+          if (state.status == ImageStatus.uploading) {
+            setState (() => image = 'loading');
+          }
           if (state.status == ImageStatus.failure) {
             setState(() => error = true);
           }
@@ -178,7 +181,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               textAlign: TextAlign.center,
                             )
                           : const SizedBox(height: 0),
-                      image != ''
+                      image != '' && image != 'loading'
                           ? Stack(children: [
                               ExtendedImage.network(
                                 image,
@@ -201,7 +204,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               )
                             ])
-                          : const SizedBox(height: 20),
+                          : image == 'loading' ? const Center(child: CircularProgressIndicator(strokeAlign: BorderSide.strokeAlignCenter, strokeWidth: 2,)) : const SizedBox(height: 20),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
