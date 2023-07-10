@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:path/path.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -50,7 +50,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -97,9 +96,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Notification Settings
       bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
-
-      // Error Tracking
-      bool enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
 
       // Post Gestures
       bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
@@ -148,7 +144,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         openInExternalBrowser: openInExternalBrowser,
         showLinkPreviews: showLinkPreviews,
         showInAppUpdateNotification: showInAppUpdateNotification,
-        enableSentryErrorTracking: enableSentryErrorTracking,
         enablePostGestures: enablePostGestures,
         leftPrimaryPostGesture: leftPrimaryPostGesture,
         leftSecondaryPostGesture: leftSecondaryPostGesture,
@@ -167,7 +162,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         contentFontSizeScale: contentFontSizeScale,
       ));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }

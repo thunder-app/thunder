@@ -53,7 +53,6 @@ dependencies:
   yaml: ^3.1.2
   exif: ^3.1.4
   image: ^4.0.17
-  sentry_flutter: ^7.7.0
   uuid: ^3.0.7
   overlay_support: ^2.1.0
   package_info_plus: ^4.0.2

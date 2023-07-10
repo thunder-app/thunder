@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
@@ -158,13 +157,11 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
 
       emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -191,7 +188,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       emit(state.copyWith(status: InboxStatus.success, replies: replies));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -220,7 +216,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -246,7 +241,6 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
       return emit(state.copyWith(status: InboxStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }

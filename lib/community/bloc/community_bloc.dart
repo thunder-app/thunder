@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -95,8 +95,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -134,8 +132,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -158,8 +154,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -337,13 +331,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
 
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }
   }
@@ -388,8 +380,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         subscribedType: fullCommunityView.communityView.subscribed,
       ));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -450,8 +440,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityName: state.communityName,
       ));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -495,8 +483,6 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         blockedCommunity: blockedCommunity,
       ));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,

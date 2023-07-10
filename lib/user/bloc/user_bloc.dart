@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -150,11 +150,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -252,11 +250,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -287,7 +283,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -304,8 +299,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(
         status: UserStatus.failure,
         errorMessage: e.toString(),
@@ -326,7 +319,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -361,7 +353,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -385,7 +376,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }

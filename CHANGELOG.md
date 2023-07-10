@@ -9,6 +9,7 @@
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
+- Removed Sentry error logging
 
 ### Fixed
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0

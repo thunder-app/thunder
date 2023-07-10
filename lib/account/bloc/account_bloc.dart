@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -59,12 +59,10 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
           } catch (e, s) {
             exception = e;
             attemptCount++;
-            await Sentry.captureException(e, stackTrace: s);
           }
         }
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: exception.toString()));
       } catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });

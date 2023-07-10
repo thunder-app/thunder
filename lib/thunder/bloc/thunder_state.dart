@@ -40,9 +40,6 @@ class ThunderState extends Equatable {
     // Notification Settings
     this.showInAppUpdateNotification = true,
 
-    // Error Reporting
-    this.enableSentryErrorTracking = false,
-
     // Post Gestures
     this.enablePostGestures = true,
     this.leftPrimaryPostGesture = SwipeAction.upvote,
@@ -105,9 +102,6 @@ class ThunderState extends Equatable {
   // Notification Settings
   final bool showInAppUpdateNotification;
 
-  // Error Reporting
-  final bool enableSentryErrorTracking;
-
   // Post Gestures
   final bool enablePostGestures;
   final SwipeAction leftPrimaryPostGesture;
@@ -162,8 +156,6 @@ class ThunderState extends Equatable {
     bool? openInExternalBrowser,
     // Notification Settings
     bool? showInAppUpdateNotification,
-    // Error Reporting
-    bool? enableSentryErrorTracking,
     // Post Gestures
     bool? enablePostGestures,
     SwipeAction? leftPrimaryPostGesture,
@@ -215,8 +207,6 @@ class ThunderState extends Equatable {
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      // Error Reporting
-      enableSentryErrorTracking: enableSentryErrorTracking ?? this.enableSentryErrorTracking,
       // Post Gestures
       enablePostGestures: enablePostGestures ?? this.enablePostGestures,
       leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
@@ -268,7 +258,6 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         openInExternalBrowser,
         showInAppUpdateNotification,
-        enableSentryErrorTracking,
         enablePostGestures,
         leftPrimaryPostGesture,
         leftSecondaryPostGesture,

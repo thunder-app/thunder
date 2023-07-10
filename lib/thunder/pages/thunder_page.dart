@@ -41,7 +41,6 @@ class _ThunderState extends State<Thunder> {
   final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
 
   bool hasShownUpdateDialog = false;
-  bool hasShownSentryDialog = false;
 
   @override
   void initState() {
@@ -95,6 +94,7 @@ class _ThunderState extends State<Thunder> {
       _feedScaffoldKey.currentState?.openDrawer();
     }
   }
+
   void _showExitWarning() {
     final theme = Theme.of(context);
     const snackBarTextColor = TextStyle(color: Colors.white);
@@ -123,118 +123,95 @@ class _ThunderState extends State<Thunder> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (context) => ThunderBloc()),
-        BlocProvider(create: (context) => InboxBloc()),
-      ],
-    child: WillPopScope(
-    onWillPop: () async { return _handleBackButtonPress(); },
-      child: BlocBuilder<ThunderBloc, ThunderState>(
-        builder: (context, thunderBlocState) {
-          FlutterNativeSplash.remove();
-
-          switch (thunderBlocState.status) {
-            case ThunderStatus.initial:
-              context.read<ThunderBloc>().add(InitializeAppEvent());
-              return const Center(child: CircularProgressIndicator());
-            case ThunderStatus.loading:
-              return const Center(child: CircularProgressIndicator());
-            case ThunderStatus.refreshing:
-            case ThunderStatus.success:
-              return Scaffold(
-                bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
-                  body: MultiBlocProvider(
-                    providers: [
-                      BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
-                      BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
-                    ],
-                    child: BlocConsumer<AuthBloc, AuthState>(
-                      listenWhen: (AuthState previous, AuthState current) { if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true; return false; },
-                      listener: (context, state) {
-                        context.read<AccountBloc>().add(GetAccountInformation());
-                        context.read<InboxBloc>().add(const GetInboxEvent());
-                        },
-                      builder: (context, state) {
-                        switch (state.status) {
-                          case AuthStatus.initial:
-                            context.read<AuthBloc>().add(CheckAuth());
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          case AuthStatus.loading:
-                            WidgetsBinding.instance.addPostFrameCallback((_) =>
-                                setState(() => selectedPageIndex = 0));
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          case AuthStatus.success:
-                            Version? version = thunderBlocState.version;
-                            bool showInAppUpdateNotification = thunderBlocState
-                                .showInAppUpdateNotification;
-                            bool? enableSentryErrorTracking = thunderBlocState
-                                .enableSentryErrorTracking;
-                            if (version?.hasUpdate == true &&
-                                hasShownUpdateDialog == false &&
-                                showInAppUpdateNotification == true) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                showUpdateNotification(context, version);
-                                setState(() => hasShownUpdateDialog = true);
-                              }
-                              );
-                            }
-
-                            // Ask user if they want to opt-in to Sentry for the first time (based on if setting_error_tracking_enable_sentry is null)
-                            if (enableSentryErrorTracking == null &&
-                                hasShownSentryDialog == false) {
-                              WidgetsBinding.instance.addPostFrameCallback((_) {
-                                showSentryNotification(context);
-                                setState(() => hasShownSentryDialog = true);
-                              });
-                            }
-
-                            return PageView(
-                              controller: pageController,
-                              onPageChanged: (index) => setState(() => selectedPageIndex = index),
-                              physics: const NeverScrollableScrollPhysics(),
-                              children: <Widget>[
-                                CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                BlocProvider(
-                                  create: (context) => SearchBloc(),
-                                  child: const SearchPage(),
-                                ),
-                                const AccountPage(),
-                                const InboxPage(),
-                                SettingsPage(),
-                              ],
-                            );
-
-                          case AuthStatus.failure:
-                            return ErrorMessage(
-                              message: state.errorMessage,
-                              action: () =>
-                              {
-                                context.read<AuthBloc>().add(CheckAuth())
-                              },
-                              actionText: 'Refresh Content',
-                            );
-                        }
-                      }
-                      )
-                  )
-              );
-          case ThunderStatus.failure:
-            return ErrorMessage(
-              message: thunderBlocState.errorMessage,
-              action: () => {context.read<AuthBloc>().add(CheckAuth())},
-              actionText: 'Refresh Content',
-            );
-          }
+        providers: [
+          BlocProvider(create: (context) => ThunderBloc()),
+          BlocProvider(create: (context) => InboxBloc()),
+        ],
+        child: WillPopScope(
+          onWillPop: () async {
+            return _handleBackButtonPress();
           },
-      ),
-    )
-    );
+          child: BlocBuilder<ThunderBloc, ThunderState>(
+            builder: (context, thunderBlocState) {
+              FlutterNativeSplash.remove();
+
+              switch (thunderBlocState.status) {
+                case ThunderStatus.initial:
+                  context.read<ThunderBloc>().add(InitializeAppEvent());
+                  return const Center(child: CircularProgressIndicator());
+                case ThunderStatus.loading:
+                  return const Center(child: CircularProgressIndicator());
+                case ThunderStatus.refreshing:
+                case ThunderStatus.success:
+                  return Scaffold(
+                      bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
+                      body: MultiBlocProvider(
+                          providers: [
+                            BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
+                            BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
+                          ],
+                          child: BlocConsumer<AuthBloc, AuthState>(listenWhen: (AuthState previous, AuthState current) {
+                            if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                            return false;
+                          }, listener: (context, state) {
+                            context.read<AccountBloc>().add(GetAccountInformation());
+                            context.read<InboxBloc>().add(const GetInboxEvent());
+                          }, builder: (context, state) {
+                            switch (state.status) {
+                              case AuthStatus.initial:
+                                context.read<AuthBloc>().add(CheckAuth());
+                                return const Center(child: CircularProgressIndicator());
+                              case AuthStatus.loading:
+                                WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => selectedPageIndex = 0));
+                                return const Center(child: CircularProgressIndicator());
+                              case AuthStatus.success:
+                                Version? version = thunderBlocState.version;
+                                bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+
+                                if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                                  WidgetsBinding.instance.addPostFrameCallback((_) {
+                                    showUpdateNotification(context, version);
+                                    setState(() => hasShownUpdateDialog = true);
+                                  });
+                                }
+
+                                return PageView(
+                                  controller: pageController,
+                                  onPageChanged: (index) => setState(() => selectedPageIndex = index),
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  children: <Widget>[
+                                    CommunityPage(scaffoldKey: _feedScaffoldKey),
+                                    BlocProvider(
+                                      create: (context) => SearchBloc(),
+                                      child: const SearchPage(),
+                                    ),
+                                    const AccountPage(),
+                                    const InboxPage(),
+                                    SettingsPage(),
+                                  ],
+                                );
+
+                              case AuthStatus.failure:
+                                return ErrorMessage(
+                                  message: state.errorMessage,
+                                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
+                                  actionText: 'Refresh Content',
+                                );
+                            }
+                          })));
+                case ThunderStatus.failure:
+                  return ErrorMessage(
+                    message: thunderBlocState.errorMessage,
+                    action: () => {context.read<AuthBloc>().add(CheckAuth())},
+                    actionText: 'Refresh Content',
+                  );
+              }
+            },
+          ),
+        ));
   }
 
   // Generates the BottomNavigationBar
@@ -334,76 +311,6 @@ class _ThunderState extends State<Thunder> {
       autoDismiss: true,
       duration: const Duration(seconds: 5),
       slideDismissDirection: DismissDirection.vertical,
-    );
-  }
-
-  // Sentry opt-in notification
-  void showSentryNotification(BuildContext thunderBlocContext) {
-    final theme = Theme.of(context);
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
-
-    showOverlay(
-      (context, t) {
-        return Container(
-          color: Color.lerp(Colors.transparent, Colors.black54, t),
-          child: FractionalTranslation(
-            translation: Offset.lerp(const Offset(0, 1), const Offset(0, 0), t)!,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                Card(
-                  child: SafeArea(
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 0, bottom: 8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Enable Sentry Error Reporting?',
-                            style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                          const SizedBox(height: 12.0),
-                          Text(
-                            'By opting in, any errors that you encounter will be automatically sent to Sentry to improve Thunder.',
-                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Text(
-                            'You may opt out at any time in the Settings.',
-                            style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8)),
-                          ),
-                          const SizedBox(height: 8.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              TextButton(
-                                child: const Text('Allow'),
-                                onPressed: () {
-                                  prefs.setBool('setting_error_tracking_enable_sentry', true);
-                                  OverlaySupportEntry.of(context)!.dismiss();
-                                },
-                              ),
-                              TextButton(
-                                child: const Text('Do not allow'),
-                                onPressed: () {
-                                  prefs.setBool('setting_error_tracking_enable_sentry', false);
-                                  OverlaySupportEntry.of(context)!.dismiss();
-                                },
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-      duration: Duration.zero,
     );
   }
 }
