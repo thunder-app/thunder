@@ -102,7 +102,7 @@ class _ThunderState extends State<Thunder> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        backgroundColor: theme.dividerColor,
+        backgroundColor: theme.primaryColorDark,
         width: 190,
         duration: const Duration(milliseconds: 3500),
         content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
