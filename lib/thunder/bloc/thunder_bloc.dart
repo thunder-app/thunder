@@ -87,6 +87,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
@@ -138,6 +139,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showSaveAction: showSaveAction,
         showFullHeightImages: showFullHeightImages,
         showEdgeToEdgeImages: showEdgeToEdgeImages,
+        tabletMode: tabletMode,
         showTextContent: showTextContent,
         hideNsfwPreviews: hideNsfwPreviews,
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
