@@ -107,9 +107,14 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Container(
-                child: instanceIcon == null 
-                  ? Image.asset('assets/logo.png', width: 80.0, height: 80.0)
+              AnimatedCrossFade(
+                duration: const Duration(milliseconds: 500),
+                crossFadeState: instanceIcon == null
+                  ? CrossFadeState.showFirst
+                  : CrossFadeState.showSecond,
+                firstChild: Image.asset('assets/logo.png', width: 80.0, height: 80.0),
+                secondChild: instanceIcon == null
+                  ? Container()
                   : CircleAvatar(
                       foregroundImage: CachedNetworkImageProvider(instanceIcon!),
                       backgroundColor: Colors.transparent,
