@@ -97,14 +97,15 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
+  bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions));
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, tabletMode));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool tabletMode) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
@@ -114,8 +115,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
       if (fetchImageDimensions) {
         Size result = await retrieveImageDimensions(url);
-
-        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, tabletMode: tabletMode);
         media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       } else {
         media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
@@ -135,8 +135,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
           int mediaHeight = result.height.toInt();
           int mediaWidth = result.width.toInt();
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight);
-
+          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, tabletMode: tabletMode);
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
         } else {
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
