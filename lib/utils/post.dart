@@ -98,16 +98,15 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
   bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
+  bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
 
-
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages));
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
-
-Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
@@ -117,8 +116,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
       if (fetchImageDimensions) {
         Size result = await retrieveImageDimensions(url);
-
-        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24);
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
         media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       } else {
         media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
@@ -138,7 +136,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
 
           int mediaHeight = result.height.toInt();
           int mediaWidth = result.width.toInt();
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24);
+          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
         } else {
           media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));

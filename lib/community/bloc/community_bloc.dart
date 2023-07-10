@@ -179,13 +179,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     PostListingType defaultListingType;
     SortType defaultSortType;
+    bool tabletMode;
 
     try {
       defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
     } catch (e) {
       defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+      tabletMode = false;
     }
 
     try {
@@ -229,6 +232,18 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: communityId ?? getCommunityResponse?.communityView.community.id,
               communityName: event.communityName,
             ));
+            if (tabletMode) {
+              List<PostView> posts2 = await lemmy.run(GetPosts(
+                auth: account?.jwt,
+                page: 2,
+                limit: limit,
+                sort: sortType,
+                type: listingType,
+                communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+                communityName: event.communityName,
+              ));
+              posts.addAll(posts2);
+            }
 
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> formattedPosts = await parsePostViews(posts);
@@ -241,7 +256,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
-                page: 2,
+                page: tabletMode ? 2 : 3,
                 postViews: formattedPosts,
                 postIds: postIds,
                 listingType: listingType,
@@ -275,6 +290,18 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: state.communityId,
               communityName: state.communityName,
             ));
+            if (tabletMode) {
+              List<PostView> posts2 = await lemmy.run(GetPosts(
+                auth: account?.jwt,
+                page: state.page + 1,
+                limit: limit,
+                sort: sortType,
+                type: state.listingType,
+                communityId: state.communityId,
+                communityName: state.communityName,
+              ));
+              posts.addAll(posts2);
+            }
 
             // Parse the posts, and append them to the existing list
             List<PostViewMedia> postMedias = await parsePostViews(posts);
@@ -295,7 +322,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             return emit(
               state.copyWith(
                 status: CommunityStatus.success,
-                page: state.page + 1,
+                page: tabletMode ? state.page + 2 : state.page + 1,
                 postViews: postViews,
                 postIds: postIds,
                 communityId: communityId,
