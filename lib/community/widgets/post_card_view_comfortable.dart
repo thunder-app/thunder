@@ -30,6 +30,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showSaveAction;
   final bool showTextContent;
   final bool isUserLoggedIn;
+  final bool markPostReadOnMediaView;
 
   const PostCardViewComfortable({
     super.key,
@@ -46,6 +47,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.markPostReadOnMediaView,
   });
 
   @override
@@ -60,6 +62,8 @@ class PostCardViewComfortable extends StatelessWidget {
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
       edgeToEdgeImages: edgeToEdgeImages,
+      markPostReadOnMediaView: markPostReadOnMediaView,
+      isUserLoggedIn: isUserLoggedIn,
     );
 
     return Padding(

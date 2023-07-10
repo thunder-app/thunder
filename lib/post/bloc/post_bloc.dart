@@ -2,7 +2,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -147,12 +146,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
       emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -243,7 +240,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
 
@@ -253,7 +249,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -281,7 +276,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -298,7 +292,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -337,7 +330,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -361,7 +353,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -393,7 +384,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -424,7 +414,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

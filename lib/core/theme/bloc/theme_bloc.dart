@@ -4,7 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -56,7 +56,6 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         ),
       );
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThemeStatus.failure));
     }
   }

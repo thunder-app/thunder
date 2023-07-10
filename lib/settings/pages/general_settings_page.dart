@@ -37,11 +37,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showSaveAction = true;
   bool showFullHeightImages = false;
   bool showEdgeToEdgeImages = false;
+  bool tabletMode = false;
   bool showTextContent = false;
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
   bool useDisplayNames = true;
+  bool markPostReadOnMediaView = false;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -50,9 +52,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool showInAppUpdateNotification = true;
 
   String defaultInstance = 'lemmy.world';
-
-  // Error Reporting
-  bool enableSentryErrorTracking = false;
 
   TextEditingController instanceController = TextEditingController();
 
@@ -138,6 +137,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
+      case 'setting_post_tablet_mode':
+        await prefs.setBool('setting_post_tablet_mode', value);
+        setState(() => tabletMode = value);
+      case 'setting_general_mark_post_read_on_media_view':
+        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
+        setState(() => markPostReadOnMediaView = value);
+        break;
 
       // Link Settings
       case 'setting_general_show_link_previews':
@@ -153,22 +159,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_notifications_show_inapp_update':
         await prefs.setBool('setting_notifications_show_inapp_update', value);
         setState(() => showInAppUpdateNotification = value);
-        break;
-
-      // Error Reporting
-      case 'setting_error_tracking_enable_sentry':
-        await prefs.setBool('setting_error_tracking_enable_sentry', value);
-        setState(() => enableSentryErrorTracking = value);
-
-        SnackBar snackBar = const SnackBar(
-          content: Text('Restart Thunder to apply the new settings'),
-          behavior: SnackBarBehavior.floating,
-        );
-
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-          ScaffoldMessenger.of(context).showSnackBar(snackBar);
-        }
         break;
     }
 
@@ -207,6 +197,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -214,9 +206,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
-
-      // Error Tracking
-      enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
 
       isLoading = false;
     });
@@ -378,6 +367,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
                         ToggleOption(
+                          description: '2-column Tablet Mode',
+                          value: tabletMode,
+                          iconEnabled: Icons.view_comfortable_rounded,
+                          iconDisabled: Icons.view_agenda,
+                          onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
+                        ),
+                        ToggleOption(
+                          description: 'Mark read after viewing media',
+                          value: markPostReadOnMediaView,
+                          iconEnabled: Icons.visibility,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
+                        ),
+                        ToggleOption(
                           description: 'Use display names for users',
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
@@ -482,29 +485,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
                           onToggle: (bool value) => setPreferences('setting_notifications_show_inapp_update', value),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Error Reporting',
-                            style: theme.textTheme.titleLarge,
-                          ),
-                        ),
-                        ToggleOption(
-                          description: 'Enable Sentry error tracking',
-                          value: enableSentryErrorTracking,
-                          iconEnabled: Icons.error_rounded,
-                          iconDisabled: Icons.error_rounded,
-                          onToggle: (bool value) => setPreferences('setting_error_tracking_enable_sentry', value),
                         ),
                       ],
                     ),

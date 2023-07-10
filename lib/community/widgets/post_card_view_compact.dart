@@ -17,6 +17,8 @@ class PostCardViewCompact extends StatelessWidget {
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
   final bool showInstanceName;
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
 
   const PostCardViewCompact({
     super.key,
@@ -24,6 +26,8 @@ class PostCardViewCompact extends StatelessWidget {
     required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
     required this.showInstanceName,
+    required this.markPostReadOnMediaView,
+    required this.isUserLoggedIn,
   });
 
   @override
@@ -42,7 +46,9 @@ class PostCardViewCompact extends StatelessWidget {
               postView: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
+              markPostReadOnMediaView: markPostReadOnMediaView,
               viewMode: ViewMode.compact,
+              isUserLoggedIn: isUserLoggedIn,
             ),
           if (!showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
           Flexible(
@@ -93,7 +99,9 @@ class PostCardViewCompact extends StatelessWidget {
               postView: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
+              markPostReadOnMediaView: markPostReadOnMediaView,
               viewMode: ViewMode.compact,
+              isUserLoggedIn: isUserLoggedIn,
             ),
         ],
       ),
