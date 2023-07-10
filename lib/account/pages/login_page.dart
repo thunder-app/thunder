@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -5,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 
 class LoginPage extends StatefulWidget {
@@ -24,6 +28,9 @@ class _LoginPageState extends State<LoginPage> {
 
   bool showPassword = false;
   bool fieldsFilledIn = false;
+  String? instanceIcon;
+  String? currentInstance;
+  Timer? instanceTextDebounceTimer;
 
   @override
   void initState() {
@@ -49,12 +56,30 @@ class _LoginPageState extends State<LoginPage> {
       }
     });
 
-    _instanceTextEditingController.addListener(() {
+    _instanceTextEditingController.addListener(() async {
+      if (currentInstance != _instanceTextEditingController.text) {
+        setState(() => instanceIcon = null);
+        currentInstance = _instanceTextEditingController.text;
+      }
+
       if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
       }
+      
+      // Debounce
+      if (instanceTextDebounceTimer?.isActive == true) {
+        instanceTextDebounceTimer!.cancel();
+      }
+      instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+        await getInstanceIcon(_instanceTextEditingController.text).then((value) { 
+          // Make sure the icon we looked up still matches the text
+          if (currentInstance == _instanceTextEditingController.text) {
+            setState(() => instanceIcon = value);
+          }
+        });
+      });
     });
   }
 
@@ -82,8 +107,29 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.asset('assets/logo.png', width: 196.0, height: 196.0),
+              Container(
+                child: instanceIcon == null 
+                  ? Image.asset('assets/logo.png', width: 80.0, height: 80.0)
+                  : CircleAvatar(
+                      foregroundImage: CachedNetworkImageProvider(instanceIcon!),
+                      backgroundColor: Colors.transparent,
+                      maxRadius: 40,
+                  ),
+              ),
               const SizedBox(height: 12.0),
+              TextField(
+                autocorrect: false,
+                controller: _instanceTextEditingController,
+                inputFormatters: [LowerCaseTextFormatter()],
+                decoration: const InputDecoration(
+                  isDense: true,
+                  border: OutlineInputBorder(),
+                  labelText: 'Instance',
+                  hintText: 'e.g., lemmy.ml, lemmy.world, etc.',
+                ),
+                enableSuggestions: false,
+              ),
+              const SizedBox(height: 35.0),
               AutofillGroup(
                 child: Column(
                   children: <Widget>[
@@ -145,18 +191,6 @@ class _LoginPageState extends State<LoginPage> {
                 enableSuggestions: false,
               ),
               const SizedBox(height: 12.0),
-              TextField(
-                autocorrect: false,
-                controller: _instanceTextEditingController,
-                inputFormatters: [LowerCaseTextFormatter()],
-                decoration: const InputDecoration(
-                  isDense: true,
-                  border: OutlineInputBorder(),
-                  labelText: 'Instance',
-                  hintText: 'lemmy.ml',
-                ),
-                enableSuggestions: false,
-              ),
               const SizedBox(height: 32.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
