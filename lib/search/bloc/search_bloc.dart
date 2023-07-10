@@ -141,6 +141,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       SearchResults updatedResults = state.results!.copyWith(communities: communities);
 
+      emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
+
+      // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
+      await Future.delayed(const Duration(seconds: 1));
+
+      fullCommunityView = await lemmy.run(GetCommunity(
+        auth: account.jwt,
+        id: event.communityId,
+      ));
+
+      communities = state.results?.communities ?? [];
+
+      communities = state.results?.communities.map((CommunityView communityView) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
+              return fullCommunityView.communityView;
+            }
+            return communityView;
+          }).toList() ??
+          [];
+
+      updatedResults = state.results!.copyWith(communities: communities);
+
       return emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
