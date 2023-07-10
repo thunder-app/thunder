@@ -157,31 +157,35 @@ class _SearchPageState extends State<SearchPage> {
                 ]),
                 trailing: isUserLoggedIn
                     ? IconButton(
-                        onPressed: communityView.subscribed == SubscribedType.pending
-                            ? null
-                            : () {
-                                context.read<SearchBloc>().add(
-                                      ChangeCommunitySubsciptionStatusEvent(
-                                        communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                                      ),
-                                    );
-                                SnackBar snackBar = SnackBar(
-                                  content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                });
-                              },
+                        onPressed:
+                            () {
+                              context.read<SearchBloc>().add(
+                                    ChangeCommunitySubsciptionStatusEvent(
+                                      communityId: communityView.community.id,
+                                      follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+                                    ),
+                                  );
+                              SnackBar snackBar = SnackBar(
+                                content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
+                            },
                         icon: Icon(
                           switch (communityView.subscribed) {
-                            SubscribedType.notSubscribed => Icons.add,
-                            SubscribedType.pending => Icons.pending_rounded,
-                            SubscribedType.subscribed => Icons.remove,
+                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                            SubscribedType.pending => Icons.pending_outlined,
+                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                           },
                         ),
+                        tooltip: switch (communityView.subscribed) {
+                          SubscribedType.notSubscribed => 'Subscribe',
+                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                          SubscribedType.subscribed => 'Unsubscribe',
+                        },
                         visualDensity: VisualDensity.compact,
                       )
                     : null,

@@ -363,12 +363,29 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         follow: event.follow,
       ));
 
-      return emit(state.copyWith(
+      emit(state.copyWith(
         status: CommunityStatus.success,
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
         subscribedType: communityView.subscribed,
+      ));
+
+      await Future.delayed(const Duration(seconds: 1));
+
+      // Update the community details again in case the subscribed type changed
+      final fullCommunityView = await lemmy.run(GetCommunity(
+        auth: account.jwt,
+        id: event.communityId,
+        name: state.communityName,
+      ));
+
+      return emit(state.copyWith(
+        status: CommunityStatus.success,
+        communityId: state.communityId,
+        listingType: state.listingType,
+        communityName: state.communityName,
+        subscribedType: fullCommunityView.communityView.subscribed,
       ));
     } catch (e, s) {
       await Sentry.captureException(e, stackTrace: s);
