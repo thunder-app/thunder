@@ -108,13 +108,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
           if (state.status == ImageStatus.success && image != state.imageUrl) {
             setState(() => image = state.imageUrl!);
           }
-          if (state.status == ImageStatus.uploading) {
+          if (state.status == ImageStatus.uploading && image == '') {
             setState (() => image = 'loading');
           }
           if (state.status == ImageStatus.failure) {
             setState(() {
               error = true;
-              image = '';
+              if (image == 'loading') image = '';
           });
           }
           if (state.status == ImageStatus.deleting) {
