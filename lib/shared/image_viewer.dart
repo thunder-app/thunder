@@ -195,7 +195,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       icon: const Icon(Icons.share_rounded, semanticLabel: "Comments"),
                     ),
                   ),
-                  const Spacer(),
+                  /*const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: IconButton(
@@ -231,7 +231,7 @@ class _ImageViewerState extends State<ImageViewer> {
                       },
                       icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments"),
                     ),
-                  ),
+                  ),*/
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
