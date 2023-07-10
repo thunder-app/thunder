@@ -64,7 +64,7 @@ Future<CommentView> saveComment(int commentId, bool save) async {
   return updatedCommentView;
 }
 
-List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
+List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
   // Create a map of CommentView objects using the comment path as the key
@@ -75,6 +75,10 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments) {
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
+  }
+
+  if (flatten) {
+    return commentMap.values.toList();
   }
 
   // Build the tree structure by assigning children to their parent comments

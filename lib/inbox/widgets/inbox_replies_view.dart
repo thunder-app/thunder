@@ -17,22 +17,35 @@ import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
-class InboxRepliesView extends StatelessWidget {
-  const InboxRepliesView({super.key});
+class InboxRepliesView extends StatefulWidget {
+  final List<CommentView> replies;
+
+  const InboxRepliesView({super.key, this.replies = const []});
+
+  @override
+  State<InboxRepliesView> createState() => _InboxRepliesViewState();
+}
+
+class _InboxRepliesViewState extends State<InboxRepliesView> {
+  int? inboxReplyMarkedAsRead;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<CommentView> replies = context.read<InboxBloc>().state.replies;
 
-    if (replies.isEmpty) {
+    if (widget.replies.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No replies'));
     }
 
     return ListView.builder(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      itemCount: replies.length,
+      itemCount: widget.replies.length,
       itemBuilder: (context, index) {
         return Card(
           clipBehavior: Clip.hardEdge,
@@ -53,7 +66,7 @@ class InboxRepliesView extends StatelessWidget {
                       BlocProvider(create: (context) => PostBloc()),
                     ],
                     child: PostPage(
-                      postId: replies[index].post.id,
+                      postId: widget.replies[index].post.id,
                       onPostUpdated: () => {},
                     ),
                   ),
@@ -69,38 +82,45 @@ class InboxRepliesView extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        replies[index].creator.name,
+                        widget.replies[index].creator.name,
                         style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                       ),
-                      Text(formatTimeToString(dateTime: replies[index].comment.published.toIso8601String()))
+                      Text(formatTimeToString(dateTime: widget.replies[index].comment.published.toIso8601String()))
                     ],
                   ),
                   GestureDetector(
                     child: Text(
-                      '${replies[index].community.name}${' · ${fetchInstanceNameFromUrl(replies[index].community.actorId)}'}',
+                      '${widget.replies[index].community.name}${' · ${fetchInstanceNameFromUrl(widget.replies[index].community.actorId)}'}',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
-                    onTap: () => onTapCommunityName(context, replies[index].community.id),
+                    onTap: () => onTapCommunityName(context, widget.replies[index].community.id),
                   ),
                   const SizedBox(height: 10),
-                  CommonMarkdownBody(body: replies[index].comment.content),
+                  CommonMarkdownBody(body: widget.replies[index].comment.content),
                   const Divider(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (replies[index].commentReply?.read == false)
-                        IconButton(
-                          onPressed: () {
-                            context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: replies[index].commentReply!.id, read: true));
-                          },
-                          icon: const Icon(
-                            Icons.check,
-                            semanticLabel: 'Mark as read',
-                          ),
-                          visualDensity: VisualDensity.compact,
-                        ),
+                      if (widget.replies[index].commentReply?.read == false)
+                        // Check to see which reply is curremntly marked as read
+                        inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
+                            ? IconButton(
+                                onPressed: () {
+                                  setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
+                                  context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
+                                },
+                                icon: const Icon(
+                                  Icons.check,
+                                  semanticLabel: 'Mark as read',
+                                ),
+                                visualDensity: VisualDensity.compact,
+                              )
+                            : const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                              ),
                       IconButton(
                         onPressed: () {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
@@ -122,7 +142,7 @@ class InboxRepliesView extends StatelessWidget {
                                       BlocProvider<PostBloc>.value(value: postBloc),
                                       BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                     ],
-                                    child: CreateCommentModal(comment: replies[index].comment, parentCommentAuthor: replies[index].creator.name),
+                                    child: CreateCommentModal(comment: widget.replies[index].comment, parentCommentAuthor: widget.replies[index].creator.name),
                                   ),
                                 ),
                               );

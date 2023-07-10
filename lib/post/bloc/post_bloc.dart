@@ -310,8 +310,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
       CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
 
-      print(commentIndexes);
-
       // if (commentIndexes.length == 1) {
       //   currentTree = currentTree.replies.first; // Traverse to the next CommentViewTree
       // }

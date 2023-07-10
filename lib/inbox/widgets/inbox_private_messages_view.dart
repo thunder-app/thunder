@@ -7,15 +7,16 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/utils/date_time.dart';
 
 class InboxPrivateMessagesView extends StatelessWidget {
-  const InboxPrivateMessagesView({super.key});
+  final List<PrivateMessageView> privateMessages;
+
+  const InboxPrivateMessagesView({super.key, this.privateMessages = const []});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    List<PrivateMessageView> privateMessages = context.read<InboxBloc>().state.privateMessages;
 
     if (privateMessages.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height/27), child: Text('No messages'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No messages'));
     }
 
     return ListView.builder(

@@ -43,6 +43,7 @@
 - Increased NSFW blur - contribution from @guigs4
 - Fixed issue where longer comment threads would not show up properly
 - Fixed a bug where the URI was not parsed to lowercase before checking extensions to parse image dimensions - contribution from @Fmstrat
+- Fixed issue where not all comments would show up on the profile page - contribution from @ajsosa
 
 ## 0.2.1+10 - 2023-07-02
 ### Added

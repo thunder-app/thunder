@@ -30,6 +30,7 @@ class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = true;
   bool resetFailureMessage = true;
+  bool _showReturnToTopButton = false;
 
   @override
   void initState() {
@@ -49,6 +50,9 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
+    setState(() {
+      _showReturnToTopButton = _scrollController.offset > 200;
+    });
   }
 
   CommentSortType? sortType;
@@ -88,8 +92,14 @@ class _PostPageState extends State<PostPage> {
                   centerTitle: false,
                   toolbarHeight: 70.0,
                 ),
-                floatingActionButton: (isUserLoggedIn && hasScrolledToBottom == false)
-                    ? FloatingActionButton(
+                floatingActionButton:
+                Stack(
+                  children: [
+                    Positioned(
+                      bottom: 20,
+                      right: 5,
+                      child:
+                      FloatingActionButton(
                         onPressed: () {
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -119,9 +129,35 @@ class _PostPageState extends State<PostPage> {
                           Icons.reply_rounded,
                           semanticLabel: 'Reply to Post',
                         ),
-                      )
-                    : null,
-                body: SafeArea(
+                      ),
+                    ),
+                    if (_showReturnToTopButton)
+                    Positioned(
+                      bottom: 20,
+                      left: 40,
+                      child: FloatingActionButton(
+                        onPressed: () {
+                          _scrollController.animateTo(
+                            0,
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.easeInOut,
+                          );
+                        },
+                        child: const Icon(
+                          Icons.arrow_upward_rounded,
+                          semanticLabel: 'Return to Top',
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+                body: GestureDetector(
+                  onHorizontalDragEnd: (details) {
+                    if (details.primaryVelocity! > 0) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                child: SafeArea(
                   child: BlocConsumer<PostBloc, PostState>(
                     listenWhen: (previous, current) {
                       if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
@@ -197,8 +233,11 @@ class _PostPageState extends State<PostPage> {
                     },
                   ),
                 ),
+              ),
               );
-            }));
+            }
+            )
+    );
   }
 
 //TODO: More or less duplicate from community_page.dart

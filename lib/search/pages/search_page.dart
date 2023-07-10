@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -98,11 +99,6 @@ class _SearchPageState extends State<SearchPage> {
       case SearchStatus.initial:
         LemmyClient lemmyClient = LemmyClient.instance;
 
-        // Obtains the base URL for the instance
-        Uri uri = Uri.parse(lemmyClient.lemmyApiV3.host);
-        String host = uri.host;
-        String baseUrl = host.startsWith('www.') ? host.substring(4) : host;
-
         return Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -112,7 +108,7 @@ class _SearchPageState extends State<SearchPage> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Text(
-                'Search for communities federated with $baseUrl',
+                'Search for communities federated with ${lemmyClient.lemmyApiV3.host}',
                 textAlign: TextAlign.center,
                 style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
               ),
@@ -139,6 +135,17 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
+                  foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                  maxRadius: 25,
+                  child: Text( communityView.community.name[0].toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
                 title: Text(
                   communityView.community.title,
                   overflow: TextOverflow.ellipsis,
