@@ -30,6 +30,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showSaveAction;
   final bool showTextContent;
   final bool isUserLoggedIn;
+  final bool markPostReadOnMediaView;
 
   const PostCardViewComfortable({
     super.key,
@@ -46,6 +47,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.markPostReadOnMediaView,
   });
 
   @override
@@ -54,6 +56,15 @@ class PostCardViewComfortable extends StatelessWidget {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     final String textContent = postViewMedia.postView.post.body ?? "";
+
+    var mediaView = MediaView(
+      postView: postViewMedia,
+      showFullHeightImages: showFullHeightImages,
+      hideNsfwPreviews: hideNsfwPreviews,
+      edgeToEdgeImages: edgeToEdgeImages,
+      markPostReadOnMediaView: markPostReadOnMediaView,
+      isUserLoggedIn: isUserLoggedIn,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
@@ -72,21 +83,11 @@ class PostCardViewComfortable extends StatelessWidget {
                   softWrap: true),
             ),
           if (edgeToEdgeImages)
-            MediaView(
-              postView: postViewMedia,
-              showFullHeightImages: showFullHeightImages,
-              hideNsfwPreviews: hideNsfwPreviews,
-              edgeToEdgeImages: edgeToEdgeImages,
-            ),
+            mediaView,
           if (!edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
-              child: MediaView(
-                postView: postViewMedia,
-                showFullHeightImages: showFullHeightImages,
-                hideNsfwPreviews: hideNsfwPreviews,
-                edgeToEdgeImages: edgeToEdgeImages,
-              ),
+              child: mediaView,
             ),
           if (!showTitleFirst)
             Padding(
@@ -127,7 +128,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : null,
+                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                           ),
                         ),
                         onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),

@@ -9,8 +9,9 @@ abstract class InboxEvent extends Equatable {
 
 class GetInboxEvent extends InboxEvent {
   final bool showAll;
+  final bool reset;
 
-  const GetInboxEvent({this.showAll = false});
+  const GetInboxEvent({this.showAll = false, this.reset = false});
 }
 
 class MarkReplyAsReadEvent extends InboxEvent {

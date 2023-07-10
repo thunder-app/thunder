@@ -108,3 +108,60 @@ class PostCardMetaData extends StatelessWidget {
     );
   }
 }
+
+class PostViewMetaData extends StatelessWidget {
+  final int comments;
+  final DateTime published;
+  final bool saved;
+
+  const PostViewMetaData({
+    super.key,
+    required this.comments,
+    required this.published,
+    required this.saved,
+  });
+
+  final MaterialColor upVoteColor = Colors.orange;
+  final MaterialColor downVoteColor = Colors.blue;
+  final MaterialColor savedColor = Colors.purple;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return BlocBuilder<ThunderBloc, ThunderState>(
+      builder: (context, state) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  icon: Icon(
+                    Icons.chat,
+                    size: 17.0,
+                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                  ),
+                  text: formatNumberToK(comments),
+                  padding: 5.0,
+                ),
+                const SizedBox(width: 10.0),
+                IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  icon: Icon(
+                    Icons.history_rounded,
+                    size: 19.0,
+                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                  ),
+                  text: formatTimeToString(dateTime: published.toIso8601String()),
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
+  }
+}

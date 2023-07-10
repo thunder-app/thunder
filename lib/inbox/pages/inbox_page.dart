@@ -8,6 +8,7 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 
 enum InboxType { replies, mentions, messages }
@@ -50,6 +51,26 @@ class _InboxPageState extends State<InboxPage> {
 
   bool showAll = false;
 
+  final _scrollController = ScrollController(initialScrollOffset: 0);
+
+  @override
+  void initState() {
+    _scrollController.addListener(_onScroll);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _onScroll() {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      context.read<InboxBloc>().add(const GetInboxEvent());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -66,7 +87,7 @@ class _InboxPageState extends State<InboxPage> {
               semanticLabel: 'Refresh',
             ),
             onPressed: () {
-              context.read<InboxBloc>().add(const GetInboxEvent());
+              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
             },
           ),
           FilterChip(
@@ -76,7 +97,7 @@ class _InboxPageState extends State<InboxPage> {
             selected: showAll,
             onSelected: (bool selected) {
               setState(() => showAll = !showAll);
-              context.read<InboxBloc>().add(GetInboxEvent(showAll: selected));
+              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: selected));
             },
           ),
           const SizedBox(width: 16.0),
@@ -93,6 +114,7 @@ class _InboxPageState extends State<InboxPage> {
                     label: Text(inboxCategory.title),
                     selected: _inboxType == inboxCategory.type,
                     onSelected: (bool selected) {
+                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
                       setState(() {
                         _inboxType = selected ? inboxCategory.type : null;
                       });
@@ -104,52 +126,61 @@ class _InboxPageState extends State<InboxPage> {
           ),
         ),
       ),
-      body: RefreshIndicator(
-        onRefresh: () async { context.read<InboxBloc>().add(const GetInboxEvent()); },
+      body: BlocProvider(
+        create: (context) => PostBloc(),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
+          },
           child: SingleChildScrollView(
+            controller: _scrollController,
             physics: const AlwaysScrollableScrollPhysics(),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                SizedBox(
-                child: BlocBuilder<InboxBloc, InboxState>(builder: (context, InboxState state) {
-                  if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                    return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
-                  }
+                BlocBuilder<InboxBloc, InboxState>(
+                  builder: (context, InboxState state) {
+                    if (context.read<AuthBloc>().state.isLoggedIn == false) {
+                      return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
+                    }
 
-                  switch (state.status) {
-                    case InboxStatus.initial:
-                    case InboxStatus.loading:
-                    case InboxStatus.refreshing:
-                      return const Align(
-                        alignment: Alignment.center,
-                        child: SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator(),
-                        ),
-                      );
-                    case InboxStatus.success:
-                      if (_inboxType == InboxType.mentions) return const InboxMentionsView();
-                      if (_inboxType == InboxType.messages) return const InboxPrivateMessagesView();
-                      if (_inboxType == InboxType.replies) return const InboxRepliesView();
-                      return Container();
-                    case InboxStatus.empty:
-                      return const Center(child: Text('Empty Inbox'));
-                    case InboxStatus.failure:
-                      return ErrorMessage(
-                        message: state.errorMessage,
-                        actionText: 'Refresh Content',
-                        action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
-                      );
-                  }
-                }
-                )
-                )
+                    switch (state.status) {
+                      case InboxStatus.initial:
+                        context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
+                      case InboxStatus.loading:
+                        return const Padding(
+                          padding: EdgeInsets.all(24.0),
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: 40,
+                              height: 40,
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        );
+                      case InboxStatus.refreshing:
+                      case InboxStatus.success:
+                        if (_inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
+                        if (_inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
+                        if (_inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies);
+                      case InboxStatus.empty:
+                        return const Center(child: Text('Empty Inbox'));
+                      case InboxStatus.failure:
+                        return ErrorMessage(
+                          message: state.errorMessage,
+                          actionText: 'Refresh Content',
+                          action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
+                        );
+                    }
+
+                    return Container();
+                  },
+                ),
               ],
             ),
           ),
+        ),
       ),
     );
   }

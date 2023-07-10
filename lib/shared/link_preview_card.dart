@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -23,8 +25,14 @@ class LinkPreviewCard extends StatelessWidget {
     this.mediaWidth,
     this.showLinkPreviews = true,
     this.showFullHeightImages = false,
+    this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
+    this.postId,
+    required this.isUserLoggedIn,
+    required this.markPostReadOnMediaView,
   });
+
+  final int? postId;
 
   final String? originURL;
   final String? mediaURL;
@@ -34,6 +42,12 @@ class LinkPreviewCard extends StatelessWidget {
 
   final bool showLinkPreviews;
   final bool showFullHeightImages;
+
+
+  final bool edgeToEdgeImages;
+
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
 
   final ViewMode viewMode;
 
@@ -66,28 +80,45 @@ class LinkPreviewCard extends StatelessWidget {
         ),
       );
     } else {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: InkWell(
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              fit: StackFit.passthrough,
-              children: [linkInformation(context)],
-            ),
+      var inkWell = InkWell(
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            fit: StackFit.passthrough,
+            children: [linkInformation(context)],
           ),
-          onTap: () => triggerOnTap(context),
         ),
+        onTap: () => triggerOnTap(context),
       );
+      if (edgeToEdgeImages) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
+          child: inkWell,
+        );
+      } else {
+          return Padding(
+            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+            child: inkWell,
+        );
+      }
     }
   }
 
   void triggerOnTap(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
-
     final openInExternalBrowser = state.openInExternalBrowser;
+
+    if (isUserLoggedIn && markPostReadOnMediaView) {
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      } catch(e){
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
+      }
+    }
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation

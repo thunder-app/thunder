@@ -19,6 +19,8 @@ import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+import '../../user/bloc/user_bloc.dart';
+
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool showInstanceName;
@@ -64,6 +66,8 @@ class _PostCardState extends State<PostCard> {
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   }
 
+  final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
@@ -72,7 +76,13 @@ class _PostCardState extends State<PostCard> {
     VoteType? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
 
-    return Listener(
+    return GestureDetector(
+      onHorizontalDragEnd: (details) {
+        if (details.primaryVelocity! > 0) {
+          _feedScaffoldKey.currentState?.openDrawer();
+        }
+      },
+    child: Listener(
       behavior: HitTestBehavior.opaque,
       onPointerDown: (event) => {},
       onPointerUp: (event) => {
@@ -159,12 +169,15 @@ class _PostCardState extends State<PostCard> {
                       postViewMedia: widget.postViewMedia,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
+                      markPostReadOnMediaView: state.markPostReadOnMediaView,
                       showInstanceName: widget.showInstanceName,
+                      isUserLoggedIn: isUserLoggedIn,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
+                      markPostReadOnMediaView: state.markPostReadOnMediaView,
                       showInstanceName: widget.showInstanceName,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,
@@ -184,7 +197,16 @@ class _PostCardState extends State<PostCard> {
                 CommunityBloc communityBloc = context.read<CommunityBloc>();
 
                 // Mark post as read when tapped
-                if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postViewMedia.postView.post.id, read: true));
+                if (isUserLoggedIn) {
+                  int postId = widget.postViewMedia.postView.post.id;
+                  try {
+                    UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+                    userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+                  } catch(e){
+                    CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+                    communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+                  }
+                }
 
                 await Navigator.of(context).push(
                   MaterialPageRoute(
@@ -211,6 +233,7 @@ class _PostCardState extends State<PostCard> {
           ],
         ),
       ),
+    ),
     );
   }
 }

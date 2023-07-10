@@ -8,6 +8,7 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 void triggerCommentAction({
   required BuildContext context,
@@ -28,6 +29,7 @@ void triggerCommentAction({
     case SwipeAction.reply:
     case SwipeAction.edit:
       PostBloc postBloc = context.read<PostBloc>();
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
       showModalBottomSheet(
         isScrollControlled: true,
@@ -38,8 +40,11 @@ void triggerCommentAction({
             padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
             child: FractionallySizedBox(
               heightFactor: 0.8,
-              child: BlocProvider<PostBloc>.value(
-                value: postBloc,
+              child: MultiBlocProvider(
+                providers: [
+                  BlocProvider<PostBloc>.value(value: postBloc),
+                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                ],
                 child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit),
               ),
             ),

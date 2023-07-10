@@ -46,6 +46,7 @@ class PostCardList extends StatefulWidget {
 
 class _PostCardListState extends State<PostCardList> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
+  bool _showReturnToTopButton = false;
 
   @override
   void initState() {
@@ -63,6 +64,9 @@ class _PostCardListState extends State<PostCardList> {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
     }
+    setState(() {
+      _showReturnToTopButton = _scrollController.offset > 300; // Adjust the threshold as needed
+    });
   }
 
   @override
@@ -86,7 +90,7 @@ class _PostCardListState extends State<PostCardList> {
         onRefresh: () async {
           HapticFeedback.mediumImpact();
           if (widget.personId != null) {
-            context.read<UserBloc>().add(const GetUserEvent(reset: true));
+            context.read<UserBloc>().add(GetUserEvent(userId: widget.personId, reset: true));
           } else {
             context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                   reset: true,
@@ -95,55 +99,77 @@ class _PostCardListState extends State<PostCardList> {
                 ));
           }
         },
-        child: MasonryGridView.builder(
-          gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
-          crossAxisSpacing: 40,
-          mainAxisSpacing: 0,
-          cacheExtent: 500,
-          controller: _scrollController,
-          itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
-          itemBuilder: (context, index) {
-            if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
-              return CommunityHeader(communityInfo: widget.communityInfo);
-            }
-            if (index == widget.postViews!.length) {
-              if (widget.hasReachedEnd == true) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Container(
-                      color: theme.dividerColor.withOpacity(0.1),
-                      padding: const EdgeInsets.symmetric(vertical: 32.0),
-                      child: Text(
-                        'Hmmm. It seems like you\'ve reached the bottom.',
-                        textAlign: TextAlign.center,
-                        style: theme.textTheme.titleSmall,
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                return Column(
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                      child: const CircularProgressIndicator(),
-                    ),
-                  ],
-                );
-              }
-            } else {
-              PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
-              return PostCard(
-                postViewMedia: postViewMedia,
-                showInstanceName: widget.communityId == null,
-                onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
-                onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
-              );
-            }
-          },
+        child: Stack(
+          children: [
+            MasonryGridView.builder(
+              gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
+              crossAxisSpacing: 40,
+              mainAxisSpacing: 0,
+              cacheExtent: 500,
+              controller: _scrollController,
+              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
+              itemBuilder: (context, index) {
+                if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
+                  return CommunityHeader(communityInfo: widget.communityInfo);
+                }
+                if (index == widget.postViews!.length) {
+                  if (widget.hasReachedEnd == true) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          color: theme.dividerColor.withOpacity(0.1),
+                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          child: Text(
+                            'Hmmm. It seems like you\'ve reached the bottom.',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        ),
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: const CircularProgressIndicator(),
+                        ),
+                      ],
+                    );
+                  }
+                } else {
+                  PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
+                  return PostCard(
+                    postViewMedia: postViewMedia,
+                    showInstanceName: widget.communityId == null,
+                    onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                    onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                  );
+                }
+              },
+
+            ),
+            if (_showReturnToTopButton)
+            Positioned(
+              bottom: 16,
+              left: 20,
+              child: FloatingActionButton(
+                onPressed: () {
+                  _scrollController.animateTo(
+                    0,
+                    duration: Duration(milliseconds: 500),
+                    curve: Curves.easeInOut,
+                  );
+                },
+                child: Icon(Icons.arrow_upward),
+              ),
+            ),
+          ],
         ),
-      ),
-    );
+
+        ),
+
+            );
   }
 }

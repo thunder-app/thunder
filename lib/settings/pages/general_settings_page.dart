@@ -42,6 +42,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool hideNsfwPreviews = true;
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
+  bool markPostReadOnMediaView = false;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -137,6 +138,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       case 'setting_post_tablet_mode':
         await prefs.setBool('setting_post_tablet_mode', value);
         setState(() => tabletMode = value);
+      case 'setting_general_mark_post_read_on_media_view':
+        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
+        setState(() => markPostReadOnMediaView = value);
         break;
 
       // Link Settings
@@ -207,6 +211,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
       tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -384,6 +389,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           iconDisabled: Icons.view_agenda,
                           onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
+                        ToggleOption(
+                          description: 'Mark read after viewing media',
+                          value: markPostReadOnMediaView,
+                          iconEnabled: Icons.visibility,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
+                        ),
                         ListOption(
                           description: 'Default Comment Sort Type',
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
@@ -396,7 +408,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                               setPreferences('setting_post_default_comment_sort_type', value.payload.name);
                             },
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
