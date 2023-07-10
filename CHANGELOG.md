@@ -5,9 +5,14 @@
 - Added scroll to top buttons on various pages - contribution from @bactaholic
 - Added double swipe to exit - contribution from @bactaholic
 - Added ability to set post as read when opening media - contribution from @ajsosa
+- Added initial support for 2 column viewing for tablet modes - contribution from @Fmstrat
+
+### Changed
+- Adjusted subscription styling to be more consistent - contribution from @micahmo
 
 ### Fixed
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
+- Fixed issue with webp previews not showing - contribution from @Fmstrat
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
