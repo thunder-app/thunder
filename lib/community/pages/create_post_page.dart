@@ -72,7 +72,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: () => setState(() => isNSFW = !isNSFW),
               icon: isNSFW
                   ? const Icon(Icons.eighteen_up_rating, semanticLabel: "Not Safe For Work",)
-                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Not Safe For Work")),
+                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Safe For Work")),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
