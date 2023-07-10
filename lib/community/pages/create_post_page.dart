@@ -51,17 +51,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     _bodyTextController.addListener(() {
-      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled)
-        setState(() => isClearButtonDisabled = true);
-      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled)
-        setState(() => isClearButtonDisabled = false);
+      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
+      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
     });
 
     _titleTextController.addListener(() {
-      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled)
-        setState(() => isSubmitButtonDisabled = true);
-      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled)
-        setState(() => isSubmitButtonDisabled = false);
+      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
+      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
     });
   }
 
@@ -75,8 +71,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
           IconButton(
               onPressed: () => setState(() => isNSFW = !isNSFW),
               icon: isNSFW
-                  ? const Icon(Icons.eighteen_up_rating)
-                  : const Icon(Icons.eighteen_up_rating_outlined)),
+                  ? const Icon(Icons.eighteen_up_rating, semanticLabel: "Not Safe For Work",)
+                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Not Safe For Work")),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
