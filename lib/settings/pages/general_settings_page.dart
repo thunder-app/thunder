@@ -224,17 +224,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     super.dispose();
   }
 
-  void toggleView( bool value ) {
-    compactEnabled = value;
-    setPreferences('setting_general_use_compact_view', value);
-  }
-
-
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     super.initState();
-    compactEnabled = useCompactView;
   }
 
   @override
@@ -284,7 +277,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ToggleOption(
-                          description: 'Use display names for users',
+                          description: 'Use User Display Names',
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
@@ -342,7 +335,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: useCompactView,
                           iconEnabled: Icons.crop_16_9_rounded,
                           iconDisabled: Icons.crop_din_rounded,
-                          onToggle: (bool value) => toggleView(value),
+                          onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 250),
@@ -354,10 +347,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               child: SlideTransition(position: _offsetAnimation, child: child),
                             );
                           },
-                          child: compactEnabled
+                          child: useCompactView
                               ? Padding(
                                 padding: const EdgeInsets.only(left: 16.0),
-                                key: ValueKey(compactEnabled),
+                                key: ValueKey(useCompactView),
                                 child: Column(
                                   children: [
                                     ToggleOption(
@@ -371,7 +364,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 ),
                               ) : Padding(
                                 padding: const EdgeInsets.only(left: 16.0),
-                                key: ValueKey(compactEnabled),
+                                key: ValueKey(useCompactView),
                                 child: Column(
                                   children: [
                                     ToggleOption(
