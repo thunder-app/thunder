@@ -20,7 +20,7 @@ class GeneralSettingsPage extends StatefulWidget {
   State<GeneralSettingsPage> createState() => _GeneralSettingsPageState();
 }
 
-class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
+class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
   // Feed Settings
   bool useCompactView = false;
   bool showTitleFirst = false;
@@ -56,6 +56,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
 
   // Loading
   bool isLoading = true;
+
+  bool compactEnabled = true;
 
   void setPreferences(attribute, value) async {
     final prefs = UserPreferences.instance.sharedPreferences;
@@ -205,15 +207,43 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
     });
   }
 
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 100),
+    vsync: this,
+  );
+
+  // Animation for comment collapse
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void toggleView( bool value ) {
+    compactEnabled = value;
+    setPreferences('setting_general_use_compact_view', value);
+  }
+
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     super.initState();
+    compactEnabled = useCompactView;
   }
 
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     return Scaffold(
       appBar: AppBar(title: const Text('General'), centerTitle: false),
@@ -236,11 +266,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           ),
                         ),
                         ToggleOption(
-                          description: 'Compact view',
-                          value: useCompactView,
-                          iconEnabled: Icons.density_small_rounded,
-                          iconDisabled: Icons.density_small_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
+                          description: '2-column Tablet Mode',
+                          value: tabletMode,
+                          iconEnabled: Icons.tablet_rounded,
+                          iconDisabled: Icons.smartphone_rounded,
+                          onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
+                        ),
+                        ToggleOption(
+                          description: 'Hide NSFW previews',
+                          value: hideNsfwPreviews,
+                          iconEnabled: Icons.no_adult_content,
+                          iconDisabled: Icons.no_adult_content,
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                        ),
+                        ToggleOption(
+                          description: 'Mark read after viewing media',
+                          value: markPostReadOnMediaView,
+                          iconEnabled: Icons.visibility,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ListOption(
                           description: 'Default Feed Type',
@@ -257,7 +301,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           description: 'Default Sort Type',
                           value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
                           options: allSortTypeItems,
-                          icon: Icons.sort,
+                          icon: Icons.sort_rounded,
                           onChanged: (_) {},
                           customListPicker: SortPicker(
                             title: 'Default Sort Type',
@@ -282,21 +326,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        ToggleOption(
-                          description: 'Hide parent comment on collapse',
-                          value: collapseParentCommentOnGesture,
-                          iconEnabled: Icons.mode_comment_rounded,
-                          iconDisabled: Icons.mode_comment_rounded,
-                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
+                        Text('These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
+                          style: TextStyle(
+                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                          ),
                         ),
-                        ToggleOption(
-                          description: 'Show thumbnail on right',
-                          subtitle: 'Applies to compact view only',
-                          value: showThumbnailPreviewOnRight,
-                          iconEnabled: Icons.photo_size_select_large_rounded,
-                          iconDisabled: Icons.photo_size_select_large_rounded,
-                          onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
-                        ),
+                        const SizedBox(height: 8,),
                         ToggleOption(
                           description: 'Disable swipe actions',
                           subtitle: 'Disable all swipe actions on posts',
@@ -306,79 +341,117 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                           onToggle: (bool value) => setPreferences('setting_post_disable_swipe_actions', value),
                         ),
                         ToggleOption(
-                          description: 'Show voting on posts',
-                          subtitle: 'Applies to normal view only',
-                          value: showVoteActions,
-                          iconEnabled: Icons.import_export_rounded,
-                          iconDisabled: Icons.import_export_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
+                          description: 'Compact list view',
+                          subtitle: 'Enable for small posts, disable for big.',
+                          value: useCompactView,
+                          iconEnabled: Icons.crop_16_9_rounded,
+                          iconDisabled: Icons.crop_din_rounded,
+                          onToggle: (bool value) => toggleView(value),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(position: _offsetAnimation, child: child),
+                            );
+                          },
+                          child: compactEnabled
+                              ? Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                key: ValueKey(compactEnabled),
+                                child: Column(
+                                  children: [
+                                    ToggleOption(
+                                      description: 'Thumbnails on the right',
+                                      value: showThumbnailPreviewOnRight,
+                                      iconEnabled: Icons.photo_size_select_large_rounded,
+                                      iconDisabled: Icons.photo_size_select_large_rounded,
+                                      onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
+                                    ),
+                                  ],
+                                ),
+                              ) : Padding(
+                                padding: const EdgeInsets.only(left: 16.0),
+                                key: ValueKey(compactEnabled),
+                                child: Column(
+                                  children: [
+                                    ToggleOption(
+                                      description: 'Show title first',
+                                      value: showTitleFirst,
+                                      iconEnabled: Icons.subtitles,
+                                      iconDisabled: Icons.subtitles_off,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
+                                    ),
+                                    ToggleOption(
+                                      description: 'View full height images',
+                                      value: showFullHeightImages,
+                                      iconEnabled: Icons.view_compact_rounded,
+                                      iconDisabled: Icons.view_compact_rounded,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
+                                    ),
+                                    ToggleOption(
+                                      description: 'Edge-to-edge images',
+                                      value: showEdgeToEdgeImages,
+                                      iconEnabled: Icons.panorama_wide_angle_select,
+                                      iconDisabled: Icons.panorama_wide_angle_outlined,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
+                                    ),
+                                    ToggleOption(
+                                      description: 'Show text content',
+                                      value: showTextContent,
+                                      iconEnabled: Icons.notes_rounded,
+                                      iconDisabled: Icons.notes_rounded,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
+                                    ),
+                                    ToggleOption(
+                                      description: 'Show vote buttons',
+                                      value: showVoteActions,
+                                      iconEnabled: Icons.import_export_rounded,
+                                      iconDisabled: Icons.import_export_rounded,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
+                                    ),
+                                    ToggleOption(
+                                      description: 'Show save button',
+                                      value: showSaveAction,
+                                      iconEnabled: Icons.star_rounded,
+                                      iconDisabled: Icons.star_rounded,
+                                      onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Comments',
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                         ToggleOption(
-                          description: 'Show save action on post',
-                          subtitle: 'Applies to normal view only',
-                          value: showSaveAction,
-                          iconEnabled: Icons.star_rounded,
-                          iconDisabled: Icons.star_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
-                        ),
-                        ToggleOption(
-                          description: 'View full height images',
-                          subtitle: 'Applies to normal view only',
-                          value: showFullHeightImages,
-                          iconEnabled: Icons.view_compact_rounded,
-                          iconDisabled: Icons.view_compact_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
-                        ),
-                        ToggleOption(
-                          description: 'Edge-to-edge images',
-                          subtitle: 'Applies to normal view only',
-                          value: showEdgeToEdgeImages,
-                          iconEnabled: Icons.panorama_wide_angle_select,
-                          iconDisabled: Icons.panorama_wide_angle_outlined,
-                          onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
-                        ),
-                        ToggleOption(
-                          description: 'Show text content',
-                          subtitle: 'Applies to normal view only',
-                          value: showTextContent,
-                          iconEnabled: Icons.notes_rounded,
-                          iconDisabled: Icons.notes_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
-                        ),
-                        ToggleOption(
-                          description: 'Show title first',
-                          subtitle: 'Applies to normal view only',
-                          value: showTitleFirst,
-                          iconEnabled: Icons.subtitles,
-                          iconDisabled: Icons.subtitles_off,
-                          onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
-                        ),
-                        ToggleOption(
-                          description: 'Hide NSFW previews',
-                          value: hideNsfwPreviews,
-                          iconEnabled: Icons.no_adult_content,
-                          iconDisabled: Icons.no_adult_content,
-                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
-                        ),
-                        ToggleOption(
-                          description: '2-column Tablet Mode',
-                          value: tabletMode,
-                          iconEnabled: Icons.view_comfortable_rounded,
-                          iconDisabled: Icons.view_agenda,
-                          onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
-                        ),
-                        ToggleOption(
-                          description: 'Mark read after viewing media',
-                          value: markPostReadOnMediaView,
-                          iconEnabled: Icons.visibility,
-                          iconDisabled: Icons.visibility,
-                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
+                          description: 'Hide parent comment on collapse',
+                          value: collapseParentCommentOnGesture,
+                          iconEnabled: Icons.mode_comment_outlined,
+                          iconDisabled: Icons.comment_outlined,
+                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                           options: commentSortTypeItems,
-                          icon: Icons.sort,
+                          icon: Icons.comment_bank_rounded ,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
                             title: 'Comment Sort Type',
@@ -386,7 +459,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
                               setPreferences('setting_post_default_comment_sort_type', value.payload.name);
                             },
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ),
