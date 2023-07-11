@@ -127,8 +127,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
               }).toList(),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+              padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
               child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
+              child: context.read<AuthBloc>().state.account != null
+                ? Text(context.read<AuthBloc>().state.account!.username ?? "-", style: Theme.of(context).textTheme.bodyMedium)
+                : Container(),
             ),
             (status != AccountStatus.success && status != AccountStatus.failure)
                 ? const Padding(
