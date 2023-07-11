@@ -62,28 +62,32 @@ class _SearchPageState extends State<SearchPage> {
           appBar: AppBar(
             toolbarHeight: 90.0,
             scrolledUnderElevation: 0.0,
-            title: SearchBar(
-              controller: _controller,
-              leading: const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Icon(Icons.search_rounded),
-              ),
-              trailing: [
-                if (_controller.text.isNotEmpty)
-                  IconButton(
-                    onPressed: () {
-                      resetTextField();
-                      context.read<SearchBloc>().add(ResetSearch());
-                    },
-                    icon: const Icon(
-                      Icons.close,
-                      semanticLabel: 'Clear Search',
+            title: TextField(
+                onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                controller: _controller,
+                decoration: InputDecoration(
+                    fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                    hintText: 'Search for communities',
+                    filled: true,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(50),
+                      borderSide: const BorderSide(
+                        width: 0,
+                        style: BorderStyle.none,
+                      ),
                     ),
-                  )
-              ],
-              hintText: 'Search for communities',
-              onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
-            ),
+                    suffixIcon: _controller.text.isNotEmpty
+                        ? IconButton(
+                        icon: const Icon(
+                          Icons.close,
+                          semanticLabel: 'Clear Search',
+                        ),
+                        onPressed: () {
+                          resetTextField();
+                          context.read<SearchBloc>().add(ResetSearch());
+                        })
+                        : null,
+                    prefixIcon: const Icon(Icons.search_rounded))),
           ),
           body: _getSearchBody(context, state),
         );
