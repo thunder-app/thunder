@@ -82,13 +82,53 @@ class CommentHeader extends StatelessWidget {
                             ),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Text(
-                                commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.white
-                                ),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.white
+                                    ),
+                                  ),
+                                  Container(
+                                    child: isOwnComment
+                                      ? Padding(
+                                        padding: const EdgeInsets.only(left: 3),
+                                        child: Icon(
+                                          Icons.person,
+                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                          color: Colors.white,
+                                        )
+                                      )
+                                      : Container(),
+                                  ),
+                                  Container(
+                                    child: commentViewTree.comment?.creator.admin == true
+                                      ? Padding(
+                                        padding: const EdgeInsets.only(left: 3),
+                                        child: Icon(
+                                          Icons.shield_rounded,
+                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : Container(),
+                                  ),
+                                  Container(
+                                    child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
+                                      ? Padding(
+                                        padding: const EdgeInsets.only(left: 3),
+                                        child: Icon(
+                                          Icons.mic,
+                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                          color: Colors.white,
+                                        ),
+                                      )
+                                      : Container(),
+                                  ),
+                                ],
                               ),
                             ),
                           )
@@ -101,48 +141,6 @@ class CommentHeader extends StatelessWidget {
                           ),
                       ),
                       const SizedBox(width: 8.0),
-                      Container(
-                        child: isOwnComment
-                          ? Row(
-                            children: [
-                              Icon(
-                                Icons.person,
-                                size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                color: theme.colorScheme.primary,
-                              ),
-                              const SizedBox(width: 8.0),
-                            ]
-                          )
-                          : Container(),
-                      ),
-                      Container(
-                        child: commentViewTree.comment?.creator.admin == true
-                          ? Row(
-                            children: [
-                              Icon(
-                                Icons.shield_rounded,
-                                size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                color: theme.colorScheme.tertiary,
-                              ),
-                              const SizedBox(width: 8.0),
-                            ]
-                          )
-                          : Container(),
-                      ),
-                      Container(
-                        child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
-                          ? Row(
-                            children: [
-                              Icon(
-                                Icons.mic,
-                                size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                color: theme.colorScheme.secondary,
-                              ),
-                              const SizedBox(width: 8.0),
-                            ]
-                          )
-                          : Container(),
-                      ),
                     ],
                   ),
                 ),
