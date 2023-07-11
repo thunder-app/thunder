@@ -62,7 +62,11 @@ class _SearchPageState extends State<SearchPage> {
           appBar: AppBar(
             toolbarHeight: 90.0,
             scrolledUnderElevation: 0.0,
-            title: TextField(
+            title: Material(
+              color: Colors.transparent,
+              borderRadius: BorderRadius.circular(50),
+              elevation: 8,
+              child:TextField(
                 onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                 controller: _controller,
                 decoration: InputDecoration(
@@ -88,6 +92,7 @@ class _SearchPageState extends State<SearchPage> {
                         })
                         : null,
                     prefixIcon: const Icon(Icons.search_rounded))),
+            )
           ),
           body: _getSearchBody(context, state),
         );
