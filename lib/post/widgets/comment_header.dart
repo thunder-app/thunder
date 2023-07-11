@@ -6,6 +6,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -95,7 +96,7 @@ class CommentHeader extends StatelessWidget {
                                   Container(
                                     child: isOwnComment
                                       ? Padding(
-                                        padding: const EdgeInsets.only(left: 3),
+                                        padding: const EdgeInsets.only(left: 1),
                                         child: Icon(
                                           Icons.person,
                                           size: 15.0 * state.contentFontSizeScale.textScaleFactor,
@@ -104,12 +105,25 @@ class CommentHeader extends StatelessWidget {
                                       )
                                       : Container(),
                                   ),
+                                  // Container(
+                                  //   // TODO: Figure out how to determine mods
+                                  //   child: true
+                                  //     ? Padding(
+                                  //       padding: const EdgeInsets.only(left: 1),
+                                  //       child: Icon(
+                                  //         Thunder.shield_home,
+                                  //         size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                  //         color: Colors.white,
+                                  //       ),
+                                  //     )
+                                  //     : Container(),
+                                  // ),
                                   Container(
                                     child: commentViewTree.comment?.creator.admin == true
                                       ? Padding(
-                                        padding: const EdgeInsets.only(left: 3),
+                                        padding: const EdgeInsets.only(left: 1),
                                         child: Icon(
-                                          Icons.shield_rounded,
+                                          Thunder.shield_account,
                                           size: 15.0 * state.contentFontSizeScale.textScaleFactor,
                                           color: Colors.white,
                                         ),
@@ -119,9 +133,9 @@ class CommentHeader extends StatelessWidget {
                                   Container(
                                     child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
                                       ? Padding(
-                                        padding: const EdgeInsets.only(left: 3),
+                                        padding: const EdgeInsets.only(left: 1),
                                         child: Icon(
-                                          Icons.mic,
+                                          Thunder.microphone_variant,
                                           size: 15.0 * state.contentFontSizeScale.textScaleFactor,
                                           color: Colors.white,
                                         ),
