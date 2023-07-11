@@ -9,6 +9,7 @@
 - Adjustments to the login screen to include instance images, and tweaks - contribution from @micahmo
 - Added ability to copy/share comment on long press - contribution from @vbh
 - Changes to support user display names, additional profile information, and UI tweaks - contribution from @CTalvio
+- Added ability to set no action for swipe gestures on posts and comments
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo

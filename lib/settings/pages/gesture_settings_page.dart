@@ -39,6 +39,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
     ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.name, payload: SwipeAction.downvote),
     ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.name, payload: SwipeAction.save),
     ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.name, payload: SwipeAction.reply),
+    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.name, payload: SwipeAction.none),
   ];
 
   void setPreferences(attribute, value) async {

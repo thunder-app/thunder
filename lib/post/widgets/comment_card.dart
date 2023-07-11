@@ -156,7 +156,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
-              direction: isUserLoggedIn ? DismissDirection.horizontal : DismissDirection.none,
+              direction: determineSwipeDirection(isUserLoggedIn, state),
               key: ObjectKey(widget.commentViewTree.comment!.comment.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
@@ -176,7 +176,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                  updatedSwipeAction = state.leftSecondaryCommentGesture;
+                  if (state.leftSecondaryCommentGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.leftSecondaryCommentGesture;
+                  } else {
+                    updatedSwipeAction = state.leftPrimaryCommentGesture;
+                  }
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
@@ -194,7 +198,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
                   if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
                 } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                  updatedSwipeAction = state.rightSecondaryCommentGesture;
+                  if (state.rightSecondaryCommentGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.rightSecondaryCommentGesture;
+                  } else {
+                    updatedSwipeAction = state.rightPrimaryCommentGesture;
+                  }
 
                   // Change the swipe action to edit for comments
                   if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
