@@ -51,7 +51,7 @@ class _CommentSubviewState extends State<CommentSubview> {
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (widget.postViewMedia != null && index == 0) {
-          return PostSubview(postViewMedia: widget.postViewMedia!);
+          return PostSubview(useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
         } else if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
           return Column(
             children: [
