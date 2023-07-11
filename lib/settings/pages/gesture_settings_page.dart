@@ -9,6 +9,8 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
+import '../widgets/toggle_option.dart';
+
 class GestureSettingsPage extends StatefulWidget {
   const GestureSettingsPage({super.key});
 
@@ -17,6 +19,11 @@ class GestureSettingsPage extends StatefulWidget {
 }
 
 class _GestureSettingsPageState extends State<GestureSettingsPage> {
+
+  bool disableSwipeActionsOnPost = false;
+  bool bottomNavBarSwipeGestures = true;
+  bool bottomNavBarDoubleTapGestures = false;
+
   // Post Gestures
   bool enablePostGestures = true;
   SwipeAction leftPrimaryPostGesture = SwipeAction.upvote;
@@ -45,6 +52,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
     final prefs = UserPreferences.instance.sharedPreferences;
 
     switch (attribute) {
+      case 'setting_post_disable_swipe_actions':
+        await prefs.setBool('setting_post_disable_swipe_actions', value);
+        setState(() => disableSwipeActionsOnPost = value);
+        break;
+      case 'setting_general_enable_swipe_gestures':
+        await prefs.setBool('setting_general_enable_swipe_gestures', value);
+        setState(() => bottomNavBarSwipeGestures = value);
+        break;
+      case 'setting_general_enable_doubletap_gestures':
+        await prefs.setBool('setting_general_enable_doubletap_gestures', value);
+        setState(() => bottomNavBarDoubleTapGestures = value);
+        break;
+
       // Post Gestures
       case 'setting_gesture_enable_post_gestures':
         await prefs.setBool('setting_gesture_enable_post_gestures', value);
@@ -100,6 +120,12 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
 
     setState(() {
       SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
+
+      // Gestures
+      disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
+      bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+
       // Post Gestures
       enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
       leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
@@ -135,6 +161,46 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
           : SingleChildScrollView(
               child: Column(
                 children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: Text(
+                            'Gestures',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Disable Post Swipe Actions',
+                          subtitle: 'Comments will still have swipe actions',
+                          value: disableSwipeActionsOnPost,
+                          iconEnabled: Icons.swipe_rounded,
+                          iconDisabled: Icons.swipe_outlined,
+                          onToggle: (bool value) => setPreferences('setting_post_disable_swipe_actions', value),
+                        ),
+                        ToggleOption(
+                          description: 'Enable Swipe Gestures',
+                          subtitle: 'Swipe gestures on bottom nav bar',
+                          value: bottomNavBarSwipeGestures,
+                          iconEnabled: Icons.swipe_right_rounded,
+                          iconDisabled: Icons.swipe_right_outlined,
+                          onToggle: (bool value) => setPreferences('setting_general_enable_swipe_gestures', value),
+                        ),
+                        ToggleOption(
+                          description: 'Enable Double-Tap Gestures',
+                          subtitle: 'Tap gestures on bottom nav bar',
+                          value: bottomNavBarDoubleTapGestures,
+                          iconEnabled: Icons.touch_app_rounded,
+                          iconDisabled: Icons.touch_app_outlined,
+                          onToggle: (bool value) => setPreferences('setting_general_enable_doubletap_gestures', value),
+                        ),
+                      ],
+                    ),
+                  ),
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(

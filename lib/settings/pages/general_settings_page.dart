@@ -30,7 +30,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
-  bool disableSwipeActionsOnPost = false;
   bool showThumbnailPreviewOnRight = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
@@ -40,8 +39,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool tabletMode = false;
   bool showTextContent = false;
   bool hideNsfwPreviews = true;
-  bool bottomNavBarSwipeGestures = true;
-  bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
 
   // Link Settings
@@ -64,14 +61,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
     switch (attribute) {
       // Feed Settings
-      case 'setting_general_use_compact_view':
-        await prefs.setBool('setting_general_use_compact_view', value);
-        setState(() => useCompactView = value);
-        break;
-      case 'setting_general_show_title_first':
-        await prefs.setBool('setting_general_show_title_first', value);
-        setState(() => showTitleFirst = value);
-        break;
       case 'setting_general_default_listing_type':
         await prefs.setString('setting_general_default_listing_type', value);
         setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
@@ -80,15 +69,26 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString('setting_general_default_sort_type', value);
         setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
         break;
+      case 'setting_post_tablet_mode':
+        await prefs.setBool('setting_post_tablet_mode', value);
+        setState(() => tabletMode = value);
+      case 'setting_general_mark_post_read_on_media_view':
+        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
+        setState(() => markPostReadOnMediaView = value);
+        break;
+      case 'setting_general_hide_nsfw_previews':
+        await prefs.setBool('setting_general_hide_nsfw_previews', value);
+        setState(() => hideNsfwPreviews = value);
+        break;
 
       // Post Settings
-      case 'setting_comments_collapse_parent_comment_on_gesture':
-        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
-        setState(() => collapseParentCommentOnGesture = value);
+      case 'setting_general_use_compact_view':
+        await prefs.setBool('setting_general_use_compact_view', value);
+        setState(() => useCompactView = value);
         break;
-      case 'setting_post_disable_swipe_actions':
-        await prefs.setBool('setting_post_disable_swipe_actions', value);
-        setState(() => disableSwipeActionsOnPost = value);
+      case 'setting_general_show_title_first':
+        await prefs.setBool('setting_general_show_title_first', value);
+        setState(() => showTitleFirst = value);
         break;
       case 'setting_compact_show_thumbnail_on_right':
         await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
@@ -114,32 +114,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_general_show_text_content', value);
         setState(() => showTextContent = value);
         break;
-      case 'setting_general_hide_nsfw_previews':
-        await prefs.setBool('setting_general_hide_nsfw_previews', value);
-        setState(() => hideNsfwPreviews = value);
-        break;
-      case 'setting_general_enable_swipe_gestures':
-        await prefs.setBool('setting_general_enable_swipe_gestures', value);
-        setState(() => bottomNavBarSwipeGestures = value);
-        break;
-      case 'setting_general_enable_doubletap_gestures':
-        await prefs.setBool('setting_general_enable_doubletap_gestures', value);
-        setState(() => bottomNavBarDoubleTapGestures = value);
-        break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+
+      // Comments
+      case 'setting_comments_collapse_parent_comment_on_gesture':
+        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
+        setState(() => collapseParentCommentOnGesture = value);
+        break;
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
-        break;
-      case 'setting_post_tablet_mode':
-        await prefs.setBool('setting_post_tablet_mode', value);
-        setState(() => tabletMode = value);
-      case 'setting_general_mark_post_read_on_media_view':
-        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
-        setState(() => markPostReadOnMediaView = value);
         break;
 
       // Link Settings
@@ -169,8 +156,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
     setState(() {
       // Feed Settings
-      useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
+      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
+      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -181,20 +169,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       }
 
       // Post Settings
-      collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
+      useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
+      showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
-      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
-      bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+
+      // Comments
+      collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
-      markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -273,17 +259,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
                         ToggleOption(
-                          description: 'Hide NSFW previews',
+                          description: 'Hide NSFW Previews',
                           value: hideNsfwPreviews,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
                         ToggleOption(
-                          description: 'Mark read after viewing media',
+                          description: 'Mark Read After Viewing Media',
                           value: markPostReadOnMediaView,
                           iconEnabled: Icons.visibility,
-                          iconDisabled: Icons.visibility,
+                          iconDisabled: Icons.remove_red_eye_outlined,
                           onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ListOption(
@@ -294,7 +280,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
                             ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
                           ],
-                          icon: Icons.feed,
+                          icon: Icons.filter_alt_rounded,
                           onChanged: (value) => setPreferences('setting_general_default_listing_type', value.payload.name),
                         ),
                         ListOption(
@@ -333,15 +319,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         const SizedBox(height: 8,),
                         ToggleOption(
-                          description: 'Disable swipe actions',
-                          subtitle: 'Disable all swipe actions on posts',
-                          value: disableSwipeActionsOnPost,
-                          iconEnabled: Icons.swipe_rounded,
-                          iconDisabled: Icons.swipe_rounded,
-                          onToggle: (bool value) => setPreferences('setting_post_disable_swipe_actions', value),
-                        ),
-                        ToggleOption(
-                          description: 'Compact list view',
+                          description: 'Compact List View',
                           subtitle: 'Enable for small posts, disable for big.',
                           value: useCompactView,
                           iconEnabled: Icons.crop_16_9_rounded,
@@ -365,10 +343,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 child: Column(
                                   children: [
                                     ToggleOption(
-                                      description: 'Thumbnails on the right',
+                                      description: 'Thumbnails on the Right',
                                       value: showThumbnailPreviewOnRight,
-                                      iconEnabled: Icons.photo_size_select_large_rounded,
-                                      iconDisabled: Icons.photo_size_select_large_rounded,
+                                      iconEnabled: Icons.switch_left_rounded,
+                                      iconDisabled: Icons.switch_right_rounded,
                                       onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                                     ),
                                   ],
@@ -379,45 +357,45 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                 child: Column(
                                   children: [
                                     ToggleOption(
-                                      description: 'Show title first',
+                                      description: 'Show Title First',
                                       value: showTitleFirst,
-                                      iconEnabled: Icons.subtitles,
-                                      iconDisabled: Icons.subtitles_off,
+                                      iconEnabled: Icons.vertical_align_top_rounded,
+                                      iconDisabled: Icons.vertical_align_bottom_rounded ,
                                       onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
                                     ),
                                     ToggleOption(
-                                      description: 'View full height images',
+                                      description: 'View Full Height Images',
                                       value: showFullHeightImages,
-                                      iconEnabled: Icons.view_compact_rounded,
-                                      iconDisabled: Icons.view_compact_rounded,
+                                      iconEnabled: Icons.image_rounded,
+                                      iconDisabled: Icons.image_outlined,
                                       onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
                                     ),
                                     ToggleOption(
-                                      description: 'Edge-to-edge images',
+                                      description: 'Edge-to-Edge Images',
                                       value: showEdgeToEdgeImages,
-                                      iconEnabled: Icons.panorama_wide_angle_select,
-                                      iconDisabled: Icons.panorama_wide_angle_outlined,
+                                      iconEnabled: Icons.fit_screen_rounded,
+                                      iconDisabled: Icons.fit_screen_outlined,
                                       onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
                                     ),
                                     ToggleOption(
-                                      description: 'Show text content',
+                                      description: 'Show Text Content',
                                       value: showTextContent,
                                       iconEnabled: Icons.notes_rounded,
                                       iconDisabled: Icons.notes_rounded,
                                       onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
                                     ),
                                     ToggleOption(
-                                      description: 'Show vote buttons',
+                                      description: 'Show Vote Buttons',
                                       value: showVoteActions,
                                       iconEnabled: Icons.import_export_rounded,
                                       iconDisabled: Icons.import_export_rounded,
                                       onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
                                     ),
                                     ToggleOption(
-                                      description: 'Show save button',
+                                      description: 'Show Save Button',
                                       value: showSaveAction,
                                       iconEnabled: Icons.star_rounded,
-                                      iconDisabled: Icons.star_rounded,
+                                      iconDisabled: Icons.star_border_rounded,
                                       onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
                                     ),
                                   ],
@@ -441,7 +419,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: 'Hide parent comment on collapse',
+                          description: 'Hide Parent Comment on Collapse',
                           value: collapseParentCommentOnGesture,
                           iconEnabled: Icons.mode_comment_outlined,
                           iconDisabled: Icons.comment_outlined,
@@ -477,51 +455,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: 'Show link previews',
+                          description: 'Show Link Previews',
                           subtitle: 'Applies to normal view only',
                           value: showLinkPreviews,
-                          iconEnabled: Icons.photo_size_select_actual_rounded,
-                          iconDisabled: Icons.photo_size_select_actual_rounded,
+                          iconEnabled: Icons.image_search_rounded,
+                          iconDisabled: Icons.link_off_rounded,
                           onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
                         ),
                         ToggleOption(
-                          description: 'Open links in external browser',
+                          description: 'Open Links in External Browser',
                           value: openInExternalBrowser,
-                          iconEnabled: Icons.link_rounded,
+                          iconEnabled: Icons.add_link_rounded,
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences('setting_links_open_in_external_browser', value),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Navigation',
-                            style: theme.textTheme.titleLarge,
-                          ),
-                        ),
-                        ToggleOption(
-                          description: 'Enable Swipe Gestures',
-                          subtitle: 'Swipe gestures on bottom nav bar',
-                          value: bottomNavBarSwipeGestures,
-                          iconEnabled: Icons.swipe_right_rounded,
-                          iconDisabled: Icons.swipe_right_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_enable_swipe_gestures', value),
-                        ),
-                        ToggleOption(
-                          description: 'Enable Double-Tap Gestures',
-                          subtitle: 'Tap gestures on bottom nav bar',
-                          value: bottomNavBarDoubleTapGestures,
-                          iconEnabled: Icons.touch_app_rounded,
-                          iconDisabled: Icons.touch_app_rounded,
-                          onToggle: (bool value) => setPreferences('setting_general_enable_doubletap_gestures', value),
                         ),
                       ],
                     ),
@@ -540,7 +486,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: 'Show in-app update notification',
+                          description: 'Show in-app Update Notification',
                           value: showInAppUpdateNotification,
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
