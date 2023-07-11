@@ -39,7 +39,18 @@ class CommonMarkdownBody extends StatelessWidget {
       },
       selectable: isSelectableText,
       onTapLink: (text, url, title) {
-        String? communityName = checkLemmyInstanceUrl(text);
+        Uri? parsedUri = Uri.tryParse(text);
+
+        String parsedUrl = text;
+
+        if (parsedUri != null && parsedUri.host.isNotEmpty) {
+          parsedUrl = parsedUri.toString();
+        } else {
+          parsedUrl = url ?? '';
+        }
+
+        String? communityName = checkLemmyInstanceUrl(parsedUrl);
+
         if (communityName != null) {
           // Push navigation
           AccountBloc accountBloc = context.read<AccountBloc>();
@@ -60,9 +71,9 @@ class CommonMarkdownBody extends StatelessWidget {
           );
         } else if (url != null) {
           if (openInExternalBrowser == true) {
-            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+            launchUrl(Uri.parse(parsedUrl), mode: LaunchMode.externalApplication);
           } else {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: parsedUrl)));
           }
         }
       },
