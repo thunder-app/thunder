@@ -58,28 +58,31 @@ class UserHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          userInfo?.person.name ?? '-',
+                          userInfo?.person.displayName != null ? userInfo?.person.displayName ?? '-' : userInfo?.person.name ?? '-',
                           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                           softWrap: false,
                           maxLines: 1,
                           overflow: TextOverflow.fade,
                         ),
                         Text(
-                          fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-',
-                          style: theme.textTheme.titleSmall,
+                          '${userInfo?.person.name ?? '-'}@${fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-'}',
                         ),
                         const SizedBox(height: 8.0),
                         Row(
                           children: [
-                            // IconText(
-                            //   icon: const Icon(Icons.people_rounded),
-                            //   text: formatNumberToK(userInfo?.communityView.counts.subscribers ?? 0),
-                            // ),
-                            // const SizedBox(width: 8.0),
-                            // IconText(
-                            //   icon: const Icon(Icons.sensors_rounded),
-                            //   text: (userInfo?.online != null) ? '${userInfo?.online}' : '-',
-                            // ),
+                             IconText(
+                               icon: const Icon(Icons.wysiwyg_rounded,
+                                 size: 18.0,
+                               ),
+                               text: formatNumberToK(userInfo?.counts.postCount ?? 0),
+                             ),
+                             const SizedBox(width: 8.0),
+                             IconText(
+                               icon: const Icon(Icons.chat_rounded,
+                                 size:  18.0,
+                               ),
+                               text: formatNumberToK(userInfo?.counts.commentCount ?? 0),
+                             ),
                           ],
                         ),
                       ],

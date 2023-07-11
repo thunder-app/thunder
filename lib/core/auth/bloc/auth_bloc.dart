@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
@@ -137,11 +136,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           // Restore the original baseUrl
           lemmyClient.changeBaseUrl(originalBaseUrl);
         } catch (e, s) {
-          await Sentry.captureException(e, stackTrace: s);
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
         }
 
-        await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });

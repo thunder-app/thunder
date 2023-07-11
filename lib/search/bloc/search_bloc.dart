@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -61,8 +61,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -98,12 +96,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -141,10 +136,30 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       SearchResults updatedResults = state.results!.copyWith(communities: communities);
 
+      emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
+
+      // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
+      await Future.delayed(const Duration(seconds: 1));
+
+      fullCommunityView = await lemmy.run(GetCommunity(
+        auth: account.jwt,
+        id: event.communityId,
+      ));
+
+      communities = state.results?.communities ?? [];
+
+      communities = state.results?.communities.map((CommunityView communityView) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
+              return fullCommunityView.communityView;
+            }
+            return communityView;
+          }).toList() ??
+          [];
+
+      updatedResults = state.results!.copyWith(communities: communities);
+
       return emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }

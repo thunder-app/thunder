@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -48,6 +48,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     );
     on<GetUserSavedEvent>(
       _getUserSavedEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<MarkUserPostAsReadEvent>(
+      _markPostAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
   }
@@ -146,11 +150,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -248,11 +250,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -283,8 +283,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markPostAsReadEvent(MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      PostView postView = await markPostAsRead(event.postId, event.read);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
+    } catch (e, s) {
+      return emit(state.copyWith(
+        status: UserStatus.failure,
+        errorMessage: e.toString(),
+        userId: state.userId,
+      ));
     }
   }
 
@@ -300,7 +319,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -335,7 +353,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -359,7 +376,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }

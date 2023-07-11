@@ -18,13 +18,13 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/numbers.dart';
-
 import '../../utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
+  final bool useDisplayNames;
 
-  const PostSubview({super.key, required this.postViewMedia});
+  const PostSubview({super.key, required this.useDisplayNames, required this.postViewMedia});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +34,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
+    final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -57,6 +57,8 @@ class PostSubview extends StatelessWidget {
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
+            markPostReadOnMediaView: markPostReadOnMediaView,
+            isUserLoggedIn: isUserLoggedIn,
           ),
           if (postViewMedia.postView.post.body != null)
             Padding(
@@ -90,7 +92,7 @@ class PostSubview extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    postView.creator.name,
+                    postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                     textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
@@ -135,7 +137,9 @@ class PostSubview extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
                   child: PostViewMetaData(
-                    comments: postView.counts.comments,
+                    comments: postViewMedia.postView.counts.comments,
+                    unreadComments: postViewMedia.postView.unreadComments,
+                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     published: post.published,
                     saved: postView.saved,
                   ),
