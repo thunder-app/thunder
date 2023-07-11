@@ -55,15 +55,13 @@ class DB {
         var batch = db.batch();
 
         if (oldVersion < 3) {
-          _updateTableAccountsV1toV2(batch);
-        }
+          bool doesUserIdExist = await doesTableHaveColumn(db, 'accounts', 'userId');
 
-        await batch.commit();
-      },
-      onOpen: (db) async {
-        // Check to see if accounts table exists with the userId attribute
-        bool doesUserIdExist = await doesTableHaveColumn(db, 'accounts', 'userId');
-        if (!doesUserIdExist) await db.execute('ALTER TABLE accounts ADD COLUMN userId INTEGER');
+          if (!doesUserIdExist) {
+            _updateTableAccountsV1toV2(batch);
+            await batch.commit();
+          }
+        }
       },
     );
   }
