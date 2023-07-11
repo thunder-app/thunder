@@ -6,6 +6,9 @@
 - Added double swipe to exit - contribution from @bactaholic
 - Added ability to set post as read when opening media - contribution from @ajsosa
 - Added initial support for 2 column viewing for tablet modes - contribution from @Fmstrat
+- Adjustments to the login screen to include instance images, and tweaks - contribution from @micahmo
+- Added ability to copy/share comment on long press - contribution from @vbh
+- Changes to support user display names, additional profile information, and UI tweaks - contribution from @CTalvio
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
