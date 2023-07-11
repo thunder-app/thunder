@@ -1,5 +1,25 @@
 ## Unreleased
 ### Added
+- Added community icons to subscription list and search - contribution from @CTalvio
+- Added ability to return to homescreen when swiping from post body - contribution from @bactaholic
+- Added scroll to top buttons on various pages - contribution from @bactaholic
+- Added double swipe to exit - contribution from @bactaholic
+- Added ability to set post as read when opening media - contribution from @ajsosa
+- Added initial support for 2 column viewing for tablet modes - contribution from @Fmstrat
+- Adjustments to the login screen to include instance images, and tweaks - contribution from @micahmo
+- Added ability to copy/share comment on long press - contribution from @vbh
+- Changes to support user display names, additional profile information, and UI tweaks - contribution from @CTalvio
+
+### Changed
+- Adjusted subscription styling to be more consistent - contribution from @micahmo
+- Removed Sentry error logging
+
+### Fixed
+- Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
+- Fixed issue with webp previews not showing - contribution from @Fmstrat
+
+## 0.2.1+11 - 2023-07-09
+### Added
 - Added colour to username in comments to distinguish your own comments
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
 - Added option to share media link or external URL links in the dialog popup on post long press

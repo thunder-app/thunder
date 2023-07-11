@@ -4,18 +4,26 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/user/pages/user_page.dart';
+
+import '../../core/auth/bloc/auth_bloc.dart';
 
 class CommentHeader extends StatelessWidget {
   final CommentViewTree commentViewTree;
+  final bool useDisplayNames;
   final bool isOwnComment;
   final bool isHidden;
+  final int sinceCreated;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
+    required this.useDisplayNames,
+    required this.sinceCreated,
     this.isOwnComment = false,
     this.isHidden = false,
   });
@@ -29,6 +37,7 @@ class CommentHeader extends StatelessWidget {
 
     VoteType? myVote = commentViewTree.comment?.myVote;
     bool? saved = commentViewTree.comment?.saved;
+    bool? hasBeenEdited = commentViewTree.comment!.comment.updated != null ? true : false;
     //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
     int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
     int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
@@ -40,12 +49,33 @@ class CommentHeader extends StatelessWidget {
           Expanded(
             child: Row(
               children: [
-                Text(
-                  commentViewTree.comment!.creator.name,
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
-                    fontWeight: FontWeight.w500,
+                GestureDetector(
+                  onTap: () {
+                    account_bloc.AccountBloc accountBloc =
+                    context.read<account_bloc.AccountBloc>();
+                    AuthBloc authBloc = context.read<AuthBloc>();
+                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => MultiBlocProvider(
+                          providers: [
+                            BlocProvider.value(value: accountBloc),
+                            BlocProvider.value(value: authBloc),
+                            BlocProvider.value(value: thunderBloc),
+                          ],
+                          child: UserPage(userId: commentViewTree.comment!.creator.id),
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -102,12 +132,35 @@ class CommentHeader extends StatelessWidget {
                 color: saved == true ? Colors.purple : null,
                 size: saved == true ? 18.0 : 0,
               ),
-              const SizedBox(width: 8.0),
-              Text(
-                formatTimeToString(dateTime: commentViewTree.comment!.comment.published.toIso8601String()),
-                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onBackground,
+              SizedBox(
+                width: hasBeenEdited ? 32.0 : 8,
+                child: Icon(
+                  hasBeenEdited ? Icons.create_rounded : null,
+                  color: theme.colorScheme.onBackground.withOpacity(0.75),
+                  size: 16.0,
+                ),
+              ),
+              Container(
+                decoration: sinceCreated < 15 ? BoxDecoration(
+                    color: theme.primaryColorLight,
+                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+                ) : null,
+                child: sinceCreated < 15 ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                  child: Text(
+                    'New!',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.background,
+                    )
+                  ),
+                ) : Text(
+                  formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onBackground,
+                  ),
                 ),
               ),
             ],

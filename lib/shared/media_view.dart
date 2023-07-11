@@ -10,6 +10,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -25,6 +27,8 @@ class MediaView extends StatefulWidget {
   final bool showFullHeightImages;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
   final ViewMode viewMode;
 
   const MediaView({
@@ -34,6 +38,8 @@ class MediaView extends StatefulWidget {
     this.showFullHeightImages = true,
     this.edgeToEdgeImages = false,
     required this.hideNsfwPreviews,
+    required this.markPostReadOnMediaView,
+    required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
   });
 
@@ -92,6 +98,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
         edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
         viewMode: widget.viewMode,
+        postId: widget.postView!.postView.post.id,
+        markPostReadOnMediaView: widget.markPostReadOnMediaView,
+        isUserLoggedIn: widget.isUserLoggedIn,
       );
     }
 
@@ -100,25 +109,37 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            transitionDuration: const Duration(milliseconds: 400),
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-              String heroKey = generateRandomHeroString();
+        onTap: () {
+          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+            int postId = widget.postView!.postView.post.id;
+            try {
+              UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+              userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+            } catch(e){
+              CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+              communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+            }
+          }
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              transitionDuration: const Duration(milliseconds: 400),
+              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+                String heroKey = generateRandomHeroString();
 
-              return ImageViewer(url: widget.postView!.media.first.mediaUrl!, heroKey: heroKey);
-            },
-            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-              return Align(
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-              );
-            },
-          ),
-        ),
+                return ImageViewer(url: widget.postView!.media.first.mediaUrl!, heroKey: heroKey);
+              },
+              transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+                return Align(
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          );
+        },
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),

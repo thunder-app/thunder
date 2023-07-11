@@ -162,8 +162,7 @@ You can also run your local development environment for Android via the Docker c
 ### Environment File
 This is an example of the `.env` that can be used for Thunder.
 ```bash
-# Sentry Credentials
-SENTRY_DSN=""
+# Empty Environment File
 ```
 
 ## Conventions

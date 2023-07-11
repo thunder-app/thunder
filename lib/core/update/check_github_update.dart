@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 
 import 'package:thunder/core/models/version.dart';
 
@@ -35,7 +34,6 @@ Future<Version> fetchVersion() async {
 
     return Version(version: currentVersion ?? 'N/A', latestVersion: 'N/A', hasUpdate: false);
   } catch (e, s) {
-    await Sentry.captureException(e, stackTrace: s);
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }
 }

@@ -106,9 +106,20 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
                       IconButton(
                         icon: Icon(
-                          (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                          switch (state.subscribedType) {
+                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                            SubscribedType.pending => Icons.pending_outlined,
+                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                            _ => Icons.add_circle_outline_rounded,
+                          },
                           semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
+                        tooltip: switch (state.subscribedType) {
+                          SubscribedType.notSubscribed => 'Subscribe',
+                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                          SubscribedType.subscribed => 'Unsubscribe',
+                          _ => null,
+                        },
                         onPressed: () {
                           HapticFeedback.mediumImpact();
                           context.read<CommunityBloc>().add(
@@ -123,7 +134,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
                         onPressed: () {
                           HapticFeedback.mediumImpact();
-                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
+                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId, listingType: state.listingType));
                         }),
                     IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),

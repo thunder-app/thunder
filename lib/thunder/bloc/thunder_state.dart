@@ -29,17 +29,17 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.hideNsfwPreviews = true,
+    this.useDisplayNames = true,
     this.bottomNavBarSwipeGestures = true,
     this.bottomNavBarDoubleTapGestures = false,
+    this.tabletMode = false,
+    this.markPostReadOnMediaView = false,
 
     // Link Settings
     this.openInExternalBrowser = false,
 
     // Notification Settings
     this.showInAppUpdateNotification = true,
-
-    // Error Reporting
-    this.enableSentryErrorTracking = false,
 
     // Post Gestures
     this.enablePostGestures = true,
@@ -92,17 +92,17 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool hideNsfwPreviews;
+  final bool useDisplayNames;
   final bool bottomNavBarSwipeGestures;
   final bool bottomNavBarDoubleTapGestures;
+  final bool tabletMode;
+  final bool markPostReadOnMediaView;
 
   // Link Settings
   final bool openInExternalBrowser;
 
   // Notification Settings
   final bool showInAppUpdateNotification;
-
-  // Error Reporting
-  final bool enableSentryErrorTracking;
 
   // Post Gestures
   final bool enablePostGestures;
@@ -150,14 +150,15 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? hideNsfwPreviews,
+    bool? tabletMode,
     bool? bottomNavBarSwipeGestures,
     bool? bottomNavBarDoubleTapGestures,
+    bool? markPostReadOnMediaView,
+    bool? useDisplayNames,
     // Link Settings
     bool? openInExternalBrowser,
     // Notification Settings
     bool? showInAppUpdateNotification,
-    // Error Reporting
-    bool? enableSentryErrorTracking,
     // Post Gestures
     bool? enablePostGestures,
     SwipeAction? leftPrimaryPostGesture,
@@ -201,14 +202,15 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
+      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
+      tabletMode: tabletMode ?? this.tabletMode,
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       // Link Settings
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      // Error Reporting
-      enableSentryErrorTracking: enableSentryErrorTracking ?? this.enableSentryErrorTracking,
       // Post Gestures
       enablePostGestures: enablePostGestures ?? this.enablePostGestures,
       leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
@@ -254,11 +256,13 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         hideNsfwPreviews,
+        useDisplayNames,
+        tabletMode,
         bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures,
+        markPostReadOnMediaView,
         openInExternalBrowser,
         showInAppUpdateNotification,
-        enableSentryErrorTracking,
         enablePostGestures,
         leftPrimaryPostGesture,
         leftSecondaryPostGesture,

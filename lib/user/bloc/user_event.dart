@@ -48,3 +48,10 @@ class SaveCommentEvent extends UserEvent {
 
   const SaveCommentEvent({required this.commentId, required this.save});
 }
+
+class MarkUserPostAsReadEvent extends UserEvent {
+  final int postId;
+  final bool read;
+
+  const MarkUserPostAsReadEvent({required this.postId, required this.read});
+}

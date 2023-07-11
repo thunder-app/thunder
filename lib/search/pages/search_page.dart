@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -134,6 +135,17 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
+                  foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                  maxRadius: 25,
+                  child: Text( communityView.community.name[0].toUpperCase(),
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
                 title: Text(
                   communityView.community.title,
                   overflow: TextOverflow.ellipsis,
@@ -145,31 +157,35 @@ class _SearchPageState extends State<SearchPage> {
                 ]),
                 trailing: isUserLoggedIn
                     ? IconButton(
-                        onPressed: communityView.subscribed == SubscribedType.pending
-                            ? null
-                            : () {
-                                context.read<SearchBloc>().add(
-                                      ChangeCommunitySubsciptionStatusEvent(
-                                        communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                                      ),
-                                    );
-                                SnackBar snackBar = SnackBar(
-                                  content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                });
-                              },
+                        onPressed:
+                            () {
+                              context.read<SearchBloc>().add(
+                                    ChangeCommunitySubsciptionStatusEvent(
+                                      communityId: communityView.community.id,
+                                      follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+                                    ),
+                                  );
+                              SnackBar snackBar = SnackBar(
+                                content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
+                            },
                         icon: Icon(
                           switch (communityView.subscribed) {
-                            SubscribedType.notSubscribed => Icons.add,
-                            SubscribedType.pending => Icons.pending_rounded,
-                            SubscribedType.subscribed => Icons.remove,
+                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                            SubscribedType.pending => Icons.pending_outlined,
+                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                           },
                         ),
+                        tooltip: switch (communityView.subscribed) {
+                          SubscribedType.notSubscribed => 'Subscribe',
+                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                          SubscribedType.subscribed => 'Unsubscribe',
+                        },
                         visualDensity: VisualDensity.compact,
                       )
                     : null,

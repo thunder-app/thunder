@@ -1,9 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/instance.dart';
 
 class Destination {
@@ -100,8 +102,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Padding(
-              padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+              padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
               child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
+              child: Text(LemmyClient.instance.lemmyApiV3.host, style: Theme.of(context).textTheme.bodyMedium),
             ),
             Column(
               children: destinations.map((Destination destination) {
@@ -121,8 +127,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
               }).toList(),
             ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(28, 16, 16, 10),
+              padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
               child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
+              child: context.read<AuthBloc>().state.account != null
+                ? Text(context.read<AuthBloc>().state.account!.username ?? "-", style: Theme.of(context).textTheme.bodyMedium)
+                : Container(),
             ),
             (status != AccountStatus.success && status != AccountStatus.failure)
                 ? const Padding(
@@ -132,7 +144,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                 : (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
                     ? Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 14.0),
                           child: Scrollbar(
                             controller: _scrollController,
                             child: SingleChildScrollView(
@@ -159,18 +171,34 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
 
                                         Navigator.of(context).pop();
                                       },
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                      child: Row(
                                         children: [
-                                          Text(
-                                            community.title,
-                                            overflow: TextOverflow.ellipsis,
-                                            maxLines: 1,
+                                          CircleAvatar(
+                                            backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                            foregroundImage: community.icon != null ? CachedNetworkImageProvider(community.icon!) : null,
+                                            maxRadius: 16,
+                                            child: Text( community.name[0].toUpperCase(),
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
+                                            ),
                                           ),
-                                          Text(
-                                            '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
-                                            style: theme.textTheme.bodyMedium,
+                                          const SizedBox(width: 16.0),
+                                          Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                community.title,
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 1,
+                                              ),
+                                              Text(
+                                                '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                                style: theme.textTheme.bodyMedium,
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
