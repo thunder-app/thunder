@@ -73,14 +73,31 @@ class CommentHeader extends StatelessWidget {
                             ),
                           );
                         },
-                        child: Text(
-                          commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
-                            fontWeight: FontWeight.w500,
+                        child: isSpecialUser(context, isOwnComment)
+                          ? Container(
+                            decoration: BoxDecoration(
+                              color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
+                              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: Text(
+                                commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white
+                                ),
+                              ),
+                            ),
+                          )
+                          : Text(
+                              commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
                       ),
                       const SizedBox(width: 8.0),
                       Container(
@@ -244,4 +261,12 @@ class CommentHeader extends StatelessWidget {
     return descriptor;
   }
 
+  bool isSpecialUser(BuildContext context, bool isOwnComment) {
+    CommentView commentView = commentViewTree.comment!;
+
+    return 
+      isOwnComment || 
+      commentView.creator.admin == true || 
+      commentView.post.creatorId == commentView.comment.creatorId;
+  }
 }
