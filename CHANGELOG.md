@@ -10,6 +10,8 @@
 - Added ability to copy/share comment on long press - contribution from @vbh
 - Changes to support user display names, additional profile information, and UI tweaks - contribution from @CTalvio
 - Added ability to set no action for swipe gestures on posts and comments
+- Added ability to select/upload image when creating post - contribution from @MrAntonS
+- Added instance name into sidebar menu - contribution from @micahmo
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
@@ -19,6 +21,7 @@
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
 - Fixed issue with webp previews not showing - contribution from @Fmstrat
 - Fixed issue with some links not being parsed properly (GitHub release links)
+- Fixed issue where copy/pasting was non-functional on the Search input - contribution from @ajsosa
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
