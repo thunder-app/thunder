@@ -84,6 +84,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      bool useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
@@ -138,6 +139,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         tabletMode: tabletMode,
         showTextContent: showTextContent,
         hideNsfwPreviews: hideNsfwPreviews,
+        useDisplayNames: useDisplayNames,
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView: markPostReadOnMediaView,

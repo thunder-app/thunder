@@ -27,6 +27,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
   SortType defaultSortType = DEFAULT_SORT_TYPE;
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
+  bool useDisplayNames = true;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -39,6 +40,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool tabletMode = false;
   bool showTextContent = false;
   bool hideNsfwPreviews = true;
+  bool bottomNavBarSwipeGestures = true;
+  bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
 
   // Link Settings
@@ -79,6 +82,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
         setState(() => hideNsfwPreviews = value);
+        break;
+      case 'setting_use_display_names_for_users':
+        await prefs.setBool('setting_use_display_names_for_users', value);
+        setState(() => useDisplayNames = value);
         break;
 
       // Post Settings
@@ -159,6 +166,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -180,6 +188,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       // Comments
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
+      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Links
@@ -271,6 +282,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.visibility,
                           iconDisabled: Icons.remove_red_eye_outlined,
                           onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
+                        ),
+                        ToggleOption(
+                          description: 'Use display names for users',
+                          value: useDisplayNames,
+                          iconEnabled: Icons.person_rounded,
+                          iconDisabled: Icons.person_off_rounded,
+                          onToggle: (bool value) => setPreferences('setting_use_display_names_for_users', value),
                         ),
                         ListOption(
                           description: 'Default Feed Type',
