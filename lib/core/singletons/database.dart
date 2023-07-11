@@ -21,10 +21,27 @@ class DB {
     return _database;
   }
 
+  Future<bool> doesTableHaveColumn(Database db, String tableName, String columnName) async {
+    List<Map<String, dynamic>> tableInfo = await db.rawQuery(
+      "PRAGMA table_info('$tableName')",
+    );
+
+    // Check if the specified column name exists in the table definition
+    bool hasColumn = false;
+
+    for (Map<String, dynamic> column in tableInfo) {
+      if (column['name'] == columnName) {
+        hasColumn = true;
+        break;
+      }
+    }
+
+    return hasColumn;
+  }
+
   /// Update Accounts table V1 to V2
   void _updateTableAccountsV1toV2(Batch batch) {
-    batch.execute('DROP TABLE accounts');
-    batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+    batch.execute('ALTER TABLE accounts ADD COLUMN userId INTEGER');
   }
 
   Future<Database> _init() async {
@@ -42,6 +59,11 @@ class DB {
         }
 
         await batch.commit();
+      },
+      onOpen: (db) async {
+        // Check to see if accounts table exists with the userId attribute
+        bool doesUserIdExist = await doesTableHaveColumn(db, 'accounts', 'userId');
+        if (!doesUserIdExist) await db.execute('ALTER TABLE accounts ADD COLUMN userId INTEGER');
       },
     );
   }
