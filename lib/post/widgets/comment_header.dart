@@ -111,20 +111,25 @@ class CommentHeader extends StatelessWidget {
           ),
           Row(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primaryContainer,
-                  borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
+              AnimatedOpacity(
+                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true))
+                  ? 1
+                  : 0,
+                // Matches the collapse animation
+                duration: const Duration(milliseconds: 130),
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.primaryContainer,
+                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: Text(
+                      '+${commentViewTree.replies.length}',
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    ),
+                  ),
                 ),
-                child: isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty)
-                  ? Padding(
-                      padding: const EdgeInsets.only(left: 5, right: 5),
-                      child: Text(
-                        '+${commentViewTree.replies.length}',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      ),
-                    )
-                  : Container(),
               ),
               const SizedBox(width: 8.0),
               Icon(
