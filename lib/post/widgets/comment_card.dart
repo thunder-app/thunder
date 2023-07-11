@@ -103,6 +103,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
+    DateTime now = DateTime.now().toUtc();
+    int sinceCreated = now.difference(widget.commentViewTree.comment!.comment.published).inMinutes;
+
+    final theme = Theme.of(context);
 
     // Checks for either the same creator id to user id, or the same username
     final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
@@ -243,7 +247,13 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment, isHidden: isHidden),
+                        CommentHeader(
+                          commentViewTree: widget.commentViewTree,
+                          useDisplayNames: state.useDisplayNames,
+                          sinceCreated: sinceCreated,
+                          isOwnComment: isOwnComment,
+                          isHidden: isHidden,
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,
