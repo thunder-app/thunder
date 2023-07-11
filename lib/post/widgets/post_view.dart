@@ -94,6 +94,7 @@ class PostSubview extends StatelessWidget {
                   },
                   child: Tooltip(
                     message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
+                    preferBelow: false,
                     child: Text(
                       postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                       textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
@@ -131,6 +132,7 @@ class PostSubview extends StatelessWidget {
                   },
                   child: Tooltip(
                     message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
+                    preferBelow: false,
                     child: Text(
                       postView.community.name,
                       textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,

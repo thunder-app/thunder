@@ -52,6 +52,7 @@ class CommentHeader extends StatelessWidget {
               children: [
                 Tooltip(
                     message: '${commentViewTree.comment!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.comment!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
+                    preferBelow: false,
                     child: Row(children: [
                       GestureDetector(
                         onTap: () {
