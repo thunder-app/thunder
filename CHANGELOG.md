@@ -17,6 +17,7 @@
 ### Fixed
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
 - Fixed issue with webp previews not showing - contribution from @Fmstrat
+- Fixed issue with some links not being parsed properly (GitHub release links)
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
