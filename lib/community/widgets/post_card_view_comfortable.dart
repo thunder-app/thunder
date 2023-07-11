@@ -138,7 +138,9 @@ class PostCardViewComfortable extends StatelessWidget {
                         score: postViewMedia.postView.counts.score,
                         voteType: postViewMedia.postView.myVote ?? VoteType.none,
                         comments: postViewMedia.postView.counts.comments,
-                        published: postViewMedia.postView.post.published,
+                        unreadComments: postViewMedia.postView.unreadComments,
+                        hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                        published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                         saved: postViewMedia.postView.saved,
                         distinguised: postViewMedia.postView.post.featuredCommunity,
                       )

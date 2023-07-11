@@ -12,6 +12,8 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+import '../utils/comment_action_helpers.dart';
+
 class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -103,6 +105,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.comment?.myVote;
     bool? saved = widget.commentViewTree.comment?.saved;
+    DateTime now = DateTime.now().toUtc();
+    int sinceCreated = now.difference(widget.commentViewTree.comment!.comment.published).inMinutes;
+
+    final theme = Theme.of(context);
 
     // Checks for either the same creator id to user id, or the same username
     final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
@@ -235,6 +241,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
+                    onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree),
                     onTap: () {
                       widget.onCollapseCommentChange(widget.commentViewTree.comment!.comment.id, !isHidden);
                       setState(() => isHidden = !isHidden);
@@ -243,7 +250,13 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CommentHeader(commentViewTree: widget.commentViewTree, isOwnComment: isOwnComment, isHidden: isHidden),
+                        CommentHeader(
+                          commentViewTree: widget.commentViewTree,
+                          useDisplayNames: state.useDisplayNames,
+                          sinceCreated: sinceCreated,
+                          isOwnComment: isOwnComment,
+                          isHidden: isHidden,
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 130),
                           switchInCurve: Curves.easeInOut,
