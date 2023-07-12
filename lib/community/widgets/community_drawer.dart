@@ -185,20 +185,27 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                             ),
                                           ),
                                           const SizedBox(width: 16.0),
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Text(
-                                                community.title,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
+                                          Expanded(
+                                            child: Tooltip(
+                                              message: '${community.title}\n${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                              preferBelow: false,
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    community.title,
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                  ),
+                                                  Text(
+                                                    '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                                    style: theme.textTheme.bodyMedium,
+                                                    overflow: TextOverflow.ellipsis,
+                                                  ),
+                                                ],
                                               ),
-                                              Text(
-                                                '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
-                                                style: theme.textTheme.bodyMedium,
-                                              ),
-                                            ],
+                                            )
                                           ),
                                         ],
                                       ),
