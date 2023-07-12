@@ -7,6 +7,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 
 part 'theme_event.dart';
@@ -32,27 +33,23 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-
-      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_type') ?? ThemeType.system.index];
 
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Check what the system theme is (light/dark)
       Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
-      bool useDarkTheme = (themeType == 'dark') || (useBlackTheme == true);
-
-      // System theme overrides other settings
-      if (useSystemTheme == true) useDarkTheme = brightness == Brightness.dark;
+      bool useDarkTheme = themeType != ThemeType.light;
+      if (themeType == ThemeType.system) {
+        useDarkTheme = brightness == Brightness.dark;
+      }
 
       return emit(
         state.copyWith(
           status: ThemeStatus.success,
-          useSystemTheme: useSystemTheme,
+          themeType: themeType,
           useMaterialYouTheme: useMaterialYouTheme,
           useDarkTheme: useDarkTheme,
-          useBlackTheme: useBlackTheme,
         ),
       );
     } catch (e, s) {

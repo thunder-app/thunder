@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -19,13 +20,19 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
-  bool useSystemTheme = false;
-  String themeType = 'dark';
-  bool useBlackTheme = false;
+  ThemeType themeType = ThemeType.system;
   bool useMaterialYouTheme = false;
 
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
+
+  //Theme
+  List<ListPickerItem> themeOptions = [
+    const ListPickerItem(icon: Icons.phonelink_setup_rounded, label: 'System', payload: ThemeType.system),
+    const ListPickerItem(icon: Icons.light_mode_rounded, label: 'Light', payload: ThemeType.light),
+    const ListPickerItem(icon: Icons.dark_mode_rounded, label: 'Dark', payload: ThemeType.dark),
+    const ListPickerItem(icon: Icons.dark_mode_rounded, label: 'Pure Black', payload: ThemeType.pureBlack)
+  ];
 
   // Font size
   List<ListPickerItem> fontScaleOptions = [
@@ -42,20 +49,9 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      case 'setting_theme_use_system_theme':
-        await prefs.setBool('setting_theme_use_system_theme', value);
-
-        setState(() => useSystemTheme = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
-        break;
       case 'setting_theme_type':
-        await prefs.setString('setting_theme_type', value);
-        setState(() => themeType = value);
-        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
-        break;
-      case 'setting_theme_use_black_theme':
-        await prefs.setBool('setting_theme_use_black_theme', value);
-        setState(() => useBlackTheme = value);
+        await prefs.setInt('setting_theme_type', value);
+        setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case 'setting_theme_use_material_you':
@@ -85,10 +81,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
     setState(() {
       // Theme Settings
-      useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-
-      themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      themeType = ThemeType.values[prefs.getInt('setting_theme_type') ?? ThemeType.system.index];
 
       useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
@@ -130,30 +123,15 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        ToggleOption(
-                          description: 'Use system theme',
-                          subtitle: 'Overrides dark/black theme options',
-                          value: useSystemTheme,
-                          iconEnabled: Icons.wallpaper,
-                          iconDisabled: Icons.wallpaper,
-                          onToggle: (bool value) => setPreferences('setting_theme_use_system_theme', value),
+                        ListOption(
+                            description: 'App Theme',
+                            value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
+                            options: themeOptions,
+                            icon: Icons.wallpaper_rounded,
+                            onChanged: (value) => setPreferences('setting_theme_type', value.payload.index)
                         ),
                         ToggleOption(
-                          description: 'Use dark theme',
-                          value: themeType == 'dark',
-                          iconEnabled: Icons.dark_mode_rounded,
-                          iconDisabled: Icons.dark_mode_outlined,
-                          onToggle: (bool value) => setPreferences('setting_theme_type', value == true ? 'dark' : 'light'),
-                        ),
-                        ToggleOption(
-                          description: 'Pure black theme',
-                          value: useBlackTheme,
-                          iconEnabled: Icons.dark_mode_outlined,
-                          iconDisabled: Icons.dark_mode_outlined,
-                          onToggle: (bool value) => setPreferences('setting_theme_use_black_theme', value),
-                        ),
-                        ToggleOption(
-                          description: 'Use Material You theme',
+                          description: 'Use Material You Theme',
                           value: useMaterialYouTheme,
                           iconEnabled: Icons.color_lens_rounded,
                           iconDisabled: Icons.color_lens_rounded,

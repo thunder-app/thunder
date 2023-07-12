@@ -13,6 +13,7 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 
 // Internal Packages
 import 'package:thunder/core/singletons/preferences.dart';
@@ -51,7 +52,7 @@ class ThunderApp extends StatelessWidget {
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
               ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.useBlackTheme);
+              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
@@ -63,7 +64,7 @@ class ThunderApp extends StatelessWidget {
                 darkTheme = FlexThemeData.dark(
                   useMaterial3: true,
                   colorScheme: darkColorScheme,
-                  darkIsTrueBlack: state.useBlackTheme,
+                  darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
                 );
               }
 
@@ -78,7 +79,7 @@ class ThunderApp extends StatelessWidget {
                 child: MaterialApp.router(
                   title: 'Thunder',
                   routerConfig: router,
-                  themeMode: state.useSystemTheme ? ThemeMode.system : (state.useDarkTheme ? ThemeMode.dark : ThemeMode.light),
+                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
