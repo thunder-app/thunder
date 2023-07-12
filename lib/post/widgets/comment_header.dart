@@ -93,6 +93,7 @@ class CommentHeader extends StatelessWidget {
                                       color: Colors.white
                                     ),
                                   ),
+                                  const SizedBox(width: 2.0),
                                   Container(
                                     child: isOwnComment
                                       ? Padding(
@@ -111,8 +112,8 @@ class CommentHeader extends StatelessWidget {
                                   //     ? Padding(
                                   //       padding: const EdgeInsets.only(left: 1),
                                   //       child: Icon(
-                                  //         Thunder.shield_home,
-                                  //         size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                  //         Thunder.shield,
+                                  //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
                                   //         color: Colors.white,
                                   //       ),
                                   //     )
@@ -123,8 +124,8 @@ class CommentHeader extends StatelessWidget {
                                       ? Padding(
                                         padding: const EdgeInsets.only(left: 1),
                                         child: Icon(
-                                          Thunder.shield_account,
-                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                          Thunder.shield_crown,
+                                          size: 14.0 * state.contentFontSizeScale.textScaleFactor,
                                           color: Colors.white,
                                         ),
                                       )

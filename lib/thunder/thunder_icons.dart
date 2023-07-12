@@ -7,7 +7,7 @@
 ///
 /// flutter:
 ///   fonts:
-///    - family: Thunder
+///    - family:  Thunder
 ///      fonts:
 ///       - asset: fonts/Thunder.ttf
 ///
@@ -22,6 +22,6 @@ class Thunder {
   static const String? _kFontPkg = null;
 
   static const IconData microphone_variant = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData shield_account = IconData(0xe801, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData shield_home = IconData(0xe802, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData shield = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData shield_crown = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }
