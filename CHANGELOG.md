@@ -26,6 +26,7 @@
 - Fixed issue with some links not being parsed properly (GitHub release links)
 - Fixed issue where copy/pasting was non-functional on the Search input - contribution from @ajsosa
 - Fixed issue where subscribing to a community from the search page would not refresh sidebar subscriptions - contribution from @micahmo
+- Fixed issue where only some subscriptions would show up on the sidebar
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
