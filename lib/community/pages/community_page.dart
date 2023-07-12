@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
@@ -134,6 +135,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
                         onPressed: () {
                           HapticFeedback.mediumImpact();
+                          context.read<AccountBloc>().add(GetAccountInformation());
                           return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId, listingType: state.listingType));
                         }),
                     IconButton(

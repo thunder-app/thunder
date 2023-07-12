@@ -191,6 +191,7 @@ class _SearchPageState extends State<SearchPage> {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               });
+                              context.read<AccountBloc>().add(GetAccountInformation());
                             },
                         icon: Icon(
                           switch (communityView.subscribed) {
