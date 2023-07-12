@@ -12,6 +12,8 @@
 - Added ability to set no action for swipe gestures on posts and comments
 - Added ability to select/upload image when creating post - contribution from @MrAntonS
 - Added instance name into sidebar menu - contribution from @micahmo
+- Navigating back from a page will first go to the feed page before exiting - contribution from @micahmo
+- Settings have been re-organized to be more consistent, and to show available options between different views - contribution from @CTalvio
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
@@ -22,6 +24,7 @@
 - Fixed issue with webp previews not showing - contribution from @Fmstrat
 - Fixed issue with some links not being parsed properly (GitHub release links)
 - Fixed issue where copy/pasting was non-functional on the Search input - contribution from @ajsosa
+- Fixed issue where subscribing to a community from the search page would not refresh sidebar subscriptions - contribution from @micahmo
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
