@@ -30,7 +30,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     try {
       emit(state.copyWith(status: ThemeStatus.loading));
 
-      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
       bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
 

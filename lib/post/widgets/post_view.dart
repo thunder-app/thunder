@@ -17,6 +17,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import '../../utils/date_time.dart';
 
@@ -91,11 +92,15 @@ class PostSubview extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  child: Tooltip(
+                    message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
+                    preferBelow: false,
+                    child: Text(
+                      postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
                     ),
                   ),
                 ),
@@ -125,11 +130,15 @@ class PostSubview extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    postView.community.name,
-                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  child: Tooltip(
+                    message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
+                    preferBelow: false,
+                    child: Text(
+                      postView.community.name,
+                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
                     ),
                   ),
                 ),
@@ -284,5 +293,19 @@ class PostSubview extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String fetchUsernameDescriptor(BuildContext context) {
+    PostView postView = postViewMedia.postView;
+    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+
+    String descriptor = '';
+
+    if (isOwnPost) descriptor += 'me';
+    if (postView.creator.admin == true) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+
+    if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
+
+    return descriptor;
   }
 }

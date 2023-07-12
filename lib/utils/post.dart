@@ -94,7 +94,7 @@ Future<PostView> savePost(int postId, bool save) async {
 
 /// Parse a post with media
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
-  SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
   bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;

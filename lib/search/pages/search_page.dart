@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -69,6 +70,9 @@ class _SearchPageState extends State<SearchPage> {
               child:TextField(
                 onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                 controller: _controller,
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                },
                 decoration: InputDecoration(
                     fillColor: Theme.of(context).searchViewTheme.backgroundColor,
                     hintText: 'Search for communities',
@@ -191,6 +195,7 @@ class _SearchPageState extends State<SearchPage> {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               });
+                              context.read<AccountBloc>().add(GetAccountInformation());
                             },
                         icon: Icon(
                           switch (communityView.subscribed) {

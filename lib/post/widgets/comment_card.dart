@@ -110,9 +110,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     final theme = Theme.of(context);
 
-    // Checks for either the same creator id to user id, or the same username
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId ||
-        widget.commentViewTree.comment?.creator.name.toLowerCase() == context.read<AuthBloc>().state.account?.username?.toLowerCase();
+    // Checks for the same creator id to user id
+    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
