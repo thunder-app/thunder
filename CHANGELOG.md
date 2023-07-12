@@ -19,6 +19,7 @@
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
 - Removed Sentry error logging
+- Tapping outside of the text field when creating a comment/reply will dismiss the keyboard
 
 ### Fixed
 - Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0

@@ -147,6 +147,7 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return Tooltip(
+                excludeFromSemantics: true,
                 message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
                 preferBelow: false,
                 child: ListTile(
@@ -156,6 +157,7 @@ class _SearchPageState extends State<SearchPage> {
                       maxRadius: 25,
                       child: Text(
                         communityView.community.name[0].toUpperCase(),
+                        semanticsLabel: '',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -173,7 +175,10 @@ class _SearchPageState extends State<SearchPage> {
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      Text(' · ${communityView.counts.subscribers}'),
+                      Text(
+                        ' · ${communityView.counts.subscribers}',
+                        semanticsLabel: '${communityView.counts.subscribers} subscribers',
+                      ),
                       const SizedBox(width: 4),
                       const Icon(Icons.people_rounded, size: 16.0),
                     ]),

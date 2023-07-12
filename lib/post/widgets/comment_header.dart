@@ -52,13 +52,14 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 Tooltip(
-                    message: '${commentViewTree.comment!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.comment!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
-                    preferBelow: false,
-                    child: Row(children: [
+                  excludeFromSemantics: true,
+                  message: '${commentViewTree.comment!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.comment!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
+                  preferBelow: false,
+                  child: Row(
+                    children: [
                       GestureDetector(
                         onTap: () {
-                          account_bloc.AccountBloc accountBloc =
-                          context.read<account_bloc.AccountBloc>();
+                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                           AuthBloc authBloc = context.read<AuthBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -76,84 +77,78 @@ class CommentHeader extends StatelessWidget {
                           );
                         },
                         child: isSpecialUser(context, isOwnComment)
-                          ? Container(
-                            decoration: BoxDecoration(
-                              color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
-                              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                    ),
+                            ? Container(
+                                decoration:
+                                    BoxDecoration(color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 5, right: 5),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
+                                      ),
+                                      const SizedBox(width: 2.0),
+                                      Container(
+                                        child: isOwnComment
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Icons.person,
+                                                  size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ))
+                                            : Container(),
+                                      ),
+                                      // Container(
+                                      //   // TODO: Figure out how to determine mods
+                                      //   child: true
+                                      //     ? Padding(
+                                      //       padding: const EdgeInsets.only(left: 1),
+                                      //       child: Icon(
+                                      //         Thunder.shield,
+                                      //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
+                                      //         color: Colors.white,
+                                      //       ),
+                                      //     )
+                                      //     : Container(),
+                                      // ),
+                                      Container(
+                                        child: commentViewTree.comment?.creator.admin == true
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.shield_crown,
+                                                  size: 14.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                      Container(
+                                        child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.microphone_variant,
+                                                  size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 2.0),
-                                  Container(
-                                    child: isOwnComment
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        )
-                                      )
-                                      : Container(),
-                                  ),
-                                  // Container(
-                                  //   // TODO: Figure out how to determine mods
-                                  //   child: true
-                                  //     ? Padding(
-                                  //       padding: const EdgeInsets.only(left: 1),
-                                  //       child: Icon(
-                                  //         Thunder.shield,
-                                  //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
-                                  //         color: Colors.white,
-                                  //       ),
-                                  //     )
-                                  //     : Container(),
-                                  // ),
-                                  Container(
-                                    child: commentViewTree.comment?.creator.admin == true
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Thunder.shield_crown,
-                                          size: 14.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                      : Container(),
-                                  ),
-                                  Container(
-                                    child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Thunder.microphone_variant,
-                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                      : Container(),
-                                  ),
-                                ],
+                                ),
+                              )
+                            : Text(
+                                commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          )
-                          : Text(
-                              commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                            ),
-                          ),
                       ),
                       const SizedBox(width: 8.0),
                     ],
@@ -192,9 +187,7 @@ class CommentHeader extends StatelessWidget {
           Row(
             children: [
               AnimatedOpacity(
-                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true))
-                  ? 1
-                  : 0,
+                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true)) ? 1 : 0,
                 // Matches the collapse animation
                 duration: const Duration(milliseconds: 130),
                 child: Container(
@@ -226,27 +219,24 @@ class CommentHeader extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: sinceCreated < 15 ? BoxDecoration(
-                    color: theme.primaryColorLight,
-                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
-                ) : null,
-                child: sinceCreated < 15 ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text(
-                    'New!',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.background,
-                    )
-                  ),
-                ) : Text(
-                  formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onBackground,
-                  ),
-                ),
+                decoration: sinceCreated < 15 ? BoxDecoration(color: theme.primaryColorLight, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                child: sinceCreated < 15
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Text('New!',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.background,
+                            )),
+                      )
+                    : Text(
+                        formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String()),
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
+                        ),
+                      ),
               ),
             ],
           )
@@ -283,9 +273,6 @@ class CommentHeader extends StatelessWidget {
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
     CommentView commentView = commentViewTree.comment!;
 
-    return 
-      isOwnComment || 
-      commentView.creator.admin == true || 
-      commentView.post.creatorId == commentView.comment.creatorId;
+    return isOwnComment || commentView.creator.admin == true || commentView.post.creatorId == commentView.comment.creatorId;
   }
 }

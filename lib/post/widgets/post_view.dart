@@ -93,6 +93,7 @@ class PostSubview extends StatelessWidget {
                     );
                   },
                   child: Tooltip(
+                    excludeFromSemantics: true,
                     message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
                     preferBelow: false,
                     child: Text(
@@ -131,6 +132,7 @@ class PostSubview extends StatelessWidget {
                     );
                   },
                   child: Tooltip(
+                    excludeFromSemantics: true,
                     message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
                     preferBelow: false,
                     child: Text(
