@@ -169,7 +169,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     int attemptCount = 0;
     int limit = 20;
 
-    SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
     PostListingType defaultListingType;
     SortType defaultSortType;

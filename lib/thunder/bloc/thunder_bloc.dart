@@ -58,7 +58,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
       // Feed Settings
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
