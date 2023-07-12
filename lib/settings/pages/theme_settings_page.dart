@@ -39,7 +39,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   bool isLoading = true;
 
   void setPreferences(attribute, value) async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
       case 'setting_theme_use_system_theme':
@@ -81,7 +81,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
       // Theme Settings

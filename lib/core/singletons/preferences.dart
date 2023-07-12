@@ -3,15 +3,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 class UserPreferences {
   late SharedPreferences sharedPreferences;
 
-  UserPreferences._initialize() {
-    refetchPreferences();
+  static Future<UserPreferences> fetchPreferences() async {
+    _preferences ??= UserPreferences()
+      ..sharedPreferences = await SharedPreferences.getInstance();
+    return _preferences!;
   }
 
-  Future<void> refetchPreferences() async {
-    sharedPreferences = await SharedPreferences.getInstance();
-  }
+  static UserPreferences? _preferences;
 
-  static final UserPreferences _preferences = UserPreferences._initialize();
-
-  static UserPreferences get instance => _preferences;
+  static Future<UserPreferences> get instance => fetchPreferences();
 }

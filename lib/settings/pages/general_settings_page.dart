@@ -59,7 +59,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   bool isLoading = true;
 
   void setPreferences(attribute, value) async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
       // Feed Settings
@@ -168,7 +168,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
       // Feed Settings

@@ -43,7 +43,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
   ];
 
   void setPreferences(attribute, value) async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
       // Post Gestures
@@ -97,7 +97,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
   }
 
   void _initPreferences() async {
-    final prefs = UserPreferences.instance.sharedPreferences;
+    final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
       SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);

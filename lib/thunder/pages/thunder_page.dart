@@ -66,7 +66,7 @@ class _ThunderState extends State<Thunder> {
 
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
     bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
@@ -83,7 +83,7 @@ class _ThunderState extends State<Thunder> {
 
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
-    final SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
     bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
