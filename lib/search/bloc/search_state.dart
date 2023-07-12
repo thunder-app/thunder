@@ -1,6 +1,6 @@
 part of 'search_bloc.dart';
 
-enum SearchStatus { initial, loading, refreshing, success, empty, networkFailure, failure }
+enum SearchStatus { initial, loading, refreshing, success, empty, failure }
 
 class SearchState extends Equatable {
   const SearchState({

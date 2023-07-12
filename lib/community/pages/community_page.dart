@@ -60,7 +60,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           return true;
         },
         listener: (context, state) {
-          if (state.status == CommunityStatus.networkFailure) {
+          if (state.status == CommunityStatus.failure) {
             SnackBar snackBar = SnackBar(
               content: Text(state.errorMessage ?? 'No error message available'),
               behavior: SnackBarBehavior.floating,
@@ -189,8 +189,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.refreshing:
-      case CommunityStatus.networkFailure:
       case CommunityStatus.success:
+      case CommunityStatus.failure:
         return PostCardList(
           postViews: state.postViews,
           listingType: state.communityId != null ? null : state.listingType,
@@ -202,14 +202,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
         );
-
       case CommunityStatus.empty:
-      case CommunityStatus.failure:
-        return ErrorMessage(
-          message: state.errorMessage,
-          action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
-          actionText: 'Refresh Content',
-        );
+        return const Center(child: Text('No posts found'));
     }
   }
 

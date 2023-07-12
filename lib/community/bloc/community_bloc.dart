@@ -420,14 +420,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      PostView postView = await lemmy.run(CreatePost(
-        auth: account!.jwt!,
-        communityId: state.communityId!,
-        name: event.name,
-        body: event.body,
-        url: event.url,
-        nsfw: event.nsfw
-      ));
+      PostView postView = await lemmy.run(CreatePost(auth: account!.jwt!, communityId: state.communityId!, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw));
 
       // Parse the posts, and append them to the existing list
       List<PostViewMedia> posts = await parsePostViews([postView]);

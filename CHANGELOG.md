@@ -14,6 +14,7 @@
 - Added instance name into sidebar menu - contribution from @micahmo
 - Navigating back from a page will first go to the feed page before exiting - contribution from @micahmo
 - Settings have been re-organized to be more consistent, and to show available options between different views - contribution from @CTalvio
+- Feed view will no longer show full screen error messages
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo

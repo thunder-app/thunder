@@ -61,43 +61,42 @@ class _SearchPageState extends State<SearchPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            toolbarHeight: 90.0,
-            scrolledUnderElevation: 0.0,
-            title: Material(
-              color: Colors.transparent,
-              borderRadius: BorderRadius.circular(50),
-              elevation: 8,
-              child:TextField(
-                onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
-                controller: _controller,
-                onTap: () {
-                  HapticFeedback.selectionClick();
-                },
-                decoration: InputDecoration(
-                    fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                    hintText: 'Search for communities',
-                    filled: true,
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(50),
-                      borderSide: const BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                      ),
-                    ),
-                    suffixIcon: _controller.text.isNotEmpty
-                        ? IconButton(
-                        icon: const Icon(
-                          Icons.close,
-                          semanticLabel: 'Clear Search',
+              toolbarHeight: 90.0,
+              scrolledUnderElevation: 0.0,
+              title: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                elevation: 8,
+                child: TextField(
+                    onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                    controller: _controller,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
+                    },
+                    decoration: InputDecoration(
+                        fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                        hintText: 'Search for communities',
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: const BorderSide(
+                            width: 0,
+                            style: BorderStyle.none,
+                          ),
                         ),
-                        onPressed: () {
-                          resetTextField();
-                          context.read<SearchBloc>().add(ResetSearch());
-                        })
-                        : null,
-                    prefixIcon: const Icon(Icons.search_rounded))),
-            )
-          ),
+                        suffixIcon: _controller.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  semanticLabel: 'Clear Search',
+                                ),
+                                onPressed: () {
+                                  resetTextField();
+                                  context.read<SearchBloc>().add(ResetSearch());
+                                })
+                            : null,
+                        prefixIcon: const Icon(Icons.search_rounded))),
+              )),
           body: _getSearchBody(context, state),
         );
       },
@@ -148,39 +147,39 @@ class _SearchPageState extends State<SearchPage> {
             CommunityView communityView = state.results!.communities[index];
 
             return Tooltip(
-              message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
-              preferBelow: false,
-              child: ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
-                  foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
-                  maxRadius: 25,
-                  child: Text( communityView.community.name[0].toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
+                message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                preferBelow: false,
+                child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
+                      foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                      maxRadius: 25,
+                      child: Text(
+                        communityView.community.name[0].toUpperCase(),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                title: Text(
-                  communityView.community.title,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Row(children: [
-                  Flexible(
-                    child: Text(
-                      '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                    title: Text(
+                      communityView.community.title,
                       overflow: TextOverflow.ellipsis,
                     ),
-                  ),
-                  Text(' · ${communityView.counts.subscribers}'),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.people_rounded, size: 16.0),
-                ]),
-                trailing: isUserLoggedIn
-                    ? IconButton(
-                        onPressed:
-                            () {
+                    subtitle: Row(children: [
+                      Flexible(
+                        child: Text(
+                          '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(' · ${communityView.counts.subscribers}'),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.people_rounded, size: 16.0),
+                    ]),
+                    trailing: isUserLoggedIn
+                        ? IconButton(
+                            onPressed: () {
                               context.read<SearchBloc>().add(
                                     ChangeCommunitySubsciptionStatusEvent(
                                       communityId: communityView.community.id,
@@ -188,7 +187,8 @@ class _SearchPageState extends State<SearchPage> {
                                     ),
                                   );
                               SnackBar snackBar = SnackBar(
-                                content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                                content: Text(
+                                    '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
                                 behavior: SnackBarBehavior.floating,
                               );
                               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -197,45 +197,43 @@ class _SearchPageState extends State<SearchPage> {
                               });
                               context.read<AccountBloc>().add(GetAccountInformation());
                             },
-                        icon: Icon(
-                          switch (communityView.subscribed) {
-                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                            SubscribedType.pending => Icons.pending_outlined,
-                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                          },
-                        ),
-                        tooltip: switch (communityView.subscribed) {
-                          SubscribedType.notSubscribed => 'Subscribe',
-                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                          SubscribedType.subscribed => 'Unsubscribe',
-                        },
-                        visualDensity: VisualDensity.compact,
-                      )
-                    : null,
-                onTap: () {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  AuthBloc authBloc = context.read<AuthBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                            icon: Icon(
+                              switch (communityView.subscribed) {
+                                SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                                SubscribedType.pending => Icons.pending_outlined,
+                                SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                              },
+                            ),
+                            tooltip: switch (communityView.subscribed) {
+                              SubscribedType.notSubscribed => 'Subscribe',
+                              SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                              SubscribedType.subscribed => 'Unsubscribe',
+                            },
+                            visualDensity: VisualDensity.compact,
+                          )
+                        : null,
+                    onTap: () {
+                      AccountBloc accountBloc = context.read<AccountBloc>();
+                      AuthBloc authBloc = context.read<AuthBloc>();
+                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: accountBloc),
-                          BlocProvider.value(value: authBloc),
-                          BlocProvider.value(value: thunderBloc),
-                        ],
-                        child: CommunityPage(communityId: communityView.community.id),
-                      ),
-                    ),
-                  );
-                })
-            );
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(value: accountBloc),
+                              BlocProvider.value(value: authBloc),
+                              BlocProvider.value(value: thunderBloc),
+                            ],
+                            child: CommunityPage(communityId: communityView.community.id),
+                          ),
+                        ),
+                      );
+                    }));
           },
         );
       case SearchStatus.empty:
         return const Center(child: Text('Empty'));
-      case SearchStatus.networkFailure:
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
