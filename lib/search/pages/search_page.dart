@@ -143,7 +143,10 @@ class _SearchPageState extends State<SearchPage> {
           itemBuilder: (BuildContext context, int index) {
             CommunityView communityView = state.results!.communities[index];
 
-            return ListTile(
+            return Tooltip(
+              message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+              preferBelow: false,
+              child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
                   foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
@@ -160,7 +163,13 @@ class _SearchPageState extends State<SearchPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Row(children: [
-                  Text('${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)} · ${communityView.counts.subscribers}'),
+                  Flexible(
+                    child: Text(
+                      '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  Text(' · ${communityView.counts.subscribers}'),
                   const SizedBox(width: 4),
                   const Icon(Icons.people_rounded, size: 16.0),
                 ]),
@@ -215,7 +224,8 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                     ),
                   );
-                });
+                })
+            );
           },
         );
       case SearchStatus.empty:
