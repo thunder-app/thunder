@@ -111,6 +111,14 @@ class _ThunderState extends State<Thunder> {
   }
 
   Future<bool> _handleBackButtonPress() async {
+    if (selectedPageIndex != 0) {
+      setState(() {
+        selectedPageIndex = 0;
+        pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+      });
+      return Future.value(false);
+    }
+    
     if (appExitCounter == 0) {
       appExitCounter++;
       _showExitWarning();
