@@ -178,7 +178,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                         ),
                         ToggleOption(
                           description: 'Navbar Double-Tap Gestures',
-                          subtitle: 'Double tap bottom nav to open sidebar',
+                          subtitle: 'Double-tap bottom nav to open sidebar',
                           value: bottomNavBarDoubleTapGestures,
                           iconEnabled: Icons.touch_app_rounded,
                           iconDisabled: Icons.touch_app_outlined,
@@ -201,7 +201,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                           ),
                         ),
                         ToggleOption(
-                          description: 'Enable Post Swipe Actions',
+                          description: 'Post Swipe Actions',
                           value: enablePostGestures,
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
@@ -257,7 +257,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                           ),
                         ),
                         ToggleOption(
-                          description: 'Enable Comment Swipe Actions',
+                          description: 'Comment Swipe Actions',
                           value: enableCommentGestures,
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
