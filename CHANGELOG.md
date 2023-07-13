@@ -19,6 +19,7 @@
 - Added maximum depth to comments. You can now tap on Load more replies to get more replies for a comment thread within a post
 - Various login flow improvements - contribution from @micahmo
 - In app browser is now switched over to use custom tabs - contribution from @micahmo
+- Adjusted theming options to show a modal rather than toggles to reduce confusion - contribution from @coslu
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
