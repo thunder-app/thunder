@@ -1,20 +1,18 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -24,7 +22,6 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -119,7 +116,7 @@ class _ThunderState extends State<Thunder> {
       });
       return Future.value(false);
     }
-    
+
     if (appExitCounter == 0) {
       appExitCounter++;
       _showExitWarning();
@@ -162,51 +159,54 @@ class _ThunderState extends State<Thunder> {
                             BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
                             BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
                           ],
-                          child: BlocConsumer<AuthBloc, AuthState>(listenWhen: (AuthState previous, AuthState current) {
-                            if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
-                            return false;
-                          }, buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
-                             listener: (context, state) {
-                            context.read<AccountBloc>().add(GetAccountInformation());
-                            context.read<InboxBloc>().add(const GetInboxEvent());
-                          }, builder: (context, state) {
-                            switch (state.status) {
-                              case AuthStatus.initial:
-                                context.read<AuthBloc>().add(CheckAuth());
-                                return const Center(child: CircularProgressIndicator());
-                              case AuthStatus.success:
-                                Version? version = thunderBlocState.version;
-                                bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                          child: BlocConsumer<AuthBloc, AuthState>(
+                              listenWhen: (AuthState previous, AuthState current) {
+                                if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                                return false;
+                              },
+                              buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                              listener: (context, state) {
+                                context.read<AccountBloc>().add(GetAccountInformation());
+                                context.read<InboxBloc>().add(const GetInboxEvent());
+                              },
+                              builder: (context, state) {
+                                switch (state.status) {
+                                  case AuthStatus.initial:
+                                    context.read<AuthBloc>().add(CheckAuth());
+                                    return const Center(child: CircularProgressIndicator());
+                                  case AuthStatus.success:
+                                    Version? version = thunderBlocState.version;
+                                    bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
 
-                                if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
-                                  WidgetsBinding.instance.addPostFrameCallback((_) {
-                                    showUpdateNotification(context, version);
-                                    setState(() => hasShownUpdateDialog = true);
-                                  });
+                                    if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
+                                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                                        showUpdateNotification(context, version);
+                                        setState(() => hasShownUpdateDialog = true);
+                                      });
+                                    }
+
+                                    return PageView(
+                                      controller: pageController,
+                                      onPageChanged: (index) => setState(() => selectedPageIndex = index),
+                                      physics: const NeverScrollableScrollPhysics(),
+                                      children: <Widget>[
+                                        CommunityPage(scaffoldKey: _feedScaffoldKey),
+                                        BlocProvider(
+                                          create: (context) => SearchBloc(),
+                                          child: const SearchPage(),
+                                        ),
+                                        const AccountPage(),
+                                        const InboxPage(),
+                                        SettingsPage(),
+                                      ],
+                                    );
+
+                                  // Should never hit these, they're handled by the login page
+                                  case AuthStatus.failure:
+                                  case AuthStatus.loading:
+                                    return Container();
                                 }
-
-                                return PageView(
-                                  controller: pageController,
-                                  onPageChanged: (index) => setState(() => selectedPageIndex = index),
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: <Widget>[
-                                    CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                    BlocProvider(
-                                      create: (context) => SearchBloc(),
-                                      child: const SearchPage(),
-                                    ),
-                                    const AccountPage(),
-                                    const InboxPage(),
-                                    SettingsPage(),
-                                  ],
-                                );
-
-                              // Should never hit these, they're handled by the login page
-                              case AuthStatus.failure:
-                              case AuthStatus.loading:
-                                return Container();
-                            }
-                          })));
+                              })));
                 case ThunderStatus.failure:
                   return ErrorMessage(
                     message: thunderBlocState.errorMessage,
@@ -308,7 +308,8 @@ class _ThunderState extends State<Thunder> {
           if (openInExternalBrowser) {
             launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest'), mode: LaunchMode.externalApplication);
           } else {
-            launch('https://github.com/hjiangsu/thunder/releases/latest',
+            launch(
+              'https://github.com/hjiangsu/thunder/releases/latest',
               customTabsOption: CustomTabsOption(
                 toolbarColor: Theme.of(context).canvasColor,
                 enableUrlBarHiding: true,

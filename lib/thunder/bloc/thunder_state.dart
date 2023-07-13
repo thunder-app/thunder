@@ -7,7 +7,6 @@ class ThunderState extends Equatable {
     this.status = ThunderStatus.initial,
 
     // General
-    this.database,
     this.version,
     this.errorMessage,
 
@@ -68,7 +67,6 @@ class ThunderState extends Equatable {
 
   final ThunderStatus status;
 
-  final Database? database;
   final Version? version;
 
   final String? errorMessage;
@@ -130,7 +128,6 @@ class ThunderState extends Equatable {
 
   ThunderState copyWith({
     ThunderStatus? status,
-    Database? database,
     Version? version,
     String? errorMessage,
 
@@ -190,7 +187,6 @@ class ThunderState extends Equatable {
   }) {
     return ThunderState(
       status: status ?? this.status,
-      database: database ?? this.database,
       version: version ?? this.version,
       errorMessage: errorMessage,
       // Feed Settings
@@ -247,7 +243,6 @@ class ThunderState extends Equatable {
   @override
   List<Object?> get props => [
         status,
-        database,
         version,
         errorMessage,
         useCompactView,

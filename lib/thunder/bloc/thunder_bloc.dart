@@ -37,19 +37,16 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
   }
 
+  /// This event should be triggered at the start of the app.
+  ///
+  /// It initializes the local database, checks for updates from GitHub, and loads the user's preferences.
   Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
     try {
-      // Load up database
-      final database = await openDatabase(
-        join(await getDatabasesPath(), 'thunder.db'),
-        version: 1,
-      );
-
       // Check for any updates from GitHub
       Version version = await fetchVersion();
 
       add(UserPreferencesChangeEvent());
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
+      emit(state.copyWith(status: ThunderStatus.success, version: version));
     } catch (e, s) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }

@@ -202,7 +202,18 @@ class _PostCardState extends State<PostCard> {
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
                       ),
-                onLongPress: () => showPostActionBottomModalSheet(context, widget.postViewMedia),
+                onLongPress: () => showPostActionBottomModalSheet(
+                  context,
+                  widget.postViewMedia,
+                  actionsToInclude: [
+                    PostCardAction.visitProfile,
+                    PostCardAction.visitCommunity,
+                    PostCardAction.blockCommunity,
+                    PostCardAction.sharePost,
+                    PostCardAction.shareMedia,
+                    PostCardAction.shareLink,
+                  ],
+                ),
                 onTap: () async {
                   AccountBloc accountBloc = context.read<AccountBloc>();
                   AuthBloc authBloc = context.read<AuthBloc>();
