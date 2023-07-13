@@ -16,12 +16,14 @@ class CommentCardActions extends StatelessWidget {
   final bool isEdit;
 
   final Function(int, VoteType) onVoteAction;
+  final Function(int, bool) onSaveAction;
 
   const CommentCardActions({
     super.key,
     required this.commentViewTree,
     this.isEdit = false,
     required this.onVoteAction,
+    required this.onSaveAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -44,12 +46,12 @@ class CommentCardActions extends StatelessWidget {
                 ),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  showCommentActionBottomModalSheet(context, commentViewTree);
+                  showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction);
                   HapticFeedback.mediumImpact();
                 }),
             IconButton(
-              icon: const Icon(
-                Icons.reply_rounded,
+              icon: Icon(
+                isEdit ? Icons.edit_rounded : Icons.reply_rounded,
                 semanticLabel: 'Reply',
               ),
               visualDensity: VisualDensity.compact,

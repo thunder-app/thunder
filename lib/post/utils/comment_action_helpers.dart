@@ -4,13 +4,10 @@ import 'package:share_plus/share_plus.dart';
 
 import '../../core/models/comment_view_tree.dart';
 
-enum CommentCardAction { copyText, shareLink }
+enum CommentCardAction { save, copyText, shareLink }
 
 class ExtendedCommentCardActions {
-  const ExtendedCommentCardActions(
-      {required this.commentCardAction,
-      required this.icon,
-      required this.label});
+  const ExtendedCommentCardActions({required this.commentCardAction, required this.icon, required this.label});
 
   final CommentCardAction commentCardAction;
   final IconData icon;
@@ -19,19 +16,23 @@ class ExtendedCommentCardActions {
 
 const commentCardActionItems = [
   ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.save,
+    icon: Icons.star_rounded,
+    label: 'Save',
+  ),
+  ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
     icon: Icons.copy_rounded,
     label: 'Copy Text',
   ),
   ExtendedCommentCardActions(
-      commentCardAction: CommentCardAction.shareLink,
-      icon: Icons.share_rounded,
-      label: 'Share Link'
+    commentCardAction: CommentCardAction.shareLink,
+    icon: Icons.share_rounded,
+    label: 'Share Link',
   ),
 ];
 
-void showCommentActionBottomModalSheet(
-    BuildContext context, CommentViewTree commentViewTree) {
+void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction) {
   final theme = Theme.of(context);
 
   showModalBottomSheet<void>(
@@ -44,8 +45,7 @@ void showCommentActionBottomModalSheet(
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -68,18 +68,15 @@ void showCommentActionBottomModalSheet(
                   onTap: () async {
                     Navigator.of(context).pop();
 
-                    CommentCardAction commentCardAction =
-                        commentCardActionItems[index].commentCardAction;
+                    CommentCardAction commentCardAction = commentCardActionItems[index].commentCardAction;
 
                     switch (commentCardAction) {
+                      case CommentCardAction.save:
+                        onSaveAction(commentViewTree.comment!.comment.id, !(commentViewTree.comment!.saved));
+                        break;
                       case CommentCardAction.copyText:
-                        Clipboard.setData(ClipboardData(
-                                text: commentViewTree.comment!.comment.content))
-                            .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Copied to clipboard"),
-                                  behavior: SnackBarBehavior.floating));
+                        Clipboard.setData(ClipboardData(text: commentViewTree.comment!.comment.content)).then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), behavior: SnackBarBehavior.floating));
                         });
                         break;
                       case CommentCardAction.shareLink:
