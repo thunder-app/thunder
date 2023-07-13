@@ -17,6 +17,7 @@
 - Feed view will no longer show full screen error messages
 - Added comment button actions and added an option to toggle comment button actions
 - Various login flow improvements - contribution from @micahmo
+- In app browser is now switched over to use custom tabs - contribution from @micahmo
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
