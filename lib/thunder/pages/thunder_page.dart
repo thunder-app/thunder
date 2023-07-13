@@ -164,16 +164,14 @@ class _ThunderState extends State<Thunder> {
                           child: BlocConsumer<AuthBloc, AuthState>(listenWhen: (AuthState previous, AuthState current) {
                             if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
                             return false;
-                          }, listener: (context, state) {
+                          }, buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                             listener: (context, state) {
                             context.read<AccountBloc>().add(GetAccountInformation());
                             context.read<InboxBloc>().add(const GetInboxEvent());
                           }, builder: (context, state) {
                             switch (state.status) {
                               case AuthStatus.initial:
                                 context.read<AuthBloc>().add(CheckAuth());
-                                return const Center(child: CircularProgressIndicator());
-                              case AuthStatus.loading:
-                                WidgetsBinding.instance.addPostFrameCallback((_) => setState(() => selectedPageIndex = 0));
                                 return const Center(child: CircularProgressIndicator());
                               case AuthStatus.success:
                                 Version? version = thunderBlocState.version;
@@ -202,12 +200,10 @@ class _ThunderState extends State<Thunder> {
                                   ],
                                 );
 
+                              // Should never hit these, they're handled by the login page
                               case AuthStatus.failure:
-                                return ErrorMessage(
-                                  message: state.errorMessage,
-                                  action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                                  actionText: 'Refresh Content',
-                                );
+                              case AuthStatus.loading:
+                                return Container();
                             }
                           })));
                 case ThunderStatus.failure:
