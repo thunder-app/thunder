@@ -97,7 +97,6 @@ Color getSwipeActionColor(SwipeAction swipeAction) {
 
 DismissDirection determineSwipeDirection(bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
-  if (state.disableSwipeActionsOnPost) return DismissDirection.none;
 
   // If all of the actions are none, then disable swiping
   if (state.leftPrimaryPostGesture == SwipeAction.none &&

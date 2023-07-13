@@ -159,7 +159,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             },
             onPointerCancel: (event) => {},
             child: Dismissible(
-              direction: determineSwipeDirection(isUserLoggedIn, state),
+              direction: state.enableCommentGestures == false ? DismissDirection.none : determineSwipeDirection(isUserLoggedIn, state),
               key: ObjectKey(widget.commentViewTree.commentView!.comment.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},

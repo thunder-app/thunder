@@ -77,7 +77,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Post Settings
       bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      bool disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
       bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -126,13 +125,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
+        // Feed Settings
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
         defaultPostListingType: defaultPostListingType,
         defaultSortType: defaultSortType,
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
-        disableSwipeActionsOnPost: disableSwipeActionsOnPost,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
