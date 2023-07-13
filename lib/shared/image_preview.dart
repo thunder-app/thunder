@@ -14,7 +14,7 @@ class ImagePreview extends StatefulWidget {
   final bool isGallery;
   final bool isExpandable;
   final bool showFullHeightImages;
-  final int postId;
+  final int? postId;
 
   const ImagePreview({
     super.key, required this.url,
@@ -23,7 +23,7 @@ class ImagePreview extends StatefulWidget {
     this.isGallery = false,
     this.isExpandable = true,
     this.showFullHeightImages = false,
-    this.postId = 0,
+    this.postId,
   });
 
   @override

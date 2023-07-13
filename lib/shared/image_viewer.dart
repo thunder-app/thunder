@@ -31,13 +31,13 @@ double slideTransparency = 0.9;
 class ImageViewer extends StatefulWidget {
   final String url;
   final String heroKey;
-  final int postId;
+  final int? postId;
 
   const ImageViewer({
     super.key,
     required this.url,
     required this.heroKey,
-    this.postId = 0,
+    this.postId,
   });
 
   get postViewMedia => null;
