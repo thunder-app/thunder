@@ -16,6 +16,7 @@
 - Settings have been re-organized to be more consistent, and to show available options between different views - contribution from @CTalvio
 - Feed view will no longer show full screen error messages
 - Added comment button actions and added an option to toggle comment button actions
+- Various login flow improvements - contribution from @micahmo
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
