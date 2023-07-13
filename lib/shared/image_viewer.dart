@@ -48,6 +48,7 @@ class ImageViewer extends StatefulWidget {
 
 class _ImageViewerState extends State<ImageViewer> {
   GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
+  final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
   bool downloaded = false;
 
   /// User Settings
@@ -81,187 +82,190 @@ class _ImageViewerState extends State<ImageViewer> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.black,
-          foregroundColor: Colors.white,
-        ),
-        backgroundColor: Colors.black.withOpacity(slideTransparency),
-        body: Center(
-          child: Column(
-            children: [
-              Expanded(
-                child: ExtendedImageSlidePage(
-                  key: slidePagekey,
-                  slideAxis: SlideAxis.both,
-                  slideType: SlideType.onlyImage,
-                  slidePageBackgroundHandler: (offset, pageSize) => Colors.transparent,
-                  onSlidingPage: (state) { //From what I can tell, this should allow the image and background to be faded out as you slide
-                    var offset = state.offset;
-                    var pageSize = state.pageSize;
+    return ScaffoldMessenger(
+      key: _imageViewer,
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.black,
+            foregroundColor: Colors.white,
+          ),
+          backgroundColor: Colors.black.withOpacity(slideTransparency),
+          body: Center(
+            child: Column(
+              children: [
+                Expanded(
+                  child: ExtendedImageSlidePage(
+                    key: slidePagekey,
+                    slideAxis: SlideAxis.both,
+                    slideType: SlideType.onlyImage,
+                    slidePageBackgroundHandler: (offset, pageSize) => Colors.transparent,
+                    onSlidingPage: (state) { //From what I can tell, this should allow the image and background to be faded out as you slide
+                      var offset = state.offset;
+                      var pageSize = state.pageSize;
 
-                    var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
+                      var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
 
-                    if( !state.isSliding ) {
-                      slideTransparency = 0.9 - scale;
-                    }
-                  },
-                  /*slideEndHandler: defaultSlideEndHandler,*/
-                  child: GestureDetector(
-                    child: HeroWidget(
-                      tag: widget.heroKey,
-                      slideType: SlideType.onlyImage,
-                      slidePagekey: slidePagekey,
-                      child: ExtendedImage.network(
-                        widget.url,
-                        enableSlideOutPage: true,
-                        mode: ExtendedImageMode.gesture,
-                        cache: true,
-                        clearMemoryCacheWhenDispose: true,
-                        initGestureConfigHandler: (ExtendedImageState state) {
-                          return GestureConfig(
-                            minScale: 1.0,
-                            animationMinScale: 1.0,
-                            maxScale: 4.0,
-                            animationMaxScale: 4.5,
-                            speed: 1.0,
-                            inertialSpeed: 100.0,
-                            initialScale: 1.0,
-                            inPageView: false,
-                            initialAlignment: InitialAlignment.center,
-                            reverseMousePointerScrollDirection: true,
-                            gestureDetailsIsChanged: (GestureDetails? details) {},
-                          );
-                        },
+                      if( !state.isSliding ) {
+                        slideTransparency = 0.9 - scale;
+                      }
+                    },
+                    /*slideEndHandler: defaultSlideEndHandler,*/
+                    child: GestureDetector(
+                      child: HeroWidget(
+                        tag: widget.heroKey,
+                        slideType: SlideType.onlyImage,
+                        slidePagekey: slidePagekey,
+                        child: ExtendedImage.network(
+                          widget.url,
+                          enableSlideOutPage: true,
+                          mode: ExtendedImageMode.gesture,
+                          cache: true,
+                          clearMemoryCacheWhenDispose: true,
+                          initGestureConfigHandler: (ExtendedImageState state) {
+                            return GestureConfig(
+                              minScale: 1.0,
+                              animationMinScale: 1.0,
+                              maxScale: 4.0,
+                              animationMaxScale: 4.5,
+                              speed: 1.0,
+                              inertialSpeed: 100.0,
+                              initialScale: 1.0,
+                              inPageView: false,
+                              initialAlignment: InitialAlignment.center,
+                              reverseMousePointerScrollDirection: true,
+                              gestureDetailsIsChanged: (GestureDetails? details) {},
+                            );
+                          },
+                        ),
                       ),
+                      onDoubleTap: () {
+                        // TODO Double tap to zoom around, somehow lol
+                      },
+                      onTap: () {
+                        slidePagekey.currentState!.popPage();
+                        Navigator.pop(context);
+                      },
                     ),
-                    onDoubleTap: () {
-                      // Double tap to zoom around, somehow lol
-                    },
-                    onTap: () {
-                      slidePagekey.currentState!.popPage();
-                      Navigator.pop(context);
-                    },
                   ),
                 ),
-              ),
-              Row(
-                children: [
-                  const Spacer(),
-                  /*Text( slideTransparency.toString() ),*/
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: IconButton(
-                      onPressed: () async {
-                        try {
-                          // Try to get the cached image first
-                          var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                          File? mediaFile = media?.file;
+                Row(
+                  children: [
+                    const Spacer(),
+                    /*Text( slideTransparency.toString() ),*/
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          try {
+                            // Try to get the cached image first
+                            var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                            File? mediaFile = media?.file;
 
-                          if (media == null) {
-                            // Tell user we're downloading the image, snackbars display twice for some reason, disabling here for now
-                            /*SnackBar snackBar = const SnackBar(
-                              content: Text('Downloading media to share...'),
+                            if (media == null) {
+                              // Tell user we're downloading the image, snackbars display twice for some reason, disabling here for now TODO fix that
+                              SnackBar snackBar = const SnackBar(
+                                content: Text('Downloading media to share...'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                _imageViewer.currentState?.clearSnackBars();
+                                _imageViewer.currentState?.showSnackBar(snackBar);
+                              });
+
+                              // Download
+                              mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+
+                              // Hide snackbar
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                _imageViewer.currentState?.clearSnackBars();
+                              });
+                            }
+
+                            // Share
+                            await Share.shareXFiles([XFile(mediaFile!.path)]);
+                          } catch (e) {
+                            // Tell the user that the download failed
+                            SnackBar snackBar = SnackBar(
+                              content: Text('There was an error downloading the media file to share: $e'),
                               behavior: SnackBarBehavior.floating,
                             );
                             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            });*/
-
-                            // Download
-                            mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
-
-                            // Hide snackbar
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
+                              _imageViewer.currentState?.clearSnackBars();
+                              _imageViewer.currentState?.showSnackBar(snackBar);
                             });
                           }
+                        },
+                        icon: const Icon(Icons.share_rounded, semanticLabel: "Comments"),
+                      ),
+                    ),
+                    const Spacer(), // TODO make go to post work
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          AccountBloc accountBloc = context.read<AccountBloc>();
+                          AuthBloc authBloc = context.read<AuthBloc>();
+                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          CommunityBloc communityBloc = context.read<CommunityBloc>();
 
-                          // Share
-                          await Share.shareXFiles([XFile(mediaFile!.path)]);
-                        } catch (e) {
-                          // Tell the user that the download failed
-                          /*SnackBar snackBar = SnackBar(
-                            content: Text('There was an error downloading the media file to share: $e'),
-                            behavior: SnackBarBehavior.floating,
+                          // Mark post as read when tapped
+                          if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
+
+                          await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider.value(value: accountBloc),
+                                    BlocProvider.value(value: authBloc),
+                                    BlocProvider.value(value: thunderBloc),
+                                    BlocProvider.value(value: communityBloc),
+                                    BlocProvider(create: (context) => post_bloc.PostBloc()),
+                                  ],
+                                  child: PostPage(
+                                    postView: widget.postViewMedia,
+                                    onPostUpdated: () {},
+                                  ),
+                                );
+                              },
+                            ),
                           );
-                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          });*/
-                        }
-                      },
-                      icon: const Icon(Icons.share_rounded, semanticLabel: "Comments"),
+                          if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
+                        },
+                        icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments"),
+                      ),
                     ),
-                  ),
-                  /*const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: IconButton(
-                      onPressed: () async {
-                        AccountBloc accountBloc = context.read<AccountBloc>();
-                        AuthBloc authBloc = context.read<AuthBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                        CommunityBloc communityBloc = context.read<CommunityBloc>();
+                    const Spacer(),
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          File file = await DefaultCacheManager().getSingleFile(widget.url);
 
-                        // Mark post as read when tapped
-                        if (isUserLoggedIn) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId, read: true));
+                          if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                            final result = await ImageGallerySaver.saveFile(file.path);
 
-                        await Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(value: accountBloc),
-                                  BlocProvider.value(value: authBloc),
-                                  BlocProvider.value(value: thunderBloc),
-                                  BlocProvider.value(value: communityBloc),
-                                  BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                ],
-                                child: PostPage(
-                                  postView: widget.postViewMedia,
-                                  onPostUpdated: () {},
-                                ),
-                              );
-                            },
-                          ),
-                        );
-                        if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                      },
-                      icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments"),
+                            setState(() => downloaded = result['isSuccess'] == true);
+                          } else if (Platform.isLinux || Platform.isWindows) {
+                            final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+
+                            File(filePath)
+                              ..createSync(recursive: true)
+                              ..writeAsBytesSync(file.readAsBytesSync());
+
+                            setState(() => downloaded = true);
+                          }
+                        },
+                        icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
+                      ),
                     ),
-                  ),*/
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: IconButton(
-                      onPressed: () async {
-                        File file = await DefaultCacheManager().getSingleFile(widget.url);
-
-                        if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                          final result = await ImageGallerySaver.saveFile(file.path);
-
-                          setState(() => downloaded = result['isSuccess'] == true);
-                        } else if (Platform.isLinux || Platform.isWindows) {
-                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
-
-                          File(filePath)
-                            ..createSync(recursive: true)
-                            ..writeAsBytesSync(file.readAsBytesSync());
-
-                          setState(() => downloaded = true);
-                        }
-                      },
-                      icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
-                    ),
-                  ),
-                  const Spacer(),
-                ],
-              ),
-            ],
+                    const Spacer(),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      );
+    );
   }
 }
