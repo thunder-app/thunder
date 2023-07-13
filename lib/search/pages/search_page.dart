@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -60,31 +61,42 @@ class _SearchPageState extends State<SearchPage> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            toolbarHeight: 90.0,
-            scrolledUnderElevation: 0.0,
-            title: SearchBar(
-              controller: _controller,
-              leading: const Padding(
-                padding: EdgeInsets.only(left: 8.0),
-                child: Icon(Icons.search_rounded),
-              ),
-              trailing: [
-                if (_controller.text.isNotEmpty)
-                  IconButton(
-                    onPressed: () {
-                      resetTextField();
-                      context.read<SearchBloc>().add(ResetSearch());
+              toolbarHeight: 90.0,
+              scrolledUnderElevation: 0.0,
+              title: Material(
+                color: Colors.transparent,
+                borderRadius: BorderRadius.circular(50),
+                elevation: 8,
+                child: TextField(
+                    onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                    controller: _controller,
+                    onTap: () {
+                      HapticFeedback.selectionClick();
                     },
-                    icon: const Icon(
-                      Icons.close,
-                      semanticLabel: 'Clear Search',
-                    ),
-                  )
-              ],
-              hintText: 'Search for communities',
-              onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
-            ),
-          ),
+                    decoration: InputDecoration(
+                        fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                        hintText: 'Search for communities',
+                        filled: true,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(50),
+                          borderSide: const BorderSide(
+                            width: 0,
+                            style: BorderStyle.none,
+                          ),
+                        ),
+                        suffixIcon: _controller.text.isNotEmpty
+                            ? IconButton(
+                                icon: const Icon(
+                                  Icons.close,
+                                  semanticLabel: 'Clear Search',
+                                ),
+                                onPressed: () {
+                                  resetTextField();
+                                  context.read<SearchBloc>().add(ResetSearch());
+                                })
+                            : null,
+                        prefixIcon: const Icon(Icons.search_rounded))),
+              )),
           body: _getSearchBody(context, state),
         );
       },
@@ -134,80 +146,99 @@ class _SearchPageState extends State<SearchPage> {
           itemBuilder: (BuildContext context, int index) {
             CommunityView communityView = state.results!.communities[index];
 
-            return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
-                  foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
-                  maxRadius: 25,
-                  child: Text( communityView.community.name[0].toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 25,
-                    ),
-                  ),
-                ),
-                title: Text(
-                  communityView.community.title,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Row(children: [
-                  Text('${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)} · ${communityView.counts.subscribers}'),
-                  const SizedBox(width: 4),
-                  const Icon(Icons.people_rounded, size: 16.0),
-                ]),
-                trailing: isUserLoggedIn
-                    ? IconButton(
-                        onPressed: communityView.subscribed == SubscribedType.pending
-                            ? null
-                            : () {
-                                context.read<SearchBloc>().add(
-                                      ChangeCommunitySubsciptionStatusEvent(
-                                        communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                                      ),
-                                    );
-                                SnackBar snackBar = SnackBar(
-                                  content: Text('${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community to subscriptions'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                });
-                              },
-                        icon: Icon(
-                          switch (communityView.subscribed) {
-                            SubscribedType.notSubscribed => Icons.add,
-                            SubscribedType.pending => Icons.pending_rounded,
-                            SubscribedType.subscribed => Icons.remove,
-                          },
+            return Tooltip(
+                excludeFromSemantics: true,
+                message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                preferBelow: false,
+                child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
+                      foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                      maxRadius: 25,
+                      child: Text(
+                        communityView.community.name[0].toUpperCase(),
+                        semanticsLabel: '',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
                         ),
-                        visualDensity: VisualDensity.compact,
-                      )
-                    : null,
-                onTap: () {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  AuthBloc authBloc = context.read<AuthBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: accountBloc),
-                          BlocProvider.value(value: authBloc),
-                          BlocProvider.value(value: thunderBloc),
-                        ],
-                        child: CommunityPage(communityId: communityView.community.id),
                       ),
                     ),
-                  );
-                });
+                    title: Text(
+                      communityView.community.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Row(children: [
+                      Flexible(
+                        child: Text(
+                          '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Text(
+                        ' · ${communityView.counts.subscribers}',
+                        semanticsLabel: '${communityView.counts.subscribers} subscribers',
+                      ),
+                      const SizedBox(width: 4),
+                      const Icon(Icons.people_rounded, size: 16.0),
+                    ]),
+                    trailing: isUserLoggedIn
+                        ? IconButton(
+                            onPressed: () {
+                              context.read<SearchBloc>().add(
+                                    ChangeCommunitySubsciptionStatusEvent(
+                                      communityId: communityView.community.id,
+                                      follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+                                    ),
+                                  );
+                              SnackBar snackBar = SnackBar(
+                                content: Text(
+                                    '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                ScaffoldMessenger.of(context).clearSnackBars();
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              });
+                              context.read<AccountBloc>().add(GetAccountInformation());
+                            },
+                            icon: Icon(
+                              switch (communityView.subscribed) {
+                                SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                                SubscribedType.pending => Icons.pending_outlined,
+                                SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                              },
+                            ),
+                            tooltip: switch (communityView.subscribed) {
+                              SubscribedType.notSubscribed => 'Subscribe',
+                              SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                              SubscribedType.subscribed => 'Unsubscribe',
+                            },
+                            visualDensity: VisualDensity.compact,
+                          )
+                        : null,
+                    onTap: () {
+                      AccountBloc accountBloc = context.read<AccountBloc>();
+                      AuthBloc authBloc = context.read<AuthBloc>();
+                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => MultiBlocProvider(
+                            providers: [
+                              BlocProvider.value(value: accountBloc),
+                              BlocProvider.value(value: authBloc),
+                              BlocProvider.value(value: thunderBloc),
+                            ],
+                            child: CommunityPage(communityId: communityView.community.id),
+                          ),
+                        ),
+                      );
+                    }));
           },
         );
       case SearchStatus.empty:
         return const Center(child: Text('Empty'));
-      case SearchStatus.networkFailure:
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,

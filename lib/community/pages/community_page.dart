@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
@@ -59,7 +60,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           return true;
         },
         listener: (context, state) {
-          if (state.status == CommunityStatus.networkFailure) {
+          if (state.status == CommunityStatus.failure) {
             SnackBar snackBar = SnackBar(
               content: Text(state.errorMessage ?? 'No error message available'),
               behavior: SnackBarBehavior.floating,
@@ -106,9 +107,20 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
                       IconButton(
                         icon: Icon(
-                          (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? Icons.library_add_check_outlined : Icons.library_add_check_rounded,
+                          switch (state.subscribedType) {
+                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                            SubscribedType.pending => Icons.pending_outlined,
+                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                            _ => Icons.add_circle_outline_rounded,
+                          },
                           semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                         ),
+                        tooltip: switch (state.subscribedType) {
+                          SubscribedType.notSubscribed => 'Subscribe',
+                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                          SubscribedType.subscribed => 'Unsubscribe',
+                          _ => null,
+                        },
                         onPressed: () {
                           HapticFeedback.mediumImpact();
                           context.read<CommunityBloc>().add(
@@ -123,7 +135,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
                         onPressed: () {
                           HapticFeedback.mediumImpact();
-                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId));
+                          context.read<AccountBloc>().add(GetAccountInformation());
+                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId, listingType: state.listingType));
                         }),
                     IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
@@ -176,8 +189,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.refreshing:
-      case CommunityStatus.networkFailure:
       case CommunityStatus.success:
+      case CommunityStatus.failure:
         return PostCardList(
           postViews: state.postViews,
           listingType: state.communityId != null ? null : state.listingType,
@@ -189,14 +202,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
         );
-
       case CommunityStatus.empty:
-      case CommunityStatus.failure:
-        return ErrorMessage(
-          message: state.errorMessage,
-          action: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId)),
-          actionText: 'Refresh Content',
-        );
+        return const Center(child: Text('No posts found'));
     }
   }
 

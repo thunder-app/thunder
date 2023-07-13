@@ -2,7 +2,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
@@ -119,10 +118,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             page: 1,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
-            // maxDepth: 8,
+            maxDepth: COMMENT_MAX_DEPTH,
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
+            type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch comments');
@@ -147,18 +147,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
       emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
 
   /// Event to fetch more comments from a post
-  Future<void> _getPostCommentsEvent(event, emit) async {
+  Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -182,11 +180,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 .run(GetComments(
               auth: account?.jwt,
               communityId: state.communityId,
+              parentId: event.commentParentId,
               postId: state.postId,
               sort: sortType,
               limit: commentLimit,
-              // maxDepth: 8,
+              maxDepth: COMMENT_MAX_DEPTH,
               page: 1,
+              type: CommentListingType.all,
             ))
                 .timeout(timeout, onTimeout: () {
               throw Exception('Error: Timeout when attempting to fetch comments');
@@ -208,7 +208,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || state.hasReachedCommentEnd) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) return;
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy
@@ -216,10 +216,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             auth: account?.jwt,
             communityId: state.communityId,
             postId: state.postId,
+            parentId: event.commentParentId,
             sort: sortType,
             limit: commentLimit,
-            // maxDepth: 8,
-            page: state.commentPage,
+            maxDepth: COMMENT_MAX_DEPTH,
+            page: event.commentParentId != null ? 1 : state.commentPage,
+            type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch more comments');
@@ -236,14 +238,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             status: PostStatus.success,
             comments: commentViewTree,
             commentResponseList: fullCommentResponseList,
-            commentPage: state.commentPage + 1,
+            commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
             commentCount: fullCommentResponseList.length,
-            hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+            hasReachedCommentEnd: event.commentParentId != null && (getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit),
           ));
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
 
@@ -253,7 +254,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -281,7 +281,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -298,7 +297,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -319,25 +317,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       // Optimistically update the comment
-      CommentView? originalCommentView = currentTree.comment;
+      CommentView? originalCommentView = currentTree.commentView;
 
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
-      currentTree.comment = updatedCommentView;
+      currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: PostStatus.success));
       emit(state.copyWith(status: PostStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
-        currentTree.comment = originalCommentView; // Reset this on exception
+        currentTree.commentView = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 
-      currentTree.comment = commentView;
+      currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -357,11 +354,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
-      currentTree.comment = commentView; // Update the comment's information
+      currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -393,7 +389,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -424,7 +419,6 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

@@ -3,8 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -26,8 +29,12 @@ class LinkPreviewCard extends StatelessWidget {
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
-    this.postId = 0,
+    this.postId,
+    required this.isUserLoggedIn,
+    required this.markPostReadOnMediaView,
   });
+
+  final int? postId;
 
   final String? originURL;
   final String? mediaURL;
@@ -40,8 +47,10 @@ class LinkPreviewCard extends StatelessWidget {
 
   final bool edgeToEdgeImages;
 
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
+
   final ViewMode viewMode;
-  final int postId;
 
   @override
   Widget build(BuildContext context) {
@@ -101,8 +110,17 @@ class LinkPreviewCard extends StatelessWidget {
 
   void triggerOnTap(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
-
     final openInExternalBrowser = state.openInExternalBrowser;
+
+    if (isUserLoggedIn && markPostReadOnMediaView) {
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      } catch(e){
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
+      }
+    }
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation
@@ -128,7 +146,20 @@ class LinkPreviewCard extends StatelessWidget {
       if (openInExternalBrowser) {
         launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
+        launch(originURL!,
+          customTabsOption: CustomTabsOption(
+            toolbarColor: Theme.of(context).canvasColor,
+            enableUrlBarHiding: true,
+            showPageTitle: true,
+            enableDefaultShare: true,
+            enableInstantApps: true,
+          ),
+          safariVCOption: SafariViewControllerOption(
+            preferredBarTintColor: Theme.of(context).canvasColor,
+            preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+            barCollapsingEnabled: true,
+          ),
+        );
       }
     }
   }

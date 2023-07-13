@@ -2,7 +2,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 
 Future<Map<String, double>> getTextScaleFactor() async {
-  final prefs = UserPreferences.instance.sharedPreferences;
+  final prefs = (await UserPreferences.instance).sharedPreferences;
 
   String? titleFontSizeScaleString = prefs.getString("setting_theme_title_font_size_scale");
   String? contentFontSizeScaleString = prefs.getString("setting_theme_content_font_size_scale");

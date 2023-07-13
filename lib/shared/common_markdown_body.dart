@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/font_size.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -39,7 +40,18 @@ class CommonMarkdownBody extends StatelessWidget {
       },
       selectable: isSelectableText,
       onTapLink: (text, url, title) {
-        String? communityName = checkLemmyInstanceUrl(text);
+        Uri? parsedUri = Uri.tryParse(text);
+
+        String parsedUrl = text;
+
+        if (parsedUri != null && parsedUri.host.isNotEmpty) {
+          parsedUrl = parsedUri.toString();
+        } else {
+          parsedUrl = url ?? '';
+        }
+
+        String? communityName = checkLemmyInstanceUrl(parsedUrl);
+
         if (communityName != null) {
           // Push navigation
           AccountBloc accountBloc = context.read<AccountBloc>();
@@ -60,9 +72,22 @@ class CommonMarkdownBody extends StatelessWidget {
           );
         } else if (url != null) {
           if (openInExternalBrowser == true) {
-            launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+            launchUrl(Uri.parse(parsedUrl), mode: LaunchMode.externalApplication);
           } else {
-            Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: url)));
+            launch(parsedUrl,
+              customTabsOption: CustomTabsOption(
+                toolbarColor: Theme.of(context).canvasColor,
+                enableUrlBarHiding: true,
+                showPageTitle: true,
+                enableDefaultShare: true,
+                enableInstantApps: true,
+              ),
+              safariVCOption: SafariViewControllerOption(
+                preferredBarTintColor: Theme.of(context).canvasColor,
+                preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+                barCollapsingEnabled: true,
+              ),
+            );
           }
         }
       },

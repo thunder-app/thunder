@@ -51,7 +51,7 @@ class _CommentSubviewState extends State<CommentSubview> {
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (widget.postViewMedia != null && index == 0) {
-          return PostSubview(postViewMedia: widget.postViewMedia!);
+          return PostSubview(useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
         } else if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
           return Column(
             children: [
@@ -92,7 +92,7 @@ class _CommentSubviewState extends State<CommentSubview> {
           return CommentCard(
             commentViewTree: widget.comments[index - 1],
             collapsedCommentSet: collapsedCommentSet,
-            collapsed: collapsedCommentSet.contains(widget.comments[index - 1].comment!.comment.id) || widget.level == 2,
+            collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
             onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
             onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
             onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
@@ -116,7 +116,5 @@ class _CommentSubviewState extends State<CommentSubview> {
     } else if (collapsed == true && !collapsedCommentSet.contains(commentId)) {
       setState(() => collapsedCommentSet.add(commentId));
     }
-
-    print(collapsedCommentSet);
   }
 }

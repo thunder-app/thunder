@@ -7,8 +7,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 
 // Optimistically updates a comment
 CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType voteType) {
-  int newScore = commentViewTree.comment!.counts.score;
-  VoteType? existingVoteType = commentViewTree.comment!.myVote;
+  int newScore = commentViewTree.commentView!.counts.score;
+  VoteType? existingVoteType = commentViewTree.commentView!.myVote;
 
   switch (voteType) {
     case VoteType.down:
@@ -27,7 +27,7 @@ CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType 
       break;
   }
 
-  return commentViewTree.comment!.copyWith(myVote: voteType, counts: commentViewTree.comment!.counts.copyWith(score: newScore));
+  return commentViewTree.commentView!.copyWith(myVote: voteType, counts: commentViewTree.commentView!.counts.copyWith(score: newScore));
 }
 
 /// Logic to vote on a comment
@@ -64,14 +64,14 @@ Future<CommentView> saveComment(int commentId, bool save) async {
   return updatedCommentView;
 }
 
+/// Builds a tree of comments given a flattened list
 List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
   // Create a map of CommentView objects using the comment path as the key
   for (CommentView commentView in comments) {
-    // commentMap[commentView.comment.path] = CommentViewTree(comment: commentView.comment, );
     commentMap[commentView.comment.path] = CommentViewTree(
-      comment: commentView,
+      commentView: commentView,
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
@@ -83,7 +83,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
   // Build the tree structure by assigning children to their parent comments
   for (CommentViewTree commentView in commentMap.values) {
-    List<String> pathIds = commentView.comment!.comment.path.split('.');
+    List<String> pathIds = commentView.commentView!.comment.path.split('.');
     String parentPath = pathIds.getRange(0, pathIds.length - 1).join('.');
 
     CommentViewTree? parentCommentView = commentMap[parentPath];
@@ -94,14 +94,14 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   }
 
   // Return the root comments (those with an empty or "0" path)
-  return commentMap.values.where((commentView) => commentView.comment!.comment.path.isEmpty || commentView.comment!.comment.path == '0.${commentView.comment!.comment.id}').toList();
+  return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
 }
 
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
   for (int i = 0; i < commentTrees.length; i++) {
-    if (commentTrees[i].comment!.comment.id == commentId) {
+    if (commentTrees[i].commentView!.comment.id == commentId) {
       return [...indexes, i]; // Return a copy of the indexes list with the current index added
     }
 

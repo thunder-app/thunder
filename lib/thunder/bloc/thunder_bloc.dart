@@ -3,13 +3,14 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:path/path.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
@@ -50,7 +51,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -59,7 +59,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
       // Feed Settings
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
@@ -85,9 +85,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      bool useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+
+      // Comment Settings
+      bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
 
       // Links
       bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -95,9 +101,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Notification Settings
       bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
-
-      // Error Tracking
-      bool enableSentryErrorTracking = prefs.getBool('setting_error_tracking_enable_sentry') ?? false;
 
       // Post Gestures
       bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
@@ -114,9 +117,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
 
       // Theme Settings
-      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
@@ -137,14 +138,19 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showSaveAction: showSaveAction,
         showFullHeightImages: showFullHeightImages,
         showEdgeToEdgeImages: showEdgeToEdgeImages,
+        tabletMode: tabletMode,
         showTextContent: showTextContent,
         hideNsfwPreviews: hideNsfwPreviews,
+        useDisplayNames: useDisplayNames,
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
+        markPostReadOnMediaView: markPostReadOnMediaView,
+        // Comment Actions
+        showCommentButtonActions: showCommentButtonActions,
+        //
         openInExternalBrowser: openInExternalBrowser,
         showLinkPreviews: showLinkPreviews,
         showInAppUpdateNotification: showInAppUpdateNotification,
-        enableSentryErrorTracking: enableSentryErrorTracking,
         enablePostGestures: enablePostGestures,
         leftPrimaryPostGesture: leftPrimaryPostGesture,
         leftSecondaryPostGesture: leftSecondaryPostGesture,
@@ -155,15 +161,12 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
-        useSystemTheme: useSystemTheme,
         themeType: themeType,
-        useBlackTheme: useBlackTheme,
         useMaterialYouTheme: useMaterialYouTheme,
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,
       ));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }

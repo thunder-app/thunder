@@ -1,5 +1,41 @@
 ## Unreleased
 ### Added
+- Added community icons to subscription list and search - contribution from @CTalvio
+- Added ability to return to homescreen when swiping from post body - contribution from @bactaholic
+- Added scroll to top buttons on various pages - contribution from @bactaholic
+- Added double swipe to exit - contribution from @bactaholic
+- Added ability to set post as read when opening media - contribution from @ajsosa
+- Added initial support for 2 column viewing for tablet modes - contribution from @Fmstrat
+- Adjustments to the login screen to include instance images, and tweaks - contribution from @micahmo
+- Added ability to copy/share comment on long press - contribution from @vbh
+- Changes to support user display names, additional profile information, and UI tweaks - contribution from @CTalvio
+- Added ability to set no action for swipe gestures on posts and comments
+- Added ability to select/upload image when creating post - contribution from @MrAntonS
+- Added instance name into sidebar menu - contribution from @micahmo
+- Navigating back from a page will first go to the feed page before exiting - contribution from @micahmo
+- Settings have been re-organized to be more consistent, and to show available options between different views - contribution from @CTalvio
+- Feed view will no longer show full screen error messages
+- Added comment button actions and added an option to toggle comment button actions
+- Added maximum depth to comments. You can now tap on Load more replies to get more replies for a comment thread within a post
+- Various login flow improvements - contribution from @micahmo
+- In app browser is now switched over to use custom tabs - contribution from @micahmo
+- Adjusted theming options to show a modal rather than toggles to reduce confusion - contribution from @coslu
+
+### Changed
+- Adjusted subscription styling to be more consistent - contribution from @micahmo
+- Removed Sentry error logging
+- Tapping outside of the text field when creating a comment/reply will dismiss the keyboard
+
+### Fixed
+- Fixed issue with styling differences in compact and normal view for community/instance - contribution from @machinaeZER0
+- Fixed issue with webp previews not showing - contribution from @Fmstrat
+- Fixed issue with some links not being parsed properly (GitHub release links)
+- Fixed issue where copy/pasting was non-functional on the Search input - contribution from @ajsosa
+- Fixed issue where subscribing to a community from the search page would not refresh sidebar subscriptions - contribution from @micahmo
+- Fixed issue where only some subscriptions would show up on the sidebar
+
+## 0.2.1+11 - 2023-07-09
+### Added
 - Added colour to username in comments to distinguish your own comments
 - Added option to allow text preview on text posts in normal view - contribution from @coslu
 - Added option to share media link or external URL links in the dialog popup on post long press

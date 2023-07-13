@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -24,6 +24,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
     on<GetAccountInformation>((event, emit) async {
       int attemptCount = 0;
 
+      bool hasFetchedAllSubsciptions = false;
+      int currentPage = 1;
+
       try {
         var exception;
 
@@ -40,31 +43,38 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               emit(state.copyWith(status: AccountStatus.loading));
             }
 
-            List<CommunityView> communityViews = await lemmy.run(
-              ListCommunities(
-                auth: account.jwt,
-                type: PostListingType.subscribed,
-                limit: 50, // Temporarily increasing this to address issue of missing subscriptions
-              ),
-            );
+            List<CommunityView> subsciptions = [];
+
+            while (!hasFetchedAllSubsciptions) {
+              List<CommunityView> communityViews = await lemmy.run(
+                ListCommunities(
+                  auth: account.jwt,
+                  page: currentPage,
+                  type: PostListingType.subscribed,
+                  limit: 50, // Temporarily increasing this to address issue of missing subscriptions
+                ),
+              );
+
+              subsciptions.addAll(communityViews);
+              currentPage++;
+              hasFetchedAllSubsciptions = communityViews.isEmpty;
+            }
 
             // Sort subscriptions by their name
-            communityViews.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
+            subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
             FullPersonView? fullPersonView = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
               throw Exception('Error: Timeout when attempting to fetch account details');
             });
 
-            return emit(state.copyWith(status: AccountStatus.success, subsciptions: communityViews, personView: fullPersonView.personView));
+            return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
           } catch (e, s) {
             exception = e;
             attemptCount++;
-            await Sentry.captureException(e, stackTrace: s);
           }
         }
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: exception.toString()));
       } catch (e, s) {
-        await Sentry.captureException(e, stackTrace: s);
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });

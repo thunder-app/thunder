@@ -12,7 +12,9 @@ import 'package:thunder/utils/numbers.dart';
 class PostCardMetaData extends StatelessWidget {
   final int score;
   final VoteType voteType;
+  final int unreadComments;
   final int comments;
+  final bool hasBeenEdited;
   final DateTime published;
   final bool saved;
   final bool distinguised;
@@ -21,7 +23,9 @@ class PostCardMetaData extends StatelessWidget {
     super.key,
     required this.score,
     required this.voteType,
+    required this.unreadComments,
     required this.comments,
+    required this.hasBeenEdited,
     required this.published,
     required this.saved,
     required this.distinguised,
@@ -53,7 +57,7 @@ class PostCardMetaData extends StatelessWidget {
                     : voteType == VoteType.down
                       ? downVoteColor
                       : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                  icon: Icon( voteType == VoteType.down ? Icons.arrow_downward : Icons.arrow_upward,
+                  icon: Icon( voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                       size: 18.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
@@ -67,19 +71,19 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    Icons.chat,
+                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                     size: 17.0,
-                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                    color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/ theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text: formatNumberToK(comments),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/ formatNumberToK(comments),
+                  textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/ theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    Icons.history_rounded,
+                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
@@ -110,13 +114,17 @@ class PostCardMetaData extends StatelessWidget {
 }
 
 class PostViewMetaData extends StatelessWidget {
+  final int unreadComments;
   final int comments;
+  final bool hasBeenEdited;
   final DateTime published;
   final bool saved;
 
   const PostViewMetaData({
     super.key,
+    required this.unreadComments,
     required this.comments,
+    required this.hasBeenEdited,
     required this.published,
     required this.saved,
   });
@@ -137,6 +145,24 @@ class PostViewMetaData extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
+                /*Container(
+                  child: unreadComments != 0 && unreadComments != comments ? Row(
+                    children: [
+                      IconText(
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        icon: Icon(
+                          Icons.mark_unread_chat_alt_rounded,
+                          size: 17.0,
+                          color: theme.primaryColor,
+                        ),
+                        text: '+${formatNumberToK(unreadComments)}',
+                        textColor: theme.primaryColor,
+                        padding: 5.0,
+                      ),
+                      const SizedBox(width: 10.0),
+                    ],
+                  ) : null,
+                ),*/
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
@@ -145,17 +171,19 @@ class PostViewMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatNumberToK(comments),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    Icons.history_rounded,
+                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
               ],
             ),

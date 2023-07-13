@@ -29,17 +29,20 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.hideNsfwPreviews = true,
+    this.useDisplayNames = true,
     this.bottomNavBarSwipeGestures = true,
     this.bottomNavBarDoubleTapGestures = false,
+    this.tabletMode = false,
+    this.markPostReadOnMediaView = false,
+
+    // Comment Settings
+    this.showCommentButtonActions = false,
 
     // Link Settings
     this.openInExternalBrowser = false,
 
     // Notification Settings
     this.showInAppUpdateNotification = true,
-
-    // Error Reporting
-    this.enableSentryErrorTracking = false,
 
     // Post Gestures
     this.enablePostGestures = true,
@@ -56,9 +59,7 @@ class ThunderState extends Equatable {
     this.rightSecondaryCommentGesture = SwipeAction.save,
 
     // Theme Settings
-    this.useSystemTheme = false,
-    this.themeType = 'dark',
-    this.useBlackTheme = false,
+    this.themeType = ThemeType.system,
     this.useMaterialYouTheme = false,
 
     // Font Scale
@@ -92,17 +93,20 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool hideNsfwPreviews;
+  final bool useDisplayNames;
   final bool bottomNavBarSwipeGestures;
   final bool bottomNavBarDoubleTapGestures;
+  final bool tabletMode;
+  final bool markPostReadOnMediaView;
+
+  // Comment Settings
+  final bool showCommentButtonActions;
 
   // Link Settings
   final bool openInExternalBrowser;
 
   // Notification Settings
   final bool showInAppUpdateNotification;
-
-  // Error Reporting
-  final bool enableSentryErrorTracking;
 
   // Post Gestures
   final bool enablePostGestures;
@@ -119,9 +123,7 @@ class ThunderState extends Equatable {
   final SwipeAction rightSecondaryCommentGesture;
 
   // Theme Settings
-  final bool useSystemTheme;
-  final String themeType;
-  final bool useBlackTheme;
+  final ThemeType themeType;
   final bool useMaterialYouTheme;
 
   // Font Scale
@@ -133,12 +135,14 @@ class ThunderState extends Equatable {
     Database? database,
     Version? version,
     String? errorMessage,
+
     // Feed Settings
     bool? useCompactView,
     bool? showTitleFirst,
     PostListingType? defaultPostListingType,
     SortType? defaultSortType,
     CommentSortType? defaultCommentSortType,
+
     // Post Settings
     bool? collapseParentCommentOnGesture,
     bool? disableSwipeActionsOnPost,
@@ -150,31 +154,39 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? hideNsfwPreviews,
+    bool? tabletMode,
     bool? bottomNavBarSwipeGestures,
     bool? bottomNavBarDoubleTapGestures,
+    bool? markPostReadOnMediaView,
+    bool? useDisplayNames,
+
+    // Comment Settings
+    bool? showCommentButtonActions,
+
     // Link Settings
     bool? openInExternalBrowser,
+
     // Notification Settings
     bool? showInAppUpdateNotification,
-    // Error Reporting
-    bool? enableSentryErrorTracking,
+
     // Post Gestures
     bool? enablePostGestures,
     SwipeAction? leftPrimaryPostGesture,
     SwipeAction? leftSecondaryPostGesture,
     SwipeAction? rightPrimaryPostGesture,
     SwipeAction? rightSecondaryPostGesture,
+
     // Comment Gestures
     bool? enableCommentGestures,
     SwipeAction? leftPrimaryCommentGesture,
     SwipeAction? leftSecondaryCommentGesture,
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
+
     // Theme Settings
-    bool? useSystemTheme,
-    String? themeType,
-    bool? useBlackTheme,
+    ThemeType? themeType,
     bool? useMaterialYouTheme,
+
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
@@ -201,14 +213,19 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
+      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
+      tabletMode: tabletMode ?? this.tabletMode,
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+
+      // Comment Settings
+      showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+
       // Link Settings
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      // Error Reporting
-      enableSentryErrorTracking: enableSentryErrorTracking ?? this.enableSentryErrorTracking,
       // Post Gestures
       enablePostGestures: enablePostGestures ?? this.enablePostGestures,
       leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
@@ -223,9 +240,7 @@ class ThunderState extends Equatable {
       rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
       // Theme Settings
-      useSystemTheme: useSystemTheme ?? this.useSystemTheme,
       themeType: themeType ?? this.themeType,
-      useBlackTheme: useBlackTheme ?? this.useBlackTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -254,11 +269,14 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         hideNsfwPreviews,
+        useDisplayNames,
+        tabletMode,
         bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures,
+        markPostReadOnMediaView,
+        showCommentButtonActions,
         openInExternalBrowser,
         showInAppUpdateNotification,
-        enableSentryErrorTracking,
         enablePostGestures,
         leftPrimaryPostGesture,
         leftSecondaryPostGesture,
@@ -269,9 +287,7 @@ class ThunderState extends Equatable {
         leftSecondaryCommentGesture,
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
-        useSystemTheme,
         themeType,
-        useBlackTheme,
         useMaterialYouTheme,
         titleFontSizeScale,
         contentFontSizeScale,

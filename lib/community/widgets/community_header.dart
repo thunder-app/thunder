@@ -62,8 +62,7 @@ class CommunityHeader extends StatelessWidget {
                           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                         ),
                         Text(
-                          fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A',
-                          style: theme.textTheme.titleSmall,
+                          '${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'
                         ),
                         const SizedBox(height: 8.0),
                         Row(
@@ -74,8 +73,8 @@ class CommunityHeader extends StatelessWidget {
                             ),
                             const SizedBox(width: 8.0),
                             IconText(
-                              icon: const Icon(Icons.sensors_rounded),
-                              text: (communityInfo?.online != null) ? '${communityInfo?.online}' : '-',
+                              icon: const Icon(Icons.calendar_month_rounded ),
+                              text: formatNumberToK(communityInfo?.communityView.counts.usersActiveMonth ?? 0),
                             ),
                           ],
                         ),
