@@ -2,7 +2,8 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -144,7 +145,20 @@ class LinkPreviewCard extends StatelessWidget {
       if (openInExternalBrowser) {
         launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
+        launch(originURL!,
+          customTabsOption: CustomTabsOption(
+            toolbarColor: Theme.of(context).canvasColor,
+            enableUrlBarHiding: true,
+            showPageTitle: true,
+            enableDefaultShare: true,
+            enableInstantApps: true,
+          ),
+          safariVCOption: SafariViewControllerOption(
+            preferredBarTintColor: Theme.of(context).canvasColor,
+            preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+            barCollapsingEnabled: true,
+          ),
+        );
       }
     }
   }
