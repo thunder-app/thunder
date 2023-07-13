@@ -72,15 +72,15 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
 
                     switch (commentCardAction) {
                       case CommentCardAction.save:
-                        onSaveAction(commentViewTree.comment!.comment.id, !(commentViewTree.comment!.saved));
+                        onSaveAction(commentViewTree.commentView!.comment.id, !(commentViewTree.commentView!.saved));
                         break;
                       case CommentCardAction.copyText:
-                        Clipboard.setData(ClipboardData(text: commentViewTree.comment!.comment.content)).then((_) {
+                        Clipboard.setData(ClipboardData(text: commentViewTree.commentView!.comment.content)).then((_) {
                           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), behavior: SnackBarBehavior.floating));
                         });
                         break;
                       case CommentCardAction.shareLink:
-                        Share.share(commentViewTree.comment!.comment.apId);
+                        Share.share(commentViewTree.commentView!.comment.apId);
                         break;
                     }
                   },

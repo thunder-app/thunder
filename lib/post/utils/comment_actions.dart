@@ -21,10 +21,10 @@ void triggerCommentAction({
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
-      onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
@@ -54,7 +54,7 @@ void triggerCommentAction({
 
       break;
     case SwipeAction.save:
-      onSaveAction(commentViewTree.comment!.comment.id, !(saved ?? false));
+      onSaveAction(commentViewTree.commentView!.comment.id, !(saved ?? false));
       break;
     default:
       break;
