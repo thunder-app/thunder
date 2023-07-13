@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
+import 'package:thunder/post/widgets/comment_card_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -279,9 +280,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           },
                           child: (isHidden && collapseParentCommentOnGesture)
                               ? Container()
-                              : Padding(
-                                  padding: const EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: 8.0),
-                                  child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
+                                      child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                                    ),
+                                    if (state.showCommentButtonActions && isUserLoggedIn)
+                                      Padding(
+                                        padding: const EdgeInsets.only(bottom: 8.0, right: 4.0),
+                                        child: CommentCardActions(
+                                          commentViewTree: widget.commentViewTree,
+                                          onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                          isEdit: isOwnComment,
+                                        ),
+                                      ),
+                                  ],
                                 ),
                         ),
                       ],

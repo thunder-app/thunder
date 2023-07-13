@@ -116,7 +116,5 @@ class _CommentSubviewState extends State<CommentSubview> {
     } else if (collapsed == true && !collapsedCommentSet.contains(commentId)) {
       setState(() => collapsedCommentSet.add(commentId));
     }
-
-    print(collapsedCommentSet);
   }
 }

@@ -35,6 +35,9 @@ class ThunderState extends Equatable {
     this.tabletMode = false,
     this.markPostReadOnMediaView = false,
 
+    // Comment Settings
+    this.showCommentButtonActions = false,
+
     // Link Settings
     this.openInExternalBrowser = false,
 
@@ -98,6 +101,9 @@ class ThunderState extends Equatable {
   final bool tabletMode;
   final bool markPostReadOnMediaView;
 
+  // Comment Settings
+  final bool showCommentButtonActions;
+
   // Link Settings
   final bool openInExternalBrowser;
 
@@ -133,12 +139,14 @@ class ThunderState extends Equatable {
     Database? database,
     Version? version,
     String? errorMessage,
+
     // Feed Settings
     bool? useCompactView,
     bool? showTitleFirst,
     PostListingType? defaultPostListingType,
     SortType? defaultSortType,
     CommentSortType? defaultCommentSortType,
+
     // Post Settings
     bool? collapseParentCommentOnGesture,
     bool? disableSwipeActionsOnPost,
@@ -155,27 +163,36 @@ class ThunderState extends Equatable {
     bool? bottomNavBarDoubleTapGestures,
     bool? markPostReadOnMediaView,
     bool? useDisplayNames,
+
+    // Comment Settings
+    bool? showCommentButtonActions,
+
     // Link Settings
     bool? openInExternalBrowser,
+
     // Notification Settings
     bool? showInAppUpdateNotification,
+
     // Post Gestures
     bool? enablePostGestures,
     SwipeAction? leftPrimaryPostGesture,
     SwipeAction? leftSecondaryPostGesture,
     SwipeAction? rightPrimaryPostGesture,
     SwipeAction? rightSecondaryPostGesture,
+
     // Comment Gestures
     bool? enableCommentGestures,
     SwipeAction? leftPrimaryCommentGesture,
     SwipeAction? leftSecondaryCommentGesture,
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
+
     // Theme Settings
     bool? useSystemTheme,
     String? themeType,
     bool? useBlackTheme,
     bool? useMaterialYouTheme,
+
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
@@ -207,6 +224,10 @@ class ThunderState extends Equatable {
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+
+      // Comment Settings
+      showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+
       // Link Settings
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
@@ -261,6 +282,7 @@ class ThunderState extends Equatable {
         bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView,
+        showCommentButtonActions,
         openInExternalBrowser,
         showInAppUpdateNotification,
         enablePostGestures,

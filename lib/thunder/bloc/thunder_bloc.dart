@@ -91,6 +91,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
+      // Comment Settings
+      bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
+
       // Links
       bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
       bool showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
@@ -143,6 +146,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        // Comment Actions
+        showCommentButtonActions: showCommentButtonActions,
+        //
         openInExternalBrowser: openInExternalBrowser,
         showLinkPreviews: showLinkPreviews,
         showInAppUpdateNotification: showInAppUpdateNotification,
