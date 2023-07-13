@@ -44,6 +44,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
 
+  // Comment Settings
+  bool showCommentButtonActions = false;
+
   // Link Settings
   bool openInExternalBrowser = false;
 
@@ -131,6 +134,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
         setState(() => collapseParentCommentOnGesture = value);
         break;
+      case 'setting_general_show_comment_button_actions':
+        await prefs.setBool('setting_general_show_comment_button_actions', value);
+        setState(() => showCommentButtonActions = value);
+        break;
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
@@ -185,6 +192,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
+
+      // Comment Settings
+      showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
 
       // Comments
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -323,12 +333,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        Text('These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
+                        Text(
+                          'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
                           style: TextStyle(
                             color: theme.colorScheme.onBackground.withOpacity(0.75),
                           ),
                         ),
-                        const SizedBox(height: 8,),
+                        const SizedBox(
+                          height: 8,
+                        ),
                         ToggleOption(
                           description: 'Compact List View',
                           subtitle: 'Enable for small posts, disable for big.',
@@ -349,69 +362,70 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           },
                           child: useCompactView
                               ? Padding(
-                                padding: const EdgeInsets.only(left: 16.0),
-                                key: ValueKey(useCompactView),
-                                child: Column(
-                                  children: [
-                                    ToggleOption(
-                                      description: 'Thumbnails on the Right',
-                                      value: showThumbnailPreviewOnRight,
-                                      iconEnabled: Icons.switch_left_rounded,
-                                      iconDisabled: Icons.switch_right_rounded,
-                                      onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
-                                    ),
-                                  ],
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  key: ValueKey(useCompactView),
+                                  child: Column(
+                                    children: [
+                                      ToggleOption(
+                                        description: 'Thumbnails on the Right',
+                                        value: showThumbnailPreviewOnRight,
+                                        iconEnabled: Icons.switch_left_rounded,
+                                        iconDisabled: Icons.switch_right_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  key: ValueKey(useCompactView),
+                                  child: Column(
+                                    children: [
+                                      ToggleOption(
+                                        description: 'Show Title First',
+                                        value: showTitleFirst,
+                                        iconEnabled: Icons.vertical_align_top_rounded,
+                                        iconDisabled: Icons.vertical_align_bottom_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'View Full Height Images',
+                                        value: showFullHeightImages,
+                                        iconEnabled: Icons.image_rounded,
+                                        iconDisabled: Icons.image_outlined,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Edge-to-Edge Images',
+                                        value: showEdgeToEdgeImages,
+                                        iconEnabled: Icons.fit_screen_rounded,
+                                        iconDisabled: Icons.fit_screen_outlined,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Show Text Content',
+                                        value: showTextContent,
+                                        iconEnabled: Icons.notes_rounded,
+                                        iconDisabled: Icons.notes_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Show Vote Buttons',
+                                        value: showVoteActions,
+                                        iconEnabled: Icons.import_export_rounded,
+                                        iconDisabled: Icons.import_export_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Show Save Button',
+                                        value: showSaveAction,
+                                        iconEnabled: Icons.star_rounded,
+                                        iconDisabled: Icons.star_border_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ) : Padding(
-                                padding: const EdgeInsets.only(left: 16.0),
-                                key: ValueKey(useCompactView),
-                                child: Column(
-                                  children: [
-                                    ToggleOption(
-                                      description: 'Show Title First',
-                                      value: showTitleFirst,
-                                      iconEnabled: Icons.vertical_align_top_rounded,
-                                      iconDisabled: Icons.vertical_align_bottom_rounded ,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
-                                    ),
-                                    ToggleOption(
-                                      description: 'View Full Height Images',
-                                      value: showFullHeightImages,
-                                      iconEnabled: Icons.image_rounded,
-                                      iconDisabled: Icons.image_outlined,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
-                                    ),
-                                    ToggleOption(
-                                      description: 'Edge-to-Edge Images',
-                                      value: showEdgeToEdgeImages,
-                                      iconEnabled: Icons.fit_screen_rounded,
-                                      iconDisabled: Icons.fit_screen_outlined,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
-                                    ),
-                                    ToggleOption(
-                                      description: 'Show Text Content',
-                                      value: showTextContent,
-                                      iconEnabled: Icons.notes_rounded,
-                                      iconDisabled: Icons.notes_rounded,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
-                                    ),
-                                    ToggleOption(
-                                      description: 'Show Vote Buttons',
-                                      value: showVoteActions,
-                                      iconEnabled: Icons.import_export_rounded,
-                                      iconDisabled: Icons.import_export_rounded,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
-                                    ),
-                                    ToggleOption(
-                                      description: 'Show Save Button',
-                                      value: showSaveAction,
-                                      iconEnabled: Icons.star_rounded,
-                                      iconDisabled: Icons.star_border_rounded,
-                                      onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
-                                    ),
-                                  ],
-                                ),
-                              ),
                         ),
                       ],
                     ),
@@ -436,11 +450,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.comment_outlined,
                           onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
                         ),
+                        ToggleOption(
+                          description: 'Show Comment Button Actions',
+                          value: showCommentButtonActions,
+                          iconEnabled: Icons.mode_comment_rounded,
+                          iconDisabled: Icons.mode_comment_outlined,
+                          onToggle: (bool value) => setPreferences('setting_general_show_comment_button_actions', value),
+                        ),
                         ListOption(
                           description: 'Default Comment Sort Type',
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                           options: commentSortTypeItems,
-                          icon: Icons.comment_bank_rounded ,
+                          icon: Icons.comment_bank_rounded,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
                             title: 'Comment Sort Type',

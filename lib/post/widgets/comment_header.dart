@@ -37,12 +37,14 @@ class CommentHeader extends StatelessWidget {
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
-    VoteType? myVote = commentViewTree.comment?.myVote;
-    bool? saved = commentViewTree.comment?.saved;
-    bool? hasBeenEdited = commentViewTree.comment!.comment.updated != null ? true : false;
+    VoteType? myVote = commentViewTree.commentView?.myVote;
+    bool? saved = commentViewTree.commentView?.saved;
+    bool? hasBeenEdited = commentViewTree.commentView!.comment.updated != null ? true : false;
     //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
-    int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
-    int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
+    int upvotes = commentViewTree.commentView?.counts.upvotes ?? 0;
+    int downvotes = commentViewTree.commentView?.counts.downvotes ?? 0;
+
+    int level = commentViewTree.level;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -52,13 +54,14 @@ class CommentHeader extends StatelessWidget {
             child: Row(
               children: [
                 Tooltip(
-                    message: '${commentViewTree.comment!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.comment!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
-                    preferBelow: false,
-                    child: Row(children: [
+                  excludeFromSemantics: true,
+                  message: '${commentViewTree.commentView!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.commentView!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
+                  preferBelow: false,
+                  child: Row(
+                    children: [
                       GestureDetector(
                         onTap: () {
-                          account_bloc.AccountBloc accountBloc =
-                          context.read<account_bloc.AccountBloc>();
+                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                           AuthBloc authBloc = context.read<AuthBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -70,90 +73,88 @@ class CommentHeader extends StatelessWidget {
                                   BlocProvider.value(value: authBloc),
                                   BlocProvider.value(value: thunderBloc),
                                 ],
-                                child: UserPage(userId: commentViewTree.comment!.creator.id),
+                                child: UserPage(userId: commentViewTree.commentView!.creator.id),
                               ),
                             ),
                           );
                         },
                         child: isSpecialUser(context, isOwnComment)
-                          ? Container(
-                            decoration: BoxDecoration(
-                              color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground,
-                              borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 5, right: 5),
-                              child: Row(
-                                children: [
-                                  Text(
-                                    commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.white
-                                    ),
+                            ? Container(
+                                decoration:
+                                    BoxDecoration(color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))),
+                                child: Padding(
+                                  padding: const EdgeInsets.only(left: 5, right: 5),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                            ? commentViewTree.commentView!.creator.displayName!
+                                            : commentViewTree.commentView!.creator.name,
+                                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
+                                      ),
+                                      const SizedBox(width: 2.0),
+                                      Container(
+                                        child: isOwnComment
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Icons.person,
+                                                  size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ))
+                                            : Container(),
+                                      ),
+                                      // Container(
+                                      //   // TODO: Figure out how to determine mods
+                                      //   child: true
+                                      //     ? Padding(
+                                      //       padding: const EdgeInsets.only(left: 1),
+                                      //       child: Icon(
+                                      //         Thunder.shield,
+                                      //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
+                                      //         color: Colors.white,
+                                      //       ),
+                                      //     )
+                                      //     : Container(),
+                                      // ),
+                                      Container(
+                                        child: commentViewTree.commentView?.creator.admin == true
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.shield_crown,
+                                                  size: 14.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                      Container(
+                                        child: commentViewTree.commentView != null && commentViewTree.commentView?.post.creatorId == commentViewTree.commentView?.comment.creatorId
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.microphone_variant,
+                                                  size: 15.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                    ],
                                   ),
-                                  const SizedBox(width: 2.0),
-                                  Container(
-                                    child: isOwnComment
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Icons.person,
-                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        )
-                                      )
-                                      : Container(),
-                                  ),
-                                  // Container(
-                                  //   // TODO: Figure out how to determine mods
-                                  //   child: true
-                                  //     ? Padding(
-                                  //       padding: const EdgeInsets.only(left: 1),
-                                  //       child: Icon(
-                                  //         Thunder.shield,
-                                  //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
-                                  //         color: Colors.white,
-                                  //       ),
-                                  //     )
-                                  //     : Container(),
-                                  // ),
-                                  Container(
-                                    child: commentViewTree.comment?.creator.admin == true
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Thunder.shield_crown,
-                                          size: 14.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                      : Container(),
-                                  ),
-                                  Container(
-                                    child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
-                                      ? Padding(
-                                        padding: const EdgeInsets.only(left: 1),
-                                        child: Icon(
-                                          Thunder.microphone_variant,
-                                          size: 15.0 * state.contentFontSizeScale.textScaleFactor,
-                                          color: Colors.white,
-                                        ),
-                                      )
-                                      : Container(),
-                                  ),
-                                ],
+                                ),
+                              )
+                            : Text(
+                                commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                    ? commentViewTree.commentView!.creator.displayName!
+                                    : commentViewTree.commentView!.creator.name,
+                                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
-                            ),
-                          )
-                          : Text(
-                              commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
-                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.w500,
-                            ),
-                          ),
                       ),
                       const SizedBox(width: 8.0),
                     ],
@@ -167,6 +168,7 @@ class CommentHeader extends StatelessWidget {
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(upvotes),
+                  semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
@@ -179,22 +181,22 @@ class CommentHeader extends StatelessWidget {
                   color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
                 const SizedBox(width: 2.0),
-                Text(
-                  formatNumberToK(downvotes),
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                if (downvotes != 0)
+                  Text(
+                    formatNumberToK(downvotes),
+                    semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                    ),
                   ),
-                ),
               ],
             ),
           ),
           Row(
             children: [
               AnimatedOpacity(
-                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true))
-                  ? 1
-                  : 0,
+                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true)) ? 1 : 0,
                 // Matches the collapse animation
                 duration: const Duration(milliseconds: 130),
                 child: Container(
@@ -226,27 +228,25 @@ class CommentHeader extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: sinceCreated < 15 ? BoxDecoration(
-                    color: theme.primaryColorLight,
-                    borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))
-                ) : null,
-                child: sinceCreated < 15 ? Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                  child: Text(
-                    'New!',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: theme.colorScheme.background,
-                    )
-                  ),
-                ) : Text(
-                  formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String() ),
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onBackground,
-                  ),
-                ),
+                decoration: sinceCreated < 15 ? BoxDecoration(color: theme.primaryColorLight, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                child: sinceCreated < 15
+                    ? Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
+                        child: Text('New!',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: theme.colorScheme.background,
+                            )),
+                      )
+                    : Text(
+                        formatTimeToString(
+                            dateTime: hasBeenEdited ? commentViewTree.commentView!.comment.updated!.toIso8601String() : commentViewTree.commentView!.comment.published.toIso8601String()),
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onBackground,
+                        ),
+                      ),
               ),
             ],
           )
@@ -256,7 +256,7 @@ class CommentHeader extends StatelessWidget {
   }
 
   Color? fetchUsernameColor(BuildContext context, bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
     if (isOwnComment) return theme.colorScheme.primary;
@@ -267,7 +267,7 @@ class CommentHeader extends StatelessWidget {
   }
 
   String fetchUsernameDescriptor(bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
 
     String descriptor = '';
 
@@ -281,11 +281,8 @@ class CommentHeader extends StatelessWidget {
   }
 
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
 
-    return 
-      isOwnComment || 
-      commentView.creator.admin == true || 
-      commentView.post.creatorId == commentView.comment.creatorId;
+    return isOwnComment || commentView.creator.admin == true || commentView.post.creatorId == commentView.comment.creatorId;
   }
 }
