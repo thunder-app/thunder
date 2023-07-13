@@ -101,7 +101,7 @@ class _PostCardState extends State<PostCard> {
         },
         onPointerCancel: (event) => {},
         child: Dismissible(
-          direction: state.enablePostGestures == false ? DismissDirection.none : determineSwipeDirection(isUserLoggedIn, state),
+          direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
           key: ObjectKey(widget.postViewMedia.postView.post.id),
           resizeDuration: Duration.zero,
           dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
