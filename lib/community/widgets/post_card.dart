@@ -170,7 +170,11 @@ class _PostCardState extends State<PostCard> {
               Divider(
                 height: 1.0,
                 thickness: 4.0,
-                color: state.themeType == 'dark' ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+                color: ElevationOverlay.applySurfaceTint(
+                  Theme.of(context).colorScheme.surface,
+                  Theme.of(context).colorScheme.surfaceTint,
+                  10,
+                ),
               ),
               InkWell(
                 child: state.useCompactView
