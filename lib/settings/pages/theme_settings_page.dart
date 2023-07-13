@@ -30,8 +30,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   List<ListPickerItem> themeOptions = [
     const ListPickerItem(icon: Icons.phonelink_setup_rounded, label: 'System', payload: ThemeType.system),
     const ListPickerItem(icon: Icons.light_mode_rounded, label: 'Light', payload: ThemeType.light),
-    const ListPickerItem(icon: Icons.dark_mode_rounded, label: 'Dark', payload: ThemeType.dark),
-    const ListPickerItem(icon: Icons.dark_mode_rounded, label: 'Pure Black', payload: ThemeType.pureBlack)
+    const ListPickerItem(icon: Icons.dark_mode_outlined, label: 'Dark', payload: ThemeType.dark),
+    const ListPickerItem(icon: Icons.dark_mode, label: 'Pure Black', payload: ThemeType.pureBlack)
   ];
 
   // Font size
