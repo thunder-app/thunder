@@ -33,7 +33,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_type') ?? ThemeType.system.index];
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
 
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 

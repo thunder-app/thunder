@@ -49,8 +49,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      case 'setting_theme_type':
-        await prefs.setInt('setting_theme_type', value);
+      case 'setting_theme_app_theme':
+        await prefs.setInt('setting_theme_app_theme', value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -81,7 +81,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
     setState(() {
       // Theme Settings
-      themeType = ThemeType.values[prefs.getInt('setting_theme_type') ?? ThemeType.system.index];
+      themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
 
       useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
@@ -128,7 +128,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences('setting_theme_type', value.payload.index)
+                            onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)
                         ),
                         ToggleOption(
                           description: 'Use Material You Theme',

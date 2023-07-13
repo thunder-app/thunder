@@ -114,7 +114,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
 
       // Theme Settings
-      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_type') ?? ThemeType.system.index];
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
