@@ -58,10 +58,10 @@ const postCardActionItems = [
   ),
 ];
 
-void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postViewMedia, {List<PostCardAction>? actionsToExclude}) {
+void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postViewMedia, {List<PostCardAction>? actionsToInclude}) {
   final theme = Theme.of(context);
-  actionsToExclude ??= [];
-  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => !actionsToExclude!.any((action) => extendedAction.postCardAction == action)).toList();
+  actionsToInclude ??= [];
+  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
 
   showModalBottomSheet<void>(
     showDragHandle: true,

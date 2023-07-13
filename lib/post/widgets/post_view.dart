@@ -286,7 +286,13 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: () => showPostActionBottomModalSheet(context, postViewMedia, actionsToExclude: [PostCardAction.visitCommunity, PostCardAction.visitProfile]),
+                  onPressed: postViewMedia.media.isEmpty
+                      ? () => Share.share(post.apId)
+                      : () => showPostActionBottomModalSheet(
+                            context,
+                            postViewMedia,
+                            actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                          ),
                 ),
               )
             ],
