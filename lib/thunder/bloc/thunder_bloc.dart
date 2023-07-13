@@ -10,6 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
@@ -116,9 +117,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
 
       // Theme Settings
-      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
@@ -162,9 +161,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
-        useSystemTheme: useSystemTheme,
         themeType: themeType,
-        useBlackTheme: useBlackTheme,
         useMaterialYouTheme: useMaterialYouTheme,
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,

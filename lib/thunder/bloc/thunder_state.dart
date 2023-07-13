@@ -59,9 +59,7 @@ class ThunderState extends Equatable {
     this.rightSecondaryCommentGesture = SwipeAction.save,
 
     // Theme Settings
-    this.useSystemTheme = false,
-    this.themeType = 'dark',
-    this.useBlackTheme = false,
+    this.themeType = ThemeType.system,
     this.useMaterialYouTheme = false,
 
     // Font Scale
@@ -125,9 +123,7 @@ class ThunderState extends Equatable {
   final SwipeAction rightSecondaryCommentGesture;
 
   // Theme Settings
-  final bool useSystemTheme;
-  final String themeType;
-  final bool useBlackTheme;
+  final ThemeType themeType;
   final bool useMaterialYouTheme;
 
   // Font Scale
@@ -188,9 +184,7 @@ class ThunderState extends Equatable {
     SwipeAction? rightSecondaryCommentGesture,
 
     // Theme Settings
-    bool? useSystemTheme,
-    String? themeType,
-    bool? useBlackTheme,
+    ThemeType? themeType,
     bool? useMaterialYouTheme,
 
     // Font Scale
@@ -246,9 +240,7 @@ class ThunderState extends Equatable {
       rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
       // Theme Settings
-      useSystemTheme: useSystemTheme ?? this.useSystemTheme,
       themeType: themeType ?? this.themeType,
-      useBlackTheme: useBlackTheme ?? this.useBlackTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
@@ -295,9 +287,7 @@ class ThunderState extends Equatable {
         leftSecondaryCommentGesture,
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
-        useSystemTheme,
         themeType,
-        useBlackTheme,
         useMaterialYouTheme,
         titleFontSizeScale,
         contentFontSizeScale,
