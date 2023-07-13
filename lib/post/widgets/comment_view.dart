@@ -92,7 +92,7 @@ class _CommentSubviewState extends State<CommentSubview> {
           return CommentCard(
             commentViewTree: widget.comments[index - 1],
             collapsedCommentSet: collapsedCommentSet,
-            collapsed: collapsedCommentSet.contains(widget.comments[index - 1].comment!.comment.id) || widget.level == 2,
+            collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
             onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
             onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
             onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),

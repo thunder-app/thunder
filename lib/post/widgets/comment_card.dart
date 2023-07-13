@@ -4,7 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/post/widgets/comment_card_actions.dart';
 import 'package:thunder/post/widgets/comment_header.dart';
@@ -12,7 +14,6 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
 import '../utils/comment_action_helpers.dart';
 
 class CommentCard extends StatefulWidget {
@@ -75,6 +76,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// The second action threshold to trigger the left or right actions (downvote/save)
   double secondActionThreshold = 0.35;
 
+  /// Whether we are fetching more comments from this comment
+  bool isFetchingMoreComments = false;
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -92,7 +96,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   @override
   void initState() {
     super.initState();
-    print('in here');
     isHidden = widget.collapsed;
   }
 
@@ -104,15 +107,15 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    VoteType? myVote = widget.commentViewTree.comment?.myVote;
-    bool? saved = widget.commentViewTree.comment?.saved;
+    VoteType? myVote = widget.commentViewTree.commentView?.myVote;
+    bool? saved = widget.commentViewTree.commentView?.saved;
     DateTime now = DateTime.now().toUtc();
-    int sinceCreated = now.difference(widget.commentViewTree.comment!.comment.published).inMinutes;
+    int sinceCreated = now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes;
 
     final theme = Theme.of(context);
 
     // Checks for the same creator id to user id
-    final bool isOwnComment = widget.commentViewTree.comment?.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnComment = widget.commentViewTree.commentView?.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
@@ -157,7 +160,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             onPointerCancel: (event) => {},
             child: Dismissible(
               direction: determineSwipeDirection(isUserLoggedIn, state),
-              key: ObjectKey(widget.commentViewTree.comment!.comment.id),
+              key: ObjectKey(widget.commentViewTree.commentView!.comment.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
               confirmDismiss: (DismissDirection direction) async {
@@ -251,7 +254,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     behavior: HitTestBehavior.translucent,
                     onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction),
                     onTap: () {
-                      widget.onCollapseCommentChange(widget.commentViewTree.comment!.comment.id, !isHidden);
+                      widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
                       setState(() => isHidden = !isHidden);
                     },
                     child: Column(
@@ -285,7 +288,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                      child: CommonMarkdownBody(body: widget.commentViewTree.comment!.comment.content),
+                                      child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
                                     ),
                                     if (state.showCommentButtonActions && isUserLoggedIn)
                                       Padding(
@@ -319,21 +322,66 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
             },
             child: isHidden
                 ? Container()
-                : ListView.builder(
-                    // addSemanticIndexes: false,
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => CommentCard(
-                      commentViewTree: widget.commentViewTree.replies[index],
-                      collapsedCommentSet: widget.collapsedCommentSet,
-                      collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].comment!.comment.id) || widget.level == 2,
-                      level: widget.level + 1,
-                      onVoteAction: widget.onVoteAction,
-                      onSaveAction: widget.onSaveAction,
-                      onCollapseCommentChange: widget.onCollapseCommentChange,
-                    ),
-                    itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
-                  ),
+                : widget.commentViewTree.replies.isEmpty && widget.commentViewTree.commentView!.counts.childCount > 0
+                    ? GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentViewTree.commentView!.comment.id));
+                          setState(() {
+                            isFetchingMoreComments = true;
+                          });
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Divider(height: 1),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  decoration: BoxDecoration(
+                                    border: Border(
+                                      left: BorderSide(
+                                        width: 4.0,
+                                        color: colors[((widget.level) % 6).toInt()],
+                                      ),
+                                    ),
+                                  ),
+                                  padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                                  child: Text(
+                                    'Load more ${widget.commentViewTree.commentView!.counts.childCount} replies',
+                                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                                    ),
+                                  ),
+                                ),
+                                isFetchingMoreComments
+                                    ? const Padding(
+                                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                                      )
+                                    : Container(),
+                              ],
+                            )
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        // addSemanticIndexes: false,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemBuilder: (context, index) => CommentCard(
+                          commentViewTree: widget.commentViewTree.replies[index],
+                          collapsedCommentSet: widget.collapsedCommentSet,
+                          collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
+                          level: widget.level + 1,
+                          onVoteAction: widget.onVoteAction,
+                          onSaveAction: widget.onSaveAction,
+                          onCollapseCommentChange: widget.onCollapseCommentChange,
+                        ),
+                        itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
+                      ),
           ),
         ],
       ),

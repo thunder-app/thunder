@@ -17,10 +17,11 @@ class GetPostEvent extends PostEvent {
 
 class GetPostCommentsEvent extends PostEvent {
   final int? postId;
+  final int? commentParentId;
   final bool reset;
   final CommentSortType? sortType;
 
-  const GetPostCommentsEvent({this.postId, this.reset = false, this.sortType});
+  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.sortType});
 }
 
 class VotePostEvent extends PostEvent {

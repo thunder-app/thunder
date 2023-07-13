@@ -31,7 +31,7 @@ class CommentCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoteType voteType = commentViewTree.comment!.myVote ?? VoteType.none;
+    final VoteType voteType = commentViewTree.commentView!.myVote ?? VoteType.none;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
@@ -91,7 +91,7 @@ class CommentCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
                 }),
             IconButton(
               icon: Icon(
@@ -102,7 +102,7 @@ class CommentCardActions extends StatelessWidget {
               visualDensity: VisualDensity.compact,
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
               },
             ),
           ],

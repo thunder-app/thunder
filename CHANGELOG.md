@@ -16,6 +16,7 @@
 - Settings have been re-organized to be more consistent, and to show available options between different views - contribution from @CTalvio
 - Feed view will no longer show full screen error messages
 - Added comment button actions and added an option to toggle comment button actions
+- Added maximum depth to comments. You can now tap on Load more replies to get more replies for a comment thread within a post
 - Various login flow improvements - contribution from @micahmo
 - In app browser is now switched over to use custom tabs - contribution from @micahmo
 

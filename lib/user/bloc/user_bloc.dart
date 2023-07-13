@@ -335,21 +335,21 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       // Optimistically update the comment
-      CommentView? originalCommentView = currentTree.comment;
+      CommentView? originalCommentView = currentTree.commentView;
 
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
-      currentTree.comment = updatedCommentView;
+      currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
-        currentTree.comment = originalCommentView; // Reset this on exception
+        currentTree.commentView = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 
-      currentTree.comment = commentView;
+      currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
@@ -372,7 +372,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
-      currentTree.comment = commentView; // Update the comment's information
+      currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
