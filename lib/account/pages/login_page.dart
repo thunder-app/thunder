@@ -31,7 +31,10 @@ class _LoginPageState extends State<LoginPage> {
   String? instanceIcon;
   String? currentInstance;
   Timer? instanceTextDebounceTimer;
-  
+  Timer? instanceValidationDebounceTimer;
+  bool instanceValidated = true;
+  String? instanceError;
+
   bool isLoading = false;
 
   @override
@@ -69,18 +72,34 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         setState(() => fieldsFilledIn = false);
       }
-      
+
       // Debounce
       if (instanceTextDebounceTimer?.isActive == true) {
         instanceTextDebounceTimer!.cancel();
       }
       instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
-        await getInstanceIcon(_instanceTextEditingController.text).then((value) { 
+        await getInstanceIcon(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
             setState(() => instanceIcon = value);
           }
         });
+      });
+
+      // Debounce
+      if (instanceValidationDebounceTimer?.isActive == true) {
+        instanceValidationDebounceTimer!.cancel();
+      }
+      instanceValidationDebounceTimer = Timer(const Duration(seconds: 1), () async {
+        await (_instanceTextEditingController.text.isEmpty ? Future<bool>.value(true) : isLemmyInstance(_instanceTextEditingController.text)).then((value) => {
+              if (currentInstance == _instanceTextEditingController.text)
+                {
+                  setState(() {
+                    instanceValidated = value;
+                    instanceError = '$currentInstance does not appear to be a valid Lemmy instance';
+                  })
+                }
+            });
       });
     });
   }
@@ -132,7 +151,7 @@ class _LoginPageState extends State<LoginPage> {
                 ScaffoldMessenger.of(context).showSnackBar(snackBar);
               });
             }
-          }
+          },
         ),
       ],
       child: Scaffold(
@@ -151,28 +170,28 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   AnimatedCrossFade(
                     duration: const Duration(milliseconds: 500),
-                    crossFadeState: instanceIcon == null
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
+                    crossFadeState: instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                     firstChild: Image.asset('assets/logo.png', width: 80.0, height: 80.0),
                     secondChild: instanceIcon == null
-                      ? Container()
-                      : CircleAvatar(
-                          foregroundImage: CachedNetworkImageProvider(instanceIcon!),
-                          backgroundColor: Colors.transparent,
-                          maxRadius: 40,
-                      ),
+                        ? Container()
+                        : CircleAvatar(
+                            foregroundImage: CachedNetworkImageProvider(instanceIcon!),
+                            backgroundColor: Colors.transparent,
+                            maxRadius: 40,
+                          ),
                   ),
                   const SizedBox(height: 12.0),
                   TextField(
                     autocorrect: false,
                     controller: _instanceTextEditingController,
                     inputFormatters: [LowerCaseTextFormatter()],
-                    decoration: const InputDecoration(
+                    decoration: InputDecoration(
                       isDense: true,
-                      border: OutlineInputBorder(),
+                      border: const OutlineInputBorder(),
                       labelText: 'Instance',
                       hintText: 'e.g., lemmy.ml, lemmy.world, etc.',
+                      errorText: instanceValidated ? null : instanceError,
+                      errorMaxLines: 2,
                     ),
                     enableSuggestions: false,
                   ),
@@ -265,9 +284,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
-                    onPressed: !isLoading
-                      ? () => widget.popRegister()
-                      : null,
+                    onPressed: !isLoading ? () => widget.popRegister() : null,
                     child: Text('Cancel', style: theme.textTheme.titleMedium),
                   ),
                   const SizedBox(height: 32.0),
