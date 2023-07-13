@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -158,7 +157,6 @@ class _ThunderState extends State<Thunder> {
                       bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
                       body: MultiBlocProvider(
                           providers: [
-                            BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
                             BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
                           ],
                           child: BlocConsumer<AuthBloc, AuthState>(listenWhen: (AuthState previous, AuthState current) {
