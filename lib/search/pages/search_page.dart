@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -33,6 +36,8 @@ class _SearchPageState extends State<SearchPage> {
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  final Set<CommunitySafe> newAnonymousSubscriptions = {};
+  final Set<int> removedSubs = {};
 
   @override
   void initState() {
@@ -59,6 +64,12 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  @override
+  void deactivate() {
+    _saveToDB();
+    super.deactivate();
+  }
+
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
@@ -78,7 +89,15 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
+    context.read<AnonymousSubscriptionsBloc>().add(
+        GetSubscribedCommunitiesEvent());
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
+            listener: (context, state) {}),
+        BlocListener<SearchBloc, SearchState>(listener: (context, state) {}),
+      ],
+      child: BlocBuilder<SearchBloc, SearchState>(
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
@@ -152,6 +171,7 @@ class _SearchPageState extends State<SearchPage> {
           body: _getSearchBody(context, state),
         );
       },
+      ),
     );
   }
 
@@ -208,6 +228,7 @@ class _SearchPageState extends State<SearchPage> {
                   : Container();
             } else {
               CommunityView communityView = state.communities![index];
+              final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
               return Tooltip(
                   excludeFromSemantics: true,
                   message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
@@ -246,18 +267,13 @@ class _SearchPageState extends State<SearchPage> {
                         const SizedBox(width: 4),
                         const Icon(Icons.people_rounded, size: 16.0),
                       ]),
-                      trailing: isUserLoggedIn
-                          ? IconButton(
+                      trailing: IconButton(
                               onPressed: () {
-                                context.read<SearchBloc>().add(
-                                      ChangeCommunitySubsciptionStatusEvent(
-                                        communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                                      ),
-                                    );
+                                SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
+                              _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
                                 SnackBar snackBar = SnackBar(
                                   content: Text(
-                                      '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                                      '${subscriptionStatus == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${subscriptionStatus == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
                                   behavior: SnackBarBehavior.floating,
                                 );
                                 WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -267,20 +283,19 @@ class _SearchPageState extends State<SearchPage> {
                                 context.read<AccountBloc>().add(GetAccountInformation());
                               },
                               icon: Icon(
-                                switch (communityView.subscribed) {
+                                switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
                                   SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
                                   SubscribedType.pending => Icons.pending_outlined,
                                   SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                                 },
                               ),
-                              tooltip: switch (communityView.subscribed) {
+                              tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
                                 SubscribedType.notSubscribed => 'Subscribe',
                                 SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                                SubscribedType.subscribed => 'Unsubscribe',
+                                SubscribedType.subscribed => 'Unsubscribe'  ,
                               },
                               visualDensity: VisualDensity.compact,
-                            )
-                          : null,
+                            ),
                       onTap: () {
                         AccountBloc accountBloc = context.read<AccountBloc>();
                         AuthBloc authBloc = context.read<AuthBloc>();
@@ -317,20 +332,65 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
-      builder: (builderContext) => SortPicker(
-        title: 'Sort Options',
-        onSelect: (selected) {
-          sortType = selected.payload;
-          sortTypeIcon = selected.icon;
-          sortTypeLabel = selected.label;
+      builder: (builderContext) =>
+          SortPicker(
+            title: 'Sort Options',
+            onSelect: (selected) {
+              sortType = selected.payload;
+              sortTypeIcon = selected.icon;
+              sortTypeLabel = selected.label;
 
-          prefs!.setString("search_default_sort_type", selected.payload.name);
+              prefs!.setString(
+                  "search_default_sort_type", selected.payload.name);
 
-          context.read<SearchBloc>().add(
+              context.read<SearchBloc>().add(
                 StartSearchEvent(query: _controller.text, sortType: sortType),
               );
-        },
-      ),
+            },
+          ),
     );
+  }
+
+  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int> currentSubscriptions) {
+    if (isUserLoggedIn) {
+      return communityView.subscribed;
+    }
+    bool isSubscribed = newAnonymousSubscriptions.contains(communityView.community) ||
+        (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id));
+    return  isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+  }
+
+  void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, CommunityView communityView) {
+     if (isUserLoggedIn) {
+      context.read<SearchBloc>().add(
+      ChangeCommunitySubsciptionStatusEvent(
+        communityId: communityView.community.id,
+        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+      ));
+      return;
+    }
+
+     Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+     setState(() {
+       if (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id)) {
+         removedSubs.add(communityView.community.id);
+       } else if (newAnonymousSubscriptions.contains(communityView.community)) {
+         newAnonymousSubscriptions.remove(communityView.community);
+       } else if (removedSubs.contains(communityView.community.id)){
+         removedSubs.remove(communityView.community.id);
+       } else {
+         newAnonymousSubscriptions.add(communityView.community);
+       }
+     });
+     return;
+  }
+
+  void _saveToDB() {
+    if (newAnonymousSubscriptions.isNotEmpty) {
+      context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: newAnonymousSubscriptions));
+    }
+    if (removedSubs.isNotEmpty) {
+      context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: removedSubs));
+    }
   }
 }

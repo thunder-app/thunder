@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -96,8 +97,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     AccountStatus status = context.read<AccountBloc>().state.status;
-
-    return Drawer(
+    AnonymousSubscriptionsBloc subscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+    subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+    return BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
+      listener: (c,s) {},
+      builder: (context, state) {
+        return Drawer(
       width: MediaQuery.of(context).size.width * 0.80,
       child: SafeArea(
         child: Column(
@@ -142,8 +147,10 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     padding: EdgeInsets.all(16.0),
                     child: Center(child: CircularProgressIndicator()),
                   )
-                : (context.read<AccountBloc>().state.subsciptions.isNotEmpty)
-                    ? Expanded(
+                      : (context.read<AccountBloc>().state.subsciptions.isNotEmpty ||
+                      subscriptionsBloc.state.subscriptions.isNotEmpty)
+                      ? (
+                      Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 14.0),
                           child: Scrollbar(
@@ -153,9 +160,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: context.read<AccountBloc>().state.subsciptions.length,
+                                  itemCount: _getSubscriptions(context).length,
                                   itemBuilder: (context, index) {
-                                    CommunitySafe community = context.read<AccountBloc>().state.subsciptions[index].community;
+                                    CommunitySafe community = _getSubscriptions(context)[index];
 
                                     return TextButton(
                                       style: TextButton.styleFrom(
@@ -164,11 +171,11 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       ),
                                       onPressed: () {
                                         context.read<CommunityBloc>().add(
-                                              GetCommunityPostsEvent(
-                                                reset: true,
-                                                communityId: context.read<AccountBloc>().state.subsciptions[index].community.id,
-                                              ),
-                                            );
+                                          GetCommunityPostsEvent(
+                                            reset: true,
+                                            communityId: community.id,
+                                          ),
+                                        );
 
                                         Navigator.of(context).pop();
                                       },
@@ -220,17 +227,26 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             ),
                           ),
                         ),
-                      )
-                    : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
-                        child: Text(
-                          'No subscriptions',
-                          style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
-                        ),
-                      )
-          ],
-        ),
-      ),
+                      ))
+                      : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                    child: Text(
+                      'No subscriptions',
+                      style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                    ),
+                  )
+                ],
+              ),
+            ),
+          );
+        }
     );
+  }
+
+  List<CommunitySafe> _getSubscriptions(BuildContext context) {
+    if (context.read<AuthBloc>().state.isLoggedIn) {
+      return context.read<AccountBloc>().state.subsciptions.map((e) => e.community).toList();
+    }
+    return context.read<AnonymousSubscriptionsBloc>().state.subscriptions;
   }
 }

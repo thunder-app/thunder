@@ -8,6 +8,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -189,10 +190,13 @@ class _ThunderState extends State<Thunder> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
                                         CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                        BlocProvider(
-                                          create: (context) => SearchBloc(),
-                                          child: const SearchPage(),
-                                        ),
+                                        MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
+                                            BlocProvider(create: (context) => SearchBloc())
+                                          ],
+                                      child: const SearchPage(),
+                                    ),
                                         const AccountPage(),
                                         const InboxPage(),
                                         SettingsPage(),
