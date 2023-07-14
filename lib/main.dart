@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/develop
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -7,13 +10,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/develop
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
@@ -54,12 +61,17 @@ class ThunderApp extends StatelessWidget {
           }
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
+<<<<<<< HEAD
               ThemeData theme = FlexThemeData.light(
                   useMaterial3: true, scheme: FlexScheme.deepBlue);
               ThemeData darkTheme = FlexThemeData.dark(
                   useMaterial3: true,
                   scheme: FlexScheme.deepBlue,
                   darkIsTrueBlack: state.useBlackTheme);
+=======
+              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
+              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+>>>>>>> upstream/develop
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
@@ -71,7 +83,7 @@ class ThunderApp extends StatelessWidget {
                 darkTheme = FlexThemeData.dark(
                   useMaterial3: true,
                   colorScheme: darkColorScheme,
-                  darkIsTrueBlack: state.useBlackTheme,
+                  darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
                 );
               }
 
@@ -86,9 +98,13 @@ class ThunderApp extends StatelessWidget {
                 child: MaterialApp.router(
                   title: 'Thunder',
                   routerConfig: router,
+<<<<<<< HEAD
                   themeMode: state.useSystemTheme
                       ? ThemeMode.system
                       : (state.useDarkTheme ? ThemeMode.dark : ThemeMode.light),
+=======
+                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+>>>>>>> upstream/develop
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,

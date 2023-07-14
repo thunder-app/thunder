@@ -58,7 +58,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
     super.initState();
 
     if (widget.isEdit) {
-      String content = widget.commentView?.comment?.comment.content ?? '';
+      String content = widget.commentView?.commentView?.comment.content ?? '';
 
       setState(() => description = content);
 
@@ -162,13 +162,13 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           ? null
                           : () {
                               if (widget.isEdit) {
-                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment!.comment.id));
+                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
                               }
 
                               if (widget.comment != null) {
                                 context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                               } else {
-                                context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.comment!.comment.id));
+                                context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.commentView!.comment.id));
                               }
                             },
                       icon: isLoading
@@ -182,7 +182,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                 ),
                 const SizedBox(height: 12.0),
                 if (widget.commentView != null && widget.isEdit == false)
-                  Text('Replying to ${widget.commentView?.comment!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+                  Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
                 if (widget.comment != null && widget.isEdit == false)
                   Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
@@ -200,7 +200,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         child: CommonMarkdownBody(
-                          body: widget.commentView != null ? (widget.commentView?.comment?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
+                          body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
                           isSelectableText: true,
                         ),
                       ),

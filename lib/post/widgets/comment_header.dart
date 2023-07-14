@@ -37,12 +37,14 @@ class CommentHeader extends StatelessWidget {
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
-    VoteType? myVote = commentViewTree.comment?.myVote;
-    bool? saved = commentViewTree.comment?.saved;
-    bool? hasBeenEdited = commentViewTree.comment!.comment.updated != null ? true : false;
+    VoteType? myVote = commentViewTree.commentView?.myVote;
+    bool? saved = commentViewTree.commentView?.saved;
+    bool? hasBeenEdited = commentViewTree.commentView!.comment.updated != null ? true : false;
     //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
-    int upvotes = commentViewTree.comment?.counts.upvotes ?? 0;
-    int downvotes = commentViewTree.comment?.counts.downvotes ?? 0;
+    int upvotes = commentViewTree.commentView?.counts.upvotes ?? 0;
+    int downvotes = commentViewTree.commentView?.counts.downvotes ?? 0;
+
+    int level = commentViewTree.level;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -53,7 +55,7 @@ class CommentHeader extends StatelessWidget {
               children: [
                 Tooltip(
                   excludeFromSemantics: true,
-                  message: '${commentViewTree.comment!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.comment!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
+                  message: '${commentViewTree.commentView!.creator.name}@${fetchInstanceNameFromUrl(commentViewTree.commentView!.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
                   preferBelow: false,
                   child: Row(
                     children: [
@@ -71,7 +73,7 @@ class CommentHeader extends StatelessWidget {
                                   BlocProvider.value(value: authBloc),
                                   BlocProvider.value(value: thunderBloc),
                                 ],
-                                child: UserPage(userId: commentViewTree.comment!.creator.id),
+                                child: UserPage(userId: commentViewTree.commentView!.creator.id),
                               ),
                             ),
                           );
@@ -85,7 +87,9 @@ class CommentHeader extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       Text(
-                                        commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                        commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                            ? commentViewTree.commentView!.creator.displayName!
+                                            : commentViewTree.commentView!.creator.name,
                                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
                                       ),
@@ -115,7 +119,7 @@ class CommentHeader extends StatelessWidget {
                                       //     : Container(),
                                       // ),
                                       Container(
-                                        child: commentViewTree.comment?.creator.admin == true
+                                        child: commentViewTree.commentView?.creator.admin == true
                                             ? Padding(
                                                 padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
@@ -127,7 +131,7 @@ class CommentHeader extends StatelessWidget {
                                             : Container(),
                                       ),
                                       Container(
-                                        child: commentViewTree.comment != null && commentViewTree.comment?.post.creatorId == commentViewTree.comment?.comment.creatorId
+                                        child: commentViewTree.commentView != null && commentViewTree.commentView?.post.creatorId == commentViewTree.commentView?.comment.creatorId
                                             ? Padding(
                                                 padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
@@ -143,7 +147,9 @@ class CommentHeader extends StatelessWidget {
                                 ),
                               )
                             : Text(
-                                commentViewTree.comment!.creator.displayName != null && useDisplayNames ? commentViewTree.comment!.creator.displayName! : commentViewTree.comment!.creator.name,
+                                commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                    ? commentViewTree.commentView!.creator.displayName!
+                                    : commentViewTree.commentView!.creator.name,
                                 textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                                 style: theme.textTheme.bodyMedium?.copyWith(
                                   fontWeight: FontWeight.w500,
@@ -234,7 +240,8 @@ class CommentHeader extends StatelessWidget {
                             )),
                       )
                     : Text(
-                        formatTimeToString(dateTime: hasBeenEdited ? commentViewTree.comment!.comment.updated!.toIso8601String() : commentViewTree.comment!.comment.published.toIso8601String()),
+                        formatTimeToString(
+                            dateTime: hasBeenEdited ? commentViewTree.commentView!.comment.updated!.toIso8601String() : commentViewTree.commentView!.comment.published.toIso8601String()),
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onBackground,
@@ -249,7 +256,7 @@ class CommentHeader extends StatelessWidget {
   }
 
   Color? fetchUsernameColor(BuildContext context, bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
     if (isOwnComment) return theme.colorScheme.primary;
@@ -260,7 +267,7 @@ class CommentHeader extends StatelessWidget {
   }
 
   String fetchUsernameDescriptor(bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
 
     String descriptor = '';
 
@@ -274,7 +281,7 @@ class CommentHeader extends StatelessWidget {
   }
 
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
-    CommentView commentView = commentViewTree.comment!;
+    CommentView commentView = commentViewTree.commentView!;
 
     return isOwnComment || commentView.creator.admin == true || commentView.post.creatorId == commentView.comment.creatorId;
   }

@@ -38,3 +38,16 @@ Future<String?> getInstanceIcon(String? url) async {
     return null;
   }
 }
+
+Future<bool> isLemmyInstance(String? url) async {
+  if (url?.isEmpty ?? true) {
+    return false;
+  }
+
+  try {
+    await LemmyApiV3(url!).run(const GetSite());
+    return true;
+  } catch (e) {
+    return false;
+  }
+}

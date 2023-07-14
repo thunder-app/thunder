@@ -96,6 +96,7 @@ class _PostCardListState extends State<PostCardList> {
                   reset: true,
                   listingType: widget.communityId != null ? null : widget.listingType,
                   communityId: widget.listingType != null ? null : widget.communityId,
+                  communityName: widget.listingType != null ? null : widget.communityName,
                 ));
           }
         },
@@ -148,28 +149,25 @@ class _PostCardListState extends State<PostCardList> {
                   );
                 }
               },
-
             ),
             if (_showReturnToTopButton)
-            Positioned(
-              bottom: 16,
-              left: 20,
-              child: FloatingActionButton(
-                onPressed: () {
-                  _scrollController.animateTo(
-                    0,
-                    duration: Duration(milliseconds: 500),
-                    curve: Curves.easeInOut,
-                  );
-                },
-                child: Icon(Icons.arrow_upward),
+              Positioned(
+                bottom: 16,
+                left: 20,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      0,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: Icon(Icons.arrow_upward),
+                ),
               ),
-            ),
           ],
         ),
-
-        ),
-
-            );
+      ),
+    );
   }
 }

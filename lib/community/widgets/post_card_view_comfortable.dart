@@ -82,8 +82,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   ),
                   softWrap: true),
             ),
-          if (edgeToEdgeImages)
-            mediaView,
+          if (edgeToEdgeImages) mediaView,
           if (!edgeToEdgeImages)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -154,7 +153,18 @@ class PostCardViewComfortable extends StatelessWidget {
                     ),
                     visualDensity: VisualDensity.compact,
                     onPressed: () {
-                      showPostActionBottomModalSheet(context, postViewMedia);
+                      showPostActionBottomModalSheet(
+                        context,
+                        postViewMedia,
+                        actionsToInclude: [
+                          PostCardAction.visitProfile,
+                          PostCardAction.visitCommunity,
+                          PostCardAction.blockCommunity,
+                          PostCardAction.sharePost,
+                          PostCardAction.shareMedia,
+                          PostCardAction.shareLink,
+                        ],
+                      );
                       HapticFeedback.mediumImpact();
                     }),
                 if (isUserLoggedIn)

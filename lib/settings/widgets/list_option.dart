@@ -16,6 +16,8 @@ class ListOption<T> extends StatelessWidget {
 
   final BottomSheetListPicker? customListPicker;
 
+  final bool disabled;
+
   const ListOption({
     super.key,
     required this.description,
@@ -24,6 +26,7 @@ class ListOption<T> extends StatelessWidget {
     required this.icon,
     required this.onChanged,
     this.customListPicker,
+    this.disabled = false,
   });
 
   @override
@@ -32,21 +35,23 @@ class ListOption<T> extends StatelessWidget {
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          showDragHandle: true,
-          builder: (context) =>
-              customListPicker ??
-              BottomSheetListPicker(
-                title: description,
-                items: options,
-                onSelect: (value) {
-                  onChanged(value);
-                },
-              ),
-        );
-      },
+      onTap: disabled
+          ? null
+          : () {
+              showModalBottomSheet(
+                context: context,
+                showDragHandle: true,
+                builder: (context) =>
+                    customListPicker ??
+                    BottomSheetListPicker(
+                      title: description,
+                      items: options,
+                      onSelect: (value) {
+                        onChanged(value);
+                      },
+                    ),
+              );
+            },
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -60,13 +65,17 @@ class ListOption<T> extends StatelessWidget {
           Row(
             children: [
               Text(
-                  value.label.capitalize
-                      .replaceAll('_', '')
-                      .replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                    return ' ${match.group(0)}';
-                  }),
-                  style: theme.textTheme.titleSmall),
-              const Icon(Icons.chevron_right_rounded),
+                value.label.capitalize.replaceAll('_', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                  return ' ${match.group(0)}';
+                }),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+                ),
+              ),
+              Icon(
+                Icons.chevron_right_rounded,
+                color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
+              ),
               const SizedBox(
                 height: 42.0,
               )

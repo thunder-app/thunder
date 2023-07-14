@@ -10,6 +10,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
@@ -36,19 +37,16 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
   }
 
+  /// This event should be triggered at the start of the app.
+  ///
+  /// It initializes the local database, checks for updates from GitHub, and loads the user's preferences.
   Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
     try {
-      // Load up database
-      final database = await openDatabase(
-        join(await getDatabasesPath(), 'thunder.db'),
-        version: 1,
-      );
-
       // Check for any updates from GitHub
       Version version = await fetchVersion();
 
       add(UserPreferencesChangeEvent());
-      emit(state.copyWith(status: ThunderStatus.success, database: database, version: version));
+      emit(state.copyWith(status: ThunderStatus.success, version: version));
     } catch (e, s) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
@@ -76,7 +74,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Post Settings
       bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      bool disableSwipeActionsOnPost = prefs.getBool('setting_post_disable_swipe_actions') ?? false;
       bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
       bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
@@ -116,9 +113,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
 
       // Theme Settings
-      bool useSystemTheme = prefs.getBool('setting_theme_use_system_theme') ?? false;
-      String themeType = prefs.getString('setting_theme_type') ?? 'dark';
-      bool useBlackTheme = prefs.getBool('setting_theme_use_black_theme') ?? false;
+      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
@@ -127,13 +122,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
+        // Feed Settings
         useCompactView: useCompactView,
         showTitleFirst: showTitleFirst,
         defaultPostListingType: defaultPostListingType,
         defaultSortType: defaultSortType,
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
-        disableSwipeActionsOnPost: disableSwipeActionsOnPost,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
@@ -162,9 +157,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
-        useSystemTheme: useSystemTheme,
         themeType: themeType,
-        useBlackTheme: useBlackTheme,
         useMaterialYouTheme: useMaterialYouTheme,
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,
