@@ -14,6 +14,7 @@ import 'package:thunder/routes.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -36,8 +37,15 @@ class ThunderApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ThemeBloc(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => ThemeBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AuthBloc(),
+        ),
+      ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           if (state.status == ThemeStatus.initial) {
@@ -45,8 +53,12 @@ class ThunderApp extends StatelessWidget {
           }
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              ThemeData theme = FlexThemeData.light(
+                  useMaterial3: true, scheme: FlexScheme.deepBlue);
+              ThemeData darkTheme = FlexThemeData.dark(
+                  useMaterial3: true,
+                  scheme: FlexScheme.deepBlue,
+                  darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
@@ -73,7 +85,11 @@ class ThunderApp extends StatelessWidget {
                 child: MaterialApp.router(
                   title: 'Thunder',
                   routerConfig: router,
-                  themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
+                  themeMode: state.themeType == ThemeType.system
+                      ? ThemeMode.system
+                      : (state.themeType == ThemeType.light
+                          ? ThemeMode.light
+                          : ThemeMode.dark),
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,

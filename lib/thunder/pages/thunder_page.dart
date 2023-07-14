@@ -156,7 +156,6 @@ class _ThunderState extends State<Thunder> {
                       bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
                       body: MultiBlocProvider(
                           providers: [
-                            BlocProvider<AuthBloc>(create: (context) => AuthBloc()),
                             BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
                           ],
                           child: BlocConsumer<AuthBloc, AuthState>(
