@@ -37,7 +37,7 @@ class _UserPageState extends State<UserPage> {
                               title: Text(
                                 'Are you sure you want to log out?',
                                 style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                                    Theme.of(context).textTheme.bodyLarge,
                               ),
                               actions: [
                                 TextButton(
