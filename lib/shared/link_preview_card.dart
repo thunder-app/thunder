@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:url_launcher/url_launcher.dart' hide launch;
 
@@ -68,6 +69,7 @@ class LinkPreviewCard extends StatelessWidget {
                     height: showFullHeightImages ? mediaHeight : null,
                     width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
                     isExpandable: false,
+                    postId: postId,
                   ),
                 linkInformation(context),
               ],
