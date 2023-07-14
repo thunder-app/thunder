@@ -23,6 +23,8 @@
 - Added ability to share post, external link, or media from post share button - contribution from @micahmo
 - Added ability to disable post and comment swipe actions separately
 - Added debug page to settings to clear preferences and local database
+- Updated image viewer buttons to the bottom for better accessibility - contribution from @CTalvio
+- Added confirmation dialog when logging out of account - contribution from @ggichure
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
