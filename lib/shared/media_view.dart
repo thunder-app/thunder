@@ -128,7 +128,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
-                return ImageViewer(url: widget.postView!.media.first.mediaUrl!, heroKey: heroKey);
+                return ImageViewer(
+                  url: widget.postView!.media.first.mediaUrl!,
+                  heroKey: heroKey,
+                  postId: widget.postView!.postView.post.id,
+                );
               },
               transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
                 return Align(
