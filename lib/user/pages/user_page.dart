@@ -35,7 +35,7 @@ class _UserPageState extends State<UserPage> {
                             value: context.read<AuthBloc>(),
                             child: AlertDialog(
                               title: Text(
-                                'Proceed to log out from current instance.',
+                                'Are you sure you want to log out?',
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
