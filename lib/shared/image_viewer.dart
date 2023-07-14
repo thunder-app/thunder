@@ -96,17 +96,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    AnimationController _animationController = AnimationController(duration: Duration(milliseconds: 200),vsync: this);
+    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140),vsync: this);
     Function() animationListener = () {};
-    Animation? _animation;
+    Animation? animation;
 
     return ScaffoldMessenger(
       key: _imageViewer,
       child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.black,
-            foregroundColor: Colors.white,
-          ),
           backgroundColor: Colors.black.withOpacity(slideTransparency),
           body: Center(
             child: Column(
@@ -130,7 +126,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         });
                       }
                     },
-                    /*slideEndHandler: thunderSlideEndHandler( Offset: offset, Size: Slideaxis:),*/
+                    /*slideEndHandler: (thunderSlideEndHandler offset Size: Slideaxis:)*/
                     child: GestureDetector(
                       child: HeroWidget(
                         tag: widget.heroKey,
@@ -164,27 +160,29 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             double begin = state.gestureDetails!.totalScale!;
                             double end;
 
-                            _animation?.removeListener(animationListener);
-                            _animationController.stop();
-                            _animationController.reset();
+                            animation?.removeListener(animationListener);
+                            animationController.stop();
+                            animationController.reset();
 
                             if (begin == 1) {
-                              end = 1.5;
+                              end = 2;
+                            } else if (begin == 2){
+                              end = 4;
                             } else {
                               end = 1;
                             }
                             animationListener = () {
                               //print(_animation.value);
                               state.handleDoubleTap(
-                                  scale: _animation!.value,
+                                  scale: animation!.value,
                                   doubleTapPosition: pointerDownPosition);
                             };
-                            _animation = _animationController
+                            animation = animationController
                                 .drive(Tween<double>(begin: begin, end: end));
 
-                            _animation!.addListener(animationListener);
+                            animation!.addListener(animationListener);
 
-                            _animationController.forward();
+                            animationController.forward();
                           },
                         ),
                       ),
@@ -195,132 +193,132 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     ),
                   ),
                 ),
-                Row(
-                  children: [
-                    Expanded(flex: 2, child: Container()) ,
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        children: [
-                          const Spacer(),  // TODO make go to post work
-                          Container(
-                            child: widget.postId != null ? Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      AccountBloc accountBloc = context.read<AccountBloc>();
-                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+                Container(
+                  decoration: BoxDecoration(color: Colors.black.withOpacity(0.65)),
+                  child: Row(
+                    children: [
+                      Expanded(flex: 2, child: Container()) ,
+                      Expanded(
+                        flex: 3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [ // TODO make go to post work
+                            Container(
+                              child: widget.postId != null ? Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: IconButton(
+                                      onPressed: () async {
+                                        AccountBloc accountBloc = context.read<AccountBloc>();
+                                        AuthBloc authBloc = context.read<AuthBloc>();
+                                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                        CommunityBloc communityBloc = context.read<CommunityBloc>();
 
-                                      // Mark post as read when tapped
-                                      if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
+                                        // Mark post as read when tapped
+                                        if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
 
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                                BlocProvider.value(value: communityBloc),
-                                                BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                              ],
-                                              child: PostPage(
-                                                postView: widget.postViewMedia,
-                                                onPostUpdated: () {},
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                      if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                                    },
-                                    icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments"),
+                                        await Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) {
+                                              return MultiBlocProvider(
+                                                providers: [
+                                                  BlocProvider.value(value: accountBloc),
+                                                  BlocProvider.value(value: authBloc),
+                                                  BlocProvider.value(value: thunderBloc),
+                                                  BlocProvider.value(value: communityBloc),
+                                                  BlocProvider(create: (context) => post_bloc.PostBloc()),
+                                                ],
+                                                child: PostPage(
+                                                  postView: widget.postViewMedia,
+                                                  onPostUpdated: () {},
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        );
+                                        if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
+                                      },
+                                      icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments"),
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ) : const Spacer(),
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: IconButton(
-                              onPressed: () async {
-                                try {
-                                  // Try to get the cached image first
-                                  var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                                  File? mediaFile = media?.file;
+                                ],
+                              ) : null,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: IconButton(
+                                onPressed: () async {
+                                  try {
+                                    // Try to get the cached image first
+                                    var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                                    File? mediaFile = media?.file;
 
-                                  if (media == null) {
-                                    // Tell user we're downloading the image, snackbars display twice for some reason, disabling here for now TODO fix that
-                                    SnackBar snackBar = const SnackBar(
-                                      content: Text('Downloading media to share...'),
+                                    if (media == null) {
+                                      // Tell user we're downloading the image
+                                      SnackBar snackBar = const SnackBar(
+                                        content: Text('Downloading media to share...'),
+                                        behavior: SnackBarBehavior.floating,
+                                      );
+                                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                        _imageViewer.currentState?.clearSnackBars();
+                                        _imageViewer.currentState?.showSnackBar(snackBar);
+                                      });
+
+                                      // Download
+                                      mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+
+                                      // Hide snackbar
+                                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                        _imageViewer.currentState?.clearSnackBars();
+                                      });
+                                    }
+
+                                    // Share
+                                    await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                  } catch (e) {
+                                    // Tell the user that the download failed
+                                    SnackBar snackBar = SnackBar(
+                                      content: Text('There was an error downloading the media file to share: $e'),
                                       behavior: SnackBarBehavior.floating,
                                     );
                                     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                       _imageViewer.currentState?.clearSnackBars();
                                       _imageViewer.currentState?.showSnackBar(snackBar);
                                     });
-
-                                    // Download
-                                    mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
-
-                                    // Hide snackbar
-                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                      _imageViewer.currentState?.clearSnackBars();
-                                    });
                                   }
-
-                                  // Share
-                                  await Share.shareXFiles([XFile(mediaFile!.path)]);
-                                } catch (e) {
-                                  // Tell the user that the download failed
-                                  SnackBar snackBar = SnackBar(
-                                    content: Text('There was an error downloading the media file to share: $e'),
-                                    behavior: SnackBarBehavior.floating,
-                                  );
-                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                    _imageViewer.currentState?.clearSnackBars();
-                                    _imageViewer.currentState?.showSnackBar(snackBar);
-                                  });
-                                }
-                              },
-                              icon: const Icon(Icons.share_rounded, semanticLabel: "Comments"),
+                                },
+                                icon: const Icon(Icons.share_rounded, semanticLabel: "Comments"),
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: IconButton(
-                              onPressed: () async {
-                                File file = await DefaultCacheManager().getSingleFile(widget.url);
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: IconButton(
+                                onPressed: () async {
+                                  File file = await DefaultCacheManager().getSingleFile(widget.url);
 
-                                if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                                  final result = await ImageGallerySaver.saveFile(file.path);
+                                  if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                                    final result = await ImageGallerySaver.saveFile(file.path);
 
-                                  setState(() => downloaded = result['isSuccess'] == true);
-                                } else if (Platform.isLinux || Platform.isWindows) {
-                                  final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                                    setState(() => downloaded = result['isSuccess'] == true);
+                                  } else if (Platform.isLinux || Platform.isWindows) {
+                                    final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
 
-                                  File(filePath)
-                                    ..createSync(recursive: true)
-                                    ..writeAsBytesSync(file.readAsBytesSync());
+                                    File(filePath)
+                                      ..createSync(recursive: true)
+                                      ..writeAsBytesSync(file.readAsBytesSync());
 
-                                  setState(() => downloaded = true);
-                                }
-                              },
-                              icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
+                                    setState(() => downloaded = true);
+                                  }
+                                },
+                                icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded') : const Icon(Icons.download, semanticLabel: "Download"),
+                              ),
                             ),
-                          ),
-                          const Spacer(),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
