@@ -34,9 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
-      await Future.delayed(const Duration(seconds: 1), () {
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
-      });
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account

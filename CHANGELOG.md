@@ -22,6 +22,7 @@
 - Adjusted theming options to show a modal rather than toggles to reduce confusion - contribution from @coslu
 - Added ability to share post, external link, or media from post share button - contribution from @micahmo
 - Added ability to disable post and comment swipe actions separately
+- Added debug page to settings to clear preferences and local database
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
