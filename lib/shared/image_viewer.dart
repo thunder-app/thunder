@@ -55,11 +55,24 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   /// User Settings
   bool isUserLoggedIn = false;
 
-/*  @override
+  /*@override
   void initState() {
     super.initState();
 
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+  }*/
+
+  /*bool? thunderSlideEndHandler(
+      {Offset offset, Size pageSize, SlideAxis pageGestureAxis}) {
+    if (pageGestureAxis == SlideAxis.both) {
+      return offset.distance >
+          Offset(pageSize.width, pageSize.height).distance / 3.5;
+    } else if (pageGestureAxis == SlideAxis.horizontal) {
+      return offset.dx.abs() > pageSize.width / 3.5;
+    } else if (pageGestureAxis == SlideAxis.vertical) {
+      return offset.dy.abs() > pageSize.height / 3.5;
+    }
+    return true;
   }*/
 
   Future<bool> _requestPermission() async {
@@ -117,7 +130,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         });
                       }
                     },
-                    /*slideEndHandler: defaultSlideEndHandler,*/
+                    /*slideEndHandler: thunderSlideEndHandler( Offset: offset, Size: Slideaxis:),*/
                     child: GestureDetector(
                       child: HeroWidget(
                         tag: widget.heroKey,
@@ -146,51 +159,51 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               gestureDetailsIsChanged: (GestureDetails? details) {},
                             );
                           },
+                          onDoubleTap: (ExtendedImageGestureState state) {
+                            var pointerDownPosition = state.pointerDownPosition;
+                            double begin = state.gestureDetails!.totalScale!;
+                            double end;
+
+                            _animation?.removeListener(animationListener);
+                            _animationController.stop();
+                            _animationController.reset();
+
+                            if (begin == 1) {
+                              end = 1.5;
+                            } else {
+                              end = 1;
+                            }
+                            animationListener = () {
+                              //print(_animation.value);
+                              state.handleDoubleTap(
+                                  scale: _animation!.value,
+                                  doubleTapPosition: pointerDownPosition);
+                            };
+                            _animation = _animationController
+                                .drive(Tween<double>(begin: begin, end: end));
+
+                            _animation!.addListener(animationListener);
+
+                            _animationController.forward();
+                          },
                         ),
                       ),
                       onTap: () {
                         slidePagekey.currentState!.popPage();
                         Navigator.pop(context);
                       },
-                      /*onDoubleTap: (ExtendedImageGestureState state) {
-                        var pointerDownPosition = state.pointerDownPosition;
-                        double begin = state.gestureDetails!.totalScale!;
-                        double end;
-
-                        _animation?.removeListener(animationListener);
-                        _animationController.stop();
-                        _animationController.reset();
-
-                        if (begin == 1) {
-                          end = 1.5;
-                        } else {
-                          end = 1;
-                        }
-                        animationListener = () {
-                          //print(_animation.value);
-                          state.handleDoubleTap(
-                              scale: _animation!.value,
-                              doubleTapPosition: pointerDownPosition);
-                        };
-                        _animation = _animationController
-                            .drive(Tween<double>(begin: begin, end: end));
-
-                        _animation!.addListener(animationListener);
-
-                        _animationController.forward();
-                      },*/
                     ),
                   ),
                 ),
                 Row(
                   children: [
-                    Expanded(flex: 3, child: Container()),
+                    Expanded(flex: 2, child: Container()) ,
                     Expanded(
                       flex: 3,
                       child: Row(
                         children: [
                           const Spacer(),  // TODO make go to post work
-                          /*Container(
+                          Container(
                             child: widget.postId != null ? Row(
                               children: [
                                 Padding(
@@ -230,9 +243,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ),
                                 ),
                               ],
-                            ) : null,
+                            ) : const Spacer(),
                           ),
-                          const Spacer(),*/
+                          const Spacer(),
                           Padding(
                             padding: const EdgeInsets.all(16.0),
                             child: IconButton(
