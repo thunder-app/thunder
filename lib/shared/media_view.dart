@@ -125,6 +125,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             PageRouteBuilder(
               opaque: false,
               transitionDuration: const Duration(milliseconds: 150),
+              reverseTransitionDuration: const Duration(milliseconds: 150),
               pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
