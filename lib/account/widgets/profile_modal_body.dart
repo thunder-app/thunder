@@ -127,7 +127,7 @@ class ProfileSelect extends StatelessWidget {
 
   Future<List<AccountExtended>> fetchAccounts() async {
     List<AccountExtended> accounts = await Future.wait((await Account.accounts()).map((account) async {
-      final instanceIcon = await getInstanceIcon(account.instance);
+      final instanceIcon = await getInstanceIcon(account.instance).timeout(const Duration(seconds: 3));
       return AccountExtended(account: account, instanceIcon: instanceIcon);
     }).toList());
 

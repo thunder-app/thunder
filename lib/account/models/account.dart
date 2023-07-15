@@ -38,20 +38,24 @@ class Account {
 
   // A method that retrieves all accounts from the database
   static Future<List<Account>> accounts() async {
-    Database? database = await DB.instance.database;
-    if (database == null) return [];
+    try {
+      Database? database = await DB.instance.database;
+      if (database == null) return [];
 
-    final List<Map<String, dynamic>> maps = await database.query('accounts');
+      final List<Map<String, dynamic>> maps = await database.query('accounts');
 
-    return List.generate(maps.length, (i) {
-      return Account(
-        id: maps[i]['accountId'],
-        username: maps[i]['username'],
-        jwt: maps[i]['jwt'],
-        instance: maps[i]['instance'],
-        userId: maps[i]['userId'],
-      );
-    });
+      return List.generate(maps.length, (i) {
+        return Account(
+          id: maps[i]['accountId'],
+          username: maps[i]['username'],
+          jwt: maps[i]['jwt'],
+          instance: maps[i]['instance'],
+          userId: maps[i]['userId'],
+        );
+      });
+    } catch (e) {
+      return [];
+    }
   }
 
   static Future<Account?> fetchAccount(String accountId) async {
