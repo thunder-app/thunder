@@ -77,7 +77,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             if (event.userId != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
-                personId: event.userId,
+                personId: event.isAccountUser ? null : event.userId,
+                username: event.isAccountUser ? account?.username : null,
                 auth: account?.jwt,
                 sort: SortType.new_,
                 limit: limit,
@@ -178,7 +179,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             if (event.userId != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
-                personId: event.userId,
+                personId: event.isAccountUser ? null : event.userId,
+                username: event.isAccountUser ? account?.username : null,
                 auth: account?.jwt,
                 sort: SortType.new_,
                 limit: limit,
