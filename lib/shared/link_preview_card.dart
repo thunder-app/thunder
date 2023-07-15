@@ -190,7 +190,6 @@ class LinkPreviewCard extends StatelessWidget {
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-    final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (viewMode == ViewMode.compact) {
       return Container(
@@ -200,10 +199,12 @@ class LinkPreviewCard extends StatelessWidget {
           height: 75,
           width: 75,
           color:
-          mediaURL != null && viewMode == ViewMode.compact && useDarkTheme ?
-            Colors.black.withOpacity(0.60) :
           mediaURL != null && viewMode == ViewMode.compact ?
-            Colors.white.withOpacity(0.70) :
+          ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            10,
+          ).withOpacity(0.65) :
           ElevationOverlay.applySurfaceTint(
             Theme.of(context).colorScheme.surface,
             Theme.of(context).colorScheme.surfaceTint,
