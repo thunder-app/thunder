@@ -67,6 +67,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    if (widget.postView == null || widget.postView!.media.isEmpty) {
+      return Container();
+    }
+
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         originURL: widget.postView!.media.first.originalUrl,
