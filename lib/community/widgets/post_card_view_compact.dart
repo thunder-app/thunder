@@ -41,7 +41,7 @@ class PostCardViewCompact extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!showThumbnailPreviewOnRight)
+          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
@@ -50,7 +50,7 @@ class PostCardViewCompact extends StatelessWidget {
               viewMode: ViewMode.compact,
               isUserLoggedIn: isUserLoggedIn,
             ),
-          if (!showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
+          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -93,8 +93,8 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          if (showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
-          if (showThumbnailPreviewOnRight)
+          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
+          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
