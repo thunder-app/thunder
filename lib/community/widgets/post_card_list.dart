@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -12,6 +13,8 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+
+import 'community_sidebar.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
@@ -150,6 +153,8 @@ class _PostCardListState extends State<PostCardList> {
                 }
               },
             ),
+            if (true) // make sidebarswitch
+              CommunitySidebar( communityInfo: widget.communityInfo ),
             if (_showReturnToTopButton)
               Positioned(
                 bottom: 16,
