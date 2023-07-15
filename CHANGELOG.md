@@ -25,6 +25,12 @@
 - Added debug page to settings to clear preferences and local database
 - Updated image viewer buttons to the bottom for better accessibility - contribution from @CTalvio
 - Added confirmation dialog when logging out of account - contribution from @ggichure
+- Added options for hourly sorts - contribution from @Fmstrat
+- Added improvements to swipe gestures on image viewer - contribution from @CTalvio
+- Added tap to scroll to top on feed view - contribution from @micahmo
+- Optimized post loading to load posts faster on startup
+- Added images to links in compact view - contribution from @CTalvio
+- Added search sort options - contribution from @micahmo
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
@@ -41,6 +47,7 @@
 - Fixed issue where only some subscriptions would show up on the sidebar
 - Fixed issue where refreshing community when tapping on a link would show local posts rather than the community's posts
 - Fixed issue where you could not log in through email
+- Potentially fixed issue with profile showing to wrong user
 
 ## 0.2.1+11 - 2023-07-09
 ### Added
