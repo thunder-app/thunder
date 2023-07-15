@@ -31,7 +31,7 @@ Future<String?> getInstanceIcon(String? url) async {
   }
 
   try {
-    final site = await LemmyApiV3(url!).run(const GetSite());
+    final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
     return site.siteView?.site.icon;
   } catch (e) {
     // Bad instances will throw an exception, so no icon
