@@ -69,7 +69,7 @@ class LinkPreviewCard extends StatelessWidget {
                 if (showLinkPreviews)
                   ImagePreview(
                     url: mediaURL!,
-                    height: showFullHeightImages ? mediaHeight : null,
+                    height: showFullHeightImages ? mediaHeight : 150,
                     width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
                     isExpandable: false,
                   ),
@@ -80,18 +80,43 @@ class LinkPreviewCard extends StatelessWidget {
           onTap: () => triggerOnTap(context),
         ),
       );
+    } else if (mediaURL != null && viewMode == ViewMode.compact) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+        child: InkWell(
+          onTap: () => triggerOnTap(context),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.passthrough,
+              children: [
+                if (showLinkPreviews)
+                  ImagePreview(
+                    url: mediaURL!,
+                    height: 75,
+                    width: 75,
+                    isExpandable: false,
+                  ),
+                linkInformation(context),
+              ],
+            ),
+          ),
+        ),
+      );
     } else {
       var inkWell = InkWell(
+        onTap: () => triggerOnTap(context),
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Stack(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.center,
             fit: StackFit.passthrough,
             children: [linkInformation(context)],
           ),
         ),
-        onTap: () => triggerOnTap(context),
       );
       if (edgeToEdgeImages) {
         return Padding(
@@ -172,14 +197,19 @@ class LinkPreviewCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
-          child: SizedBox(
-            height: 75.0,
-            width: 75.0,
-            child: Icon(
-              Icons.link_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+          height: 75,
+          width: 75,
+          color:
+          mediaURL != null && viewMode == ViewMode.compact && useDarkTheme ?
+            Colors.black.withOpacity(0.60) :
+          mediaURL != null && viewMode == ViewMode.compact ?
+            Colors.white.withOpacity(0.70) :
+          useDarkTheme ?
+            theme.colorScheme.background.lighten(7) :
+            theme.colorScheme.background.darken(7),
+          child: Icon(
+            Icons.link_rounded,
+            color: theme.colorScheme.onSecondaryContainer,
           ),
         ),
       );
