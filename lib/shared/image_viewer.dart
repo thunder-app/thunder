@@ -90,7 +90,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     return ScaffoldMessenger(
       key: _imageViewer,
       child: Scaffold(
-          backgroundColor: Colors.transparent,
+          appBar: AppBar(backgroundColor: Colors.black.withOpacity(0.65),),
+          backgroundColor: Colors.black.withOpacity(slideTransparency),
           body: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -100,7 +101,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   slideAxis: SlideAxis.both,
                   slideType: SlideType.onlyImage,
                   slidePageBackgroundHandler: (offset, pageSize) {
-                    return Colors.black.withOpacity(slideTransparency);
+                    return Colors.transparent;
                   },
                   onSlidingPage: (state) { // Fade out image and background when sliding to dismiss
                     var offset = state.offset;
@@ -110,7 +111,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                     if (state.isSliding) {
                       setState(() {
-                        slideTransparency = 0.9 - min( 0.9, scale*4);
+                        slideTransparency = 0.9 - min( 0.9, scale*0.5);
                         imageTransparency = 1.0 - min( 1.0, scale*10);
                       });
                     }
@@ -166,7 +167,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                           if (begin == 1) {
                             end = 2;
-                          } else if (begin == 2){
+                          } else if (begin >1.99 && begin <2.01){
                             end = 4;
                           } else {
                             end = 1;
@@ -199,127 +200,119 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 ),
               ),
               Container(
-                decoration: BoxDecoration(color: Colors.black.withOpacity(slideTransparency)),
+                decoration: BoxDecoration(color: Colors.black.withOpacity(0.65)),
                 child: Row(
-                  children: [
-                    Expanded(flex: 2, child: Container()) ,
-                    Expanded(
-                      flex: 3,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [ // TODO make go to post work
-                          /*Container(
-                            child: widget.postId != null ? Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      AccountBloc accountBloc = context.read<AccountBloc>();
-                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [ // TODO make go to post work
+                    /*Container(
+                      child: widget.postId != null ? Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(15.0),
+                            child: IconButton(
+                              onPressed: () async {
+                                AccountBloc accountBloc = context.read<AccountBloc>();
+                                AuthBloc authBloc = context.read<AuthBloc>();
+                                ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                                CommunityBloc communityBloc = context.read<CommunityBloc>();
 
-                                      // Mark post as read when tapped
-                                      if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
+                                // Mark post as read when tapped
+                                if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
 
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                                BlocProvider.value(value: communityBloc),
-                                                BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                              ],
-                                              child: PostPage(
-                                                postView: widget.postViewMedia,
-                                                onPostUpdated: () {},
-                                              ),
-                                            );
-                                          },
+                                await Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) {
+                                      return MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider.value(value: accountBloc),
+                                          BlocProvider.value(value: authBloc),
+                                          BlocProvider.value(value: thunderBloc),
+                                          BlocProvider.value(value: communityBloc),
+                                          BlocProvider(create: (context) => post_bloc.PostBloc()),
+                                        ],
+                                        child: PostPage(
+                                          postView: widget.postViewMedia,
+                                          onPostUpdated: () {},
                                         ),
                                       );
-                                      if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
                                     },
-                                    icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
                                   ),
-                                ),
-                              ],
-                            ) : null,
-                          ),*/
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              onPressed: () async {
-                                try {
-                                  // Try to get the cached image first
-                                  var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                                  File? mediaFile = media?.file;
-
-                                  if (media == null) {
-                                    // Tell user we're downloading the image
-                                    SnackBar snackBar = const SnackBar(
-                                      content: Text('Downloading media to share...'),
-                                      behavior: SnackBarBehavior.floating,
-                                    );
-                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                      _imageViewer.currentState?.clearSnackBars();
-                                      _imageViewer.currentState?.showSnackBar(snackBar);
-                                    });
-
-                                    // Download
-                                    mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
-
-                                    // Hide snackbar
-                                    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                      _imageViewer.currentState?.clearSnackBars();
-                                    });
-                                  }
-
-                                  // Share
-                                  await Share.shareXFiles([XFile(mediaFile!.path)]);
-                                } catch (e) {
-                                  // Tell the user that the download failed
-                                  SnackBar snackBar = SnackBar(
-                                    content: Text('There was an error downloading the media file to share: $e'),
-                                    behavior: SnackBarBehavior.floating,
-                                  );
-                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                    _imageViewer.currentState?.clearSnackBars();
-                                    _imageViewer.currentState?.showSnackBar(snackBar);
-                                  });
-                                }
+                                );
+                                if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
                               },
-                              icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: IconButton(
-                              onPressed: () async {
-                                File file = await DefaultCacheManager().getSingleFile(widget.url);
-
-                                if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                                  final result = await ImageGallerySaver.saveFile(file.path);
-
-                                  setState(() => downloaded = result['isSuccess'] == true);
-                                } else if (Platform.isLinux || Platform.isWindows) {
-                                  final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
-
-                                  File(filePath)
-                                    ..createSync(recursive: true)
-                                    ..writeAsBytesSync(file.readAsBytesSync());
-
-                                  setState(() => downloaded = true);
-                                }
-                              },
-                              icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white) : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
+                              icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
                             ),
                           ),
                         ],
+                      ) : null,
+                    ),*/
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          try {
+                            // Try to get the cached image first
+                            var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                            File? mediaFile = media?.file;
+
+                            if (media == null) {
+                              // Tell user we're downloading the image
+                              SnackBar snackBar = const SnackBar(
+                                content: Text('Downloading media to share...'),
+                                behavior: SnackBarBehavior.floating,
+                              );
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                _imageViewer.currentState?.clearSnackBars();
+                                _imageViewer.currentState?.showSnackBar(snackBar);
+                              });
+
+                              // Download
+                              mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+
+                              // Hide snackbar
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                _imageViewer.currentState?.clearSnackBars();
+                              });
+                            }
+
+                            // Share
+                            await Share.shareXFiles([XFile(mediaFile!.path)]);
+                          } catch (e) {
+                            // Tell the user that the download failed
+                            SnackBar snackBar = SnackBar(
+                              content: Text('There was an error downloading the media file to share: $e'),
+                              behavior: SnackBarBehavior.floating,
+                            );
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                              _imageViewer.currentState?.clearSnackBars();
+                              _imageViewer.currentState?.showSnackBar(snackBar);
+                            });
+                          }
+                        },
+                        icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: IconButton(
+                        onPressed: () async {
+                          File file = await DefaultCacheManager().getSingleFile(widget.url);
+
+                          if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                            final result = await ImageGallerySaver.saveFile(file.path);
+
+                            setState(() => downloaded = result['isSuccess'] == true);
+                          } else if (Platform.isLinux || Platform.isWindows) {
+                            final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+
+                            File(filePath)
+                              ..createSync(recursive: true)
+                              ..writeAsBytesSync(file.readAsBytesSync());
+
+                            setState(() => downloaded = true);
+                          }
+                        },
+                        icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white) : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
                       ),
                     ),
                   ],
