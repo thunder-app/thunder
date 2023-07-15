@@ -56,7 +56,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         q: event.query,
         page: 1,
         limit: 15,
-        sort: SortType.active,
+        sort: event.sortType,
       ));
 
       return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
@@ -83,7 +83,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             q: event.query,
             page: state.page,
             limit: 15,
-            sort: SortType.active,
+            sort: event.sortType,
           ));
 
           // Append the search results
