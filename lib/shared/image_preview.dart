@@ -71,21 +71,18 @@ class _ImagePreviewState extends State<ImagePreview> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: widget.isExpandable
-            ? InkWell(
-                child: imagePreview(context),
-                onTap: () {
-                  if (widget.nsfw && blur) {
-                    setState(() => blur = false);
-                  } else {
-                    onImageTap(context);
-                  }
-                },
-              )
-            : imagePreview(context),
-      ),
+      child: widget.isExpandable
+          ? InkWell(
+              child: imagePreview(context),
+              onTap: () {
+                if (widget.nsfw && blur) {
+                  setState(() => blur = false);
+                } else {
+                  onImageTap(context);
+                }
+              },
+            )
+          : imagePreview(context),
     );
   }
 
@@ -97,7 +94,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: [
           ExtendedImage.network(
             widget.url,
-            height: widget.showFullHeightImages ? widget.height : 150,
+            height: widget.height,
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,

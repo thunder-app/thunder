@@ -11,6 +11,8 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
@@ -66,10 +68,9 @@ class LinkPreviewCard extends StatelessWidget {
                 if (showLinkPreviews)
                   ImagePreview(
                     url: mediaURL!,
-                    height: showFullHeightImages ? mediaHeight : null,
+                    height: showFullHeightImages ? mediaHeight : 150,
                     width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
                     isExpandable: false,
-                    postId: postId,
                   ),
                 linkInformation(context),
               ],
@@ -78,18 +79,43 @@ class LinkPreviewCard extends StatelessWidget {
           onTap: () => triggerOnTap(context),
         ),
       );
+    } else if (mediaURL != null && viewMode == ViewMode.compact) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+        child: InkWell(
+          onTap: () => triggerOnTap(context),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.passthrough,
+              children: [
+                if (showLinkPreviews)
+                  ImagePreview(
+                    url: mediaURL!,
+                    height: 75,
+                    width: 75,
+                    isExpandable: false,
+                  ),
+                linkInformation(context),
+              ],
+            ),
+          ),
+        ),
+      );
     } else {
       var inkWell = InkWell(
+        onTap: () => triggerOnTap(context),
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Stack(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.center,
             fit: StackFit.passthrough,
             children: [linkInformation(context)],
           ),
         ),
-        onTap: () => triggerOnTap(context),
       );
       if (edgeToEdgeImages) {
         return Padding(
@@ -170,18 +196,23 @@ class LinkPreviewCard extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: ElevationOverlay.applySurfaceTint(
+          height: 75,
+          width: 75,
+          color:
+          mediaURL != null && viewMode == ViewMode.compact ?
+          ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            10,
+          ).withOpacity(0.65) :
+          ElevationOverlay.applySurfaceTint(
             Theme.of(context).colorScheme.surface,
             Theme.of(context).colorScheme.surfaceTint,
             10,
           ),
-          child: SizedBox(
-            height: 75.0,
-            width: 75.0,
-            child: Icon(
-              Icons.link_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+          child: Icon(
+            Icons.link_rounded,
+            color: theme.colorScheme.onSecondaryContainer,
           ),
         ),
       );
