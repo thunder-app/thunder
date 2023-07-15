@@ -32,6 +32,21 @@ const List<ListPickerItem<SortType>> defaultSortTypeItems = [
 
 const List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
+    payload: SortType.topHour,
+    icon: Icons.check_box_outline_blank,
+    label: 'Top in Past Hour',
+  ),
+  ListPickerItem(
+    payload: SortType.topSixHour,
+    icon: Icons.calendar_view_month,
+    label: 'Top in Past 6 Hours',
+  ),
+  ListPickerItem(
+    payload: SortType.topTwelveHour,
+    icon: Icons.calendar_view_week,
+    label: 'Top in Past 12 Hours',
+  ),
+  ListPickerItem(
     payload: SortType.topDay,
     icon: Icons.today,
     label: 'Top Today',
