@@ -10,3 +10,5 @@ abstract class ThunderEvent extends Equatable {
 class UserPreferencesChangeEvent extends ThunderEvent {}
 
 class InitializeAppEvent extends ThunderEvent {}
+
+class OnScrollToTopEvent extends ThunderEvent {}

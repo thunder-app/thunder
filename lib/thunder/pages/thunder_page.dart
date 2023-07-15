@@ -265,10 +265,16 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
           onTap: (index) {
-            setState(() {
-              selectedPageIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-            });
+            if (selectedPageIndex == 0 && index == 0) {
+              context.read<ThunderBloc>().add(OnScrollToTopEvent());
+            }
+
+            if (selectedPageIndex != index) {
+              setState(() {
+                selectedPageIndex = index;
+                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+              });
+            }
 
             // @todo Change this from integer to enum or some other type
             if (index == 3) {
