@@ -208,7 +208,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [ // TODO make go to post work
-                          Container(
+                          /*Container(
                             child: widget.postId != null ? Row(
                               children: [
                                 Padding(
@@ -249,7 +249,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 ),
                               ],
                             ) : null,
-                          ),
+                          ),*/
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: IconButton(
