@@ -101,7 +101,7 @@ class _PostCardState extends State<PostCard> {
         },
         onPointerCancel: (event) => {},
         child: Dismissible(
-          direction: determineSwipeDirection(isUserLoggedIn, state),
+          direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
           key: ObjectKey(widget.postViewMedia.postView.post.id),
           resizeDuration: Duration.zero,
           dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
@@ -170,7 +170,11 @@ class _PostCardState extends State<PostCard> {
               Divider(
                 height: 1.0,
                 thickness: 4.0,
-                color: state.themeType == 'dark' ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+                color: ElevationOverlay.applySurfaceTint(
+                  Theme.of(context).colorScheme.surface,
+                  Theme.of(context).colorScheme.surfaceTint,
+                  10,
+                ),
               ),
               InkWell(
                 child: state.useCompactView
@@ -198,7 +202,18 @@ class _PostCardState extends State<PostCard> {
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
                       ),
-                onLongPress: () => showPostActionBottomModalSheet(context, widget.postViewMedia),
+                onLongPress: () => showPostActionBottomModalSheet(
+                  context,
+                  widget.postViewMedia,
+                  actionsToInclude: [
+                    PostCardAction.visitProfile,
+                    PostCardAction.visitCommunity,
+                    PostCardAction.blockCommunity,
+                    PostCardAction.sharePost,
+                    PostCardAction.shareMedia,
+                    PostCardAction.shareLink,
+                  ],
+                ),
                 onTap: () async {
                   AccountBloc accountBloc = context.read<AccountBloc>();
                   AuthBloc authBloc = context.read<AuthBloc>();

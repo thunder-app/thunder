@@ -34,9 +34,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
-      await Future.delayed(const Duration(seconds: 1), () {
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
-      });
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -104,11 +102,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        // Fetch the account to get the id
-        FullPersonView person = await lemmy.run(GetPersonDetails(
-          auth: loginResponse.jwt!.raw,
-          username: event.username,
-        ));
+        FullSiteView fullSiteView = await lemmy.run(
+          GetSite(
+            auth: loginResponse.jwt!.raw,
+          ),
+        );
 
         // Create a new account in the database
         Uuid uuid = const Uuid();
@@ -116,10 +114,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         Account account = Account(
           id: accountId,
-          username: event.username,
+          username: fullSiteView.myUser?.localUserView.person.name,
           jwt: loginResponse.jwt?.raw,
           instance: instance,
-          userId: person.personView.person.id,
+          userId: fullSiteView.myUser?.localUserView.person.id,
         );
 
         await Account.insertAccount(account);
@@ -138,7 +136,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } catch (e, s) {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
         }
-
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });

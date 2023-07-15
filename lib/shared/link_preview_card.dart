@@ -1,7 +1,7 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:url_launcher/url_launcher.dart' hide launch;
 
@@ -43,7 +43,6 @@ class LinkPreviewCard extends StatelessWidget {
 
   final bool showLinkPreviews;
   final bool showFullHeightImages;
-
 
   final bool edgeToEdgeImages;
 
@@ -124,9 +123,9 @@ class LinkPreviewCard extends StatelessWidget {
           child: inkWell,
         );
       } else {
-          return Padding(
-            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-            child: inkWell,
+        return Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+          child: inkWell,
         );
       }
     }
@@ -140,7 +139,7 @@ class LinkPreviewCard extends StatelessWidget {
       try {
         UserBloc userBloc = BlocProvider.of<UserBloc>(context);
         userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
-      } catch(e){
+      } catch (e) {
         CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
         communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
       }
@@ -170,7 +169,8 @@ class LinkPreviewCard extends StatelessWidget {
       if (openInExternalBrowser) {
         launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
       } else {
-        launch(originURL!,
+        launch(
+          originURL!,
           customTabsOption: CustomTabsOption(
             toolbarColor: Theme.of(context).canvasColor,
             enableUrlBarHiding: true,
@@ -204,9 +204,11 @@ class LinkPreviewCard extends StatelessWidget {
             Colors.black.withOpacity(0.60) :
           mediaURL != null && viewMode == ViewMode.compact ?
             Colors.white.withOpacity(0.70) :
-          useDarkTheme ?
-            theme.colorScheme.background.lighten(7) :
-            theme.colorScheme.background.darken(7),
+          ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            10,
+          ),
           child: Icon(
             Icons.link_rounded,
             color: theme.colorScheme.onSecondaryContainer,
@@ -215,7 +217,11 @@ class LinkPreviewCard extends StatelessWidget {
       );
     } else {
       return Container(
-        color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+        color: ElevationOverlay.applySurfaceTint(
+          Theme.of(context).colorScheme.surface,
+          Theme.of(context).colorScheme.surfaceTint,
+          10,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [

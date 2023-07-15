@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
@@ -69,7 +70,7 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
+            padding: const EdgeInsets.only(left: 0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
@@ -287,7 +288,13 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: () => Share.share(post.apId),
+                  onPressed: postViewMedia.media.isEmpty
+                      ? () => Share.share(post.apId)
+                      : () => showPostActionBottomModalSheet(
+                            context,
+                            postViewMedia,
+                            actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                          ),
                 ),
               )
             ],
