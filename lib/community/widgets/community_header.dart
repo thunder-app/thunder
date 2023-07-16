@@ -84,6 +84,7 @@ class CommunityHeader extends StatelessWidget {
                           ],
                         ),
                       ),
+                      const Icon(Icons.chevron_left_rounded, size: 50, shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 5.0)],)
                     ],
                   ),
                 ],

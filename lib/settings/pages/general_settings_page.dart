@@ -219,7 +219,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     vsync: this,
   );
 
-  // Animation for comment collapse
+  // Animation for settings collapse
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
     begin: Offset.zero,
     end: const Offset(1.5, 0.0),
@@ -488,7 +488,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ToggleOption(
                           description: 'Show Link Previews',
-                          subtitle: 'Applies to normal view only',
                           value: showLinkPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,

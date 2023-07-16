@@ -70,7 +70,7 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(left: 0, right: 8.0, top: 16.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [

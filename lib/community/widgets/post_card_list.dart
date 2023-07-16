@@ -47,9 +47,23 @@ class PostCardList extends StatefulWidget {
   State<PostCardList> createState() => _PostCardListState();
 }
 
-class _PostCardListState extends State<PostCardList> {
+class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin{
+  bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 1),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticIn,
+  ));
 
   @override
   void initState() {
@@ -114,7 +128,25 @@ class _PostCardListState extends State<PostCardList> {
               itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
                 if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
-                  return CommunityHeader(communityInfo: widget.communityInfo);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _displaySidebar = true;
+                      });
+                    },
+                    onHorizontalDragUpdate: (details) {
+                      if( details.delta.dx < -3) {
+                        setState(() {
+                          _displaySidebar = true;
+                        });
+                      }
+                    },
+                    child: Column(
+                      children: [
+                        CommunityHeader(communityInfo: widget.communityInfo),
+                      ],
+                    ),
+                  );
                 }
                 if (index == widget.postViews!.length) {
                   if (widget.hasReachedEnd == true) {
@@ -153,8 +185,62 @@ class _PostCardListState extends State<PostCardList> {
                 }
               },
             ),
-            if (true) // make sidebarswitch
-              CommunitySidebar( communityInfo: widget.communityInfo ),
+            GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                if( details.delta.dx > 3) {
+                  setState(() {
+                    _displaySidebar = false;
+                  });
+                }
+              },
+              child: Column(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _displaySidebar ? GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _displaySidebar = false;
+                        });
+                      },
+                      child: CommunityHeader(communityInfo: widget.communityInfo),
+                    ) : null,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _displaySidebar ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _displaySidebar = false;
+                              });
+                            },
+                            child: Container(
+                              color: Colors.black.withOpacity(0.75),
+                            ),
+                          ) : null,
+                        ),
+                        AnimatedSwitcher(
+                          switchInCurve: Curves.decelerate,
+                          switchOutCurve: Curves.easeOut,
+                          transitionBuilder: (child, animation) {
+                            return SlideTransition(
+                              position: Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
+                                  .animate(animation),
+                              child: child,
+                            );
+                          },
+                          duration: const Duration(milliseconds: 300),
+                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo) : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             if (_showReturnToTopButton)
               Positioned(
                 bottom: 16,
