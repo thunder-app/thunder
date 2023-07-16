@@ -155,14 +155,14 @@ class _SearchPageState extends State<SearchPage> {
                       backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
                       foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
                       maxRadius: 25,
-                      child: Text(
+                      child: communityView.community.icon == null ? Text(
                         communityView.community.name[0].toUpperCase(),
                         semanticsLabel: '',
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
                         ),
-                      ),
+                      ) : null,
                     ),
                     title: Text(
                       communityView.community.title,

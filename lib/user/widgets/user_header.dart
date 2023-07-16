@@ -10,36 +10,45 @@ import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatelessWidget {
   final PersonViewSafe? userInfo;
+  final bool? isSidebarOpen;
 
-  const UserHeader({super.key, this.userInfo});
+  const UserHeader({
+    super.key,
+    this.userInfo,
+    this.isSidebarOpen,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: userInfo?.person.banner != null ? BoxDecoration(
-        image: DecorationImage(
-            image: CachedNetworkImageProvider(userInfo!.person.banner!),
-            fit: BoxFit.cover
-        ),
-      ) : null,
+      decoration: userInfo?.person.banner != null
+          ? BoxDecoration(
+              image: DecorationImage(
+                  image: CachedNetworkImageProvider(userInfo!.person.banner!),
+                  fit: BoxFit.cover),
+            )
+          : null,
       child: Container(
-        decoration: userInfo?.person.banner != null ? BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              theme.colorScheme.background,
-              theme.colorScheme.background,
-              theme.colorScheme.background.withOpacity(0.85),
-              theme.colorScheme.background.withOpacity(0.4),
-              Colors.transparent,
-            ],
-          ),
-        ) : null,
+        decoration: userInfo?.person.banner != null
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    theme.colorScheme.background,
+                    theme.colorScheme.background,
+                    theme.colorScheme.background.withOpacity(0.85),
+                    theme.colorScheme.background.withOpacity(0.4),
+                    Colors.transparent,
+                  ],
+                ),
+              )
+            : null,
         child: Padding(
-          padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+          padding: const EdgeInsets.only(
+              top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -47,8 +56,12 @@ class UserHeader extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: userInfo?.person.avatar != null ? Colors.transparent : theme.colorScheme.onBackground,
-                    foregroundImage: userInfo?.person.avatar != null ? CachedNetworkImageProvider(userInfo!.person.avatar!) : null,
+                    backgroundColor: userInfo?.person.avatar != null
+                        ? Colors.transparent
+                        : theme.colorScheme.onBackground,
+                    foregroundImage: userInfo?.person.avatar != null
+                        ? CachedNetworkImageProvider(userInfo!.person.avatar!)
+                        : null,
                     maxRadius: 45,
                   ),
                   const SizedBox(width: 20.0),
@@ -58,8 +71,11 @@ class UserHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          userInfo?.person.displayName != null ? userInfo?.person.displayName ?? '-' : userInfo?.person.name ?? '-',
-                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                          userInfo?.person.displayName != null
+                              ? userInfo?.person.displayName ?? '-'
+                              : userInfo?.person.name ?? '-',
+                          style: theme.textTheme.headlineSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
                           softWrap: false,
                           maxLines: 1,
                           overflow: TextOverflow.fade,
@@ -70,23 +86,36 @@ class UserHeader extends StatelessWidget {
                         const SizedBox(height: 8.0),
                         Row(
                           children: [
-                             IconText(
-                               icon: const Icon(Icons.wysiwyg_rounded,
-                                 size: 18.0,
-                               ),
-                               text: formatNumberToK(userInfo?.counts.postCount ?? 0),
-                             ),
-                             const SizedBox(width: 8.0),
-                             IconText(
-                               icon: const Icon(Icons.chat_rounded,
-                                 size:  18.0,
-                               ),
-                               text: formatNumberToK(userInfo?.counts.commentCount ?? 0),
-                             ),
+                            IconText(
+                              icon: const Icon(
+                                Icons.wysiwyg_rounded,
+                                size: 18.0,
+                              ),
+                              text: formatNumberToK(
+                                  userInfo?.counts.postCount ?? 0),
+                            ),
+                            const SizedBox(width: 8.0),
+                            IconText(
+                              icon: const Icon(
+                                Icons.chat_rounded,
+                                size: 18.0,
+                              ),
+                              text: formatNumberToK(
+                                  userInfo?.counts.commentCount ?? 0),
+                            ),
                           ],
                         ),
                       ],
                     ),
+                  ),
+                  Icon(
+                    isSidebarOpen != null && isSidebarOpen!
+                        ? Icons.chevron_right_rounded
+                        : Icons.chevron_left_rounded,
+                    size: 50,
+                    shadows: <Shadow>[
+                      Shadow(color: theme.colorScheme.background, blurRadius: 5.0)
+                    ],
                   ),
                 ],
               ),

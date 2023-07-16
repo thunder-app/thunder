@@ -93,10 +93,10 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
     bool tabletMode = state.tabletMode;
 
-    const tabletGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
     );
-    const phoneGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const phoneGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1,
     );
 
@@ -141,11 +141,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         });
                       }
                     },
-                    child: Column(
-                      children: [
-                        CommunityHeader(communityInfo: widget.communityInfo),
-                      ],
-                    ),
+                    child: CommunityHeader(communityInfo: widget.communityInfo),
                   );
                 }
                 if (index == widget.postViews!.length) {
@@ -203,7 +199,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           _displaySidebar = false;
                         });
                       },
-                      child: CommunityHeader(communityInfo: widget.communityInfo),
+                      child: CommunityHeader(communityInfo: widget.communityInfo, isSidebarOpen: _displaySidebar,),
                     ) : null,
                   ),
                   Expanded(

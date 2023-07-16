@@ -29,6 +29,7 @@ class CommonMarkdownBody extends StatelessWidget {
     bool openInExternalBrowser = state.openInExternalBrowser;
 
     return MarkdownBody(
+      // TODO We need spoiler support here
       data: body,
       imageBuilder: (uri, title, alt) {
         return ImagePreview(
