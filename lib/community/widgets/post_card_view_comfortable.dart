@@ -9,10 +9,8 @@ import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
   final Function(VoteType) onVoteAction;
@@ -136,8 +134,19 @@ class PostCardViewComfortable extends StatelessWidget {
                           showCommunityIcons: showCommunityIcons,
                           postView: postViewMedia.postView,
                           showInstanceName: showInstanceName,
-                          state: state,
-                          theme: theme),
+                          textStyleAuthor: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.4)),
+                          textStyleCommunity:
+                              theme.textTheme.titleSmall?.copyWith(
+                            fontSize:
+                                theme.textTheme.titleSmall!.fontSize! * 1.05,
+                            color: postViewMedia.postView.read
+                                ? theme.textTheme.titleSmall?.color
+                                    ?.withOpacity(0.4)
+                                : theme.textTheme.titleSmall?.color
+                                    ?.withOpacity(0.75),
+                          )),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
@@ -193,76 +202,6 @@ class PostCardViewComfortable extends StatelessWidget {
           )
         ],
       ),
-    );
-  }
-}
-
-class PostCommunityAndAuthor extends StatelessWidget {
-  const PostCommunityAndAuthor({
-    super.key,
-    required this.showCommunityIcons,
-    required this.postView,
-    required this.showInstanceName,
-    required this.state,
-    required this.theme,
-  });
-
-  final bool showCommunityIcons;
-  final PostView postView;
-  final bool showInstanceName;
-  final ThunderState state;
-  final ThemeData theme;
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        if (showCommunityIcons)
-          GestureDetector(
-            child: Padding(
-              padding: const EdgeInsets.only(right: 8.0),
-              child: CommunityIcon(
-                  community: postView.community, radius: 14),
-            ),
-            onTap: () => onTapCommunityName(
-                context, postView.community.id),
-          ),
-        Expanded(
-          child: Wrap(
-            direction: Axis.horizontal,
-            alignment: WrapAlignment.start,
-            crossAxisAlignment: WrapCrossAlignment.end,
-            spacing: 1.0,
-            children: [
-              GestureDetector(
-                  child: Text(
-                    '${postView.creator.name} to ',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color:
-                          theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                    ),
-                  ),
-                  onTap: () => onTapUserName(
-                      context, postView.creator.id)),
-              GestureDetector(
-                  child: Text(
-                    '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.titleSmall?.copyWith(
-                      fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                      color: postView.read
-                          ? theme.textTheme.titleSmall?.color?.withOpacity(0.4)
-                          : theme.textTheme.titleSmall?.color
-                              ?.withOpacity(0.75),
-                    ),
-                  ),
-                  onTap: () => onTapCommunityName(
-                      context, postView.community.id)),
-            ],
-          ),
-        ),
-      ],
     );
   }
 }

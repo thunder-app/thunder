@@ -2,11 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCardMetaData extends StatelessWidget {
@@ -70,7 +73,8 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
+                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons
+                        .chat,
                     size: 17.0,
                     color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
                         theme.textTheme.titleSmall?.color?.withOpacity(0.75),
@@ -85,12 +89,16 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                    hasBeenEdited
+                        ? Icons.refresh_rounded
+                        : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text: formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text:
+                      formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor:
+                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
                 const SizedBox(width: 14.0),
                 if (distinguised)
@@ -173,19 +181,24 @@ class PostViewMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatNumberToK(comments),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  textColor:
+                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                    hasBeenEdited
+                        ? Icons.refresh_rounded
+                        : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text: formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text:
+                      formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor:
+                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
               ],
             ),
@@ -193,5 +206,65 @@ class PostViewMetaData extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class PostCommunityAndAuthor extends StatelessWidget {
+  const PostCommunityAndAuthor({
+    super.key,
+    required this.showCommunityIcons,
+    required this.postView,
+    required this.showInstanceName,
+    this.textStyleAuthor,
+    this.textStyleCommunity,
+  });
+
+  final bool showCommunityIcons;
+  final PostView postView;
+  final bool showInstanceName;
+  final TextStyle? textStyleAuthor;
+  final TextStyle? textStyleCommunity;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
+      return Row(
+        children: [
+          if (showCommunityIcons)
+            GestureDetector(
+              child: Padding(
+                padding: const EdgeInsets.only(right: 8.0),
+                child: CommunityIcon(community: postView.community, radius: 14),
+              ),
+              onTap: () => onTapCommunityName(context, postView.community.id),
+            ),
+          Expanded(
+            child: Wrap(
+              direction: Axis.horizontal,
+              alignment: WrapAlignment.start,
+              crossAxisAlignment: WrapCrossAlignment.end,
+              spacing: 1.0,
+              children: [
+                GestureDetector(
+                    child: Text('${postView.creator.name} to ',
+                        textScaleFactor:
+                            state.contentFontSizeScale.textScaleFactor,
+                        style: textStyleAuthor),
+                    onTap: () => onTapUserName(context, postView.creator.id)),
+                GestureDetector(
+                    child: Text(
+                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                      textScaleFactor:
+                          state.contentFontSizeScale.textScaleFactor,
+                      style: textStyleCommunity,
+                    ),
+                    onTap: () =>
+                        onTapCommunityName(context, postView.community.id)),
+              ],
+            ),
+          ),
+        ],
+      );
+    });
   }
 }

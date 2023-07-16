@@ -10,7 +10,6 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -36,6 +35,13 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    final TextStyle? textStyleCommunityAndAuthor =
+        theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read
+          ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4)
+          : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -64,21 +70,26 @@ class PostCardViewCompact extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(postViewMedia.postView.post.name,
-                        textScaleFactor: state.titleFontSizeScale.textScaleFactor,
+                        textScaleFactor:
+                            state.titleFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                          color: postViewMedia.postView.read
+                              ? theme.textTheme.bodyMedium?.color
+                                  ?.withOpacity(0.4)
+                              : null,
                         )),
                     const SizedBox(height: 4.0),
                     GestureDetector(
-                      child: Text(
-                        '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                        ),
+                      child: PostCommunityAndAuthor(
+                        showCommunityIcons: false,
+                        postView: postViewMedia.postView,
+                        showInstanceName: showInstanceName,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
                       ),
-                      onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
+                      onTap: () => onTapCommunityName(
+                          context, postViewMedia.postView.community.id),
                     ),
                     const SizedBox(height: 8.0),
                   ],
@@ -88,8 +99,12 @@ class PostCardViewCompact extends StatelessWidget {
                   voteType: postViewMedia.postView.myVote ?? VoteType.none,
                   comments: postViewMedia.postView.counts.comments,
                   unreadComments: postViewMedia.postView.unreadComments,
-                  hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
+                  hasBeenEdited: postViewMedia.postView.post.updated != null
+                      ? true
+                      : false,
+                  published: postViewMedia.postView.post.updated != null
+                      ? postViewMedia.postView.post.updated!
+                      : postViewMedia.postView.post.published,
                   saved: postViewMedia.postView.saved,
                   distinguised: postViewMedia.postView.post.featuredCommunity,
                 )
