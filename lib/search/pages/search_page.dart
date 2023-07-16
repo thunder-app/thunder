@@ -14,10 +14,12 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
+
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -213,19 +215,7 @@ class _SearchPageState extends State<SearchPage> {
                   message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
                   preferBelow: false,
                   child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
-                        foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
-                        maxRadius: 25,
-                        child: Text(
-                          communityView.community.name[0].toUpperCase(),
-                          semanticsLabel: '',
-                          style: const TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 25,
-                          ),
-                        ),
-                      ),
+                      leading: CommunityIcon(community: communityView.community, radius: 25),
                       title: Text(
                         communityView.community.title,
                         overflow: TextOverflow.ellipsis,

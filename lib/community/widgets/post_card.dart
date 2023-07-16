@@ -197,6 +197,7 @@ class _PostCardState extends State<PostCard> {
                         showTitleFirst: state.showTitleFirst,
                         showVoteActions: state.showVoteActions,
                         showSaveAction: state.showSaveAction,
+                        showCommunityIcons: state.showCommunityIcons,
                         showTextContent: state.showTextContent,
                         isUserLoggedIn: isUserLoggedIn,
                         onVoteAction: widget.onVoteAction,
