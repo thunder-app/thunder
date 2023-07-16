@@ -12,16 +12,16 @@ class CommunityIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    CircleAvatar placeholderAvatar = CircleAvatar(
+    CircleAvatar placeholderIcon = CircleAvatar(
         backgroundColor: theme.colorScheme.secondaryContainer,
         maxRadius: radius,
         child: community?.name != null
             ? Text(
                 community!.name[0].toUpperCase(),
                 semanticsLabel: '',
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.bold,
-                  fontSize: 16,
+                  fontSize: radius,
                 ),
               )
             : null);
@@ -35,8 +35,8 @@ class CommunityIcon extends StatelessWidget {
           maxRadius: radius,
         );
       },
-      placeholder: (context, url) => placeholderAvatar,
-      errorWidget: (context, url, error) => placeholderAvatar,
+      placeholder: (context, url) => placeholderIcon,
+      errorWidget: (context, url, error) => placeholderIcon,
     );
   }
 }
