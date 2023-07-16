@@ -124,7 +124,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: widget.commentViewTrees?.length,
-                itemBuilder: (context, index) => CommentCard(comment: widget.commentViewTrees![index].comment!),
+                itemBuilder: (context, index) => CommentCard(comment: widget.commentViewTrees![index].commentView!),
               ),
             ),
           if (selectedUserOption == 2)

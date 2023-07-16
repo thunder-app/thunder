@@ -5,11 +5,14 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/utils/image.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -25,6 +28,8 @@ class MediaView extends StatefulWidget {
   final bool showFullHeightImages;
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
   final ViewMode viewMode;
 
   const MediaView({
@@ -34,6 +39,8 @@ class MediaView extends StatefulWidget {
     this.showFullHeightImages = true,
     this.edgeToEdgeImages = false,
     required this.hideNsfwPreviews,
+    required this.markPostReadOnMediaView,
+    required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
   });
 
@@ -61,26 +68,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
 
     if (widget.postView == null || widget.postView!.media.isEmpty) {
-      if (widget.viewMode == ViewMode.compact) {
-        return Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
-          child: Container(
-            color: theme.cardColor.darken(3),
-            child: SizedBox(
-              height: 75.0,
-              width: 75.0,
-              child: Icon(
-                Icons.article_rounded,
-                color: theme.colorScheme.onSecondaryContainer,
-                semanticLabel: 'Article Link',
-              ),
-            ),
-          ),
-        );
-      } else {
-        return Container();
-      }
+      return Container();
     }
 
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
@@ -92,6 +80,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
         edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
         viewMode: widget.viewMode,
+        postId: widget.postView!.postView.post.id,
+        markPostReadOnMediaView: widget.markPostReadOnMediaView,
+        isUserLoggedIn: widget.isUserLoggedIn,
       );
     }
 
@@ -100,25 +91,42 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
       child: GestureDetector(
-        onTap: () => Navigator.of(context).push(
-          PageRouteBuilder(
-            opaque: false,
-            transitionDuration: const Duration(milliseconds: 400),
-            pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-              String heroKey = generateRandomHeroString();
+        onTap: () {
+          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+            int postId = widget.postView!.postView.post.id;
+            try {
+              UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+              userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+            } catch(e){
+              CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+              communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+            }
+          }
+          Navigator.of(context).push(
+            PageRouteBuilder(
+              opaque: false,
+              transitionDuration: const Duration(milliseconds: 150),
+              reverseTransitionDuration: const Duration(milliseconds: 150),
+              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+                String heroKey = generateRandomHeroString();
 
-              return ImageViewer(url: widget.postView!.media.first.mediaUrl!, heroKey: heroKey);
-            },
-            transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-              return Align(
-                child: FadeTransition(
-                  opacity: animation,
-                  child: child,
-                ),
-              );
-            },
-          ),
-        ),
+                return ImageViewer(
+                  url: widget.postView!.media.first.mediaUrl!,
+                  heroKey: heroKey,
+                  postId: widget.postView!.postView.post.id,
+                );
+              },
+              transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+                return Align(
+                  child: FadeTransition(
+                    opacity: animation,
+                    child: child,
+                  ),
+                );
+              },
+            ),
+          );
+        },
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),
@@ -234,7 +242,20 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                         if (openInExternalBrowser) {
                           launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
                         } else {
-                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: widget.post!.url!)));
+                          launch(widget.post!.url!,
+                            customTabsOption: CustomTabsOption(
+                              toolbarColor: Theme.of(context).canvasColor,
+                              enableUrlBarHiding: true,
+                              showPageTitle: true,
+                              enableDefaultShare: true,
+                              enableInstantApps: true,
+                            ),
+                            safariVCOption: SafariViewControllerOption(
+                              preferredBarTintColor: Theme.of(context).canvasColor,
+                              preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+                              barCollapsingEnabled: true,
+                            ),
+                          );
                         }
                       }
                     },

@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -50,6 +50,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _getUserSavedEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkUserPostAsReadEvent>(
+      _markPostAsReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -73,7 +77,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             if (event.userId != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
-                personId: event.userId,
+                personId: event.isAccountUser ? null : event.userId,
+                username: event.isAccountUser ? account?.username : null,
                 auth: account?.jwt,
                 sort: SortType.new_,
                 limit: limit,
@@ -146,11 +151,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -176,7 +179,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             if (event.userId != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
-                personId: event.userId,
+                personId: event.isAccountUser ? null : event.userId,
+                username: event.isAccountUser ? account?.username : null,
                 auth: account?.jwt,
                 sort: SortType.new_,
                 limit: limit,
@@ -248,11 +252,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -283,8 +285,27 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markPostAsReadEvent(MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      PostView postView = await markPostAsRead(event.postId, event.read);
+
+      // Find the specific post to update
+      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      state.posts[existingPostViewIndex].postView = postView;
+
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
+    } catch (e, s) {
+      return emit(state.copyWith(
+        status: UserStatus.failure,
+        errorMessage: e.toString(),
+        userId: state.userId,
+      ));
     }
   }
 
@@ -300,7 +321,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -317,25 +337,24 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       }
 
       // Optimistically update the comment
-      CommentView? originalCommentView = currentTree.comment;
+      CommentView? originalCommentView = currentTree.commentView;
 
       CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
-      currentTree.comment = updatedCommentView;
+      currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
-        currentTree.comment = originalCommentView; // Reset this on exception
+        currentTree.commentView = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 
-      currentTree.comment = commentView;
+      currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -355,11 +374,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
-      currentTree.comment = commentView; // Update the comment's information
+      currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }

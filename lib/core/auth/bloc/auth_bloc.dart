@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
 import 'package:uuid/uuid.dart';
@@ -32,12 +31,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (account == null) return emit(state.copyWith(status: AuthStatus.success, account: null, isLoggedIn: false));
 
       // Set this account as the active account
-      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
-      await Future.delayed(const Duration(seconds: 1), () {
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
-      });
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -46,7 +43,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       // Check to see what the current active account/profile is
       // The profile will match an account in the database (through the account's id)
-      SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       String? activeProfileId = prefs.getString('active_profile_id');
 
       // If there is an existing jwt, remove it from the prefs
@@ -105,11 +102,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        // Fetch the account to get the id
-        FullPersonView person = await lemmy.run(GetPersonDetails(
-          auth: loginResponse.jwt!.raw,
-          username: event.username,
-        ));
+        FullSiteView fullSiteView = await lemmy.run(
+          GetSite(
+            auth: loginResponse.jwt!.raw,
+          ),
+        );
 
         // Create a new account in the database
         Uuid uuid = const Uuid();
@@ -117,16 +114,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         Account account = Account(
           id: accountId,
-          username: event.username,
+          username: fullSiteView.myUser?.localUserView.person.name,
           jwt: loginResponse.jwt?.raw,
           instance: instance,
-          userId: person.personView.person.id,
+          userId: fullSiteView.myUser?.localUserView.person.id,
         );
 
         await Account.insertAccount(account);
 
         // Set this account as the active account
-        SharedPreferences prefs = UserPreferences.instance.sharedPreferences;
+        SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', accountId);
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
@@ -137,11 +134,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           // Restore the original baseUrl
           lemmyClient.changeBaseUrl(originalBaseUrl);
         } catch (e, s) {
-          await Sentry.captureException(e, stackTrace: s);
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: s.toString()));
         }
-
-        await Sentry.captureException(e, stackTrace: s);
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });

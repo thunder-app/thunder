@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
 
 class ProfileModalBody extends StatelessWidget {
   const ProfileModalBody({super.key});
@@ -79,22 +80,26 @@ class ProfileSelect extends StatelessWidget {
                 );
               } else {
                 return ListTile(
-                  leading: Icon(
-                    Icons.person,
-                    color: currentAccountId == snapshot.data![index].id ? Colors.amber : null,
-                  ),
+                  leading: snapshot.data![index].instanceIcon == null
+                      ? const Icon(
+                          Icons.person,
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          foregroundImage: snapshot.data![index].instanceIcon == null ? null : CachedNetworkImageProvider(snapshot.data![index].instanceIcon!),
+                        ),
                   title: Text(
-                    snapshot.data![index].username ?? 'N/A',
+                    snapshot.data![index].account.username ?? 'N/A',
                     style: theme.textTheme.titleMedium?.copyWith(),
                   ),
-                  subtitle: Text(snapshot.data![index].instance?.replaceAll('https://', '') ?? 'N/A'),
-                  onTap: (currentAccountId == snapshot.data![index].id)
+                  subtitle: Text(snapshot.data![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+                  onTap: (currentAccountId == snapshot.data![index].account.id)
                       ? null
                       : () {
-                          context.read<AuthBloc>().add(SwitchAccount(accountId: snapshot.data![index].id));
+                          context.read<AuthBloc>().add(SwitchAccount(accountId: snapshot.data![index].account.id));
                           context.pop();
                         },
-                  trailing: (currentAccountId == snapshot.data![index].id)
+                  trailing: (currentAccountId == snapshot.data![index].account.id)
                       ? const InputChip(
                           label: Text('Active'),
                           visualDensity: VisualDensity.compact,
@@ -105,7 +110,7 @@ class ProfileSelect extends StatelessWidget {
                             semanticLabel: 'Remove Account',
                           ),
                           onPressed: () {
-                            context.read<AuthBloc>().add(RemoveAccount(accountId: snapshot.data![index].id));
+                            context.read<AuthBloc>().add(RemoveAccount(accountId: snapshot.data![index].account.id));
                             context.pop();
                           }),
                 );
@@ -114,14 +119,28 @@ class ProfileSelect extends StatelessWidget {
             itemCount: (snapshot.data?.length ?? 0) + 1,
           );
         } else {
-          return Container();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
   }
 
-  Future<List<Account>> fetchAccounts() async {
+  Future<List<AccountExtended>> fetchAccounts() async {
     List<Account> accounts = await Account.accounts();
-    return accounts;
+
+    List<AccountExtended> accountsExtended = await Future.wait(accounts.map((Account account) async {
+      // final instanceIcon = await getInstanceIcon(account.instance).timeout(const Duration(seconds: 3));
+      return AccountExtended(account: account, instanceIcon: null);
+    })).timeout(const Duration(seconds: 5));
+
+    return accountsExtended;
   }
+}
+
+/// Wrapper class around Account with support for instance icon
+class AccountExtended {
+  final Account account;
+  final String? instanceIcon;
+
+  const AccountExtended({required this.account, this.instanceIcon});
 }

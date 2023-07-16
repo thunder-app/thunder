@@ -32,6 +32,11 @@ const postCardActionItems = [
     label: 'Visit Community',
   ),
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockCommunity,
+    icon: Icons.block_rounded,
+    label: 'Block Community',
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitProfile,
     icon: Icons.person_search_rounded,
     label: 'Visit User Profile',
@@ -51,15 +56,12 @@ const postCardActionItems = [
     icon: Icons.link_rounded,
     label: 'Share Link',
   ),
-  ExtendedPostCardActions(
-    postCardAction: PostCardAction.blockCommunity,
-    icon: Icons.block_rounded,
-    label: 'Block Community',
-  )
 ];
 
-void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postViewMedia) {
+void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postViewMedia, {List<PostCardAction>? actionsToInclude}) {
   final theme = Theme.of(context);
+  actionsToInclude ??= [];
+  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -83,27 +85,27 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: postCardActionItems.length,
+              itemCount: postCardActionItemsToUse.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
-                if (postCardActionItems[index].postCardAction == PostCardAction.shareLink &&
+                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareLink &&
                     (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
                   return Container();
                 }
 
-                if (postCardActionItems[index].postCardAction == PostCardAction.shareMedia && (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null)) {
+                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareMedia && (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null)) {
                   return Container();
                 }
 
                 return ListTile(
                   title: Text(
-                    postCardActionItems[index].label,
+                    postCardActionItemsToUse[index].label,
                     style: theme.textTheme.bodyMedium,
                   ),
-                  leading: Icon(postCardActionItems[index].icon),
+                  leading: Icon(postCardActionItemsToUse[index].icon),
                   onTap: () async {
                     Navigator.of(context).pop();
 
-                    PostCardAction postCardAction = postCardActionItems[index].postCardAction;
+                    PostCardAction postCardAction = postCardActionItemsToUse[index].postCardAction;
 
                     switch (postCardAction) {
                       case PostCardAction.visitCommunity:

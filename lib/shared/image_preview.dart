@@ -14,8 +14,17 @@ class ImagePreview extends StatefulWidget {
   final bool isGallery;
   final bool isExpandable;
   final bool showFullHeightImages;
+  final int? postId;
 
-  const ImagePreview({super.key, required this.url, this.height, this.width, this.nsfw = false, this.isGallery = false, this.isExpandable = true, this.showFullHeightImages = false});
+  const ImagePreview({
+    super.key, required this.url,
+    this.height, this.width,
+    this.nsfw = false,
+    this.isGallery = false,
+    this.isExpandable = true,
+    this.showFullHeightImages = false,
+    this.postId,
+  });
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -33,14 +42,19 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   void onImageTap(BuildContext context) {
-    Navigator.of(context).push(
+    Navigator.of(context).push( // TODO This is probably where BlocProvider breaks
       PageRouteBuilder(
         opaque: false,
-        transitionDuration: const Duration(milliseconds: 400),
+        transitionDuration: const Duration(milliseconds: 150),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
-          return ImageViewer(url: widget.url, heroKey: heroKey);
+          return ImageViewer(
+            url: widget.url,
+            heroKey: heroKey,
+            postId: widget.postId,
+          );
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return Align(
@@ -57,21 +71,18 @@ class _ImagePreviewState extends State<ImagePreview> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: widget.isExpandable
-            ? InkWell(
-                child: imagePreview(context),
-                onTap: () {
-                  if (widget.nsfw && blur) {
-                    setState(() => blur = false);
-                  } else {
-                    onImageTap(context);
-                  }
-                },
-              )
-            : imagePreview(context),
-      ),
+      child: widget.isExpandable
+          ? InkWell(
+              child: imagePreview(context),
+              onTap: () {
+                if (widget.nsfw && blur) {
+                  setState(() => blur = false);
+                } else {
+                  onImageTap(context);
+                }
+              },
+            )
+          : imagePreview(context),
     );
   }
 
@@ -83,7 +94,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: [
           ExtendedImage.network(
             widget.url,
-            height: widget.showFullHeightImages ? widget.height : 150,
+            height: widget.height,
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,

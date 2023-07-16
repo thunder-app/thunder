@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:sentry_flutter/sentry_flutter.dart';
+
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -21,7 +21,7 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 }
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
-  SearchBloc() : super(const SearchState()) {
+  SearchBloc() : super(SearchState()) {
     on<StartSearchEvent>(
       _startSearchEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -56,13 +56,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         q: event.query,
         page: 1,
         limit: 15,
-        sort: SortType.active,
+        sort: event.sortType,
       ));
 
-      return emit(state.copyWith(status: SearchStatus.success, results: searchResponse, page: 2));
+      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, page: 2));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -75,7 +73,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
+          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -85,32 +83,30 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             q: event.query,
             page: state.page,
             limit: 15,
-            sort: SortType.active,
+            sort: event.sortType,
           ));
 
-          // Append the search results
-          state.results?.communities.addAll(searchResponse.communities);
-          state.results?.comments.addAll(searchResponse.comments);
-          state.results?.posts.addAll(searchResponse.posts);
-          state.results?.users.addAll(searchResponse.users);
+          if (searchResponse.communities.isEmpty) {
+            return emit(state.copyWith(status: SearchStatus.done));
+          }
 
-          return emit(state.copyWith(status: SearchStatus.success, results: state.results, page: state.page + 1));
+          // Append the search results
+          state.communities = [...state.communities ?? [], ...searchResponse.communities];
+
+          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, page: state.page + 1));
         } catch (e, s) {
           exception = e;
           attemptCount++;
-          await Sentry.captureException(e, stackTrace: s);
         }
       }
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 
   Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<SearchState> emit) async {
     try {
-      emit(state.copyWith(status: SearchStatus.refreshing, results: state.results));
+      emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -129,9 +125,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         id: event.communityId,
       ));
 
-      List<CommunityView> communities = state.results?.communities ?? [];
+      List<CommunityView> communities = state.communities ?? [];
 
-      communities = state.results?.communities.map((CommunityView communityView) {
+      communities = state.communities?.map((CommunityView communityView) {
             if (communityView.community.id == fullCommunityView.communityView.community.id) {
               return fullCommunityView.communityView;
             }
@@ -139,12 +135,28 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }).toList() ??
           [];
 
-      SearchResults updatedResults = state.results!.copyWith(communities: communities);
+      emit(state.copyWith(status: SearchStatus.success, communities: communities));
 
-      return emit(state.copyWith(status: SearchStatus.success, results: updatedResults));
+      // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
+      await Future.delayed(const Duration(seconds: 1));
+
+      fullCommunityView = await lemmy.run(GetCommunity(
+        auth: account.jwt,
+        id: event.communityId,
+      ));
+
+      communities = state.communities ?? [];
+
+      communities = state.communities?.map((CommunityView communityView) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
+              return fullCommunityView.communityView;
+            }
+            return communityView;
+          }).toList() ??
+          [];
+
+      return emit(state.copyWith(status: SearchStatus.success, communities: communities));
     } catch (e, s) {
-      await Sentry.captureException(e, stackTrace: s);
-
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }

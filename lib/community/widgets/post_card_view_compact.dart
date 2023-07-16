@@ -17,6 +17,8 @@ class PostCardViewCompact extends StatelessWidget {
   final bool showThumbnailPreviewOnRight;
   final bool hideNsfwPreviews;
   final bool showInstanceName;
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
 
   const PostCardViewCompact({
     super.key,
@@ -24,6 +26,8 @@ class PostCardViewCompact extends StatelessWidget {
     required this.showThumbnailPreviewOnRight,
     required this.hideNsfwPreviews,
     required this.showInstanceName,
+    required this.markPostReadOnMediaView,
+    required this.isUserLoggedIn,
   });
 
   @override
@@ -37,14 +41,16 @@ class PostCardViewCompact extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!showThumbnailPreviewOnRight)
+          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
+              markPostReadOnMediaView: markPostReadOnMediaView,
               viewMode: ViewMode.compact,
+              isUserLoggedIn: isUserLoggedIn,
             ),
-          if (!showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
+          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -78,20 +84,24 @@ class PostCardViewCompact extends StatelessWidget {
                   score: postViewMedia.postView.counts.score,
                   voteType: postViewMedia.postView.myVote ?? VoteType.none,
                   comments: postViewMedia.postView.counts.comments,
-                  published: postViewMedia.postView.post.published,
+                  unreadComments: postViewMedia.postView.unreadComments,
+                  hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                   saved: postViewMedia.postView.saved,
                   distinguised: postViewMedia.postView.post.featuredCommunity,
                 )
               ],
             ),
           ),
-          if (showThumbnailPreviewOnRight) const SizedBox(width: 8.0),
-          if (showThumbnailPreviewOnRight)
+          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
+          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
+              markPostReadOnMediaView: markPostReadOnMediaView,
               viewMode: ViewMode.compact,
+              isUserLoggedIn: isUserLoggedIn,
             ),
         ],
       ),

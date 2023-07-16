@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:thunder/thunder/thunder.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
 import 'package:thunder/core/update/check_github_update.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class AboutSettingsPage extends StatelessWidget {
@@ -53,7 +52,21 @@ class AboutSettingsPage extends StatelessWidget {
                     if (openInExternalBrowser) {
                       launchUrl(Uri.parse('https://github.com/hjiangsu/thunder'), mode: LaunchMode.externalApplication);
                     } else {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://github.com/hjiangsu/thunder')));
+                      launch(
+                        'https://github.com/hjiangsu/thunder',
+                        customTabsOption: CustomTabsOption(
+                          toolbarColor: Theme.of(context).canvasColor,
+                          enableUrlBarHiding: true,
+                          showPageTitle: true,
+                          enableDefaultShare: true,
+                          enableInstantApps: true,
+                        ),
+                        safariVCOption: SafariViewControllerOption(
+                          preferredBarTintColor: Theme.of(context).canvasColor,
+                          preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+                          barCollapsingEnabled: true,
+                        ),
+                      );
                     }
                   },
                 ),
@@ -68,7 +81,21 @@ class AboutSettingsPage extends StatelessWidget {
                     if (openInExternalBrowser) {
                       launchUrl(Uri.parse('https://lemmy.world/c/thunder_app'), mode: LaunchMode.externalApplication);
                     } else {
-                      Navigator.of(context).push(MaterialPageRoute(builder: (context) => const WebView(url: 'https://lemmy.world/c/thunder_app')));
+                      launch(
+                        'https://lemmy.world/c/thunder_app',
+                        customTabsOption: CustomTabsOption(
+                          toolbarColor: Theme.of(context).canvasColor,
+                          enableUrlBarHiding: true,
+                          showPageTitle: true,
+                          enableDefaultShare: true,
+                          enableInstantApps: true,
+                        ),
+                        safariVCOption: SafariViewControllerOption(
+                          preferredBarTintColor: Theme.of(context).canvasColor,
+                          preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+                          barCollapsingEnabled: true,
+                        ),
+                      );
                     }
                   },
                 ),

@@ -1,9 +1,12 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -25,7 +28,12 @@ class LinkPreviewCard extends StatelessWidget {
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
+    this.postId,
+    required this.isUserLoggedIn,
+    required this.markPostReadOnMediaView,
   });
+
+  final int? postId;
 
   final String? originURL;
   final String? mediaURL;
@@ -37,6 +45,9 @@ class LinkPreviewCard extends StatelessWidget {
   final bool showFullHeightImages;
 
   final bool edgeToEdgeImages;
+
+  final bool markPostReadOnMediaView;
+  final bool isUserLoggedIn;
 
   final ViewMode viewMode;
 
@@ -57,7 +68,7 @@ class LinkPreviewCard extends StatelessWidget {
                 if (showLinkPreviews)
                   ImagePreview(
                     url: mediaURL!,
-                    height: showFullHeightImages ? mediaHeight : null,
+                    height: showFullHeightImages ? mediaHeight : 150,
                     width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
                     isExpandable: false,
                   ),
@@ -68,18 +79,43 @@ class LinkPreviewCard extends StatelessWidget {
           onTap: () => triggerOnTap(context),
         ),
       );
+    } else if (mediaURL != null && viewMode == ViewMode.compact) {
+      return Padding(
+        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+        child: InkWell(
+          onTap: () => triggerOnTap(context),
+          child: Container(
+            clipBehavior: Clip.hardEdge,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+            child: Stack(
+              alignment: Alignment.center,
+              fit: StackFit.passthrough,
+              children: [
+                if (showLinkPreviews)
+                  ImagePreview(
+                    url: mediaURL!,
+                    height: 75,
+                    width: 75,
+                    isExpandable: false,
+                  ),
+                linkInformation(context),
+              ],
+            ),
+          ),
+        ),
+      );
     } else {
       var inkWell = InkWell(
+        onTap: () => triggerOnTap(context),
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
           child: Stack(
-            alignment: Alignment.bottomRight,
+            alignment: Alignment.center,
             fit: StackFit.passthrough,
             children: [linkInformation(context)],
           ),
         ),
-        onTap: () => triggerOnTap(context),
       );
       if (edgeToEdgeImages) {
         return Padding(
@@ -87,9 +123,9 @@ class LinkPreviewCard extends StatelessWidget {
           child: inkWell,
         );
       } else {
-          return Padding(
-            padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-            child: inkWell,
+        return Padding(
+          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+          child: inkWell,
         );
       }
     }
@@ -97,8 +133,17 @@ class LinkPreviewCard extends StatelessWidget {
 
   void triggerOnTap(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
-
     final openInExternalBrowser = state.openInExternalBrowser;
+
+    if (isUserLoggedIn && markPostReadOnMediaView) {
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+      } catch (e) {
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId!, read: true));
+      }
+    }
 
     if (originURL != null && originURL!.contains('/c/')) {
       // Push navigation
@@ -124,34 +169,60 @@ class LinkPreviewCard extends StatelessWidget {
       if (openInExternalBrowser) {
         launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
       } else {
-        Navigator.of(context).push(MaterialPageRoute(builder: (context) => WebView(url: originURL!)));
+        launch(
+          originURL!,
+          customTabsOption: CustomTabsOption(
+            toolbarColor: Theme.of(context).canvasColor,
+            enableUrlBarHiding: true,
+            showPageTitle: true,
+            enableDefaultShare: true,
+            enableInstantApps: true,
+          ),
+          safariVCOption: SafariViewControllerOption(
+            preferredBarTintColor: Theme.of(context).canvasColor,
+            preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+            barCollapsingEnabled: true,
+          ),
+        );
       }
     }
   }
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-    final bool useDarkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     if (viewMode == ViewMode.compact) {
       return Container(
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
         child: Container(
-          color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
-          child: SizedBox(
-            height: 75.0,
-            width: 75.0,
-            child: Icon(
-              Icons.link_rounded,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
+          height: 75,
+          width: 75,
+          color:
+          mediaURL != null && viewMode == ViewMode.compact ?
+          ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            10,
+          ).withOpacity(0.65) :
+          ElevationOverlay.applySurfaceTint(
+            Theme.of(context).colorScheme.surface,
+            Theme.of(context).colorScheme.surfaceTint,
+            10,
+          ),
+          child: Icon(
+            Icons.link_rounded,
+            color: theme.colorScheme.onSecondaryContainer,
           ),
         ),
       );
     } else {
       return Container(
-        color: useDarkTheme ? theme.colorScheme.background.lighten(7) : theme.colorScheme.background.darken(7),
+        color: ElevationOverlay.applySurfaceTint(
+          Theme.of(context).colorScheme.surface,
+          Theme.of(context).colorScheme.surfaceTint,
+          10,
+        ),
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
         child: Row(
           children: [

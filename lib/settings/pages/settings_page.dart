@@ -23,6 +23,7 @@ class SettingsPage extends StatelessWidget {
     SettingTopic(title: 'Theming', icon: Icons.text_fields, path: '/settings/themes'),
     SettingTopic(title: 'Gestures', icon: Icons.swipe, path: '/settings/gestures'),
     SettingTopic(title: 'About', icon: Icons.info_rounded, path: '/settings/about'),
+    SettingTopic(title: 'Debug', icon: Icons.developer_mode_rounded, path: '/settings/debug'),
   ];
 
   @override

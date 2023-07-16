@@ -21,27 +21,47 @@ class DB {
     return _database;
   }
 
+  Future<bool> doesTableHaveColumn(Database db, String tableName, String columnName) async {
+    List<Map<String, dynamic>> tableInfo = await db.rawQuery(
+      "PRAGMA table_info('$tableName')",
+    );
+
+    // Check if the specified column name exists in the table definition
+    bool hasColumn = false;
+
+    for (Map<String, dynamic> column in tableInfo) {
+      if (column['name'] == columnName) {
+        hasColumn = true;
+        break;
+      }
+    }
+
+    return hasColumn;
+  }
+
   /// Update Accounts table V1 to V2
   void _updateTableAccountsV1toV2(Batch batch) {
-    batch.execute('DROP TABLE accounts');
-    batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+    batch.execute('ALTER TABLE accounts ADD COLUMN userId INTEGER');
   }
 
   Future<Database> _init() async {
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
-      version: 2,
+      version: 3,
       onCreate: (db, version) {
         return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         var batch = db.batch();
 
-        if (oldVersion == 1) {
-          _updateTableAccountsV1toV2(batch);
-        }
+        if (oldVersion < 3) {
+          bool doesUserIdExist = await doesTableHaveColumn(db, 'accounts', 'userId');
 
-        await batch.commit();
+          if (!doesUserIdExist) {
+            _updateTableAccountsV1toV2(batch);
+            await batch.commit();
+          }
+        }
       },
     );
   }

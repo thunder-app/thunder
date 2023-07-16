@@ -21,10 +21,10 @@ void triggerCommentAction({
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
-      onVoteAction(commentViewTree.comment!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
@@ -54,7 +54,7 @@ void triggerCommentAction({
 
       break;
     case SwipeAction.save:
-      onSaveAction(commentViewTree.comment!.comment.id, !(saved ?? false));
+      onSaveAction(commentViewTree.commentView!.comment.id, !(saved ?? false));
       break;
     default:
       break;
@@ -93,4 +93,34 @@ Color getSwipeActionColor(SwipeAction swipeAction) {
     default:
       return Colors.transparent;
   }
+}
+
+DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderState state) {
+  if (!isUserLoggedIn) return DismissDirection.none;
+
+  // If all of the actions are none, then disable swiping
+  if (state.leftPrimaryCommentGesture == SwipeAction.none &&
+      state.leftSecondaryCommentGesture == SwipeAction.none &&
+      state.rightPrimaryCommentGesture == SwipeAction.none &&
+      state.rightSecondaryCommentGesture == SwipeAction.none) {
+    return DismissDirection.none;
+  }
+
+  // If there is at least 1 action on either side, then allow swiping from both sides
+  if ((state.leftPrimaryCommentGesture != SwipeAction.none || state.leftSecondaryCommentGesture != SwipeAction.none) &&
+      (state.rightPrimaryCommentGesture != SwipeAction.none || state.rightSecondaryCommentGesture != SwipeAction.none)) {
+    return DismissDirection.horizontal;
+  }
+
+  // If there is no action on left side, disable left side swiping
+  if (state.leftPrimaryCommentGesture == SwipeAction.none && state.leftSecondaryCommentGesture == SwipeAction.none) {
+    return DismissDirection.endToStart;
+  }
+
+  // If there is no action on the right side, disable right side swiping
+  if (state.rightPrimaryCommentGesture == SwipeAction.none && state.rightSecondaryCommentGesture == SwipeAction.none) {
+    return DismissDirection.startToEnd;
+  }
+
+  return DismissDirection.none;
 }

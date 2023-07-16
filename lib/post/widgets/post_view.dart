@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
@@ -17,14 +18,15 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
-
 import '../../utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
+  final bool useDisplayNames;
 
-  const PostSubview({super.key, required this.postViewMedia});
+  const PostSubview({super.key, required this.useDisplayNames, required this.postViewMedia});
 
   @override
   Widget build(BuildContext context) {
@@ -34,10 +36,10 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
+    final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -57,6 +59,8 @@ class PostSubview extends StatelessWidget {
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
+            markPostReadOnMediaView: markPostReadOnMediaView,
+            isUserLoggedIn: isUserLoggedIn,
           ),
           if (postViewMedia.postView.post.body != null)
             Padding(
@@ -66,7 +70,7 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
+            padding: const EdgeInsets.only(left: 0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
@@ -89,11 +93,16 @@ class PostSubview extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    postView.creator.name,
-                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  child: Tooltip(
+                    excludeFromSemantics: true,
+                    message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
+                    preferBelow: false,
+                    child: Text(
+                      postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
                     ),
                   ),
                 ),
@@ -123,11 +132,16 @@ class PostSubview extends StatelessWidget {
                       ),
                     );
                   },
-                  child: Text(
-                    postView.community.name,
-                    textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  child: Tooltip(
+                    excludeFromSemantics: true,
+                    message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
+                    preferBelow: false,
+                    child: Text(
+                      postView.community.name,
+                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
                     ),
                   ),
                 ),
@@ -135,7 +149,9 @@ class PostSubview extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
                   child: PostViewMetaData(
-                    comments: postView.counts.comments,
+                    comments: postViewMedia.postView.counts.comments,
+                    unreadComments: postViewMedia.postView.unreadComments,
+                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     published: post.published,
                     saved: postView.saved,
                   ),
@@ -272,7 +288,13 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: () => Share.share(post.apId),
+                  onPressed: postViewMedia.media.isEmpty
+                      ? () => Share.share(post.apId)
+                      : () => showPostActionBottomModalSheet(
+                            context,
+                            postViewMedia,
+                            actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                          ),
                 ),
               )
             ],
@@ -280,5 +302,19 @@ class PostSubview extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String fetchUsernameDescriptor(BuildContext context) {
+    PostView postView = postViewMedia.postView;
+    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+
+    String descriptor = '';
+
+    if (isOwnPost) descriptor += 'me';
+    if (postView.creator.admin == true) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+
+    if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
+
+    return descriptor;
   }
 }

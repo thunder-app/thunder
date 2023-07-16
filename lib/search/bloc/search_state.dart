@@ -1,36 +1,40 @@
 part of 'search_bloc.dart';
 
-enum SearchStatus { initial, loading, refreshing, success, empty, networkFailure, failure }
+enum SearchStatus { initial, loading, refreshing, success, empty, failure, done }
 
 class SearchState extends Equatable {
-  const SearchState({
+  SearchState({
     this.status = SearchStatus.initial,
-    this.results,
+    this.communities,
     this.errorMessage,
     this.page = 1,
+    this.sortType,
   });
 
   final SearchStatus status;
-  final SearchResults? results;
+  List<CommunityView>? communities;
 
   final String? errorMessage;
 
   final int page;
+  final SortType? sortType;
 
   SearchState copyWith({
     SearchStatus? status,
-    SearchResults? results,
+    List<CommunityView>? communities,
     String? errorMessage,
     int? page,
+    SortType? sortType,
   }) {
     return SearchState(
       status: status ?? this.status,
-      results: results,
+      communities: communities ?? this.communities,
       errorMessage: errorMessage,
       page: page ?? this.page,
+      sortType: sortType ?? this.sortType,
     );
   }
 
   @override
-  List<Object?> get props => [status, results, errorMessage, page];
+  List<Object?> get props => [status, communities, errorMessage, page];
 }
