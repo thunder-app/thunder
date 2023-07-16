@@ -9,6 +9,7 @@ import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -26,6 +27,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showFullHeightImages;
   final bool showVoteActions;
   final bool showSaveAction;
+  final bool showCommunityIcons;
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
@@ -41,6 +43,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.showFullHeightImages,
     required this.showVoteActions,
     required this.showSaveAction,
+    required this.showCommunityIcons,
     required this.showTextContent,
     required this.isUserLoggedIn,
     required this.onVoteAction,
@@ -77,7 +80,9 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text(postViewMedia.postView.post.name,
                   textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                    color: postViewMedia.postView.read
+                        ? theme.textTheme.titleMedium?.color?.withOpacity(0.4)
+                        : null,
                   ),
                   softWrap: true),
             ),
@@ -89,31 +94,38 @@ class PostCardViewComfortable extends StatelessWidget {
             ),
           if (!showTitleFirst)
             Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+              padding: const EdgeInsets.only(
+                  top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
               child: Text(postViewMedia.postView.post.name,
                   textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                    color: postViewMedia.postView.read
+                        ? theme.textTheme.titleMedium?.color?.withOpacity(0.4)
+                        : null,
                   ),
                   softWrap: true),
             ),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
+              padding:
+                  const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
               child: Text(
                 textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  color: postViewMedia.postView.read
+                      ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4)
+                      : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                 ),
               ),
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
+            padding:
+                const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
             child: Row(
               children: [
                 Expanded(
@@ -121,26 +133,52 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       GestureDetector(
-                        child: Text(
-                          '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                          ),
+                        child: Row(
+                          children: [
+                            if (showCommunityIcons)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: CommunityIcon(
+                                    community:
+                                        postViewMedia.postView.community),
+                              ),
+                            Text(
+                              '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
+                              textScaleFactor:
+                                  state.contentFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.titleSmall?.copyWith(
+                                fontSize:
+                                    theme.textTheme.titleSmall!.fontSize! *
+                                        1.05,
+                                color: postViewMedia.postView.read
+                                    ? theme.textTheme.titleSmall?.color
+                                        ?.withOpacity(0.4)
+                                    : theme.textTheme.titleSmall?.color
+                                        ?.withOpacity(0.75),
+                              ),
+                            ),
+                          ],
                         ),
-                        onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
+                        onTap: () => onTapCommunityName(
+                            context, postViewMedia.postView.community.id),
                       ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
-                        voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                        voteType:
+                            postViewMedia.postView.myVote ?? VoteType.none,
                         comments: postViewMedia.postView.counts.comments,
                         unreadComments: postViewMedia.postView.unreadComments,
-                        hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                        published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
+                        hasBeenEdited:
+                            postViewMedia.postView.post.updated != null
+                                ? true
+                                : false,
+                        published: postViewMedia.postView.post.updated != null
+                            ? postViewMedia.postView.post.updated!
+                            : postViewMedia.postView.post.published,
                         saved: postViewMedia.postView.saved,
-                        distinguised: postViewMedia.postView.post.featuredCommunity,
+                        distinguised:
+                            postViewMedia.postView.post.featuredCommunity,
                       )
                     ],
                   ),

@@ -38,6 +38,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
+  bool showCommunityIcons = false;
   bool showFullHeightImages = false;
   bool showEdgeToEdgeImages = false;
   bool tabletMode = false;
@@ -125,6 +126,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_show_save_action':
         await prefs.setBool('setting_general_show_save_action', value);
         setState(() => showSaveAction = value);
+        break;
+      case 'setting_general_show_community_icons':
+        await prefs.setBool('setting_general_show_community_icons', value);
+        setState(() => showCommunityIcons = value);
         break;
       case 'setting_general_show_full_height_images':
         await prefs.setBool('setting_general_show_full_height_images', value);
@@ -217,6 +222,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
@@ -477,6 +483,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconEnabled: Icons.star_rounded,
                                         iconDisabled: Icons.star_border_rounded,
                                         onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Show Community Icons',
+                                        value: showCommunityIcons,
+                                        iconEnabled: Icons.groups,
+                                        iconDisabled: Icons.groups,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_community_icons', value),
                                       ),
                                     ],
                                   ),
