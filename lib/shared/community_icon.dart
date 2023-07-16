@@ -20,14 +20,16 @@ class CommunityIcon extends StatelessWidget {
           ? CachedNetworkImageProvider(community!.icon!)
           : null,
       maxRadius: radius,
-      child: Text(
-        community?.name != null ? community!.name[0].toUpperCase() : "",
-        semanticsLabel: '',
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: radius,
-        ),
-      ),
+      child: community?.icon == null
+          ? Text(
+              community?.name != null ? community!.name[0].toUpperCase() : "",
+              semanticsLabel: '',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: radius,
+              ),
+            )
+          : null,
     );
   }
 }
