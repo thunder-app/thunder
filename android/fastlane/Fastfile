@@ -15,6 +15,14 @@
 
 default_platform(:android)
 
+lane :playstore do
+  gradle(
+    task: 'assemble',
+    build_type: 'Release'
+  )
+  upload_to_play_store # Uploads the APK built in the gradle step above and releases it to all production users
+end
+
 platform :android do
   desc "Runs all the tests"
   lane :test do

@@ -1,1 +1,3 @@
-<p><i>Thunder</i> is an open-source cross-platform Lemmy client for iOS and Android built with Flutter. It lets you browse community posts (and subscriptions if logged in), search for communities from the current instance (and subscribe), see a specific post and its associated comments, has infinite scrolling for posts and comments, and more.</p>
+Thunder is an open source, cross-platform Lemmy client built in Flutter.
+
+With Thunder, you can access Lemmy communities, sign into your accounts, and interact with your favourite communities.
