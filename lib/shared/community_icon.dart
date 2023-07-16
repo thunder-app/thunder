@@ -12,24 +12,31 @@ class CommunityIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return CircleAvatar(
-      backgroundColor: community?.icon != null
-          ? Colors.transparent
-          : theme.colorScheme.secondaryContainer,
-      foregroundImage: community?.icon != null
-          ? CachedNetworkImageProvider(community!.icon!)
-          : null,
-      maxRadius: radius,
-      child: community?.icon == null
-          ? Text(
-              community?.name != null ? community!.name[0].toUpperCase() : "",
-              semanticsLabel: '',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: radius,
-              ),
-            )
-          : null,
+    CircleAvatar placeholderAvatar = CircleAvatar(
+        backgroundColor: theme.colorScheme.secondaryContainer,
+        maxRadius: radius,
+        child: community?.name != null
+            ? Text(
+                community!.name[0].toUpperCase(),
+                semanticsLabel: '',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              )
+            : null);
+
+    return CachedNetworkImage(
+      imageUrl: community?.icon ?? "",
+      imageBuilder: (context, imageProvider) {
+        return CircleAvatar(
+          backgroundColor: Colors.transparent,
+          foregroundImage: imageProvider,
+          maxRadius: radius,
+        );
+      },
+      placeholder: (context, url) => placeholderAvatar,
+      errorWidget: (context, url, error) => placeholderAvatar,
     );
   }
 }
