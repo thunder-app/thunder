@@ -132,74 +132,12 @@ class PostCardViewComfortable extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
-                        children: [
-                          if (showCommunityIcons)
-                            GestureDetector(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
-                                child: CommunityIcon(
-                                    community:
-                                        postViewMedia.postView.community, radius: 14),
-                              ),
-                              onTap: () => onTapCommunityName(
-                                  context, postViewMedia.postView.community.id),
-                            ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              GestureDetector(
-                                  child: Text(
-                                    '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                                    textScaleFactor: state
-                                        .contentFontSizeScale.textScaleFactor,
-                                    style: theme.textTheme.titleSmall?.copyWith(
-                                      fontSize: theme
-                                              .textTheme.titleSmall!.fontSize! *
-                                          1.05,
-                                      color: postViewMedia.postView.read
-                                          ? theme.textTheme.titleSmall?.color
-                                              ?.withOpacity(0.4)
-                                          : theme.textTheme.titleSmall?.color
-                                              ?.withOpacity(0.75),
-                                    ),
-                                  ),
-                                  onTap: () => onTapCommunityName(context,
-                                      postViewMedia.postView.community.id)),
-                              Row(
-                                children: [
-                                  Text(
-                                    'by ',
-                                    textScaleFactor: state
-                                        .contentFontSizeScale.textScaleFactor,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: theme.textTheme.bodyMedium?.color
-                                          ?.withOpacity(0.4),
-                                    ),
-                                  ),
-                                  GestureDetector(
-                                    child: Text(postViewMedia.postView.creator.name,
-                                        textScaleFactor: state
-                                            .contentFontSizeScale.textScaleFactor,
-                                        style:
-                                            theme.textTheme.titleSmall?.copyWith(
-                                          fontSize: theme.textTheme.titleSmall!
-                                                  .fontSize! *
-                                              1.05,
-                                          color: postViewMedia.postView.read
-                                              ? theme.textTheme.titleSmall?.color
-                                                  ?.withOpacity(0.4)
-                                              : theme.textTheme.titleSmall?.color
-                                                  ?.withOpacity(0.75),
-                                        )),
-                                  onTap: () => onTapUserName(context,
-                                    postViewMedia.postView.creator.id)),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+                      PostCommunityAndAuthor(
+                          showCommunityIcons: showCommunityIcons,
+                          postView: postViewMedia.postView,
+                          showInstanceName: showInstanceName,
+                          state: state,
+                          theme: theme),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
@@ -255,6 +193,76 @@ class PostCardViewComfortable extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class PostCommunityAndAuthor extends StatelessWidget {
+  const PostCommunityAndAuthor({
+    super.key,
+    required this.showCommunityIcons,
+    required this.postView,
+    required this.showInstanceName,
+    required this.state,
+    required this.theme,
+  });
+
+  final bool showCommunityIcons;
+  final PostView postView;
+  final bool showInstanceName;
+  final ThunderState state;
+  final ThemeData theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        if (showCommunityIcons)
+          GestureDetector(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: CommunityIcon(
+                  community: postView.community, radius: 14),
+            ),
+            onTap: () => onTapCommunityName(
+                context, postView.community.id),
+          ),
+        Expanded(
+          child: Wrap(
+            direction: Axis.horizontal,
+            alignment: WrapAlignment.start,
+            crossAxisAlignment: WrapCrossAlignment.end,
+            spacing: 1.0,
+            children: [
+              GestureDetector(
+                  child: Text(
+                    '${postView.creator.name} to ',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color:
+                          theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                    ),
+                  ),
+                  onTap: () => onTapUserName(
+                      context, postView.creator.id)),
+              GestureDetector(
+                  child: Text(
+                    '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.titleSmall?.copyWith(
+                      fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
+                      color: postView.read
+                          ? theme.textTheme.titleSmall?.color?.withOpacity(0.4)
+                          : theme.textTheme.titleSmall?.color
+                              ?.withOpacity(0.75),
+                    ),
+                  ),
+                  onTap: () => onTapCommunityName(
+                      context, postView.community.id)),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
