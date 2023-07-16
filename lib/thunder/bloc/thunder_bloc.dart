@@ -35,6 +35,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<OnScrollToTopEvent>(
+      _onScrollToTopEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// This event should be triggered at the start of the app.
@@ -165,5 +169,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     } catch (e, s) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
+  }
+
+  void _onScrollToTopEvent(OnScrollToTopEvent event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
   }
 }

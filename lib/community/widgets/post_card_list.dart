@@ -47,6 +47,7 @@ class PostCardList extends StatefulWidget {
 class _PostCardListState extends State<PostCardList> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
+  int _previousScrollId = 0;
 
   @override
   void initState() {
@@ -82,6 +83,11 @@ class _PostCardListState extends State<PostCardList> {
     const phoneGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1,
     );
+
+    if (state.scrollToTopId > _previousScrollId) {
+      scrollToTop();
+      _previousScrollId = state.scrollToTopId;
+    }
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
@@ -156,11 +162,7 @@ class _PostCardListState extends State<PostCardList> {
                 left: 20,
                 child: FloatingActionButton(
                   onPressed: () {
-                    _scrollController.animateTo(
-                      0,
-                      duration: Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
+                    scrollToTop();
                   },
                   child: Icon(Icons.arrow_upward),
                 ),
@@ -168,6 +170,14 @@ class _PostCardListState extends State<PostCardList> {
           ],
         ),
       ),
+    );
+  }
+
+  void scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
     );
   }
 }

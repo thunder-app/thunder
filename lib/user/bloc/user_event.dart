@@ -10,15 +10,17 @@ abstract class UserEvent extends Equatable {
 class GetUserEvent extends UserEvent {
   final int? userId;
   final bool reset;
+  final bool isAccountUser;
 
-  const GetUserEvent({this.userId, this.reset = false});
+  const GetUserEvent({this.userId, this.reset = false, this.isAccountUser = false});
 }
 
 class GetUserSavedEvent extends UserEvent {
   final int? userId;
   final bool reset;
+  final bool isAccountUser;
 
-  const GetUserSavedEvent({this.userId, this.reset = false});
+  const GetUserSavedEvent({this.userId, this.reset = false, this.isAccountUser = false});
 }
 
 class VotePostEvent extends UserEvent {

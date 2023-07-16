@@ -49,7 +49,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
   bool downloaded = false;
 
-  double slideTransparency = 0.9;
+  double slideTransparency = 0.93;
   double imageTransparency = 1.0;
 
   /// User Settings
@@ -83,7 +83,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
-    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140),vsync: this);
+    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
 
@@ -103,7 +103,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                   slidePageBackgroundHandler: (offset, pageSize) {
                     return Colors.transparent;
                   },
-                  onSlidingPage: (state) { // Fade out image and background when sliding to dismiss
+                  onSlidingPage: (state) {
+                    // Fade out image and background when sliding to dismiss
                     var offset = state.offset;
                     var pageSize = state.pageSize;
 
@@ -116,7 +117,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       });
                     }
                   },
-                  slideEndHandler: ( // Decrease slide to dismiss threshold so it can be done easier
+                  slideEndHandler: (
+                    // Decrease slide to dismiss threshold so it can be done easier
                     Offset offset, {
                     ExtendedImageSlidePageState? state,
                     ScaleEndDetails? details,
@@ -173,12 +175,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             end = 1;
                           }
                           animationListener = () {
-                            state.handleDoubleTap(
-                                scale: animation!.value,
-                                doubleTapPosition: pointerDownPosition);
+                            state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
                           };
-                          animation = animationController
-                              .drive(Tween<double>(begin: begin, end: end));
+                          animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
                           animation!.addListener(animationListener);
 
@@ -201,9 +200,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
               ),
               Container(
                 decoration: BoxDecoration(color: Colors.black.withOpacity(0.65)),
+                padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [ // TODO make go to post work
+                  children: [
+                    // TODO make go to post work
                     /*Container(
                       child: widget.postId != null ? Row(
                         children: [
@@ -247,7 +248,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       ) : null,
                     ),*/
                     Padding(
-                      padding: const EdgeInsets.all(15.0),
+                      padding: const EdgeInsets.all(8.0),
                       child: IconButton(
                         onPressed: () async {
                           try {
@@ -277,7 +278,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
                             // Share
                             await Share.shareXFiles([XFile(mediaFile!.path)]);
-                          } catch (e) {
+                            } catch (e) {
                             // Tell the user that the download failed
                             SnackBar snackBar = SnackBar(
                               content: Text('There was an error downloading the media file to share: $e'),
@@ -289,38 +290,40 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             });
                           }
                         },
-                        icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
-                      ),
+                      icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: IconButton(
-                        onPressed: () async {
-                          File file = await DefaultCacheManager().getSingleFile(widget.url);
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: IconButton(
+                      onPressed: () async {
+                        File file = await DefaultCacheManager().getSingleFile(widget.url);
 
-                          if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                            final result = await ImageGallerySaver.saveFile(file.path);
+                        if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                          final result = await ImageGallerySaver.saveFile(file.path);
 
-                            setState(() => downloaded = result['isSuccess'] == true);
-                          } else if (Platform.isLinux || Platform.isWindows) {
-                            final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                          setState(() => downloaded = result['isSuccess'] == true);
+                        } else if (Platform.isLinux || Platform.isWindows) {
+                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
 
-                            File(filePath)
-                              ..createSync(recursive: true)
-                              ..writeAsBytesSync(file.readAsBytesSync());
+                          File(filePath)
+                            ..createSync(recursive: true)
+                            ..writeAsBytesSync(file.readAsBytesSync());
 
-                            setState(() => downloaded = true);
-                          }
-                        },
-                        icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white) : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
-                      ),
+                          setState(() => downloaded = true);
+                        }
+                      },
+                      icon: downloaded
+                          ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white)
+                          : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
+      ),
     );
   }
 }

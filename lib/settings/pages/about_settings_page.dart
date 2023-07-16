@@ -109,7 +109,6 @@ class AboutSettingsPage extends StatelessWidget {
                 )
               ],
             ),
-            ElevatedButton(onPressed: () {}, child: Text('Remove Local Database'))
           ],
         ),
       ),
