@@ -212,22 +212,27 @@ class PostViewMetaData extends StatelessWidget {
 class PostCommunityAndAuthor extends StatelessWidget {
   const PostCommunityAndAuthor({
     super.key,
-    required this.showCommunityIcons,
     required this.postView,
+    required this.showCommunityIcons,
     required this.showInstanceName,
     this.textStyleAuthor,
     this.textStyleCommunity,
   });
 
   final bool showCommunityIcons;
-  final PostView postView;
   final bool showInstanceName;
+  final PostView postView;
   final TextStyle? textStyleAuthor;
   final TextStyle? textStyleCommunity;
 
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
+      final String? creatorName =
+          postView.creator.displayName != null && state.useDisplayNames
+              ? postView.creator.displayName
+              : postView.creator.name;
+
       return Row(
         children: [
           if (showCommunityIcons)
@@ -245,12 +250,13 @@ class PostCommunityAndAuthor extends StatelessWidget {
               crossAxisAlignment: WrapCrossAlignment.end,
               spacing: 1.0,
               children: [
-                GestureDetector(
-                    child: Text('${postView.creator.name} to ',
-                        textScaleFactor:
-                            state.contentFontSizeScale.textScaleFactor,
-                        style: textStyleAuthor),
-                    onTap: () => onTapUserName(context, postView.creator.id)),
+                if (state.showPostAuthor)
+                  GestureDetector(
+                      child: Text('$creatorName to ',
+                          textScaleFactor:
+                              state.contentFontSizeScale.textScaleFactor,
+                          style: textStyleAuthor),
+                      onTap: () => onTapUserName(context, postView.creator.id)),
                 GestureDetector(
                     child: Text(
                       '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',

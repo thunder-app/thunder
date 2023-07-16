@@ -15,6 +15,7 @@ class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
+  final bool showPostAuthor;
   final bool hideNsfwPreviews;
   final bool showInstanceName;
   final bool markPostReadOnMediaView;
@@ -25,6 +26,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.postViewMedia,
     required this.showThumbnailPreviewOnRight,
     required this.showTextPostIndicator,
+    required this.showPostAuthor,
     required this.hideNsfwPreviews,
     required this.showInstanceName,
     required this.markPostReadOnMediaView,
@@ -83,8 +85,8 @@ class PostCardViewCompact extends StatelessWidget {
                     GestureDetector(
                       child: PostCommunityAndAuthor(
                         showCommunityIcons: false,
-                        postView: postViewMedia.postView,
                         showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
                       ),
