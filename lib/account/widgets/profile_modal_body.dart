@@ -1,13 +1,12 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
 class ProfileModalBody extends StatelessWidget {
@@ -82,15 +81,13 @@ class ProfileSelect extends StatelessWidget {
               } else {
                 return ListTile(
                   leading: snapshot.data![index].instanceIcon == null
-                    ? const Icon(
-                        Icons.person,
-                    )
-                    : CircleAvatar(
-                        backgroundColor: Colors.transparent,
-                        foregroundImage: snapshot.data![index].instanceIcon == null 
-                          ? null
-                          : CachedNetworkImageProvider(snapshot.data![index].instanceIcon!),
-                    ),
+                      ? const Icon(
+                          Icons.person,
+                        )
+                      : CircleAvatar(
+                          backgroundColor: Colors.transparent,
+                          foregroundImage: snapshot.data![index].instanceIcon == null ? null : CachedNetworkImageProvider(snapshot.data![index].instanceIcon!),
+                        ),
                   title: Text(
                     snapshot.data![index].account.username ?? 'N/A',
                     style: theme.textTheme.titleMedium?.copyWith(),
@@ -122,7 +119,7 @@ class ProfileSelect extends StatelessWidget {
             itemCount: (snapshot.data?.length ?? 0) + 1,
           );
         } else {
-          return Container();
+          return const Center(child: CircularProgressIndicator());
         }
       },
     );
@@ -130,7 +127,7 @@ class ProfileSelect extends StatelessWidget {
 
   Future<List<AccountExtended>> fetchAccounts() async {
     List<AccountExtended> accounts = await Future.wait((await Account.accounts()).map((account) async {
-      final instanceIcon =  await getInstanceIcon(account.instance);
+      final instanceIcon = await getInstanceIcon(account.instance);
       return AccountExtended(account: account, instanceIcon: instanceIcon);
     }).toList());
 
@@ -143,8 +140,5 @@ class AccountExtended {
   final Account account;
   final String? instanceIcon;
 
-  const AccountExtended({
-    required this.account,
-    this.instanceIcon
-  });
+  const AccountExtended({required this.account, this.instanceIcon});
 }

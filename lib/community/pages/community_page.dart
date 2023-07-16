@@ -136,7 +136,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         onPressed: () {
                           HapticFeedback.mediumImpact();
                           context.read<AccountBloc>().add(GetAccountInformation());
-                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType, communityId: state.communityId, listingType: state.listingType));
+                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                                reset: true,
+                                sortType: sortType,
+                                communityId: state.communityId,
+                                listingType: state.listingType,
+                                communityName: state.communityName,
+                              ));
                         }),
                     IconButton(
                         icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),

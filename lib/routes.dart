@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:thunder/settings/pages/about_settings_page.dart';
+import 'package:thunder/settings/pages/debug_settings_page.dart';
 import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
@@ -62,6 +63,16 @@ final GoRouter router = GoRouter(
             return BlocProvider.value(
               value: state.extra! as ThunderBloc,
               child: const AboutSettingsPage(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'debug',
+          path: 'debug',
+          builder: (context, state) {
+            return BlocProvider.value(
+              value: state.extra! as ThunderBloc,
+              child: const DebugSettingsPage(),
             );
           },
         ),
