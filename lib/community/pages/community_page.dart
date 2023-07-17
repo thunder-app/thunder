@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -11,8 +14,10 @@ import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/utils/constants.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -32,6 +37,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   SortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  CommunityBloc? currentCommunityBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(_handleBack);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +53,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<CommunityBloc>(
-      create: (context) => CommunityBloc(),
+      create: (context) => currentCommunityBloc = CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
@@ -197,6 +209,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     );
   }
 
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
   Widget _getBody(BuildContext context, CommunityState state) {
     switch (state.status) {
       case CommunityStatus.initial:
@@ -260,5 +278,32 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (currentCommunityBloc != null) {
+      // This restricts back button handling to when we're already at the top level of navigation
+      final canPop = Navigator.of(context).canPop();
+
+      final prefs = (await UserPreferences.instance).sharedPreferences;
+      final desiredPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      final currentPostListingType = currentCommunityBloc!.state.listingType;
+      final currentCommunityId = currentCommunityBloc!.state.communityId;
+
+      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+        currentCommunityBloc!.add(
+          GetCommunityPostsEvent(
+            sortType: currentCommunityBloc!.state.sortType,
+            reset: true,
+            listingType: desiredPostListingType,
+            communityId: null,
+          ),
+        );
+
+        return true;
+      }
+    }
+
+    return false;
   }
 }

@@ -74,6 +74,7 @@ dependencies:
   image_picker: ^1.0.0
   flutter_staggered_grid_view: ^0.6.2
   flutter_custom_tabs: ^1.0.4
+  back_button_interceptor: ^6.0.2
 
 dev_dependencies:
   flutter_test:
