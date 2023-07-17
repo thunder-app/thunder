@@ -10,6 +10,8 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+import '../bloc/post_bloc.dart';
+
 class CommentSubview extends StatefulWidget {
   final List<CommentViewTree> comments;
   final int level;
@@ -18,9 +20,11 @@ class CommentSubview extends StatefulWidget {
   final Function(int, bool) onSaveAction;
 
   final PostViewMedia? postViewMedia;
+  final int? selectedCommentId;
   final ScrollController? scrollController;
 
   final bool hasReachedCommentEnd;
+  final bool viewFullCommentsRefreshing;
 
   const CommentSubview({
     super.key,
@@ -29,21 +33,55 @@ class CommentSubview extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     this.postViewMedia,
+    this.selectedCommentId,
     this.scrollController,
     this.hasReachedCommentEnd = false,
+    this.viewFullCommentsRefreshing = false,
   });
 
   @override
   State<CommentSubview> createState() => _CommentSubviewState();
 }
 
-class _CommentSubviewState extends State<CommentSubview> {
+class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
   Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
+  bool _animatingOut = false;
+  bool  _animatingIn = false;
+  bool _removeViewFullCommentsButton = false;
+
+  late final AnimationController _fullCommentsAnimation = AnimationController(
+    duration: const Duration(milliseconds: 500),
+    vsync: this,
+  );
+  late final Animation<Offset> _fullCommentsOffsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0.0, 5),
+  ).animate(CurvedAnimation(
+    parent: _fullCommentsAnimation,
+    curve: Curves.easeInOut,
+  ));
+
+  @override
+  void initState() {
+    super.initState();
+    _fullCommentsOffsetAnimation.addStatusListener((status) {
+      if(status == AnimationStatus.completed && _animatingOut) {
+        _animatingOut = false;
+        _removeViewFullCommentsButton = true;
+        context.read<PostBloc>().add(const GetPostCommentsEvent(commentParentId: null, viewAllCommentsRefresh: true));
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    if(!widget.viewFullCommentsRefreshing && _removeViewFullCommentsButton) {
+      _animatingIn = true;
+      _fullCommentsAnimation.reverse();
+    }
 
     return ListView.builder(
       addSemanticIndexes: false,
@@ -51,34 +89,8 @@ class _CommentSubviewState extends State<CommentSubview> {
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (widget.postViewMedia != null && index == 0) {
-          return PostSubview(useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
-        } else if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
-          return Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                child: const CircularProgressIndicator(),
-              ),
-            ],
-          );
-        } else if (index == widget.comments.length + 1) {
-          if (widget.hasReachedCommentEnd == true) {
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Container(
-                  color: theme.dividerColor.withOpacity(0.1),
-                  padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  child: Text(
-                    'Hmmm. It seems like you\'ve reached the bottom.',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    textAlign: TextAlign.center,
-                    style: theme.textTheme.titleSmall,
-                  ),
-                ),
-              ],
-            );
-          } else {
+          return PostSubview(selectedCommentId: widget.selectedCommentId, useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
+        } if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
             return Column(
               children: [
                 Container(
@@ -87,18 +99,76 @@ class _CommentSubviewState extends State<CommentSubview> {
                 ),
               ],
             );
-          }
-        } else {
-          return CommentCard(
-            commentViewTree: widget.comments[index - 1],
-            collapsedCommentSet: collapsedCommentSet,
-            collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-            onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-            onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
-            onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
+          } else {
+          return SlideTransition(
+            position: _fullCommentsOffsetAnimation,
+            child: Column(
+              children: [
+                if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
+                  Center(
+                    child: Column(
+                      children: [
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: theme.colorScheme.primaryContainer,
+                            textStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.primary,
+                            ),
+                          ),
+                          onPressed: () {
+                            _animatingOut = true;
+                            _fullCommentsAnimation.forward();
+                          },
+                          child: const Text('View all comments'),
+                        ),
+                        const Padding(padding: EdgeInsets.only(top: 10)),
+                      ]
+                    )
+                  ),
+                  if (index != widget.comments.length + 1)
+                    CommentCard(
+                      selectCommentId: widget.selectedCommentId,
+                      commentViewTree: widget.comments[index - 1],
+                      collapsedCommentSet: collapsedCommentSet,
+                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
+                      onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                      onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed)
+                    ),
+                  if (index == widget.comments.length + 1) ...[
+                    if (widget.hasReachedCommentEnd == true) ...[
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Container(
+                            color: theme.dividerColor.withOpacity(0.1),
+                            padding: const EdgeInsets.symmetric(vertical: 32.0),
+                            child: Text(
+                              'Hmmm. It seems like you\'ve reached the bottom.',
+                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              textAlign: TextAlign.center,
+                              style: theme.textTheme.titleSmall,
+                            ),
+                          ),
+                        ],
+                      )
+                    ] else ...[
+                      Column(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
+                            child: const CircularProgressIndicator(),
+                          ),
+                        ],
+                      )
+                    ]
+                  ]
+                ]
+            )
           );
         }
-      },
+      }
     );
   }
 

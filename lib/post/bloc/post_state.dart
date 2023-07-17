@@ -15,9 +15,14 @@ class PostState extends Equatable {
       this.hasReachedCommentEnd = false,
       this.errorMessage,
       this.sortType,
-      this.sortTypeIcon});
+      this.sortTypeIcon,
+      this.selectedCommentId,
+      this.selectedCommentPath,
+      this.viewAllCommentsRefresh = false});
 
   final PostStatus status;
+
+  final bool viewAllCommentsRefresh;
 
   final CommentSortType? sortType;
   final IconData? sortTypeIcon;
@@ -32,6 +37,8 @@ class PostState extends Equatable {
   final int commentPage;
   final int commentCount;
   final bool hasReachedCommentEnd;
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
 
   final String? errorMessage;
 
@@ -48,6 +55,9 @@ class PostState extends Equatable {
     String? errorMessage,
     CommentSortType? sortType,
     IconData? sortTypeIcon,
+    int? selectedCommentId,
+    String? selectedCommentPath,
+    bool? viewAllCommentsRefresh = false,
   }) {
     return PostState(
       status: status,
@@ -60,11 +70,14 @@ class PostState extends Equatable {
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       communityId: communityId ?? this.communityId,
       errorMessage: errorMessage ?? this.errorMessage,
-      sortType: sortType,
-      sortTypeIcon: sortTypeIcon,
+      sortType: sortType ?? this.sortType,
+      sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
+      selectedCommentId: selectedCommentId,
+      selectedCommentPath: selectedCommentPath,
+      viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd, sortType, sortTypeIcon];
+  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd, sortType, sortTypeIcon, selectedCommentId, selectedCommentPath, viewAllCommentsRefresh];
 }

@@ -38,7 +38,7 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, onPostUpdated: () => {}),
+                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: () => {}),
               ),
             ),
           );
