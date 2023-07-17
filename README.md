@@ -70,14 +70,19 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 
 ## Releases
 <div align="center">
+ <a href="https://play.google.com/store/apps/details?id=com.hjiangsu.thunder">
+  <img src="https://cdn.rawgit.com/steverichey/google-play-badge-svg/master/img/en_get.svg" height="80"/>
+ </a>
  <a href="https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder">
-    <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">
-  </a>
-  <a href="https://github.com/hjiangsu/thunder/releases/latest"><img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80"></a>
+  <img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png" height="80">
+ </a>
+ <a href="https://github.com/hjiangsu/thunder/releases/latest">
+  <img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" height="80">
+ </a>
 </div>
 
 ### Android
-If you are on Android, releases are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version. There is also an option to obtain the release through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested.
+If you are on Android, you can download Thunder from the [Google Play store](play.google.com/store/apps/details?id=com.hjiangsu.thunder). There is also an option to obtain the releases through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested. Finally, all releases (including alpha builds) are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
 
 ### iOS
 If you are on iOS, there is TestFlight available through [this link](https://testflight.apple.com/join/9n8xrqvH). An alternative is to download the corresponding IPA file in the [Releases](https://github.com/hjiangsu/thunder/releases) section and install it through [AltStore](https://altstore.io/).
