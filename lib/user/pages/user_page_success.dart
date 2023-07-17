@@ -30,6 +30,7 @@ class UserPageSuccess extends StatefulWidget {
   final List<CommentViewTree>? commentViewTrees;
   final List<PostViewMedia>? postViews;
   final List<PostViewMedia>? savedPostViews;
+  final List<CommunityModeratorView>? moderates;
 
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
@@ -42,6 +43,7 @@ class UserPageSuccess extends StatefulWidget {
     this.commentViewTrees,
     this.postViews,
     this.savedPostViews,
+    this.moderates,
     required this.hasReachedPostEnd,
     required this.hasReachedSavedPostEnd,
   });
@@ -116,7 +118,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     });
                   }
                 },
-                child: UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar,),
+                child: UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16),
@@ -223,7 +225,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           );
                         },
                         duration: const Duration(milliseconds: 300),
-                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView) : null,
+                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates,) : null,
                       ),
                     ],
                   ),

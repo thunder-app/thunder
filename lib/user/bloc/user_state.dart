@@ -3,6 +3,7 @@ part of 'user_bloc.dart';
 enum UserStatus { initial, loading, refreshing, success, empty, failure }
 
 class UserState extends Equatable {
+
   const UserState({
     this.status = UserStatus.initial,
     this.userId,
@@ -11,6 +12,7 @@ class UserState extends Equatable {
     this.savedComments = const [],
     this.posts = const [],
     this.savedPosts = const [],
+    this.moderates = const [],
     this.page = 1,
     this.savedContentPage = 1,
     this.hasReachedPostEnd = false,
@@ -31,6 +33,8 @@ class UserState extends Equatable {
   final List<PostViewMedia> posts;
   final List<PostViewMedia> savedPosts;
 
+  final List<CommunityModeratorView> moderates;
+
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
 
@@ -50,6 +54,7 @@ class UserState extends Equatable {
     List<CommentViewTree>? savedComments,
     List<PostViewMedia>? posts,
     List<PostViewMedia>? savedPosts,
+    List<CommunityModeratorView>? moderates,
     int? page,
     int? savedContentPage,
     bool? hasReachedPostEnd,
@@ -66,6 +71,7 @@ class UserState extends Equatable {
       savedComments: savedComments ?? this.savedComments,
       posts: posts ?? this.posts,
       savedPosts: savedPosts ?? this.savedPosts,
+      moderates: moderates ?? this.moderates,
       page: page ?? this.page,
       savedContentPage: savedContentPage ?? this.savedContentPage,
       hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,

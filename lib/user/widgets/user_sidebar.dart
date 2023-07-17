@@ -17,10 +17,12 @@ import '../../shared/common_markdown_body.dart';
 class UserSidebar extends StatefulWidget {
 
   final PersonViewSafe? userInfo;
+  final List<CommunityModeratorView>? moderates;
 
   const UserSidebar({
     super.key,
     required this.userInfo,
+    required this.moderates,
   });
 
   @override
@@ -139,47 +141,68 @@ class _UserSidebarState extends State<UserSidebar>{
                             ),
                             const Divider(),
                             const SizedBox(height: 40.0),
-                            /*const Text('Moderates:'),
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
+                            Container(
+                              child: widget.moderates != null ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  CircleAvatar(
-                                    backgroundColor: widget.userInfo?.counts. != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                    foregroundImage: widget.communityInfo?.moderators.first.moderator?.avatar != null ? CachedNetworkImageProvider( widget.communityInfo!.moderators.first.moderator!.avatar! ) : null,
-                                    maxRadius: 16,
-                                    child: Text(
-                                      widget.communityInfo?.moderators.first.moderator!.name[0].toUpperCase() ?? '',
-                                      semanticsLabel: '',
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16.0),
-                                  Expanded(
+                                  const Text('Moderates:'),
+                                  const Divider(),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                     child: Column(
-                                      mainAxisAlignment: MainAxisAlignment.start,
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          widget.communityInfo?.moderators.first.moderator!.displayName ?? widget.communityInfo?.moderators.first.moderator!.name ?? '',
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 1,
-                                        ),
-                                        Text(
-                                          '${widget.communityInfo?.moderators.first.moderator!.name ?? ''} · ${fetchInstanceNameFromUrl(widget.communityInfo?.moderators.first.moderator!.actorId)}',
-                                          style: theme.textTheme.bodyMedium,
-                                          overflow: TextOverflow.ellipsis,
+                                      children: [ for (var mods in widget.moderates! )
+                                        Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor: mods.community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                                foregroundImage: mods.community.icon  != null ? CachedNetworkImageProvider( mods.community.icon! ) : null,
+                                                maxRadius: 20,
+                                                child: Text(
+                                                  mods.community.name[0].toUpperCase() ?? '',
+                                                  semanticsLabel: '',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      mods.community.title ?? mods.community.name ?? '',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      '${mods.community.name ?? ''} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: theme.colorScheme.onBackground.withOpacity(0.6),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ],
                                     ),
                                   ),
                                 ],
-                              ),
-                            ),*/
+                              ) : null,
+                            ),
                           ],
                         ),
                       ),

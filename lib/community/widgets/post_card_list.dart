@@ -24,6 +24,7 @@ class PostCardList extends StatefulWidget {
   final bool? hasReachedEnd;
   final PostListingType? listingType;
   final FullCommunityView? communityInfo;
+  final SubscribedType? subscribeType;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -38,6 +39,7 @@ class PostCardList extends StatefulWidget {
     this.communityInfo,
     this.communityName,
     this.personId,
+    this.subscribeType,
     required this.onScrollEndReached,
     required this.onVoteAction,
     required this.onSaveAction,
@@ -223,13 +225,13 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           switchOutCurve: Curves.easeOut,
                           transitionBuilder: (child, animation) {
                             return SlideTransition(
-                              position: Tween<Offset>(begin: Offset(1.2, 0), end: Offset(0, 0))
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0))
                                   .animate(animation),
                               child: child,
                             );
                           },
                           duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo) : null,
+                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo, subscribedType: widget.subscribeType,) : null,
                         ),
                       ],
                     ),
@@ -245,11 +247,11 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   onPressed: () {
                     _scrollController.animateTo(
                       0,
-                      duration: Duration(milliseconds: 500),
+                      duration: const Duration(milliseconds: 500),
                       curve: Curves.easeInOut,
                     );
                   },
-                  child: Icon(Icons.arrow_upward),
+                  child: const Icon(Icons.arrow_upward),
                 ),
               ),
           ],

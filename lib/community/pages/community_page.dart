@@ -45,7 +45,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       create: (context) => CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
-          if (previousState.subscribedType != currentState.subscribedType) {
+          if (previousState.subscribedType != currentState.subscribedType ) {
             context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
           }
 
@@ -199,6 +199,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.success:
       case CommunityStatus.failure:
         return PostCardList(
+          subscribeType: state.subscribedType,
           postViews: state.postViews,
           listingType: state.communityId != null ? null : state.listingType,
           communityId: widget.communityId ?? state.communityId,

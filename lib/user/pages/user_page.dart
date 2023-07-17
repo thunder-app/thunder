@@ -105,6 +105,7 @@ class _UserPageState extends State<UserPage> {
                 userId: widget.userId,
                 isAccountUser: widget.isAccountUser,
                 personView: state.personView,
+                moderates: state.moderates,
                 commentViewTrees: state.comments,
                 postViews: state.posts,
                 savedPostViews: state.savedPosts,
