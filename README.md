@@ -82,7 +82,7 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 </div>
 
 ### Android
-If you are on Android, you can download Thunder from the [Google Play store](play.google.com/store/apps/details?id=com.hjiangsu.thunder). There is also an option to obtain the releases through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested. Finally, all releases (including alpha builds) are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
+If you are on Android, you can download Thunder from the [Google Play store](https://play.google.com/store/apps/details?id=com.hjiangsu.thunder). There is also an option to obtain the releases through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested. Finally, all releases (including alpha builds) are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
 
 ### iOS
 If you are on iOS, there is TestFlight available through [this link](https://testflight.apple.com/join/9n8xrqvH). An alternative is to download the corresponding IPA file in the [Releases](https://github.com/hjiangsu/thunder/releases) section and install it through [AltStore](https://altstore.io/).
