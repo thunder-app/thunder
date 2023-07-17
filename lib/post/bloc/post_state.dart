@@ -8,7 +8,7 @@ class PostState extends Equatable {
       this.postId,
       this.postView,
       this.comments = const [],
-      this.commentResponseList = const [],
+      this.commentResponseMap = const <int, CommentView>{},
       this.commentPage = 1,
       this.commentCount = 0,
       this.communityId,
@@ -28,7 +28,7 @@ class PostState extends Equatable {
 
   // Comment related data
   final List<CommentViewTree> comments;
-  final List<CommentView> commentResponseList; // This is the raw list of comments
+  final Map<int, CommentView> commentResponseMap;
   final int commentPage;
   final int commentCount;
   final bool hasReachedCommentEnd;
@@ -40,7 +40,7 @@ class PostState extends Equatable {
     int? postId,
     PostViewMedia? postView,
     List<CommentViewTree>? comments,
-    List<CommentView>? commentResponseList,
+    Map<int, CommentView>? commentResponseMap,
     int? commentPage,
     int? commentCount,
     bool? hasReachedCommentEnd,
@@ -54,7 +54,7 @@ class PostState extends Equatable {
       postId: postId ?? this.postId,
       postView: postView ?? this.postView,
       comments: comments ?? this.comments,
-      commentResponseList: commentResponseList ?? this.commentResponseList,
+      commentResponseMap: commentResponseMap ?? this.commentResponseMap,
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
