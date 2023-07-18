@@ -11,6 +11,7 @@
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
 - Minor tweaks to toast notification when blocking communities - contribution from @micahmo
 - Changed to default feed type to be "All" rather than "Local" - contribution from @CTalvio
+- Optimization improvements to comment cards and calculating published/edited time - contribution from @ajsosa
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
