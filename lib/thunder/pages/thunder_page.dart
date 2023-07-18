@@ -142,8 +142,6 @@ class _ThunderState extends State<Thunder> {
           },
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
-              FlutterNativeSplash.remove();
-
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
@@ -152,6 +150,7 @@ class _ThunderState extends State<Thunder> {
                   return const Center(child: CircularProgressIndicator());
                 case ThunderStatus.refreshing:
                 case ThunderStatus.success:
+                  FlutterNativeSplash.remove();
                   return Scaffold(
                       bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
                       body: MultiBlocProvider(
