@@ -82,57 +82,69 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 </div>
 
 ### Android
-If you are on Android, you can download Thunder from the [Google Play store](https://play.google.com/store/apps/details?id=com.hjiangsu.thunder). There is also an option to obtain the releases through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested. Finally, all releases (including alpha builds) are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
+If you are on Android, you can download Thunder from the [Google Play Store](https://play.google.com/store/apps/details?id=com.hjiangsu.thunder). There is also an option to obtain the releases through [IzzyOnDroid](https://apt.izzysoft.de/fdroid/index/apk/com.hjiangsu.thunder) if you are interested. Finally, all releases (including alpha builds) are available in the [Releases](https://github.com/hjiangsu/thunder/releases) section under the corresponding version.
 
 ### iOS
 If you are on iOS, there is TestFlight available through [this link](https://testflight.apple.com/join/9n8xrqvH). An alternative is to download the corresponding IPA file in the [Releases](https://github.com/hjiangsu/thunder/releases) section and install it through [AltStore](https://altstore.io/).
 
 ## Features
 
-Thunder is currently undergoing **active development**, and it is possible that not all features have been fully implemented at this stage. Due to this, significant breaking changes may occur between versions. The next section summarizes the features that are currently implemented.
+Thunder is currently undergoing **active alpha development**, and it is possible that not all features have been fully implemented at this stage. Due to this, significant breaking changes may occur between versions. The next section summarizes the features that are currently implemented.
 
 #### **Communities**
 
-- Browsing through general (All/Local) feeds, as well as specific communities
+- Browsing through general (All/Local/Subscribed) feeds, including specific communities
 - Ability to search for communities that are federated with the current instance
 - See a list of subscriptions, and access their community posts and general information
+- Ability to block a specific community
 
 #### **Posts & Comments**
 
-- Voting (upvote/downvote) and save actions for posts and comments
+- Voting and save actions for posts and comments
+- Swipe actions for posts and comments with customizable actions
 - Infinite scrolling for posts and comments
 - Ability to create a new post, and reply to posts/comments
+- Sharing links, media, comments from posts and comments
 
 #### **Authentication**
 
 - Ability to log into multiple instances, and switch between them
+- Basic inbox capabilities, view replies, mentions and private messages
 
 #### **Theme & Customization**
 
-- Basic customization for the look of posts
-  - Standard/Compact views
-  - Toggle full image views or a compacted image view 
-  - Toggling voting and saving actions
-- Light, dark, and OLED themes available
+#### Feed
+- Two-column view for tablets
+- Setting default feed/sort types
 
-#### **Extras**
+#### Posts
+- Different post views - compact, normal, expanded (full-image)
+- Swipe customizations on posts (voting, saving, marking as read, etc.)
+- Showing text preview, actions, moving title to the top, etc.
+
+#### Themes
+- Follow system theme and Material You theming
+- Light, dark, and OLED themes available
+- Customizable font size selections
+
+#### Extras
 - In-app update notifications for new releases on GitHub
+- Opening links in external browser
 
 ## Roadmap
 
-The current focus is to provide a MVP to be able to do basic tasks, including
-- Inbox features (replies, mentions, private messages)
-  - Ability to view your inbox, and be able to mark them as read
-  - Ability to reply to inbox messages
-  - Ability to see full context of a given inbox message (navigate to post, or comment for replies and mentions)
-- Improvements to accessibility services
-- More customizability of post views (compact, normal, expanded, etc.)
+The current focus is to continue to expand on the general functionality of Thunder. This includes but is not limited to:
+- Improvements to theming to allow for more theme choices
+- Improvements to post/comment creation to reach parity with the web-ui
+- Optimizations to make the overall experience even smoother
+- Improved searching capabilities
 
 ## Contributing
 
 Contributions are always welcome! To contribute potential features or bug-fixes:
 
 1. Fork this repository
+2. Base the feature or fix off the `develop` branch. This is to allow for pre-release versions without affecting the main general releases.
 2. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 3. Create a pull request to have your changes reviewed and merged
 
@@ -140,12 +152,11 @@ Contributions are always welcome! To contribute potential features or bug-fixes:
 
 ### Installing Flutter and Related Dependencies
 
-Thunder is developed with Flutter, and is built to support both iOS and Android. There may be limited support on other platforms but is not guaranteed at this time (Linux, Windows, MacOS)
+Thunder is developed with Flutter, and is built to support both iOS and Android. There may be unofficial support on other platforms but is not guaranteed at this time (Linux, Windows, MacOS)
 
 To build the app from source, a few steps are required.
 
-1. Set up and install Flutter.
-   - For more information, visit https://docs.flutter.dev/get-started/install.
+1. Set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
 3. Generate an empty `.env` file. The `.env` file holds any credentials. At the time of writing, en empty `.env` file with a comment is all that is required.
 3. Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions
@@ -157,7 +168,7 @@ Alternatively, you can skip the prerequisite setup and build the Android applica
 ./scripts/docker-build-android.sh
 ```
 
-### Developing with Docker
+#### Developing with Docker
 
 You can also run your local development environment for Android via the Docker container, including connecting to ADB on the host machine.
 ```
@@ -175,11 +186,3 @@ This is an example of the `.env` that can be used for Thunder.
 While there are no specific conventions that must be followed, do try to follow best practices whenever possible.
 
 Suggestions are always welcome to improve the code quality and architecture of the app!
-
-## Related Packages
-
-Thunder uses the following packages and libraries under the hood. This is not an exhaustive list.
-
-### Custom Built Libraries
-
-[lemmy-dart](https://github.com/hjiangsu/lemmy-dart) - Custom Lemmy API library written in Dart.
