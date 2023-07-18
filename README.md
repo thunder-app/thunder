@@ -43,8 +43,7 @@
 <p align="center">
   <a href="#contributing">Contributing</a> •
   <a href="#building-from-source">Building From Source</a> •
-  <a href="#conventions">Conventions</a> •
-  <a href="#related-packages">Related Packages</a>
+  <a href="#conventions">Conventions</a>
 </p>
 
 <div align="center">
@@ -66,6 +65,14 @@ Contributions to this project are always welcomed, and in fact, even strongly en
 Your passion, contributions, and ideas would be greatly appreciated! Together, let's make this project shine. 🚀 💻
 </p>
 <hr />
+
+## Communities
+If you want to join in on further discussions around Thunder, feel free to join the lemmy communities or the Matrix space!
+
+Community: https://lemmy.world/c/thunder_app  
+Nightly Community: https://lemmy.world/c/thunder_app  
+
+Matrix Space: https://matrix.to/#/#thunderapp:matrix.org
 
 
 ## Releases
@@ -110,6 +117,7 @@ Thunder is currently undergoing **active alpha development**, and it is possible
 
 - Ability to log into multiple instances, and switch between them
 - Basic inbox capabilities, view replies, mentions and private messages
+- View your own profile, including posts, comments, and saved content
 
 #### **Theme & Customization**
 
