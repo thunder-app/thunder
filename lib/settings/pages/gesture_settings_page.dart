@@ -40,20 +40,20 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
 
   /// The available gesture options
   List<ListPickerItem> postGestureOptions = [
-    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.friendlyName, payload: SwipeAction.upvote),
-    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.friendlyName, payload: SwipeAction.downvote),
-    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.friendlyName, payload: SwipeAction.save),
-    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.friendlyName, payload: SwipeAction.reply),
-    ListPickerItem(icon: Icons.markunread_outlined, label: SwipeAction.toggleRead.friendlyName, payload: SwipeAction.toggleRead),
-    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.friendlyName, payload: SwipeAction.none),
+    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.label, payload: SwipeAction.reply),
+    ListPickerItem(icon: Icons.markunread_outlined, label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
+    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   List<ListPickerItem> commentGestureOptions = [
-    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.friendlyName, payload: SwipeAction.upvote),
-    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.friendlyName, payload: SwipeAction.downvote),
-    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.friendlyName, payload: SwipeAction.save),
-    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.friendlyName, payload: SwipeAction.reply),
-    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.friendlyName, payload: SwipeAction.none),
+    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.label, payload: SwipeAction.reply),
+    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   void setPreferences(attribute, value) async {

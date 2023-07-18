@@ -1,15 +1,15 @@
 enum SwipeAction {
-  upvote(friendlyName: 'Upvote'),
-  downvote(friendlyName: 'Downvote'),
-  reply(friendlyName: 'Reply'),
-  save(friendlyName: 'Save'),
-  edit(friendlyName: 'Edit'),
-  toggleRead(friendlyName: 'Mark As Read/Unread'),
-  none(friendlyName: 'None');
+  upvote(label: 'Upvote'),
+  downvote(label: 'Downvote'),
+  reply(label: 'Reply'),
+  save(label: 'Save'),
+  edit(label: 'Edit'),
+  toggleRead(label: 'Mark As Read/Unread'),
+  none(label: 'None');
 
   const SwipeAction({
-    required this.friendlyName,
+    required this.label,
   });
 
-  final String friendlyName;
+  final String label;
 }
