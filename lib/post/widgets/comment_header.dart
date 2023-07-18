@@ -7,7 +7,6 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
@@ -243,8 +242,7 @@ class CommentHeader extends StatelessWidget {
                             ])
                           : Container(),
                       Text(
-                        formatTimeToString(
-                            dateTime: hasBeenEdited ? commentViewTree.commentView!.comment.updated!.toIso8601String() : commentViewTree.commentView!.comment.published.toIso8601String()),
+                        commentViewTree.datePostedOrEdited,
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onBackground,

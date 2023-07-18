@@ -21,6 +21,7 @@ class CommentSubview extends StatefulWidget {
   final ScrollController? scrollController;
 
   final bool hasReachedCommentEnd;
+  final DateTime now;
 
   const CommentSubview({
     super.key,
@@ -31,6 +32,7 @@ class CommentSubview extends StatefulWidget {
     this.postViewMedia,
     this.scrollController,
     this.hasReachedCommentEnd = false,
+    required this.now,
   });
 
   @override
@@ -90,6 +92,7 @@ class _CommentSubviewState extends State<CommentSubview> {
           }
         } else {
           return CommentCard(
+            now: widget.now,
             commentViewTree: widget.comments[index - 1],
             collapsedCommentSet: collapsedCommentSet,
             collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
