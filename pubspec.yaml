@@ -17,10 +17,6 @@ dependencies:
     sdk: flutter
   sqflite: ^2.2.8+4
   path: ^1.8.3
-  # lemmy:
-  #   git:
-  #     url: https://github.com/hjiangsu/lemmy-dart.git
-  #     ref: 0.1.11-alpha
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git

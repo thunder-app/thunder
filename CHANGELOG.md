@@ -1,5 +1,23 @@
 ## Unreleased
 ### Added
+- Added swipe gesture to toggle read/unread status on posts - contribution from @micahmo
+- Added option to enable/disable text post indicator on compact view - contribution from @micahmo
+- Added improvements to link previews to be more stable, and to work more often - contribution from @micahmo
+- Added instance icons in account selection - contribution from @micahmo
+- Image viewer supports double-tap and slide zoom - contribution from @CTalvio
+- Improvements to image viewer to be more reliable with gesture controls, and overall UI fixes - contribution from @CTalvio
+
+### Changed
+- Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
+- Minor tweaks to toast notification when blocking communities - contribution from @micahmo
+- Changed to default feed type to be "All" rather than "Local" - contribution from @CTalvio
+
+### Fixed
+- Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
+- Fixed minor UI issue where the screen would switch from light-dark-light on app startup - contribution from @micahmo
+
+## 0.2.1+12 - 2023-07-18
+### Added
 - Added community icons to subscription list and search - contribution from @CTalvio
 - Added ability to return to homescreen when swiping from post body - contribution from @bactaholic
 - Added scroll to top buttons on various pages - contribution from @bactaholic
