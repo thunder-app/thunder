@@ -1,6 +1,6 @@
 import 'package:lemmy_api_client/v3.dart';
 
-const PostListingType DEFAULT_LISTING_TYPE = PostListingType.local;
+const PostListingType DEFAULT_LISTING_TYPE = PostListingType.all;
 
 const SortType DEFAULT_SORT_TYPE = SortType.hot;
 

@@ -98,7 +98,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
@@ -135,7 +135,8 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                         if (openInExternalBrowser) {
                           launchUrl(Uri.parse(widget.mediaUrl!), mode: LaunchMode.externalApplication);
                         } else {
-                          launch(widget.mediaUrl!,
+                          launch(
+                            widget.mediaUrl!,
                             customTabsOption: CustomTabsOption(
                               toolbarColor: Theme.of(context).canvasColor,
                               enableUrlBarHiding: true,

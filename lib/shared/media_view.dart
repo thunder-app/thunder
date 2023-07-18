@@ -68,7 +68,26 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
 
     if (widget.postView == null || widget.postView!.media.isEmpty) {
-      return Container();
+      if (widget.viewMode == ViewMode.compact) {
+        return Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          child: Container(
+            color: theme.cardColor.darken(3),
+            child: SizedBox(
+              height: 75.0,
+              width: 75.0,
+              child: Icon(
+                Icons.article_rounded,
+                color: theme.colorScheme.onSecondaryContainer,
+                semanticLabel: 'Article Link',
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
     }
 
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
@@ -97,7 +116,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             try {
               UserBloc userBloc = BlocProvider.of<UserBloc>(context);
               userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-            } catch(e){
+            } catch (e) {
               CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
               communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
             }
@@ -105,8 +124,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false,
-              transitionDuration: const Duration(milliseconds: 150),
-              reverseTransitionDuration: const Duration(milliseconds: 150),
+              transitionDuration: const Duration(milliseconds: 200),
+              reverseTransitionDuration: const Duration(milliseconds: 200),
               pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
@@ -129,7 +148,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -208,7 +227,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
@@ -242,7 +261,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                         if (openInExternalBrowser) {
                           launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
                         } else {
-                          launch(widget.post!.url!,
+                          launch(
+                            widget.post!.url!,
                             customTabsOption: CustomTabsOption(
                               toolbarColor: Theme.of(context).canvasColor,
                               enableUrlBarHiding: true,

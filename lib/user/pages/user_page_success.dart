@@ -117,6 +117,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                 onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
                 onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                 onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
               ),
             ),
           if (selectedUserOption == 1)
@@ -136,6 +137,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                 onScrollEndReached: () => context.read<UserBloc>().add(const GetUserSavedEvent()),
                 onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                 onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
               ),
             ),
         ],

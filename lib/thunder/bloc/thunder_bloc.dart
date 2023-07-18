@@ -79,6 +79,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Post Settings
       bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
       bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
+      bool showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
@@ -134,6 +135,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
+        showTextPostIndicator: showTextPostIndicator,
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
         showFullHeightImages: showFullHeightImages,
