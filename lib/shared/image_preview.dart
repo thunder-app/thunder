@@ -48,8 +48,8 @@ class _ImagePreviewState extends State<ImagePreview> {
       // TODO This is probably where BlocProvider breaks
       PageRouteBuilder(
         opaque: false,
-        transitionDuration: const Duration(milliseconds: 150),
-        reverseTransitionDuration: const Duration(milliseconds: 150),
+        transitionDuration: const Duration(milliseconds: 200),
+        reverseTransitionDuration: const Duration(milliseconds: 200),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
