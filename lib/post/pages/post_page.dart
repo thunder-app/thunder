@@ -28,7 +28,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
-  bool hasScrolledToBottom = true;
+  bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _showReturnToTopButton = false;
 
@@ -52,9 +52,16 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 200;
-    });
+
+    if (_scrollController.offset > 200 && !_showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = true;
+      });
+    } else if (_scrollController.offset <= 200 && _showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = false;
+      });
+    }
   }
 
   CommentSortType? sortType;
@@ -64,7 +71,6 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<PostBloc>(
       create: (context) => PostBloc(),
