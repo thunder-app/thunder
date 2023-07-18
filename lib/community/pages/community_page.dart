@@ -85,19 +85,27 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}'),
+                  Expanded(
+                    child: Text(
+                      'Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   if (state.blockedCommunity?.blocked == true)
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
-                      },
-                      icon: Icon(
-                        Icons.undo_rounded,
-                        color: theme.colorScheme.primary,
+                    SizedBox(
+                      height: 20,
+                      child: IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
+                        },
+                        icon: Icon(
+                          Icons.undo_rounded,
+                          color: theme.colorScheme.inversePrimary,
+                        ),
                       ),
-                    )
+                    ),
                 ],
               ),
               behavior: SnackBarBehavior.floating,
