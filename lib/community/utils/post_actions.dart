@@ -11,8 +11,10 @@ void triggerPostAction({
   SwipeAction? swipeAction,
   required Function(int, VoteType) onVoteAction,
   required Function(int, bool) onSaveAction,
+  required Function(int, bool) onToggleReadAction,
   required VoteType voteType,
   bool? saved,
+  bool? read,
   required PostViewMedia postViewMedia,
 }) {
   switch (swipeAction) {
@@ -37,6 +39,9 @@ void triggerPostAction({
       break;
     case SwipeAction.save:
       onSaveAction(postViewMedia.postView.post.id, !(saved ?? false));
+      break;
+    case SwipeAction.toggleRead:
+      onToggleReadAction(postViewMedia.postView.post.id, !(read ?? false));
       break;
     default:
       break;

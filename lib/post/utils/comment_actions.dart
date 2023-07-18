@@ -61,7 +61,10 @@ void triggerCommentAction({
   }
 }
 
-IconData? getSwipeActionIcon(SwipeAction swipeAction) {
+// Note: This function applies both to posts and comments.
+// The read parameter applies only to posts and can be ignored otherwise.
+// It may be wise to refactor this at some point.
+IconData? getSwipeActionIcon(SwipeAction swipeAction, {bool read = false}) {
   switch (swipeAction) {
     case SwipeAction.upvote:
       return Icons.north_rounded;
@@ -73,11 +76,15 @@ IconData? getSwipeActionIcon(SwipeAction swipeAction) {
       return Icons.edit;
     case SwipeAction.save:
       return Icons.star_rounded;
+    case SwipeAction.toggleRead:
+      return read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined;
     default:
       return null;
   }
 }
 
+// Note: This function applies to both posts and comments.
+// It may be wise to refactor it at some point.
 Color getSwipeActionColor(SwipeAction swipeAction) {
   switch (swipeAction) {
     case SwipeAction.upvote:
@@ -90,6 +97,8 @@ Color getSwipeActionColor(SwipeAction swipeAction) {
       return Colors.green.shade700;
     case SwipeAction.save:
       return Colors.purple.shade700;
+    case SwipeAction.toggleRead:
+      return Colors.teal.shade300;
     default:
       return Colors.transparent;
   }
