@@ -20,6 +20,7 @@ class ThunderState extends Equatable {
     // Post Settings
     this.collapseParentCommentOnGesture = true,
     this.showThumbnailPreviewOnRight = false,
+    this.showTextPostIndicator = false,
     this.showLinkPreviews = true,
     this.showVoteActions = true,
     this.showSaveAction = true,
@@ -85,6 +86,7 @@ class ThunderState extends Equatable {
   // Post Settings
   final bool collapseParentCommentOnGesture;
   final bool showThumbnailPreviewOnRight;
+  final bool showTextPostIndicator;
   final bool showLinkPreviews;
   final bool showVoteActions;
   final bool showSaveAction;
@@ -147,6 +149,7 @@ class ThunderState extends Equatable {
     // Post Settings
     bool? collapseParentCommentOnGesture,
     bool? showThumbnailPreviewOnRight,
+    bool? showTextPostIndicator,
     bool? showLinkPreviews,
     bool? showVoteActions,
     bool? showSaveAction,
@@ -207,6 +210,7 @@ class ThunderState extends Equatable {
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
+      showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
       showVoteActions: showVoteActions ?? this.showVoteActions,
       showSaveAction: showSaveAction ?? this.showSaveAction,
@@ -264,6 +268,7 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showThumbnailPreviewOnRight,
+        showTextPostIndicator,
         showLinkPreviews,
         showVoteActions,
         showSaveAction,

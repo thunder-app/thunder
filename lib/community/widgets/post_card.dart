@@ -186,6 +186,7 @@ class _PostCardState extends State<PostCard> {
                     ? PostCardViewCompact(
                         postViewMedia: widget.postViewMedia,
                         showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                        showTextPostIndicator: state.showTextPostIndicator,
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,

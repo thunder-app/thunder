@@ -68,7 +68,26 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     final theme = Theme.of(context);
 
     if (widget.postView == null || widget.postView!.media.isEmpty) {
-      return Container();
+      if (widget.viewMode == ViewMode.compact) {
+        return Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+          child: Container(
+            color: theme.cardColor.darken(3),
+            child: SizedBox(
+              height: 75.0,
+              width: 75.0,
+              child: Icon(
+                Icons.article_rounded,
+                color: theme.colorScheme.onSecondaryContainer,
+                semanticLabel: 'Article Link',
+              ),
+            ),
+          ),
+        );
+      } else {
+        return Container();
+      }
     }
 
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {

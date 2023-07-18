@@ -15,6 +15,7 @@ import 'package:thunder/utils/instance.dart';
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
+  final bool showTextPostIndicator;
   final bool hideNsfwPreviews;
   final bool showInstanceName;
   final bool markPostReadOnMediaView;
@@ -24,6 +25,7 @@ class PostCardViewCompact extends StatelessWidget {
     super.key,
     required this.postViewMedia,
     required this.showThumbnailPreviewOnRight,
+    required this.showTextPostIndicator,
     required this.hideNsfwPreviews,
     required this.showInstanceName,
     required this.markPostReadOnMediaView,
@@ -41,7 +43,7 @@ class PostCardViewCompact extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
+          if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
@@ -50,7 +52,7 @@ class PostCardViewCompact extends StatelessWidget {
               viewMode: ViewMode.compact,
               isUserLoggedIn: isUserLoggedIn,
             ),
-          if (!showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
+          if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -93,16 +95,16 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty ) const SizedBox(width: 8.0),
-          if (showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty )
-            MediaView(
-              postView: postViewMedia,
-              showFullHeightImages: false,
-              hideNsfwPreviews: hideNsfwPreviews,
-              markPostReadOnMediaView: markPostReadOnMediaView,
-              viewMode: ViewMode.compact,
-              isUserLoggedIn: isUserLoggedIn,
-            ),
+          if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
+            if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
+              MediaView(
+                postView: postViewMedia,
+                showFullHeightImages: false,
+                hideNsfwPreviews: hideNsfwPreviews,
+                markPostReadOnMediaView: markPostReadOnMediaView,
+                viewMode: ViewMode.compact,
+                isUserLoggedIn: isUserLoggedIn,
+              ),
         ],
       ),
     );
