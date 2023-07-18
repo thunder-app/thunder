@@ -112,7 +112,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
-    int sinceCreated = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes;
+    bool? isCommentNew = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes < 15;
 
     final theme = Theme.of(context);
 
@@ -266,7 +266,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         CommentHeader(
                           commentViewTree: widget.commentViewTree,
                           useDisplayNames: state.useDisplayNames,
-                          sinceCreated: sinceCreated,
+                          isCommentNew: isCommentNew,
                           isOwnComment: isOwnComment,
                           isHidden: isHidden,
                         ),
