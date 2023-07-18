@@ -228,18 +228,21 @@ class CommentHeader extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: sinceCreated < 15 ? BoxDecoration(color: theme.primaryColorLight, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
-                child: sinceCreated < 15
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Text('New!',
-                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.background,
-                            )),
-                      )
-                    : Text(
+                decoration: sinceCreated < 15 ? BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  child: Row(
+                    children: [
+                      sinceCreated < 15
+                          ? const Row(children: [
+                              Icon(
+                                Icons.auto_awesome_rounded,
+                                size: 16.0,
+                              ),
+                              SizedBox(width: 5)
+                            ])
+                          : Container(),
+                      Text(
                         formatTimeToString(
                             dateTime: hasBeenEdited ? commentViewTree.commentView!.comment.updated!.toIso8601String() : commentViewTree.commentView!.comment.published.toIso8601String()),
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
@@ -247,6 +250,9 @@ class CommentHeader extends StatelessWidget {
                           color: theme.colorScheme.onBackground,
                         ),
                       ),
+                    ],
+                  ),
+                ),
               ),
             ],
           )

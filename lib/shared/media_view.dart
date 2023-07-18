@@ -124,8 +124,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false,
-              transitionDuration: const Duration(milliseconds: 150),
-              reverseTransitionDuration: const Duration(milliseconds: 150),
+              transitionDuration: const Duration(milliseconds: 200),
+              reverseTransitionDuration: const Duration(milliseconds: 200),
               pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
@@ -148,7 +148,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -227,7 +227,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
