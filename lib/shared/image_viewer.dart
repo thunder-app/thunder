@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
@@ -47,10 +48,15 @@ class ImageViewer extends StatefulWidget {
 class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
   GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
   final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
 
   double slideTransparency = 0.93;
   double imageTransparency = 1.0;
+
+  bool maybeSlideZooming = false;
+  bool slideZooming = false;
+  Offset downCoord = Offset.zero;
 
   /// User Settings
   bool isUserLoggedIn = false;
@@ -61,6 +67,17 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
     isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   }*/
+
+  void _maybeSlide() {
+    setState(() {
+      maybeSlideZooming = true;
+    });
+    Timer(const Duration(milliseconds: 300), (){
+      setState(() {
+        maybeSlideZooming = false;
+      });
+    });
+  }
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
@@ -96,105 +113,127 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Expanded(
-                child: ExtendedImageSlidePage(
-                  key: slidePagekey,
-                  slideAxis: SlideAxis.both,
-                  slideType: SlideType.onlyImage,
-                  slidePageBackgroundHandler: (offset, pageSize) {
-                    return Colors.transparent;
+                child: GestureDetector(
+                  onTap: () {
+                    slidePagekey.currentState!.popPage();
+                    Navigator.pop(context);
                   },
-                  onSlidingPage: (state) {
-                    // Fade out image and background when sliding to dismiss
-                    var offset = state.offset;
-                    var pageSize = state.pageSize;
-
-                    var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
-
-                    if (state.isSliding) {
-                      setState(() {
-                        slideTransparency = 0.9 - min( 0.9, scale*0.5);
-                        imageTransparency = 1.0 - min( 1.0, scale*10);
-                      });
+                  // Start doubletap zoom if conditions are met
+                  onVerticalDragStart: maybeSlideZooming ? (details) {
+                    setState(() {
+                      slideZooming = true;
+                    });
+                  }:null,
+                  // Zoom image in an out based on movement in vertical axis if conditions are met
+                  onVerticalDragUpdate: maybeSlideZooming || slideZooming ? (details) {
+                    // Need to catch the drag during "maybe" phase or it wont activate fast enough
+                    if (!maybeSlideZooming && slideZooming) {
+                      double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1+(details.delta.dy*pow(gestureKey.currentState!.gestureDetails!.totalScale!,0.8)/400)), 1);
+                      gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition );
                     }
-                  },
-                  slideEndHandler: (
-                    // Decrease slide to dismiss threshold so it can be done easier
-                    Offset offset, {
-                    ExtendedImageSlidePageState? state,
-                    ScaleEndDetails? details,
-                  }) {
-                    if ( state != null ) {
-                      var offset = state.offset;
-                      var pageSize = state.pageSize;
-                      return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
-                    }
-                    return true;
-                  },
-                  child: GestureDetector(
-                    child: HeroWidget(
-                      tag: widget.heroKey,
+                  }:null,
+                  // End doubltap zoom
+                  onVerticalDragEnd: slideZooming ? (details) {
+                    setState(() {
+                      slideZooming = false;
+                    });
+                  }:null,
+                  child: Listener(
+                    // Start watching for double tap zoom
+                    onPointerDown: (details) {
+                      downCoord = details.position;
+                      _maybeSlide();
+                    },
+                    child: ExtendedImageSlidePage(
+                      key: slidePagekey,
+                      slideAxis: SlideAxis.both,
                       slideType: SlideType.onlyImage,
-                      slidePagekey: slidePagekey,
-                      child: ExtendedImage.network(
-                        widget.url,
-                        color: Colors.white.withOpacity(imageTransparency),
-                        colorBlendMode: BlendMode.dstIn,
-                        enableSlideOutPage: true,
-                        mode: ExtendedImageMode.gesture,
-                        cache: true,
-                        clearMemoryCacheWhenDispose: true,
-                        initGestureConfigHandler: (ExtendedImageState state) {
-                          return GestureConfig(
-                            minScale: 0.8,
-                            animationMinScale: 0.8,
-                            maxScale: 4.0,
-                            animationMaxScale: 4.0,
-                            speed: 1.0,
-                            inertialSpeed: 100.0,
-                            initialScale: 1.0,
-                            inPageView: false,
-                            initialAlignment: InitialAlignment.center,
-                            reverseMousePointerScrollDirection: true,
-                            gestureDetailsIsChanged: (GestureDetails? details) {},
-                          );
-                        },
-                        onDoubleTap: (ExtendedImageGestureState state) {
-                          var pointerDownPosition = state.pointerDownPosition;
-                          double begin = state.gestureDetails!.totalScale!;
-                          double end;
+                      slidePageBackgroundHandler: (offset, pageSize) {
+                        return Colors.transparent;
+                      },
+                      onSlidingPage: (state) {
+                        // Fade out image and background when sliding to dismiss
+                        var offset = state.offset;
+                        var pageSize = state.pageSize;
 
-                          animation?.removeListener(animationListener);
-                          animationController.stop();
-                          animationController.reset();
+                        var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
 
-                          if (begin == 1) {
-                            end = 2;
-                          } else if (begin >1.99 && begin <2.01){
-                            end = 4;
-                          } else {
-                            end = 1;
-                          }
-                          animationListener = () {
-                            state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                          };
-                          animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                        if (state.isSliding) {
+                          setState(() {
+                            slideTransparency = 0.9 - min( 0.9, scale*0.5);
+                            imageTransparency = 1.0 - min( 1.0, scale*10);
+                          });
+                        }
+                      },
+                      slideEndHandler: (
+                        // Decrease slide to dismiss threshold so it can be done easier
+                        Offset offset, {
+                        ExtendedImageSlidePageState? state,
+                        ScaleEndDetails? details,
+                      }) {
+                        if ( state != null ) {
+                          var offset = state.offset;
+                          var pageSize = state.pageSize;
+                          return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
+                        }
+                        return true;
+                      },
+                      child: HeroWidget(
+                        tag: widget.heroKey,
+                        slideType: SlideType.onlyImage,
+                        slidePagekey: slidePagekey,
+                        child: ExtendedImage.network(
+                          widget.url,
+                          color: Colors.white.withOpacity(imageTransparency),
+                          colorBlendMode: BlendMode.dstIn,
+                          enableSlideOutPage: true,
+                          mode: ExtendedImageMode.gesture,
+                          extendedImageGestureKey: gestureKey,
+                          cache: true,
+                          clearMemoryCacheWhenDispose: true,
+                          initGestureConfigHandler: (ExtendedImageState state) {
+                            return GestureConfig(
+                              minScale: 0.8,
+                              animationMinScale: 0.8,
+                              maxScale: 4.0,
+                              animationMaxScale: 4.0,
+                              speed: 1.0,
+                              inertialSpeed: 100.0,
+                              initialScale: 1.0,
+                              inPageView: false,
+                              initialAlignment: InitialAlignment.center,
+                              reverseMousePointerScrollDirection: true,
+                              gestureDetailsIsChanged: (GestureDetails? details) {},
+                            );
+                          },
+                          onDoubleTap: (ExtendedImageGestureState state) {
+                            var pointerDownPosition = state.pointerDownPosition;
+                            double begin = state.gestureDetails!.totalScale!;
+                            double end;
 
-                          animation!.addListener(animationListener);
+                            animation?.removeListener(animationListener);
+                            animationController.stop();
+                            animationController.reset();
 
-                          animationController.forward();
-                        },
+                            if (begin == 1) {
+                              end = 2;
+                            } else if (begin >1.99 && begin <2.01){
+                              end = 4;
+                            } else {
+                              end = 1;
+                            }
+                            animationListener = () {
+                              state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                            };
+                            animation = animationController.drive(Tween<double>(begin: begin, end: end));
+
+                            animation!.addListener(animationListener);
+
+                            animationController.forward();
+                          },
+                        ),
                       ),
                     ),
-                    onTap: () {
-                      slidePagekey.currentState!.popPage();
-                      Navigator.pop(context);
-                    },
-                    onDoubleTapCancel: () {
-                      setState(() {
-                        // Somehow set a number based on how far finger is moved
-                        /*gestureDetails(GestureDetails: 4.0)*/
-                      });
-                    },
                   ),
                 ),
               ),
