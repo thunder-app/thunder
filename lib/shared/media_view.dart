@@ -71,7 +71,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       if (widget.viewMode == ViewMode.compact) {
         return Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)), // TODO: Change this to 12 once #384 is merged
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
             color: theme.cardColor.darken(3),
             child: SizedBox(
