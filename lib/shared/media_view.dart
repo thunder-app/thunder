@@ -97,7 +97,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             try {
               UserBloc userBloc = BlocProvider.of<UserBloc>(context);
               userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-            } catch(e){
+            } catch (e) {
               CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
               communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
             }
@@ -129,7 +129,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 6))),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
           child: Stack(
             alignment: Alignment.center,
             children: [
@@ -208,7 +208,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
@@ -242,7 +242,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                         if (openInExternalBrowser) {
                           launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
                         } else {
-                          launch(widget.post!.url!,
+                          launch(
+                            widget.post!.url!,
                             customTabsOption: CustomTabsOption(
                               toolbarColor: Theme.of(context).canvasColor,
                               enableUrlBarHiding: true,

@@ -17,8 +17,10 @@ class ImagePreview extends StatefulWidget {
   final int? postId;
 
   const ImagePreview({
-    super.key, required this.url,
-    this.height, this.width,
+    super.key,
+    required this.url,
+    this.height,
+    this.width,
     this.nsfw = false,
     this.isGallery = false,
     this.isExpandable = true,
@@ -42,7 +44,8 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   void onImageTap(BuildContext context) {
-    Navigator.of(context).push( // TODO This is probably where BlocProvider breaks
+    Navigator.of(context).push(
+      // TODO This is probably where BlocProvider breaks
       PageRouteBuilder(
         opaque: false,
         transitionDuration: const Duration(milliseconds: 150),
@@ -89,7 +92,7 @@ class _ImagePreviewState extends State<ImagePreview> {
   Widget imagePreview(BuildContext context) {
     return Container(
       clipBehavior: Clip.hardEdge,
-      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Stack(
         children: [
           ExtendedImage.network(
