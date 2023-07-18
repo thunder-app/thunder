@@ -70,7 +70,7 @@ Your passion, contributions, and ideas would be greatly appreciated! Together, l
 If you want to join in on further discussions around Thunder, feel free to join the lemmy communities or the Matrix space!
 
 Community: https://lemmy.world/c/thunder_app  
-Nightly Community: https://lemmy.world/c/thunder_app  
+Nightly Community: https://lemmy.world/c/thunder_nightly
 
 Matrix Space: https://matrix.to/#/#thunderapp:matrix.org
 
