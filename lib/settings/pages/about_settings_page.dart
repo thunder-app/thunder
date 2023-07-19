@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -49,25 +48,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('github.com/hjiangsu/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    if (openInExternalBrowser) {
-                      launchUrl(Uri.parse('https://github.com/hjiangsu/thunder'), mode: LaunchMode.externalApplication);
-                    } else {
-                      launch(
-                        'https://github.com/hjiangsu/thunder',
-                        customTabsOption: CustomTabsOption(
-                          toolbarColor: Theme.of(context).canvasColor,
-                          enableUrlBarHiding: true,
-                          showPageTitle: true,
-                          enableDefaultShare: true,
-                          enableInstantApps: true,
-                        ),
-                        safariVCOption: SafariViewControllerOption(
-                          preferredBarTintColor: Theme.of(context).canvasColor,
-                          preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                          barCollapsingEnabled: true,
-                        ),
-                      );
-                    }
+                    openLink(context, url: 'https://github.com/hjiangsu/thunder', openInExternalBrowser: openInExternalBrowser);
                   },
                 ),
                 ListTile(
@@ -78,25 +59,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    if (openInExternalBrowser) {
-                      launchUrl(Uri.parse('https://lemmy.world/c/thunder_app'), mode: LaunchMode.externalApplication);
-                    } else {
-                      launch(
-                        'https://lemmy.world/c/thunder_app',
-                        customTabsOption: CustomTabsOption(
-                          toolbarColor: Theme.of(context).canvasColor,
-                          enableUrlBarHiding: true,
-                          showPageTitle: true,
-                          enableDefaultShare: true,
-                          enableInstantApps: true,
-                        ),
-                        safariVCOption: SafariViewControllerOption(
-                          preferredBarTintColor: Theme.of(context).canvasColor,
-                          preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                          barCollapsingEnabled: true,
-                        ),
-                      );
-                    }
+                    openLink(context, url: 'https://lemmy.world/c/thunder_app', openInExternalBrowser: openInExternalBrowser);
                   },
                 ),
                 ListTile(

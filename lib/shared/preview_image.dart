@@ -1,12 +1,11 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
+import 'package:thunder/utils/links.dart';
 
 class PreviewImage extends StatefulWidget {
   final ViewMode viewMode;
@@ -131,27 +130,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                       ),
                     ),
                     onTap: () {
-                      if (widget.mediaUrl != null) {
-                        if (openInExternalBrowser) {
-                          launchUrl(Uri.parse(widget.mediaUrl!), mode: LaunchMode.externalApplication);
-                        } else {
-                          launch(
-                            widget.mediaUrl!,
-                            customTabsOption: CustomTabsOption(
-                              toolbarColor: Theme.of(context).canvasColor,
-                              enableUrlBarHiding: true,
-                              showPageTitle: true,
-                              enableDefaultShare: true,
-                              enableInstantApps: true,
-                            ),
-                            safariVCOption: SafariViewControllerOption(
-                              preferredBarTintColor: Theme.of(context).canvasColor,
-                              preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                              barCollapsingEnabled: true,
-                            ),
-                          );
-                        }
-                      }
+                      openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
                     },
                   ),
                 ),
