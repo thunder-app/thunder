@@ -72,7 +72,6 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
     VoteType? myVote = widget.postViewMedia.postView.myVote;
@@ -151,22 +150,22 @@ class _PostCardState extends State<PostCard> {
               ? AnimatedContainer(
                   alignment: Alignment.centerLeft,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.leftPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
+                    width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
                     child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
                   ),
                 )
               : AnimatedContainer(
                   alignment: Alignment.centerRight,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.rightPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
+                    width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
                     child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
                   ),
                 ),
