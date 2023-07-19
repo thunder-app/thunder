@@ -17,6 +17,10 @@
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
 - Fixed minor UI issue where the screen would switch from light-dark-light on app startup - contribution from @micahmo
+- Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
+- Fixed dpluicate post regression - contribution from @ajsosa
+- Fixed a couple of performance issues with constant widget rebuilding - contribution from @ajsosa
+- Fixed swipe action icons not showing properly when on 2-column view - contribution from @ajsosa
 
 ## 0.2.1+12 - 2023-07-18
 ### Added
