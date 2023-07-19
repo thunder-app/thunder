@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/auth/bloc/auth_bloc.dart';
 import '../../core/models/comment_view_tree.dart';
 
-enum CommentCardAction { save, copyText, shareLink }
+enum CommentCardAction { save, copyText, shareLink, delete }
 
 class ExtendedCommentCardActions {
   const ExtendedCommentCardActions({required this.commentCardAction, required this.icon, required this.label});
@@ -30,9 +32,14 @@ const commentCardActionItems = [
     icon: Icons.share_rounded,
     label: 'Share Link',
   ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.delete,
+    icon: Icons.delete_rounded,
+    label: 'Delete',
+  ),
 ];
 
-void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction) {
+void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction, Function onDeleteAction) {
   final theme = Theme.of(context);
 
   showModalBottomSheet<void>(
@@ -82,6 +89,8 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
                       case CommentCardAction.shareLink:
                         Share.share(commentViewTree.commentView!.comment.apId);
                         break;
+                      case CommentCardAction.delete:
+                        onDeleteAction(commentViewTree.commentView!.comment.id, !(commentViewTree.commentView!.comment.deleted));
                     }
                   },
                 );
