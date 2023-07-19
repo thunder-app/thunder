@@ -264,24 +264,26 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.refreshing));
 
       // Optimistically update the post
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
+      final posts = state.savedPosts.isEmpty ? state.posts : state.savedPosts;
 
-      PostView originalPostView = state.posts[existingPostViewIndex].postView;
+      int existingPostViewIndex = posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      PostViewMedia postViewMedia = posts[existingPostViewIndex];
+
+      PostView originalPostView = posts[existingPostViewIndex].postView;
       PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
-      state.posts[existingPostViewIndex].postView = updatedPostView;
+      posts[existingPostViewIndex].postView = updatedPostView;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
-        state.posts[existingPostViewIndex].postView = originalPostView;
+        posts[existingPostViewIndex].postView = originalPostView;
         throw Exception('Error: Timeout when attempting to vote post');
       });
 
       // Find the specific post to update
-      state.posts[existingPostViewIndex].postView = postView;
+      posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
@@ -295,9 +297,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       PostView postView = await markPostAsRead(event.postId, event.read);
 
+      final posts = state.savedPosts.isEmpty ? state.posts : state.savedPosts;
+
       // Find the specific post to update
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      state.posts[existingPostViewIndex].postView = postView;
+      int existingPostViewIndex = posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
     } catch (e, s) {
@@ -315,9 +319,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       PostView postView = await savePost(event.postId, event.save);
 
+      final posts = state.savedPosts.isEmpty ? state.posts : state.savedPosts;
+
       // Find the specific post to update
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      state.posts[existingPostViewIndex].postView = postView;
+      int existingPostViewIndex = posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
+      posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
