@@ -65,6 +65,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
           child: CommentSubview(
             viewFullCommentsRefreshing: widget.viewFullCommentsRefreshing,
             selectedCommentId: widget.selectedCommentId,
+            now: DateTime.now().toUtc(),
             scrollController: widget.scrollController,
             postViewMedia: widget.postView,
             comments: widget.comments,

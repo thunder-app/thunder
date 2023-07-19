@@ -113,7 +113,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
-          int? parentId ;
+          int? parentId;
           if (event.selectedCommentPath != null) {
             parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
           }
@@ -131,12 +131,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception(
-                'Error: Timeout when attempting to fetch comments');
+            throw Exception('Error: Timeout when attempting to fetch comments');
           });
 
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+
+          Map<int, CommentView> responseMap = {};
+          for (CommentView comment in getCommentsResponse) {
+            responseMap[comment.comment.id] = comment;
+          }
 
           return emit(
             state.copyWith(
@@ -144,8 +148,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 comments: commentTree,
-                commentResponseList: getCommentsResponse,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
+                commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.length,
                 hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
@@ -183,7 +187,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
           if (event.reset || event.viewAllCommentsRefresh) {
-            if(event.viewAllCommentsRefresh) {
+            if (event.viewAllCommentsRefresh) {
               emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
             } else {
               emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
@@ -208,15 +212,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
+            Map<int, CommentView> responseMap = {};
+            for (CommentView comment in getCommentsResponse) {
+              responseMap[comment.comment.id] = comment;
+            }
+
             return emit(
               state.copyWith(
                   selectedCommentId: null,
                   selectedCommentPath: null,
                   status: PostStatus.success,
                   comments: commentTree,
-                  commentResponseList: getCommentsResponse,
+                  commentResponseMap: responseMap,
                   commentPage: 1,
-                  commentCount: getCommentsResponse.length,
+                  commentCount: responseMap.length,
                   hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                   sortType: sortType),
             );
@@ -235,7 +244,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             maxDepth: COMMENT_MAX_DEPTH,
-            page: state.commentPage,//event.commentParentId != null ? 1 : state.commentPage,
+            page: state.commentPage, //event.commentParentId != null ? 1 : state.commentPage,
             type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
@@ -243,8 +252,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           });
 
           // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseList)..addAll(getCommentsResponse);
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
 
+          for (CommentView comment in getCommentsResponse) {
+            state.commentResponseMap[comment.comment.id] = comment;
+          }
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
 
@@ -255,10 +267,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             selectedCommentPath: null,
             selectedCommentId: null,
             comments: commentViewTree,
-            commentResponseList: fullCommentResponseList,
+            commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
-            commentCount: fullCommentResponseList.length,
-            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit),
+            commentCount: state.commentResponseMap.length,
+            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
         } catch (e, s) {
           exception = e;

@@ -25,6 +25,7 @@ class CommentSubview extends StatefulWidget {
 
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
+  final DateTime now;
 
   const CommentSubview({
     super.key,
@@ -37,6 +38,7 @@ class CommentSubview extends StatefulWidget {
     this.scrollController,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
+    required this.now,
   });
 
   @override
@@ -46,7 +48,7 @@ class CommentSubview extends StatefulWidget {
 class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
   Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
   bool _animatingOut = false;
-  bool  _animatingIn = false;
+  bool _animatingIn = false;
   bool _removeViewFullCommentsButton = false;
 
   late final AnimationController _fullCommentsAnimation = AnimationController(
@@ -65,7 +67,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
   void initState() {
     super.initState();
     _fullCommentsOffsetAnimation.addStatusListener((status) {
-      if(status == AnimationStatus.completed && _animatingOut) {
+      if (status == AnimationStatus.completed && _animatingOut) {
         _animatingOut = false;
         _removeViewFullCommentsButton = true;
         context.read<PostBloc>().add(const GetPostCommentsEvent(commentParentId: null, viewAllCommentsRefresh: true));
@@ -78,19 +80,20 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    if(!widget.viewFullCommentsRefreshing && _removeViewFullCommentsButton) {
+    if (!widget.viewFullCommentsRefreshing && _removeViewFullCommentsButton) {
       _animatingIn = true;
       _fullCommentsAnimation.reverse();
     }
 
     return ListView.builder(
-      addSemanticIndexes: false,
-      controller: widget.scrollController,
-      itemCount: getCommentsListLength(),
-      itemBuilder: (context, index) {
-        if (widget.postViewMedia != null && index == 0) {
-          return PostSubview(selectedCommentId: widget.selectedCommentId, useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
-        } if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
+        addSemanticIndexes: false,
+        controller: widget.scrollController,
+        itemCount: getCommentsListLength(),
+        itemBuilder: (context, index) {
+          if (widget.postViewMedia != null && index == 0) {
+            return PostSubview(selectedCommentId: widget.selectedCommentId, useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
+          }
+          if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
             return Column(
               children: [
                 Container(
@@ -100,42 +103,38 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               ],
             );
           } else {
-          return SlideTransition(
-            position: _fullCommentsOffsetAnimation,
-            child: Column(
-              children: [
-                if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
-                  Center(
-                    child: Column(
-                      children: [
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: theme.colorScheme.primaryContainer,
-                            textStyle: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary,
-                            ),
+            return SlideTransition(
+                position: _fullCommentsOffsetAnimation,
+                child: Column(children: [
+                  if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
+                    Center(
+                        child: Column(children: [
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size.fromHeight(50),
+                          backgroundColor: theme.colorScheme.primaryContainer,
+                          textStyle: theme.textTheme.titleMedium?.copyWith(
+                            color: theme.colorScheme.primary,
                           ),
-                          onPressed: () {
-                            _animatingOut = true;
-                            _fullCommentsAnimation.forward();
-                          },
-                          child: const Text('View all comments'),
                         ),
-                        const Padding(padding: EdgeInsets.only(top: 10)),
-                      ]
-                    )
-                  ),
+                        onPressed: () {
+                          _animatingOut = true;
+                          _fullCommentsAnimation.forward();
+                        },
+                        child: const Text('View all comments'),
+                      ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
+                    ])),
                   if (index != widget.comments.length + 1)
                     CommentCard(
-                      selectCommentId: widget.selectedCommentId,
-                      commentViewTree: widget.comments[index - 1],
-                      collapsedCommentSet: collapsedCommentSet,
-                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-                      onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                      onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
-                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed)
-                    ),
+                        now: widget.now,
+                        selectCommentId: widget.selectedCommentId,
+                        commentViewTree: widget.comments[index - 1],
+                        collapsedCommentSet: collapsedCommentSet,
+                        collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
+                        onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                        onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                        onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed)),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[
                       Column(
@@ -164,12 +163,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       )
                     ]
                   ]
-                ]
-            )
-          );
-        }
-      }
-    );
+                ]));
+          }
+        });
   }
 
   int getCommentsListLength() {

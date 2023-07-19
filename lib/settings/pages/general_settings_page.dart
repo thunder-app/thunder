@@ -32,6 +32,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   // Post Settings
   bool collapseParentCommentOnGesture = true;
   bool showThumbnailPreviewOnRight = false;
+  bool showTextPostIndicator = false;
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
@@ -103,6 +104,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_compact_show_thumbnail_on_right':
         await prefs.setBool('setting_compact_show_thumbnail_on_right', value);
         setState(() => showThumbnailPreviewOnRight = value);
+        break;
+      case 'setting_compact_show_text_post_indicator':
+        await prefs.setBool('setting_compact_show_text_post_indicator', value);
+        setState(() => showTextPostIndicator = value);
         break;
       case 'setting_general_show_vote_actions':
         await prefs.setBool('setting_general_show_vote_actions', value);
@@ -187,6 +192,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
       showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
+      showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
@@ -372,6 +378,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconEnabled: Icons.switch_left_rounded,
                                         iconDisabled: Icons.switch_right_rounded,
                                         onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
+                                      ),
+                                      ToggleOption(
+                                        description: 'Show Text Post Indicator',
+                                        value: showTextPostIndicator,
+                                        iconEnabled: Icons.article,
+                                        iconDisabled: Icons.article_outlined,
+                                        onToggle: (bool value) => setPreferences('setting_compact_show_text_post_indicator', value),
                                       ),
                                     ],
                                   ),
