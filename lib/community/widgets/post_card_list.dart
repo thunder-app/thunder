@@ -25,6 +25,7 @@ class PostCardList extends StatefulWidget {
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onToggleReadAction;
 
   const PostCardList({
     super.key,
@@ -38,6 +39,7 @@ class PostCardList extends StatefulWidget {
     required this.onScrollEndReached,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onToggleReadAction,
   });
 
   @override
@@ -65,9 +67,17 @@ class _PostCardListState extends State<PostCardList> {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 300; // Adjust the threshold as needed
-    });
+
+    // Adjust the threshold as needed
+    if (_scrollController.offset > 300 && !_showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = true;
+      });
+    } else if(_scrollController.offset <= 300 && _showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = false;
+      });
+    }
   }
 
   @override
@@ -77,10 +87,10 @@ class _PostCardListState extends State<PostCardList> {
 
     bool tabletMode = state.tabletMode;
 
-    const tabletGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
     );
-    const phoneGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const phoneGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1,
     );
 
@@ -152,6 +162,7 @@ class _PostCardListState extends State<PostCardList> {
                     showInstanceName: widget.communityId == null,
                     onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                     onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                    onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                   );
                 }
               },

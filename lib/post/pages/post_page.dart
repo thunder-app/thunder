@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -12,15 +11,16 @@ import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
+  final String? selectedCommentPath;
+  final int? selectedCommentId;
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, required this.onPostUpdated});
+  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -28,7 +28,7 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
-  bool hasScrolledToBottom = true;
+  bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _showReturnToTopButton = false;
 
@@ -52,9 +52,16 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 200;
-    });
+
+    if (_scrollController.offset > 200 && !_showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = true;
+      });
+    } else if (_scrollController.offset <= 200 && _showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = false;
+      });
+    }
   }
 
   CommentSortType? sortType;
@@ -64,7 +71,6 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<PostBloc>(
       create: (context) => PostBloc(),
@@ -192,7 +198,6 @@ class _PostPageState extends State<PostPage> {
                         backgroundColor: theme.colorScheme.onErrorContainer,
                         behavior: SnackBarBehavior.floating,
                       );
-
                       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -201,7 +206,8 @@ class _PostPageState extends State<PostPage> {
                     }
                     switch (state.status) {
                       case PostStatus.initial:
-                        context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                      context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
+                          selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
                         return const Center(child: CircularProgressIndicator());
                       case PostStatus.loading:
                         return const Center(child: CircularProgressIndicator());
@@ -212,9 +218,11 @@ class _PostPageState extends State<PostPage> {
                           return RefreshIndicator(
                             onRefresh: () async {
                               HapticFeedback.mediumImpact();
-                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
+                                  selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
                             },
-                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, selectedCommentId: state.selectedCommentId,
+                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
                           );
                         }
                         return ErrorMessage(

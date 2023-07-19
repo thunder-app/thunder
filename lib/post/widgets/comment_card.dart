@@ -22,6 +22,9 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
 
   final Set collapsedCommentSet;
+  final int? selectCommentId;
+
+  final DateTime now;
 
   const CommentCard({
     super.key,
@@ -31,7 +34,9 @@ class CommentCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onCollapseCommentChange,
+    required this.now,
     this.collapsedCommentSet = const {},
+    this.selectCommentId,
   });
 
   /// CommentViewTree containing relevant information
@@ -109,8 +114,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
-    DateTime now = DateTime.now().toUtc();
-    int sinceCreated = now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes;
+    bool? isCommentNew = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes < 15;
 
     final theme = Theme.of(context);
 
@@ -125,6 +129,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return Container(
       decoration: BoxDecoration(
+        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
         border: widget.level > 0
             ? Border(
                 left: BorderSide(
@@ -264,7 +269,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         CommentHeader(
                           commentViewTree: widget.commentViewTree,
                           useDisplayNames: state.useDisplayNames,
-                          sinceCreated: sinceCreated,
+                          isCommentNew: isCommentNew,
                           isOwnComment: isOwnComment,
                           isHidden: isHidden,
                         ),
@@ -372,6 +377,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) => CommentCard(
+                          selectCommentId: widget.selectCommentId,
+                          now: widget.now,
                           commentViewTree: widget.commentViewTree.replies[index],
                           collapsedCommentSet: widget.collapsedCommentSet,
                           collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
