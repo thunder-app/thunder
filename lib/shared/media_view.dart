@@ -93,7 +93,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         originURL: widget.postView!.media.first.originalUrl,
-        mediaURL: widget.postView!.media.first.mediaUrl,
+        mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,
         mediaWidth: widget.postView!.media.first.width,
         showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
