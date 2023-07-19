@@ -26,8 +26,9 @@ class UserHeader extends StatelessWidget {
       decoration: userInfo?.person.banner != null
           ? BoxDecoration(
               image: DecorationImage(
-                  image: CachedNetworkImageProvider(userInfo!.person.banner!),
-                  fit: BoxFit.cover),
+                image: CachedNetworkImageProvider(userInfo!.person.banner!),
+                fit: BoxFit.cover,
+              ),
             )
           : null,
       child: Container(
@@ -82,6 +83,7 @@ class UserHeader extends StatelessWidget {
                         ),
                         Text(
                           '${userInfo?.person.name ?? '-'}@${fetchInstanceNameFromUrl(userInfo?.person.actorId) ?? '-'}',
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 8.0),
                         Row(
@@ -91,8 +93,7 @@ class UserHeader extends StatelessWidget {
                                 Icons.wysiwyg_rounded,
                                 size: 18.0,
                               ),
-                              text: formatNumberToK(
-                                  userInfo?.counts.postCount ?? 0),
+                              text: formatNumberToK(userInfo?.counts.postCount ?? 0),
                             ),
                             const SizedBox(width: 8.0),
                             IconText(
@@ -100,8 +101,7 @@ class UserHeader extends StatelessWidget {
                                 Icons.chat_rounded,
                                 size: 18.0,
                               ),
-                              text: formatNumberToK(
-                                  userInfo?.counts.commentCount ?? 0),
+                              text: formatNumberToK(userInfo?.counts.commentCount ?? 0),
                             ),
                           ],
                         ),

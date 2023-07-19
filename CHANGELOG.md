@@ -1,5 +1,30 @@
 ## Unreleased
 ### Added
+- Added swipe gesture to toggle read/unread status on posts - contribution from @micahmo
+- Added option to enable/disable text post indicator on compact view - contribution from @micahmo
+- Added improvements to link previews to be more stable, and to work more often - contribution from @micahmo
+- Added instance icons in account selection - contribution from @micahmo
+- Image viewer supports double-tap and slide zoom - contribution from @CTalvio
+- Improvements to image viewer to be more reliable with gesture controls, and overall UI fixes - contribution from @CTalvio
+
+### Changed
+- Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
+- Minor tweaks to toast notification when blocking communities - contribution from @micahmo
+- Changed to default feed type to be "All" rather than "Local" - contribution from @CTalvio
+- Optimization improvements to comment cards and calculating published/edited time - contribution from @ajsosa
+- Improved UI navigation experience when logging in - contribution from @micahmo
+- Posts no longer have the reply swipe gesture
+
+### Fixed
+- Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
+- Fixed minor UI issue where the screen would switch from light-dark-light on app startup - contribution from @micahmo
+- Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
+- Fixed dpluicate post regression - contribution from @ajsosa
+- Fixed a couple of performance issues with constant widget rebuilding - contribution from @ajsosa
+- Fixed swipe action icons not showing properly when on 2-column view - contribution from @ajsosa
+
+## 0.2.1+12 - 2023-07-18
+### Added
 - Added community icons to subscription list and search - contribution from @CTalvio
 - Added ability to return to homescreen when swiping from post body - contribution from @bactaholic
 - Added scroll to top buttons on various pages - contribution from @bactaholic
@@ -25,6 +50,12 @@
 - Added debug page to settings to clear preferences and local database
 - Updated image viewer buttons to the bottom for better accessibility - contribution from @CTalvio
 - Added confirmation dialog when logging out of account - contribution from @ggichure
+- Added options for hourly sorts - contribution from @Fmstrat
+- Added improvements to swipe gestures on image viewer - contribution from @CTalvio
+- Added tap to scroll to top on feed view - contribution from @micahmo
+- Optimized post loading to load posts faster on startup
+- Added images to links in compact view - contribution from @CTalvio
+- Added search sort options - contribution from @micahmo
 
 ### Changed
 - Adjusted subscription styling to be more consistent - contribution from @micahmo
@@ -41,6 +72,7 @@
 - Fixed issue where only some subscriptions would show up on the sidebar
 - Fixed issue where refreshing community when tapping on a link would show local posts rather than the community's posts
 - Fixed issue where you could not log in through email
+- Potentially fixed issue with profile showing to wrong user
 
 ## 0.2.1+11 - 2023-07-09
 ### Added

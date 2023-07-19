@@ -7,7 +7,6 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
@@ -19,13 +18,13 @@ class CommentHeader extends StatelessWidget {
   final bool useDisplayNames;
   final bool isOwnComment;
   final bool isHidden;
-  final int sinceCreated;
+  final bool isCommentNew;
 
   const CommentHeader({
     super.key,
     required this.commentViewTree,
     required this.useDisplayNames,
-    required this.sinceCreated,
+    this.isCommentNew = false,
     this.isOwnComment = false,
     this.isHidden = false,
   });
@@ -228,25 +227,30 @@ class CommentHeader extends StatelessWidget {
                 ),
               ),
               Container(
-                decoration: sinceCreated < 15 ? BoxDecoration(color: theme.primaryColorLight, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
-                child: sinceCreated < 15
-                    ? Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                        child: Text('New!',
-                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: theme.colorScheme.background,
-                            )),
-                      )
-                    : Text(
-                        formatTimeToString(
-                            dateTime: hasBeenEdited ? commentViewTree.commentView!.comment.updated!.toIso8601String() : commentViewTree.commentView!.comment.published.toIso8601String()),
+                decoration: isCommentNew ? BoxDecoration(color: theme.splashColor, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))) : null,
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 5, right: 5),
+                  child: Row(
+                    children: [
+                      isCommentNew
+                          ? const Row(children: [
+                              Icon(
+                                Icons.auto_awesome_rounded,
+                                size: 16.0,
+                              ),
+                              SizedBox(width: 5)
+                            ])
+                          : Container(),
+                      Text(
+                        commentViewTree.datePostedOrEdited,
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.colorScheme.onBackground,
                         ),
                       ),
+                    ],
+                  ),
+                ),
               ),
             ],
           )

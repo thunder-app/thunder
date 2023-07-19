@@ -1,1 +1,1 @@
-Lemmy client for iOS and Android
+Thunder is an open source, cross-platform Lemmy client

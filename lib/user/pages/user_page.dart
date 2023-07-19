@@ -29,53 +29,42 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-          onPressed: () {
-            showDialog<void>(
-                context: context,
-                builder: (context) =>
-                BlocProvider<AuthBloc>.value(
-                  value: context.read<AuthBloc>(),
-                  child: AlertDialog(
-                    title: Text(
-                      'Are you sure you want to log out?',
-                      style:
-                      Theme
-                          .of(context)
-                          .textTheme
-                          .bodyLarge,
-                    ),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            context.pop();
-                          },
-                          child: const Text('Cancel')),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      FilledButton(
-                          onPressed: () {
-                            context
-                                .read<AuthBloc>()
-                                .add(RemoveAccount(
-                              accountId: context
-                                  .read<AuthBloc>()
-                                  .state
-                                  .account!
-                                  .id,
-                            ));
-                            context.pop();
-                          },
-                          child: const Text('Log out'))
-                    ],
-                  ),
-                ));
-          },
-          icon: const Icon(
-            Icons.logout,
-            semanticLabel: 'Log out',
-          ),
-        )
+                onPressed: () {
+                  showDialog<void>(
+                      context: context,
+                      builder: (context) => BlocProvider<AuthBloc>.value(
+                            value: context.read<AuthBloc>(),
+                            child: AlertDialog(
+                              title: Text(
+                                'Are you sure you want to log out?',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              actions: [
+                                TextButton(
+                                    onPressed: () {
+                                      context.pop();
+                                    },
+                                    child: const Text('Cancel')),
+                                const SizedBox(
+                                  width: 12,
+                                ),
+                                FilledButton(
+                                    onPressed: () {
+                                      context.read<AuthBloc>().add(RemoveAccount(
+                                            accountId: context.read<AuthBloc>().state.account!.id,
+                                          ));
+                                      context.pop();
+                                    },
+                                    child: const Text('Log out'))
+                              ],
+                            ),
+                          ));
+                },
+                icon: const Icon(
+                  Icons.logout,
+                  semanticLabel: 'Log out',
+                ),
+              )
             : null,
         actions: [
           if (widget.isAccountUser)
@@ -100,10 +89,8 @@ class _UserPageState extends State<UserPage> {
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           switch (state.status) {
             case UserStatus.initial:
-              context.read<UserBloc>().add(
-                  GetUserEvent(userId: widget.userId, reset: true));
-              context.read<UserBloc>().add(
-                  GetUserSavedEvent(userId: widget.userId, reset: true));
+              context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
+              context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
               return const Center(child: CircularProgressIndicator());
             case UserStatus.loading:
               return const Center(child: CircularProgressIndicator());

@@ -164,10 +164,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
   }
 
-  /// Get community posts
   Future<void> _getCommunityPostsEvent(GetCommunityPostsEvent event, Emitter<CommunityState> emit) async {
-    int attemptCount = 0;
-    int limit = 20;
+    int limit = 10;
 
     SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -186,155 +184,138 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     }
 
     try {
-      var exception;
-
       Account? account = await fetchActiveProfileAccount();
 
-      while (attemptCount < 2) {
-        try {
-          LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          if (event.reset) {
-            emit(state.copyWith(status: CommunityStatus.loading));
+      if (event.reset) {
+        emit(state.copyWith(status: CommunityStatus.loading));
 
-            int? communityId = event.communityId;
-            String? communityName = event.communityName;
-            PostListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
-            SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+        int? communityId = event.communityId;
+        String? communityName = event.communityName;
+        PostListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
+        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
-            // Fetch community's information
-            SubscribedType? subscribedType;
-            FullCommunityView? getCommunityResponse;
+        // Fetch community's information
+        SubscribedType? subscribedType;
+        FullCommunityView? getCommunityResponse;
 
-            if (communityId != null || communityName != null) {
-              getCommunityResponse = await lemmy.run(GetCommunity(
-                auth: account?.jwt,
-                id: communityId,
-                name: event.communityName,
-              ));
+        if (communityId != null || communityName != null) {
+          getCommunityResponse = await lemmy.run(GetCommunity(
+            auth: account?.jwt,
+            id: communityId,
+            name: event.communityName,
+          ));
 
-              subscribedType = getCommunityResponse?.communityView.subscribed;
-            }
-
-            // Fetch community's posts
-            List<PostView> posts = await lemmy.run(GetPosts(
-              auth: account?.jwt,
-              page: 1,
-              limit: limit,
-              sort: sortType,
-              type: listingType,
-              communityId: communityId ?? getCommunityResponse?.communityView.community.id,
-              communityName: event.communityName,
-            ));
-            if (tabletMode) {
-              List<PostView> posts2 = await lemmy.run(GetPosts(
-                auth: account?.jwt,
-                page: 2,
-                limit: limit,
-                sort: sortType,
-                type: listingType,
-                communityId: communityId ?? getCommunityResponse?.communityView.community.id,
-                communityName: event.communityName,
-              ));
-              posts.addAll(posts2);
-            }
-
-            // Parse the posts and add in media information which is used elsewhere in the app
-            List<PostViewMedia> formattedPosts = await parsePostViews(posts);
-
-            Set<int> postIds = {};
-            for (PostViewMedia post in formattedPosts) {
-              postIds.add(post.postView.post.id);
-            }
-
-            return emit(
-              state.copyWith(
-                status: CommunityStatus.success,
-                page: tabletMode ? 2 : 3,
-                postViews: formattedPosts,
-                postIds: postIds,
-                listingType: listingType,
-                communityId: communityId,
-                communityName: event.communityName,
-                hasReachedEnd: posts.isEmpty || posts.length < limit,
-                subscribedType: subscribedType,
-                sortType: sortType,
-                communityInfo: getCommunityResponse,
-              ),
-            );
-          } else {
-            if (state.hasReachedEnd) {
-              // Stop extra requests if we've reached the end
-              return emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
-            }
-
-            emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
-
-            int? communityId = event.communityId ?? state.communityId;
-            PostListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
-            SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
-
-            // Fetch more posts from the community
-            List<PostView> posts = await lemmy.run(GetPosts(
-              auth: account?.jwt,
-              page: state.page,
-              limit: limit,
-              sort: sortType,
-              type: state.listingType,
-              communityId: state.communityId,
-              communityName: state.communityName,
-            ));
-            if (tabletMode) {
-              List<PostView> posts2 = await lemmy.run(GetPosts(
-                auth: account?.jwt,
-                page: state.page + 1,
-                limit: limit,
-                sort: sortType,
-                type: state.listingType,
-                communityId: state.communityId,
-                communityName: state.communityName,
-              ));
-              posts.addAll(posts2);
-            }
-
-            // Parse the posts, and append them to the existing list
-            List<PostViewMedia> postMedias = await parsePostViews(posts);
-            List<PostViewMedia> postViews = List.from(state.postViews ?? []);
-            Set<int> postIds = Set.from(state.postIds ?? {});
-
-            // Insure we don't add existing posts to view
-            for (PostViewMedia postMedia in postMedias) {
-              int id = postMedia.postView.post.id;
-              if (postIds.contains(id)) {
-                continue;
-              }
-
-              postIds.add(id);
-              postViews.add(postMedia);
-            }
-
-            return emit(
-              state.copyWith(
-                status: CommunityStatus.success,
-                page: tabletMode ? state.page + 2 : state.page + 1,
-                postViews: postViews,
-                postIds: postIds,
-                communityId: communityId,
-                communityName: state.communityName,
-                listingType: listingType,
-                hasReachedEnd: posts.isEmpty,
-                subscribedType: state.subscribedType,
-                sortType: sortType,
-              ),
-            );
-          }
-        } catch (e, s) {
-          exception = e;
-          attemptCount++;
+          subscribedType = getCommunityResponse?.communityView.subscribed;
         }
-      }
 
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: exception.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+        // Fetch community's posts
+        List<PostViewMedia> posts = [];
+        Set<int> postIds = {};
+        int currentPage = 1;
+
+        do {
+          List<PostView> batch = await lemmy.run(GetPosts(
+            auth: account?.jwt,
+            page: currentPage,
+            limit: limit,
+            sort: sortType,
+            type: listingType,
+            communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+            communityName: event.communityName,
+          ));
+
+          currentPage++;
+
+          // Parse the posts and add in media information which is used elsewhere in the app
+          List<PostViewMedia> formattedPosts = await parsePostViews(batch);
+          posts.addAll(formattedPosts);
+
+          for (PostViewMedia post in formattedPosts) {
+            postIds.add(post.postView.post.id);
+          }
+
+          emit(
+            state.copyWith(
+              status: CommunityStatus.success,
+              page: tabletMode ? currentPage + 1 : currentPage,
+              postViews: posts,
+              postIds: postIds,
+              listingType: listingType,
+              communityId: communityId,
+              communityName: event.communityName,
+              hasReachedEnd: posts.isEmpty || posts.length < limit,
+              subscribedType: subscribedType,
+              sortType: sortType,
+              communityInfo: getCommunityResponse,
+            ),
+          );
+        } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
+
+        return;
+      } else {
+        if (state.hasReachedEnd) {
+          // Stop extra requests if we've reached the end
+          emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+          return;
+        }
+
+        emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+
+        int? communityId = event.communityId ?? state.communityId;
+        PostListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
+        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
+        // Fetch more posts from the community
+        List<PostViewMedia> posts = List.from(state.postViews ?? []);
+        int currentPage = state.page;
+
+        do {
+          List<PostView> batch = await lemmy.run(GetPosts(
+            auth: account?.jwt,
+            page: currentPage,
+            limit: limit,
+            sort: sortType,
+            type: state.listingType,
+            communityId: state.communityId,
+            communityName: state.communityName,
+          ));
+
+          currentPage++;
+
+          // Parse the posts, and append them to the existing list
+          List<PostViewMedia> postMedias = await parsePostViews(batch);
+
+          Set<int> postIds = Set.from(state.postIds ?? {});
+
+          // Ensure we don't add existing posts to view
+          for (PostViewMedia postMedia in postMedias) {
+            int id = postMedia.postView.post.id;
+            if (!postIds.contains(id)) {
+              postIds.add(id);
+              posts.add(postMedia);
+            }
+          }
+
+          emit(
+            state.copyWith(
+              status: CommunityStatus.success,
+              page: tabletMode ? currentPage + 1 : currentPage,
+              postViews: posts,
+              postIds: postIds,
+              communityId: communityId,
+              communityName: state.communityName,
+              listingType: listingType,
+              hasReachedEnd: posts.isEmpty,
+              subscribedType: state.subscribedType,
+              sortType: sortType,
+            ),
+          );
+        } while (tabletMode && posts.length < limit && currentPage <= state.page + 2); // Fetch two batches
+
+        return;
+      }
     } catch (e, s) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }

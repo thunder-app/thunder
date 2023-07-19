@@ -20,6 +20,7 @@ class ThunderState extends Equatable {
     // Post Settings
     this.collapseParentCommentOnGesture = true,
     this.showThumbnailPreviewOnRight = false,
+    this.showTextPostIndicator = false,
     this.showLinkPreviews = true,
     this.showVoteActions = true,
     this.showSaveAction = true,
@@ -63,6 +64,9 @@ class ThunderState extends Equatable {
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
+
+    // Scroll
+    this.scrollToTopId = 0,
   });
 
   final ThunderStatus status;
@@ -82,6 +86,7 @@ class ThunderState extends Equatable {
   // Post Settings
   final bool collapseParentCommentOnGesture;
   final bool showThumbnailPreviewOnRight;
+  final bool showTextPostIndicator;
   final bool showLinkPreviews;
   final bool showVoteActions;
   final bool showSaveAction;
@@ -126,6 +131,9 @@ class ThunderState extends Equatable {
   final FontScale titleFontSizeScale;
   final FontScale contentFontSizeScale;
 
+  // Scroll
+  final int scrollToTopId;
+
   ThunderState copyWith({
     ThunderStatus? status,
     Version? version,
@@ -141,6 +149,7 @@ class ThunderState extends Equatable {
     // Post Settings
     bool? collapseParentCommentOnGesture,
     bool? showThumbnailPreviewOnRight,
+    bool? showTextPostIndicator,
     bool? showLinkPreviews,
     bool? showVoteActions,
     bool? showSaveAction,
@@ -184,6 +193,9 @@ class ThunderState extends Equatable {
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
+
+    // Scroll
+    int? scrollToTopId,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -198,6 +210,7 @@ class ThunderState extends Equatable {
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
+      showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
       showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
       showVoteActions: showVoteActions ?? this.showVoteActions,
       showSaveAction: showSaveAction ?? this.showSaveAction,
@@ -237,6 +250,9 @@ class ThunderState extends Equatable {
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
+
+      // Scroll
+      scrollToTopId: scrollToTopId ?? this.scrollToTopId,
     );
   }
 
@@ -252,6 +268,7 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showThumbnailPreviewOnRight,
+        showTextPostIndicator,
         showLinkPreviews,
         showVoteActions,
         showSaveAction,
@@ -281,5 +298,6 @@ class ThunderState extends Equatable {
         useMaterialYouTheme,
         titleFontSizeScale,
         contentFontSizeScale,
+        scrollToTopId,
       ];
 }

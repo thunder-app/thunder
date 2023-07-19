@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -12,8 +15,10 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/utils/constants.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -33,6 +38,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   SortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  CommunityBloc? currentCommunityBloc;
+
+  @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(_handleBack);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +54,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     return BlocProvider<CommunityBloc>(
-      create: (context) => CommunityBloc(),
+      create: (context) => currentCommunityBloc = CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType ) {
@@ -74,19 +86,27 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text('Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}'),
+                  Expanded(
+                    child: Text(
+                      'Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}',
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
                   if (state.blockedCommunity?.blocked == true)
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
-                      },
-                      icon: Icon(
-                        Icons.undo_rounded,
-                        color: theme.colorScheme.primary,
+                    SizedBox(
+                      height: 20,
+                      child: IconButton(
+                        visualDensity: VisualDensity.compact,
+                        onPressed: () {
+                          ScaffoldMessenger.of(context).clearSnackBars();
+                          context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
+                        },
+                        icon: Icon(
+                          Icons.undo_rounded,
+                          color: theme.colorScheme.inversePrimary,
+                        ),
                       ),
-                    )
+                    ),
                 ],
               ),
               behavior: SnackBarBehavior.floating,
@@ -95,96 +115,113 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            key: widget.scaffoldKey,
-            appBar: AppBar(
-              title: Text(getCommunityName(state)),
-              centerTitle: false,
-              toolbarHeight: 70.0,
-              actions: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
-                      IconButton(
-                        icon: Icon(
-                          switch (state.subscribedType) {
-                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                            SubscribedType.pending => Icons.pending_outlined,
-                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                            _ => Icons.add_circle_outline_rounded,
-                          },
-                          semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
-                        ),
-                        tooltip: switch (state.subscribedType) {
-                          SubscribedType.notSubscribed => 'Subscribe',
-                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                          SubscribedType.subscribed => 'Unsubscribe',
-                          _ => null,
-                        },
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          context.read<CommunityBloc>().add(
-                                ChangeCommunitySubsciptionStatusEvent(
-                                  communityId: state.communityId!,
-                                  follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
-                                ),
-                              );
-                        },
-                      ),
-                    IconButton(
-                        icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          context.read<AccountBloc>().add(GetAccountInformation());
-                          return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                reset: true,
-                                sortType: sortType,
-                                communityId: state.communityId,
-                                listingType: state.listingType,
-                                communityName: state.communityName,
-                              ));
-                        }),
-                    IconButton(
-                        icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                        tooltip: sortTypeLabel,
-                        onPressed: () {
-                          HapticFeedback.mediumImpact();
-                          showSortBottomSheet(context, state);
-                        }),
-                    const SizedBox(width: 8.0),
-                  ],
-                )
-              ],
-            ),
-            drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-            floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
-                ? FloatingActionButton(
-                    onPressed: () {
-                      CommunityBloc communityBloc = context.read<CommunityBloc>();
+          return BlocListener<AuthBloc, AuthState>(
+            listenWhen: (previous, current) {
+              if (previous.account == null && current.account != null && previous.account?.id != current.account?.id) {
+                context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType));
+                return true;
+              }
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) {
-                            return BlocProvider<CommunityBloc>.value(
-                              value: communityBloc,
-                              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                            );
+              return false;
+            },
+            listener: (context, state) {},
+            child: Scaffold(
+              key: widget.scaffoldKey,
+              appBar: AppBar(
+                title: Text(getCommunityName(state)),
+                centerTitle: false,
+                toolbarHeight: 70.0,
+                actions: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
+                        IconButton(
+                          icon: Icon(
+                            switch (state.subscribedType) {
+                              SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                              SubscribedType.pending => Icons.pending_outlined,
+                              SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                              _ => Icons.add_circle_outline_rounded,
+                            },
+                            semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                          ),
+                          tooltip: switch (state.subscribedType) {
+                            SubscribedType.notSubscribed => 'Subscribe',
+                            SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                            SubscribedType.subscribed => 'Unsubscribe',
+                            _ => null,
+                          },
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            context.read<CommunityBloc>().add(
+                                  ChangeCommunitySubsciptionStatusEvent(
+                                    communityId: state.communityId!,
+                                    follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                  ),
+                                );
                           },
                         ),
-                      );
-                    },
-                    child: const Icon(
-                      Icons.add,
-                      semanticLabel: 'Create Post',
-                    ),
+                      IconButton(
+                          icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            context.read<AccountBloc>().add(GetAccountInformation());
+                            return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                                  reset: true,
+                                  sortType: sortType,
+                                  communityId: state.communityId,
+                                  listingType: state.listingType,
+                                  communityName: state.communityName,
+                                ));
+                          }),
+                      IconButton(
+                          icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                          tooltip: sortTypeLabel,
+                          onPressed: () {
+                            HapticFeedback.mediumImpact();
+                            showSortBottomSheet(context, state);
+                          }),
+                      const SizedBox(width: 8.0),
+                    ],
                   )
-                : null,
-            body: SafeArea(child: _getBody(context, state)),
+                ],
+              ),
+              drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+              floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
+                  ? FloatingActionButton(
+                      onPressed: () {
+                        CommunityBloc communityBloc = context.read<CommunityBloc>();
+
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return BlocProvider<CommunityBloc>.value(
+                                value: communityBloc,
+                                child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      child: const Icon(
+                        Icons.add,
+                        semanticLabel: 'Create Post',
+                      ),
+                    )
+                  : null,
+              body: SafeArea(child: _getBody(context, state)),
+            ),
           );
         },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
@@ -210,6 +247,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onScrollEndReached: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId)),
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+          onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
         );
       case CommunityStatus.empty:
         return const Center(child: Text('No posts found'));
@@ -252,5 +290,32 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (currentCommunityBloc != null) {
+      // This restricts back button handling to when we're already at the top level of navigation
+      final canPop = Navigator.of(context).canPop();
+
+      final prefs = (await UserPreferences.instance).sharedPreferences;
+      final desiredPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      final currentPostListingType = currentCommunityBloc!.state.listingType;
+      final currentCommunityId = currentCommunityBloc!.state.communityId;
+
+      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+        currentCommunityBloc!.add(
+          GetCommunityPostsEvent(
+            sortType: currentCommunityBloc!.state.sortType,
+            reset: true,
+            listingType: desiredPostListingType,
+            communityId: null,
+          ),
+        );
+
+        return true;
+      }
+    }
+
+    return false;
   }
 }

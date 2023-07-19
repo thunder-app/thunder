@@ -27,6 +27,7 @@ class PostCard extends StatefulWidget {
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
+  final Function(bool) onToggleReadAction;
 
   const PostCard({
     super.key,
@@ -34,6 +35,7 @@ class PostCard extends StatefulWidget {
     this.showInstanceName = true,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onToggleReadAction,
   });
 
   @override
@@ -70,11 +72,11 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
     VoteType? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
+    bool read = widget.postViewMedia.postView.read;
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -93,8 +95,10 @@ class _PostCardState extends State<PostCard> {
                 swipeAction: swipeAction,
                 onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
                 onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+                onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
                 voteType: myVote ?? VoteType.none,
                 saved: saved,
+                read: read,
                 postViewMedia: widget.postViewMedia,
               ),
             }
@@ -146,23 +150,23 @@ class _PostCardState extends State<PostCard> {
               ? AnimatedContainer(
                   alignment: Alignment.centerLeft,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.leftPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                    width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
+                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
                   ),
                 )
               : AnimatedContainer(
                   alignment: Alignment.centerRight,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.rightPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                    width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
+                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
                   ),
                 ),
           child: Column(
@@ -181,6 +185,7 @@ class _PostCardState extends State<PostCard> {
                     ? PostCardViewCompact(
                         postViewMedia: widget.postViewMedia,
                         showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                        showTextPostIndicator: state.showTextPostIndicator,
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,

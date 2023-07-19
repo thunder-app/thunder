@@ -30,6 +30,7 @@ class PostCardList extends StatefulWidget {
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onToggleReadAction;
 
   const PostCardList({
     super.key,
@@ -44,6 +45,7 @@ class PostCardList extends StatefulWidget {
     required this.onScrollEndReached,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onToggleReadAction,
     this.blockedCommunity,
   });
 
@@ -55,6 +57,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
+  int _previousScrollId = 0;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -85,9 +88,17 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 300; // Adjust the threshold as needed
-    });
+
+    // Adjust the threshold as needed
+    if (_scrollController.offset > 300 && !_showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = true;
+      });
+    } else if(_scrollController.offset <= 300 && _showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = false;
+      });
+    }
   }
 
   @override
@@ -103,6 +114,11 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     const phoneGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1,
     );
+
+    if (state.scrollToTopId > _previousScrollId) {
+      scrollToTop();
+      _previousScrollId = state.scrollToTopId;
+    }
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
@@ -181,6 +197,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     showInstanceName: widget.communityId == null,
                     onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                     onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                    onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                   );
                 }
               },
@@ -247,18 +264,22 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 left: 20,
                 child: FloatingActionButton(
                   onPressed: () {
-                    _scrollController.animateTo(
-                      0,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
+                    scrollToTop();
                   },
-                  child: const Icon(Icons.arrow_upward),
+                  child: Icon(Icons.arrow_upward),
                 ),
               ),
           ],
         ),
       ),
+    );
+  }
+
+  void scrollToTop() {
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
     );
   }
 }

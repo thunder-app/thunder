@@ -20,13 +20,13 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
-import '../../utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
+  final int? selectedCommentId;
 
-  const PostSubview({super.key, required this.useDisplayNames, required this.postViewMedia});
+  const PostSubview({super.key, this.selectedCommentId, required this.useDisplayNames, required this.postViewMedia});
 
   @override
   Widget build(BuildContext context) {
@@ -298,7 +298,7 @@ class PostSubview extends StatelessWidget {
                 ),
               )
             ],
-          )
+          ),
         ],
       ),
     );

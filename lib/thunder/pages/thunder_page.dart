@@ -142,8 +142,6 @@ class _ThunderState extends State<Thunder> {
           },
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
-              FlutterNativeSplash.remove();
-
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
@@ -152,6 +150,7 @@ class _ThunderState extends State<Thunder> {
                   return const Center(child: CircularProgressIndicator());
                 case ThunderStatus.refreshing:
                 case ThunderStatus.success:
+                  FlutterNativeSplash.remove();
                   return Scaffold(
                       bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
                       body: MultiBlocProvider(
@@ -265,10 +264,16 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
           onTap: (index) {
-            setState(() {
-              selectedPageIndex = index;
-              pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
-            });
+            if (selectedPageIndex == 0 && index == 0) {
+              context.read<ThunderBloc>().add(OnScrollToTopEvent());
+            }
+
+            if (selectedPageIndex != index) {
+              setState(() {
+                selectedPageIndex = index;
+                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+              });
+            }
 
             // @todo Change this from integer to enum or some other type
             if (index == 3) {
