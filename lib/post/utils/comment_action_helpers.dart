@@ -16,7 +16,7 @@ class ExtendedCommentCardActions {
   final String label;
 }
 
-const commentCardActionItems = [
+const commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.save,
     icon: Icons.star_rounded,
@@ -32,15 +32,11 @@ const commentCardActionItems = [
     icon: Icons.share_rounded,
     label: 'Share Link',
   ),
-  ExtendedCommentCardActions(
-    commentCardAction: CommentCardAction.delete,
-    icon: Icons.delete_rounded,
-    label: 'Delete',
-  ),
 ];
 
 void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction, Function onDeleteAction) {
   final theme = Theme.of(context);
+  List<ExtendedCommentCardActions> commentCardActionItems = _updateDefaultCommentActionItems(context, commentViewTree);
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -102,4 +98,21 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
       );
     },
   );
+}
+
+List<ExtendedCommentCardActions> _updateDefaultCommentActionItems(BuildContext context, CommentViewTree commentViewTree) {
+  final bool isOwnComment = commentViewTree.commentView?.creator.id == context.read<AuthBloc>().state.account?.userId;
+  bool isDeleted = commentViewTree.commentView!.comment.deleted;
+  List<ExtendedCommentCardActions> updatedList = [...commentCardDefaultActionItems];
+
+  if (isOwnComment) {
+    updatedList.add(
+        ExtendedCommentCardActions(
+          commentCardAction: CommentCardAction.delete,
+          icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
+          label: isDeleted ? 'Restore' : 'Delete',
+        )
+    );
+  }
+  return updatedList;
 }
