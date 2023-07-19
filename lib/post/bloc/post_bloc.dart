@@ -113,9 +113,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
+          int? parentId;
+          if (event.selectedCommentPath != null) {
+            parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
+          }
+
           List<CommentView> getCommentsResponse = await lemmy
               .run(GetComments(
-            page: 1,
+            page: event.selectedCommentId == null ? 1 : null,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
             maxDepth: COMMENT_MAX_DEPTH,
@@ -123,6 +128,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             type: CommentListingType.all,
+            parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch comments');
@@ -142,12 +148,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 comments: commentTree,
+                commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
-                commentPage: state.commentPage + 1,
                 commentCount: getCommentsResponse.length,
                 hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
-                sortType: sortType),
+                sortType: sortType,
+                selectedCommentId: event.selectedCommentId,
+                selectedCommentPath: event.selectedCommentPath),
           );
         } catch (e, s) {
           exception = e;
@@ -178,8 +186,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         try {
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          if (event.reset) {
-            emit(state.copyWith(status: PostStatus.loading));
+          if (event.reset || event.viewAllCommentsRefresh) {
+            if (event.viewAllCommentsRefresh) {
+              emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
+            } else {
+              emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
+            }
 
             List<CommentView> getCommentsResponse = await lemmy
                 .run(GetComments(
@@ -207,6 +219,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
             return emit(
               state.copyWith(
+                  selectedCommentId: null,
+                  selectedCommentPath: null,
                   status: PostStatus.success,
                   comments: commentTree,
                   commentResponseMap: responseMap,
@@ -230,7 +244,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             maxDepth: COMMENT_MAX_DEPTH,
-            page: event.commentParentId != null ? 1 : state.commentPage,
+            page: state.commentPage, //event.commentParentId != null ? 1 : state.commentPage,
             type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
@@ -248,7 +262,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
+            sortType: sortType,
             status: PostStatus.success,
+            selectedCommentPath: null,
+            selectedCommentId: null,
             comments: commentViewTree,
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,

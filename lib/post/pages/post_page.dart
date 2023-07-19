@@ -15,10 +15,12 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
+  final String? selectedCommentPath;
+  final int? selectedCommentId;
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, required this.onPostUpdated});
+  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -196,7 +198,6 @@ class _PostPageState extends State<PostPage> {
                         backgroundColor: theme.colorScheme.onErrorContainer,
                         behavior: SnackBarBehavior.floating,
                       );
-
                       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -205,7 +206,8 @@ class _PostPageState extends State<PostPage> {
                     }
                     switch (state.status) {
                       case PostStatus.initial:
-                        context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                      context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
+                          selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
                         return const Center(child: CircularProgressIndicator());
                       case PostStatus.loading:
                         return const Center(child: CircularProgressIndicator());
@@ -216,9 +218,11 @@ class _PostPageState extends State<PostPage> {
                           return RefreshIndicator(
                             onRefresh: () async {
                               HapticFeedback.mediumImpact();
-                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
+                                  selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
                             },
-                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, selectedCommentId: state.selectedCommentId,
+                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
                           );
                         }
                         return ErrorMessage(

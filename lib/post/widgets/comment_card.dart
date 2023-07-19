@@ -22,6 +22,7 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
 
   final Set collapsedCommentSet;
+  final int? selectCommentId;
 
   final DateTime now;
 
@@ -35,6 +36,7 @@ class CommentCard extends StatefulWidget {
     required this.onCollapseCommentChange,
     required this.now,
     this.collapsedCommentSet = const {},
+    this.selectCommentId,
   });
 
   /// CommentViewTree containing relevant information
@@ -127,6 +129,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return Container(
       decoration: BoxDecoration(
+        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
         border: widget.level > 0
             ? Border(
                 left: BorderSide(
@@ -374,6 +377,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) => CommentCard(
+                          selectCommentId: widget.selectCommentId,
                           now: widget.now,
                           commentViewTree: widget.commentViewTree.replies[index],
                           collapsedCommentSet: widget.collapsedCommentSet,
