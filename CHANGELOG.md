@@ -12,6 +12,7 @@
 - Minor tweaks to toast notification when blocking communities - contribution from @micahmo
 - Changed to default feed type to be "All" rather than "Local" - contribution from @CTalvio
 - Optimization improvements to comment cards and calculating published/edited time - contribution from @ajsosa
+- Improved UI navigation experience when logging in - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
