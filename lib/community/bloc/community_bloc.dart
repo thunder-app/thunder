@@ -286,9 +286,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           // Parse the posts, and append them to the existing list
           List<PostViewMedia> postMedias = await parsePostViews(batch);
-          posts.addAll(postMedias);
 
-          List<PostViewMedia> postViews = List.from(state.postViews ?? []);
           Set<int> postIds = Set.from(state.postIds ?? {});
 
           // Ensure we don't add existing posts to view
@@ -296,7 +294,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             int id = postMedia.postView.post.id;
             if (!postIds.contains(id)) {
               postIds.add(id);
-              postViews.add(postMedia);
+              posts.add(postMedia);
             }
           }
 
