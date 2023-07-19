@@ -225,7 +225,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           );
                         },
                         duration: const Duration(milliseconds: 300),
-                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates,) : null,
+                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates, isAccountUser: widget.isAccountUser) : null,
                       ),
                     ],
                   ),

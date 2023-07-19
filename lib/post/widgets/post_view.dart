@@ -88,7 +88,7 @@ class PostSubview extends StatelessWidget {
                             BlocProvider.value(value: authBloc),
                             BlocProvider.value(value: thunderBloc),
                           ],
-                          child: UserPage(userId: postView.creator.id),
+                          child: UserPage(userId: postView.creator.id, blockedUser: ),
                         ),
                       ),
                     );

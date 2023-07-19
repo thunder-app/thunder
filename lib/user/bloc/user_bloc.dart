@@ -54,6 +54,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _markPostAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<BlockUserEvent>(
+      _blockUserEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -379,6 +383,44 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e, s) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+  Future<void> _blockUserEvent(BlockUserEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(
+          state.copyWith(
+            status: UserStatus.failure,
+            errorMessage: 'You are not logged in. Cannot block user.',
+            userId: state.userId,
+          ),
+        );
+      }
+
+      BlockedPerson blockedPerson = await lemmy.run(BlockPerson(
+        auth: account!.jwt!,
+        personId: event.personId,
+        block: event.blocked,
+      ));
+
+      return emit(state.copyWith(
+        status: UserStatus.success,
+        personView: state.personView,
+        blockedPerson: blockedPerson,
+      ));
+    } catch (e, s) {
+      return emit(
+        state.copyWith(
+          status: UserStatus.failure,
+          errorMessage: e.toString(),
+          personView: state.personView,
+        ),
+      );
     }
   }
 }
