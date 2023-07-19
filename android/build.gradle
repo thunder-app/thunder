@@ -18,6 +18,13 @@ allprojects {
     }
 }
 
+android {
+    defaultConfig {
+        // Defines the minimum API level required to run the app.
+        minSdkVersion(21)
+    }
+}
+
 rootProject.buildDir = '../build'
 subprojects {
     project.buildDir = "${rootProject.buildDir}/${project.name}"
