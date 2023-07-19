@@ -107,8 +107,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
       SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
       SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
       bool enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
