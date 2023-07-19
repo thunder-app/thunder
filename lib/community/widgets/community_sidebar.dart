@@ -25,11 +25,13 @@ class CommunitySidebar extends StatefulWidget {
 
   final FullCommunityView? communityInfo;
   final SubscribedType? subscribedType;
+  final BlockedCommunity? blockedCommunity;
 
   const CommunitySidebar({
     super.key,
     required this.communityInfo,
     required this.subscribedType,
+    required this.blockedCommunity,
   });
 
   @override
@@ -38,6 +40,8 @@ class CommunitySidebar extends StatefulWidget {
 
 class _CommunitySidebarState extends State<CommunitySidebar> with TickerProviderStateMixin{
   final ScrollController _scrollController = ScrollController();
+
+  bool isBlocked = false;
 
   @override
   void initState() {
@@ -55,6 +59,12 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
+    if( widget.blockedCommunity != null ) {
+      isBlocked = widget.blockedCommunity!.blocked;
+    } else {
+      isBlocked = widget.communityInfo!.communityView.blocked;
+    }
+
     return Container(
       alignment: Alignment.topRight,
       child: FractionallySizedBox(
@@ -65,95 +75,104 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
             color: theme.colorScheme.background,
             child: Column(
               children: [
-                if (widget.communityInfo?.communityView.blocked == false) Padding(
-                  padding: const EdgeInsets.only(top: 8.0, left: 12, right: 12,),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: isUserLoggedIn ? () {
-                            HapticFeedback.mediumImpact();
-                            CommunityBloc communityBloc = context.read<CommunityBloc>();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return BlocProvider<CommunityBloc>.value(
-                                    value: communityBloc,
-                                    child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
-                                  );
-                                },
-                              ),
-                            );
-                          } : null,
-                          style: TextButton.styleFrom(
-                            fixedSize: const Size.fromHeight(40),
-                            foregroundColor: null,
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: const Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.library_books_rounded,
-                                semanticLabel: 'New Post',
-                              ),
-                              SizedBox(width: 4.0),
-                              Text(
-                                'New Post',
-                                style: TextStyle(
-                                  color: null,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      const SizedBox( width: 8, height: 8,),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: isUserLoggedIn ? () {
-                            HapticFeedback.mediumImpact();
-                            context.read<CommunityBloc>().add(
-                              ChangeCommunitySubsciptionStatusEvent(
-                                communityId: widget.communityInfo!.communityView.community.id,
-                                follow: (widget.subscribedType == null) ? true : (widget.subscribedType == SubscribedType.notSubscribed ? true : false),
-                              ),
-                            );
-                          } : null,
-                          style: TextButton.styleFrom(
-                            fixedSize: const Size.fromHeight(40),
-                            foregroundColor: null,
-                            padding: EdgeInsets.zero,
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                switch (widget.subscribedType) {
-                                  SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                                  SubscribedType.pending => Icons.pending_outlined,
-                                  SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                                  _ => Icons.add_circle_outline_rounded,
-                                },
-                                semanticLabel: (widget.subscribedType == SubscribedType.notSubscribed || widget.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
-                              ),
-                              const SizedBox(width: 4.0),
-                              Text( switch (widget.subscribedType) {
-                                  SubscribedType.notSubscribed => 'Subscribe',
-                                  SubscribedType.pending => 'Pending...',
-                                  SubscribedType.subscribed => 'Unsubscribe',
-                                  _ => '',
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
                 AnimatedSwitcher(
                   duration: const Duration( milliseconds: 100),
+                  transitionBuilder: (Widget child, Animation<double> animation) {
+                    return SizeTransition(
+                      sizeFactor: animation,
+                      child: FadeTransition(opacity: animation, child: child),
+                    );
+                  },
+                  child: isBlocked == false ? Padding(
+                    padding: const EdgeInsets.only(top: 8.0, left: 12, right: 12,),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: isUserLoggedIn ? () {
+                              HapticFeedback.mediumImpact();
+                              CommunityBloc communityBloc = context.read<CommunityBloc>();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return BlocProvider<CommunityBloc>.value(
+                                      value: communityBloc,
+                                      child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
+                                    );
+                                  },
+                                ),
+                              );
+                            } : null,
+                            style: TextButton.styleFrom(
+                              fixedSize: const Size.fromHeight(40),
+                              foregroundColor: null,
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.library_books_rounded,
+                                  semanticLabel: 'New Post',
+                                ),
+                                SizedBox(width: 4.0),
+                                Text(
+                                  'New Post',
+                                  style: TextStyle(
+                                    color: null,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox( width: 8, height: 8,),
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: isUserLoggedIn ? () {
+                              HapticFeedback.mediumImpact();
+                              context.read<CommunityBloc>().add(
+                                ChangeCommunitySubsciptionStatusEvent(
+                                  communityId: widget.communityInfo!.communityView.community.id,
+                                  follow: (widget.subscribedType == null) ? true : (widget.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                ),
+                              );
+                            } : null,
+                            style: TextButton.styleFrom(
+                              fixedSize: const Size.fromHeight(40),
+                              foregroundColor: null,
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  switch (widget.subscribedType) {
+                                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                                    SubscribedType.pending => Icons.pending_outlined,
+                                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                                    _ => Icons.add_circle_outline_rounded,
+                                  },
+                                  semanticLabel: (widget.subscribedType == SubscribedType.notSubscribed || widget.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                                ),
+                                const SizedBox(width: 4.0),
+                                Text( switch (widget.subscribedType) {
+                                    SubscribedType.notSubscribed => 'Subscribe',
+                                    SubscribedType.pending => 'Pending...',
+                                    SubscribedType.subscribed => 'Unsubscribe',
+                                    _ => '',
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ) : null,
+                ),
+                AnimatedSwitcher(
+                  duration: const Duration( milliseconds: 150),
                   transitionBuilder: (Widget child, Animation<double> animation) {
                     return SizeTransition(
                       sizeFactor: animation,
@@ -169,7 +188,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                         context.read<CommunityBloc>().add(
                           BlockCommunityEvent(
                             communityId: widget.communityInfo!.communityView.community.id,
-                            block: widget.communityInfo?.communityView.blocked == true ? false : true,
+                            block: isBlocked == true ? false : true,
                           ),
                         );
                       } : null,
@@ -182,12 +201,12 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(
-                            widget.communityInfo?.communityView.blocked == true ? Icons.undo_rounded : Icons.block_rounded,
-                            semanticLabel: widget.communityInfo?.communityView.blocked == true ? 'Unblock Community' : 'Block Community',
+                            isBlocked == true ? Icons.undo_rounded : Icons.block_rounded,
+                            semanticLabel: isBlocked == true ? 'Unblock Community' : 'Block Community',
                           ),
                           const SizedBox(width: 4.0),
                           Text(
-                            widget.communityInfo?.communityView.blocked == true ? 'Unblock Community' : 'Block Community',
+                            isBlocked == true ? 'Unblock Community' : 'Block Community',
                           ),
                         ],
                       ),

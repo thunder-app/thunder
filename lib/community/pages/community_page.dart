@@ -206,6 +206,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           communityName: widget.communityName ?? state.communityName,
           hasReachedEnd: state.hasReachedEnd,
           communityInfo: state.communityInfo,
+          blockedCommunity: state.blockedCommunity,
           onScrollEndReached: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId)),
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),

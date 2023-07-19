@@ -26,6 +26,7 @@ class UserSidebar extends StatefulWidget {
   final List<CommunityModeratorView>? moderates;
   final bool isAccountUser;
   final List<PersonBlockView>? personBlocks;
+  final BlockedPerson? blockedPerson;
 
   const UserSidebar({
     super.key,
@@ -33,6 +34,7 @@ class UserSidebar extends StatefulWidget {
     required this.moderates,
     required this.isAccountUser,
     this.personBlocks,
+    this.blockedPerson,
   });
 
   @override
@@ -46,15 +48,6 @@ class _UserSidebarState extends State<UserSidebar>{
   @override
   void initState() {
     super.initState();
-
-    if (widget.personBlocks !=  null) {
-      for (var user in widget.personBlocks! ) {
-        if ( user.person.id == widget.userInfo!.person.id ){
-          isBlocked = true;
-        }
-      }
-    }
-
   }
 
   @override
@@ -68,8 +61,19 @@ class _UserSidebarState extends State<UserSidebar>{
     final theme = Theme.of(context);
 
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    AccountStatus status = context.read<AccountBloc>().state.status;
     String locale = Localizations.localeOf(context).languageCode;
+
+    if ( widget.personBlocks !=  null ) {
+      for (var user in widget.personBlocks! ) {
+        if ( user.person.id == widget.userInfo!.person.id ){
+          isBlocked = true;
+        }
+      }
+    }
+
+    if( widget.blockedPerson != null ) {
+      isBlocked = widget.blockedPerson!.blocked;
+    }
 
     return Container(
       alignment: Alignment.topRight,
@@ -90,12 +94,11 @@ class _UserSidebarState extends State<UserSidebar>{
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {
-                                  /*HapticFeedback.mediumImpact();*/
-                                },
+                                onPressed: null/*() {
+                                  HapticFeedback.mediumImpact();
+                                }*/,
                                 style: TextButton.styleFrom(
                                   fixedSize: const Size.fromHeight(40),
-                                  foregroundColor: null,
                                   padding: EdgeInsets.zero,
                                 ),
                                 child: const Row(
@@ -108,9 +111,6 @@ class _UserSidebarState extends State<UserSidebar>{
                                     SizedBox(width: 4.0),
                                     Text(
                                       'Message User',
-                                      style: TextStyle(
-                                        color: null,
-                                      ),
                                     ),
                                   ],
                                 ),
@@ -138,7 +138,7 @@ class _UserSidebarState extends State<UserSidebar>{
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(
-                                      Icons.block,
+                                      isBlocked == true ? Icons.undo_rounded : Icons.block,
                                       semanticLabel: isBlocked == true ? 'Unblock User' : 'Block User',
                                     ),
                                     const SizedBox(width: 4.0),
@@ -314,9 +314,9 @@ class _UserSidebarState extends State<UserSidebar>{
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 12, right: 12),
                         child: ElevatedButton(
-                          onPressed: () {
-                            /*HapticFeedback.mediumImpact();*/
-                          },
+                          onPressed: null/*() {
+                            HapticFeedback.mediumImpact();
+                          }*/,
                           style: TextButton.styleFrom(
                             fixedSize: const Size.fromHeight(40),
                             foregroundColor: null,

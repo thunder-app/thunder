@@ -31,6 +31,7 @@ class UserPageSuccess extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final List<PostViewMedia>? savedPostViews;
   final List<CommunityModeratorView>? moderates;
+  final BlockedPerson? blockedPerson;
 
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
@@ -46,6 +47,7 @@ class UserPageSuccess extends StatefulWidget {
     this.moderates,
     required this.hasReachedPostEnd,
     required this.hasReachedSavedPostEnd,
+    this.blockedPerson,
   });
 
   @override
@@ -225,7 +227,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           );
                         },
                         duration: const Duration(milliseconds: 300),
-                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates, isAccountUser: widget.isAccountUser) : null,
+                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates, isAccountUser: widget.isAccountUser, blockedPerson: widget.blockedPerson,) : null,
                       ),
                     ],
                   ),

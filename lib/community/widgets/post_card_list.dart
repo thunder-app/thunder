@@ -25,6 +25,7 @@ class PostCardList extends StatefulWidget {
   final PostListingType? listingType;
   final FullCommunityView? communityInfo;
   final SubscribedType? subscribeType;
+  final BlockedCommunity? blockedCommunity;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -43,6 +44,7 @@ class PostCardList extends StatefulWidget {
     required this.onScrollEndReached,
     required this.onVoteAction,
     required this.onSaveAction,
+    this.blockedCommunity,
   });
 
   @override
@@ -231,7 +233,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             );
                           },
                           duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo, subscribedType: widget.subscribeType,) : null,
+                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo, subscribedType: widget.subscribeType, blockedCommunity: widget.blockedCommunity,) : null,
                         ),
                       ],
                     ),

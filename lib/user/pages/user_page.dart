@@ -23,159 +23,117 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    final theme = Theme.of(context);
 
-    return BlocProvider<UserBloc>(
-      create: (context) => UserBloc(),
-      child: BlocConsumer(
-        listener: (context, state) {
-            if (state?.status == UserStatus.failure) {
-              SnackBar snackBar = SnackBar(
-                content: Text(state.errorMessage ?? 'No error message available'),
-                behavior: SnackBarBehavior.floating,
-              );
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
-            }
-
-            if (state.status == UserStatus.success && state.blockedUser != null) {
-              SnackBar snackBar = SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text('Successfully ${state?.blockedUser?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedUser?.person.name}'),
-                        if (state.blockedUser?.blocked == true)
-                    IconButton(
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        context.read<UserBloc>().add(BlockUserEvent(personId: state.blockedUser.name, blocked: false));
-                      },
-                      icon: Icon(
-                        Icons.undo_rounded,
-                        color: theme.colorScheme.primary,
-                      ),
-                    )
-                  ],
-                ),
-                behavior: SnackBarBehavior.floating,
-              );
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
-          },
-        },
-        builder: (context, state) {
-          return Scaffold(
-            appBar: AppBar(
-              scrolledUnderElevation: 0,
-              leading: widget.isAccountUser
-                  ? IconButton(
-                onPressed: () {
-                  showDialog<void>(
-                      context: context,
-                      builder: (context) =>
-                      BlocProvider<AuthBloc>.value(
-                        value: context.read<AuthBloc>(),
-                        child: AlertDialog(
-                          title: Text(
-                            'Are you sure you want to log out?',
-                            style:
-                            Theme
-                                .of(context)
-                                .textTheme
-                                .bodyLarge,
-                          ),
-                          actions: [
-                            TextButton(
-                                onPressed: () {
-                                  context.pop();
-                                },
-                                child: const Text('Cancel')),
-                            const SizedBox(
-                              width: 12,
-                            ),
-                            FilledButton(
-                                onPressed: () {
-                                  context
-                                      .read<AuthBloc>()
-                                      .add(RemoveAccount(
-                                    accountId: context
-                                        .read<AuthBloc>()
-                                        .state
-                                        .account!
-                                        .id,
-                                  ));
-                                  context.pop();
-                                },
-                                child: const Text('Log out'))
-                          ],
-                        ),
-                      ));
-                },
-                icon: const Icon(
-                  Icons.logout,
-                  semanticLabel: 'Log out',
-                ),
-              )
-                  : null,
-              actions: [
-                if (widget.isAccountUser)
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: IconButton(
-                      onPressed: () => showProfileModalSheet(context),
-                      icon: const Icon(
-                        Icons.people_alt_rounded,
-                        semanticLabel: 'Profiles',
-                      ),
+    return Scaffold(
+      appBar: AppBar(
+        scrolledUnderElevation: 0,
+        leading: widget.isAccountUser
+            ? IconButton(
+          onPressed: () {
+            showDialog<void>(
+                context: context,
+                builder: (context) =>
+                BlocProvider<AuthBloc>.value(
+                  value: context.read<AuthBloc>(),
+                  child: AlertDialog(
+                    title: Text(
+                      'Are you sure you want to log out?',
+                      style:
+                      Theme
+                          .of(context)
+                          .textTheme
+                          .bodyLarge,
                     ),
+                    actions: [
+                      TextButton(
+                          onPressed: () {
+                            context.pop();
+                          },
+                          child: const Text('Cancel')),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      FilledButton(
+                          onPressed: () {
+                            context
+                                .read<AuthBloc>()
+                                .add(RemoveAccount(
+                              accountId: context
+                                  .read<AuthBloc>()
+                                  .state
+                                  .account!
+                                  .id,
+                            ));
+                            context.pop();
+                          },
+                          child: const Text('Log out'))
+                    ],
                   ),
-              ],
+                ));
+          },
+          icon: const Icon(
+            Icons.logout,
+            semanticLabel: 'Log out',
+          ),
+        )
+            : null,
+        actions: [
+          if (widget.isAccountUser)
+            Padding(
+              padding: const EdgeInsets.all(4.0),
+              child: IconButton(
+                onPressed: () => showProfileModalSheet(context),
+                icon: const Icon(
+                  Icons.people_alt_rounded,
+                  semanticLabel: 'Profiles',
+                ),
+              ),
             ),
-            body: MultiBlocProvider(
-              providers: [
-                BlocProvider<UserBloc>(
-                    create: (BuildContext context) => UserBloc()),
-                BlocProvider(create: (context) => community.CommunityBloc()),
-              ],
-              child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
-                switch (state.status) {
-                  case UserStatus.initial:
-                    context.read<UserBloc>().add(
-                        GetUserEvent(userId: widget.userId, reset: true));
-                    context.read<UserBloc>().add(
-                        GetUserSavedEvent(userId: widget.userId, reset: true));
-                    return const Center(child: CircularProgressIndicator());
-                  case UserStatus.loading:
-                    return const Center(child: CircularProgressIndicator());
-                  case UserStatus.refreshing:
-                  case UserStatus.success:
-                    return UserPageSuccess(
-                      userId: widget.userId,
-                      isAccountUser: widget.isAccountUser,
-                      personView: state.personView,
-                      moderates: state.moderates,
-                      commentViewTrees: state.comments,
-                      postViews: state.posts,
-                      savedPostViews: state.savedPosts,
-                      hasReachedPostEnd: state.hasReachedPostEnd,
-                      hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
-                    );
-                  case UserStatus.empty:
-                    return Container();
-                  case UserStatus.failure:
-                    return ErrorMessage(
-                      message: state.errorMessage,
-                      action: () {
-                        context.read<UserBloc>().add(GetUserEvent(userId: widget
-                            .userId, reset: true));
-                      },
-                      actionText: 'Refresh Content',
-                    );
-                }
-              }),
-            ),
-          );
-        },
+        ],
+      ),
+      body: MultiBlocProvider(
+        providers: [
+          BlocProvider<UserBloc>(
+              create: (BuildContext context) => UserBloc()),
+          BlocProvider(create: (context) => community.CommunityBloc()),
+        ],
+        child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+          switch (state.status) {
+            case UserStatus.initial:
+              context.read<UserBloc>().add(
+                  GetUserEvent(userId: widget.userId, reset: true));
+              context.read<UserBloc>().add(
+                  GetUserSavedEvent(userId: widget.userId, reset: true));
+              return const Center(child: CircularProgressIndicator());
+            case UserStatus.loading:
+              return const Center(child: CircularProgressIndicator());
+            case UserStatus.refreshing:
+            case UserStatus.success:
+              return UserPageSuccess(
+                userId: widget.userId,
+                isAccountUser: widget.isAccountUser,
+                personView: state.personView,
+                moderates: state.moderates,
+                commentViewTrees: state.comments,
+                postViews: state.posts,
+                savedPostViews: state.savedPosts,
+                hasReachedPostEnd: state.hasReachedPostEnd,
+                hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
+                blockedPerson: state.blockedPerson,
+              );
+            case UserStatus.empty:
+              return Container();
+            case UserStatus.failure:
+              return ErrorMessage(
+                message: state.errorMessage,
+                action: () {
+                  context.read<UserBloc>().add(GetUserEvent(userId: widget
+                      .userId, reset: true));
+                },
+                actionText: 'Refresh Content',
+              );
+          }
+        }),
       ),
     );
   }
