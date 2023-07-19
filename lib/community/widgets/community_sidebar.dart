@@ -412,56 +412,62 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 40),
-                            const Text('Community host instance:'),
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
+                            Container(
+                              child: widget.communityInfo?.site != null ? Column(
                                 children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        backgroundColor: widget.communityInfo?.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                        foregroundImage: widget.communityInfo?.site?.icon != null ? CachedNetworkImageProvider( widget.communityInfo!.site!.icon! ) : null,
-                                        maxRadius: 24,
-                                        child: widget.communityInfo?.site?.icon == null ? Text(
-                                          widget.communityInfo?.moderators.first.moderator!.name[0].toUpperCase() ?? '',
-                                          semanticsLabel: '',
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16,
-                                          ),
-                                        ) : null,
-                                      ),
-                                      const SizedBox(width: 16.0),
-                                      Expanded(
-                                        child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.start,
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                  const SizedBox(height: 40),
+                                  const Text('Community host instance:'),
+                                  const Divider(),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                    child: Column(
+                                      children: [
+                                        Row(
                                           children: [
-                                            Text(
-                                              widget.communityInfo?.site?.name ?? widget.communityInfo?.instanceHost ?? '',
-                                              overflow: TextOverflow.ellipsis,
-                                              maxLines: 1,
-                                              style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                            CircleAvatar(
+                                              backgroundColor: widget.communityInfo?.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                              foregroundImage: widget.communityInfo?.site?.icon != null ? CachedNetworkImageProvider( widget.communityInfo!.site!.icon! ) : null,
+                                              maxRadius: 24,
+                                              child: widget.communityInfo?.site?.icon == null ? Text(
+                                                widget.communityInfo?.moderators.first.moderator!.name[0].toUpperCase() ?? '',
+                                                semanticsLabel: '',
+                                                style: const TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16,
+                                                ),
+                                              ) : null,
                                             ),
-                                            Text(
-                                              widget.communityInfo?.site?.description ?? '',
-                                              style: theme.textTheme.bodyMedium,
-                                              overflow: TextOverflow.visible,
+                                            const SizedBox(width: 16.0),
+                                            Expanded(
+                                              child: Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    widget.communityInfo?.site?.name ?? /*widget.communityInfo?.instanceHost ??*/ '',
+                                                    overflow: TextOverflow.ellipsis,
+                                                    maxLines: 1,
+                                                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                                  ),
+                                                  Text(
+                                                    widget.communityInfo?.site?.description ?? '',
+                                                    style: theme.textTheme.bodyMedium,
+                                                    overflow: TextOverflow.visible,
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ],
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                  const Divider(),
-                                  CommonMarkdownBody(
-                                    body: widget.communityInfo?.site?.sidebar ?? widget.communityInfo?.instanceHost ?? '',
+                                        const Divider(),
+                                        CommonMarkdownBody(
+                                          body: widget.communityInfo?.site?.sidebar ?? '' /*?? widget.communityInfo?.instanceHost*/,
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ],
-                              ),
+                              ) : null,
                             ),
                           ],
                         ),

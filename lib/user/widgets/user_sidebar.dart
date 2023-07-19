@@ -63,13 +63,13 @@ class _UserSidebarState extends State<UserSidebar>{
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     String locale = Localizations.localeOf(context).languageCode;
 
-    if ( widget.personBlocks !=  null ) {
+/*    if ( widget.personBlocks !=  null ) {
       for (var user in widget.personBlocks! ) {
         if ( user.person.id == widget.userInfo!.person.id ){
           isBlocked = true;
         }
       }
-    }
+    }*/
 
     if( widget.blockedPerson != null ) {
       isBlocked = widget.blockedPerson!.blocked;

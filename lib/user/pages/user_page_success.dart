@@ -120,7 +120,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     });
                   }
                 },
-                child: UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar),
+                child: widget.personView != null ? UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar) : const SizedBox(),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16),
