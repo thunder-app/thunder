@@ -332,23 +332,23 @@ class _ImageViewerState extends State<ImageViewer>
 
                               if ((Platform.isAndroid || Platform.isIOS) &&
                                   await _requestPermission()) {
-                                // final directory =
-                                //     await getApplicationDocumentsDirectory();
+                                if (Platform.isAndroid) {
+                                  // Save image to
+                                  // [internal storage]/Pictures/ThunderImages
+                                  GallerySaver.saveImage(file.path,
+                                          albumName: "Pictures/ThunderImages")
+                                      .then((value) {
+                                    setState(() => downloaded = value as bool);
+                                  });
+                                } else if (Platform.isIOS) {
+                                  // TODO: Check to make sure this works on iOS
 
-                                // final result =
-                                //     await GallerySaver.saveFile(file.path);
-
-                                // debugPrint("Images:");
-                                // debugPrint(directory.path);
-
-                                // setState(() =>
-                                //     downloaded = result['isSuccess'] == true);
-
-                                GallerySaver.saveImage(file.path,
-                                        albumName: "ThunderImages")
-                                    .then((value) {
-                                  setState(() => downloaded = value as bool);
-                                });
+                                  GallerySaver.saveImage(file.path,
+                                          albumName: "ThunderImages")
+                                      .then((value) {
+                                    setState(() => downloaded = value as bool);
+                                  });
+                                }
                               } else if (Platform.isLinux ||
                                   Platform.isWindows) {
                                 final filePath =
