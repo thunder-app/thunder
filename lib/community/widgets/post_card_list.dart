@@ -67,9 +67,17 @@ class _PostCardListState extends State<PostCardList> {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 300; // Adjust the threshold as needed
-    });
+
+    // Adjust the threshold as needed
+    if (_scrollController.offset > 300 && !_showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = true;
+      });
+    } else if(_scrollController.offset <= 300 && _showReturnToTopButton) {
+      setState(() {
+        _showReturnToTopButton = false;
+      });
+    }
   }
 
   @override
@@ -79,10 +87,10 @@ class _PostCardListState extends State<PostCardList> {
 
     bool tabletMode = state.tabletMode;
 
-    const tabletGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
     );
-    const phoneGridDelegate = const SliverSimpleGridDelegateWithFixedCrossAxisCount(
+    const phoneGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 1,
     );
 
