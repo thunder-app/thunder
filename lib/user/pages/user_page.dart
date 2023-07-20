@@ -23,7 +23,6 @@ class UserPage extends StatefulWidget {
 class _UserPageState extends State<UserPage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -82,8 +81,7 @@ class _UserPageState extends State<UserPage> {
       ),
       body: MultiBlocProvider(
         providers: [
-          BlocProvider<UserBloc>(
-              create: (BuildContext context) => UserBloc()),
+          BlocProvider<UserBloc>(create: (BuildContext context) => UserBloc()),
           BlocProvider(create: (context) => community.CommunityBloc()),
         ],
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
@@ -114,8 +112,7 @@ class _UserPageState extends State<UserPage> {
               return ErrorMessage(
                 message: state.errorMessage,
                 action: () {
-                  context.read<UserBloc>().add(GetUserEvent(userId: widget
-                      .userId, reset: true));
+                  context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true));
                 },
                 actionText: 'Refresh Content',
               );

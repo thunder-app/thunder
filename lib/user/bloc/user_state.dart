@@ -3,7 +3,6 @@ part of 'user_bloc.dart';
 enum UserStatus { initial, loading, refreshing, success, empty, failure }
 
 class UserState extends Equatable {
-
   const UserState({
     this.status = UserStatus.initial,
     this.userId,
@@ -92,19 +91,20 @@ class UserState extends Equatable {
 
   @override
   List<Object?> get props => [
-    status,
-    userId,
-    personView,
-    comments,
-    posts,
-    page,
-    savedPosts,
-    moderates,
-    errorMessage,
-    hasReachedPostEnd,
-    hasReachedSavedPostEnd,
-    hasReachedCommentEnd,
-    hasReachedSavedCommentEnd,
-    personBlocks,
-    blockedPerson];
+        status,
+        userId,
+        personView,
+        comments,
+        posts,
+        page,
+        savedPosts,
+        moderates,
+        errorMessage,
+        hasReachedPostEnd,
+        hasReachedSavedPostEnd,
+        hasReachedCommentEnd,
+        hasReachedSavedCommentEnd,
+        personBlocks,
+        blockedPerson
+      ];
 }

@@ -57,7 +57,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       create: (context) => currentCommunityBloc = CommunityBloc(),
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
-          if (previousState.subscribedType != currentState.subscribedType ) {
+          if (previousState.subscribedType != currentState.subscribedType) {
             context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
           }
 

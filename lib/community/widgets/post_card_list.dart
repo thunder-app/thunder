@@ -53,7 +53,7 @@ class PostCardList extends StatefulWidget {
   State<PostCardList> createState() => _PostCardListState();
 }
 
-class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin{
+class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin {
   bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
@@ -159,7 +159,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                       });
                     },
                     onHorizontalDragUpdate: (details) {
-                      if( details.delta.dx < -3) {
+                      if (details.delta.dx < -3) {
                         setState(() {
                           _displaySidebar = true;
                         });
@@ -208,7 +208,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
             ),
             GestureDetector(
               onHorizontalDragUpdate: (details) {
-                if( details.delta.dx > 3) {
+                if (details.delta.dx > 3) {
                   setState(() {
                     _displaySidebar = false;
                   });
@@ -218,43 +218,55 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 children: [
                   AnimatedSwitcher(
                     duration: const Duration(milliseconds: 300),
-                    child: _displaySidebar ? GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _displaySidebar = false;
-                        });
-                      },
-                      child: CommunityHeader(communityInfo: widget.communityInfo, isSidebarOpen: _displaySidebar,),
-                    ) : null,
+                    child: _displaySidebar
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _displaySidebar = false;
+                              });
+                            },
+                            child: CommunityHeader(
+                              communityInfo: widget.communityInfo,
+                              isSidebarOpen: _displaySidebar,
+                            ),
+                          )
+                        : null,
                   ),
                   Expanded(
                     child: Stack(
                       children: [
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _displaySidebar = false;
-                              });
-                            },
-                            child: Container(
-                              color: Colors.black.withOpacity(0.75),
-                            ),
-                          ) : null,
+                          child: _displaySidebar
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _displaySidebar = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.75),
+                                  ),
+                                )
+                              : null,
                         ),
                         AnimatedSwitcher(
                           switchInCurve: Curves.decelerate,
                           switchOutCurve: Curves.easeOut,
                           transitionBuilder: (child, animation) {
                             return SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0))
-                                  .animate(animation),
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
                               child: child,
                             );
                           },
                           duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar ? CommunitySidebar(communityInfo: widget.communityInfo, subscribedType: widget.subscribeType, blockedCommunity: widget.blockedCommunity,) : null,
+                          child: _displaySidebar
+                              ? CommunitySidebar(
+                                  communityInfo: widget.communityInfo,
+                                  subscribedType: widget.subscribeType,
+                                  blockedCommunity: widget.blockedCommunity,
+                                )
+                              : null,
                         ),
                       ],
                     ),

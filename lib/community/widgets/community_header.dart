@@ -30,10 +30,7 @@ class CommunityHeader extends StatelessWidget {
           child: Container(
             decoration: communityInfo?.communityView.community.banner != null
                 ? BoxDecoration(
-                    image: DecorationImage(
-                        image: CachedNetworkImageProvider(
-                            communityInfo!.communityView.community.banner!),
-                        fit: BoxFit.cover),
+                    image: DecorationImage(image: CachedNetworkImageProvider(communityInfo!.communityView.community.banner!), fit: BoxFit.cover),
                   )
                 : null,
             child: Container(
@@ -53,8 +50,7 @@ class CommunityHeader extends StatelessWidget {
                     )
                   : null,
               child: Padding(
-                padding: const EdgeInsets.only(
-                    top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+                padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -62,17 +58,8 @@ class CommunityHeader extends StatelessWidget {
                     Row(
                       children: [
                         CircleAvatar(
-                          backgroundColor:
-                              communityInfo?.communityView.community.icon !=
-                                      null
-                                  ? Colors.transparent
-                                  : theme.colorScheme.onBackground,
-                          foregroundImage: communityInfo
-                                      ?.communityView.community.icon !=
-                                  null
-                              ? CachedNetworkImageProvider(
-                                  communityInfo!.communityView.community.icon!)
-                              : null,
+                          backgroundColor: communityInfo?.communityView.community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
+                          foregroundImage: communityInfo?.communityView.community.icon != null ? CachedNetworkImageProvider(communityInfo!.communityView.community.icon!) : null,
                           maxRadius: 45,
                         ),
                         const SizedBox(width: 20.0),
@@ -82,12 +69,8 @@ class CommunityHeader extends StatelessWidget {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
-                                communityInfo?.communityView.community.title ??
-                                    communityInfo
-                                        ?.communityView.community.name ??
-                                    'N/A',
-                                style: theme.textTheme.headlineSmall
-                                    ?.copyWith(fontWeight: FontWeight.w600),
+                                communityInfo?.communityView.community.title ?? communityInfo?.communityView.community.name ?? 'N/A',
+                                style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                               ),
                               Text('${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'),
                               const SizedBox(height: 8.0),
@@ -95,21 +78,12 @@ class CommunityHeader extends StatelessWidget {
                                 children: [
                                   IconText(
                                     icon: const Icon(Icons.people_rounded),
-                                    text: formatNumberToK(communityInfo
-                                            ?.communityView
-                                            .counts
-                                            .subscribers ??
-                                        0),
+                                    text: formatNumberToK(communityInfo?.communityView.counts.subscribers ?? 0),
                                   ),
                                   const SizedBox(width: 8.0),
                                   IconText(
-                                    icon: const Icon(
-                                        Icons.calendar_month_rounded),
-                                    text: formatNumberToK(communityInfo
-                                            ?.communityView
-                                            .counts
-                                            .usersActiveMonth ??
-                                        0),
+                                    icon: const Icon(Icons.calendar_month_rounded),
+                                    text: formatNumberToK(communityInfo?.communityView.counts.usersActiveMonth ?? 0),
                                   ),
                                 ],
                               ),
@@ -117,13 +91,9 @@ class CommunityHeader extends StatelessWidget {
                           ),
                         ),
                         Icon(
-                          isSidebarOpen != null && isSidebarOpen!
-                              ? Icons.chevron_right_rounded
-                              : Icons.chevron_left_rounded,
+                          isSidebarOpen != null && isSidebarOpen! ? Icons.chevron_right_rounded : Icons.chevron_left_rounded,
                           size: 50,
-                          shadows: const <Shadow>[
-                            Shadow(color: Colors.black, blurRadius: 5.0)
-                          ],
+                          shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 5.0)],
                         )
                       ],
                     ),

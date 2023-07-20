@@ -114,7 +114,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                   });
                 },
                 onHorizontalDragUpdate: (details) {
-                  if( details.delta.dx < -3) {
+                  if (details.delta.dx < -3) {
                     setState(() {
                       _displaySidebar = true;
                     });
@@ -183,7 +183,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
           ),
           GestureDetector(
             onHorizontalDragUpdate: (details) {
-              if( details.delta.dx > 3) {
+              if (details.delta.dx > 3) {
                 setState(() {
                   _displaySidebar = false;
                 });
@@ -193,43 +193,56 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
               children: [
                 AnimatedSwitcher(
                   duration: const Duration(milliseconds: 300),
-                  child: _displaySidebar ? GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _displaySidebar = false;
-                      });
-                    },
-                    child: UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar,),
-                  ) : null,
+                  child: _displaySidebar
+                      ? GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              _displaySidebar = false;
+                            });
+                          },
+                          child: UserHeader(
+                            userInfo: widget.personView,
+                            isSidebarOpen: _displaySidebar,
+                          ),
+                        )
+                      : null,
                 ),
                 Expanded(
                   child: Stack(
                     children: [
                       AnimatedSwitcher(
                         duration: const Duration(milliseconds: 300),
-                        child: _displaySidebar ? GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              _displaySidebar = false;
-                            });
-                          },
-                          child: Container(
-                            color: Colors.black.withOpacity(0.75),
-                          ),
-                        ) : null,
+                        child: _displaySidebar
+                            ? GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _displaySidebar = false;
+                                  });
+                                },
+                                child: Container(
+                                  color: Colors.black.withOpacity(0.75),
+                                ),
+                              )
+                            : null,
                       ),
                       AnimatedSwitcher(
                         switchInCurve: Curves.decelerate,
                         switchOutCurve: Curves.easeOut,
                         transitionBuilder: (child, animation) {
                           return SlideTransition(
-                            position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0))
-                                .animate(animation),
+                            position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
                             child: child,
                           );
                         },
                         duration: const Duration(milliseconds: 300),
-                        child: _displaySidebar ? UserSidebar(userInfo: widget.personView, moderates: widget.moderates, isAccountUser: widget.isAccountUser, blockedPerson: widget.blockedPerson,) : null,
+                        child: _displaySidebar
+                            ? UserSidebar(
+                                userInfo: widget.personView,
+                                moderates: widget.moderates,
+                                isAccountUser: widget.isAccountUser,
+                                blockedPerson: widget.blockedPerson,
+                              )
+                            : null,
                       ),
                     ],
                   ),
