@@ -16,6 +16,7 @@ class ThunderState extends Equatable {
     this.defaultPostListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
+    this.disableFeedFab = false,
 
     // Post Settings
     this.collapseParentCommentOnGesture = true,
@@ -33,6 +34,7 @@ class ThunderState extends Equatable {
     this.bottomNavBarDoubleTapGestures = false,
     this.tabletMode = false,
     this.markPostReadOnMediaView = false,
+    this.disablePostFabs = false,
 
     // Comment Settings
     this.showCommentButtonActions = false,
@@ -82,6 +84,7 @@ class ThunderState extends Equatable {
   final PostListingType defaultPostListingType;
   final SortType defaultSortType;
   final CommentSortType defaultCommentSortType;
+  final bool disableFeedFab;
 
   // Post Settings
   final bool collapseParentCommentOnGesture;
@@ -99,6 +102,7 @@ class ThunderState extends Equatable {
   final bool bottomNavBarDoubleTapGestures;
   final bool tabletMode;
   final bool markPostReadOnMediaView;
+  final bool disablePostFabs;
 
   // Comment Settings
   final bool showCommentButtonActions;
@@ -145,6 +149,7 @@ class ThunderState extends Equatable {
     PostListingType? defaultPostListingType,
     SortType? defaultSortType,
     CommentSortType? defaultCommentSortType,
+    bool? disableFeedFab,
 
     // Post Settings
     bool? collapseParentCommentOnGesture,
@@ -162,6 +167,7 @@ class ThunderState extends Equatable {
     bool? bottomNavBarDoubleTapGestures,
     bool? markPostReadOnMediaView,
     bool? useDisplayNames,
+    bool? disablePostFabs,
 
     // Comment Settings
     bool? showCommentButtonActions,
@@ -207,6 +213,7 @@ class ThunderState extends Equatable {
       defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
+      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
@@ -223,6 +230,7 @@ class ThunderState extends Equatable {
       bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
       bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      disablePostFabs: disablePostFabs ?? this.disablePostFabs,
 
       // Comment Settings
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,

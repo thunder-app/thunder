@@ -63,6 +63,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Feed Settings
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
+      bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -89,6 +90,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
+      bool disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Comment Settings
@@ -145,6 +147,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        disablePostFabs: disablePostFabs,
+        disableFeedFab: disableFeedFab,
         // Comment Actions
         showCommentButtonActions: showCommentButtonActions,
         //

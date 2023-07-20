@@ -28,6 +28,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   SortType defaultSortType = DEFAULT_SORT_TYPE;
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
   bool useDisplayNames = true;
+  bool disableFeedFab = false;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -44,6 +45,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
+  bool disablePostFabs = false;
 
   // Comment Settings
   bool showCommentButtonActions = false;
@@ -91,6 +93,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_use_display_names_for_users', value);
         setState(() => useDisplayNames = value);
         break;
+      case 'setting_disable_feed_fab':
+        await prefs.setBool('setting_disable_feed_fab', value);
+        setState(() => disableFeedFab = value);
+        break;
 
       // Post Settings
       case 'setting_general_use_compact_view':
@@ -132,6 +138,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
+        break;
+      case 'setting_disable_post_fabs':
+        await prefs.setBool('setting_disable_post_fabs', value);
+        setState(() => disablePostFabs = value);
         break;
 
       // Comments
@@ -179,6 +189,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
+      disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -198,6 +209,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
+      disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
@@ -299,6 +311,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences('setting_use_display_names_for_users', value),
                         ),
+                        ToggleOption(
+                          description: 'Disable Floating Buttons on Feed',
+                          value: disableFeedFab,
+                          iconEnabled: Icons.visibility_off,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences('setting_disable_feed_fab', value),
+                        ),
                         ListOption(
                           description: 'Default Feed Type',
                           value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
@@ -347,6 +366,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         const SizedBox(
                           height: 8,
+                        ),
+                        ToggleOption(
+                          description: 'Disable Floating Buttons on Posts',
+                          value: disablePostFabs,
+                          iconEnabled: Icons.visibility_off,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences('setting_disable_post_fabs', value),
                         ),
                         ToggleOption(
                           description: 'Compact List View',
