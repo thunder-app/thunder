@@ -21,7 +21,8 @@ class DB {
     return _database;
   }
 
-  Future<bool> doesTableHaveColumn(Database db, String tableName, String columnName) async {
+  Future<bool> doesTableHaveColumn(
+      Database db, String tableName, String columnName) async {
     List<Map<String, dynamic>> tableInfo = await db.rawQuery(
       "PRAGMA table_info('$tableName')",
     );
@@ -49,13 +50,15 @@ class DB {
       join(await getDatabasesPath(), 'thunder.db'),
       version: 3,
       onCreate: (db, version) {
-        return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+        return db.execute(
+            'CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         var batch = db.batch();
 
         if (oldVersion < 3) {
-          bool doesUserIdExist = await doesTableHaveColumn(db, 'accounts', 'userId');
+          bool doesUserIdExist =
+              await doesTableHaveColumn(db, 'accounts', 'userId');
 
           if (!doesUserIdExist) {
             _updateTableAccountsV1toV2(batch);

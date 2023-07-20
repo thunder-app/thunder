@@ -15,13 +15,18 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:extended_image/extended_image.dart';
 
-const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
+const List<Widget> postTypes = <Widget>[
+  Text('Text'),
+  Text('Image'),
+  Text('Link')
+];
 
 class CreatePostPage extends StatefulWidget {
   final int communityId;
   final FullCommunityView? communityInfo;
 
-  const CreatePostPage({super.key, required this.communityId, this.communityInfo});
+  const CreatePostPage(
+      {super.key, required this.communityId, this.communityInfo});
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -46,13 +51,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     _bodyTextController.addListener(() {
-      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
-      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
+      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled)
+        setState(() => isClearButtonDisabled = true);
+      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled)
+        setState(() => isClearButtonDisabled = false);
     });
 
     _titleTextController.addListener(() {
-      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
-      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled)
+        setState(() => isSubmitButtonDisabled = true);
+      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled)
+        setState(() => isSubmitButtonDisabled = false);
     });
   }
 
@@ -70,14 +79,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Icons.eighteen_up_rating,
                       semanticLabel: "Not Safe For Work",
                     )
-                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Safe For Work")),
+                  : const Icon(Icons.eighteen_up_rating_outlined,
+                      semanticLabel: "Safe For Work")),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
                 : () {
                     image != ''
-                        ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: image))
-                        : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                        ? context.read<CommunityBloc>().add(CreatePostEvent(
+                            name: _titleTextController.text,
+                            body: _bodyTextController.text,
+                            nsfw: isNSFW,
+                            url: image))
+                        : context.read<CommunityBloc>().add(CreatePostEvent(
+                            name: _titleTextController.text,
+                            body: _bodyTextController.text,
+                            nsfw: isNSFW));
                     Navigator.of(context).pop();
                   },
             icon: const Icon(
@@ -90,8 +107,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
       body: BlocListener<ImageBloc, ImageState>(
         listenWhen: (previous, current) => (previous.status != current.status),
         listener: (context, state) {
-          if (state.status == ImageStatus.success && state.bodyImage!.isNotEmpty) {
-            setState(() => _bodyTextController.text += "![](${state.bodyImage})");
+          if (state.status == ImageStatus.success &&
+              state.bodyImage!.isNotEmpty) {
+            setState(
+                () => _bodyTextController.text += "![](${state.bodyImage})");
             state.copyWith(bodyImage: '');
           }
           if (state.status == ImageStatus.success && image != state.imageUrl) {
@@ -119,13 +138,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text('Create Post', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  Text('Create Post',
+                      style: theme.textTheme.headlineMedium
+                          ?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12.0),
-                  Text(widget.communityInfo?.communityView.community.name ?? 'N/A', style: theme.textTheme.titleLarge),
                   Text(
-                    fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
+                      widget.communityInfo?.communityView.community.name ??
+                          'N/A',
+                      style: theme.textTheme.titleLarge),
+                  Text(
+                    fetchInstanceNameFromUrl(widget
+                            .communityInfo?.communityView.community.actorId) ??
+                        'N/A',
                     style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.textTheme.titleMedium?.color?.withOpacity(0.7),
+                      color:
+                          theme.textTheme.titleMedium?.color?.withOpacity(0.7),
                       fontWeight: FontWeight.w400,
                     ),
                   ),
@@ -180,31 +207,45 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   },
                                   icon: const Icon(
                                     Icons.cancel,
-                                    shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],
+                                    shadows: [
+                                      Shadow(
+                                          color: Colors.black, blurRadius: 15.0)
+                                    ],
                                   ),
                                 ),
                               )
                             ])
                           : image == 'loading'
-                              ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                              ? const Center(
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2))
                               : const SizedBox(height: 20),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                        TextButton(
-                          child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
-                          onPressed: () async {
-                            error = false;
-                            final ImagePicker picker = ImagePicker();
-                            XFile? file = await picker.pickImage(source: ImageSource.gallery);
-                            try {
-                              Account? account = await fetchActiveProfileAccount();
-                              String path = file!.path;
-                              imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
-                            } catch (e) {
-                              null;
-                            }
-                          },
-                        )
-                      ]),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            TextButton(
+                              child: image == ''
+                                  ? const Text("Upload Image")
+                                  : const Text("Upload Image to the Body"),
+                              onPressed: () async {
+                                error = false;
+                                final ImagePicker picker = ImagePicker();
+                                XFile? file = await picker.pickImage(
+                                    source: ImageSource.gallery);
+                                try {
+                                  Account? account =
+                                      await fetchActiveProfileAccount();
+                                  String path = file!.path;
+                                  imageBloc.add(ImageUploadEvent(
+                                      imageFile: path,
+                                      instance: account!.instance!,
+                                      jwt: account.jwt!));
+                                } catch (e) {
+                                  null;
+                                }
+                              },
+                            )
+                          ]),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         mainAxisAlignment: MainAxisAlignment.start,
@@ -214,14 +255,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             height: 200,
                             child: showPreview
                                 ? Container(
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                                    decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
                                     padding: const EdgeInsets.all(12),
                                     child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(body: description),
+                                      child:
+                                          CommonMarkdownBody(body: description),
                                     ),
                                   )
                                 : MarkdownTextInput(
-                                    (String value) => setState(() => description = value),
+                                    (String value) =>
+                                        setState(() => description = value),
                                     description,
                                     label: 'Post Body',
                                     maxLines: 5,
@@ -255,8 +301,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 child: const Text('Clear'),
                               ),
                               TextButton(
-                                onPressed: () => setState(() => showPreview = !showPreview),
-                                child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                                onPressed: () =>
+                                    setState(() => showPreview = !showPreview),
+                                child: Text(showPreview == true
+                                    ? 'Show Markdown'
+                                    : 'Show Preview'),
                               ),
                             ],
                           ),

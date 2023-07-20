@@ -21,7 +21,8 @@ part 'thunder_state.dart';
 const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
@@ -43,7 +44,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   /// This event should be triggered at the start of the app.
   ///
   /// It initializes the local database, checks for updates from GitHub, and loads the user's preferences.
-  Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
+  Future<void> _initializeAppEvent(
+      InitializeAppEvent event, Emitter<ThunderState> emit) async {
     try {
       // Check for any updates from GitHub
       Version version = await fetchVersion();
@@ -51,84 +53,144 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, version: version));
     } catch (e) {
-      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
+  Future<void> _userPreferencesChangeEvent(
+      UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
 
       // Feed Settings
-      bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
+      bool useCompactView =
+          prefs.getBool('setting_general_use_compact_view') ?? false;
+      bool showTitleFirst =
+          prefs.getBool('setting_general_show_title_first') ?? false;
       bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(
+            prefs.getString("setting_general_default_listing_type") ??
+                DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(
+            prefs.getString("setting_general_default_sort_type") ??
+                DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultPostListingType =
+            PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
       // Post Settings
-      bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-      bool showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
-      bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
-      bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
-      bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
-      bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
-      bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
-      bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      bool useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
-      bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
-      bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      bool collapseParentCommentOnGesture = prefs
+              .getBool('setting_comments_collapse_parent_comment_on_gesture') ??
+          true;
+      bool showThumbnailPreviewOnRight =
+          prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
+      bool showTextPostIndicator =
+          prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
+      bool showVoteActions =
+          prefs.getBool('setting_general_show_vote_actions') ?? true;
+      bool showSaveAction =
+          prefs.getBool('setting_general_show_save_action') ?? true;
+      bool showFullHeightImages =
+          prefs.getBool('setting_general_show_full_height_images') ?? false;
+      bool showEdgeToEdgeImages =
+          prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
+      bool showTextContent =
+          prefs.getBool('setting_general_show_text_content') ?? false;
+      bool hideNsfwPreviews =
+          prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      bool useDisplayNames =
+          prefs.getBool('setting_use_display_names_for_users') ?? true;
+      bool bottomNavBarSwipeGestures =
+          prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bool bottomNavBarDoubleTapGestures =
+          prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
-      bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
-      bool disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
-      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      bool markPostReadOnMediaView =
+          prefs.getBool('setting_general_mark_post_read_on_media_view') ??
+              false;
+      bool disablePostFabs =
+          prefs.getBool('setting_disable_post_fabs') ?? false;
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(
+          prefs.getString("setting_post_default_comment_sort_type") ??
+              DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Comment Settings
-      bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
+      bool showCommentButtonActions =
+          prefs.getBool('setting_general_show_comment_button_actions') ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
-          NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+          NestedCommentIndicatorStyle.values.byName(prefs.getString(
+                  "setting_general_nested_comment_indicator_style") ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
-          NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+          NestedCommentIndicatorColor.values.byName(prefs.getString(
+                  "setting_general_nested_comment_indicator_color") ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
-      bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
-      bool showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
+      bool openInExternalBrowser =
+          prefs.getBool('setting_links_open_in_external_browser') ?? false;
+      bool showLinkPreviews =
+          prefs.getBool('setting_general_show_link_previews') ?? true;
 
       // Notification Settings
-      bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+      bool showInAppUpdateNotification =
+          prefs.getBool('setting_notifications_show_inapp_update') ?? true;
 
       // Post Gestures
-      bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
-      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.save.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.toggleRead.name);
+      bool enablePostGestures =
+          prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
+      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_post_left_primary_gesture') ??
+              SwipeAction.upvote.name);
+      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_post_left_secondary_gesture') ??
+              SwipeAction.downvote.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_post_right_primary_gesture') ??
+              SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_post_right_secondary_gesture') ??
+              SwipeAction.toggleRead.name);
 
       // Comment Gestures
-      bool enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
-      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name);
-      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
+      bool enableCommentGestures =
+          prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
+      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_comment_left_primary_gesture') ??
+              SwipeAction.upvote.name);
+      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_comment_left_secondary_gesture') ??
+              SwipeAction.downvote.name);
+      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_comment_right_primary_gesture') ??
+              SwipeAction.reply.name);
+      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(
+          prefs.getString('setting_gesture_comment_right_secondary_gesture') ??
+              SwipeAction.save.name);
 
       // Theme Settings
-      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
-      bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
+      ThemeType themeType = ThemeType.values[
+          prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
+      bool useMaterialYouTheme =
+          prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
-      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_title_font_size_scale') ?? FontScale.base.name);
-      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_content_font_size_scale') ?? FontScale.base.name);
+      FontScale titleFontSizeScale = FontScale.values.byName(
+          prefs.getString('setting_theme_title_font_size_scale') ??
+              FontScale.base.name);
+      FontScale contentFontSizeScale = FontScale.values.byName(
+          prefs.getString('setting_theme_content_font_size_scale') ??
+              FontScale.base.name);
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -178,11 +240,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         contentFontSizeScale: contentFontSizeScale,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  void _onScrollToTopEvent(OnScrollToTopEvent event, Emitter<ThunderState> emit) {
+  void _onScrollToTopEvent(
+      OnScrollToTopEvent event, Emitter<ThunderState> emit) {
     emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
   }
 }

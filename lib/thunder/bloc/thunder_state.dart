@@ -216,14 +216,19 @@ class ThunderState extends Equatable {
       // Feed Settings
       useCompactView: useCompactView ?? this.useCompactView,
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
-      defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
+      defaultPostListingType:
+          defaultPostListingType ?? this.defaultPostListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
-      defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
+      defaultCommentSortType:
+          defaultCommentSortType ?? this.defaultCommentSortType,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       // Post Settings
-      collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
-      showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
-      showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
+      collapseParentCommentOnGesture:
+          collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
+      showThumbnailPreviewOnRight:
+          showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
+      showTextPostIndicator:
+          showTextPostIndicator ?? this.showTextPostIndicator,
       showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
       showVoteActions: showVoteActions ?? this.showVoteActions,
       showSaveAction: showSaveAction ?? this.showSaveAction,
@@ -233,32 +238,49 @@ class ThunderState extends Equatable {
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       tabletMode: tabletMode ?? this.tabletMode,
-      bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
-      bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
-      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      bottomNavBarSwipeGestures:
+          bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
+      bottomNavBarDoubleTapGestures:
+          bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+      markPostReadOnMediaView:
+          markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
 
       // Comment Settings
-      showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
-      nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
-      nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
+      showCommentButtonActions:
+          showCommentButtonActions ?? this.showCommentButtonActions,
+      nestedCommentIndicatorStyle:
+          nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
+      nestedCommentIndicatorColor:
+          nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
       // Link Settings
-      openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
+      openInExternalBrowser:
+          openInExternalBrowser ?? this.openInExternalBrowser,
       // Notification Settings
-      showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
+      showInAppUpdateNotification:
+          showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       // Post Gestures
       enablePostGestures: enablePostGestures ?? this.enablePostGestures,
-      leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
-      leftSecondaryPostGesture: leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
-      rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
-      rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
+      leftPrimaryPostGesture:
+          leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
+      leftSecondaryPostGesture:
+          leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
+      rightPrimaryPostGesture:
+          rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
+      rightSecondaryPostGesture:
+          rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
       // Comment Gestures
-      enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
-      leftPrimaryCommentGesture: leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
-      leftSecondaryCommentGesture: leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
-      rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
-      rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
+      enableCommentGestures:
+          enableCommentGestures ?? this.enableCommentGestures,
+      leftPrimaryCommentGesture:
+          leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
+      leftSecondaryCommentGesture:
+          leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
+      rightPrimaryCommentGesture:
+          rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
+      rightSecondaryCommentGesture:
+          rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
       // Theme Settings
       themeType: themeType ?? this.themeType,

@@ -27,10 +27,12 @@ class DebugSettingsPage extends StatelessWidget {
                 style: theme.textTheme.titleLarge,
               ),
               const SizedBox(height: 16.0),
-              const Text('The following debug settings should only be used for troubleshooting purposes.'),
+              const Text(
+                  'The following debug settings should only be used for troubleshooting purposes.'),
               const SizedBox(height: 32.0),
               TextButton(
-                style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
+                style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(60)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -38,7 +40,8 @@ class DebugSettingsPage extends StatelessWidget {
                     const SizedBox(width: 8.0),
                     Text(
                       'Delete Local Preferences',
-                      style: TextStyle(color: theme.colorScheme.onSecondaryContainer),
+                      style: TextStyle(
+                          color: theme.colorScheme.onSecondaryContainer),
                     ),
                   ],
                 ),
@@ -58,7 +61,8 @@ class DebugSettingsPage extends StatelessWidget {
                         const SizedBox(width: 12),
                         FilledButton(
                             onPressed: () {
-                              SharedPreferences.getInstance().then((prefs) async {
+                              SharedPreferences.getInstance()
+                                  .then((prefs) async {
                                 await prefs.clear();
 
                                 SnackBar snackBar = const SnackBar(
@@ -66,9 +70,12 @@ class DebugSettingsPage extends StatelessWidget {
                                   behavior: SnackBarBehavior.floating,
                                 );
 
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((timeStamp) {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 });
                               });
 
@@ -84,7 +91,8 @@ class DebugSettingsPage extends StatelessWidget {
               TextButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(60),
-                  backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.primary),
+                  backgroundColor: theme.colorScheme.primaryContainer
+                      .harmonizeWith(theme.colorScheme.primary),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -93,7 +101,8 @@ class DebugSettingsPage extends StatelessWidget {
                     const SizedBox(width: 8.0),
                     Text(
                       'Delete Local Database',
-                      style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                      style: TextStyle(
+                          color: theme.colorScheme.onPrimaryContainer),
                     ),
                   ],
                 ),
@@ -113,17 +122,21 @@ class DebugSettingsPage extends StatelessWidget {
                         const SizedBox(width: 12),
                         FilledButton(
                             onPressed: () async {
-                              String path = join(await getDatabasesPath(), 'thunder.db');
+                              String path =
+                                  join(await getDatabasesPath(), 'thunder.db');
                               await databaseFactory.deleteDatabase(path);
 
                               SnackBar snackBar = const SnackBar(
-                                content: Text('Cleared local database. Restart Thunder for changes to take effect.'),
+                                content: Text(
+                                    'Cleared local database. Restart Thunder for changes to take effect.'),
                                 behavior: SnackBarBehavior.floating,
                               );
 
-                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                              WidgetsBinding.instance
+                                  .addPostFrameCallback((timeStamp) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(snackBar);
                               });
 
                               if (context.mounted) Navigator.of(context).pop();

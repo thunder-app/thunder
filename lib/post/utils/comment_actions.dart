@@ -20,10 +20,12 @@ void triggerCommentAction({
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(commentViewTree.commentView!.comment.id,
+          voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
-      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(commentViewTree.commentView!.comment.id,
+          voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
@@ -36,7 +38,8 @@ void triggerCommentAction({
         showDragHandle: true,
         builder: (context) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom + 40),
             child: FractionallySizedBox(
               heightFactor: 0.8,
               child: MultiBlocProvider(
@@ -44,7 +47,9 @@ void triggerCommentAction({
                   BlocProvider<PostBloc>.value(value: postBloc),
                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
                 ],
-                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit),
+                child: CreateCommentModal(
+                    commentView: commentViewTree,
+                    isEdit: swipeAction == SwipeAction.edit),
               ),
             ),
           );
@@ -76,7 +81,9 @@ IconData? getSwipeActionIcon(SwipeAction swipeAction, {bool read = false}) {
     case SwipeAction.save:
       return Icons.star_rounded;
     case SwipeAction.toggleRead:
-      return read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined;
+      return read
+          ? Icons.mark_email_unread_rounded
+          : Icons.mark_email_read_outlined;
     default:
       return null;
   }
@@ -103,7 +110,8 @@ Color getSwipeActionColor(SwipeAction swipeAction) {
   }
 }
 
-DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderState state) {
+DismissDirection determineCommentSwipeDirection(
+    bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
 
   // If all of the actions are none, then disable swiping
@@ -115,18 +123,22 @@ DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderStat
   }
 
   // If there is at least 1 action on either side, then allow swiping from both sides
-  if ((state.leftPrimaryCommentGesture != SwipeAction.none || state.leftSecondaryCommentGesture != SwipeAction.none) &&
-      (state.rightPrimaryCommentGesture != SwipeAction.none || state.rightSecondaryCommentGesture != SwipeAction.none)) {
+  if ((state.leftPrimaryCommentGesture != SwipeAction.none ||
+          state.leftSecondaryCommentGesture != SwipeAction.none) &&
+      (state.rightPrimaryCommentGesture != SwipeAction.none ||
+          state.rightSecondaryCommentGesture != SwipeAction.none)) {
     return DismissDirection.horizontal;
   }
 
   // If there is no action on left side, disable left side swiping
-  if (state.leftPrimaryCommentGesture == SwipeAction.none && state.leftSecondaryCommentGesture == SwipeAction.none) {
+  if (state.leftPrimaryCommentGesture == SwipeAction.none &&
+      state.leftSecondaryCommentGesture == SwipeAction.none) {
     return DismissDirection.endToStart;
   }
 
   // If there is no action on the right side, disable right side swiping
-  if (state.rightPrimaryCommentGesture == SwipeAction.none && state.rightSecondaryCommentGesture == SwipeAction.none) {
+  if (state.rightPrimaryCommentGesture == SwipeAction.none &&
+      state.rightSecondaryCommentGesture == SwipeAction.none) {
     return DismissDirection.startToEnd;
   }
 

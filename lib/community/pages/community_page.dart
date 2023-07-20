@@ -23,13 +23,15 @@ class CommunityPage extends StatefulWidget {
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage(
+      {super.key, this.communityId, this.communityName, this.scaffoldKey});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
 }
 
-class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveClientMixin<CommunityPage> {
+class _CommunityPageState extends State<CommunityPage>
+    with AutomaticKeepAliveClientMixin<CommunityPage> {
   @override
   bool get wantKeepAlive => true;
 
@@ -56,13 +58,16 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       child: BlocConsumer<CommunityBloc, CommunityState>(
         listenWhen: (previousState, currentState) {
           if (previousState.subscribedType != currentState.subscribedType) {
-            context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
+            context
+                .read<account_bloc.AccountBloc>()
+                .add(account_bloc.GetAccountInformation());
           }
 
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) =>
+                  sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -76,10 +81,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               content: Text(state.errorMessage ?? 'No error message available'),
               behavior: SnackBarBehavior.floating,
             );
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
+                ScaffoldMessenger.of(context).showSnackBar(snackBar));
           }
 
-          if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
+          if (state.status == CommunityStatus.success &&
+              state.blockedCommunity != null) {
             SnackBar snackBar = SnackBar(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -97,7 +104,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         visualDensity: VisualDensity.compact,
                         onPressed: () {
                           ScaffoldMessenger.of(context).clearSnackBars();
-                          context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
+                          context.read<CommunityBloc>().add(BlockCommunityEvent(
+                              communityId: state
+                                  .blockedCommunity!.communityView.community.id,
+                              block: false));
                         },
                         icon: Icon(
                           Icons.undo_rounded,
@@ -109,14 +119,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               ),
               behavior: SnackBarBehavior.floating,
             );
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) =>
+                ScaffoldMessenger.of(context).showSnackBar(snackBar));
           }
         },
         builder: (context, state) {
           return BlocListener<AuthBloc, AuthState>(
             listenWhen: (previous, current) {
-              if (previous.account == null && current.account != null && previous.account?.id != current.account?.id) {
-                context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType));
+              if (previous.account == null &&
+                  current.account != null &&
+                  previous.account?.id != current.account?.id) {
+                context.read<CommunityBloc>().add(
+                    GetCommunityPostsEvent(reset: true, sortType: sortType));
                 return true;
               }
 
@@ -133,20 +147,29 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if ((state.communityId != null || state.communityName != null) && isUserLoggedIn)
+                      if ((state.communityId != null ||
+                              state.communityName != null) &&
+                          isUserLoggedIn)
                         IconButton(
                           icon: Icon(
                             switch (state.subscribedType) {
-                              SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                              SubscribedType.notSubscribed =>
+                                Icons.add_circle_outline_rounded,
                               SubscribedType.pending => Icons.pending_outlined,
-                              SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                              SubscribedType.subscribed =>
+                                Icons.remove_circle_outline_rounded,
                               _ => Icons.add_circle_outline_rounded,
                             },
-                            semanticLabel: (state.subscribedType == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                            semanticLabel: (state.subscribedType ==
+                                        SubscribedType.notSubscribed ||
+                                    state.subscribedType == null)
+                                ? 'Subscribe'
+                                : 'Unsubscribe',
                           ),
                           tooltip: switch (state.subscribedType) {
                             SubscribedType.notSubscribed => 'Subscribe',
-                            SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                            SubscribedType.pending =>
+                              'Unsubscribe (subscription pending)',
                             SubscribedType.subscribed => 'Unsubscribe',
                             _ => null,
                           },
@@ -155,17 +178,27 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             context.read<CommunityBloc>().add(
                                   ChangeCommunitySubsciptionStatusEvent(
                                     communityId: state.communityId!,
-                                    follow: (state.subscribedType == null) ? true : (state.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                    follow: (state.subscribedType == null)
+                                        ? true
+                                        : (state.subscribedType ==
+                                                SubscribedType.notSubscribed
+                                            ? true
+                                            : false),
                                   ),
                                 );
                           },
                         ),
                       IconButton(
-                          icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                          icon: const Icon(Icons.refresh_rounded,
+                              semanticLabel: 'Refresh'),
                           onPressed: () {
                             HapticFeedback.mediumImpact();
-                            context.read<AccountBloc>().add(GetAccountInformation());
-                            return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                            context
+                                .read<AccountBloc>()
+                                .add(GetAccountInformation());
+                            return context
+                                .read<CommunityBloc>()
+                                .add(GetCommunityPostsEvent(
                                   reset: true,
                                   sortType: sortType,
                                   communityId: state.communityId,
@@ -185,18 +218,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   )
                 ],
               ),
-              drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-              floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
+              drawer:
+                  (widget.communityId != null || widget.communityName != null)
+                      ? null
+                      : const CommunityDrawer(),
+              floatingActionButton: ((state.communityId != null ||
+                          widget.communityName != null) &&
+                      isUserLoggedIn)
                   ? FloatingActionButton(
                       onPressed: () {
-                        CommunityBloc communityBloc = context.read<CommunityBloc>();
+                        CommunityBloc communityBloc =
+                            context.read<CommunityBloc>();
 
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) {
                               return BlocProvider<CommunityBloc>.value(
                                 value: communityBloc,
-                                child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                                child: CreatePostPage(
+                                    communityId: state.communityId!,
+                                    communityInfo: state.communityInfo),
                               );
                             },
                           ),
@@ -226,7 +267,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     switch (state.status) {
       case CommunityStatus.initial:
         // communityId and communityName are mutually exclusive - only one of the two should be passed in
-        context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, communityId: widget.communityId, communityName: widget.communityName));
+        context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+            reset: true,
+            communityId: widget.communityId,
+            communityName: widget.communityName));
         return const Center(child: CircularProgressIndicator());
       case CommunityStatus.loading:
         return const Center(child: CircularProgressIndicator());
@@ -240,10 +284,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           communityName: widget.communityName ?? state.communityName,
           hasReachedEnd: state.hasReachedEnd,
           communityInfo: state.communityInfo,
-          onScrollEndReached: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId)),
-          onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
-          onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-          onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
+          onScrollEndReached: () => context
+              .read<CommunityBloc>()
+              .add(GetCommunityPostsEvent(communityId: widget.communityId)),
+          onSaveAction: (int postId, bool save) => context
+              .read<CommunityBloc>()
+              .add(SavePostEvent(postId: postId, save: save)),
+          onVoteAction: (int postId, VoteType voteType) => context
+              .read<CommunityBloc>()
+              .add(VotePostEvent(postId: postId, score: voteType)),
+          onToggleReadAction: (int postId, bool read) => context
+              .read<CommunityBloc>()
+              .add(MarkPostAsReadEvent(postId: postId, read: read)),
         );
       case CommunityStatus.empty:
         return const Center(child: Text('No posts found'));
@@ -266,7 +318,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 GetCommunityPostsEvent(
                   sortType: selected.payload,
                   reset: true,
-                  listingType: state.communityId != null ? null : state.listingType,
+                  listingType:
+                      state.communityId != null ? null : state.listingType,
                   communityId: widget.communityId ?? state.communityId,
                 ),
               );
@@ -276,7 +329,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   String getCommunityName(CommunityState state) {
-    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+    if (state.status == CommunityStatus.initial ||
+        state.status == CommunityStatus.loading) {
       return '';
     }
 
@@ -285,20 +339,30 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       return '';
     }
 
-    return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+    return (state.listingType != null)
+        ? (destinations
+            .firstWhere(
+                (destination) => destination.listingType == state.listingType)
+            .label)
+        : '';
   }
 
-  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+  FutureOr<bool> _handleBack(
+      bool stopDefaultButtonEvent, RouteInfo info) async {
     if (currentCommunityBloc != null) {
       // This restricts back button handling to when we're already at the top level of navigation
       final canPop = Navigator.of(context).canPop();
 
       final prefs = (await UserPreferences.instance).sharedPreferences;
-      final desiredPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      final desiredPostListingType = PostListingType.values.byName(
+          prefs.getString("setting_general_default_listing_type") ??
+              DEFAULT_LISTING_TYPE.name);
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 
-      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+      if (!canPop &&
+          (desiredPostListingType != currentPostListingType ||
+              currentCommunityId != null)) {
         currentCommunityBloc!.add(
           GetCommunityPostsEvent(
             sortType: currentCommunityBloc!.state.sortType,

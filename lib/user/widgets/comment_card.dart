@@ -38,7 +38,11 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: () => {}),
+                child: PostPage(
+                    postId: comment.post.id,
+                    selectedCommentPath: comment.comment.path,
+                    selectedCommentId: comment.comment.id,
+                    onPostUpdated: () => {}),
               ),
             ),
           );
@@ -53,9 +57,11 @@ class CommentCard extends StatelessWidget {
                 children: [
                   Text(
                     comment.creator.name,
-                    style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                    style: theme.textTheme.titleSmall
+                        ?.copyWith(color: Colors.greenAccent),
                   ),
-                  Text(formatTimeToString(dateTime: comment.comment.published.toIso8601String()))
+                  Text(formatTimeToString(
+                      dateTime: comment.comment.published.toIso8601String()))
                 ],
               ),
               GestureDetector(
