@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-
+import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -36,7 +39,7 @@ class CommonMarkdownBody extends StatelessWidget {
         );
       },
       selectable: isSelectableText,
-      onTapLink: (text, url, title) {
+      onTapLink: (text, url, title) async {
         Uri? parsedUri = Uri.tryParse(text);
 
         String parsedUrl = text;
@@ -47,9 +50,27 @@ class CommonMarkdownBody extends StatelessWidget {
           parsedUrl = url ?? '';
         }
 
+        // The markdown link processor treats URLs with @ as emails and prepends "mailto:".
+        // If the URL contains that, but the text doesn't, we can remove it.
+        if (parsedUrl.startsWith('mailto:') && !text.startsWith('mailto:')) {
+          parsedUrl = parsedUrl.replaceFirst('mailto:', '');
+        }
+
         String? communityName = checkLemmyInstanceUrl(parsedUrl);
 
         if (communityName != null) {
+          // If we're logged in, get the full community so we have its ID
+          int? communityId;
+          Account? account = await fetchActiveProfileAccount();
+          if (account != null) {
+            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+              auth: account.jwt,
+              name: communityName,
+            ));
+
+            communityId = getCommunityResponse.communityView.community.id;
+          }
+
           // Push navigation
           AccountBloc accountBloc = context.read<AccountBloc>();
           AuthBloc authBloc = context.read<AuthBloc>();
@@ -63,7 +84,7 @@ class CommonMarkdownBody extends StatelessWidget {
                   BlocProvider.value(value: authBloc),
                   BlocProvider.value(value: thunderBloc),
                 ],
-                child: CommunityPage(communityName: communityName),
+                child: CommunityPage(communityName: communityName, communityId: communityId),
               ),
             ),
           );
