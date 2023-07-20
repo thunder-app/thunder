@@ -68,13 +68,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             });
 
             return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
-          } catch (e, s) {
+          } catch (e) {
             exception = e;
             attemptCount++;
           }
         }
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: exception.toString()));
-      } catch (e, s) {
+      } catch (e) {
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });

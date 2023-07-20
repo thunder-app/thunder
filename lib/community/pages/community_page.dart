@@ -15,7 +15,6 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/utils/constants.dart';
 

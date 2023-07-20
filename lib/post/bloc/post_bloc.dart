@@ -157,13 +157,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 selectedCommentId: event.selectedCommentId,
                 selectedCommentPath: event.selectedCommentPath),
           );
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
       emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -272,18 +272,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             commentCount: state.commentResponseMap.length,
             hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
 
-      if (exception != null && is50xError(exception.toString()) != null) {
+      if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -310,7 +310,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -326,7 +326,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -364,7 +364,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -387,7 +387,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -418,7 +418,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -448,7 +448,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }

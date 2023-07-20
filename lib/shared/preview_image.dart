@@ -52,9 +52,9 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
     return Hero(
-      tag: widget.mediaUrl!,
+      tag: widget.mediaUrl,
       child: ExtendedImage.network(
-        widget.mediaUrl!,
+        widget.mediaUrl,
         height: height,
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,

@@ -11,7 +11,6 @@ import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -25,7 +24,7 @@ class InboxMentionsView extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (mentions.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: Text('No mentions'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No mentions'));
     }
 
     return ListView.builder(

@@ -94,7 +94,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -131,7 +131,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -153,7 +153,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -316,7 +316,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
         return;
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }
   }
@@ -360,7 +360,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityName: state.communityName,
         subscribedType: fullCommunityView.communityView.subscribed,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -415,7 +415,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         listingType: state.listingType,
         communityName: state.communityName,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -458,7 +458,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityName: state.communityName,
         blockedCommunity: blockedCommunity,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,

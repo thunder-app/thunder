@@ -175,7 +175,7 @@ class _PostCardListState extends State<PostCardList> {
                   onPressed: () {
                     scrollToTop();
                   },
-                  child: Icon(Icons.arrow_upward),
+                  child: const Icon(Icons.arrow_upward),
                 ),
               ),
           ],

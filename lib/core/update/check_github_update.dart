@@ -33,7 +33,7 @@ Future<Version> fetchVersion() async {
     }
 
     return Version(version: currentVersion ?? 'N/A', latestVersion: 'N/A', hasUpdate: false);
-  } catch (e, s) {
+  } catch (e) {
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }
 }
