@@ -16,6 +16,7 @@ import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 
 class CommunityPage extends StatefulWidget {
@@ -190,12 +191,16 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   ? FloatingActionButton(
                       onPressed: () {
                         CommunityBloc communityBloc = context.read<CommunityBloc>();
+                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                         Navigator.of(context).push(
                           MaterialPageRoute(
                             builder: (context) {
-                              return BlocProvider<CommunityBloc>.value(
-                                value: communityBloc,
+                              return MultiBlocProvider(
+                                providers: [
+                                  BlocProvider<CommunityBloc>.value(value: communityBloc),
+                                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                ],
                                 child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
                               );
                             },
