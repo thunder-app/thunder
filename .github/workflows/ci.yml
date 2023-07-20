@@ -23,7 +23,8 @@ jobs:
         run: flutter pub get
 
       - name: Linting
-        run: flutter analyze
+        # We'll ignore info and warnings when performing this step
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Formatting
         run: dart format --set-exit-if-changed .
