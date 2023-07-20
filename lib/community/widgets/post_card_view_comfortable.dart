@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
@@ -12,7 +11,6 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/font_size.dart';
 import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {

@@ -63,6 +63,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _editCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<DeleteCommentEvent>(
+      _deleteCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -157,13 +161,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 selectedCommentId: event.selectedCommentId,
                 selectedCommentPath: event.selectedCommentPath),
           );
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
       emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -272,18 +276,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             commentCount: state.commentResponseMap.length,
             hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
 
-      if (exception != null && is50xError(exception.toString()) != null) {
+      if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -310,7 +314,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -326,7 +330,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -364,7 +368,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -387,7 +391,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -418,7 +422,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -447,6 +451,32 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
+      return emit(state.copyWith(status: PostStatus.success));
+    } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _deleteCommentEvent(DeleteCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.'));
+      }
+
+      if (state.postView?.postView.post.id == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to delete the comment.'));
+      }
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
+      currentTree.commentView = deletedComment.commentView;
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));

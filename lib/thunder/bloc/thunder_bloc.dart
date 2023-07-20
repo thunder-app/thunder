@@ -2,13 +2,12 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:path/path.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
@@ -51,7 +50,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, version: version));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -65,6 +64,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Feed Settings
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
+      bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -91,10 +91,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
+      bool disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       // Comment Settings
       bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
+      NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
+          NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      NestedCommentIndicatorColor nestedCommentIndicatorColor =
+          NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
       bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -147,8 +152,12 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView: markPostReadOnMediaView,
+        disablePostFabs: disablePostFabs,
+        disableFeedFab: disableFeedFab,
         // Comment Actions
         showCommentButtonActions: showCommentButtonActions,
+        nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
+        nestedCommentIndicatorColor: nestedCommentIndicatorColor,
         //
         openInExternalBrowser: openInExternalBrowser,
         showLinkPreviews: showLinkPreviews,
@@ -168,7 +177,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }

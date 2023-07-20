@@ -51,7 +51,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   // final List<bool> _selectedPostType = <bool>[true, false, false];
 
   String description = '';
-  TextEditingController _bodyTextController = TextEditingController();
+  final TextEditingController _bodyTextController = TextEditingController();
 
   @override
   void initState() {

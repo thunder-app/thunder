@@ -17,7 +17,7 @@ class GestureSettingsPage extends StatefulWidget {
   State<GestureSettingsPage> createState() => _GestureSettingsPageState();
 }
 
-class _GestureSettingsPageState extends State<GestureSettingsPage> {
+class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerProviderStateMixin {
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
 
@@ -146,6 +146,20 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
     });
   }
 
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 100),
+    vsync: this,
+  );
+
+  // Animation for comment collapse
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
@@ -208,6 +222,15 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'Looking to use buttons instead? Change what buttons appear on post cards in general settings.',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
+                          ),
+                        ),
                         ToggleOption(
                           description: 'Post Swipe Actions',
                           value: enablePostGestures,
@@ -215,38 +238,57 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences('setting_gesture_enable_post_gestures', value),
                         ),
-                        const SizedBox(height: 8),
-                        ListOption(
-                          description: 'Left Short Swipe',
-                          value: ListPickerItem(label: leftPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryPostGesture),
-                          options: postGestureOptions,
-                          icon: Icons.keyboard_arrow_right_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_post_left_primary_gesture', value.payload),
-                          disabled: !enablePostGestures,
-                        ),
-                        ListOption(
-                          description: 'Left Long Swipe',
-                          value: ListPickerItem(label: leftSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryPostGesture),
-                          options: postGestureOptions,
-                          icon: Icons.keyboard_double_arrow_right_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_post_left_secondary_gesture', value.payload),
-                          disabled: !enablePostGestures,
-                        ),
-                        ListOption(
-                          description: 'Right Short Swipe',
-                          value: ListPickerItem(label: rightPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryPostGesture),
-                          options: postGestureOptions,
-                          icon: Icons.keyboard_arrow_left_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_post_right_primary_gesture', value.payload),
-                          disabled: !enablePostGestures,
-                        ),
-                        ListOption(
-                          description: 'Right Long Swipe',
-                          value: ListPickerItem(label: rightSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryPostGesture),
-                          options: postGestureOptions,
-                          icon: Icons.keyboard_double_arrow_left_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_post_right_secondary_gesture', value.payload),
-                          disabled: !enablePostGestures,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(position: _offsetAnimation, child: child),
+                            );
+                          },
+                          child: enablePostGestures
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Column(
+                                    children: [
+                                      ListOption(
+                                        description: 'Left Short Swipe',
+                                        value: ListPickerItem(label: leftPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryPostGesture),
+                                        options: postGestureOptions,
+                                        icon: Icons.keyboard_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_left_primary_gesture', value.payload),
+                                        disabled: !enablePostGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Left Long Swipe',
+                                        value: ListPickerItem(label: leftSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryPostGesture),
+                                        options: postGestureOptions,
+                                        icon: Icons.keyboard_double_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_left_secondary_gesture', value.payload),
+                                        disabled: !enablePostGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Right Short Swipe',
+                                        value: ListPickerItem(label: rightPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryPostGesture),
+                                        options: postGestureOptions,
+                                        icon: Icons.keyboard_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_right_primary_gesture', value.payload),
+                                        disabled: !enablePostGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Right Long Swipe',
+                                        value: ListPickerItem(label: rightSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryPostGesture),
+                                        options: postGestureOptions,
+                                        icon: Icons.keyboard_double_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_right_secondary_gesture', value.payload),
+                                        disabled: !enablePostGestures,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
                         ),
                       ],
                     ),
@@ -264,6 +306,15 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'Looking to use buttons instead? Enable them in the comments section in general settings.',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
+                          ),
+                        ),
                         ToggleOption(
                           description: 'Comment Swipe Actions',
                           value: enableCommentGestures,
@@ -271,38 +322,57 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> {
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences('setting_gesture_enable_comment_gestures', value),
                         ),
-                        const SizedBox(height: 8),
-                        ListOption(
-                          description: 'Left Short Swipe',
-                          value: ListPickerItem(label: leftPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryCommentGesture),
-                          options: commentGestureOptions,
-                          icon: Icons.keyboard_arrow_right_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_comment_left_primary_gesture', value.payload),
-                          disabled: !enableCommentGestures,
-                        ),
-                        ListOption(
-                          description: 'Left Long Swipe',
-                          value: ListPickerItem(label: leftSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryCommentGesture),
-                          options: commentGestureOptions,
-                          icon: Icons.keyboard_double_arrow_right_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_comment_left_secondary_gesture', value.payload),
-                          disabled: !enableCommentGestures,
-                        ),
-                        ListOption(
-                          description: 'Right Short Swipe',
-                          value: ListPickerItem(label: rightPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryCommentGesture),
-                          options: commentGestureOptions,
-                          icon: Icons.keyboard_arrow_left_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_comment_right_primary_gesture', value.payload),
-                          disabled: !enableCommentGestures,
-                        ),
-                        ListOption(
-                          description: 'Right Long Swipe',
-                          value: ListPickerItem(label: rightSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryCommentGesture),
-                          options: commentGestureOptions,
-                          icon: Icons.keyboard_double_arrow_left_rounded,
-                          onChanged: (value) => setPreferences('setting_gesture_comment_right_secondary_gesture', value.payload),
-                          disabled: !enableCommentGestures,
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(position: _offsetAnimation, child: child),
+                            );
+                          },
+                          child: enableCommentGestures
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Column(
+                                    children: [
+                                      ListOption(
+                                        description: 'Left Short Swipe',
+                                        value: ListPickerItem(label: leftPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryCommentGesture),
+                                        options: commentGestureOptions,
+                                        icon: Icons.keyboard_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_left_primary_gesture', value.payload),
+                                        disabled: !enableCommentGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Left Long Swipe',
+                                        value: ListPickerItem(label: leftSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryCommentGesture),
+                                        options: commentGestureOptions,
+                                        icon: Icons.keyboard_double_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_left_secondary_gesture', value.payload),
+                                        disabled: !enableCommentGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Right Short Swipe',
+                                        value: ListPickerItem(label: rightPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryCommentGesture),
+                                        options: commentGestureOptions,
+                                        icon: Icons.keyboard_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_right_primary_gesture', value.payload),
+                                        disabled: !enableCommentGestures,
+                                      ),
+                                      ListOption(
+                                        description: 'Right Long Swipe',
+                                        value: ListPickerItem(label: rightSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryCommentGesture),
+                                        options: commentGestureOptions,
+                                        icon: Icons.keyboard_double_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_right_secondary_gesture', value.payload),
+                                        disabled: !enableCommentGestures,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
                         ),
                       ],
                     ),

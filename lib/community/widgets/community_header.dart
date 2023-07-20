@@ -18,26 +18,27 @@ class CommunityHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Container(
-      decoration: communityInfo?.communityView.community.banner != null ? BoxDecoration(
-        image: DecorationImage(
-            image: CachedNetworkImageProvider(communityInfo!.communityView.community.banner!),
-            fit: BoxFit.cover
-        ),
-      ) : null,
+      decoration: communityInfo?.communityView.community.banner != null
+          ? BoxDecoration(
+              image: DecorationImage(image: CachedNetworkImageProvider(communityInfo!.communityView.community.banner!), fit: BoxFit.cover),
+            )
+          : null,
       child: Container(
-        decoration: communityInfo?.communityView.community.banner != null ? BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-            colors: [
-              theme.colorScheme.background,
-              theme.colorScheme.background,
-              theme.colorScheme.background.withOpacity(0.85),
-              theme.colorScheme.background.withOpacity(0.4),
-              Colors.transparent,
-            ],
-          ),
-        ) : null,
+        decoration: communityInfo?.communityView.community.banner != null
+            ? BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    theme.colorScheme.background,
+                    theme.colorScheme.background,
+                    theme.colorScheme.background.withOpacity(0.85),
+                    theme.colorScheme.background.withOpacity(0.4),
+                    Colors.transparent,
+                  ],
+                ),
+              )
+            : null,
         child: Padding(
           padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: Column(
@@ -61,9 +62,7 @@ class CommunityHeader extends StatelessWidget {
                           communityInfo?.communityView.community.title ?? communityInfo?.communityView.community.name ?? 'N/A',
                           style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                         ),
-                        Text(
-                          '${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'
-                        ),
+                        Text('${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'),
                         const SizedBox(height: 8.0),
                         Row(
                           children: [
@@ -73,7 +72,7 @@ class CommunityHeader extends StatelessWidget {
                             ),
                             const SizedBox(width: 8.0),
                             IconText(
-                              icon: const Icon(Icons.calendar_month_rounded ),
+                              icon: const Icon(Icons.calendar_month_rounded),
                               text: formatNumberToK(communityInfo?.communityView.counts.usersActiveMonth ?? 0),
                             ),
                           ],
