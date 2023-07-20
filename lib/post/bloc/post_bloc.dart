@@ -83,7 +83,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: PostStatus.loading));
+          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -110,10 +110,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postId: postView?.postView.post.id,
               postView: postView,
               communityId: postView?.postView.post.communityId,
+              selectedCommentPath: event.selectedCommentPath,
+              selectedCommentId: event.selectedCommentId
             ),
           );
 
-          emit(state.copyWith(status: PostStatus.refreshing));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 

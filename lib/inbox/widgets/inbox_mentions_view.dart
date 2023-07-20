@@ -50,7 +50,12 @@ class InboxMentionsView extends StatelessWidget {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(postId: mentions[index].post.id, onPostUpdated: () => {}),
+                    child: PostPage(
+                        selectedCommentPath: mentions[index].comment.path,
+                        selectedCommentId: mentions[index].comment.id,
+                        postId: mentions[index].post.id,
+                        onPostUpdated: () => {}
+                    ),
                   ),
                 ),
               );

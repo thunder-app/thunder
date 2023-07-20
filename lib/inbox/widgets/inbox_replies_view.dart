@@ -65,6 +65,8 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       BlocProvider(create: (context) => PostBloc()),
                     ],
                     child: PostPage(
+                      selectedCommentId: widget.replies[index].comment.id,
+                      selectedCommentPath: widget.replies[index].comment.path,
                       postId: widget.replies[index].post.id,
                       onPostUpdated: () => {},
                     ),
