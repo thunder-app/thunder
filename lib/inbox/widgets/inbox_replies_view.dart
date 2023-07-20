@@ -38,7 +38,10 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
     final theme = Theme.of(context);
 
     if (widget.replies.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
+      return Align(
+          alignment: Alignment.topCenter,
+          heightFactor: (MediaQuery.of(context).size.height / 27),
+          child: const Text('No replies'));
     }
 
     return ListView.builder(
@@ -73,7 +76,8 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               );
             },
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -82,33 +86,45 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                     children: [
                       Text(
                         widget.replies[index].creator.name,
-                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                        style: theme.textTheme.titleSmall
+                            ?.copyWith(color: Colors.greenAccent),
                       ),
-                      Text(formatTimeToString(dateTime: widget.replies[index].comment.published.toIso8601String()))
+                      Text(formatTimeToString(
+                          dateTime: widget.replies[index].comment.published
+                              .toIso8601String()))
                     ],
                   ),
                   GestureDetector(
                     child: Text(
                       '${widget.replies[index].community.name}${' · ${fetchInstanceNameFromUrl(widget.replies[index].community.actorId)}'}',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                        color: theme.textTheme.bodyMedium?.color
+                            ?.withOpacity(0.75),
                       ),
                     ),
-                    onTap: () => onTapCommunityName(context, widget.replies[index].community.id),
+                    onTap: () => onTapCommunityName(
+                        context, widget.replies[index].community.id),
                   ),
                   const SizedBox(height: 10),
-                  CommonMarkdownBody(body: widget.replies[index].comment.content),
+                  CommonMarkdownBody(
+                      body: widget.replies[index].comment.content),
                   const Divider(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       if (widget.replies[index].commentReply?.read == false)
                         // Check to see which reply is curremntly marked as read
-                        inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
+                        inboxReplyMarkedAsRead !=
+                                widget.replies[index].commentReply?.id
                             ? IconButton(
                                 onPressed: () {
-                                  setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
-                                  context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
+                                  setState(() => inboxReplyMarkedAsRead =
+                                      widget.replies[index].commentReply?.id);
+                                  context.read<InboxBloc>().add(
+                                      MarkReplyAsReadEvent(
+                                          commentReplyId: widget
+                                              .replies[index].commentReply!.id,
+                                          read: true));
                                 },
                                 icon: const Icon(
                                   Icons.check,
@@ -118,7 +134,10 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                               )
                             : const Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                                child: SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator()),
                               ),
                       IconButton(
                         onPressed: () {
@@ -132,16 +151,26 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                             showDragHandle: true,
                             builder: (context) {
                               return Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                                padding: EdgeInsets.only(
+                                    bottom: MediaQuery.of(context)
+                                            .viewInsets
+                                            .bottom +
+                                        40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
                                   child: MultiBlocProvider(
                                     providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                      BlocProvider<InboxBloc>.value(
+                                          value: inboxBloc),
+                                      BlocProvider<PostBloc>.value(
+                                          value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(
+                                          value: thunderBloc),
                                     ],
-                                    child: CreateCommentModal(comment: widget.replies[index].comment, parentCommentAuthor: widget.replies[index].creator.name),
+                                    child: CreateCommentModal(
+                                        comment: widget.replies[index].comment,
+                                        parentCommentAuthor:
+                                            widget.replies[index].creator.name),
                                   ),
                                 ),
                               );

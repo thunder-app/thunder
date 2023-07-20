@@ -20,16 +20,19 @@ class ErrorMessage extends StatelessWidget {
           children: [
             Icon(Icons.warning_rounded, size: 100, color: Colors.red.shade300),
             const SizedBox(height: 32.0),
-            Text('Oops, something went wrong!', style: theme.textTheme.titleLarge),
+            Text('Oops, something went wrong!',
+                style: theme.textTheme.titleLarge),
             const SizedBox(height: 8.0),
             Text(
               message ?? 'No error message available',
-              style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+              style: theme.textTheme.labelLarge
+                  ?.copyWith(color: theme.dividerColor),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 32.0),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50)),
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50)),
               onPressed: () => action?.call(),
               child: Text(actionText ?? 'Refresh'),
             ),

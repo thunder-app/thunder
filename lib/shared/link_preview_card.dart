@@ -50,7 +50,8 @@ class LinkPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
+    if ((mediaURL != null || originURL != null) &&
+        viewMode == ViewMode.comfortable) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -67,7 +68,8 @@ class LinkPreviewCard extends StatelessWidget {
                       ? ImagePreview(
                           url: mediaURL ?? originURL!,
                           height: showFullHeightImages ? mediaHeight : 150,
-                          width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
+                          width: mediaWidth ??
+                              MediaQuery.of(context).size.width - 24,
                           isExpandable: false,
                         )
                       : SizedBox(
@@ -89,7 +91,8 @@ class LinkPreviewCard extends StatelessWidget {
           onTap: () => triggerOnTap(context),
         ),
       );
-    } else if ((mediaURL != null || originURL != null) && viewMode == ViewMode.compact) {
+    } else if ((mediaURL != null || originURL != null) &&
+        viewMode == ViewMode.compact) {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
@@ -144,7 +147,8 @@ class LinkPreviewCard extends StatelessWidget {
       );
       if (edgeToEdgeImages) {
         return Padding(
-          padding: const EdgeInsets.only(top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
+          padding: const EdgeInsets.only(
+              top: 4.0, bottom: 8.0, left: 12.0, right: 12.0),
           child: inkWell,
         );
       } else {
@@ -191,7 +195,8 @@ class LinkPreviewCard extends StatelessWidget {
         ),
       );
     } else if (originURL != null) {
-      openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
+      openLink(context,
+          url: originURL!, openInExternalBrowser: openInExternalBrowser);
     }
   }
 
@@ -205,7 +210,8 @@ class LinkPreviewCard extends StatelessWidget {
         child: Container(
           height: 75,
           width: 75,
-          color: (mediaURL != null || originURL != null) && viewMode == ViewMode.compact
+          color: (mediaURL != null || originURL != null) &&
+                  viewMode == ViewMode.compact
               ? ElevationOverlay.applySurfaceTint(
                   Theme.of(context).colorScheme.surface,
                   Theme.of(context).colorScheme.surfaceTint,

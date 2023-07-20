@@ -16,7 +16,8 @@ part 'theme_state.dart';
 const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) =>
+      droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
@@ -27,18 +28,23 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     );
   }
 
-  Future<void> _themeChangeEvent(ThemeChangeEvent event, Emitter<ThemeState> emit) async {
+  Future<void> _themeChangeEvent(
+      ThemeChangeEvent event, Emitter<ThemeState> emit) async {
     try {
       emit(state.copyWith(status: ThemeStatus.loading));
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      SharedPreferences prefs =
+          (await UserPreferences.instance).sharedPreferences;
 
-      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
+      ThemeType themeType = ThemeType.values[
+          prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
 
-      bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
+      bool useMaterialYouTheme =
+          prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Check what the system theme is (light/dark)
-      Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
+      Brightness brightness =
+          SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool useDarkTheme = themeType != ThemeType.light;
       if (themeType == ThemeType.system) {
         useDarkTheme = brightness == Brightness.dark;

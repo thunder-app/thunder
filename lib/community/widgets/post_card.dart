@@ -13,7 +13,8 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
+import 'package:thunder/post/bloc/post_bloc.dart'
+    as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -92,9 +93,12 @@ class _PostCardState extends State<PostCard> {
               triggerPostAction(
                 context: context,
                 swipeAction: swipeAction,
-                onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-                onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
-                onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
+                onSaveAction: (int postId, bool saved) =>
+                    widget.onSaveAction(saved),
+                onVoteAction: (int postId, VoteType vote) =>
+                    widget.onVoteAction(vote),
+                onToggleReadAction: (int postId, bool read) =>
+                    widget.onToggleReadAction(read),
                 voteType: myVote ?? VoteType.none,
                 saved: saved,
                 read: read,
@@ -104,37 +108,52 @@ class _PostCardState extends State<PostCard> {
         },
         onPointerCancel: (event) => {},
         child: Dismissible(
-          direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
+          direction: state.enablePostGestures == false
+              ? DismissDirection.none
+              : determinePostSwipeDirection(isUserLoggedIn, state),
           key: ObjectKey(widget.postViewMedia.postView.post.id),
           resizeDuration: Duration.zero,
-          dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+          dismissThresholds: const {
+            DismissDirection.endToStart: 1,
+            DismissDirection.startToEnd: 1
+          },
           confirmDismiss: (DismissDirection direction) async {
             return false;
           },
           onUpdate: (DismissUpdateDetails details) {
             SwipeAction? updatedSwipeAction;
 
-            if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+            if (details.progress > firstActionThreshold &&
+                details.progress < secondActionThreshold &&
+                details.direction == DismissDirection.startToEnd) {
               updatedSwipeAction = state.leftPrimaryPostGesture;
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+              if (updatedSwipeAction != swipeAction)
+                HapticFeedback.mediumImpact();
+            } else if (details.progress > secondActionThreshold &&
+                details.direction == DismissDirection.startToEnd) {
               if (state.leftSecondaryPostGesture != SwipeAction.none) {
                 updatedSwipeAction = state.leftSecondaryPostGesture;
               } else {
                 updatedSwipeAction = state.leftPrimaryPostGesture;
               }
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+              if (updatedSwipeAction != swipeAction)
+                HapticFeedback.mediumImpact();
+            } else if (details.progress > firstActionThreshold &&
+                details.progress < secondActionThreshold &&
+                details.direction == DismissDirection.endToStart) {
               updatedSwipeAction = state.rightPrimaryPostGesture;
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+              if (updatedSwipeAction != swipeAction)
+                HapticFeedback.mediumImpact();
+            } else if (details.progress > secondActionThreshold &&
+                details.direction == DismissDirection.endToStart) {
               if (state.rightSecondaryPostGesture != SwipeAction.none) {
                 updatedSwipeAction = state.rightSecondaryPostGesture;
               } else {
                 updatedSwipeAction = state.rightPrimaryPostGesture;
               }
 
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+              if (updatedSwipeAction != swipeAction)
+                HapticFeedback.mediumImpact();
             } else {
               updatedSwipeAction = null;
             }
@@ -149,23 +168,37 @@ class _PostCardState extends State<PostCard> {
               ? AnimatedContainer(
                   alignment: Alignment.centerLeft,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.leftPrimaryPostGesture)
+                          .withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                    width: MediaQuery.of(context).size.width *
+                        (state.tabletMode ? 0.5 : 1) *
+                        dismissThreshold,
+                    child: swipeAction == null
+                        ? Container()
+                        : Icon(getSwipeActionIcon(
+                            swipeAction ?? SwipeAction.none,
+                            read: read)),
                   ),
                 )
               : AnimatedContainer(
                   alignment: Alignment.centerRight,
                   color: swipeAction == null
-                      ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                      ? getSwipeActionColor(state.rightPrimaryPostGesture)
+                          .withOpacity(dismissThreshold / firstActionThreshold)
                       : getSwipeActionColor(swipeAction ?? SwipeAction.none),
                   duration: const Duration(milliseconds: 200),
                   child: SizedBox(
-                    width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                    width: (MediaQuery.of(context).size.width *
+                            (state.tabletMode ? 0.5 : 1)) *
+                        dismissThreshold,
+                    child: swipeAction == null
+                        ? Container()
+                        : Icon(getSwipeActionIcon(
+                            swipeAction ?? SwipeAction.none,
+                            read: read)),
                   ),
                 ),
           child: Column(
@@ -183,7 +216,8 @@ class _PostCardState extends State<PostCard> {
                 child: state.useCompactView
                     ? PostCardViewCompact(
                         postViewMedia: widget.postViewMedia,
-                        showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                        showThumbnailPreviewOnRight:
+                            state.showThumbnailPreviewOnRight,
                         showTextPostIndicator: state.showTextPostIndicator,
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
@@ -192,7 +226,8 @@ class _PostCardState extends State<PostCard> {
                       )
                     : PostCardViewComfortable(
                         postViewMedia: widget.postViewMedia,
-                        showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                        showThumbnailPreviewOnRight:
+                            state.showThumbnailPreviewOnRight,
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,
@@ -229,10 +264,13 @@ class _PostCardState extends State<PostCard> {
                     int postId = widget.postViewMedia.postView.post.id;
                     try {
                       UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+                      userBloc.add(
+                          MarkUserPostAsReadEvent(postId: postId, read: true));
                     } catch (e) {
-                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+                      CommunityBloc communityBloc =
+                          BlocProvider.of<CommunityBloc>(context);
+                      communityBloc
+                          .add(MarkPostAsReadEvent(postId: postId, read: true));
                     }
                   }
 
@@ -245,7 +283,8 @@ class _PostCardState extends State<PostCard> {
                             BlocProvider.value(value: authBloc),
                             BlocProvider.value(value: thunderBloc),
                             BlocProvider.value(value: communityBloc),
-                            BlocProvider(create: (context) => post_bloc.PostBloc()),
+                            BlocProvider(
+                                create: (context) => post_bloc.PostBloc()),
                           ],
                           child: PostPage(
                             postView: widget.postViewMedia,
@@ -255,7 +294,8 @@ class _PostCardState extends State<PostCard> {
                       },
                     ),
                   );
-                  if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
+                  if (context.mounted)
+                    context.read<CommunityBloc>().add(ForceRefreshEvent());
                 },
               ),
             ],

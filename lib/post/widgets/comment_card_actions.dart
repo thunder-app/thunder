@@ -32,7 +32,8 @@ class CommentCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoteType voteType = commentViewTree.commentView!.myVote ?? VoteType.none;
+    final VoteType voteType =
+        commentViewTree.commentView!.myVote ?? VoteType.none;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
@@ -47,7 +48,8 @@ class CommentCardActions extends StatelessWidget {
                 ),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
+                  showCommentActionBottomModalSheet(
+                      context, commentViewTree, onSaveAction, onDeleteAction);
                   HapticFeedback.mediumImpact();
                 }),
             IconButton(
@@ -67,7 +69,9 @@ class CommentCardActions extends StatelessWidget {
                   showDragHandle: true,
                   builder: (context) {
                     return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      padding: EdgeInsets.only(
+                          bottom:
+                              MediaQuery.of(context).viewInsets.bottom + 40),
                       child: FractionallySizedBox(
                         heightFactor: 0.8,
                         child: MultiBlocProvider(
@@ -75,7 +79,8 @@ class CommentCardActions extends StatelessWidget {
                             BlocProvider<PostBloc>.value(value: postBloc),
                             BlocProvider<ThunderBloc>.value(value: thunderBloc),
                           ],
-                          child: CreateCommentModal(commentView: commentViewTree, isEdit: isEdit),
+                          child: CreateCommentModal(
+                              commentView: commentViewTree, isEdit: isEdit),
                         ),
                       ),
                     );
@@ -92,18 +97,21 @@ class CommentCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                  onVoteAction(commentViewTree.commentView!.comment.id,
+                      voteType == VoteType.up ? VoteType.none : VoteType.up);
                 }),
             IconButton(
               icon: Icon(
                 Icons.arrow_downward,
-                semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+                semanticLabel:
+                    voteType == VoteType.down ? 'Downvoted' : 'Downvote',
               ),
               color: voteType == VoteType.down ? downVoteColor : null,
               visualDensity: VisualDensity.compact,
               onPressed: () {
                 HapticFeedback.mediumImpact();
-                onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                onVoteAction(commentViewTree.commentView!.comment.id,
+                    voteType == VoteType.down ? VoteType.none : VoteType.down);
               },
             ),
           ],

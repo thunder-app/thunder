@@ -32,7 +32,8 @@ class _WebViewState extends State<WebView> {
       params = const PlatformWebViewControllerCreationParams();
     }
 
-    final WebViewController controller = WebViewController.fromPlatformCreationParams(params);
+    final WebViewController controller =
+        WebViewController.fromPlatformCreationParams(params);
 
     controller
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
@@ -40,7 +41,8 @@ class _WebViewState extends State<WebView> {
       ..loadRequest(Uri.parse(widget.url));
 
     if (controller.platform is AndroidWebViewController) {
-      (controller.platform as AndroidWebViewController).setMediaPlaybackRequiresUserGesture(false);
+      (controller.platform as AndroidWebViewController)
+          .setMediaPlaybackRequiresUserGesture(false);
     }
     _controller = controller;
   }
@@ -60,7 +62,8 @@ class _WebViewState extends State<WebView> {
 }
 
 class NavigationControls extends StatelessWidget {
-  const NavigationControls({super.key, required this.webViewController, required this.url});
+  const NavigationControls(
+      {super.key, required this.webViewController, required this.url});
 
   final WebViewController webViewController;
   final String url;
@@ -81,7 +84,8 @@ class NavigationControls extends StatelessWidget {
             Icons.open_in_browser_rounded,
             semanticLabel: 'Open in Browser',
           ),
-          onPressed: () => launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
+          onPressed: () =>
+              launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication),
         ),
         IconButton(
           icon: const Icon(

@@ -72,7 +72,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.7) {
       context.read<UserBloc>().add(const GetUserEvent());
     }
   }
@@ -99,13 +100,20 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                 selectedUserOption = index;
               });
               if (index == 2) {
-                context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                context.read<UserBloc>().add(
+                    GetUserSavedEvent(userId: widget.userId, reset: false));
               }
             },
             borderRadius: const BorderRadius.all(Radius.circular(8)),
-            constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (widget.isAccountUser ? accountOptionTypes.length : userOptionTypes.length)) - 12.0),
+            constraints: BoxConstraints.expand(
+                width: (MediaQuery.of(context).size.width /
+                        (widget.isAccountUser
+                            ? accountOptionTypes.length
+                            : userOptionTypes.length)) -
+                    12.0),
             isSelected: _selectedUserOption,
-            children: widget.isAccountUser ? accountOptionTypes : userOptionTypes,
+            children:
+                widget.isAccountUser ? accountOptionTypes : userOptionTypes,
           ),
           const SizedBox(height: 12.0),
           if (selectedUserOption == 0)
@@ -114,10 +122,17 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                 postViews: widget.postViews,
                 personId: widget.userId,
                 hasReachedEnd: widget.hasReachedPostEnd,
-                onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
-                onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
+                onScrollEndReached: () =>
+                    context.read<UserBloc>().add(const GetUserEvent()),
+                onSaveAction: (int postId, bool save) => context
+                    .read<UserBloc>()
+                    .add(SavePostEvent(postId: postId, save: save)),
+                onVoteAction: (int postId, VoteType voteType) => context
+                    .read<UserBloc>()
+                    .add(VotePostEvent(postId: postId, score: voteType)),
+                onToggleReadAction: (int postId, bool read) => context
+                    .read<UserBloc>()
+                    .add(MarkUserPostAsReadEvent(postId: postId, read: read)),
               ),
             ),
           if (selectedUserOption == 1)
@@ -125,7 +140,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
               child: ListView.builder(
                 controller: _scrollController,
                 itemCount: widget.commentViewTrees?.length,
-                itemBuilder: (context, index) => CommentCard(comment: widget.commentViewTrees![index].commentView!),
+                itemBuilder: (context, index) => CommentCard(
+                    comment: widget.commentViewTrees![index].commentView!),
               ),
             ),
           if (selectedUserOption == 2)
@@ -134,10 +150,17 @@ class _UserPageSuccessState extends State<UserPageSuccess> {
                 postViews: widget.savedPostViews,
                 personId: widget.userId,
                 hasReachedEnd: widget.hasReachedSavedPostEnd,
-                onScrollEndReached: () => context.read<UserBloc>().add(const GetUserSavedEvent()),
-                onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
-                onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
+                onScrollEndReached: () =>
+                    context.read<UserBloc>().add(const GetUserSavedEvent()),
+                onSaveAction: (int postId, bool save) => context
+                    .read<UserBloc>()
+                    .add(SavePostEvent(postId: postId, save: save)),
+                onVoteAction: (int postId, VoteType voteType) => context
+                    .read<UserBloc>()
+                    .add(VotePostEvent(postId: postId, score: voteType)),
+                onToggleReadAction: (int postId, bool read) => context
+                    .read<UserBloc>()
+                    .add(MarkUserPostAsReadEvent(postId: postId, read: read)),
               ),
             ),
         ],

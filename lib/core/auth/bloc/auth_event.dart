@@ -13,7 +13,11 @@ class LoginAttempt extends AuthEvent {
   final String instance;
   final String totp;
 
-  const LoginAttempt({required this.username, required this.password, required this.instance, this.totp=""});
+  const LoginAttempt(
+      {required this.username,
+      required this.password,
+      required this.instance,
+      this.totp = ""});
 }
 
 class CheckAuth extends AuthEvent {}

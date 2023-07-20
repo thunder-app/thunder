@@ -51,13 +51,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     _bodyTextController.addListener(() {
-      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled) setState(() => isClearButtonDisabled = true);
-      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled) setState(() => isClearButtonDisabled = false);
+      if (_bodyTextController.text.isEmpty && !isClearButtonDisabled)
+        setState(() => isClearButtonDisabled = true);
+      if (_bodyTextController.text.isNotEmpty && isClearButtonDisabled)
+        setState(() => isClearButtonDisabled = false);
     });
 
     _titleTextController.addListener(() {
-      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
-      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled)
+        setState(() => isSubmitButtonDisabled = true);
+      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled)
+        setState(() => isSubmitButtonDisabled = false);
     });
   }
 
@@ -71,8 +75,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
           IconButton(
               onPressed: () => setState(() => isNSFW = !isNSFW),
               icon: isNSFW
-                  ? const Icon(Icons.eighteen_up_rating, semanticLabel: "Not Safe For Work",)
-                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Safe For Work")),
+                  ? const Icon(
+                      Icons.eighteen_up_rating,
+                      semanticLabel: "Not Safe For Work",
+                    )
+                  : const Icon(Icons.eighteen_up_rating_outlined,
+                      semanticLabel: "Safe For Work")),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
@@ -109,13 +117,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
             setState(() => image = state.imageUrl!);
           }
           if (state.status == ImageStatus.uploading && image == '') {
-            setState (() => image = 'loading');
+            setState(() => image = 'loading');
           }
           if (state.status == ImageStatus.failure) {
             setState(() {
               error = true;
               if (image == 'loading') image = '';
-          });
+            });
           }
           if (state.status == ImageStatus.deleting) {
             setState(() => image = '');
@@ -207,7 +215,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 ),
                               )
                             ])
-                          : image == 'loading' ? const Center(child: CircularProgressIndicator(strokeAlign: BorderSide.strokeAlignCenter, strokeWidth: 2,)) : const SizedBox(height: 20),
+                          : image == 'loading'
+                              ? const Center(
+                                  child:
+                                      CircularProgressIndicator(strokeWidth: 2))
+                              : const SizedBox(height: 20),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[

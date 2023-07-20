@@ -19,7 +19,8 @@ class Destination {
 }
 
 const List<Destination> destinations = <Destination>[
-  Destination('Subscriptions', PostListingType.subscribed, Icons.view_list_rounded),
+  Destination(
+      'Subscriptions', PostListingType.subscribed, Icons.view_list_rounded),
   Destination('Local Posts', PostListingType.local, Icons.home_rounded),
   Destination('All Posts', PostListingType.all, Icons.grid_view_rounded),
 ];
@@ -31,7 +32,12 @@ class DrawerItem extends StatelessWidget {
 
   final bool disabled;
 
-  const DrawerItem({super.key, required this.onTap, required this.label, required this.icon, this.disabled = false});
+  const DrawerItem(
+      {super.key,
+      required this.onTap,
+      required this.label,
+      required this.icon,
+      this.disabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -56,7 +62,10 @@ class DrawerItem extends StatelessWidget {
                   const SizedBox(width: 12),
                   Text(
                     label,
-                    style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
+                    style: disabled
+                        ? theme.textTheme.bodyMedium
+                            ?.copyWith(color: theme.dividerColor)
+                        : null,
                   ),
                 ],
               ),
@@ -105,16 +114,20 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
           children: [
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
-              child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
+              child:
+                  Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-              child: Text(LemmyClient.instance.lemmyApiV3.host, style: Theme.of(context).textTheme.bodyMedium),
+              child: Text(LemmyClient.instance.lemmyApiV3.host,
+                  style: Theme.of(context).textTheme.bodyMedium),
             ),
             Column(
               children: destinations.map((Destination destination) {
                 return DrawerItem(
-                  disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
+                  disabled:
+                      destination.listingType == PostListingType.subscribed &&
+                          isLoggedIn == false,
                   onTap: () {
                     context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                           reset: true,
@@ -130,11 +143,16 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
-              child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
+              child: Text('Subscriptions',
+                  style: Theme.of(context).textTheme.titleSmall),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-              child: context.read<AuthBloc>().state.account != null ? Text(context.read<AuthBloc>().state.account!.username ?? "-", style: Theme.of(context).textTheme.bodyMedium) : Container(),
+              child: context.read<AuthBloc>().state.account != null
+                  ? Text(
+                      context.read<AuthBloc>().state.account!.username ?? "-",
+                      style: Theme.of(context).textTheme.bodyMedium)
+                  : Container(),
             ),
             (status != AccountStatus.success && status != AccountStatus.failure)
                 ? const Padding(
@@ -152,9 +170,17 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               child: ListView.builder(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: context.read<AccountBloc>().state.subsciptions.length,
+                                  itemCount: context
+                                      .read<AccountBloc>()
+                                      .state
+                                      .subsciptions
+                                      .length,
                                   itemBuilder: (context, index) {
-                                    CommunitySafe community = context.read<AccountBloc>().state.subsciptions[index].community;
+                                    CommunitySafe community = context
+                                        .read<AccountBloc>()
+                                        .state
+                                        .subsciptions[index]
+                                        .community;
 
                                     return TextButton(
                                       style: TextButton.styleFrom(
@@ -165,7 +191,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         context.read<CommunityBloc>().add(
                                               GetCommunityPostsEvent(
                                                 reset: true,
-                                                communityId: context.read<AccountBloc>().state.subsciptions[index].community.id,
+                                                communityId: context
+                                                    .read<AccountBloc>()
+                                                    .state
+                                                    .subsciptions[index]
+                                                    .community
+                                                    .id,
                                               ),
                                             );
 
@@ -174,8 +205,16 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                       child: Row(
                                         children: [
                                           CircleAvatar(
-                                            backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                            foregroundImage: community.icon != null ? CachedNetworkImageProvider(community.icon!) : null,
+                                            backgroundColor:
+                                                community.icon != null
+                                                    ? Colors.transparent
+                                                    : theme.colorScheme
+                                                        .secondaryContainer,
+                                            foregroundImage: community.icon !=
+                                                    null
+                                                ? CachedNetworkImageProvider(
+                                                    community.icon!)
+                                                : null,
                                             maxRadius: 16,
                                             child: Text(
                                               community.name[0].toUpperCase(),
@@ -190,21 +229,27 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                           Expanded(
                                             child: Tooltip(
                                               excludeFromSemantics: true,
-                                              message: '${community.title}\n${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                              message:
+                                                  '${community.title}\n${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
                                               preferBelow: false,
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     community.title,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                     maxLines: 1,
                                                   ),
                                                   Text(
                                                     '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
-                                                    style: theme.textTheme.bodyMedium,
-                                                    overflow: TextOverflow.ellipsis,
+                                                    style: theme
+                                                        .textTheme.bodyMedium,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
@@ -219,10 +264,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                         ),
                       )
                     : Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 28.0, vertical: 8.0),
                         child: Text(
                           'No subscriptions available',
-                          style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
+                          style: theme.textTheme.labelLarge
+                              ?.copyWith(color: theme.dividerColor),
                         ),
                       )
           ],

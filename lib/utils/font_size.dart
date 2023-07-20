@@ -4,21 +4,28 @@ import 'package:thunder/core/singletons/preferences.dart';
 Future<Map<String, double>> getTextScaleFactor() async {
   final prefs = (await UserPreferences.instance).sharedPreferences;
 
-  String? titleFontSizeScaleString = prefs.getString("setting_theme_title_font_size_scale");
-  String? contentFontSizeScaleString = prefs.getString("setting_theme_content_font_size_scale");
+  String? titleFontSizeScaleString =
+      prefs.getString("setting_theme_title_font_size_scale");
+  String? contentFontSizeScaleString =
+      prefs.getString("setting_theme_content_font_size_scale");
 
   double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
   double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   if (titleFontSizeScaleString != null) {
-    titleFontSizeScaleFactor = FontScale.values.byName(titleFontSizeScaleString).textScaleFactor;
+    titleFontSizeScaleFactor =
+        FontScale.values.byName(titleFontSizeScaleString).textScaleFactor;
   }
 
   if (contentFontSizeScaleString != null) {
-    contentFontSizeScaleFactor = FontScale.values.byName(contentFontSizeScaleString).textScaleFactor;
+    contentFontSizeScaleFactor =
+        FontScale.values.byName(contentFontSizeScaleString).textScaleFactor;
   }
 
-  Map<String, double> textScaleFactor = {"titleFontSizeScaleFactor": titleFontSizeScaleFactor, "contentFontSizeScaleFactor": contentFontSizeScaleFactor};
+  Map<String, double> textScaleFactor = {
+    "titleFontSizeScaleFactor": titleFontSizeScaleFactor,
+    "contentFontSizeScaleFactor": contentFontSizeScaleFactor
+  };
 
   return textScaleFactor;
 }

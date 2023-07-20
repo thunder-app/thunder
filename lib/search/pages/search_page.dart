@@ -44,8 +44,11 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> initPrefs() async {
     prefs = (await UserPreferences.instance).sharedPreferences;
     setState(() {
-      sortType = SortType.values.byName(prefs!.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
-      final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == sortType);
+      sortType = SortType.values.byName(
+          prefs!.getString("search_default_sort_type") ??
+              DEFAULT_SEARCH_SORT_TYPE.name);
+      final sortTypeItem = allSortTypeItems
+          .firstWhere((sortTypeItem) => sortTypeItem.payload == sortType);
       sortTypeIcon = sortTypeItem.icon;
       sortTypeLabel = sortTypeItem.label;
     });
@@ -60,9 +63,11 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
-        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType));
+        context.read<SearchBloc>().add(
+            ContinueSearchEvent(query: _controller.text, sortType: sortType));
       }
     }
   }
@@ -73,7 +78,9 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   _onChange(BuildContext context, String value) {
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType));
+    context
+        .read<SearchBloc>()
+        .add(StartSearchEvent(query: value, sortType: sortType));
   }
 
   @override
@@ -91,13 +98,17 @@ class _SearchPageState extends State<SearchPage> {
                 child: Stack(
                   children: [
                     TextField(
-                      onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                      onChanged: (value) => debounce(
+                          const Duration(milliseconds: 300),
+                          _onChange,
+                          [context, value]),
                       controller: _controller,
                       onTap: () {
                         HapticFeedback.selectionClick();
                       },
                       decoration: InputDecoration(
-                        fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                        fillColor:
+                            Theme.of(context).searchViewTheme.backgroundColor,
                         hintText: 'Search for communities',
                         filled: true,
                         border: OutlineInputBorder(
@@ -120,7 +131,9 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                       onPressed: () {
                                         resetTextField();
-                                        context.read<SearchBloc>().add(ResetSearch());
+                                        context
+                                            .read<SearchBloc>()
+                                            .add(ResetSearch());
                                       },
                                     ),
                                   ],
@@ -174,7 +187,8 @@ class _SearchPageState extends State<SearchPage> {
               child: Text(
                 'Search for communities federated with ${lemmyClient.lemmyApiV3.host}',
                 textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+                style: theme.textTheme.titleMedium
+                    ?.copyWith(color: theme.dividerColor),
               ),
             )
           ],
@@ -189,7 +203,8 @@ class _SearchPageState extends State<SearchPage> {
             child: Text(
               'No communities found',
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+              style: theme.textTheme.titleMedium
+                  ?.copyWith(color: theme.dividerColor),
             ),
           );
         }
@@ -210,12 +225,18 @@ class _SearchPageState extends State<SearchPage> {
               CommunityView communityView = state.communities![index];
               return Tooltip(
                   excludeFromSemantics: true,
-                  message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                  message:
+                      '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
                   preferBelow: false,
                   child: ListTile(
                       leading: CircleAvatar(
-                        backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
-                        foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
+                        backgroundColor: communityView.community.icon != null
+                            ? Colors.transparent
+                            : theme.colorScheme.primaryContainer,
+                        foregroundImage: communityView.community.icon != null
+                            ? CachedNetworkImageProvider(
+                                communityView.community.icon!)
+                            : null,
                         maxRadius: 25,
                         child: Text(
                           communityView.community.name[0].toUpperCase(),
@@ -239,7 +260,8 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                         Text(
                           ' · ${communityView.counts.subscribers}',
-                          semanticsLabel: '${communityView.counts.subscribers} subscribers',
+                          semanticsLabel:
+                              '${communityView.counts.subscribers} subscribers',
                         ),
                         const SizedBox(width: 4),
                         const Icon(Icons.people_rounded, size: 16.0),
@@ -250,7 +272,10 @@ class _SearchPageState extends State<SearchPage> {
                                 context.read<SearchBloc>().add(
                                       ChangeCommunitySubsciptionStatusEvent(
                                         communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+                                        follow: communityView.subscribed ==
+                                                SubscribedType.notSubscribed
+                                            ? true
+                                            : false,
                                       ),
                                     );
                                 SnackBar snackBar = SnackBar(
@@ -258,22 +283,31 @@ class _SearchPageState extends State<SearchPage> {
                                       '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
                                   behavior: SnackBarBehavior.floating,
                                 );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((timeStamp) {
+                                  ScaffoldMessenger.of(context)
+                                      .clearSnackBars();
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(snackBar);
                                 });
-                                context.read<AccountBloc>().add(GetAccountInformation());
+                                context
+                                    .read<AccountBloc>()
+                                    .add(GetAccountInformation());
                               },
                               icon: Icon(
                                 switch (communityView.subscribed) {
-                                  SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                                  SubscribedType.pending => Icons.pending_outlined,
-                                  SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                                  SubscribedType.notSubscribed =>
+                                    Icons.add_circle_outline_rounded,
+                                  SubscribedType.pending =>
+                                    Icons.pending_outlined,
+                                  SubscribedType.subscribed =>
+                                    Icons.remove_circle_outline_rounded,
                                 },
                               ),
                               tooltip: switch (communityView.subscribed) {
                                 SubscribedType.notSubscribed => 'Subscribe',
-                                SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                                SubscribedType.pending =>
+                                  'Unsubscribe (subscription pending)',
                                 SubscribedType.subscribed => 'Unsubscribe',
                               },
                               visualDensity: VisualDensity.compact,
@@ -292,7 +326,8 @@ class _SearchPageState extends State<SearchPage> {
                                 BlocProvider.value(value: authBloc),
                                 BlocProvider.value(value: thunderBloc),
                               ],
-                              child: CommunityPage(communityId: communityView.community.id),
+                              child: CommunityPage(
+                                  communityId: communityView.community.id),
                             ),
                           ),
                         );
@@ -305,7 +340,10 @@ class _SearchPageState extends State<SearchPage> {
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType))},
+          action: () => {
+            context.read<SearchBloc>().add(StartSearchEvent(
+                query: _controller.value.text, sortType: sortType))
+          },
           actionText: 'Retry',
         );
     }

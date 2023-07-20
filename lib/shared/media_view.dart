@@ -44,12 +44,17 @@ class MediaView extends StatefulWidget {
   State<MediaView> createState() => _MediaViewState();
 }
 
-class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMixin {
+class _MediaViewState extends State<MediaView>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(
+        vsync: this,
+        duration: const Duration(seconds: 1),
+        lowerBound: 0.0,
+        upperBound: 1.0);
     super.initState();
   }
 
@@ -89,11 +94,16 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         originURL: widget.postView!.media.first.originalUrl,
-        mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
+        mediaURL: widget.postView!.media.first.mediaUrl ??
+            widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,
         mediaWidth: widget.postView!.media.first.width,
-        showFullHeightImages: widget.viewMode == ViewMode.comfortable ? widget.showFullHeightImages : false,
-        edgeToEdgeImages: widget.viewMode == ViewMode.comfortable ? widget.edgeToEdgeImages : false,
+        showFullHeightImages: widget.viewMode == ViewMode.comfortable
+            ? widget.showFullHeightImages
+            : false,
+        edgeToEdgeImages: widget.viewMode == ViewMode.comfortable
+            ? widget.edgeToEdgeImages
+            : false,
         viewMode: widget.viewMode,
         postId: widget.postView!.postView.post.id,
         markPostReadOnMediaView: widget.markPostReadOnMediaView,
@@ -101,7 +111,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       );
     }
 
-    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
+    bool hideNsfw = widget.hideNsfwPreviews &&
+        (widget.postView?.postView.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
@@ -113,8 +124,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               UserBloc userBloc = BlocProvider.of<UserBloc>(context);
               userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
             } catch (e) {
-              CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-              communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+              CommunityBloc communityBloc =
+                  BlocProvider.of<CommunityBloc>(context);
+              communityBloc
+                  .add(MarkPostAsReadEvent(postId: postId, read: true));
             }
           }
           Navigator.of(context).push(
@@ -122,7 +135,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               opaque: false,
               transitionDuration: const Duration(milliseconds: 200),
               reverseTransitionDuration: const Duration(milliseconds: 200),
-              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+              pageBuilder: (BuildContext context, Animation<double> animation,
+                  Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
                 return ImageViewer(
@@ -131,7 +145,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   postId: widget.postView!.postView.post.id,
                 );
               },
-              transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+              transitionsBuilder: (BuildContext context,
+                  Animation<double> animation,
+                  Animation<double> secondaryAnimation,
+                  Widget child) {
                 return Align(
                   child: FadeTransition(
                     opacity: animation,
@@ -144,19 +161,28 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         },
         child: Container(
           clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
+          decoration: BoxDecoration(
+              borderRadius:
+                  BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
           child: Stack(
             alignment: Alignment.center,
             children: [
-              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: previewImage(context)) : previewImage(context),
+              hideNsfw
+                  ? ImageFiltered(
+                      imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                      child: previewImage(context))
+                  : previewImage(context),
               if (hideNsfw)
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.all(20),
                   child: Column(
                     children: [
-                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                      Icon(Icons.warning_rounded,
+                          size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                      if (widget.viewMode != ViewMode.compact)
+                        const Text("NSFW - Tap to reveal",
+                            textScaleFactor: 1.5),
                     ],
                   ),
                 ),
@@ -173,8 +199,15 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     final openInExternalBrowser = state.openInExternalBrowser;
 
-    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
-    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
+    double? height = widget.viewMode == ViewMode.compact
+        ? 75
+        : (widget.showFullHeightImages
+            ? widget.postView!.media.first.height
+            : 150);
+    double width = widget.viewMode == ViewMode.compact
+        ? 75
+        : MediaQuery.of(context).size.width -
+            (widget.edgeToEdgeImages ? 0 : 24);
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
@@ -182,12 +215,17 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         widget.postView!.media.first.mediaUrl!,
         height: height,
         width: width,
-        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+        fit: widget.viewMode == ViewMode.compact
+            ? BoxFit.cover
+            : BoxFit.fitWidth,
         cache: true,
         clearMemoryCacheWhenDispose: true,
         cacheWidth: widget.viewMode == ViewMode.compact
             ? (75 * View.of(context).devicePixelRatio.ceil())
-            : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
+            : ((MediaQuery.of(context).size.width -
+                        (widget.edgeToEdgeImages ? 0 : 24)) *
+                    View.of(context).devicePixelRatio.ceil())
+                .toInt(),
         loadStateChanged: (ExtendedImageState state) {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
@@ -198,7 +236,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 child: SizedBox(
                   height: height,
                   width: width,
-                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
+                  child: const Center(
+                      child: SizedBox(
+                          width: 40,
+                          height: 40,
+                          child: CircularProgressIndicator())),
                 ),
               );
             case LoadState.completed:
@@ -223,18 +265,21 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
                         children: [
                           Container(
                             color: theme.colorScheme.secondary.withOpacity(0.4),
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0, vertical: 12.0),
                             child: Row(
                               children: [
                                 const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Icon(
                                     Icons.link,
                                   ),
@@ -254,7 +299,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                     ),
                     onTap: () {
                       if (widget.post?.url != null) {
-                        openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                        openLink(context,
+                            url: widget.post!.url!,
+                            openInExternalBrowser: openInExternalBrowser);
                       }
                     },
                   ),

@@ -47,7 +47,8 @@ class CommentSubview extends StatefulWidget {
   State<CommentSubview> createState() => _CommentSubviewState();
 }
 
-class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
+class _CommentSubviewState extends State<CommentSubview>
+    with SingleTickerProviderStateMixin {
   Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
   bool _animatingOut = false;
   bool _animatingIn = false;
@@ -72,7 +73,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       if (status == AnimationStatus.completed && _animatingOut) {
         _animatingOut = false;
         _removeViewFullCommentsButton = true;
-        context.read<PostBloc>().add(const GetPostCommentsEvent(commentParentId: null, viewAllCommentsRefresh: true));
+        context.read<PostBloc>().add(const GetPostCommentsEvent(
+            commentParentId: null, viewAllCommentsRefresh: true));
       }
     });
   }
@@ -93,7 +95,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         itemCount: getCommentsListLength(),
         itemBuilder: (context, index) {
           if (widget.postViewMedia != null && index == 0) {
-            return PostSubview(selectedCommentId: widget.selectedCommentId,
+            return PostSubview(
+                selectedCommentId: widget.selectedCommentId,
                 useDisplayNames: state.useDisplayNames,
                 postViewMedia: widget.postViewMedia!);
           }
@@ -110,7 +113,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
             return SlideTransition(
                 position: _fullCommentsOffsetAnimation,
                 child: Column(children: [
-                  if (widget.selectedCommentId != null && !_animatingIn &&
+                  if (widget.selectedCommentId != null &&
+                      !_animatingIn &&
                       index != widget.comments.length + 1)
                     Center(
                         child: Column(children: [
@@ -132,15 +136,22 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                     ])),
                   if (index != widget.comments.length + 1)
                     CommentCard(
-                        now: widget.now,
-                        selectCommentId: widget.selectedCommentId,
-                        commentViewTree: widget.comments[index - 1],
-                        collapsedCommentSet: collapsedCommentSet,
-                        collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-                        onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                        onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
-                        onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
-                        onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                      now: widget.now,
+                      selectCommentId: widget.selectedCommentId,
+                      commentViewTree: widget.comments[index - 1],
+                      collapsedCommentSet: collapsedCommentSet,
+                      collapsed: collapsedCommentSet.contains(widget
+                              .comments[index - 1].commentView!.comment.id) ||
+                          widget.level == 2,
+                      onSaveAction: (int commentId, bool save) =>
+                          widget.onSaveAction(commentId, save),
+                      onVoteAction: (int commentId, VoteType voteType) =>
+                          widget.onVoteAction(commentId, voteType),
+                      onCollapseCommentChange:
+                          (int commentId, bool collapsed) =>
+                              onCollapseCommentChange(commentId, collapsed),
+                      onDeleteAction: (int commentId, bool deleted) =>
+                          widget.onDeleteAction(commentId, deleted),
                     ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[
@@ -152,7 +163,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
                               'Hmmm. It seems like you\'ve reached the bottom.',
-                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              textScaleFactor:
+                                  state.contentFontSizeScale.textScaleFactor,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
                             ),
@@ -180,7 +192,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       return 2; // Show post and loading indicator since no comments have been fetched yet
     }
 
-    return widget.postViewMedia != null ? widget.comments.length + 2 : widget.comments.length + 1;
+    return widget.postViewMedia != null
+        ? widget.comments.length + 2
+        : widget.comments.length + 1;
   }
 
   void onCollapseCommentChange(int commentId, bool collapsed) {

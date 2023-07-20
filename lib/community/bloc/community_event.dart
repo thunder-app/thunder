@@ -52,7 +52,8 @@ class CreatePostEvent extends CommunityEvent {
   final String? url;
   final bool nsfw;
 
-  const CreatePostEvent({required this.name, required this.body, this.url, this.nsfw = false});
+  const CreatePostEvent(
+      {required this.name, required this.body, this.url, this.nsfw = false});
 }
 
 class MarkPostAsReadEvent extends CommunityEvent {

@@ -63,8 +63,10 @@ class _ThunderState extends State<Thunder> {
 
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+    final SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
+    bool bottomNavBarSwipeGestures =
+        prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
@@ -80,14 +82,17 @@ class _ThunderState extends State<Thunder> {
 
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
-    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+    final SharedPreferences prefs =
+        (await UserPreferences.instance).sharedPreferences;
+    bool bottomNavBarDoubleTapGestures =
+        prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
 
     if (bottomNavBarDoubleTapGestures == true && scaffoldState == true) {
       _feedScaffoldKey.currentState?.closeDrawer();
-    } else if (bottomNavBarDoubleTapGestures == true && scaffoldState == false) {
+    } else if (bottomNavBarDoubleTapGestures == true &&
+        scaffoldState == false) {
       _feedScaffoldKey.currentState?.openDrawer();
     }
   }
@@ -102,7 +107,8 @@ class _ThunderState extends State<Thunder> {
         backgroundColor: theme.primaryColorDark,
         width: 190,
         duration: const Duration(milliseconds: 3500),
-        content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
+        content: const Center(
+            child: Text('Press back twice to exit', style: snackBarTextColor)),
       ),
     );
   }
@@ -111,7 +117,8 @@ class _ThunderState extends State<Thunder> {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-        pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        pageController.animateToPage(0,
+            duration: const Duration(milliseconds: 500), curve: Curves.ease);
       });
       return Future.value(false);
     }
@@ -151,43 +158,65 @@ class _ThunderState extends State<Thunder> {
                 case ThunderStatus.success:
                   FlutterNativeSplash.remove();
                   return Scaffold(
-                      bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
+                      bottomNavigationBar:
+                          _getScaffoldBottomNavigationBar(context),
                       body: MultiBlocProvider(
                           providers: [
-                            BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
+                            BlocProvider<AccountBloc>(
+                                create: (context) => AccountBloc()),
                           ],
                           child: BlocConsumer<AuthBloc, AuthState>(
-                              listenWhen: (AuthState previous, AuthState current) {
-                                if (previous.isLoggedIn != current.isLoggedIn || previous.status == AuthStatus.initial) return true;
+                              listenWhen:
+                                  (AuthState previous, AuthState current) {
+                                if (previous.isLoggedIn != current.isLoggedIn ||
+                                    previous.status == AuthStatus.initial)
+                                  return true;
                                 return false;
                               },
-                              buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
+                              buildWhen: (previous, current) =>
+                                  current.status != AuthStatus.failure &&
+                                  current.status != AuthStatus.loading,
                               listener: (context, state) {
-                                context.read<AccountBloc>().add(GetAccountInformation());
-                                context.read<InboxBloc>().add(const GetInboxEvent());
+                                context
+                                    .read<AccountBloc>()
+                                    .add(GetAccountInformation());
+                                context
+                                    .read<InboxBloc>()
+                                    .add(const GetInboxEvent());
                               },
                               builder: (context, state) {
                                 switch (state.status) {
                                   case AuthStatus.initial:
                                     context.read<AuthBloc>().add(CheckAuth());
-                                    return const Center(child: CircularProgressIndicator());
+                                    return const Center(
+                                        child: CircularProgressIndicator());
                                   case AuthStatus.success:
                                     Version? version = thunderBlocState.version;
-                                    bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
+                                    bool showInAppUpdateNotification =
+                                        thunderBlocState
+                                            .showInAppUpdateNotification;
 
-                                    if (version?.hasUpdate == true && hasShownUpdateDialog == false && showInAppUpdateNotification == true) {
-                                      WidgetsBinding.instance.addPostFrameCallback((_) {
-                                        showUpdateNotification(context, version);
-                                        setState(() => hasShownUpdateDialog = true);
+                                    if (version?.hasUpdate == true &&
+                                        hasShownUpdateDialog == false &&
+                                        showInAppUpdateNotification == true) {
+                                      WidgetsBinding.instance
+                                          .addPostFrameCallback((_) {
+                                        showUpdateNotification(
+                                            context, version);
+                                        setState(
+                                            () => hasShownUpdateDialog = true);
                                       });
                                     }
 
                                     return PageView(
                                       controller: pageController,
-                                      onPageChanged: (index) => setState(() => selectedPageIndex = index),
-                                      physics: const NeverScrollableScrollPhysics(),
+                                      onPageChanged: (index) => setState(
+                                          () => selectedPageIndex = index),
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
-                                        CommunityPage(scaffoldKey: _feedScaffoldKey),
+                                        CommunityPage(
+                                            scaffoldKey: _feedScaffoldKey),
                                         BlocProvider(
                                           create: (context) => SearchBloc(),
                                           child: const SearchPage(),
@@ -230,7 +259,9 @@ class _ThunderState extends State<Thunder> {
         onHorizontalDragStart: _handleDragStart,
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: _handleDragEnd,
-        onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? _handleDoubleTap : null,
+        onDoubleTap: state.bottomNavBarDoubleTapGestures == true
+            ? _handleDoubleTap
+            : null,
         child: BottomNavigationBar(
           currentIndex: selectedPageIndex,
           showSelectedLabels: false,
@@ -270,7 +301,9 @@ class _ThunderState extends State<Thunder> {
             if (selectedPageIndex != index) {
               setState(() {
                 selectedPageIndex = index;
-                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                pageController.animateToPage(index,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.ease);
               });
             }
 
@@ -308,7 +341,9 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          openLink(context, url: 'https://github.com/hjiangsu/thunder/releases/latest', openInExternalBrowser: openInExternalBrowser);
+          openLink(context,
+              url: 'https://github.com/hjiangsu/thunder/releases/latest',
+              openInExternalBrowser: openInExternalBrowser);
         },
       ),
       background: theme.cardColor,

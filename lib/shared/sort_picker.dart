@@ -73,10 +73,17 @@ const List<ListPickerItem<SortType>> topSortTypeItems = [
   ),
 ];
 
-const List<ListPickerItem<SortType>> allSortTypeItems = [...defaultSortTypeItems, ...topSortTypeItems];
+const List<ListPickerItem<SortType>> allSortTypeItems = [
+  ...defaultSortTypeItems,
+  ...topSortTypeItems
+];
 
 class SortPicker extends BottomSheetListPicker<SortType> {
-  const SortPicker({super.key, required super.onSelect, required super.title, super.items = defaultSortTypeItems});
+  const SortPicker(
+      {super.key,
+      required super.onSelect,
+      required super.title,
+      super.items = defaultSortTypeItems});
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -168,7 +175,8 @@ class _SortPickerState extends State<SortPicker> {
     );
   }
 
-  List<ListTile> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
+  List<ListTile> _generateList(
+      List<ListPickerItem<SortType>> items, ThemeData theme) {
     return items
         .map(
           (item) => ListTile(

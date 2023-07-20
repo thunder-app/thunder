@@ -20,7 +20,13 @@ class PostPage extends StatefulWidget {
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
+  const PostPage(
+      {super.key,
+      this.postView,
+      this.postId,
+      this.selectedCommentPath,
+      this.selectedCommentId,
+      required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -48,10 +54,13 @@ class _PostPageState extends State<PostPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
-      if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent * 0.95) {
+      if (hasScrolledToBottom == false)
+        setState(() => hasScrolledToBottom = true);
     } else {
-      if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
+      if (hasScrolledToBottom == true)
+        setState(() => hasScrolledToBottom = false);
     }
 
     if (!disableFabs) {
@@ -84,7 +93,9 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = commentSortTypeItems.firstWhere(
+                  (sortTypeItem) =>
+                      sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -122,15 +133,21 @@ class _PostPageState extends State<PostPage> {
                           showDragHandle: true,
                           builder: (context) {
                             return Padding(
-                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      MediaQuery.of(context).viewInsets.bottom +
+                                          40),
                               child: FractionallySizedBox(
                                 heightFactor: 0.8,
                                 child: MultiBlocProvider(
                                   providers: [
-                                    BlocProvider<PostBloc>.value(value: postBloc),
-                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    BlocProvider<PostBloc>.value(
+                                        value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(
+                                        value: thunderBloc),
                                   ],
-                                  child: CreateCommentModal(postView: widget.postView?.postView),
+                                  child: CreateCommentModal(
+                                      postView: widget.postView?.postView),
                                 ),
                               ),
                             );
@@ -168,26 +185,32 @@ class _PostPageState extends State<PostPage> {
                 _currentHorizontalDragStartPosition = details.globalPosition;
               },
               onHorizontalDragEnd: (details) {
-                if (details.primaryVelocity! > 0 && (_currentHorizontalDragStartPosition?.dx ?? 0) > 45) {
+                if (details.primaryVelocity! > 0 &&
+                    (_currentHorizontalDragStartPosition?.dx ?? 0) > 45) {
                   Navigator.of(context).pop();
                 }
               },
               child: SafeArea(
                 child: BlocConsumer<PostBloc, PostState>(
                   listenWhen: (previous, current) {
-                    if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                    if (previous.status != PostStatus.failure &&
+                        current.status == PostStatus.failure) {
                       setState(() => resetFailureMessage = true);
                     }
                     return true;
                   },
                   listener: (context, state) {
-                    if (state.status == PostStatus.success && widget.postView != null) {
+                    if (state.status == PostStatus.success &&
+                        widget.postView != null) {
                       // Update the community's post
-                      context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      context
+                          .read<CommunityBloc>()
+                          .add(UpdatePostEvent(postViewMedia: state.postView!));
                     }
                   },
                   builder: (context, state) {
-                    if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                    if (state.status == PostStatus.failure &&
+                        resetFailureMessage == true) {
                       SnackBar snackBar = SnackBar(
                         content: Row(
                           children: [
@@ -197,7 +220,10 @@ class _PostPageState extends State<PostPage> {
                             ),
                             const SizedBox(width: 8.0),
                             Flexible(
-                              child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
+                              child: Text(
+                                  state.errorMessage ??
+                                      'No error message available',
+                                  maxLines: 4),
                             )
                           ],
                         ),
@@ -212,8 +238,11 @@ class _PostPageState extends State<PostPage> {
                     }
                     switch (state.status) {
                       case PostStatus.initial:
-                      context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
-                          selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
+                        context.read<PostBloc>().add(GetPostEvent(
+                            postView: widget.postView,
+                            postId: widget.postId,
+                            selectedCommentPath: widget.selectedCommentPath,
+                            selectedCommentId: widget.selectedCommentId));
                         return const Center(child: CircularProgressIndicator());
                       case PostStatus.loading:
                         return const Center(child: CircularProgressIndicator());
@@ -224,17 +253,30 @@ class _PostPageState extends State<PostPage> {
                           return RefreshIndicator(
                             onRefresh: () async {
                               HapticFeedback.mediumImpact();
-                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId,
-                                  selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                              return context.read<PostBloc>().add(GetPostEvent(
+                                  postView: widget.postView,
+                                  postId: widget.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath:
+                                      state.selectedCommentPath));
                             },
-                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, selectedCommentId: state.selectedCommentId,
-                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            child: PostPageSuccess(
+                                postView: state.postView!,
+                                comments: state.comments,
+                                selectedCommentId: state.selectedCommentId,
+                                viewFullCommentsRefreshing:
+                                    state.viewAllCommentsRefresh,
+                                scrollController: _scrollController,
+                                hasReachedCommentEnd:
+                                    state.hasReachedCommentEnd),
                           );
                         }
                         return ErrorMessage(
                           message: state.errorMessage,
                           action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            context.read<PostBloc>().add(GetPostEvent(
+                                postView: widget.postView,
+                                postId: widget.postId));
                           },
                           actionText: 'Refresh Content',
                         );
@@ -242,7 +284,9 @@ class _PostPageState extends State<PostPage> {
                         return ErrorMessage(
                           message: state.errorMessage,
                           action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            context.read<PostBloc>().add(GetPostEvent(
+                                postView: widget.postView,
+                                postId: widget.postId));
                           },
                           actionText: 'Refresh Content',
                         );
