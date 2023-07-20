@@ -14,6 +14,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 class CommentCardActions extends StatelessWidget {
   final CommentViewTree commentViewTree;
   final bool isEdit;
+  final double iconSize = 22;
 
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
@@ -36,56 +37,70 @@ class CommentCardActions extends StatelessWidget {
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
-            IconButton(
+            SizedBox(
+              height: 28,
+              width: 44,
+              child: IconButton(
                 icon: const Icon(
                   Icons.more_horiz_rounded,
                   semanticLabel: 'Actions',
+                  size: 20,
                 ),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction);
                   HapticFeedback.mediumImpact();
                 }),
-            IconButton(
-              icon: Icon(
-                isEdit ? Icons.edit_rounded : Icons.reply_rounded,
-                semanticLabel: 'Reply',
-              ),
-              visualDensity: VisualDensity.compact,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                PostBloc postBloc = context.read<PostBloc>();
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: MultiBlocProvider(
-                          providers: [
-                            BlocProvider<PostBloc>.value(value: postBloc),
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                          ],
-                          child: CreateCommentModal(commentView: commentViewTree, isEdit: isEdit),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
             ),
-            IconButton(
+            SizedBox(
+              height: 28,
+              width: 44,
+              child: IconButton(
+                icon: Icon(
+                  isEdit ? Icons.edit_rounded : Icons.reply_rounded,
+                  semanticLabel: 'Reply',
+                  size: iconSize
+                ),
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  PostBloc postBloc = context.read<PostBloc>();
+                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                  showModalBottomSheet(
+                    isScrollControlled: true,
+                    context: context,
+                    showDragHandle: true,
+                    builder: (context) {
+                      return Padding(
+                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                        child: FractionallySizedBox(
+                          heightFactor: 0.8,
+                          child: MultiBlocProvider(
+                            providers: [
+                              BlocProvider<PostBloc>.value(value: postBloc),
+                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                            ],
+                            child: CreateCommentModal(commentView: commentViewTree, isEdit: isEdit),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+            SizedBox(
+              height: 28,
+              width: 44,
+              child: IconButton(
                 icon: Icon(
                   Icons.arrow_upward,
                   semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
+                  size: iconSize,
                 ),
                 color: voteType == VoteType.up ? upVoteColor : null,
                 visualDensity: VisualDensity.compact,
@@ -93,17 +108,23 @@ class CommentCardActions extends StatelessWidget {
                   HapticFeedback.mediumImpact();
                   onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
                 }),
-            IconButton(
-              icon: Icon(
-                Icons.arrow_downward,
-                semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+            ),
+            SizedBox(
+              height: 28,
+              width: 44,
+              child: IconButton(
+                icon: Icon(
+                  Icons.arrow_downward,
+                  semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+                  size: iconSize,
+                ),
+                color: voteType == VoteType.down ? downVoteColor : null,
+                visualDensity: VisualDensity.compact,
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                },
               ),
-              color: voteType == VoteType.down ? downVoteColor : null,
-              visualDensity: VisualDensity.compact,
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
-              },
             ),
           ],
         );

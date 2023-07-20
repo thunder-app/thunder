@@ -18,8 +18,14 @@ import 'package:thunder/utils/instance.dart';
 class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
+  final bool isComment;
 
-  const CommonMarkdownBody({super.key, required this.body, this.isSelectableText = false});
+  const CommonMarkdownBody({
+    super.key,
+    required this.body,
+    this.isSelectableText = false,
+    this.isComment = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -31,11 +37,13 @@ class CommonMarkdownBody extends StatelessWidget {
     return MarkdownBody(
       data: body,
       imageBuilder: (uri, title, alt) {
-        return ImagePreview(
-          url: uri.toString(),
-          width: MediaQuery.of(context).size.width - 24,
-          isExpandable: true,
-          showFullHeightImages: true,
+        return ConstrainedBox(
+          constraints: BoxConstraints( maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60),
+          child: ImagePreview(
+            url: uri.toString(),
+            isExpandable: true,
+            showFullHeightImages: true,
+          ),
         );
       },
       selectable: isSelectableText,
