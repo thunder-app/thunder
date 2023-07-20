@@ -27,6 +27,7 @@
 - Fixed dpluicate post regression - contribution from @ajsosa
 - Fixed a couple of performance issues with constant widget rebuilding - contribution from @ajsosa
 - Fixed swipe action icons not showing properly when on 2-column view - contribution from @ajsosa
+- Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
 
 ## 0.2.1+12 - 2023-07-18
 ### Added
