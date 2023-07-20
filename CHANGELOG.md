@@ -12,6 +12,7 @@
 - Improvements to CI/development workflow
 - Added ability to view comment context when tapping on your own comment from profile - contribution from @ajsosa
 - Added Matrix space to about page
+- Added initial support for custom themes
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
