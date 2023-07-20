@@ -16,6 +16,7 @@ class CommentCardActions extends StatelessWidget {
 
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onDeleteAction;
 
   const CommentCardActions({
     super.key,
@@ -23,6 +24,7 @@ class CommentCardActions extends StatelessWidget {
     this.isEdit = false,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onDeleteAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -45,7 +47,7 @@ class CommentCardActions extends StatelessWidget {
                 ),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
-                  showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction);
+                  showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
                   HapticFeedback.mediumImpact();
                 }),
             IconButton(
