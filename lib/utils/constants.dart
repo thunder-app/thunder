@@ -1,4 +1,5 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/nested_comment_indicator.dart';
 
 const PostListingType DEFAULT_LISTING_TYPE = PostListingType.all;
 
