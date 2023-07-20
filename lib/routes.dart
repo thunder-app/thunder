@@ -64,12 +64,9 @@ final GoRouter router = GoRouter(
           builder: (context, state) {
             return MultiBlocProvider(
               providers: [
-                BlocProvider.value(
-                    value: (state.extra! as List)[0] as ThunderBloc),
-                BlocProvider.value(
-                    value: (state.extra! as List)[1] as AccountBloc),
-                BlocProvider.value(
-                    value: (state.extra! as List)[2] as AuthBloc),
+                BlocProvider.value(value: (state.extra! as List)[0] as ThunderBloc),
+                BlocProvider.value(value: (state.extra! as List)[1] as AccountBloc),
+                BlocProvider.value(value: (state.extra! as List)[2] as AuthBloc),
               ],
               child: const AboutSettingsPage(),
             );

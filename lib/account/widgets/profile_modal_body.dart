@@ -12,8 +12,7 @@ import 'package:thunder/utils/instance.dart';
 class ProfileModalBody extends StatelessWidget {
   const ProfileModalBody({super.key});
 
-  static final GlobalKey<NavigatorState> shellNavigatorKey =
-      GlobalKey<NavigatorState>();
+  static final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
   void pushRegister() {
     shellNavigatorKey.currentState!.pushNamed("/login");
@@ -79,8 +78,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
           if (index == accounts?.length) {
             return Column(
               children: [
-                if (accounts != null && accounts!.isNotEmpty)
-                  const Divider(indent: 16.0, endIndent: 16.0, thickness: 2.0),
+                if (accounts != null && accounts!.isNotEmpty) const Divider(indent: 16.0, endIndent: 16.0, thickness: 2.0),
                 ListTile(
                   leading: const Icon(Icons.add),
                   title: const Text('Add Account'),
@@ -91,9 +89,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
           } else {
             return ListTile(
               leading: AnimatedCrossFade(
-                crossFadeState: accounts![index].instanceIcon == null
-                    ? CrossFadeState.showFirst
-                    : CrossFadeState.showSecond,
+                crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                 duration: const Duration(milliseconds: 500),
                 firstChild: const SizedBox(
                   width: 40,
@@ -103,26 +99,18 @@ class _ProfileSelectState extends State<ProfileSelect> {
                 ),
                 secondChild: CircleAvatar(
                   backgroundColor: Colors.transparent,
-                  foregroundImage: accounts![index].instanceIcon == null
-                      ? null
-                      : CachedNetworkImageProvider(
-                          accounts![index].instanceIcon!),
+                  foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
                 ),
               ),
               title: Text(
                 accounts![index].account.username ?? 'N/A',
                 style: theme.textTheme.titleMedium?.copyWith(),
               ),
-              subtitle: Text(accounts![index]
-                      .account
-                      .instance
-                      ?.replaceAll('https://', '') ??
-                  'N/A'),
+              subtitle: Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
               onTap: (currentAccountId == accounts![index].account.id)
                   ? null
                   : () {
-                      context.read<AuthBloc>().add(SwitchAccount(
-                          accountId: accounts![index].account.id));
+                      context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
                       context.pop();
                     },
               trailing: (currentAccountId == accounts![index].account.id)
@@ -136,8 +124,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         semanticLabel: 'Remove Account',
                       ),
                       onPressed: () {
-                        context.read<AuthBloc>().add(RemoveAccount(
-                            accountId: accounts![index].account.id));
+                        context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
                         context.pop();
                       }),
             );
@@ -153,10 +140,8 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> fetchAccounts() async {
     List<Account> accounts = await Account.accounts();
 
-    List<AccountExtended> accountsExtended =
-        await Future.wait(accounts.map((Account account) async {
-      return AccountExtended(
-          account: account, instance: account.instance, instanceIcon: null);
+    List<AccountExtended> accountsExtended = await Future.wait(accounts.map((Account account) async {
+      return AccountExtended(account: account, instance: account.instance, instanceIcon: null);
     })).timeout(const Duration(seconds: 5));
 
     // Intentionally don't await this here
@@ -165,8 +150,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
     setState(() => this.accounts = accountsExtended);
   }
 
-  Future<void> fetchInstanceIcons(
-      List<AccountExtended> accountsExtended) async {
+  Future<void> fetchInstanceIcons(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
       final instanceIcon = await getInstanceIcon(account.instance).timeout(
         const Duration(seconds: 3),

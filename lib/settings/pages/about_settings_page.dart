@@ -31,8 +31,7 @@ class AboutSettingsPage extends StatelessWidget {
                 future: getCurrentVersion(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Center(
-                        child: Text('Version ${snapshot.data ?? 'N/A'}'));
+                    return Center(child: Text('Version ${snapshot.data ?? 'N/A'}'));
                   }
                   return Container();
                 },
@@ -45,35 +44,29 @@ class AboutSettingsPage extends StatelessWidget {
                 ListTile(
                   title: Text(
                     'GitHub',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   subtitle: const Text('github.com/thunder-app/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    openLink(context,
-                        url: 'https://github.com/thunder-app/thunder',
-                        openInExternalBrowser: openInExternalBrowser);
+                    openLink(context, url: 'https://github.com/thunder-app/thunder', openInExternalBrowser: openInExternalBrowser);
                   },
                 ),
                 ListTile(
                   title: Text(
                     'Lemmy Community',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    navigateToCommunityByName(
-                        context, 'thunder_app@lemmy.world');
+                    navigateToCommunityByName(context, 'thunder_app@lemmy.world');
                   },
                 ),
                 ListTile(
                   title: Text(
                     'Licenses',
-                    style: theme.textTheme.titleMedium
-                        ?.copyWith(fontWeight: FontWeight.w600),
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () => showLicensePage(context: context),

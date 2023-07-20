@@ -17,8 +17,7 @@ class GestureSettingsPage extends StatefulWidget {
   State<GestureSettingsPage> createState() => _GestureSettingsPageState();
 }
 
-class _GestureSettingsPageState extends State<GestureSettingsPage>
-    with TickerProviderStateMixin {
+class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerProviderStateMixin {
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
 
@@ -41,49 +40,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
 
   /// The available gesture options
   List<ListPickerItem> postGestureOptions = [
-    ListPickerItem(
-        icon: Icons.north_rounded,
-        label: SwipeAction.upvote.label,
-        payload: SwipeAction.upvote),
-    ListPickerItem(
-        icon: Icons.south_rounded,
-        label: SwipeAction.downvote.label,
-        payload: SwipeAction.downvote),
-    ListPickerItem(
-        icon: Icons.star_outline_rounded,
-        label: SwipeAction.save.label,
-        payload: SwipeAction.save),
-    ListPickerItem(
-        icon: Icons.markunread_outlined,
-        label: SwipeAction.toggleRead.label,
-        payload: SwipeAction.toggleRead),
-    ListPickerItem(
-        icon: Icons.not_interested_rounded,
-        label: SwipeAction.none.label,
-        payload: SwipeAction.none),
+    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: Icons.markunread_outlined, label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
+    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   List<ListPickerItem> commentGestureOptions = [
-    ListPickerItem(
-        icon: Icons.north_rounded,
-        label: SwipeAction.upvote.label,
-        payload: SwipeAction.upvote),
-    ListPickerItem(
-        icon: Icons.south_rounded,
-        label: SwipeAction.downvote.label,
-        payload: SwipeAction.downvote),
-    ListPickerItem(
-        icon: Icons.star_outline_rounded,
-        label: SwipeAction.save.label,
-        payload: SwipeAction.save),
-    ListPickerItem(
-        icon: Icons.reply_rounded,
-        label: SwipeAction.reply.label,
-        payload: SwipeAction.reply),
-    ListPickerItem(
-        icon: Icons.not_interested_rounded,
-        label: SwipeAction.none.label,
-        payload: SwipeAction.none),
+    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.label, payload: SwipeAction.reply),
+    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   void setPreferences(attribute, value) async {
@@ -105,23 +74,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
         setState(() => enablePostGestures = value);
         break;
       case 'setting_gesture_post_left_primary_gesture':
-        await prefs.setString('setting_gesture_post_left_primary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_post_left_primary_gesture', (value as SwipeAction).name);
         setState(() => leftPrimaryPostGesture = value);
         break;
       case 'setting_gesture_post_left_secondary_gesture':
-        await prefs.setString('setting_gesture_post_left_secondary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_post_left_secondary_gesture', (value as SwipeAction).name);
         setState(() => leftSecondaryPostGesture = value);
         break;
       case 'setting_gesture_post_right_primary_gesture':
-        await prefs.setString('setting_gesture_post_right_primary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_post_right_primary_gesture', (value as SwipeAction).name);
         setState(() => rightPrimaryPostGesture = value);
         break;
       case 'setting_gesture_post_right_secondary_gesture':
-        await prefs.setString('setting_gesture_post_right_secondary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_post_right_secondary_gesture', (value as SwipeAction).name);
         setState(() => rightSecondaryPostGesture = value);
         break;
 
@@ -131,23 +96,19 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
         setState(() => enableCommentGestures = value);
         break;
       case 'setting_gesture_comment_left_primary_gesture':
-        await prefs.setString('setting_gesture_comment_left_primary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_comment_left_primary_gesture', (value as SwipeAction).name);
         setState(() => leftPrimaryCommentGesture = value);
         break;
       case 'setting_gesture_comment_left_secondary_gesture':
-        await prefs.setString('setting_gesture_comment_left_secondary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_comment_left_secondary_gesture', (value as SwipeAction).name);
         setState(() => leftSecondaryCommentGesture = value);
         break;
       case 'setting_gesture_comment_right_primary_gesture':
-        await prefs.setString('setting_gesture_comment_right_primary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_comment_right_primary_gesture', (value as SwipeAction).name);
         setState(() => rightPrimaryCommentGesture = value);
         break;
       case 'setting_gesture_comment_right_secondary_gesture':
-        await prefs.setString('setting_gesture_comment_right_secondary_gesture',
-            (value as SwipeAction).name);
+        await prefs.setString('setting_gesture_comment_right_secondary_gesture', (value as SwipeAction).name);
         setState(() => rightSecondaryCommentGesture = value);
         break;
     }
@@ -161,47 +122,25 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
-      SwipeAction.values.byName(
-          prefs.getString('setting_gesture_post_left_primary_gesture') ??
-              SwipeAction.upvote.name);
+      SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
 
       // Gestures
-      bottomNavBarSwipeGestures =
-          prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
-      bottomNavBarDoubleTapGestures =
-          prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+      bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
 
       // Post Gestures
-      enablePostGestures =
-          prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
-      leftPrimaryPostGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_post_left_primary_gesture') ??
-              SwipeAction.upvote.name);
-      leftSecondaryPostGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_post_left_secondary_gesture') ??
-              SwipeAction.downvote.name);
-      rightPrimaryPostGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_post_right_primary_gesture') ??
-              SwipeAction.save.name);
-      rightSecondaryPostGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_post_right_secondary_gesture') ??
-              SwipeAction.toggleRead.name);
+      enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
+      leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
+      leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
+      rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.save.name);
+      rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
-      enableCommentGestures =
-          prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
-      leftPrimaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_comment_left_primary_gesture') ??
-              SwipeAction.upvote.name);
-      leftSecondaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_comment_left_secondary_gesture') ??
-              SwipeAction.downvote.name);
-      rightPrimaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_comment_right_primary_gesture') ??
-              SwipeAction.reply.name);
-      rightSecondaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString('setting_gesture_comment_right_secondary_gesture') ??
-              SwipeAction.save.name);
+      enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
+      leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name);
+      leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name);
+      rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name);
+      rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
 
       isLoading = false;
     });
@@ -239,8 +178,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -258,8 +196,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           value: bottomNavBarSwipeGestures,
                           iconEnabled: Icons.swipe_right_rounded,
                           iconDisabled: Icons.swipe_right_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_enable_swipe_gestures', value),
+                          onToggle: (bool value) => setPreferences('setting_general_enable_swipe_gestures', value),
                         ),
                         ToggleOption(
                           description: 'Navbar Double-Tap Gestures',
@@ -267,16 +204,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           value: bottomNavBarDoubleTapGestures,
                           iconEnabled: Icons.touch_app_rounded,
                           iconDisabled: Icons.touch_app_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_enable_doubletap_gestures',
-                              value),
+                          onToggle: (bool value) => setPreferences('setting_general_enable_doubletap_gestures', value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -293,8 +227,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           child: Text(
                             'Looking to use buttons instead? Change what buttons appear on post cards in general settings.',
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground
-                                  .withOpacity(0.75),
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
                             ),
                           ),
                         ),
@@ -303,19 +236,16 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           value: enablePostGestures,
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_gesture_enable_post_gestures', value),
+                          onToggle: (bool value) => setPreferences('setting_gesture_enable_post_gestures', value),
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
                           switchOutCurve: Curves.easeInOut,
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
+                          transitionBuilder: (Widget child, Animation<double> animation) {
                             return SizeTransition(
                               sizeFactor: animation,
-                              child: SlideTransition(
-                                  position: _offsetAnimation, child: child),
+                              child: SlideTransition(position: _offsetAnimation, child: child),
                             );
                           },
                           child: enablePostGestures
@@ -325,61 +255,34 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                                     children: [
                                       ListOption(
                                         description: 'Left Short Swipe',
-                                        value: ListPickerItem(
-                                            label: leftPrimaryPostGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload: leftPrimaryPostGesture),
+                                        value: ListPickerItem(label: leftPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryPostGesture),
                                         options: postGestureOptions,
-                                        icon:
-                                            Icons.keyboard_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_post_left_primary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_left_primary_gesture', value.payload),
                                         disabled: !enablePostGestures,
                                       ),
                                       ListOption(
                                         description: 'Left Long Swipe',
-                                        value: ListPickerItem(
-                                            label: leftSecondaryPostGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload: leftSecondaryPostGesture),
+                                        value: ListPickerItem(label: leftSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryPostGesture),
                                         options: postGestureOptions,
-                                        icon: Icons
-                                            .keyboard_double_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_post_left_secondary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_double_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_left_secondary_gesture', value.payload),
                                         disabled: !enablePostGestures,
                                       ),
                                       ListOption(
                                         description: 'Right Short Swipe',
-                                        value: ListPickerItem(
-                                            label: rightPrimaryPostGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload: rightPrimaryPostGesture),
+                                        value: ListPickerItem(label: rightPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryPostGesture),
                                         options: postGestureOptions,
                                         icon: Icons.keyboard_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_post_right_primary_gesture',
-                                            value.payload),
+                                        onChanged: (value) => setPreferences('setting_gesture_post_right_primary_gesture', value.payload),
                                         disabled: !enablePostGestures,
                                       ),
                                       ListOption(
                                         description: 'Right Long Swipe',
-                                        value: ListPickerItem(
-                                            label: rightSecondaryPostGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload: rightSecondaryPostGesture),
+                                        value: ListPickerItem(label: rightSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryPostGesture),
                                         options: postGestureOptions,
-                                        icon: Icons
-                                            .keyboard_double_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_post_right_secondary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_double_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_post_right_secondary_gesture', value.payload),
                                         disabled: !enablePostGestures,
                                       ),
                                     ],
@@ -391,8 +294,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -409,8 +311,7 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           child: Text(
                             'Looking to use buttons instead? Enable them in the comments section in general settings.',
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground
-                                  .withOpacity(0.75),
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
                             ),
                           ),
                         ),
@@ -419,19 +320,16 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                           value: enableCommentGestures,
                           iconEnabled: Icons.swipe_rounded,
                           iconDisabled: Icons.swipe_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_gesture_enable_comment_gestures', value),
+                          onToggle: (bool value) => setPreferences('setting_gesture_enable_comment_gestures', value),
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
                           switchOutCurve: Curves.easeInOut,
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
+                          transitionBuilder: (Widget child, Animation<double> animation) {
                             return SizeTransition(
                               sizeFactor: animation,
-                              child: SlideTransition(
-                                  position: _offsetAnimation, child: child),
+                              child: SlideTransition(position: _offsetAnimation, child: child),
                             );
                           },
                           child: enableCommentGestures
@@ -441,64 +339,34 @@ class _GestureSettingsPageState extends State<GestureSettingsPage>
                                     children: [
                                       ListOption(
                                         description: 'Left Short Swipe',
-                                        value: ListPickerItem(
-                                            label: leftPrimaryCommentGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload: leftPrimaryCommentGesture),
+                                        value: ListPickerItem(label: leftPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryCommentGesture),
                                         options: commentGestureOptions,
-                                        icon:
-                                            Icons.keyboard_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_comment_left_primary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_left_primary_gesture', value.payload),
                                         disabled: !enableCommentGestures,
                                       ),
                                       ListOption(
                                         description: 'Left Long Swipe',
-                                        value: ListPickerItem(
-                                            label: leftSecondaryCommentGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload:
-                                                leftSecondaryCommentGesture),
+                                        value: ListPickerItem(label: leftSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryCommentGesture),
                                         options: commentGestureOptions,
-                                        icon: Icons
-                                            .keyboard_double_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_comment_left_secondary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_double_arrow_right_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_left_secondary_gesture', value.payload),
                                         disabled: !enableCommentGestures,
                                       ),
                                       ListOption(
                                         description: 'Right Short Swipe',
-                                        value: ListPickerItem(
-                                            label: rightPrimaryCommentGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload:
-                                                rightPrimaryCommentGesture),
+                                        value: ListPickerItem(label: rightPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryCommentGesture),
                                         options: commentGestureOptions,
                                         icon: Icons.keyboard_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_comment_right_primary_gesture',
-                                            value.payload),
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_right_primary_gesture', value.payload),
                                         disabled: !enableCommentGestures,
                                       ),
                                       ListOption(
                                         description: 'Right Long Swipe',
-                                        value: ListPickerItem(
-                                            label: rightSecondaryCommentGesture
-                                                .name.capitalize,
-                                            icon: Icons.feed,
-                                            payload:
-                                                rightSecondaryCommentGesture),
+                                        value: ListPickerItem(label: rightSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryCommentGesture),
                                         options: commentGestureOptions,
-                                        icon: Icons
-                                            .keyboard_double_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(
-                                            'setting_gesture_comment_right_secondary_gesture',
-                                            value.payload),
+                                        icon: Icons.keyboard_double_arrow_left_rounded,
+                                        onChanged: (value) => setPreferences('setting_gesture_comment_right_secondary_gesture', value.payload),
                                         disabled: !enableCommentGestures,
                                       ),
                                     ],

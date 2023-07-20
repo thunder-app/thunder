@@ -13,8 +13,7 @@ class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
 
-  const CommonMarkdownBody(
-      {super.key, required this.body, this.isSelectableText = false});
+  const CommonMarkdownBody({super.key, required this.body, this.isSelectableText = false});
 
   @override
   Widget build(BuildContext context) {
@@ -56,8 +55,7 @@ class CommonMarkdownBody extends StatelessWidget {
         if (communityName != null) {
           navigateToCommunityByName(context, communityName);
         } else if (url != null) {
-          openLink(context,
-              url: parsedUrl, openInExternalBrowser: openInExternalBrowser);
+          openLink(context, url: parsedUrl, openInExternalBrowser: openInExternalBrowser);
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(

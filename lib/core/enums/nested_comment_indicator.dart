@@ -5,8 +5,7 @@ enum NestedCommentIndicatorStyle {
   final String value;
   const NestedCommentIndicatorStyle(this.value);
 
-  factory NestedCommentIndicatorStyle.fromJson(String value) =>
-      values.firstWhere((e) => e.value == value);
+  factory NestedCommentIndicatorStyle.fromJson(String value) => values.firstWhere((e) => e.value == value);
 
   String toJson() => value;
 
@@ -21,8 +20,7 @@ enum NestedCommentIndicatorColor {
   final String value;
   const NestedCommentIndicatorColor(this.value);
 
-  factory NestedCommentIndicatorColor.fromJson(String value) =>
-      values.firstWhere((e) => e.value == value);
+  factory NestedCommentIndicatorColor.fromJson(String value) => values.firstWhere((e) => e.value == value);
 
   String toJson() => value;
 

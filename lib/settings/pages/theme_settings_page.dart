@@ -28,40 +28,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   //Theme
   List<ListPickerItem> themeOptions = [
-    const ListPickerItem(
-        icon: Icons.phonelink_setup_rounded,
-        label: 'System',
-        payload: ThemeType.system),
-    const ListPickerItem(
-        icon: Icons.light_mode_rounded,
-        label: 'Light',
-        payload: ThemeType.light),
-    const ListPickerItem(
-        icon: Icons.dark_mode_outlined, label: 'Dark', payload: ThemeType.dark),
-    const ListPickerItem(
-        icon: Icons.dark_mode,
-        label: 'Pure Black',
-        payload: ThemeType.pureBlack)
+    const ListPickerItem(icon: Icons.phonelink_setup_rounded, label: 'System', payload: ThemeType.system),
+    const ListPickerItem(icon: Icons.light_mode_rounded, label: 'Light', payload: ThemeType.light),
+    const ListPickerItem(icon: Icons.dark_mode_outlined, label: 'Dark', payload: ThemeType.dark),
+    const ListPickerItem(icon: Icons.dark_mode, label: 'Pure Black', payload: ThemeType.pureBlack)
   ];
 
   // Font size
   List<ListPickerItem> fontScaleOptions = [
-    ListPickerItem(
-        icon: Icons.text_fields_rounded,
-        label: FontScale.small.label,
-        payload: FontScale.small),
-    ListPickerItem(
-        icon: Icons.text_fields_rounded,
-        label: FontScale.base.label,
-        payload: FontScale.base),
-    ListPickerItem(
-        icon: Icons.text_fields_rounded,
-        label: FontScale.large.label,
-        payload: FontScale.large),
-    ListPickerItem(
-        icon: Icons.text_fields_rounded,
-        label: FontScale.extraLarge.label,
-        payload: FontScale.extraLarge),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.small.label, payload: FontScale.small),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.base.label, payload: FontScale.base),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.large.label, payload: FontScale.large),
+    ListPickerItem(icon: Icons.text_fields_rounded, label: FontScale.extraLarge.label, payload: FontScale.extraLarge),
   ];
 
   // Loading
@@ -82,14 +60,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case 'setting_theme_title_font_size_scale':
-        await prefs.setString(
-            'setting_theme_title_font_size_scale', (value as FontScale).name);
+        await prefs.setString('setting_theme_title_font_size_scale', (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
       case 'setting_theme_content_font_size_scale':
-        await prefs.setString(
-            'setting_theme_content_font_size_scale', (value as FontScale).name);
+        await prefs.setString('setting_theme_content_font_size_scale', (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -105,19 +81,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
     setState(() {
       // Theme Settings
-      themeType = ThemeType.values[
-          prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
+      themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
 
-      useMaterialYouTheme =
-          prefs.getBool('setting_theme_use_material_you') ?? false;
+      useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
-      titleFontSizeScale = FontScale.values.byName(
-          prefs.getString('setting_theme_title_font_size_scale') ??
-              FontScale.base.name);
-      contentFontSizeScale = FontScale.values.byName(
-          prefs.getString('setting_theme_content_font_size_scale') ??
-              FontScale.base.name);
+      titleFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_title_font_size_scale') ?? FontScale.base.name);
+      contentFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_content_font_size_scale') ?? FontScale.base.name);
 
       isLoading = false;
     });
@@ -141,8 +111,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -156,29 +125,22 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ),
                         ListOption(
                             description: 'App Theme',
-                            value: ListPickerItem(
-                                label: themeType.name.capitalize,
-                                icon: Icons.wallpaper_rounded,
-                                payload: themeType),
+                            value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences(
-                                'setting_theme_app_theme',
-                                value.payload.index)),
+                            onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)),
                         ToggleOption(
                           description: 'Use Material You Theme',
                           value: useMaterialYouTheme,
                           iconEnabled: Icons.color_lens_rounded,
                           iconDisabled: Icons.color_lens_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_theme_use_material_you', value),
+                          onToggle: (bool value) => setPreferences('setting_theme_use_material_you', value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -193,27 +155,17 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                         ),
                         ListOption(
                           description: 'Title Font Scale',
-                          value: ListPickerItem(
-                              label: titleFontSizeScale.name.capitalize,
-                              icon: Icons.feed,
-                              payload: titleFontSizeScale),
+                          value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(
-                              'setting_theme_title_font_size_scale',
-                              value.payload),
+                          onChanged: (value) => setPreferences('setting_theme_title_font_size_scale', value.payload),
                         ),
                         ListOption(
                           description: 'Content Font Scale',
-                          value: ListPickerItem(
-                              label: contentFontSizeScale.name.capitalize,
-                              icon: Icons.feed,
-                              payload: contentFontSizeScale),
+                          value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences(
-                              'setting_theme_content_font_size_scale',
-                              value.payload),
+                          onChanged: (value) => setPreferences('setting_theme_content_font_size_scale', value.payload),
                         ),
                       ],
                     ),

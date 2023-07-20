@@ -24,10 +24,7 @@ class InboxMentionsView extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (mentions.isEmpty) {
-      return Align(
-          alignment: Alignment.topCenter,
-          heightFactor: (MediaQuery.of(context).size.height / 27),
-          child: const Text('No mentions'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No mentions'));
     }
 
     return ListView.builder(
@@ -53,16 +50,13 @@ class InboxMentionsView extends StatelessWidget {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(
-                        postId: mentions[index].post.id,
-                        onPostUpdated: () => {}),
+                    child: PostPage(postId: mentions[index].post.id, onPostUpdated: () => {}),
                   ),
                 ),
               );
             },
             child: Padding(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -71,26 +65,19 @@ class InboxMentionsView extends StatelessWidget {
                     children: [
                       Text(
                         mentions[index].creator.name,
-                        style: theme.textTheme.titleSmall
-                            ?.copyWith(color: Colors.greenAccent),
+                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                       ),
-                      Text(formatTimeToString(
-                          dateTime: mentions[index]
-                              .comment
-                              .published
-                              .toIso8601String()))
+                      Text(formatTimeToString(dateTime: mentions[index].comment.published.toIso8601String()))
                     ],
                   ),
                   GestureDetector(
                     child: Text(
                       '${mentions[index].community.name}${' · ${fetchInstanceNameFromUrl(mentions[index].community.actorId)}'}',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color
-                            ?.withOpacity(0.75),
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
-                    onTap: () => onTapCommunityName(
-                        context, mentions[index].community.id),
+                    onTap: () => onTapCommunityName(context, mentions[index].community.id),
                   ),
                   const SizedBox(height: 10),
                   CommonMarkdownBody(body: mentions[index].comment.content),
@@ -101,11 +88,7 @@ class InboxMentionsView extends StatelessWidget {
                       if (mentions[index].personMention.read == false)
                         IconButton(
                           onPressed: () {
-                            context.read<InboxBloc>().add(
-                                MarkMentionAsReadEvent(
-                                    personMentionId:
-                                        mentions[index].personMention.id,
-                                    read: true));
+                            context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: mentions[index].personMention.id, read: true));
                           },
                           icon: const Icon(
                             Icons.check,
@@ -125,24 +108,15 @@ class InboxMentionsView extends StatelessWidget {
                             showDragHandle: true,
                             builder: (context) {
                               return Padding(
-                                padding: EdgeInsets.only(
-                                    bottom: MediaQuery.of(context)
-                                            .viewInsets
-                                            .bottom +
-                                        40),
+                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
                                 child: FractionallySizedBox(
                                   heightFactor: 0.8,
                                   child: MultiBlocProvider(
                                     providers: [
-                                      BlocProvider<InboxBloc>.value(
-                                          value: inboxBloc),
-                                      BlocProvider<ThunderBloc>.value(
-                                          value: thunderBloc),
+                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                     ],
-                                    child: CreateCommentModal(
-                                        comment: mentions[index].comment,
-                                        parentCommentAuthor:
-                                            mentions[index].creator.name),
+                                    child: CreateCommentModal(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name),
                                   ),
                                 ),
                               );

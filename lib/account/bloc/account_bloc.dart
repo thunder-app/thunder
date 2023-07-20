@@ -16,8 +16,7 @@ const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) =>
-      droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class AccountBloc extends Bloc<AccountEvent, AccountState> {
@@ -39,10 +38,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             emit(state.copyWith(status: AccountStatus.loading));
 
             if (account == null || account.jwt == null) {
-              return emit(state.copyWith(
-                  status: AccountStatus.success,
-                  subsciptions: [],
-                  personView: null));
+              return emit(state.copyWith(status: AccountStatus.success, subsciptions: [], personView: null));
             } else {
               emit(state.copyWith(status: AccountStatus.loading));
             }
@@ -55,8 +51,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
                   auth: account.jwt,
                   page: currentPage,
                   type: PostListingType.subscribed,
-                  limit:
-                      50, // Temporarily increasing this to address issue of missing subscriptions
+                  limit: 50, // Temporarily increasing this to address issue of missing subscriptions
                 ),
               );
 
@@ -66,34 +61,21 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             }
 
             // Sort subscriptions by their name
-            subsciptions.sort((CommunityView a, CommunityView b) =>
-                a.community.name.compareTo(b.community.name));
+            subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
-            FullPersonView? fullPersonView = await lemmy
-                .run(GetPersonDetails(
-                    username: account.username,
-                    auth: account.jwt,
-                    sort: SortType.new_,
-                    page: 1))
-                .timeout(timeout, onTimeout: () {
-              throw Exception(
-                  'Error: Timeout when attempting to fetch account details');
+            FullPersonView? fullPersonView = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
+              throw Exception('Error: Timeout when attempting to fetch account details');
             });
 
-            return emit(state.copyWith(
-                status: AccountStatus.success,
-                subsciptions: subsciptions,
-                personView: fullPersonView.personView));
+            return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
           } catch (e) {
             exception = e;
             attemptCount++;
           }
         }
-        emit(state.copyWith(
-            status: AccountStatus.failure, errorMessage: exception.toString()));
+        emit(state.copyWith(status: AccountStatus.failure, errorMessage: exception.toString()));
       } catch (e) {
-        emit(state.copyWith(
-            status: AccountStatus.failure, errorMessage: e.toString()));
+        emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
     });
   }

@@ -14,10 +14,7 @@ class InboxPrivateMessagesView extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (privateMessages.isEmpty) {
-      return Align(
-          alignment: Alignment.topCenter,
-          heightFactor: (MediaQuery.of(context).size.height / 27),
-          child: const Text('No messages'));
+      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No messages'));
     }
 
     return ListView.builder(
@@ -27,8 +24,7 @@ class InboxPrivateMessagesView extends StatelessWidget {
       itemBuilder: (context, index) {
         return Card(
           child: Padding(
-            padding:
-                const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -40,8 +36,7 @@ class InboxPrivateMessagesView extends StatelessWidget {
                       children: [
                         Text(
                           privateMessages[index].creator.name,
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(color: Colors.greenAccent),
+                          style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                         ),
                         const Padding(
                           padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -49,21 +44,15 @@ class InboxPrivateMessagesView extends StatelessWidget {
                         ),
                         Text(
                           privateMessages[index].recipient.name,
-                          style: theme.textTheme.titleSmall
-                              ?.copyWith(color: Colors.greenAccent),
+                          style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                         ),
                       ],
                     ),
-                    Text(formatTimeToString(
-                        dateTime: privateMessages[index]
-                            .privateMessage
-                            .published
-                            .toIso8601String()))
+                    Text(formatTimeToString(dateTime: privateMessages[index].privateMessage.published.toIso8601String()))
                   ],
                 ),
                 const SizedBox(height: 10),
-                CommonMarkdownBody(
-                    body: privateMessages[index].privateMessage.content),
+                CommonMarkdownBody(body: privateMessages[index].privateMessage.content),
               ],
             ),
           ),

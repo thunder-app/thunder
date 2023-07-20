@@ -18,16 +18,14 @@ class MarkReplyAsReadEvent extends InboxEvent {
   final int commentReplyId;
   final bool read;
 
-  const MarkReplyAsReadEvent(
-      {required this.commentReplyId, required this.read});
+  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read});
 }
 
 class MarkMentionAsReadEvent extends InboxEvent {
   final int personMentionId;
   final bool read;
 
-  const MarkMentionAsReadEvent(
-      {required this.personMentionId, required this.read});
+  const MarkMentionAsReadEvent({required this.personMentionId, required this.read});
 }
 
 class CreateInboxCommentReplyEvent extends InboxEvent {
@@ -35,8 +33,5 @@ class CreateInboxCommentReplyEvent extends InboxEvent {
   final int postId;
   final int parentCommentId;
 
-  const CreateInboxCommentReplyEvent(
-      {required this.content,
-      required this.postId,
-      required this.parentCommentId});
+  const CreateInboxCommentReplyEvent({required this.content, required this.postId, required this.parentCommentId});
 }

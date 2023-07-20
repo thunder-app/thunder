@@ -25,17 +25,12 @@ class PreviewImage extends StatefulWidget {
   State<PreviewImage> createState() => _PreviewImageState();
 }
 
-class _PreviewImageState extends State<PreviewImage>
-    with SingleTickerProviderStateMixin {
+class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
 
   @override
   void initState() {
-    _controller = AnimationController(
-        vsync: this,
-        duration: const Duration(seconds: 1),
-        lowerBound: 0.0,
-        upperBound: 1.0);
+    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
     super.initState();
   }
 
@@ -53,12 +48,8 @@ class _PreviewImageState extends State<PreviewImage>
 
     final openInExternalBrowser = state.openInExternalBrowser;
 
-    double? height = widget.viewMode == ViewMode.compact
-        ? 75
-        : (widget.showFullHeightImages ? widget.height : 150);
-    double width = widget.viewMode == ViewMode.compact
-        ? 75
-        : MediaQuery.of(context).size.width - 24;
+    double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
+    double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
     return Hero(
       tag: widget.mediaUrl,
@@ -66,32 +57,22 @@ class _PreviewImageState extends State<PreviewImage>
         widget.mediaUrl,
         height: height,
         width: width,
-        fit: widget.viewMode == ViewMode.compact
-            ? BoxFit.cover
-            : BoxFit.fitWidth,
+        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
         clearMemoryCacheWhenDispose: true,
-        cacheWidth: widget.viewMode == ViewMode.compact
-            ? (75 * View.of(context).devicePixelRatio.ceil())
-            : ((MediaQuery.of(context).size.width - 24) *
-                    View.of(context).devicePixelRatio.ceil())
-                .toInt(),
+        cacheWidth:
+            widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
         loadStateChanged: (ExtendedImageState state) {
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               _controller.reset();
 
               return Container(
-                color:
-                    useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
                 child: SizedBox(
                   height: height,
                   width: width,
-                  child: const Center(
-                      child: SizedBox(
-                          width: 40,
-                          height: 40,
-                          child: CircularProgressIndicator())),
+                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
                 ),
               );
             case LoadState.completed:
@@ -110,28 +91,24 @@ class _PreviewImageState extends State<PreviewImage>
               state.imageProvider.evict();
 
               return Container(
-                color:
-                    useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
                         children: [
                           Container(
                             color: Colors.grey.shade900,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0, vertical: 12.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
                             child: Row(
                               children: [
                                 const Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 8.0),
+                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
                                   child: Icon(
                                     Icons.link,
                                     color: Colors.white60,
@@ -153,9 +130,7 @@ class _PreviewImageState extends State<PreviewImage>
                       ),
                     ),
                     onTap: () {
-                      openLink(context,
-                          url: widget.mediaUrl,
-                          openInExternalBrowser: openInExternalBrowser);
+                      openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
                     },
                   ),
                 ),

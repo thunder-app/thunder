@@ -32,8 +32,7 @@ Future<PostView> markPostAsRead(int postId, bool read) async {
 }
 
 // Optimistically updates a post
-PostView optimisticallyVotePost(
-    PostViewMedia postViewMedia, VoteType voteType) {
+PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
   int newScore = postViewMedia.postView.counts.score;
   VoteType? existingVoteType = postViewMedia.postView.myVote;
 
@@ -54,9 +53,7 @@ PostView optimisticallyVotePost(
       break;
   }
 
-  return postViewMedia.postView.copyWith(
-      myVote: voteType,
-      counts: postViewMedia.postView.counts.copyWith(score: newScore));
+  return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
 }
 
 /// Logic to vote on a post
@@ -97,22 +94,17 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions =
-      prefs.getBool('setting_general_show_full_height_images') ?? false;
-  bool edgeToEdgeImages =
-      prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
+  bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
+  bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
   bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures =
-      postViews.map<Future<PostViewMedia>>((post) => parsePostView(
-          post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
+  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
 }
 
-Future<PostViewMedia> parsePostView(PostView postView,
-    bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
+Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions, bool edgeToEdgeImages, bool tabletMode) async {
   List<Media> media = [];
   String? url = postView.post.url;
 
@@ -122,17 +114,8 @@ Future<PostViewMedia> parsePostView(PostView postView,
 
       if (fetchImageDimensions) {
         Size result = await retrieveImageDimensions(url);
-        Size size = MediaExtension.getScaledMediaSize(
-            width: result.width,
-            height: result.height,
-            offset: edgeToEdgeImages ? 0 : 24,
-            tabletMode: tabletMode);
-        media.add(Media(
-            mediaUrl: url,
-            originalUrl: url,
-            width: size.width,
-            height: size.height,
-            mediaType: mediaType));
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+        media.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       } else {
         media.add(Media(mediaUrl: url, originalUrl: url, mediaType: mediaType));
       }
@@ -143,10 +126,7 @@ Future<PostViewMedia> parsePostView(PostView postView,
   } else if (url != null) {
     if (fetchImageDimensions) {
       if (postView.post.thumbnailUrl?.isNotEmpty == true) {
-        media.add(Media(
-            mediaUrl: postView.post.thumbnailUrl!,
-            mediaType: MediaType.link,
-            originalUrl: url));
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
       } else {
         // For external links, attempt to fetch any media associated with it (image, title)
         LinkInfo linkInfo = await getLinkInfo(url);
@@ -157,22 +137,10 @@ Future<PostViewMedia> parsePostView(PostView postView,
 
             int mediaHeight = result.height.toInt();
             int mediaWidth = result.width.toInt();
-            Size size = MediaExtension.getScaledMediaSize(
-                width: mediaWidth,
-                height: mediaHeight,
-                offset: edgeToEdgeImages ? 0 : 24,
-                tabletMode: tabletMode);
-            media.add(Media(
-                mediaUrl: linkInfo.imageURL!,
-                mediaType: MediaType.link,
-                originalUrl: url,
-                height: size.height,
-                width: size.width));
+            Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
           } else {
-            media.add(Media(
-                mediaUrl: linkInfo.imageURL!,
-                mediaType: MediaType.link,
-                originalUrl: url));
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
           }
         } catch (e) {
           // Default back to a link
@@ -181,10 +149,7 @@ Future<PostViewMedia> parsePostView(PostView postView,
       }
     } else {
       if (postView.post.thumbnailUrl?.isNotEmpty == true) {
-        media.add(Media(
-            mediaUrl: postView.post.thumbnailUrl!,
-            mediaType: MediaType.link,
-            originalUrl: url));
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
       } else {
         media.add(Media(mediaType: MediaType.link, originalUrl: url));
       }

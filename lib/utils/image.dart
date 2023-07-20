@@ -7,20 +7,11 @@ import 'dart:math';
 
 String generateRandomHeroString({int? len}) {
   Random r = Random();
-  return String.fromCharCodes(
-      List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
+  return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
 }
 
 bool isImageUrl(String url) {
-  final imageExtensions = [
-    '.png',
-    '.jpg',
-    '.jpeg',
-    '.gif',
-    '.bmp',
-    '.svg',
-    '.webp'
-  ];
+  final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp'];
 
   final uri = Uri.parse(url);
   final path = uri.path.toLowerCase();
@@ -72,22 +63,12 @@ Future<Size> retrieveImageDimensions(String imageUrl) async {
 }
 
 Size getPNGImageDimensions(Uint8List bytes) {
-  if (bytes.length < 24 ||
-      bytes[0] != 0x89 ||
-      bytes[1] != 0x50 ||
-      bytes[2] != 0x4E ||
-      bytes[3] != 0x47 ||
-      bytes[4] != 0x0D ||
-      bytes[5] != 0x0A ||
-      bytes[6] != 0x1A ||
-      bytes[7] != 0x0A) {
+  if (bytes.length < 24 || bytes[0] != 0x89 || bytes[1] != 0x50 || bytes[2] != 0x4E || bytes[3] != 0x47 || bytes[4] != 0x0D || bytes[5] != 0x0A || bytes[6] != 0x1A || bytes[7] != 0x0A) {
     throw Exception('Invalid PNG file');
   }
 
-  final width =
-      (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
-  final height =
-      (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23];
+  final width = (bytes[16] << 24) | (bytes[17] << 16) | (bytes[18] << 8) | bytes[19];
+  final height = (bytes[20] << 24) | (bytes[21] << 16) | (bytes[22] << 8) | bytes[23];
 
   return Size(width.toDouble(), height.toDouble());
 }
@@ -132,15 +113,7 @@ Size getGIFImageDimensions(Uint8List bytes) {
 }
 
 Size getWEBPImageDimensions(Uint8List bytes) {
-  if (bytes.lengthInBytes <= 28 ||
-      bytes[0] != 0x52 ||
-      bytes[1] != 0x49 ||
-      bytes[2] != 0x46 ||
-      bytes[3] != 0x46 ||
-      bytes[8] != 0x57 ||
-      bytes[9] != 0x45 ||
-      bytes[10] != 0x42 ||
-      bytes[11] != 0x50) {
+  if (bytes.lengthInBytes <= 28 || bytes[0] != 0x52 || bytes[1] != 0x49 || bytes[2] != 0x46 || bytes[3] != 0x46 || bytes[8] != 0x57 || bytes[9] != 0x45 || bytes[10] != 0x42 || bytes[11] != 0x50) {
     throw Exception('Invalid WEBP file');
   }
 

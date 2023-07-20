@@ -15,18 +15,10 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 
-enum PostCardAction {
-  visitProfile,
-  visitCommunity,
-  sharePost,
-  shareMedia,
-  shareLink,
-  blockCommunity
-}
+enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink, blockCommunity }
 
 class ExtendedPostCardActions {
-  const ExtendedPostCardActions(
-      {required this.postCardAction, required this.icon, required this.label});
+  const ExtendedPostCardActions({required this.postCardAction, required this.icon, required this.label});
 
   final PostCardAction postCardAction;
   final IconData icon;
@@ -66,15 +58,10 @@ const postCardActionItems = [
   ),
 ];
 
-void showPostActionBottomModalSheet(
-    BuildContext context, PostViewMedia postViewMedia,
-    {List<PostCardAction>? actionsToInclude}) {
+void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postViewMedia, {List<PostCardAction>? actionsToInclude}) {
   final theme = Theme.of(context);
   actionsToInclude ??= [];
-  final postCardActionItemsToUse = postCardActionItems
-      .where((extendedAction) => actionsToInclude!
-          .any((action) => extendedAction.postCardAction == action))
-      .toList();
+  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -86,8 +73,7 @@ void showPostActionBottomModalSheet(
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -101,20 +87,12 @@ void showPostActionBottomModalSheet(
               physics: const NeverScrollableScrollPhysics(),
               itemCount: postCardActionItemsToUse.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
-                if (postCardActionItemsToUse[index].postCardAction ==
-                        PostCardAction.shareLink &&
-                    (postViewMedia.media.isEmpty ||
-                        (postViewMedia.media.first.mediaType !=
-                                MediaType.link &&
-                            postViewMedia.media.first.mediaType !=
-                                MediaType.image))) {
+                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareLink &&
+                    (postViewMedia.media.isEmpty || (postViewMedia.media.first.mediaType != MediaType.link && postViewMedia.media.first.mediaType != MediaType.image))) {
                   return Container();
                 }
 
-                if (postCardActionItemsToUse[index].postCardAction ==
-                        PostCardAction.shareMedia &&
-                    (postViewMedia.media.isEmpty ||
-                        postViewMedia.media.first.mediaUrl == null)) {
+                if (postCardActionItemsToUse[index].postCardAction == PostCardAction.shareMedia && (postViewMedia.media.isEmpty || postViewMedia.media.first.mediaUrl == null)) {
                   return Container();
                 }
 
@@ -127,13 +105,11 @@ void showPostActionBottomModalSheet(
                   onTap: () async {
                     Navigator.of(context).pop();
 
-                    PostCardAction postCardAction =
-                        postCardActionItemsToUse[index].postCardAction;
+                    PostCardAction postCardAction = postCardActionItemsToUse[index].postCardAction;
 
                     switch (postCardAction) {
                       case PostCardAction.visitCommunity:
-                        onTapCommunityName(
-                            context, postViewMedia.postView.community.id);
+                        onTapCommunityName(context, postViewMedia.postView.community.id);
                         break;
                       case PostCardAction.visitProfile:
                         AccountBloc accountBloc = context.read<AccountBloc>();
@@ -148,9 +124,7 @@ void showPostActionBottomModalSheet(
                                 BlocProvider.value(value: authBloc),
                                 BlocProvider.value(value: thunderBloc),
                               ],
-                              child: UserPage(
-                                  userId:
-                                      postViewMedia.postView.post.creatorId),
+                              child: UserPage(userId: postViewMedia.postView.post.creatorId),
                             ),
                           ),
                         );
@@ -162,9 +136,7 @@ void showPostActionBottomModalSheet(
                         if (postViewMedia.media.first.mediaUrl != null) {
                           try {
                             // Try to get the cached image first
-                            var media = await DefaultCacheManager()
-                                .getFileFromCache(
-                                    postViewMedia.media.first.mediaUrl!);
+                            var media = await DefaultCacheManager().getFileFromCache(postViewMedia.media.first.mediaUrl!);
                             File? mediaFile = media?.file;
 
                             if (media == null) {
@@ -173,21 +145,16 @@ void showPostActionBottomModalSheet(
                                 content: Text('Downloading media to share...'),
                                 behavior: SnackBarBehavior.floating,
                               );
-                              WidgetsBinding.instance
-                                  .addPostFrameCallback((timeStamp) {
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
+                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               });
 
                               // Download
-                              mediaFile = await DefaultCacheManager()
-                                  .getSingleFile(
-                                      postViewMedia.media.first.mediaUrl!);
+                              mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
 
                               // Hide snackbar
-                              WidgetsBinding.instance
-                                  .addPostFrameCallback((timeStamp) {
+                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                 ScaffoldMessenger.of(context).clearSnackBars();
                               });
                             }
@@ -197,27 +164,21 @@ void showPostActionBottomModalSheet(
                           } catch (e) {
                             // Tell the user that the download failed
                             SnackBar snackBar = SnackBar(
-                              content: Text(
-                                  'There was an error downloading the media file to share: $e'),
+                              content: Text('There was an error downloading the media file to share: $e'),
                               behavior: SnackBarBehavior.floating,
                             );
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context)
-                                  .showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             });
                           }
                         }
                         break;
                       case PostCardAction.shareLink:
-                        if (postViewMedia.media.first.originalUrl != null)
-                          Share.share(postViewMedia.media.first.originalUrl!);
+                        if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
                         break;
                       case PostCardAction.blockCommunity:
-                        context.read<CommunityBloc>().add(BlockCommunityEvent(
-                            communityId: postViewMedia.postView.community.id,
-                            block: true));
+                        context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: postViewMedia.postView.community.id, block: true));
                         break;
                     }
                   },

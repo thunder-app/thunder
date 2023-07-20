@@ -3,8 +3,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 class LemmyClient {
-  LemmyApiV3 lemmyApiV3 =
-      LemmyApiV3(dotenv.env['LEMMY_BASE_URL'] ?? 'lemmy.ml');
+  LemmyApiV3 lemmyApiV3 = LemmyApiV3(dotenv.env['LEMMY_BASE_URL'] ?? 'lemmy.ml');
 
   LemmyClient._initialize();
 

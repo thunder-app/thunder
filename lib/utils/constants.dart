@@ -11,8 +11,6 @@ const CommentSortType DEFAULT_COMMENT_SORT_TYPE = CommentSortType.top;
 
 const int COMMENT_MAX_DEPTH = 8;
 
-const NestedCommentIndicatorStyle DEFAULT_NESTED_COMMENT_INDICATOR_STYLE =
-    NestedCommentIndicatorStyle.thick;
+const NestedCommentIndicatorStyle DEFAULT_NESTED_COMMENT_INDICATOR_STYLE = NestedCommentIndicatorStyle.thick;
 
-const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR =
-    NestedCommentIndicatorColor.colorful;
+const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR = NestedCommentIndicatorColor.colorful;

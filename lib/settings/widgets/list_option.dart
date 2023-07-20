@@ -65,22 +65,16 @@ class ListOption<T> extends StatelessWidget {
           Row(
             children: [
               Text(
-                value.label.capitalize
-                    .replaceAll('_', '')
-                    .replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                value.label.capitalize.replaceAll('_', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
                   return ' ${match.group(0)}';
                 }),
                 style: theme.textTheme.titleSmall?.copyWith(
-                  color: disabled
-                      ? theme.colorScheme.onSurface.withOpacity(0.5)
-                      : theme.colorScheme.onSurface,
+                  color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
                 ),
               ),
               Icon(
                 Icons.chevron_right_rounded,
-                color: disabled
-                    ? theme.colorScheme.onSurface.withOpacity(0.5)
-                    : null,
+                color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
               ),
               const SizedBox(
                 height: 42.0,

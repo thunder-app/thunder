@@ -43,8 +43,7 @@ Future<LinkInfo> getLinkInfo(String url) async {
   }
 }
 
-void openLink(BuildContext context,
-    {required String url, bool openInExternalBrowser = false}) async {
+void openLink(BuildContext context, {required String url, bool openInExternalBrowser = false}) async {
   if (openInExternalBrowser) {
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   } else {
@@ -59,9 +58,7 @@ void openLink(BuildContext context,
       ),
       safariVCOption: SafariViewControllerOption(
         preferredBarTintColor: Theme.of(context).canvasColor,
-        preferredControlTintColor:
-            Theme.of(context).textTheme.titleLarge?.color ??
-                Theme.of(context).primaryColor,
+        preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
         barCollapsingEnabled: true,
       ),
     );
