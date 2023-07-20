@@ -47,6 +47,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   // Comment Settings
   bool showCommentButtonActions = false;
+  NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
+  NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -147,6 +149,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
+      case 'setting_general_nested_comment_indicator_style':
+        await prefs.setString('setting_general_nested_comment_indicator_style', value);
+        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
+        break;
+      case 'setting_general_nested_comment_indicator_color':
+        await prefs.setString('setting_general_nested_comment_indicator_color', value);
+        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
+        break;
 
       // Link Settings
       case 'setting_general_show_link_previews':
@@ -208,6 +218,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -482,6 +494,26 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               setPreferences('setting_post_default_comment_sort_type', value.payload.name);
                             },
                           ),
+                        ),
+                        ListOption(
+                          description: 'Nested Comment Indicator Style',
+                          value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                          options: [
+                            ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                            ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                          ],
+                          icon: Icons.format_list_bulleted_rounded,
+                          onChanged: (value) => setPreferences('setting_general_nested_comment_indicator_style', value.payload.name),
+                        ),
+                        ListOption(
+                          description: 'Nested Comment Indicator Color',
+                          value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                          options: [
+                            ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                            ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                          ],
+                          icon: Icons.color_lens_outlined,
+                          onChanged: (value) => setPreferences('setting_general_nested_comment_indicator_color', value.payload.name),
                         ),
                       ],
                     ),

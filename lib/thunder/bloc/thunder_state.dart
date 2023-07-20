@@ -36,6 +36,8 @@ class ThunderState extends Equatable {
 
     // Comment Settings
     this.showCommentButtonActions = false,
+    this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
+    this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
     // Link Settings
     this.openInExternalBrowser = false,
@@ -102,6 +104,8 @@ class ThunderState extends Equatable {
 
   // Comment Settings
   final bool showCommentButtonActions;
+  final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
+  final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
   // Link Settings
   final bool openInExternalBrowser;
@@ -165,6 +169,8 @@ class ThunderState extends Equatable {
 
     // Comment Settings
     bool? showCommentButtonActions,
+    NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
+    NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
     // Link Settings
     bool? openInExternalBrowser,
@@ -226,6 +232,8 @@ class ThunderState extends Equatable {
 
       // Comment Settings
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+      nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
+      nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
       // Link Settings
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
@@ -282,6 +290,8 @@ class ThunderState extends Equatable {
         bottomNavBarDoubleTapGestures,
         markPostReadOnMediaView,
         showCommentButtonActions,
+        nestedCommentIndicatorStyle,
+        nestedCommentIndicatorColor,
         openInExternalBrowser,
         showInAppUpdateNotification,
         enablePostGestures,

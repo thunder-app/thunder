@@ -93,6 +93,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Comment Settings
       bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
+      NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
+          NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      NestedCommentIndicatorColor nestedCommentIndicatorColor =
+          NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
       bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -147,6 +151,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnMediaView: markPostReadOnMediaView,
         // Comment Actions
         showCommentButtonActions: showCommentButtonActions,
+        nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
+        nestedCommentIndicatorColor: nestedCommentIndicatorColor,
         //
         openInExternalBrowser: openInExternalBrowser,
         showLinkPreviews: showLinkPreviews,
