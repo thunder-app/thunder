@@ -38,6 +38,7 @@ class PostSubview extends StatelessWidget {
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
+    final bool showLinkPreview = thunderState.showLinkPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
@@ -56,6 +57,7 @@ class PostSubview extends StatelessWidget {
             ),
           ),
           MediaView(
+            showLinkPreview: showLinkPreview,
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,

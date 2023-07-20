@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/utils/image.dart';
 

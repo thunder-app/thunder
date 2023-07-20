@@ -1,9 +1,7 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -154,14 +152,14 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
             ),
           );
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
 
       emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString()));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -187,7 +185,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
 
       emit(state.copyWith(status: InboxStatus.success, replies: replies));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -215,7 +213,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -240,7 +238,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
       return emit(state.copyWith(status: InboxStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }

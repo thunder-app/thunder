@@ -128,8 +128,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)
-                        ),
+                            onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)),
                         ToggleOption(
                           description: 'Use Material You Theme',
                           value: useMaterialYouTheme,

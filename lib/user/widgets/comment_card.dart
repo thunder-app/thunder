@@ -70,7 +70,7 @@ class CommentCard extends StatelessWidget {
               const SizedBox(height: 10),
               CommonMarkdownBody(body: comment.comment.content),
               const Divider(height: 20),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // IconButton(

@@ -68,3 +68,10 @@ class EditCommentEvent extends PostEvent {
 
   const EditCommentEvent({required this.content, required this.commentId});
 }
+
+class DeleteCommentEvent extends PostEvent {
+  final int commentId;
+  final bool deleted;
+
+  const DeleteCommentEvent({required this.deleted, required this.commentId});
+}

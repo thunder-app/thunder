@@ -44,7 +44,7 @@ class _SearchPageState extends State<SearchPage> {
   Future<void> initPrefs() async {
     prefs = (await UserPreferences.instance).sharedPreferences;
     setState(() {
-      sortType = SortType.values.byName(prefs!.getString("search_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      sortType = SortType.values.byName(prefs!.getString("search_default_sort_type") ?? DEFAULT_SEARCH_SORT_TYPE.name);
       final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == sortType);
       sortTypeIcon = sortTypeItem.icon;
       sortTypeLabel = sortTypeItem.label;

@@ -7,18 +7,18 @@ Future<Map<String, double>> getTextScaleFactor() async {
   String? titleFontSizeScaleString = prefs.getString("setting_theme_title_font_size_scale");
   String? contentFontSizeScaleString = prefs.getString("setting_theme_content_font_size_scale");
 
-  double _titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
-  double _contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double titleFontSizeScaleFactor = FontScale.base.textScaleFactor;
+  double contentFontSizeScaleFactor = FontScale.base.textScaleFactor;
 
   if (titleFontSizeScaleString != null) {
-    _titleFontSizeScaleFactor = FontScale.values.byName(titleFontSizeScaleString).textScaleFactor;
+    titleFontSizeScaleFactor = FontScale.values.byName(titleFontSizeScaleString).textScaleFactor;
   }
 
   if (contentFontSizeScaleString != null) {
-    _contentFontSizeScaleFactor = FontScale.values.byName(contentFontSizeScaleString).textScaleFactor;
+    contentFontSizeScaleFactor = FontScale.values.byName(contentFontSizeScaleString).textScaleFactor;
   }
 
-  Map<String, double> textScaleFactor = {"titleFontSizeScaleFactor": _titleFontSizeScaleFactor, "contentFontSizeScaleFactor": _contentFontSizeScaleFactor};
+  Map<String, double> textScaleFactor = {"titleFontSizeScaleFactor": titleFontSizeScaleFactor, "contentFontSizeScaleFactor": contentFontSizeScaleFactor};
 
   return textScaleFactor;
 }

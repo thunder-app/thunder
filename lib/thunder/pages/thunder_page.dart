@@ -3,11 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
+import 'package:thunder/utils/links.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -309,25 +308,7 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          if (openInExternalBrowser) {
-            launchUrl(Uri.parse('https://github.com/hjiangsu/thunder/releases/latest'), mode: LaunchMode.externalApplication);
-          } else {
-            launch(
-              'https://github.com/hjiangsu/thunder/releases/latest',
-              customTabsOption: CustomTabsOption(
-                toolbarColor: Theme.of(context).canvasColor,
-                enableUrlBarHiding: true,
-                showPageTitle: true,
-                enableDefaultShare: true,
-                enableInstantApps: true,
-              ),
-              safariVCOption: SafariViewControllerOption(
-                preferredBarTintColor: Theme.of(context).canvasColor,
-                preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                barCollapsingEnabled: true,
-              ),
-            );
-          }
+          openLink(context, url: 'https://github.com/hjiangsu/thunder/releases/latest', openInExternalBrowser: openInExternalBrowser);
         },
       ),
       background: theme.cardColor,

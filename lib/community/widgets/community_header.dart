@@ -89,8 +89,7 @@ class CommunityHeader extends StatelessWidget {
                                 style: theme.textTheme.headlineSmall
                                     ?.copyWith(fontWeight: FontWeight.w600),
                               ),
-                              Text(
-                                  '${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'),
+                              Text('${communityInfo?.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(communityInfo?.communityView.community.actorId) ?? 'N/A'}'),
                               const SizedBox(height: 8.0),
                               Row(
                                 children: [

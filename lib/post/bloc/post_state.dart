@@ -79,5 +79,20 @@ class PostState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd, sortType, sortTypeIcon, selectedCommentId, selectedCommentPath, viewAllCommentsRefresh];
+  List<Object?> get props => [
+        status,
+        postId,
+        postView,
+        comments,
+        commentPage,
+        commentCount,
+        communityId,
+        errorMessage,
+        hasReachedCommentEnd,
+        sortType,
+        sortTypeIcon,
+        selectedCommentId,
+        selectedCommentPath,
+        viewAllCommentsRefresh
+      ];
 }
