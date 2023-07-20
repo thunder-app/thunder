@@ -50,6 +50,7 @@ class _PostCardListState extends State<PostCardList> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
+  bool disableFabs = false;
 
   @override
   void initState() {
@@ -68,15 +69,17 @@ class _PostCardListState extends State<PostCardList> {
       widget.onScrollEndReached();
     }
 
-    // Adjust the threshold as needed
-    if (_scrollController.offset > 300 && !_showReturnToTopButton) {
-      setState(() {
-        _showReturnToTopButton = true;
-      });
-    } else if(_scrollController.offset <= 300 && _showReturnToTopButton) {
-      setState(() {
-        _showReturnToTopButton = false;
-      });
+    if (!disableFabs) {
+      // Adjust the threshold as needed
+      if (_scrollController.offset > 300 && !_showReturnToTopButton) {
+        setState(() {
+          _showReturnToTopButton = true;
+        });
+      } else if (_scrollController.offset <= 300 && _showReturnToTopButton) {
+        setState(() {
+          _showReturnToTopButton = false;
+        });
+      }
     }
   }
 
@@ -84,6 +87,7 @@ class _PostCardListState extends State<PostCardList> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
+    disableFabs = state.disableFeedFab;
 
     bool tabletMode = state.tabletMode;
 
@@ -167,7 +171,7 @@ class _PostCardListState extends State<PostCardList> {
                 }
               },
             ),
-            if (_showReturnToTopButton)
+            if (!state.disableFeedFab && _showReturnToTopButton)
               Positioned(
                 bottom: 16,
                 left: 20,
