@@ -6,6 +6,9 @@
 - Added instance icons in account selection - contribution from @micahmo
 - Image viewer supports double-tap and slide zoom - contribution from @CTalvio
 - Improvements to image viewer to be more reliable with gesture controls, and overall UI fixes - contribution from @CTalvio
+- Added an option to disable FABs in feed/post page - contribution from @ajsosa
+- Added customization of nested comment indicators - contribution from @micahmo
+- Added ability to delete comment on long press - contribution from @vbh
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
@@ -14,6 +17,8 @@
 - Optimization improvements to comment cards and calculating published/edited time - contribution from @ajsosa
 - Improved UI navigation experience when logging in - contribution from @micahmo
 - Posts no longer have the reply swipe gesture
+- Improved about page to add in-app navigation to lemmy community, and update to GitHub url - contribution from @micahmo
+- Improvements to community navigation from links - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
