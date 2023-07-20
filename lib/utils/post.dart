@@ -125,26 +125,34 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     }
   } else if (url != null) {
     if (fetchImageDimensions) {
-      // For external links, attempt to fetch any media associated with it (image, title)
-      LinkInfo linkInfo = await getLinkInfo(url);
+      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
+      } else {
+        // For external links, attempt to fetch any media associated with it (image, title)
+        LinkInfo linkInfo = await getLinkInfo(url);
 
-      try {
-        if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-          Size result = await retrieveImageDimensions(linkInfo.imageURL!);
+        try {
+          if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
+            Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
-          int mediaHeight = result.height.toInt();
-          int mediaWidth = result.width.toInt();
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-        } else {
-          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
+            int mediaHeight = result.height.toInt();
+            int mediaWidth = result.width.toInt();
+            Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+          } else {
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
+          }
+        } catch (e) {
+          // Default back to a link
+          media.add(Media(mediaType: MediaType.link, originalUrl: url));
         }
-      } catch (e) {
-        // Default back to a link
-        media.add(Media(mediaType: MediaType.link, originalUrl: url));
       }
     } else {
-      media.add(Media(mediaType: MediaType.link, originalUrl: url));
+      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
+      } else {
+        media.add(Media(mediaType: MediaType.link, originalUrl: url));
+      }
     }
   }
 
