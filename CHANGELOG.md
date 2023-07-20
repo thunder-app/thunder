@@ -34,6 +34,7 @@
 - Fixed swipe action icons not showing properly when on 2-column view - contribution from @ajsosa
 - Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
 - Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
+- Fixed broken show link preview option in settings - contribution from @ajsosa
 
 ## 0.2.1+12 - 2023-07-18
 ### Added
