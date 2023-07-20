@@ -16,16 +16,13 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
       transformer: throttleDroppable(throttleDuration),
     );
   }
-  Future<void> _uploadImageToServer(
-      ImageUploadEvent event, Emitter<ImageState> emit) async {
+  Future<void> _uploadImageToServer(ImageUploadEvent event, Emitter<ImageState> emit) async {
     PictrsApi pictrs = PictrsApi(event.instance);
     emit(state.copyWith(status: ImageStatus.uploading));
     // print("Uploading image ${event.imageFile}");
     try {
-      PictrsUpload result =
-          await pictrs.upload(filePath: event.imageFile, auth: event.jwt);
-      String url =
-          "https://${event.instance}/pictrs/image/${result.files[0].file}";
+      PictrsUpload result = await pictrs.upload(filePath: event.imageFile, auth: event.jwt);
+      String url = "https://${event.instance}/pictrs/image/${result.files[0].file}";
       if (state.imageUrl == '') {
         emit(state.copyWith(status: ImageStatus.success, imageUrl: url));
       } else {
@@ -36,8 +33,7 @@ class ImageBloc extends Bloc<ImageEvent, ImageState> {
     }
   }
 
-  Future<void> _imageDelete(
-      ImageDeleteEvent event, Emitter<ImageState> emit) async {
+  Future<void> _imageDelete(ImageDeleteEvent event, Emitter<ImageState> emit) async {
     emit(state.copyWith(status: ImageStatus.deleting, imageUrl: ''));
   }
 }

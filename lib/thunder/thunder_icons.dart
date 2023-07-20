@@ -11,7 +11,7 @@
 ///      fonts:
 ///       - asset: fonts/Thunder.ttf
 ///
-/// 
+///
 ///
 import 'package:flutter/widgets.dart';
 

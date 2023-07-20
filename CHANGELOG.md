@@ -6,22 +6,35 @@
 - Added instance icons in account selection - contribution from @micahmo
 - Image viewer supports double-tap and slide zoom - contribution from @CTalvio
 - Improvements to image viewer to be more reliable with gesture controls, and overall UI fixes - contribution from @CTalvio
+- Added an option to disable FABs in feed/post page - contribution from @ajsosa
+- Added customization of nested comment indicators - contribution from @micahmo
+- Added ability to delete comment on long press - contribution from @vbh
+- Improvements to CI/development workflow
+- Added ability to view comment context when tapping on your own comment from profile - contribution from @ajsosa
+- Added Matrix space to about page
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
 - Minor tweaks to toast notification when blocking communities - contribution from @micahmo
-- Changed to default feed type to be "All" rather than "Local" - contribution from @CTalvio
+- Changed to default feed type to be "All" rather than "Local" - contribution from @micahmo
 - Optimization improvements to comment cards and calculating published/edited time - contribution from @ajsosa
 - Improved UI navigation experience when logging in - contribution from @micahmo
 - Posts no longer have the reply swipe gesture
+- Improved about page to add in-app navigation to lemmy community, and update to GitHub url - contribution from @micahmo
+- Improvements to community navigation from links - contribution from @micahmo
+- Updated README with Google Play Store links - contribution from @micahmo
+- Increased relevance of default community search - contribution from @machinaeZER0
+- Improved Gesture settings UI to be more clear - contribution from @CTalvio
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
 - Fixed minor UI issue where the screen would switch from light-dark-light on app startup - contribution from @micahmo
-- Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
-- Fixed dpluicate post regression - contribution from @ajsosa
+- Fixed duplicate post regression - contribution from @ajsosa
 - Fixed a couple of performance issues with constant widget rebuilding - contribution from @ajsosa
 - Fixed swipe action icons not showing properly when on 2-column view - contribution from @ajsosa
+- Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
+- Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
+- Fixed broken show link preview option in settings - contribution from @ajsosa
 
 ## 0.2.1+12 - 2023-07-18
 ### Added

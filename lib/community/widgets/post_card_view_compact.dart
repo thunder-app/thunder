@@ -45,6 +45,7 @@ class PostCardViewCompact extends StatelessWidget {
         children: [
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
             MediaView(
+              showLinkPreview: state.showLinkPreviews,
               postView: postViewMedia,
               showFullHeightImages: false,
               hideNsfwPreviews: hideNsfwPreviews,
@@ -98,6 +99,7 @@ class PostCardViewCompact extends StatelessWidget {
           if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
             if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
               MediaView(
+                showLinkPreview: state.showLinkPreviews,
                 postView: postViewMedia,
                 showFullHeightImages: false,
                 hideNsfwPreviews: hideNsfwPreviews,

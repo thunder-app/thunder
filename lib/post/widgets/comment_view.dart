@@ -26,6 +26,7 @@ class CommentSubview extends StatefulWidget {
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
   final DateTime now;
+  final Function(int, bool) onDeleteAction;
 
   const CommentSubview({
     super.key,
@@ -39,6 +40,7 @@ class CommentSubview extends StatefulWidget {
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
     required this.now,
+    required this.onDeleteAction,
   });
 
   @override
@@ -127,14 +129,16 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                     ])),
                   if (index != widget.comments.length + 1)
                     CommentCard(
-                        now: widget.now,
-                        selectCommentId: widget.selectedCommentId,
-                        commentViewTree: widget.comments[index - 1],
-                        collapsedCommentSet: collapsedCommentSet,
-                        collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-                        onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                        onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
-                        onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed)),
+                      now: widget.now,
+                      selectCommentId: widget.selectedCommentId,
+                      commentViewTree: widget.comments[index - 1],
+                      collapsedCommentSet: collapsedCommentSet,
+                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
+                      onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                      onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
+                      onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                    ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[
                       Column(

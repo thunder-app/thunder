@@ -73,8 +73,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   // Create a map of CommentView objects using the comment path as the key
   for (CommentView commentView in comments) {
     bool hasBeenEdited = commentView.comment.updated != null ? true : false;
-    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String()
-        : commentView.comment.published.toIso8601String();
+    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String() : commentView.comment.published.toIso8601String();
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),

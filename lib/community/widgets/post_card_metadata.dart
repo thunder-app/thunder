@@ -53,18 +53,17 @@ class PostCardMetaData extends StatelessWidget {
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   text: formatNumberToK(score),
                   textColor: voteType == VoteType.up
-                    ? upVoteColor
-                    : voteType == VoteType.down
-                      ? downVoteColor
-                      : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                  icon: Icon( voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
+                      ? upVoteColor
+                      : voteType == VoteType.down
+                          ? downVoteColor
+                          : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                       size: 18.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
                           : voteType == VoteType.down
                               ? downVoteColor
-                              : theme.textTheme.titleSmall?.color?.withOpacity(0.75)
-                  ),
+                              : theme.textTheme.titleSmall?.color?.withOpacity(0.75)),
                   padding: 2.0,
                 ),
                 const SizedBox(width: 12.0),
@@ -73,10 +72,13 @@ class PostCardMetaData extends StatelessWidget {
                   icon: Icon(
                     /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                     size: 17.0,
-                    color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/ theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                    color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
+                        theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/ formatNumberToK(comments),
-                  textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/ theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
+                      formatNumberToK(comments),
+                  textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
+                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),

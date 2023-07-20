@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/nested_comment_indicator.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -28,6 +29,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   SortType defaultSortType = DEFAULT_SORT_TYPE;
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
   bool useDisplayNames = true;
+  bool disableFeedFab = false;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -44,9 +46,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool bottomNavBarSwipeGestures = true;
   bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
+  bool disablePostFabs = false;
 
   // Comment Settings
   bool showCommentButtonActions = false;
+  NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
+  NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
 
   // Link Settings
   bool openInExternalBrowser = false;
@@ -91,6 +96,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_use_display_names_for_users', value);
         setState(() => useDisplayNames = value);
         break;
+      case 'setting_disable_feed_fab':
+        await prefs.setBool('setting_disable_feed_fab', value);
+        setState(() => disableFeedFab = value);
+        break;
 
       // Post Settings
       case 'setting_general_use_compact_view':
@@ -133,6 +142,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString('setting_instance_default_instance', value);
         setState(() => defaultInstance = value);
         break;
+      case 'setting_disable_post_fabs':
+        await prefs.setBool('setting_disable_post_fabs', value);
+        setState(() => disablePostFabs = value);
+        break;
 
       // Comments
       case 'setting_comments_collapse_parent_comment_on_gesture':
@@ -146,6 +159,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        break;
+      case 'setting_general_nested_comment_indicator_style':
+        await prefs.setString('setting_general_nested_comment_indicator_style', value);
+        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
+        break;
+      case 'setting_general_nested_comment_indicator_color':
+        await prefs.setString('setting_general_nested_comment_indicator_color', value);
+        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
 
       // Link Settings
@@ -179,6 +200,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
+      disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -198,6 +220,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
+      disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
@@ -208,6 +231,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
       openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
@@ -293,11 +318,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ToggleOption(
-                          description: 'Use User Display Names',
+                          description: 'Show User Display Names',
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences('setting_use_display_names_for_users', value),
+                        ),
+                        ToggleOption(
+                          description: 'Disable Floating Buttons on Feed',
+                          value: disableFeedFab,
+                          iconEnabled: Icons.visibility_off,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences('setting_disable_feed_fab', value),
                         ),
                         ListOption(
                           description: 'Default Feed Type',
@@ -339,14 +371,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        Text(
-                          'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
-                          style: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
                           ),
                         ),
                         const SizedBox(
                           height: 8,
+                        ),
+                        ToggleOption(
+                          description: 'Disable Floating Buttons on Posts',
+                          value: disablePostFabs,
+                          iconEnabled: Icons.visibility_off,
+                          iconDisabled: Icons.visibility,
+                          onToggle: (bool value) => setPreferences('setting_disable_post_fabs', value),
                         ),
                         ToggleOption(
                           description: 'Compact List View',
@@ -483,6 +525,26 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             },
                           ),
                         ),
+                        ListOption(
+                          description: 'Nested Comment Indicator Style',
+                          value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                          options: [
+                            ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                            ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                          ],
+                          icon: Icons.format_list_bulleted_rounded,
+                          onChanged: (value) => setPreferences('setting_general_nested_comment_indicator_style', value.payload.name),
+                        ),
+                        ListOption(
+                          description: 'Nested Comment Indicator Color',
+                          value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                          options: [
+                            ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                            ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                          ],
+                          icon: Icons.color_lens_outlined,
+                          onChanged: (value) => setPreferences('setting_general_nested_comment_indicator_color', value.payload.name),
+                        ),
                       ],
                     ),
                   ),
@@ -501,7 +563,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ToggleOption(
                           description: 'Show Link Previews',
-                          subtitle: 'Applies to normal view only',
+                          subtitle: 'Disable for slightly better performance',
                           value: showLinkPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,

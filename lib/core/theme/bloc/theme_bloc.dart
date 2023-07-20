@@ -52,7 +52,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
           useDarkTheme: useDarkTheme,
         ),
       );
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: ThemeStatus.failure));
     }
   }

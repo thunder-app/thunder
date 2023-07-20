@@ -1,5 +1,9 @@
+import 'package:flutter/material.dart';
+
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
+import 'package:url_launcher/url_launcher.dart' hide launch;
 
 class LinkInfo {
   String? imageURL;
@@ -36,5 +40,27 @@ Future<LinkInfo> getLinkInfo(String url) async {
     }
   } catch (e) {
     return LinkInfo();
+  }
+}
+
+void openLink(BuildContext context, {required String url, bool openInExternalBrowser = false}) async {
+  if (openInExternalBrowser) {
+    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  } else {
+    launch(
+      url,
+      customTabsOption: CustomTabsOption(
+        toolbarColor: Theme.of(context).canvasColor,
+        enableUrlBarHiding: true,
+        showPageTitle: true,
+        enableDefaultShare: true,
+        enableInstantApps: true,
+      ),
+      safariVCOption: SafariViewControllerOption(
+        preferredBarTintColor: Theme.of(context).canvasColor,
+        preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
+        barCollapsingEnabled: true,
+      ),
+    );
   }
 }

@@ -1,19 +1,15 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
@@ -80,7 +76,10 @@ class LinkPreviewCard extends StatelessWidget {
                             link: originURL!,
                             showBody: false,
                             showTitle: false,
-                            placeholderWidget: Container(),
+                            placeholderWidget: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                            cacheDuration: Duration.zero,
                           ),
                         ),
                 linkInformation(context),
@@ -117,7 +116,11 @@ class LinkPreviewCard extends StatelessWidget {
                             link: originURL!,
                             showBody: false,
                             showTitle: false,
-                            placeholderWidget: Container(),
+                            placeholderWidget: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: const CircularProgressIndicator(),
+                            ),
+                            cacheDuration: Duration.zero,
                           ),
                         ),
                 linkInformation(context),
@@ -188,25 +191,7 @@ class LinkPreviewCard extends StatelessWidget {
         ),
       );
     } else if (originURL != null) {
-      if (openInExternalBrowser) {
-        launchUrl(Uri.parse(originURL!), mode: LaunchMode.externalApplication);
-      } else {
-        launch(
-          originURL!,
-          customTabsOption: CustomTabsOption(
-            toolbarColor: Theme.of(context).canvasColor,
-            enableUrlBarHiding: true,
-            showPageTitle: true,
-            enableDefaultShare: true,
-            enableInstantApps: true,
-          ),
-          safariVCOption: SafariViewControllerOption(
-            preferredBarTintColor: Theme.of(context).canvasColor,
-            preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-            barCollapsingEnabled: true,
-          ),
-        );
-      }
+      openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
     }
   }
 
