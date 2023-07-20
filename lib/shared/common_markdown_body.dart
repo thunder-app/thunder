@@ -32,7 +32,7 @@ class CommonMarkdownBody extends StatelessWidget {
       data: body,
       imageBuilder: (uri, title, alt) {
         return ConstrainedBox(
-          constraints: BoxConstraints( maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60),
+          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60),
           child: ImagePreview(
             url: uri.toString(),
             isExpandable: true,

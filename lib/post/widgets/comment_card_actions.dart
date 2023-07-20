@@ -45,26 +45,22 @@ class CommentCardActions extends StatelessWidget {
               height: 28,
               width: 44,
               child: IconButton(
-                icon: const Icon(
-                  Icons.more_horiz_rounded,
-                  semanticLabel: 'Actions',
-                  size: 20,
-                ),
-                visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
-                  HapticFeedback.mediumImpact();
-                }),
+                  icon: const Icon(
+                    Icons.more_horiz_rounded,
+                    semanticLabel: 'Actions',
+                    size: 20,
+                  ),
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () {
+                    showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
+                    HapticFeedback.mediumImpact();
+                  }),
             ),
             SizedBox(
               height: 28,
               width: 44,
               child: IconButton(
-                icon: Icon(
-                  isEdit ? Icons.edit_rounded : Icons.reply_rounded,
-                  semanticLabel: 'Reply',
-                  size: iconSize
-                ),
+                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: 'Reply', size: iconSize),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
@@ -98,17 +94,17 @@ class CommentCardActions extends StatelessWidget {
               height: 28,
               width: 44,
               child: IconButton(
-                icon: Icon(
-                  Icons.arrow_upward,
-                  semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
-                  size: iconSize,
-                ),
-                color: voteType == VoteType.up ? upVoteColor : null,
-                visualDensity: VisualDensity.compact,
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
-                }),
+                  icon: Icon(
+                    Icons.arrow_upward,
+                    semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
+                    size: iconSize,
+                  ),
+                  color: voteType == VoteType.up ? upVoteColor : null,
+                  visualDensity: VisualDensity.compact,
+                  onPressed: () {
+                    HapticFeedback.mediumImpact();
+                    onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                  }),
             ),
             SizedBox(
               height: 28,
