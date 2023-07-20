@@ -4,7 +4,7 @@ const PostListingType DEFAULT_LISTING_TYPE = PostListingType.all;
 
 const SortType DEFAULT_SORT_TYPE = SortType.hot;
 
-const SortType DEFAULT_SEARCH_SORT_TYPE = SortType.topAll;
+const SortType DEFAULT_SEARCH_SORT_TYPE = SortType.topYear;
 
 const CommentSortType DEFAULT_COMMENT_SORT_TYPE = CommentSortType.top;
 
