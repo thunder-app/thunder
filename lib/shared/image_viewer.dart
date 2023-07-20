@@ -22,8 +22,7 @@ import '../account/bloc/account_bloc.dart';
 import '../community/bloc/community_bloc.dart';
 import '../core/auth/bloc/auth_bloc.dart';
 import '../post/pages/post_page.dart';
-import 'package:thunder/post/bloc/post_bloc.dart'
-    as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
+import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import '../thunder/bloc/thunder_bloc.dart';
 
 class ImageViewer extends StatefulWidget {
@@ -44,12 +43,9 @@ class ImageViewer extends StatefulWidget {
   State<ImageViewer> createState() => _ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer>
-    with TickerProviderStateMixin {
-  GlobalKey<ExtendedImageSlidePageState> slidePagekey =
-      GlobalKey<ExtendedImageSlidePageState>();
-  final GlobalKey<ScaffoldMessengerState> _imageViewer =
-      GlobalKey<ScaffoldMessengerState>();
+class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
+  final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
   bool downloaded = false;
 
   double slideTransparency = 0.93;
@@ -68,8 +64,7 @@ class _ImageViewerState extends State<ImageViewer>
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
     if (Platform.isAndroid) {
-      androidVersionBelow33 =
-          (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
+      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
     if (androidVersionBelow33) {
@@ -80,18 +75,14 @@ class _ImageViewerState extends State<ImageViewer>
         Permission.photosAddOnly,
       ].request();
     }
-    bool hasPermission = await Permission.photos.isGranted ||
-        await Permission.photos.isLimited ||
-        await Permission.storage.isGranted ||
-        await Permission.storage.isLimited;
+    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
 
     return hasPermission;
   }
 
   @override
   Widget build(BuildContext context) {
-    AnimationController animationController = AnimationController(
-        duration: const Duration(milliseconds: 140), vsync: this);
+    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
 
@@ -115,8 +106,7 @@ class _ImageViewerState extends State<ImageViewer>
                   var offset = state.offset;
                   var pageSize = state.pageSize;
 
-                  var scale = offset.distance /
-                      Offset(pageSize.width, pageSize.height).distance;
+                  var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
 
                   if (state.isSliding) {
                     setState(() {
@@ -134,8 +124,7 @@ class _ImageViewerState extends State<ImageViewer>
                   if (state != null) {
                     var offset = state.offset;
                     var pageSize = state.pageSize;
-                    return offset.distance.greaterThan(
-                        Offset(pageSize.width, pageSize.height).distance / 10);
+                    return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
                   }
                   return true;
                 },
@@ -184,12 +173,9 @@ class _ImageViewerState extends State<ImageViewer>
                           end = 1;
                         }
                         animationListener = () {
-                          state.handleDoubleTap(
-                              scale: animation!.value,
-                              doubleTapPosition: pointerDownPosition);
+                          state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
                         };
-                        animation = animationController
-                            .drive(Tween<double>(begin: begin, end: end));
+                        animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
                         animation!.addListener(animationListener);
 
@@ -211,10 +197,8 @@ class _ImageViewerState extends State<ImageViewer>
               ),
             ),
             Container(
-              decoration: BoxDecoration(
-                  color: Colors.black.withOpacity(slideTransparency)),
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+              decoration: BoxDecoration(color: Colors.black.withOpacity(slideTransparency)),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: Row(
                 children: [
                   Expanded(flex: 2, child: Container()),
@@ -272,87 +256,68 @@ class _ImageViewerState extends State<ImageViewer>
                             onPressed: () async {
                               try {
                                 // Try to get the cached image first
-                                var media = await DefaultCacheManager()
-                                    .getFileFromCache(widget.url!);
+                                var media = await DefaultCacheManager().getFileFromCache(widget.url!);
                                 File? mediaFile = media?.file;
 
                                 if (media == null) {
                                   // Tell user we're downloading the image
                                   SnackBar snackBar = const SnackBar(
-                                    content:
-                                        Text('Downloading media to share...'),
+                                    content: Text('Downloading media to share...'),
                                     behavior: SnackBarBehavior.floating,
                                   );
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((timeStamp) {
+                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                     _imageViewer.currentState?.clearSnackBars();
-                                    _imageViewer.currentState
-                                        ?.showSnackBar(snackBar);
+                                    _imageViewer.currentState?.showSnackBar(snackBar);
                                   });
 
                                   // Download
-                                  mediaFile = await DefaultCacheManager()
-                                      .getSingleFile(widget.url!);
+                                  mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
 
                                   // Hide snackbar
-                                  WidgetsBinding.instance
-                                      .addPostFrameCallback((timeStamp) {
+                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                     _imageViewer.currentState?.clearSnackBars();
                                   });
                                 }
 
                                 // Share
-                                await Share.shareXFiles(
-                                    [XFile(mediaFile!.path)]);
+                                await Share.shareXFiles([XFile(mediaFile!.path)]);
                               } catch (e) {
                                 // Tell the user that the download failed
                                 SnackBar snackBar = SnackBar(
-                                  content: Text(
-                                      'There was an error downloading the media file to share: $e'),
+                                  content: Text('There was an error downloading the media file to share: $e'),
                                   behavior: SnackBarBehavior.floating,
                                 );
-                                WidgetsBinding.instance
-                                    .addPostFrameCallback((timeStamp) {
+                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                                   _imageViewer.currentState?.clearSnackBars();
-                                  _imageViewer.currentState
-                                      ?.showSnackBar(snackBar);
+                                  _imageViewer.currentState?.showSnackBar(snackBar);
                                 });
                               }
                             },
-                            icon: const Icon(Icons.share_rounded,
-                                semanticLabel: "Comments", color: Colors.white),
+                            icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: IconButton(
                             onPressed: () async {
-                              File file = await DefaultCacheManager()
-                                  .getSingleFile(widget.url);
+                              File file = await DefaultCacheManager().getSingleFile(widget.url);
 
-                              if ((Platform.isAndroid || Platform.isIOS) &&
-                                  await _requestPermission()) {
+                              if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
                                 if (Platform.isAndroid) {
                                   // Save image to
                                   // [internal storage]/Pictures/ThunderImages
-                                  GallerySaver.saveImage(file.path,
-                                          albumName: "Pictures/ThunderImages")
-                                      .then((value) {
+                                  GallerySaver.saveImage(file.path, albumName: "Pictures/ThunderImages").then((value) {
                                     setState(() => downloaded = value as bool);
                                   });
                                 } else if (Platform.isIOS) {
                                   // TODO: Check to make sure this works on iOS
 
-                                  GallerySaver.saveImage(file.path,
-                                          albumName: "ThunderImages")
-                                      .then((value) {
+                                  GallerySaver.saveImage(file.path, albumName: "ThunderImages").then((value) {
                                     setState(() => downloaded = value as bool);
                                   });
                                 }
-                              } else if (Platform.isLinux ||
-                                  Platform.isWindows) {
-                                final filePath =
-                                    '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                              } else if (Platform.isLinux || Platform.isWindows) {
+                                final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
 
                                 File(filePath)
                                   ..createSync(recursive: true)
@@ -362,12 +327,8 @@ class _ImageViewerState extends State<ImageViewer>
                               }
                             },
                             icon: downloaded
-                                ? const Icon(Icons.check_circle,
-                                    semanticLabel: 'Downloaded',
-                                    color: Colors.white)
-                                : const Icon(Icons.download,
-                                    semanticLabel: "Download",
-                                    color: Colors.white),
+                                ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white)
+                                : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
                           ),
                         ),
                       ],
