@@ -65,6 +65,17 @@ class AboutSettingsPage extends StatelessWidget {
                 ),
                 ListTile(
                   title: Text(
+                    'Matrix Space',
+                    style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  subtitle: const Text('matrix.to/#/#thunderapp:matrix.org'),
+                  trailing: const Icon(Icons.chevron_right_rounded),
+                  onTap: () {
+                    openLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org', openInExternalBrowser: openInExternalBrowser);
+                  },
+                ),
+                ListTile(
+                  title: Text(
                     'Licenses',
                     style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
