@@ -5,7 +5,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'package:thunder/shared/hero.dart';
@@ -20,12 +19,7 @@ import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-import '../account/bloc/account_bloc.dart';
-import '../community/bloc/community_bloc.dart';
-import '../core/auth/bloc/auth_bloc.dart';
-import '../post/pages/post_page.dart';
-import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
-import '../thunder/bloc/thunder_bloc.dart';
+// renamed to prevent clash with VotePostEvent, etc from community_bloc
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -292,7 +286,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         onPressed: () async {
                           try {
                             // Try to get the cached image first
-                            var media = await DefaultCacheManager().getFileFromCache(widget.url!);
+                            var media = await DefaultCacheManager().getFileFromCache(widget.url);
                             File? mediaFile = media?.file;
 
                             if (media == null) {
@@ -307,7 +301,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                               });
 
                               // Download
-                              mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                              mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
 
                               // Hide snackbar
                               WidgetsBinding.instance.addPostFrameCallback((timeStamp) {

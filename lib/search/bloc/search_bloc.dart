@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -60,7 +59,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       ));
 
       return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, page: 2));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -69,7 +68,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     int attemptCount = 0;
 
     try {
-      var exception;
+      Object exception;
 
       while (attemptCount < 2) {
         try {
@@ -94,12 +93,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.communities = [...state.communities ?? [], ...searchResponse.communities];
 
           return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, page: state.page + 1));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -156,7 +155,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           [];
 
       return emit(state.copyWith(status: SearchStatus.success, communities: communities));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }

@@ -2,10 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:path/path.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
@@ -51,7 +49,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, version: version));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -107,8 +105,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
       SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
       SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.reply.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.save.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
       bool enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
@@ -168,7 +166,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }

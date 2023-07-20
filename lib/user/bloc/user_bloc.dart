@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -61,7 +60,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      var exception;
+      Object exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -126,7 +125,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
@@ -148,12 +147,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -163,7 +162,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      var exception;
+      Object exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -249,12 +248,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
             hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -286,7 +285,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -304,7 +303,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: UserStatus.failure,
         errorMessage: e.toString(),
@@ -326,7 +325,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       posts[existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -360,7 +359,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -383,7 +382,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }

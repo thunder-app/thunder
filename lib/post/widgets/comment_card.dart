@@ -22,6 +22,8 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
 
   final Set collapsedCommentSet;
+  final int? selectCommentId;
+  final Function(int, bool) onDeleteAction;
 
   final DateTime now;
 
@@ -35,6 +37,8 @@ class CommentCard extends StatefulWidget {
     required this.onCollapseCommentChange,
     required this.now,
     this.collapsedCommentSet = const {},
+    this.selectCommentId,
+    required this.onDeleteAction,
   });
 
   /// CommentViewTree containing relevant information
@@ -127,6 +131,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return Container(
       decoration: BoxDecoration(
+        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
         border: widget.level > 0
             ? Border(
                 left: BorderSide(
@@ -254,7 +259,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 children: [
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
-                    onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction),
+                    onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction),
                     onTap: () {
                       widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
                       setState(() => isHidden = !isHidden);
@@ -290,7 +295,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                      child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
+                                      child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.deleted ? "_deleted by creator_" : widget.commentViewTree.commentView!.comment.content),
                                     ),
                                     if (state.showCommentButtonActions && isUserLoggedIn)
                                       Padding(
@@ -300,6 +305,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                           onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                                           isEdit: isOwnComment,
                                           onSaveAction: widget.onSaveAction,
+                                          onDeleteAction: widget.onDeleteAction,
                                         ),
                                       ),
                                   ],
@@ -374,6 +380,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
                         itemBuilder: (context, index) => CommentCard(
+                          selectCommentId: widget.selectCommentId,
                           now: widget.now,
                           commentViewTree: widget.commentViewTree.replies[index],
                           collapsedCommentSet: widget.collapsedCommentSet,
@@ -382,6 +389,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           onVoteAction: widget.onVoteAction,
                           onSaveAction: widget.onSaveAction,
                           onCollapseCommentChange: widget.onCollapseCommentChange,
+                          onDeleteAction: widget.onDeleteAction,
                         ),
                         itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                       ),

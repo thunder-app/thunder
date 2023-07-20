@@ -5,21 +5,17 @@ import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:thunder/utils/image.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
 
+import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class MediaView extends StatefulWidget {
@@ -258,25 +254,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                     ),
                     onTap: () {
                       if (widget.post?.url != null) {
-                        if (openInExternalBrowser) {
-                          launchUrl(Uri.parse(widget.post!.url!), mode: LaunchMode.externalApplication);
-                        } else {
-                          launch(
-                            widget.post!.url!,
-                            customTabsOption: CustomTabsOption(
-                              toolbarColor: Theme.of(context).canvasColor,
-                              enableUrlBarHiding: true,
-                              showPageTitle: true,
-                              enableDefaultShare: true,
-                              enableInstantApps: true,
-                            ),
-                            safariVCOption: SafariViewControllerOption(
-                              preferredBarTintColor: Theme.of(context).canvasColor,
-                              preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                              barCollapsingEnabled: true,
-                            ),
-                          );
-                        }
+                        openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
                       }
                     },
                   ),

@@ -127,9 +127,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         prefs.setString('active_profile_id', accountId);
 
         return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
-      } on LemmyApiException catch (e, s) {
+      } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
-      } catch (e, s) {
+      } catch (e) {
         try {
           // Restore the original baseUrl
           lemmyClient.changeBaseUrl(originalBaseUrl);

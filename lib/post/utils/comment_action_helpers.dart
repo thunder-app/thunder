@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
 
+import '../../core/auth/bloc/auth_bloc.dart';
 import '../../core/models/comment_view_tree.dart';
 
-enum CommentCardAction { save, copyText, shareLink }
+enum CommentCardAction { save, copyText, shareLink, delete }
 
 class ExtendedCommentCardActions {
   const ExtendedCommentCardActions({required this.commentCardAction, required this.icon, required this.label});
@@ -14,7 +16,7 @@ class ExtendedCommentCardActions {
   final String label;
 }
 
-const commentCardActionItems = [
+const commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.save,
     icon: Icons.star_rounded,
@@ -32,8 +34,9 @@ const commentCardActionItems = [
   ),
 ];
 
-void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction) {
+void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction, Function onDeleteAction) {
   final theme = Theme.of(context);
+  List<ExtendedCommentCardActions> commentCardActionItems = _updateDefaultCommentActionItems(context, commentViewTree);
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -82,6 +85,8 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
                       case CommentCardAction.shareLink:
                         Share.share(commentViewTree.commentView!.comment.apId);
                         break;
+                      case CommentCardAction.delete:
+                        onDeleteAction(commentViewTree.commentView!.comment.id, !(commentViewTree.commentView!.comment.deleted));
                     }
                   },
                 );
@@ -93,4 +98,21 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
       );
     },
   );
+}
+
+List<ExtendedCommentCardActions> _updateDefaultCommentActionItems(BuildContext context, CommentViewTree commentViewTree) {
+  final bool isOwnComment = commentViewTree.commentView?.creator.id == context.read<AuthBloc>().state.account?.userId;
+  bool isDeleted = commentViewTree.commentView!.comment.deleted;
+  List<ExtendedCommentCardActions> updatedList = [...commentCardDefaultActionItems];
+
+  if (isOwnComment) {
+    updatedList.add(
+        ExtendedCommentCardActions(
+          commentCardAction: CommentCardAction.delete,
+          icon: isDeleted ? Icons.restore_from_trash_rounded : Icons.delete_rounded,
+          label: isDeleted ? 'Restore' : 'Delete',
+        )
+    );
+  }
+  return updatedList;
 }

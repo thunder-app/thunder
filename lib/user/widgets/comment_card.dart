@@ -38,7 +38,7 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, onPostUpdated: () => {}),
+                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: () => {}),
               ),
             ),
           );
@@ -70,7 +70,7 @@ class CommentCard extends StatelessWidget {
               const SizedBox(height: 10),
               CommonMarkdownBody(body: comment.comment.content),
               const Divider(height: 20),
-              Row(
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   // IconButton(
