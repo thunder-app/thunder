@@ -9,6 +9,7 @@
 - Added an option to disable FABs in feed/post page - contribution from @ajsosa
 - Added customization of nested comment indicators - contribution from @micahmo
 - Added ability to delete comment on long press - contribution from @vbh
+- Improvements to CI/development workflow
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
