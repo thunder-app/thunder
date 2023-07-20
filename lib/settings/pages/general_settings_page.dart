@@ -339,10 +339,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        Text(
-                          'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
-                          style: TextStyle(
-                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
                           ),
                         ),
                         const SizedBox(
