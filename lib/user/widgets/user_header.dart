@@ -43,8 +43,7 @@ class UserHeader extends StatelessWidget {
               )
             : null,
         child: Padding(
-          padding: const EdgeInsets.only(
-              top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+          padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -52,12 +51,8 @@ class UserHeader extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundColor: userInfo?.person.avatar != null
-                        ? Colors.transparent
-                        : theme.colorScheme.onBackground,
-                    foregroundImage: userInfo?.person.avatar != null
-                        ? CachedNetworkImageProvider(userInfo!.person.avatar!)
-                        : null,
+                    backgroundColor: userInfo?.person.avatar != null ? Colors.transparent : theme.colorScheme.onBackground,
+                    foregroundImage: userInfo?.person.avatar != null ? CachedNetworkImageProvider(userInfo!.person.avatar!) : null,
                     maxRadius: 45,
                   ),
                   const SizedBox(width: 20.0),
@@ -67,11 +62,8 @@ class UserHeader extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          userInfo?.person.displayName != null
-                              ? userInfo?.person.displayName ?? '-'
-                              : userInfo?.person.name ?? '-',
-                          style: theme.textTheme.headlineSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
+                          userInfo?.person.displayName != null ? userInfo?.person.displayName ?? '-' : userInfo?.person.name ?? '-',
+                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                           softWrap: false,
                           maxLines: 1,
                           overflow: TextOverflow.fade,
@@ -88,8 +80,7 @@ class UserHeader extends StatelessWidget {
                                 Icons.wysiwyg_rounded,
                                 size: 18.0,
                               ),
-                              text: formatNumberToK(
-                                  userInfo?.counts.postCount ?? 0),
+                              text: formatNumberToK(userInfo?.counts.postCount ?? 0),
                             ),
                             const SizedBox(width: 8.0),
                             IconText(
@@ -97,8 +88,7 @@ class UserHeader extends StatelessWidget {
                                 Icons.chat_rounded,
                                 size: 18.0,
                               ),
-                              text: formatNumberToK(
-                                  userInfo?.counts.commentCount ?? 0),
+                              text: formatNumberToK(userInfo?.counts.commentCount ?? 0),
                             ),
                           ],
                         ),

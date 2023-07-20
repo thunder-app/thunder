@@ -43,8 +43,7 @@ class PostCardViewCompact extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          if (!showThumbnailPreviewOnRight &&
-              (postViewMedia.media.isNotEmpty || showTextPostIndicator))
+          if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
             MediaView(
               postView: postViewMedia,
               showFullHeightImages: false,
@@ -53,9 +52,7 @@ class PostCardViewCompact extends StatelessWidget {
               viewMode: ViewMode.compact,
               isUserLoggedIn: isUserLoggedIn,
             ),
-          if (!showThumbnailPreviewOnRight &&
-              (postViewMedia.media.isNotEmpty || showTextPostIndicator))
-            const SizedBox(width: 8.0),
+          if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
           Flexible(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -66,31 +63,21 @@ class PostCardViewCompact extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(postViewMedia.postView.post.name,
-                        textScaleFactor:
-                            state.titleFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.read
-                              ? theme.textTheme.bodyMedium?.color
-                                  ?.withOpacity(0.4)
-                              : null,
+                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                         )),
                     const SizedBox(height: 4.0),
                     GestureDetector(
                       child: Text(
                         '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                        textScaleFactor:
-                            state.contentFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
-                          color: postViewMedia.postView.read
-                              ? theme.textTheme.bodyMedium?.color
-                                  ?.withOpacity(0.4)
-                              : theme.textTheme.bodyMedium?.color
-                                  ?.withOpacity(0.75),
+                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
                       ),
-                      onTap: () => onTapCommunityName(
-                          context, postViewMedia.postView.community.id),
+                      onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
                     ),
                     const SizedBox(height: 8.0),
                   ],
@@ -100,22 +87,16 @@ class PostCardViewCompact extends StatelessWidget {
                   voteType: postViewMedia.postView.myVote ?? VoteType.none,
                   comments: postViewMedia.postView.counts.comments,
                   unreadComments: postViewMedia.postView.unreadComments,
-                  hasBeenEdited: postViewMedia.postView.post.updated != null
-                      ? true
-                      : false,
-                  published: postViewMedia.postView.post.updated != null
-                      ? postViewMedia.postView.post.updated!
-                      : postViewMedia.postView.post.published,
+                  hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                   saved: postViewMedia.postView.saved,
                   distinguised: postViewMedia.postView.post.featuredCommunity,
                 )
               ],
             ),
           ),
-          if (showThumbnailPreviewOnRight &&
-              (postViewMedia.media.isNotEmpty || showTextPostIndicator))
-            if (showThumbnailPreviewOnRight &&
-                (postViewMedia.media.isNotEmpty || showTextPostIndicator))
+          if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
+            if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
               MediaView(
                 postView: postViewMedia,
                 showFullHeightImages: false,

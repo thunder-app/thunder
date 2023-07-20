@@ -28,8 +28,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding:
-                const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+            padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(

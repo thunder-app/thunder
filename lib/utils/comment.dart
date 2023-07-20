@@ -8,8 +8,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'date_time.dart';
 
 // Optimistically updates a comment
-CommentView optimisticallyVoteComment(
-    CommentViewTree commentViewTree, VoteType voteType) {
+CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType voteType) {
   int newScore = commentViewTree.commentView!.counts.score;
   VoteType? existingVoteType = commentViewTree.commentView!.myVote;
 
@@ -30,9 +29,7 @@ CommentView optimisticallyVoteComment(
       break;
   }
 
-  return commentViewTree.commentView!.copyWith(
-      myVote: voteType,
-      counts: commentViewTree.commentView!.counts.copyWith(score: newScore));
+  return commentViewTree.commentView!.copyWith(myVote: voteType, counts: commentViewTree.commentView!.counts.copyWith(score: newScore));
 }
 
 /// Logic to vote on a comment
@@ -70,16 +67,13 @@ Future<CommentView> saveComment(int commentId, bool save) async {
 }
 
 /// Builds a tree of comments given a flattened list
-List<CommentViewTree> buildCommentViewTree(List<CommentView> comments,
-    {bool flatten = false}) {
+List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool flatten = false}) {
   Map<String, CommentViewTree> commentMap = {};
 
   // Create a map of CommentView objects using the comment path as the key
   for (CommentView commentView in comments) {
     bool hasBeenEdited = commentView.comment.updated != null ? true : false;
-    String commentTime = hasBeenEdited
-        ? commentView.comment.updated!.toIso8601String()
-        : commentView.comment.published.toIso8601String();
+    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String() : commentView.comment.published.toIso8601String();
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
@@ -106,31 +100,20 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments,
   }
 
   // Return the root comments (those with an empty or "0" path)
-  return commentMap.values
-      .where((commentView) =>
-          commentView.commentView!.comment.path.isEmpty ||
-          commentView.commentView!.comment.path ==
-              '0.${commentView.commentView!.comment.id}')
-      .toList();
+  return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
 }
 
-List<int> findCommentIndexesFromCommentViewTree(
-    List<CommentViewTree> commentTrees, int commentId,
-    [List<int>? indexes]) {
+List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
   for (int i = 0; i < commentTrees.length; i++) {
     if (commentTrees[i].commentView!.comment.id == commentId) {
-      return [
-        ...indexes,
-        i
-      ]; // Return a copy of the indexes list with the current index added
+      return [...indexes, i]; // Return a copy of the indexes list with the current index added
     }
 
     indexes.add(i); // Add the current index to the indexes list
 
-    List<int> foundIndexes = findCommentIndexesFromCommentViewTree(
-        commentTrees[i].replies, commentId, indexes);
+    List<int> foundIndexes = findCommentIndexesFromCommentViewTree(commentTrees[i].replies, commentId, indexes);
 
     if (foundIndexes.isNotEmpty) {
       return foundIndexes;

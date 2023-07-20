@@ -26,8 +26,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult =
-      Process.runSync('flutter', ['build', 'apk', '--release']);
+  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 

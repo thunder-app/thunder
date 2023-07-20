@@ -21,10 +21,7 @@ class Thunder {
   static const _kFontFam = 'Thunder';
   static const String? _kFontPkg = null;
 
-  static const IconData microphone_variant =
-      IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData shield =
-      IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
-  static const IconData shield_crown =
-      IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData microphone_variant = IconData(0xe800, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData shield = IconData(0xe803, fontFamily: _kFontFam, fontPackage: _kFontPkg);
+  static const IconData shield_crown = IconData(0xe804, fontFamily: _kFontFam, fontPackage: _kFontPkg);
 }

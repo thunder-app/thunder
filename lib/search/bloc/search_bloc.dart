@@ -16,8 +16,7 @@ part 'search_state.dart';
 const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) =>
-      droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class SearchBloc extends Bloc<SearchEvent, SearchState> {
@@ -40,13 +39,11 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     );
   }
 
-  Future<void> _resetSearch(
-      ResetSearch event, Emitter<SearchState> emit) async {
+  Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
     emit(state.copyWith(status: SearchStatus.initial));
   }
 
-  Future<void> _startSearchEvent(
-      StartSearchEvent event, Emitter<SearchState> emit) async {
+  Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
 
@@ -61,18 +58,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         sort: event.sortType,
       ));
 
-      return emit(state.copyWith(
-          status: SearchStatus.success,
-          communities: searchResponse.communities,
-          page: 2));
+      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, page: 2));
     } catch (e) {
-      return emit(state.copyWith(
-          status: SearchStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _continueSearchEvent(
-      ContinueSearchEvent event, Emitter<SearchState> emit) async {
+  Future<void> _continueSearchEvent(ContinueSearchEvent event, Emitter<SearchState> emit) async {
     int attemptCount = 0;
 
     try {
@@ -80,8 +72,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(
-              status: SearchStatus.refreshing, communities: state.communities));
+          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -99,32 +90,22 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           }
 
           // Append the search results
-          state.communities = [
-            ...state.communities ?? [],
-            ...searchResponse.communities
-          ];
+          state.communities = [...state.communities ?? [], ...searchResponse.communities];
 
-          return emit(state.copyWith(
-              status: SearchStatus.success,
-              communities: state.communities,
-              page: state.page + 1));
+          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, page: state.page + 1));
         } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
     } catch (e) {
-      return emit(state.copyWith(
-          status: SearchStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _changeCommunitySubsciptionStatusEvent(
-      ChangeCommunitySubsciptionStatusEvent event,
-      Emitter<SearchState> emit) async {
+  Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<SearchState> emit) async {
     try {
-      emit(state.copyWith(
-          status: SearchStatus.refreshing, communities: state.communities));
+      emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -146,16 +127,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       List<CommunityView> communities = state.communities ?? [];
 
       communities = state.communities?.map((CommunityView communityView) {
-            if (communityView.community.id ==
-                fullCommunityView.communityView.community.id) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
               return fullCommunityView.communityView;
             }
             return communityView;
           }).toList() ??
           [];
 
-      emit(state.copyWith(
-          status: SearchStatus.success, communities: communities));
+      emit(state.copyWith(status: SearchStatus.success, communities: communities));
 
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
@@ -168,19 +147,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       communities = state.communities ?? [];
 
       communities = state.communities?.map((CommunityView communityView) {
-            if (communityView.community.id ==
-                fullCommunityView.communityView.community.id) {
+            if (communityView.community.id == fullCommunityView.communityView.community.id) {
               return fullCommunityView.communityView;
             }
             return communityView;
           }).toList() ??
           [];
 
-      return emit(state.copyWith(
-          status: SearchStatus.success, communities: communities));
+      return emit(state.copyWith(status: SearchStatus.success, communities: communities));
     } catch (e) {
-      return emit(state.copyWith(
-          status: SearchStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
   }
 }

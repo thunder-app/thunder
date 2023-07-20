@@ -22,14 +22,8 @@ abstract class PictrsMediaExtension {
         MediaType mediaType = MediaType.image;
         Size result = await retrieveImageDimensions(url);
 
-        Size size = MediaExtension.getScaledMediaSize(
-            width: result.width, height: result.height);
-        mediaList.add(Media(
-            mediaUrl: url,
-            originalUrl: url,
-            width: size.width,
-            height: size.height,
-            mediaType: mediaType));
+        Size size = MediaExtension.getScaledMediaSize(width: result.width, height: result.height);
+        mediaList.add(Media(mediaUrl: url, originalUrl: url, width: size.width, height: size.height, mediaType: mediaType));
       }
     } catch (e) {
       // If it fails, fall back to a media type of link

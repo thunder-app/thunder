@@ -49,8 +49,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         opaque: false,
         transitionDuration: const Duration(milliseconds: 200),
         reverseTransitionDuration: const Duration(milliseconds: 200),
-        pageBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation) {
+        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
           return ImageViewer(
@@ -59,8 +58,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             postId: widget.postId,
           );
         },
-        transitionsBuilder: (BuildContext context, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) {
+        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
           return Align(
             child: FadeTransition(
               opacity: animation,
@@ -103,14 +101,10 @@ class _ImagePreviewState extends State<ImagePreview> {
             fit: BoxFit.cover,
             cache: true,
             clearMemoryCacheWhenDispose: true,
-            cacheWidth: ((MediaQuery.of(context).size.width - 24) *
-                    View.of(context).devicePixelRatio.ceil())
-                .toInt(),
+            cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
           ),
           TweenAnimationBuilder<double>(
-            tween: Tween<double>(
-                begin: blur ? startBlur : endBlur,
-                end: blur ? endBlur : startBlur),
+            tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),
             builder: (_, value, child) {
               return BackdropFilter(

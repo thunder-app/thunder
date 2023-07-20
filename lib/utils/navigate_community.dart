@@ -10,14 +10,12 @@ import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
-Future<void> navigateToCommunityByName(
-    BuildContext context, String communityName) async {
+Future<void> navigateToCommunityByName(BuildContext context, String communityName) async {
   // If we're logged in, get the full community so we have its ID
   int? communityId;
   Account? account = await fetchActiveProfileAccount();
   if (account != null) {
-    final getCommunityResponse =
-        await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+    final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
       auth: account.jwt,
       name: communityName,
     ));
@@ -38,8 +36,7 @@ Future<void> navigateToCommunityByName(
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
         ],
-        child: CommunityPage(
-            communityName: communityName, communityId: communityId),
+        child: CommunityPage(communityName: communityName, communityId: communityId),
       ),
     ),
   );

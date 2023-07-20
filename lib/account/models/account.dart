@@ -17,13 +17,7 @@ class Account {
   });
 
   Map<String, dynamic> toMap() {
-    return {
-      'accountId': id,
-      'username': username,
-      'jwt': jwt,
-      'instance': instance,
-      'userId': userId
-    };
+    return {'accountId': id, 'username': username, 'jwt': jwt, 'instance': instance, 'userId': userId};
   }
 
   @override
@@ -67,8 +61,7 @@ class Account {
   static Future<Account?> fetchAccount(String accountId) async {
     Database? database = await DB.instance.database;
 
-    final List<Map<String, dynamic>>? maps = await database
-        ?.query('accounts', where: 'accountId = ?', whereArgs: [accountId]);
+    final List<Map<String, dynamic>>? maps = await database?.query('accounts', where: 'accountId = ?', whereArgs: [accountId]);
     if (maps == null || maps.isEmpty) return null;
 
     return Account(
@@ -84,8 +77,7 @@ class Account {
     Database? database = await DB.instance.database;
     if (database == null) return;
 
-    await database.update('accounts', account.toMap(),
-        where: 'accountId = ?', whereArgs: [account.id]);
+    await database.update('accounts', account.toMap(), where: 'accountId = ?', whereArgs: [account.id]);
   }
 
   static Future<void> deleteAccount(String id) async {

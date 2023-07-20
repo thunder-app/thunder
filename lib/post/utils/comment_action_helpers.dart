@@ -9,10 +9,7 @@ import '../../core/models/comment_view_tree.dart';
 enum CommentCardAction { save, copyText, shareLink, delete }
 
 class ExtendedCommentCardActions {
-  const ExtendedCommentCardActions(
-      {required this.commentCardAction,
-      required this.icon,
-      required this.label});
+  const ExtendedCommentCardActions({required this.commentCardAction, required this.icon, required this.label});
 
   final CommentCardAction commentCardAction;
   final IconData icon;
@@ -37,14 +34,9 @@ const commentCardDefaultActionItems = [
   ),
 ];
 
-void showCommentActionBottomModalSheet(
-    BuildContext context,
-    CommentViewTree commentViewTree,
-    Function onSaveAction,
-    Function onDeleteAction) {
+void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree commentViewTree, Function onSaveAction, Function onDeleteAction) {
   final theme = Theme.of(context);
-  List<ExtendedCommentCardActions> commentCardActionItems =
-      _updateDefaultCommentActionItems(context, commentViewTree);
+  List<ExtendedCommentCardActions> commentCardActionItems = _updateDefaultCommentActionItems(context, commentViewTree);
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -56,8 +48,7 @@ void showCommentActionBottomModalSheet(
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding:
-                  const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -80,31 +71,22 @@ void showCommentActionBottomModalSheet(
                   onTap: () async {
                     Navigator.of(context).pop();
 
-                    CommentCardAction commentCardAction =
-                        commentCardActionItems[index].commentCardAction;
+                    CommentCardAction commentCardAction = commentCardActionItems[index].commentCardAction;
 
                     switch (commentCardAction) {
                       case CommentCardAction.save:
-                        onSaveAction(commentViewTree.commentView!.comment.id,
-                            !(commentViewTree.commentView!.saved));
+                        onSaveAction(commentViewTree.commentView!.comment.id, !(commentViewTree.commentView!.saved));
                         break;
                       case CommentCardAction.copyText:
-                        Clipboard.setData(ClipboardData(
-                                text: commentViewTree
-                                    .commentView!.comment.content))
-                            .then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text("Copied to clipboard"),
-                                  behavior: SnackBarBehavior.floating));
+                        Clipboard.setData(ClipboardData(text: commentViewTree.commentView!.comment.content)).then((_) {
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), behavior: SnackBarBehavior.floating));
                         });
                         break;
                       case CommentCardAction.shareLink:
                         Share.share(commentViewTree.commentView!.comment.apId);
                         break;
                       case CommentCardAction.delete:
-                        onDeleteAction(commentViewTree.commentView!.comment.id,
-                            !(commentViewTree.commentView!.comment.deleted));
+                        onDeleteAction(commentViewTree.commentView!.comment.id, !(commentViewTree.commentView!.comment.deleted));
                     }
                   },
                 );
@@ -118,14 +100,10 @@ void showCommentActionBottomModalSheet(
   );
 }
 
-List<ExtendedCommentCardActions> _updateDefaultCommentActionItems(
-    BuildContext context, CommentViewTree commentViewTree) {
-  final bool isOwnComment = commentViewTree.commentView?.creator.id ==
-      context.read<AuthBloc>().state.account?.userId;
+List<ExtendedCommentCardActions> _updateDefaultCommentActionItems(BuildContext context, CommentViewTree commentViewTree) {
+  final bool isOwnComment = commentViewTree.commentView?.creator.id == context.read<AuthBloc>().state.account?.userId;
   bool isDeleted = commentViewTree.commentView!.comment.deleted;
-  List<ExtendedCommentCardActions> updatedList = [
-    ...commentCardDefaultActionItems
-  ];
+  List<ExtendedCommentCardActions> updatedList = [...commentCardDefaultActionItems];
 
   if (isOwnComment) {
     updatedList.add(ExtendedCommentCardActions(

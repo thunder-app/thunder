@@ -39,14 +39,10 @@ class ImageViewer extends StatefulWidget {
   State<ImageViewer> createState() => _ImageViewerState();
 }
 
-class _ImageViewerState extends State<ImageViewer>
-    with TickerProviderStateMixin {
-  GlobalKey<ExtendedImageSlidePageState> slidePagekey =
-      GlobalKey<ExtendedImageSlidePageState>();
-  final GlobalKey<ScaffoldMessengerState> _imageViewer =
-      GlobalKey<ScaffoldMessengerState>();
-  final GlobalKey<ExtendedImageGestureState> gestureKey =
-      GlobalKey<ExtendedImageGestureState>();
+class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
+  GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
+  final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
 
   double slideTransparency = 0.93;
@@ -80,8 +76,7 @@ class _ImageViewerState extends State<ImageViewer>
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
     if (Platform.isAndroid) {
-      androidVersionBelow33 =
-          (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
+      androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
     if (androidVersionBelow33) {
@@ -92,18 +87,14 @@ class _ImageViewerState extends State<ImageViewer>
         Permission.photosAddOnly,
       ].request();
     }
-    bool hasPermission = await Permission.photos.isGranted ||
-        await Permission.photos.isLimited ||
-        await Permission.storage.isGranted ||
-        await Permission.storage.isLimited;
+    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
 
     return hasPermission;
   }
 
   @override
   Widget build(BuildContext context) {
-    AnimationController animationController = AnimationController(
-        duration: const Duration(milliseconds: 140), vsync: this);
+    AnimationController animationController = AnimationController(duration: const Duration(milliseconds: 140), vsync: this);
     Function() animationListener = () {};
     Animation? animation;
 
@@ -136,21 +127,9 @@ class _ImageViewerState extends State<ImageViewer>
                     ? (details) {
                         // Need to catch the drag during "maybe" phase or it wont activate fast enough
                         if (!maybeSlideZooming && slideZooming) {
-                          double newScale = max(
-                              gestureKey.currentState!.gestureDetails!
-                                      .totalScale! *
-                                  (1 +
-                                      (details.delta.dy *
-                                          pow(
-                                              gestureKey.currentState!
-                                                  .gestureDetails!.totalScale!,
-                                              0.8) /
-                                          400)),
-                              1);
-                          gestureKey.currentState?.handleDoubleTap(
-                              scale: newScale,
-                              doubleTapPosition:
-                                  gestureKey.currentState!.pointerDownPosition);
+                          double newScale =
+                              max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy * pow(gestureKey.currentState!.gestureDetails!.totalScale!, 0.8) / 400)), 1);
+                          gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
                         }
                       }
                     : null,
@@ -180,8 +159,7 @@ class _ImageViewerState extends State<ImageViewer>
                       var offset = state.offset;
                       var pageSize = state.pageSize;
 
-                      var scale = offset.distance /
-                          Offset(pageSize.width, pageSize.height).distance;
+                      var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
 
                       if (state.isSliding) {
                         setState(() {
@@ -199,9 +177,7 @@ class _ImageViewerState extends State<ImageViewer>
                       if (state != null) {
                         var offset = state.offset;
                         var pageSize = state.pageSize;
-                        return offset.distance.greaterThan(
-                            Offset(pageSize.width, pageSize.height).distance /
-                                10);
+                        return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
                       }
                       return true;
                     },
@@ -230,8 +206,7 @@ class _ImageViewerState extends State<ImageViewer>
                             inPageView: false,
                             initialAlignment: InitialAlignment.center,
                             reverseMousePointerScrollDirection: true,
-                            gestureDetailsIsChanged:
-                                (GestureDetails? details) {},
+                            gestureDetailsIsChanged: (GestureDetails? details) {},
                           );
                         },
                         onDoubleTap: (ExtendedImageGestureState state) {
@@ -251,12 +226,9 @@ class _ImageViewerState extends State<ImageViewer>
                             end = 1;
                           }
                           animationListener = () {
-                            state.handleDoubleTap(
-                                scale: animation!.value,
-                                doubleTapPosition: pointerDownPosition);
+                            state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
                           };
-                          animation = animationController
-                              .drive(Tween<double>(begin: begin, end: end));
+                          animation = animationController.drive(Tween<double>(begin: begin, end: end));
 
                           animation!.addListener(animationListener);
 
@@ -270,8 +242,7 @@ class _ImageViewerState extends State<ImageViewer>
             ),
             Container(
               decoration: BoxDecoration(color: Colors.black.withOpacity(0.65)),
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
+              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -324,8 +295,7 @@ class _ImageViewerState extends State<ImageViewer>
                       onPressed: () async {
                         try {
                           // Try to get the cached image first
-                          var media = await DefaultCacheManager()
-                              .getFileFromCache(widget.url);
+                          var media = await DefaultCacheManager().getFileFromCache(widget.url);
                           File? mediaFile = media?.file;
 
                           if (media == null) {
@@ -334,19 +304,16 @@ class _ImageViewerState extends State<ImageViewer>
                               content: Text('Downloading media to share...'),
                               behavior: SnackBarBehavior.floating,
                             );
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               _imageViewer.currentState?.clearSnackBars();
                               _imageViewer.currentState?.showSnackBar(snackBar);
                             });
 
                             // Download
-                            mediaFile = await DefaultCacheManager()
-                                .getSingleFile(widget.url);
+                            mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
 
                             // Hide snackbar
-                            WidgetsBinding.instance
-                                .addPostFrameCallback((timeStamp) {
+                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               _imageViewer.currentState?.clearSnackBars();
                             });
                           }
@@ -356,38 +323,30 @@ class _ImageViewerState extends State<ImageViewer>
                         } catch (e) {
                           // Tell the user that the download failed
                           SnackBar snackBar = SnackBar(
-                            content: Text(
-                                'There was an error downloading the media file to share: $e'),
+                            content: Text('There was an error downloading the media file to share: $e'),
                             behavior: SnackBarBehavior.floating,
                           );
-                          WidgetsBinding.instance
-                              .addPostFrameCallback((timeStamp) {
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                             _imageViewer.currentState?.clearSnackBars();
                             _imageViewer.currentState?.showSnackBar(snackBar);
                           });
                         }
                       },
-                      icon: const Icon(Icons.share_rounded,
-                          semanticLabel: "Comments", color: Colors.white),
+                      icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: IconButton(
                       onPressed: () async {
-                        File file = await DefaultCacheManager()
-                            .getSingleFile(widget.url);
+                        File file = await DefaultCacheManager().getSingleFile(widget.url);
 
-                        if ((Platform.isAndroid || Platform.isIOS) &&
-                            await _requestPermission()) {
-                          final result =
-                              await ImageGallerySaver.saveFile(file.path);
+                        if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                          final result = await ImageGallerySaver.saveFile(file.path);
 
-                          setState(
-                              () => downloaded = result['isSuccess'] == true);
+                          setState(() => downloaded = result['isSuccess'] == true);
                         } else if (Platform.isLinux || Platform.isWindows) {
-                          final filePath =
-                              '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
 
                           File(filePath)
                             ..createSync(recursive: true)
@@ -396,11 +355,7 @@ class _ImageViewerState extends State<ImageViewer>
                           setState(() => downloaded = true);
                         }
                       },
-                      icon: downloaded
-                          ? const Icon(Icons.check_circle,
-                              semanticLabel: 'Downloaded', color: Colors.white)
-                          : const Icon(Icons.download,
-                              semanticLabel: "Download", color: Colors.white),
+                      icon: downloaded ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white) : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
                     ),
                   ),
                 ],

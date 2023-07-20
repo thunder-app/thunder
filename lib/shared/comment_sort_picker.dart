@@ -32,11 +32,7 @@ const List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
 ];
 
 class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
-  const CommentSortPicker(
-      {super.key,
-      required super.onSelect,
-      required super.title,
-      super.items = commentSortTypeItems});
+  const CommentSortPicker({super.key, required super.onSelect, required super.title, super.items = commentSortTypeItems});
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -88,8 +84,7 @@ class _SortPickerState extends State<CommentSortPicker> {
     );
   }
 
-  List<ListTile> _generateList(
-      List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
+  List<ListTile> _generateList(List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
     return items
         .map(
           (item) => ListTile(

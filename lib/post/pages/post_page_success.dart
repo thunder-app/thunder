@@ -52,8 +52,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
     if (widget.selectedCommentId != null) {
       return;
     }
-    if (widget.scrollController.position.pixels >=
-        widget.scrollController.position.maxScrollExtent * 0.6) {
+    if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {
       context.read<PostBloc>().add(const GetPostCommentsEvent());
     }
   }
@@ -71,16 +70,9 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
-            onVoteAction: (int commentId, VoteType voteType) => context
-                .read<PostBloc>()
-                .add(VoteCommentEvent(commentId: commentId, score: voteType)),
-            onSaveAction: (int commentId, bool save) => context
-                .read<PostBloc>()
-                .add(SaveCommentEvent(commentId: commentId, save: save)),
-            onDeleteAction: (int commentId, bool deleted) => context
-                .read<PostBloc>()
-                .add(
-                    DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+            onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+            onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
           ),
         ),
       ],

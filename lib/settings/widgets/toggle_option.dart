@@ -39,11 +39,7 @@ class ToggleOption extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(description, style: theme.textTheme.bodyMedium),
-                if (subtitle != null)
-                  Text(subtitle!,
-                      style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.textTheme.bodySmall?.color
-                              ?.withOpacity(0.8))),
+                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
               ],
             ),
           ],

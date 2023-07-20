@@ -19,29 +19,20 @@ Future<Version> fetchVersion() async {
   try {
     String? currentVersion = await getCurrentVersion();
 
-    final response =
-        await http.get(Uri.parse(url)).timeout(const Duration(seconds: 3));
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 3));
 
     if (response.statusCode == 200) {
       final release = json.decode(response.body);
       String latestVersion = release['tag_name'];
 
-      if (currentVersion != null &&
-          currentVersion.compareTo(latestVersion) < 0) {
-        return Version(
-            version: currentVersion,
-            latestVersion: latestVersion,
-            hasUpdate: true);
+      if (currentVersion != null && currentVersion.compareTo(latestVersion) < 0) {
+        return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {
-        return Version(
-            version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
+        return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
       }
     }
 
-    return Version(
-        version: currentVersion ?? 'N/A',
-        latestVersion: 'N/A',
-        hasUpdate: false);
+    return Version(version: currentVersion ?? 'N/A', latestVersion: 'N/A', hasUpdate: false);
   } catch (e) {
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }

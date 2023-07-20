@@ -46,9 +46,7 @@ class _LoginPageState extends State<LoginPage> {
     _instanceTextEditingController = TextEditingController();
 
     _usernameTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -56,9 +54,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _passwordTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -71,9 +67,7 @@ class _LoginPageState extends State<LoginPage> {
         currentInstance = _instanceTextEditingController.text;
       }
 
-      if (_usernameTextEditingController.text.isNotEmpty &&
-          _passwordTextEditingController.text.isNotEmpty &&
-          _instanceTextEditingController.text.isNotEmpty) {
+      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -83,10 +77,8 @@ class _LoginPageState extends State<LoginPage> {
       if (instanceTextDebounceTimer?.isActive == true) {
         instanceTextDebounceTimer!.cancel();
       }
-      instanceTextDebounceTimer =
-          Timer(const Duration(milliseconds: 500), () async {
-        await getInstanceIcon(_instanceTextEditingController.text)
-            .then((value) {
+      instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
+        await getInstanceIcon(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
             setState(() => instanceIcon = value);
@@ -98,21 +90,16 @@ class _LoginPageState extends State<LoginPage> {
       if (instanceValidationDebounceTimer?.isActive == true) {
         instanceValidationDebounceTimer!.cancel();
       }
-      instanceValidationDebounceTimer =
-          Timer(const Duration(seconds: 1), () async {
-        await (_instanceTextEditingController.text.isEmpty
-                ? Future<bool>.value(true)
-                : isLemmyInstance(_instanceTextEditingController.text))
-            .then((value) => {
-                  if (currentInstance == _instanceTextEditingController.text)
-                    {
-                      setState(() {
-                        instanceValidated = value;
-                        instanceError =
-                            '$currentInstance does not appear to be a valid Lemmy instance';
-                      })
-                    }
-                });
+      instanceValidationDebounceTimer = Timer(const Duration(seconds: 1), () async {
+        await (_instanceTextEditingController.text.isEmpty ? Future<bool>.value(true) : isLemmyInstance(_instanceTextEditingController.text)).then((value) => {
+              if (currentInstance == _instanceTextEditingController.text)
+                {
+                  setState(() {
+                    instanceValidated = value;
+                    instanceError = '$currentInstance does not appear to be a valid Lemmy instance';
+                  })
+                }
+            });
       });
     });
   }
@@ -143,8 +130,7 @@ class _LoginPageState extends State<LoginPage> {
               });
 
               SnackBar snackBar = SnackBar(
-                content: Text(
-                    'Login failed, please try again (${state.errorMessage ?? 'Unknown'})'),
+                content: Text('Login failed, please try again (${state.errorMessage ?? 'Unknown'})'),
                 behavior: SnackBarBehavior.floating,
               );
 
@@ -184,16 +170,12 @@ class _LoginPageState extends State<LoginPage> {
                 children: [
                   AnimatedCrossFade(
                     duration: const Duration(milliseconds: 500),
-                    crossFadeState: instanceIcon == null
-                        ? CrossFadeState.showFirst
-                        : CrossFadeState.showSecond,
-                    firstChild: Image.asset('assets/logo.png',
-                        width: 80.0, height: 80.0),
+                    crossFadeState: instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    firstChild: Image.asset('assets/logo.png', width: 80.0, height: 80.0),
                     secondChild: instanceIcon == null
                         ? Container()
                         : CircleAvatar(
-                            foregroundImage:
-                                CachedNetworkImageProvider(instanceIcon!),
+                            foregroundImage: CachedNetworkImageProvider(instanceIcon!),
                             backgroundColor: Colors.transparent,
                             maxRadius: 40,
                           ),
@@ -232,37 +214,26 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 12.0),
                         TextField(
-                          onSubmitted: (!isLoading &&
-                                  _passwordTextEditingController
-                                      .text.isNotEmpty &&
-                                  _passwordTextEditingController
-                                      .text.isNotEmpty &&
-                                  _instanceTextEditingController
-                                      .text.isNotEmpty)
-                              ? (_) => _handleLogin()
-                              : null,
+                          onSubmitted:
+                              (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                                  ? (_) => _handleLogin()
+                                  : null,
                           autocorrect: false,
                           controller: _passwordTextEditingController,
                           obscureText: !showPassword,
                           enableSuggestions: false,
-                          maxLength:
-                              60, // This is what lemmy retricts password length to
+                          maxLength: 60, // This is what lemmy retricts password length to
                           autofillHints: const [AutofillHints.password],
                           decoration: InputDecoration(
                             isDense: true,
                             border: const OutlineInputBorder(),
                             labelText: 'Password',
                             suffixIcon: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 4.0),
+                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
                               child: IconButton(
                                 icon: Icon(
-                                  showPassword
-                                      ? Icons.visibility_rounded
-                                      : Icons.visibility_off_rounded,
-                                  semanticLabel: showPassword
-                                      ? 'Hide Password'
-                                      : 'Show Password',
+                                  showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                                  semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
                                 ),
                                 onPressed: () {
                                   setState(() {
@@ -282,9 +253,7 @@ class _LoginPageState extends State<LoginPage> {
                     controller: _totpTextEditingController,
                     maxLength: 6,
                     keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[
-                      FilteringTextInputFormatter.digitsOnly
-                    ],
+                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
                     decoration: const InputDecoration(
                       isDense: true,
                       border: OutlineInputBorder(),
@@ -303,21 +272,13 @@ class _LoginPageState extends State<LoginPage> {
                         color: theme.colorScheme.onPrimary,
                       ),
                     ),
-                    onPressed: (!isLoading &&
-                            _passwordTextEditingController.text.isNotEmpty &&
-                            _passwordTextEditingController.text.isNotEmpty &&
-                            _instanceTextEditingController.text.isNotEmpty)
+                    onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                         ? _handleLogin
                         : null,
-                    child: Text('Login',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                            color: !isLoading && fieldsFilledIn
-                                ? theme.colorScheme.onPrimary
-                                : theme.colorScheme.primary)),
+                    child: Text('Login', style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
                   TextButton(
-                    style: ElevatedButton.styleFrom(
-                        minimumSize: const Size.fromHeight(60)),
+                    style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                     onPressed: !isLoading ? () => widget.popRegister() : null,
                     child: Text('Cancel', style: theme.textTheme.titleMedium),
                   ),

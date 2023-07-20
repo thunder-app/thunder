@@ -66,8 +66,7 @@ class _InboxPageState extends State<InboxPage> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >=
-        _scrollController.position.maxScrollExtent * 0.7) {
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       context.read<InboxBloc>().add(const GetInboxEvent());
     }
   }
@@ -88,9 +87,7 @@ class _InboxPageState extends State<InboxPage> {
               semanticLabel: 'Refresh',
             ),
             onPressed: () {
-              context
-                  .read<InboxBloc>()
-                  .add(GetInboxEvent(reset: true, showAll: showAll));
+              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
             },
           ),
           FilterChip(
@@ -100,9 +97,7 @@ class _InboxPageState extends State<InboxPage> {
             selected: showAll,
             onSelected: (bool selected) {
               setState(() => showAll = !showAll);
-              context
-                  .read<InboxBloc>()
-                  .add(GetInboxEvent(reset: true, showAll: selected));
+              context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: selected));
             },
           ),
           const SizedBox(width: 16.0),
@@ -119,9 +114,7 @@ class _InboxPageState extends State<InboxPage> {
                     label: Text(inboxCategory.title),
                     selected: _inboxType == inboxCategory.type,
                     onSelected: (bool selected) {
-                      _scrollController.animateTo(0,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeInOut);
+                      _scrollController.animateTo(0, duration: const Duration(milliseconds: 150), curve: Curves.easeInOut);
                       setState(() {
                         _inboxType = selected ? inboxCategory.type : null;
                       });
@@ -137,9 +130,7 @@ class _InboxPageState extends State<InboxPage> {
         create: (context) => PostBloc(),
         child: RefreshIndicator(
           onRefresh: () async {
-            context
-                .read<InboxBloc>()
-                .add(GetInboxEvent(reset: true, showAll: showAll));
+            context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
           },
           child: SingleChildScrollView(
             controller: _scrollController,
@@ -150,17 +141,12 @@ class _InboxPageState extends State<InboxPage> {
                 BlocBuilder<InboxBloc, InboxState>(
                   builder: (context, InboxState state) {
                     if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                      return Align(
-                          alignment: Alignment.topCenter,
-                          child: Text('Log in to see your inbox',
-                              style: theme.textTheme.titleMedium));
+                      return Align(alignment: Alignment.topCenter, child: Text('Log in to see your inbox', style: theme.textTheme.titleMedium));
                     }
 
                     switch (state.status) {
                       case InboxStatus.initial:
-                        context
-                            .read<InboxBloc>()
-                            .add(const GetInboxEvent(reset: true));
+                        context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                       case InboxStatus.loading:
                         return const Padding(
                           padding: EdgeInsets.all(24.0),
@@ -175,22 +161,16 @@ class _InboxPageState extends State<InboxPage> {
                         );
                       case InboxStatus.refreshing:
                       case InboxStatus.success:
-                        if (_inboxType == InboxType.mentions)
-                          return InboxMentionsView(mentions: state.mentions);
-                        if (_inboxType == InboxType.messages)
-                          return InboxPrivateMessagesView(
-                              privateMessages: state.privateMessages);
-                        if (_inboxType == InboxType.replies)
-                          return InboxRepliesView(replies: state.replies);
+                        if (_inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
+                        if (_inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
+                        if (_inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies);
                       case InboxStatus.empty:
                         return const Center(child: Text('Empty Inbox'));
                       case InboxStatus.failure:
                         return ErrorMessage(
                           message: state.errorMessage,
                           actionText: 'Refresh Content',
-                          action: () => context
-                              .read<InboxBloc>()
-                              .add(const GetInboxEvent()),
+                          action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
                         );
                     }
 

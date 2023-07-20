@@ -42,30 +42,25 @@ class PostCardActions extends StatelessWidget {
               IconButton(
                   icon: Icon(
                     Icons.arrow_upward,
-                    semanticLabel:
-                        voteType == VoteType.up ? 'Upvoted' : 'Upvote',
+                    semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
                   ),
                   color: voteType == VoteType.up ? upVoteColor : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(
-                        voteType == VoteType.up ? VoteType.none : VoteType.up);
+                    onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
                   }),
             if (showVoteActions)
               IconButton(
                 icon: Icon(
                   Icons.arrow_downward,
-                  semanticLabel:
-                      voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+                  semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
                 ),
                 color: voteType == VoteType.down ? downVoteColor : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(voteType == VoteType.down
-                      ? VoteType.none
-                      : VoteType.down);
+                  onVoteAction(voteType == VoteType.down ? VoteType.none : VoteType.down);
                 },
               ),
             if (showSaveAction)

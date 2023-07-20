@@ -14,8 +14,7 @@ const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 3);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) =>
-      droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class InboxBloc extends Bloc<InboxEvent, InboxState> {
@@ -93,20 +92,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
                 inboxPrivateMessagePage: 2,
-                hasReachedInboxReplyEnd:
-                    commentViews.isEmpty || commentViews.length < limit,
-                hasReachedInboxMentionEnd: personMentionViews.isEmpty ||
-                    personMentionViews.length < limit,
-                hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty ||
-                    privateMessageViews.length < limit,
+                hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
+                hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
+                hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
               ),
             );
           }
 
           // Prevent duplicate requests if we're done fetching
-          if (state.hasReachedInboxReplyEnd &&
-              state.hasReachedInboxMentionEnd &&
-              state.hasReachedInboxPrivateMessageEnd) return;
+          if (state.hasReachedInboxReplyEnd && state.hasReachedInboxMentionEnd && state.hasReachedInboxPrivateMessageEnd) return;
           emit(state.copyWith(status: InboxStatus.refreshing));
 
           // Fetch all the things
@@ -139,12 +133,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             ),
           );
 
-          List<CommentView> replies = List.from(state.replies)
-            ..addAll(commentViews);
-          List<PersonMentionView> mentions = List.from(state.mentions)
-            ..addAll(personMentionViews);
-          List<PrivateMessageView> privateMessages =
-              List.from(state.privateMessages)..addAll(privateMessageViews);
+          List<CommentView> replies = List.from(state.replies)..addAll(commentViews);
+          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(personMentionViews);
+          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessageViews);
 
           return emit(
             state.copyWith(
@@ -156,12 +147,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
               inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
-              hasReachedInboxReplyEnd:
-                  commentViews.isEmpty || commentViews.length < limit,
-              hasReachedInboxMentionEnd: personMentionViews.isEmpty ||
-                  personMentionViews.length < limit,
-              hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty ||
-                  privateMessageViews.length < limit,
+              hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
+              hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
+              hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
             ),
           );
         } catch (e) {
@@ -170,11 +158,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       }
 
-      emit(state.copyWith(
-          status: InboxStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString()));
     } catch (e) {
-      emit(state.copyWith(
-          status: InboxStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -196,20 +182,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       ));
 
       // Remove the post from the current reply list
-      List<CommentView> replies = List.from(state.replies)
-        ..removeWhere((element) =>
-            element.commentReply?.id ==
-            response.commentReplyView.commentReply.id);
+      List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
 
       emit(state.copyWith(status: InboxStatus.success, replies: replies));
     } catch (e) {
-      return emit(state.copyWith(
-          status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _markMentionAsReadEvent(
-      MarkMentionAsReadEvent event, emit) async {
+  Future<void> _markMentionAsReadEvent(MarkMentionAsReadEvent event, emit) async {
     try {
       emit(state.copyWith(
         status: InboxStatus.loading,
@@ -225,8 +206,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      PersonMentionView personMentionView =
-          await lemmy.run(MarkPersonMentionAsRead(
+      PersonMentionView personMentionView = await lemmy.run(MarkPersonMentionAsRead(
         auth: account!.jwt!,
         personMentionId: event.personMentionId,
         read: event.read,
@@ -234,13 +214,11 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
 
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
     } catch (e) {
-      return emit(state.copyWith(
-          status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _createCommentEvent(
-      CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
+  Future<void> _createCommentEvent(CreateInboxCommentReplyEvent event, Emitter<InboxState> emit) async {
     try {
       emit(state.copyWith(status: InboxStatus.refreshing));
 
@@ -248,9 +226,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(
-            status: InboxStatus.failure,
-            errorMessage: 'You are not logged in. Cannot create a comment'));
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
       }
 
       FullCommentView fullCommentView = await lemmy.run(CreateComment(
@@ -263,8 +239,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       add(GetInboxEvent(showAll: !state.showUnreadOnly));
       return emit(state.copyWith(status: InboxStatus.success));
     } catch (e) {
-      return emit(state.copyWith(
-          status: InboxStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
   }
 }

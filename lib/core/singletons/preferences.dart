@@ -4,8 +4,7 @@ class UserPreferences {
   late SharedPreferences sharedPreferences;
 
   static Future<UserPreferences> fetchPreferences() async {
-    _preferences ??= UserPreferences()
-      ..sharedPreferences = await SharedPreferences.getInstance();
+    _preferences ??= UserPreferences()..sharedPreferences = await SharedPreferences.getInstance();
     return _preferences!;
   }
 

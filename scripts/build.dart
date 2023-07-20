@@ -26,8 +26,7 @@ void buildRelease() {
 
   // Build for Android
   print('\nStarting Android build...');
-  ProcessResult androidResult =
-      Process.runSync('flutter', ['build', 'apk', '--release']);
+  ProcessResult androidResult = Process.runSync('flutter', ['build', 'apk', '--release']);
   stdout.write(androidResult.stdout);
   stderr.write(androidResult.stderr);
 
@@ -40,8 +39,7 @@ void buildRelease() {
 
   // Build for iOS
   print('\nStarting iOS build...');
-  ProcessResult iosResult =
-      Process.runSync('flutter', ['build', 'ios', '--release']);
+  ProcessResult iosResult = Process.runSync('flutter', ['build', 'ios', '--release']);
   stdout.write(iosResult.stdout);
   stderr.write(iosResult.stderr);
 
@@ -97,8 +95,7 @@ void createIPAFile(String version) {
   Directory runnerAppDir = Directory(runnerAppPath);
 
   runnerAppDir.listSync(recursive: true).forEach((file) {
-    String newPath =
-        file.path.replaceFirst(runnerAppDir.path, payloadRunnerDir.path);
+    String newPath = file.path.replaceFirst(runnerAppDir.path, payloadRunnerDir.path);
 
     if (file is File) {
       File newFile = File(newPath);
@@ -108,8 +105,7 @@ void createIPAFile(String version) {
   });
 
   // Compress the "Payload" directory into a zip file, and rename it to .ipa
-  ProcessResult zipResult = Process.runSync(
-      'bash', ['-c', 'cd release && zip -r thunder-v$version.ipa Payload']);
+  ProcessResult zipResult = Process.runSync('bash', ['-c', 'cd release && zip -r thunder-v$version.ipa Payload']);
   if (zipResult.exitCode == 0) {
     print('IPA file created successfully!');
   } else {

@@ -30,22 +30,14 @@ class _HeroWidgetState extends State<HeroWidget> {
         _rectTween = RectTween(begin: begin, end: end);
         return _rectTween!;
       },
-      flightShuttleBuilder: (BuildContext flightContext,
-          Animation<double> animation,
-          HeroFlightDirection flightDirection,
-          BuildContext fromHeroContext,
-          BuildContext toHeroContext) {
-        final Hero hero = (flightDirection == HeroFlightDirection.pop
-            ? fromHeroContext.widget
-            : toHeroContext.widget) as Hero;
+      flightShuttleBuilder: (BuildContext flightContext, Animation<double> animation, HeroFlightDirection flightDirection, BuildContext fromHeroContext, BuildContext toHeroContext) {
+        final Hero hero = (flightDirection == HeroFlightDirection.pop ? fromHeroContext.widget : toHeroContext.widget) as Hero;
         if (_rectTween == null) {
           return hero;
         }
 
         if (flightDirection == HeroFlightDirection.pop) {
-          final bool fixTransform = widget.slideType == SlideType.onlyImage &&
-              (widget.slidePagekey.currentState!.offset != Offset.zero ||
-                  widget.slidePagekey.currentState!.scale != 1.0);
+          final bool fixTransform = widget.slideType == SlideType.onlyImage && (widget.slidePagekey.currentState!.offset != Offset.zero || widget.slidePagekey.currentState!.scale != 1.0);
 
           final Widget toHeroWidget = (toHeroContext.widget as Hero).child;
           return AnimatedBuilder(
@@ -75,12 +67,9 @@ class _HeroWidgetState extends State<HeroWidget> {
               );
 
               if (fixTransform) {
-                final Tween<Offset> offsetTween = Tween<Offset>(
-                    begin: Offset.zero,
-                    end: widget.slidePagekey.currentState!.offset);
+                final Tween<Offset> offsetTween = Tween<Offset>(begin: Offset.zero, end: widget.slidePagekey.currentState!.offset);
 
-                final Tween<double> scaleTween = Tween<double>(
-                    begin: 1.0, end: widget.slidePagekey.currentState!.scale);
+                final Tween<double> scaleTween = Tween<double>(begin: 1.0, end: widget.slidePagekey.currentState!.scale);
                 animatedBuilderChild = Transform.translate(
                   offset: offsetTween.evaluate(animation),
                   child: Transform.scale(

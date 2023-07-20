@@ -20,8 +20,7 @@ const throttleDuration = Duration(seconds: 1);
 const timeout = Duration(seconds: 3);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) =>
-      droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class UserBloc extends Bloc<UserEvent, UserState> {
@@ -89,13 +88,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts =
-                await parsePostViews(fullPersonView?.posts ?? []);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(
-                fullPersonView?.comments ?? [],
-                flatten: true);
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? [], flatten: true);
 
             return emit(
               state.copyWith(
@@ -105,10 +101,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 comments: commentTree,
                 posts: posts,
                 page: 2,
-                hasReachedPostEnd:
-                    posts.length == fullPersonView?.personView.counts.postCount,
-                hasReachedCommentEnd:
-                    posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
+                hasReachedPostEnd: posts.length == fullPersonView?.personView.counts.postCount,
+                hasReachedCommentEnd: posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
               ),
             );
           }
@@ -131,17 +125,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts =
-              await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(
-              fullPersonView.comments ?? [],
-              flatten: true);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
 
           // Append the new comments
           List<CommentViewTree> commentViewTree = List.from(state.comments);
@@ -153,10 +144,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             comments: commentViewTree,
             posts: postViewMedias,
             page: state.page + 1,
-            hasReachedPostEnd: postViewMedias.length ==
-                fullPersonView.personView.counts.postCount,
-            hasReachedCommentEnd:
-                posts.isEmpty && fullPersonView.comments.isEmpty,
+            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
+            hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
         } catch (e) {
           exception = e;
@@ -164,8 +153,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
     } catch (e) {
-      emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
@@ -203,13 +191,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
               });
             }
 
-            List<PostViewMedia> posts =
-                await parsePostViews(fullPersonView?.posts ?? []);
+            List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(
-                fullPersonView?.comments ?? [],
-                flatten: true);
+            List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView?.comments ?? [], flatten: true);
 
             return emit(
               state.copyWith(
@@ -218,8 +203,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 savedPosts: posts,
                 savedContentPage: 2,
                 hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
-                hasReachedSavedCommentEnd:
-                    commentTree.isEmpty || commentTree.length < limit,
+                hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
               ),
             );
           }
@@ -240,25 +224,20 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             savedOnly: true,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception(
-                'Error: Timeout when attempting to fetch user saved content');
+            throw Exception('Error: Timeout when attempting to fetch user saved content');
           });
 
-          List<PostViewMedia> posts =
-              await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(
-              fullPersonView.comments ?? [],
-              flatten: true);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
 
           // Append the new comments
-          List<CommentViewTree> commentViewTree =
-              List.from(state.savedComments);
+          List<CommentViewTree> commentViewTree = List.from(state.savedComments);
           commentViewTree.addAll(commentTree);
 
           return emit(state.copyWith(
@@ -267,8 +246,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             savedPosts: postViewMedias,
             savedContentPage: state.savedContentPage + 1,
             hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
-            hasReachedSavedCommentEnd:
-                commentTree.isEmpty || commentTree.length < limit,
+            hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
         } catch (e) {
           exception = e;
@@ -276,13 +254,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         }
       }
     } catch (e) {
-      emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _votePostEvent(
-      VotePostEvent event, Emitter<UserState> emit) async {
+  Future<void> _votePostEvent(VotePostEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
 
@@ -291,16 +267,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       if (postViewMedia != null) {
         PostView originalPostView = postViewMedia.postView;
-        PostView updatedPostView =
-            optimisticallyVotePost(postViewMedia, event.score);
+        PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
         _updatePosts(updatedPostView, event.postId);
 
         // Immediately set the status, and continue
         emit(state.copyWith(status: UserStatus.success));
         emit(state.copyWith(status: UserStatus.refreshing));
 
-        PostView postView = await votePost(event.postId, event.score)
-            .timeout(timeout, onTimeout: () {
+        PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
           _updatePosts(originalPostView, event.postId);
           throw Exception('Error: Timeout when attempting to vote post');
         });
@@ -311,13 +285,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
-      return emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _markPostAsReadEvent(
-      MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
+  Future<void> _markPostAsReadEvent(MarkUserPostAsReadEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
 
@@ -325,8 +297,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       _updatePosts(postView, event.postId);
 
-      return emit(
-          state.copyWith(status: UserStatus.success, userId: state.userId));
+      return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
     } catch (e) {
       return emit(state.copyWith(
         status: UserStatus.failure,
@@ -336,8 +307,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Future<void> _savePostEvent(
-      SavePostEvent event, Emitter<UserState> emit) async {
+  Future<void> _savePostEvent(SavePostEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
 
@@ -347,41 +317,33 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
-      return emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _voteCommentEvent(
-      VoteCommentEvent event, Emitter<UserState> emit) async {
+  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(
-          state.comments, event.commentId);
-      CommentViewTree currentTree =
-          state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
 
       for (int i = 1; i < commentIndexes.length; i++) {
-        currentTree = currentTree
-            .replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
       // Optimistically update the comment
       CommentView? originalCommentView = currentTree.commentView;
 
-      CommentView updatedCommentView =
-          optimisticallyVoteComment(currentTree, event.score);
+      CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
       currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
       emit(state.copyWith(status: UserStatus.success));
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      CommentView commentView = await voteComment(event.commentId, event.score)
-          .timeout(timeout, onTimeout: () {
-        currentTree.commentView =
-            originalCommentView; // Reset this on exception
+      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        currentTree.commentView = originalCommentView; // Reset this on exception
         throw Exception('Error: Timeout when attempting to vote on comment');
       });
 
@@ -389,49 +351,40 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
-      return emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _saveCommentEvent(
-      SaveCommentEvent event, Emitter<UserState> emit) async {
+  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<UserState> emit) async {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      CommentView commentView = await saveComment(event.commentId, event.save)
-          .timeout(timeout, onTimeout: () {
+      CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
         throw Exception('Error: Timeout when attempting save a comment');
       });
 
-      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(
-          state.comments, event.commentId);
-      CommentViewTree currentTree =
-          state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
 
       for (int i = 1; i < commentIndexes.length; i++) {
-        currentTree = currentTree
-            .replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
       }
 
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
-      emit(state.copyWith(
-          status: UserStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
 
   PostViewMedia? _getPost(int postId) {
-    int postsIndex = state.posts.indexWhere(
-        (postViewMedia) => postViewMedia.postView.post.id == postId);
+    int postsIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
     if (postsIndex >= 0) {
       return state.posts[postsIndex];
     }
 
-    int savedPostsIndex = state.savedPosts.indexWhere(
-        (postViewMedia) => postViewMedia.postView.post.id == postId);
+    int savedPostsIndex = state.savedPosts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
     if (savedPostsIndex >= 0) {
       return state.savedPosts[savedPostsIndex];
     }
@@ -440,14 +393,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   void _updatePosts(PostView postView, int postId) {
-    int postsIndex = state.posts.indexWhere(
-        (postViewMedia) => postViewMedia.postView.post.id == postId);
+    int postsIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
     if (postsIndex >= 0) {
       state.posts[postsIndex].postView = postView;
     }
 
-    int savedPostsIndex = state.savedPosts.indexWhere(
-        (postViewMedia) => postViewMedia.postView.post.id == postId);
+    int savedPostsIndex = state.savedPosts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
     if (savedPostsIndex >= 0) {
       state.savedPosts[savedPostsIndex].postView = postView;
     }

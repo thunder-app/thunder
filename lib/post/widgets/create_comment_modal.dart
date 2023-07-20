@@ -11,11 +11,7 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 
-const List<Widget> postTypes = <Widget>[
-  Text('Text'),
-  Text('Image'),
-  Text('Link')
-];
+const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
 class CreateCommentModal extends StatefulWidget {
   final PostView? postView;
@@ -76,8 +72,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
 
     _bodyTextController.addListener(() {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-        setState(
-            () => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
+        setState(() => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
       });
     });
   }
@@ -103,8 +98,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
               if (hasExited == false) Navigator.pop(context);
               setState(() => hasExited = true);
             }
-            if (state.status == PostStatus.loading ||
-                state.status == PostStatus.refreshing) {
+            if (state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
               setState(() {
                 isLoading = true;
                 isFailure = true;
@@ -130,8 +124,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                 if (hasExited == false) Navigator.pop(context);
                 setState(() => hasExited = true);
               }
-              if (state.status == InboxStatus.loading ||
-                  state.status == InboxStatus.refreshing) {
+              if (state.status == InboxStatus.loading || state.status == InboxStatus.refreshing) {
                 setState(() {
                   isLoading = true;
                   isFailure = true;
@@ -163,39 +156,23 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text('${widget.isEdit ? 'Edit' : 'Create'} Comment',
-                        style: theme.textTheme.headlineSmall
-                            ?.copyWith(fontWeight: FontWeight.bold)),
+                    Text('${widget.isEdit ? 'Edit' : 'Create'} Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
                     IconButton(
                       onPressed: (isSubmitButtonDisabled || isLoading)
                           ? null
                           : () {
                               if (widget.isEdit) {
-                                return context.read<PostBloc>().add(
-                                    EditCommentEvent(
-                                        content: _bodyTextController.text,
-                                        commentId: widget.commentView!
-                                            .commentView!.comment.id));
+                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
                               }
 
                               if (widget.comment != null) {
-                                context.read<InboxBloc>().add(
-                                    CreateInboxCommentReplyEvent(
-                                        content: _bodyTextController.text,
-                                        parentCommentId: widget.comment!.id,
-                                        postId: widget.comment!.postId));
+                                context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                               } else {
-                                context.read<PostBloc>().add(CreateCommentEvent(
-                                    content: _bodyTextController.text,
-                                    parentCommentId: widget
-                                        .commentView?.commentView!.comment.id));
+                                context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.commentView!.comment.id));
                               }
                             },
                       icon: isLoading
-                          ? const SizedBox(
-                              width: 20,
-                              height: 20,
-                              child: CircularProgressIndicator())
+                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator())
                           : const Icon(
                               Icons.send_rounded,
                               semanticLabel: 'Reply',
@@ -205,27 +182,17 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                 ),
                 const SizedBox(height: 12.0),
                 if (widget.commentView != null && widget.isEdit == false)
-                  Text(
-                      'Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w400)),
+                  Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
                 if (widget.comment != null && widget.isEdit == false)
-                  Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}',
-                      style: theme.textTheme.titleMedium
-                          ?.copyWith(fontWeight: FontWeight.w400)),
+                  Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
-                if ((widget.commentView != null || widget.comment != null) &&
-                    widget.isEdit == false)
+                if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 12.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                     margin: const EdgeInsets.symmetric(vertical: 8.0),
                     constraints: const BoxConstraints(maxHeight: 150.0),
                     width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        border: Border.all(color: theme.dividerColor),
-                        borderRadius: BorderRadius.circular(8.0),
-                        color: theme.cardColor),
+                    decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0), color: theme.cardColor),
                     child: Scrollbar(
                       controller: _scrollController,
                       trackVisibility: true,
@@ -233,11 +200,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         child: CommonMarkdownBody(
-                          body: widget.commentView != null
-                              ? (widget.commentView?.commentView?.comment
-                                      .content ??
-                                  'N/A')
-                              : (widget.comment?.content ?? 'N/A'),
+                          body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
                           isSelectableText: true,
                         ),
                       ),
@@ -283,18 +246,14 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           height: 200,
                           child: (showPreview)
                               ? Container(
-                                  decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                      borderRadius: BorderRadius.circular(10)),
+                                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                                   padding: const EdgeInsets.all(12),
                                   child: SingleChildScrollView(
-                                    child:
-                                        CommonMarkdownBody(body: description),
+                                    child: CommonMarkdownBody(body: description),
                                   ),
                                 )
                               : MarkdownTextInput(
-                                  (String value) =>
-                                      setState(() => description = value),
+                                  (String value) => setState(() => description = value),
                                   description,
                                   label: 'Comment',
                                   maxLines: 5,
@@ -328,16 +287,12 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               child: const Text('Clear'),
                             ),
                             TextButton(
-                              onPressed: () =>
-                                  setState(() => showPreview = !showPreview),
-                              child: Text(showPreview == true
-                                  ? 'Show Markdown'
-                                  : 'Show Preview'),
+                              onPressed: () => setState(() => showPreview = !showPreview),
+                              child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
                             ),
                           ],
                         ),
-                        if (isFailure)
-                          AutoSizeText(errorMessage ?? 'Error', maxLines: 3)
+                        if (isFailure) AutoSizeText(errorMessage ?? 'Error', maxLines: 3)
                       ],
                     ),
                   ],

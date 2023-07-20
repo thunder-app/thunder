@@ -14,12 +14,7 @@ class GetPostEvent extends PostEvent {
   final String? selectedCommentPath;
   final int? selectedCommentId;
 
-  const GetPostEvent(
-      {this.sortType,
-      this.postView,
-      this.postId,
-      this.selectedCommentPath,
-      this.selectedCommentId});
+  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
@@ -29,12 +24,7 @@ class GetPostCommentsEvent extends PostEvent {
   final bool viewAllCommentsRefresh;
   final CommentSortType? sortType;
 
-  const GetPostCommentsEvent(
-      {this.postId,
-      this.commentParentId,
-      this.reset = false,
-      this.viewAllCommentsRefresh = false,
-      this.sortType});
+  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.viewAllCommentsRefresh = false, this.sortType});
 }
 
 class VotePostEvent extends PostEvent {

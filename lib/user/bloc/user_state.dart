@@ -69,27 +69,13 @@ class UserState extends Equatable {
       page: page ?? this.page,
       savedContentPage: savedContentPage ?? this.savedContentPage,
       hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,
-      hasReachedSavedPostEnd:
-          hasReachedSavedPostEnd ?? this.hasReachedSavedPostEnd,
+      hasReachedSavedPostEnd: hasReachedSavedPostEnd ?? this.hasReachedSavedPostEnd,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
-      hasReachedSavedCommentEnd:
-          hasReachedSavedCommentEnd ?? this.hasReachedSavedCommentEnd,
+      hasReachedSavedCommentEnd: hasReachedSavedCommentEnd ?? this.hasReachedSavedCommentEnd,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
 
   @override
-  List<Object?> get props => [
-        status,
-        userId,
-        personView,
-        comments,
-        posts,
-        page,
-        errorMessage,
-        hasReachedPostEnd,
-        hasReachedSavedPostEnd,
-        hasReachedCommentEnd,
-        hasReachedSavedCommentEnd
-      ];
+  List<Object?> get props => [status, userId, personView, comments, posts, page, errorMessage, hasReachedPostEnd, hasReachedSavedPostEnd, hasReachedCommentEnd, hasReachedSavedCommentEnd];
 }
