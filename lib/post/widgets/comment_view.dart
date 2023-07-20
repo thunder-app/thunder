@@ -111,20 +111,25 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                   if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
                     Center(
                         child: Column(children: [
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          backgroundColor: theme.colorScheme.primaryContainer,
-                          textStyle: theme.textTheme.titleMedium?.copyWith(
-                            color: theme.colorScheme.primary,
+                      Row(children: [
+                        const Padding(padding: EdgeInsets.only(left: 15)),
+                        Expanded(
+                            child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(50),
+                            backgroundColor: theme.colorScheme.primaryContainer,
+                            textStyle: theme.textTheme.titleMedium?.copyWith(
+                              color: theme.colorScheme.primary,
+                            ),
                           ),
-                        ),
-                        onPressed: () {
-                          _animatingOut = true;
-                          _fullCommentsAnimation.forward();
-                        },
-                        child: const Text('View all comments'),
-                      ),
+                          onPressed: () {
+                            _animatingOut = true;
+                            _fullCommentsAnimation.forward();
+                          },
+                          child: const Text('View all comments'),
+                        )),
+                        const Padding(padding: EdgeInsets.only(right: 15))
+                      ]),
                       const Padding(padding: EdgeInsets.only(top: 10)),
                     ])),
                   if (index != widget.comments.length + 1)

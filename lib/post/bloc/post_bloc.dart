@@ -19,6 +19,7 @@ import 'package:thunder/utils/post.dart';
 import '../../utils/constants.dart';
 
 part 'post_event.dart';
+
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
@@ -83,7 +84,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: PostStatus.loading));
+          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -106,14 +107,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           emit(
             state.copyWith(
-              status: PostStatus.success,
-              postId: postView?.postView.post.id,
-              postView: postView,
-              communityId: postView?.postView.post.communityId,
-            ),
+                status: PostStatus.success,
+                postId: postView?.postView.post.id,
+                postView: postView,
+                communityId: postView?.postView.post.communityId,
+                selectedCommentPath: event.selectedCommentPath,
+                selectedCommentId: event.selectedCommentId),
           );
 
-          emit(state.copyWith(status: PostStatus.refreshing));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -248,7 +250,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             maxDepth: COMMENT_MAX_DEPTH,
-            page: state.commentPage, //event.commentParentId != null ? 1 : state.commentPage,
+            page: state.commentPage,
+            //event.commentParentId != null ? 1 : state.commentPage,
             type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
