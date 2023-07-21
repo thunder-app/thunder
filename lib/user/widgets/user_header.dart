@@ -10,8 +10,13 @@ import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatelessWidget {
   final PersonViewSafe? userInfo;
+  final bool? isSidebarOpen;
 
-  const UserHeader({super.key, this.userInfo});
+  const UserHeader({
+    super.key,
+    this.userInfo,
+    this.isSidebarOpen,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -94,6 +99,11 @@ class UserHeader extends StatelessWidget {
                         ),
                       ],
                     ),
+                  ),
+                  Icon(
+                    isSidebarOpen != null && isSidebarOpen! ? Icons.chevron_right_rounded : Icons.chevron_left_rounded,
+                    size: 50,
+                    shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 5.0)],
                   ),
                 ],
               ),
