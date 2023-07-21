@@ -126,9 +126,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 onVerticalDragUpdate: maybeSlideZooming || slideZooming
                     ? (details) {
                         // Need to catch the drag during "maybe" phase or it wont activate fast enough
-                        if (!maybeSlideZooming && slideZooming) {
-                          double newScale =
-                              max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy * pow(gestureKey.currentState!.gestureDetails!.totalScale!, 0.8) / 400)), 1);
+                        if (slideZooming) {
+                          double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
                           gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
                         }
                       }
