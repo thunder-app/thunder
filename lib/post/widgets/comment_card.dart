@@ -285,7 +285,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     children: [
                       GestureDetector(
                         behavior: HitTestBehavior.translucent,
-                        onLongPress: () => showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction),
+                        onLongPress: () {
+                          HapticFeedback.mediumImpact();
+                          showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
+                        },
                         onTap: () {
                           widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
                           setState(() => isHidden = !isHidden);
