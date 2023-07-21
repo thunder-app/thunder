@@ -32,6 +32,8 @@
 - Improved Gesture settings UI to be more clear - contribution from @CTalvio
 - Improvements to tap + slide zoom gesture when previewing images - contribution from @CTalvio
 - Downloaded images are now saved in a separate directory/album - contribution from @njshockey
+- Material You theme setting is hidden on non-android devices
+- Comment child count now counts total replies rather than total top level replies contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
