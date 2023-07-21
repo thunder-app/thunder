@@ -66,6 +66,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
       bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
       bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
+      bool hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
 
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -157,6 +158,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnMediaView: markPostReadOnMediaView,
         disablePostFabs: disablePostFabs,
         disableFeedFab: disableFeedFab,
+        hideNsfwPosts: hideNsfwPosts,
         // Comment Actions
         showCommentButtonActions: showCommentButtonActions,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
