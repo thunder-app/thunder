@@ -16,6 +16,7 @@
 - Added haptic feedback when long pressing on a comment - contribution from @ajsosa
 - Added width/height limit on comment images, and adjustments to comment button actions - contribution from @CTalvio
 - Added sidebars to user profiles and community pages - contribution from @CTalvio
+- Added blur to external link previews - contribution from @ajsosa
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
