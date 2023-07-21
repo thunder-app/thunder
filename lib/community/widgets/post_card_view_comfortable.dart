@@ -56,6 +56,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final String textContent = postViewMedia.postView.post.body ?? "";
 
     var mediaView = MediaView(
+      showLinkPreview: state.showLinkPreviews,
       postView: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,

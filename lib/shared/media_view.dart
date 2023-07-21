@@ -26,6 +26,7 @@ class MediaView extends StatefulWidget {
   final bool edgeToEdgeImages;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
+  final bool? showLinkPreview;
   final ViewMode viewMode;
 
   const MediaView({
@@ -38,6 +39,7 @@ class MediaView extends StatefulWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
+    this.showLinkPreview,
   });
 
   @override
@@ -88,6 +90,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
+        showLinkPreviews: widget.showLinkPreview!,
         originURL: widget.postView!.media.first.originalUrl,
         mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,

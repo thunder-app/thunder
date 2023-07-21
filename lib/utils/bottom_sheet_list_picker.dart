@@ -47,7 +47,13 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                       item.label.capitalize,
                       style: theme.textTheme.bodyMedium,
                     ),
-                    leading: Icon(item.icon),
+                    leading: item.icon != null
+                        ? Icon(item.icon)
+                        : Container(
+                            height: 32,
+                            width: 32,
+                            decoration: BoxDecoration(color: item.color, borderRadius: BorderRadius.circular(100)),
+                          ),
                     onTap: () {
                       Navigator.of(context).pop();
                       widget.onSelect(item);
@@ -64,12 +70,14 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
 }
 
 class ListPickerItem<T> {
-  final IconData icon;
+  final IconData? icon;
+  final Color? color;
   final String label;
   final T payload;
 
   const ListPickerItem({
-    required this.icon,
+    this.icon,
+    this.color,
     required this.label,
     required this.payload,
   });

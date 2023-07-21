@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/enums/custom_theme_type.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -124,6 +125,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       // Theme Settings
       ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString('setting_theme_custom_app_theme') ?? CustomThemeType.deepBlue.name);
+
       bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
       // Font scale
@@ -172,7 +175,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
+        // Themes
         themeType: themeType,
+        selectedTheme: selectedTheme,
         useMaterialYouTheme: useMaterialYouTheme,
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,

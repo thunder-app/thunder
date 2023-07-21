@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:thunder/core/enums/custom_theme_type.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -22,6 +23,14 @@ class ThemeSettingsPage extends StatefulWidget {
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ThemeType themeType = ThemeType.system;
   bool useMaterialYouTheme = false;
+
+  // For now, we will use the pre-made themes provided by FlexScheme
+  // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
+  CustomThemeType selectedTheme = CustomThemeType.deepBlue;
+
+  List<ListPickerItem> customThemeOptions = CustomThemeType.values.map((CustomThemeType scheme) {
+    return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
+  }).toList();
 
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
@@ -54,6 +63,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case 'setting_theme_custom_app_theme':
+        await prefs.setString('setting_theme_custom_app_theme', (value as CustomThemeType).name);
+        setState(() => selectedTheme = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case 'setting_theme_use_material_you':
         await prefs.setBool('setting_theme_use_material_you', value);
         setState(() => useMaterialYouTheme = value);
@@ -82,6 +96,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     setState(() {
       // Theme Settings
       themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
+      selectedTheme = CustomThemeType.values.byName(prefs.getString('setting_theme_custom_app_theme') ?? CustomThemeType.deepBlue.name);
 
       useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
 
@@ -129,8 +144,15 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)),
+                        ListOption(
+                            description: 'Custom Themes',
+                            value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                            options: customThemeOptions,
+                            icon: Icons.wallpaper_rounded,
+                            onChanged: (value) => setPreferences('setting_theme_custom_app_theme', value.payload)),
                         ToggleOption(
                           description: 'Use Material You Theme',
+                          subtitle: 'Overrides the selected custom theme',
                           value: useMaterialYouTheme,
                           iconEnabled: Icons.color_lens_rounded,
                           iconDisabled: Icons.color_lens_rounded,

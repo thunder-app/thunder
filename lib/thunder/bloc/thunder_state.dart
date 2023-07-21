@@ -63,6 +63,7 @@ class ThunderState extends Equatable {
 
     // Theme Settings
     this.themeType = ThemeType.system,
+    this.selectedTheme = CustomThemeType.deepBlue,
     this.useMaterialYouTheme = false,
 
     // Font Scale
@@ -133,6 +134,7 @@ class ThunderState extends Equatable {
 
   // Theme Settings
   final ThemeType themeType;
+  final CustomThemeType selectedTheme;
   final bool useMaterialYouTheme;
 
   // Font Scale
@@ -200,6 +202,7 @@ class ThunderState extends Equatable {
 
     // Theme Settings
     ThemeType? themeType,
+    CustomThemeType? selectedTheme,
     bool? useMaterialYouTheme,
 
     // Font Scale
@@ -262,7 +265,9 @@ class ThunderState extends Equatable {
 
       // Theme Settings
       themeType: themeType ?? this.themeType,
+      selectedTheme: selectedTheme ?? this.selectedTheme,
       useMaterialYouTheme: useMaterialYouTheme ?? this.useMaterialYouTheme,
+
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,

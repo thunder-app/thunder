@@ -318,7 +318,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ToggleOption(
-                          description: 'Use User Display Names',
+                          description: 'Show User Display Names',
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
@@ -563,7 +563,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ToggleOption(
                           description: 'Show Link Previews',
-                          subtitle: 'Applies to normal view only',
+                          subtitle: 'Disable for slightly better performance',
                           value: showLinkPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,

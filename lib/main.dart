@@ -53,8 +53,8 @@ class ThunderApp extends StatelessWidget {
           }
           return DynamicColorBuilder(
             builder: (lightColorScheme, darkColorScheme) {
-              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.deepBlue);
-              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.deepBlue, darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
+              ThemeData theme = FlexThemeData.light(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name));
+              ThemeData darkTheme = FlexThemeData.dark(useMaterial3: true, scheme: FlexScheme.values.byName(state.selectedTheme.name), darkIsTrueBlack: state.themeType == ThemeType.pureBlack);
 
               // Enable Material You theme
               if (state.useMaterialYouTheme == true) {
