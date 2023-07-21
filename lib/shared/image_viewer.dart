@@ -5,21 +5,15 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'package:thunder/shared/hero.dart';
-
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-// renamed to prevent clash with VotePostEvent, etc from community_bloc
+import 'package:thunder/shared/hero.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -54,13 +48,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   /// User Settings
   bool isUserLoggedIn = false;
-
-  /*@override
-  void initState() {
-    super.initState();
-
-    isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-  }*/
 
   void _maybeSlide() {
     setState(() {
@@ -341,11 +328,20 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         File file = await DefaultCacheManager().getSingleFile(widget.url);
 
                         if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                          final result = await ImageGallerySaver.saveFile(file.path);
+                          if (Platform.isAndroid) {
+                            // Save image to [internal storage]/Pictures/Thunder
+                            GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
+                              setState(() => downloaded = value as bool);
+                            });
+                          } else if (Platform.isIOS) {
+                            // TODO: Check to make sure this works on iOS
 
-                          setState(() => downloaded = result['isSuccess'] == true);
+                            GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
+                              setState(() => downloaded = value as bool);
+                            });
+                          }
                         } else if (Platform.isLinux || Platform.isWindows) {
-                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                          final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
                           File(filePath)
                             ..createSync(recursive: true)
