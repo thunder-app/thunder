@@ -57,3 +57,10 @@ class MarkUserPostAsReadEvent extends UserEvent {
 
   const MarkUserPostAsReadEvent({required this.postId, required this.read});
 }
+
+class BlockUserEvent extends UserEvent {
+  final int personId;
+  final bool blocked;
+
+  const BlockUserEvent({required this.personId, required this.blocked});
+}

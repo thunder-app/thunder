@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -13,6 +14,8 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
+import 'community_sidebar.dart';
+
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
   final int? communityId;
@@ -21,6 +24,8 @@ class PostCardList extends StatefulWidget {
   final bool? hasReachedEnd;
   final PostListingType? listingType;
   final FullCommunityView? communityInfo;
+  final SubscribedType? subscribeType;
+  final BlockedCommunity? blockedCommunity;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -36,21 +41,37 @@ class PostCardList extends StatefulWidget {
     this.communityInfo,
     this.communityName,
     this.personId,
+    this.subscribeType,
     required this.onScrollEndReached,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
+    this.blockedCommunity,
   });
 
   @override
   State<PostCardList> createState() => _PostCardListState();
 }
 
-class _PostCardListState extends State<PostCardList> {
+class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin {
+  bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
   bool disableFabs = false;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 1),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.elasticIn,
+  ));
 
   @override
   void initState() {
@@ -131,7 +152,21 @@ class _PostCardListState extends State<PostCardList> {
               itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
                 if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
-                  return CommunityHeader(communityInfo: widget.communityInfo);
+                  return GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        _displaySidebar = true;
+                      });
+                    },
+                    onHorizontalDragUpdate: (details) {
+                      if (details.delta.dx < -3) {
+                        setState(() {
+                          _displaySidebar = true;
+                        });
+                      }
+                    },
+                    child: CommunityHeader(communityInfo: widget.communityInfo),
+                  );
                 }
                 if (index == widget.postViews!.length) {
                   if (widget.hasReachedEnd == true) {
@@ -170,6 +205,74 @@ class _PostCardListState extends State<PostCardList> {
                   );
                 }
               },
+            ),
+            GestureDetector(
+              onHorizontalDragUpdate: (details) {
+                if (details.delta.dx > 3) {
+                  setState(() {
+                    _displaySidebar = false;
+                  });
+                }
+              },
+              child: Column(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 300),
+                    child: _displaySidebar
+                        ? GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _displaySidebar = false;
+                              });
+                            },
+                            child: CommunityHeader(
+                              communityInfo: widget.communityInfo,
+                              isSidebarOpen: _displaySidebar,
+                            ),
+                          )
+                        : null,
+                  ),
+                  Expanded(
+                    child: Stack(
+                      children: [
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 300),
+                          child: _displaySidebar
+                              ? GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _displaySidebar = false;
+                                    });
+                                  },
+                                  child: Container(
+                                    color: Colors.black.withOpacity(0.75),
+                                  ),
+                                )
+                              : null,
+                        ),
+                        AnimatedSwitcher(
+                          switchInCurve: Curves.decelerate,
+                          switchOutCurve: Curves.easeOut,
+                          transitionBuilder: (child, animation) {
+                            return SlideTransition(
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                              child: child,
+                            );
+                          },
+                          duration: const Duration(milliseconds: 300),
+                          child: _displaySidebar
+                              ? CommunitySidebar(
+                                  communityInfo: widget.communityInfo,
+                                  subscribedType: widget.subscribeType,
+                                  blockedCommunity: widget.blockedCommunity,
+                                )
+                              : null,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
             if (!state.disableFeedFab && _showReturnToTopButton)
               Positioned(

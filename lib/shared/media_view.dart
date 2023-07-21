@@ -88,8 +88,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       }
     }
 
+    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
+
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
+        hideNsfw: hideNsfw,
         showLinkPreviews: widget.showLinkPreview!,
         originURL: widget.postView!.media.first.originalUrl,
         mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
@@ -103,8 +106,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         isUserLoggedIn: widget.isUserLoggedIn,
       );
     }
-
-    bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
 
     return Padding(
       padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),

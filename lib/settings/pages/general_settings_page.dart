@@ -250,7 +250,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     vsync: this,
   );
 
-  // Animation for comment collapse
+  // Animation for settings collapse
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
     begin: Offset.zero,
     end: const Offset(1.5, 0.0),
