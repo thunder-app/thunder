@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -139,25 +141,27 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                         ),
                         ListOption(
-                            description: 'App Theme',
+                            description: 'Theme',
                             value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)),
                         ListOption(
-                            description: 'Custom Themes',
+                            description: 'Accent Colors',
                             value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
                             options: customThemeOptions,
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences('setting_theme_custom_app_theme', value.payload)),
-                        ToggleOption(
-                          description: 'Use Material You Theme',
-                          subtitle: 'Overrides the selected custom theme',
-                          value: useMaterialYouTheme,
-                          iconEnabled: Icons.color_lens_rounded,
-                          iconDisabled: Icons.color_lens_rounded,
-                          onToggle: (bool value) => setPreferences('setting_theme_use_material_you', value),
-                        ),
+                        if (Platform.isAndroid) ...[
+                          ToggleOption(
+                            description: 'Use Material You Theme',
+                            subtitle: 'Overrides the selected custom theme',
+                            value: useMaterialYouTheme,
+                            iconEnabled: Icons.color_lens_rounded,
+                            iconDisabled: Icons.color_lens_rounded,
+                            onToggle: (bool value) => setPreferences('setting_theme_use_material_you', value),
+                          )
+                        ],
                       ],
                     ),
                   ),
