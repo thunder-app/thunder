@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +28,7 @@ class LinkPreviewCard extends StatelessWidget {
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
     this.postId,
+    required this.hideNsfw,
     required this.isUserLoggedIn,
     required this.markPostReadOnMediaView,
   });
@@ -45,6 +48,8 @@ class LinkPreviewCard extends StatelessWidget {
 
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
+
+  final bool hideNsfw;
 
   final ViewMode viewMode;
 
@@ -72,16 +77,41 @@ class LinkPreviewCard extends StatelessWidget {
                         )
                       : SizedBox(
                           height: 150,
-                          child: LinkPreviewGenerator(
-                            link: originURL!,
-                            showBody: false,
-                            showTitle: false,
-                            placeholderWidget: const Center(
-                              child: CircularProgressIndicator(),
-                            ),
-                            cacheDuration: Duration.zero,
-                          ),
+                          child: hideNsfw
+                              ? ImageFiltered(
+                                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                  child: LinkPreviewGenerator(
+                                    link: originURL!,
+                                    showBody: false,
+                                    showTitle: false,
+                                    placeholderWidget: Container(
+                                      margin: const EdgeInsets.all(15),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                                    cacheDuration: Duration.zero,
+                                  ))
+                              : LinkPreviewGenerator(
+                                  link: originURL!,
+                                  showBody: false,
+                                  showTitle: false,
+                                  placeholderWidget: const Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  cacheDuration: Duration.zero,
+                                ),
                         ),
+                if (hideNsfw)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(20),
+                    child: const Column(
+                      children: [
+                        Icon(Icons.warning_rounded, size: 55),
+                        // Thid won't show but it does cause the icon above to center
+                        Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                      ],
+                    ),
+                  ),
                 linkInformation(context),
               ],
             ),
@@ -112,17 +142,40 @@ class LinkPreviewCard extends StatelessWidget {
                       : SizedBox(
                           height: 75,
                           width: 75,
-                          child: LinkPreviewGenerator(
-                            link: originURL!,
-                            showBody: false,
-                            showTitle: false,
-                            placeholderWidget: Container(
-                              margin: const EdgeInsets.all(15),
-                              child: const CircularProgressIndicator(),
-                            ),
-                            cacheDuration: Duration.zero,
-                          ),
+                          child: hideNsfw
+                              ? ImageFiltered(
+                                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                  child: LinkPreviewGenerator(
+                                    link: originURL!,
+                                    showBody: false,
+                                    showTitle: false,
+                                    placeholderWidget: Container(
+                                      margin: const EdgeInsets.all(15),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                                    cacheDuration: Duration.zero,
+                                  ))
+                              : LinkPreviewGenerator(
+                                  link: originURL!,
+                                  showBody: false,
+                                  showTitle: false,
+                                  placeholderWidget: Container(
+                                    margin: const EdgeInsets.all(15),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                  cacheDuration: Duration.zero,
+                                ),
                         ),
+                if (hideNsfw)
+                  Container(
+                    alignment: Alignment.center,
+                    padding: const EdgeInsets.all(20),
+                    child: const Column(
+                      children: [
+                        Icon(Icons.warning_rounded, size: 30),
+                      ],
+                    ),
+                  ),
                 linkInformation(context),
               ],
             ),
