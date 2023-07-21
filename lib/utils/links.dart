@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
@@ -44,7 +46,7 @@ Future<LinkInfo> getLinkInfo(String url) async {
 }
 
 void openLink(BuildContext context, {required String url, bool openInExternalBrowser = false}) async {
-  if (openInExternalBrowser) {
+  if (openInExternalBrowser || (!Platform.isAndroid && !Platform.isIOS)) {
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   } else {
     launch(
