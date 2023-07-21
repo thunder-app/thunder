@@ -98,7 +98,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
             if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
               SnackBar snackBar = const SnackBar(
-                content: Text('Succesfully blocked!'),
+                content: Text('Successfully blocked!'),
                 behavior: SnackBarBehavior.floating,
               );
 
