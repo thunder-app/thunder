@@ -389,7 +389,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                     ),
                                     padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
                                     child: Text(
-                                      'Load more ${widget.commentViewTree.commentView!.counts.childCount} replies',
+                                      'Load ${widget.commentViewTree.commentView!.counts.childCount} more replies',
                                       textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                                       style: theme.textTheme.bodyMedium?.copyWith(
                                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
