@@ -30,6 +30,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
   bool useDisplayNames = true;
   bool disableFeedFab = false;
+  bool hideNsfwPosts = false;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -89,6 +90,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_mark_post_read_on_media_view':
         await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
         setState(() => markPostReadOnMediaView = value);
+        break;
+      case 'setting_general_hide_nsfw_posts':
+        await prefs.setBool('setting_general_hide_nsfw_posts', value);
+        setState(() => hideNsfwPosts = value);
         break;
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
@@ -209,6 +214,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
@@ -239,7 +245,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       // Comments
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -316,12 +321,36 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
                         ToggleOption(
-                          description: 'Hide NSFW Previews',
-                          value: hideNsfwPreviews,
+                          description: 'Hide NSFW Posts from Feed',
+                          value: hideNsfwPosts,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
-                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_posts', value),
                         ),
+                        AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 250),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return SizeTransition(
+                                sizeFactor: animation,
+                                child: SlideTransition(position: _offsetAnimation, child: child),
+                              );
+                            },
+                            child: !hideNsfwPosts
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 16.0),
+                                    key: ValueKey(useCompactView),
+                                    child: Column(children: [
+                                      ToggleOption(
+                                        description: 'Hide NSFW Previews',
+                                        value: hideNsfwPreviews,
+                                        iconEnabled: Icons.no_adult_content,
+                                        iconDisabled: Icons.no_adult_content,
+                                        onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                                      )
+                                    ]))
+                                : Container()),
                         ToggleOption(
                           description: 'Mark Read After Viewing Media',
                           value: markPostReadOnMediaView,
