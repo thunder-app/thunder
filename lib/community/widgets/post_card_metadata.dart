@@ -73,8 +73,7 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons
-                        .chat,
+                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                     size: 17.0,
                     color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
                         theme.textTheme.titleSmall?.color?.withOpacity(0.75),
@@ -89,16 +88,12 @@ class PostCardMetaData extends StatelessWidget {
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    hasBeenEdited
-                        ? Icons.refresh_rounded
-                        : Icons.history_rounded,
+                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text:
-                      formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor:
-                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text: formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
                 const SizedBox(width: 14.0),
                 if (distinguised)
@@ -181,24 +176,19 @@ class PostViewMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatNumberToK(comments),
-                  textColor:
-                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
-                    hasBeenEdited
-                        ? Icons.refresh_rounded
-                        : Icons.history_rounded,
+                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
-                  text:
-                      formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor:
-                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  text: formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
               ],
             ),
@@ -228,10 +218,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
-      final String? creatorName =
-          postView.creator.displayName != null && state.useDisplayNames
-              ? postView.creator.displayName
-              : postView.creator.name;
+      final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
 
       return Row(
         children: [
@@ -252,20 +239,14 @@ class PostCommunityAndAuthor extends StatelessWidget {
               children: [
                 if (state.showPostAuthor)
                   GestureDetector(
-                      child: Text('$creatorName to ',
-                          textScaleFactor:
-                              state.contentFontSizeScale.textScaleFactor,
-                          style: textStyleAuthor),
-                      onTap: () => onTapUserName(context, postView.creator.id)),
+                      child: Text('$creatorName to ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
                 GestureDetector(
                     child: Text(
                       '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                      textScaleFactor:
-                          state.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                       style: textStyleCommunity,
                     ),
-                    onTap: () =>
-                        onTapCommunityName(context, postView.community.id)),
+                    onTap: () => onTapCommunityName(context, postView.community.id)),
               ],
             ),
           ),

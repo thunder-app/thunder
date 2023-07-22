@@ -38,11 +38,8 @@ class PostCardViewCompact extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    final TextStyle? textStyleCommunityAndAuthor =
-        theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read
-          ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4)
-          : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
     return Padding(
@@ -72,14 +69,10 @@ class PostCardViewCompact extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(postViewMedia.postView.post.name,
-                        textScaleFactor:
-                            state.titleFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.read
-                              ? theme.textTheme.bodyMedium?.color
-                                  ?.withOpacity(0.4)
-                              : null,
+                          color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                         )),
                     const SizedBox(height: 4.0),
                     GestureDetector(
@@ -90,8 +83,7 @@ class PostCardViewCompact extends StatelessWidget {
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
                       ),
-                      onTap: () => onTapCommunityName(
-                          context, postViewMedia.postView.community.id),
+                      onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
                     ),
                     const SizedBox(height: 8.0),
                   ],
@@ -101,12 +93,8 @@ class PostCardViewCompact extends StatelessWidget {
                   voteType: postViewMedia.postView.myVote ?? VoteType.none,
                   comments: postViewMedia.postView.counts.comments,
                   unreadComments: postViewMedia.postView.unreadComments,
-                  hasBeenEdited: postViewMedia.postView.post.updated != null
-                      ? true
-                      : false,
-                  published: postViewMedia.postView.post.updated != null
-                      ? postViewMedia.postView.post.updated!
-                      : postViewMedia.postView.post.published,
+                  hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                  published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                   saved: postViewMedia.postView.saved,
                   distinguised: postViewMedia.postView.post.featuredCommunity,
                 )

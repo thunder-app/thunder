@@ -20,7 +20,6 @@ import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
 
-
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 

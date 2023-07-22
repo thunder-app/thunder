@@ -21,8 +21,7 @@ class GeneralSettingsPage extends StatefulWidget {
   State<GeneralSettingsPage> createState() => _GeneralSettingsPageState();
 }
 
-class _GeneralSettingsPageState extends State<GeneralSettingsPage>
-    with SingleTickerProviderStateMixin {
+class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
   // Feed Settings
   bool useCompactView = false;
   bool showTitleFirst = false;
@@ -78,20 +77,17 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
       // Feed Settings
       case 'setting_general_default_listing_type':
         await prefs.setString('setting_general_default_listing_type', value);
-        setState(() => defaultPostListingType =
-            PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case 'setting_general_default_sort_type':
         await prefs.setString('setting_general_default_sort_type', value);
-        setState(() => defaultSortType =
-            SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
+        setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
         break;
       case 'setting_post_tablet_mode':
         await prefs.setBool('setting_post_tablet_mode', value);
         setState(() => tabletMode = value);
       case 'setting_general_mark_post_read_on_media_view':
-        await prefs.setBool(
-            'setting_general_mark_post_read_on_media_view', value);
+        await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
         setState(() => markPostReadOnMediaView = value);
         break;
       case 'setting_general_hide_nsfw_previews':
@@ -163,19 +159,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
 
       // Comments
       case 'setting_comments_collapse_parent_comment_on_gesture':
-        await prefs.setBool(
-            'setting_comments_collapse_parent_comment_on_gesture', value);
+        await prefs.setBool('setting_comments_collapse_parent_comment_on_gesture', value);
         setState(() => collapseParentCommentOnGesture = value);
         break;
       case 'setting_general_show_comment_button_actions':
-        await prefs.setBool(
-            'setting_general_show_comment_button_actions', value);
+        await prefs.setBool('setting_general_show_comment_button_actions', value);
         setState(() => showCommentButtonActions = value);
         break;
       case 'setting_post_default_comment_sort_type':
         await prefs.setString('setting_post_default_comment_sort_type', value);
-        setState(() => defaultCommentSortType = CommentSortType.values
-            .byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
       case 'setting_general_nested_comment_indicator_style':
         await prefs.setString('setting_general_nested_comment_indicator_style', value);
@@ -220,15 +213,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
       disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
 
       try {
-        defaultPostListingType = PostListingType.values.byName(
-            prefs.getString("setting_general_default_listing_type") ??
-                DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(
-            prefs.getString("setting_general_default_sort_type") ??
-                DEFAULT_SORT_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType =
-            PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -247,8 +235,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
       showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? false;
 
       // Comment Settings
-      showCommentButtonActions =
-          prefs.getBool('setting_general_show_comment_button_actions') ?? false;
+      showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
 
       // Comments
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
@@ -260,14 +247,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
-      openInExternalBrowser =
-          prefs.getBool('setting_links_open_in_external_browser') ?? false;
-      showLinkPreviews =
-          prefs.getBool('setting_general_show_link_previews') ?? true;
+      openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
+      showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
 
       // Notification Settings
-      showInAppUpdateNotification =
-          prefs.getBool('setting_notifications_show_inapp_update') ?? true;
+      showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
 
       isLoading = false;
     });
@@ -312,8 +296,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -330,33 +313,28 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: tabletMode,
                           iconEnabled: Icons.tablet_rounded,
                           iconDisabled: Icons.smartphone_rounded,
-                          onToggle: (bool value) =>
-                              setPreferences('setting_post_tablet_mode', value),
+                          onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
                         ToggleOption(
                           description: 'Hide NSFW Previews',
                           value: hideNsfwPreviews,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_hide_nsfw_previews', value),
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
                         ),
                         ToggleOption(
                           description: 'Mark Read After Viewing Media',
                           value: markPostReadOnMediaView,
                           iconEnabled: Icons.visibility,
                           iconDisabled: Icons.remove_red_eye_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              "setting_general_mark_post_read_on_media_view",
-                              value),
+                          onToggle: (bool value) => setPreferences("setting_general_mark_post_read_on_media_view", value),
                         ),
                         ToggleOption(
                           description: 'Show User Display Names',
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_use_display_names_for_users', value),
+                          onToggle: (bool value) => setPreferences('setting_use_display_names_for_users', value),
                         ),
                         ToggleOption(
                           description: 'Disable Floating Buttons on Feed',
@@ -367,44 +345,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                         ),
                         ListOption(
                           description: 'Default Feed Type',
-                          value: ListPickerItem(
-                              label: defaultPostListingType.value,
-                              icon: Icons.feed,
-                              payload: defaultPostListingType),
+                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
                           options: [
-                            ListPickerItem(
-                                icon: Icons.view_list_rounded,
-                                label: PostListingType.subscribed.value,
-                                payload: PostListingType.subscribed),
-                            ListPickerItem(
-                                icon: Icons.home_rounded,
-                                label: PostListingType.all.value,
-                                payload: PostListingType.all),
-                            ListPickerItem(
-                                icon: Icons.grid_view_rounded,
-                                label: PostListingType.local.value,
-                                payload: PostListingType.local),
+                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
+                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
+                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
                           ],
                           icon: Icons.filter_alt_rounded,
-                          onChanged: (value) => setPreferences(
-                              'setting_general_default_listing_type',
-                              value.payload.name),
+                          onChanged: (value) => setPreferences('setting_general_default_listing_type', value.payload.name),
                         ),
                         ListOption(
                           description: 'Default Sort Type',
-                          value: ListPickerItem(
-                              label: defaultSortType.value,
-                              icon: Icons.local_fire_department_rounded,
-                              payload: defaultSortType),
+                          value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
                           options: allSortTypeItems,
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
                           customListPicker: SortPicker(
                             title: 'Default Sort Type',
                             onSelect: (value) {
-                              setPreferences(
-                                  'setting_general_default_sort_type',
-                                  value.payload.name);
+                              setPreferences('setting_general_default_sort_type', value.payload.name);
                             },
                           ),
                         ),
@@ -412,8 +371,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -450,19 +408,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: useCompactView,
                           iconEnabled: Icons.crop_16_9_rounded,
                           iconDisabled: Icons.crop_din_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_use_compact_view', value),
+                          onToggle: (bool value) => setPreferences('setting_general_use_compact_view', value),
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 250),
                           switchInCurve: Curves.easeInOut,
                           switchOutCurve: Curves.easeInOut,
-                          transitionBuilder:
-                              (Widget child, Animation<double> animation) {
+                          transitionBuilder: (Widget child, Animation<double> animation) {
                             return SizeTransition(
                               sizeFactor: animation,
-                              child: SlideTransition(
-                                  position: _offsetAnimation, child: child),
+                              child: SlideTransition(position: _offsetAnimation, child: child),
                             );
                           },
                           child: useCompactView
@@ -475,11 +430,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                                         description: 'Thumbnails on the Right',
                                         value: showThumbnailPreviewOnRight,
                                         iconEnabled: Icons.switch_left_rounded,
-                                        iconDisabled:
-                                            Icons.switch_right_rounded,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_compact_show_thumbnail_on_right',
-                                            value),
+                                        iconDisabled: Icons.switch_right_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_compact_show_thumbnail_on_right', value),
                                       ),
                                       ToggleOption(
                                         description: 'Show Text Post Indicator',
@@ -499,69 +451,51 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                                       ToggleOption(
                                         description: 'Show Title First',
                                         value: showTitleFirst,
-                                        iconEnabled:
-                                            Icons.vertical_align_top_rounded,
-                                        iconDisabled:
-                                            Icons.vertical_align_bottom_rounded,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_title_first',
-                                            value),
+                                        iconEnabled: Icons.vertical_align_top_rounded,
+                                        iconDisabled: Icons.vertical_align_bottom_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_title_first', value),
                                       ),
                                       ToggleOption(
                                         description: 'View Full Height Images',
                                         value: showFullHeightImages,
                                         iconEnabled: Icons.image_rounded,
                                         iconDisabled: Icons.image_outlined,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_full_height_images',
-                                            value),
+                                        onToggle: (bool value) => setPreferences('setting_general_show_full_height_images', value),
                                       ),
                                       ToggleOption(
                                         description: 'Edge-to-Edge Images',
                                         value: showEdgeToEdgeImages,
                                         iconEnabled: Icons.fit_screen_rounded,
                                         iconDisabled: Icons.fit_screen_outlined,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_edge_to_edge_images',
-                                            value),
+                                        onToggle: (bool value) => setPreferences('setting_general_show_edge_to_edge_images', value),
                                       ),
                                       ToggleOption(
                                         description: 'Show Text Content',
                                         value: showTextContent,
                                         iconEnabled: Icons.notes_rounded,
                                         iconDisabled: Icons.notes_rounded,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_text_content',
-                                            value),
+                                        onToggle: (bool value) => setPreferences('setting_general_show_text_content', value),
                                       ),
                                       ToggleOption(
                                         description: 'Show Vote Buttons',
                                         value: showVoteActions,
-                                        iconEnabled:
-                                            Icons.import_export_rounded,
-                                        iconDisabled:
-                                            Icons.import_export_rounded,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_vote_actions',
-                                            value),
+                                        iconEnabled: Icons.import_export_rounded,
+                                        iconDisabled: Icons.import_export_rounded,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_vote_actions', value),
                                       ),
                                       ToggleOption(
                                         description: 'Show Save Button',
                                         value: showSaveAction,
                                         iconEnabled: Icons.star_rounded,
                                         iconDisabled: Icons.star_border_rounded,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_save_action',
-                                            value),
+                                        onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
                                       ),
                                       ToggleOption(
                                         description: 'Show Community Icons',
                                         value: showCommunityIcons,
                                         iconEnabled: Icons.groups,
                                         iconDisabled: Icons.groups,
-                                        onToggle: (bool value) => setPreferences(
-                                            'setting_general_show_community_icons',
-                                            value),
+                                        onToggle: (bool value) => setPreferences('setting_general_show_community_icons', value),
                                       ),
                                     ],
                                   ),
@@ -572,15 +506,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: showPostAuthor,
                           iconEnabled: Icons.person,
                           iconDisabled: Icons.person,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_show_post_author', value),
+                          onToggle: (bool value) => setPreferences('setting_general_show_post_author', value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -597,34 +529,25 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: collapseParentCommentOnGesture,
                           iconEnabled: Icons.mode_comment_outlined,
                           iconDisabled: Icons.comment_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_comments_collapse_parent_comment_on_gesture',
-                              value),
+                          onToggle: (bool value) => setPreferences('setting_comments_collapse_parent_comment_on_gesture', value),
                         ),
                         ToggleOption(
                           description: 'Show Comment Button Actions',
                           value: showCommentButtonActions,
                           iconEnabled: Icons.mode_comment_rounded,
                           iconDisabled: Icons.mode_comment_outlined,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_show_comment_button_actions',
-                              value),
+                          onToggle: (bool value) => setPreferences('setting_general_show_comment_button_actions', value),
                         ),
                         ListOption(
                           description: 'Default Comment Sort Type',
-                          value: ListPickerItem(
-                              label: defaultCommentSortType.value,
-                              icon: Icons.local_fire_department_rounded,
-                              payload: defaultCommentSortType),
+                          value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
                           options: commentSortTypeItems,
                           icon: Icons.comment_bank_rounded,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
                             title: 'Comment Sort Type',
                             onSelect: (value) {
-                              setPreferences(
-                                  'setting_post_default_comment_sort_type',
-                                  value.payload.name);
+                              setPreferences('setting_post_default_comment_sort_type', value.payload.name);
                             },
                           ),
                         ),
@@ -652,8 +575,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -671,23 +593,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: showLinkPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_general_show_link_previews', value),
+                          onToggle: (bool value) => setPreferences('setting_general_show_link_previews', value),
                         ),
                         ToggleOption(
                           description: 'Open Links in External Browser',
                           value: openInExternalBrowser,
                           iconEnabled: Icons.add_link_rounded,
                           iconDisabled: Icons.link_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_links_open_in_external_browser', value),
+                          onToggle: (bool value) => setPreferences('setting_links_open_in_external_browser', value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -704,8 +623,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage>
                           value: showInAppUpdateNotification,
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
-                          onToggle: (bool value) => setPreferences(
-                              'setting_notifications_show_inapp_update', value),
+                          onToggle: (bool value) => setPreferences('setting_notifications_show_inapp_update', value),
                         ),
                       ],
                     ),
