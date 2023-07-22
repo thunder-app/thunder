@@ -123,7 +123,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 8,
+                                    width: 10,
                                     height: 8,
                                   ),
                                   Expanded(

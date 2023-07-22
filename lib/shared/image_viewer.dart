@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:flutter/services.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -39,7 +40,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
 
-  double slideTransparency = 0.90;
+  double slideTransparency = 0.92;
   double imageTransparency = 1.0;
 
   bool maybeSlideZooming = false;
@@ -97,8 +98,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
           Scaffold(
             appBar: AppBar(
               iconTheme: IconThemeData(
-                color: fullscreen ? Colors.transparent : null,
-                shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 15.0), const Shadow(color: Colors.black, blurRadius: 25.0)],
+                color: fullscreen ? Colors.transparent : Colors.white,
+                shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
               ),
               backgroundColor: Colors.transparent,
             ),
@@ -109,8 +110,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 Expanded(
                   child: GestureDetector(
                     onLongPress: () {
+                      HapticFeedback.lightImpact();
                       setState(() {
-                        fullscreen = true;
+                        fullscreen = !fullscreen;
                       });
                     },
                     onTap: () {
@@ -301,7 +303,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             ) : null,
                           ),*/
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: IconButton(
                             onPressed: fullscreen
                                 ? null
@@ -345,16 +347,16 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       });
                                     }
                                   },
-                            icon: const Icon(
+                            icon: Icon(
                               Icons.share_rounded,
                               semanticLabel: "Comments",
-                              color: Colors.white,
-                              shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0), Shadow(color: Colors.black, blurRadius: 25.0)],
+                              color: Colors.white.withOpacity(0.90),
+                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(15.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: IconButton(
                             onPressed: fullscreen
                                 ? null
@@ -389,13 +391,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     Icons.check_circle,
                                     semanticLabel: 'Downloaded',
                                     color: Colors.white,
-                                    shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0)],
+                                    shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
                                   )
-                                : const Icon(
+                                : Icon(
                                     Icons.download,
                                     semanticLabel: "Download",
-                                    color: Colors.white,
-                                    shadows: <Shadow>[Shadow(color: Colors.black, blurRadius: 15.0), Shadow(color: Colors.black, blurRadius: 25.0)],
+                                    color: Colors.white.withOpacity(0.90),
+                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
                                   ),
                           ),
                         ),
