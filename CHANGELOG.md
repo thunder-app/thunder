@@ -18,6 +18,7 @@
 - Added sidebars to user profiles and community pages - contribution from @CTalvio
 - Added blur to external link previews - contribution from @ajsosa
 - Added account settings to manage blocked communities and users - contribution from @micahmo
+- Added very basic initial support for localization
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
