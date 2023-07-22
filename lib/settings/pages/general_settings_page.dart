@@ -30,6 +30,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
   bool useDisplayNames = true;
   bool disableFeedFab = false;
+  bool disableScoreCounters = false;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -99,6 +100,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_disable_feed_fab':
         await prefs.setBool('setting_disable_feed_fab', value);
         setState(() => disableFeedFab = value);
+        break;
+      case 'setting_disable_score_counters':
+        await prefs.setBool('setting_disable_score_counters', value);
+        setState(() => disableScoreCounters = value);
         break;
 
       // Post Settings
@@ -201,6 +206,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
+      disableScoreCounters = prefs.getBool('setting_disable_score_counters') ?? false;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
@@ -330,6 +336,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.visibility_off,
                           iconDisabled: Icons.visibility,
                           onToggle: (bool value) => setPreferences('setting_disable_feed_fab', value),
+                        ),
+                        ToggleOption(
+                          description: 'Disable All Score Counters',
+                          value: disableScoreCounters,
+                          iconEnabled: Icons.score_rounded,
+                          iconDisabled: Icons.score_rounded,
+                          onToggle: (bool value) => setPreferences('setting_disable_score_counters', value),
                         ),
                         ListOption(
                           description: 'Default Feed Type',
