@@ -423,7 +423,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
-      add(GetPostEvent(postView: state.postView!));
+      add(GetPostEvent(postView: state.postView!, selectedCommentId: event.selectedCommentId, selectedCommentPath: event.selectedCommentPath));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));

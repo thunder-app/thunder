@@ -21,6 +21,7 @@ class CommentSubview extends StatefulWidget {
 
   final PostViewMedia? postViewMedia;
   final int? selectedCommentId;
+  final String? selectedCommentPath;
   final ScrollController? scrollController;
 
   final bool hasReachedCommentEnd;
@@ -36,6 +37,7 @@ class CommentSubview extends StatefulWidget {
     required this.onSaveAction,
     this.postViewMedia,
     this.selectedCommentId,
+    this.selectedCommentPath,
     this.scrollController,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
@@ -136,6 +138,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                     CommentCard(
                       now: widget.now,
                       selectCommentId: widget.selectedCommentId,
+                      selectedCommentPath: widget.selectedCommentPath,
                       commentViewTree: widget.comments[index - 1],
                       collapsedCommentSet: collapsedCommentSet,
                       collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,

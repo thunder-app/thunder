@@ -12,6 +12,7 @@ class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
   final List<CommentViewTree> comments;
   final int? selectedCommentId;
+  final String? selectedCommentPath;
 
   final ScrollController scrollController;
   final bool hasReachedCommentEnd;
@@ -25,6 +26,7 @@ class PostPageSuccess extends StatefulWidget {
     required this.scrollController,
     this.hasReachedCommentEnd = false,
     this.selectedCommentId,
+    this.selectedCommentPath,
     this.viewFullCommentsRefreshing = false,
   });
 
@@ -65,6 +67,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
           child: CommentSubview(
             viewFullCommentsRefreshing: widget.viewFullCommentsRefreshing,
             selectedCommentId: widget.selectedCommentId,
+            selectedCommentPath: widget.selectedCommentPath,
             now: DateTime.now().toUtc(),
             scrollController: widget.scrollController,
             postViewMedia: widget.postView,
