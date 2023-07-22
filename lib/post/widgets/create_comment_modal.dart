@@ -173,7 +173,11 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               if (widget.comment != null) {
                                 context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                               } else {
-                                context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.commentView!.comment.id, selectedCommentId: widget.selectedCommentId, selectedCommentPath: widget.selectedCommentPath));
+                                context.read<PostBloc>().add(CreateCommentEvent(
+                                    content: _bodyTextController.text,
+                                    parentCommentId: widget.commentView?.commentView!.comment.id,
+                                    selectedCommentId: widget.selectedCommentId,
+                                    selectedCommentPath: widget.selectedCommentPath));
                               }
                             },
                       icon: isLoading
