@@ -15,7 +15,6 @@ class AnonymousSubscriptionsState extends Equatable {
   final List<CommunitySafe> subscriptions;
   final Set<int> ids;
 
-
   AnonymousSubscriptionsState copyWith({
     AnonymousSubscriptionsStatus? status,
     List<CommunitySafe>? subscriptions,
@@ -24,7 +23,7 @@ class AnonymousSubscriptionsState extends Equatable {
   }) {
     return AnonymousSubscriptionsState(
       status: status ?? this.status,
-      ids: ids?? this.ids,
+      ids: ids ?? this.ids,
       subscriptions: subscriptions ?? this.subscriptions,
       errorMessage: errorMessage ?? this.errorMessage,
     );

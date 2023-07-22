@@ -9,12 +9,7 @@ class Community {
   final String actorId;
   final String? icon;
 
-  const Community(
-      {required this.id,
-      required this.name,
-      required this.title,
-      required this.actorId,
-      this.icon});
+  const Community({required this.id, required this.name, required this.title, required this.actorId, this.icon});
 
   Map<String, dynamic> toMap() {
     return {
@@ -48,8 +43,7 @@ class AnonymousSubscriptions {
 
     Batch batch = database.batch();
     for (var element in ids) {
-      batch.delete("anonymous_subscriptions",
-          where: 'id = ?', whereArgs: [element]);
+      batch.delete("anonymous_subscriptions", where: 'id = ?', whereArgs: [element]);
     }
     batch.commit();
   }
@@ -58,8 +52,7 @@ class AnonymousSubscriptions {
     Database? database = await DB.instance.database;
     if (database == null) return [];
 
-    final List<Map<String, dynamic>> maps =
-        await database.query('anonymous_subscriptions');
+    final List<Map<String, dynamic>> maps = await database.query('anonymous_subscriptions');
 
     return List.generate(maps.length, (i) {
       return Community(

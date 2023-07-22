@@ -191,12 +191,9 @@ class _ThunderState extends State<Thunder> {
                                       children: <Widget>[
                                         CommunityPage(scaffoldKey: _feedScaffoldKey),
                                         MultiBlocProvider(
-                                          providers: [
-                                            BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
-                                            BlocProvider(create: (context) => SearchBloc())
-                                          ],
-                                      child: const SearchPage(),
-                                    ),
+                                          providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
+                                          child: const SearchPage(),
+                                        ),
                                         const AccountPage(),
                                         const InboxPage(),
                                         SettingsPage(),

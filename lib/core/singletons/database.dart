@@ -49,10 +49,8 @@ class DB {
   }
 
   String _getAnonymousSubscriptionsTableRawString() {
-    return 'CREATE TABLE anonymous_subscriptions(id int PRIMARY KEY, ' +
-        'name TEXT, title TEXT, actorId TEXT, icon TEXT)';
+    return 'CREATE TABLE anonymous_subscriptions(id int PRIMARY KEY, ' + 'name TEXT, title TEXT, actorId TEXT, icon TEXT)';
   }
-
 
   Future<Database> _init() async {
     return await openDatabase(

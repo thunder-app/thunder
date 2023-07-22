@@ -15,27 +15,12 @@ Future<void> insertSubscriptions(Set<CommunitySafe> communities) async {
 extension on Community {
   CommunitySafe get toCommunitySafe {
     return CommunitySafe(
-        id: id,
-        name: name,
-        title: title,
-        removed: false,
-        published: DateTime.now(),
-        deleted: false,
-        nsfw: false,
-        actorId: actorId,
-        local: false,
-        icon: icon,
-        instanceHost: "lemmy.world");
+        id: id, name: name, title: title, removed: false, published: DateTime.now(), deleted: false, nsfw: false, actorId: actorId, local: false, icon: icon, instanceHost: "lemmy.world");
   }
 }
 
 extension on CommunitySafe {
   Community get toCommunity {
-    return Community(
-        id: id,
-        name: name,
-        title: title,
-        icon: icon,
-        actorId: actorId);
+    return Community(id: id, name: name, title: title, icon: icon, actorId: actorId);
   }
 }
