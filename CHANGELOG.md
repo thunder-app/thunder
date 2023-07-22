@@ -22,6 +22,7 @@
 - Added ability to subscribe to communities without being logged in - contribution from @vbh
 - Added options to show post author, and community icons within the feed - contribution from @sant0s12
 - Added option to disable NSFW content - contribution from @ajsosa
+- Added long-press action on image viewer to show image-only mode - contribution from @CTalvio
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
