@@ -5,9 +5,10 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/core/enums/custom_theme_type.dart';
 
+import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -62,55 +63,64 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-      // Feed Settings
-      bool useCompactView = prefs.getBool('setting_general_use_compact_view') ?? false;
-      bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
-      bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
-      bool hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
-
+      /// -------------------------- Feed Related Settings --------------------------
+      // Default Listing/Sort Settings
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
         defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
-      // Post Settings
-      bool collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      bool showThumbnailPreviewOnRight = prefs.getBool('setting_compact_show_thumbnail_on_right') ?? false;
-      bool showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
-      bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
-      bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
-      bool showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
-      bool showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? true;
-      bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
-      bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
-      bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
-      bool hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
-      bool useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
+      // NSFW Settings
+      bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
+      bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+
+      // Tablet Settings
+      bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+
+      // General Settings
+      bool showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
+      bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      bool disableFeedFab = prefs.getBool(LocalSettings.disableFeedFab.name) ?? false;
+      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+
+      /// -------------------------- Feed Post Related Settings --------------------------
+      // Compact Related Settings
+      bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
+      bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
+      bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+
+      // General Settings
+      bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
+      bool showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
+      bool showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+      bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+      bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
+      bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? true;
+
+      /// -------------------------- Post Page Related Settings --------------------------
+      bool disablePostFabs = prefs.getBool(LocalSettings.disablePostFab.name) ?? false;
+
+      // Comment Related Settings
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
+      bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
+          NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      NestedCommentIndicatorColor nestedCommentIndicatorColor =
+          NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+
+      // --------------------
       bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
-      bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
-      bool markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
-      bool disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
-      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
-
-      // Comment Settings
-      bool showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
-      NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
-          NestedCommentIndicatorStyle.values.byName(prefs.getString("setting_general_nested_comment_indicator_style") ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
-      NestedCommentIndicatorColor nestedCommentIndicatorColor =
-          NestedCommentIndicatorColor.values.byName(prefs.getString("setting_general_nested_comment_indicator_color") ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
-
-      // Links
-      bool openInExternalBrowser = prefs.getBool('setting_links_open_in_external_browser') ?? false;
-      bool showLinkPreviews = prefs.getBool('setting_general_show_link_previews') ?? true;
-
-      // Notification Settings
-      bool showInAppUpdateNotification = prefs.getBool('setting_notifications_show_inapp_update') ?? true;
 
       // Post Gestures
       bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
@@ -138,39 +148,56 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
-        // Feed Settings
-        useCompactView: useCompactView,
-        showTitleFirst: showTitleFirst,
+
+        /// -------------------------- Feed Related Settings --------------------------
+        // Default Listing/Sort Settings
         defaultPostListingType: defaultPostListingType,
         defaultSortType: defaultSortType,
-        defaultCommentSortType: defaultCommentSortType,
-        collapseParentCommentOnGesture: collapseParentCommentOnGesture,
+
+        // NSFW Settings
+        hideNsfwPosts: hideNsfwPosts,
+        hideNsfwPreviews: hideNsfwPreviews,
+
+        // Tablet Settings
+        tabletMode: tabletMode,
+
+        // General Settings
+        showLinkPreviews: showLinkPreviews,
+        openInExternalBrowser: openInExternalBrowser,
+        useDisplayNames: useDisplayNames,
+        markPostReadOnMediaView: markPostReadOnMediaView,
+        disableFeedFab: disableFeedFab,
+        showInAppUpdateNotification: showInAppUpdateNotification,
+
+        /// -------------------------- Feed Post Related Settings --------------------------
+        // Compact Related Settings
+        useCompactView: useCompactView,
+        showTitleFirst: showTitleFirst,
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
+
+        // General Settings
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
         showCommunityIcons: showCommunityIcons,
-        showPostAuthor: showPostAuthor,
         showFullHeightImages: showFullHeightImages,
         showEdgeToEdgeImages: showEdgeToEdgeImages,
-        tabletMode: tabletMode,
         showTextContent: showTextContent,
-        hideNsfwPreviews: hideNsfwPreviews,
-        useDisplayNames: useDisplayNames,
-        bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
-        bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
-        markPostReadOnMediaView: markPostReadOnMediaView,
+        showPostAuthor: showPostAuthor,
+
+        /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs: disablePostFabs,
-        disableFeedFab: disableFeedFab,
-        hideNsfwPosts: hideNsfwPosts,
-        // Comment Actions
+
+        // Comment Related Settings
+        defaultCommentSortType: defaultCommentSortType,
+        collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
-        //
-        openInExternalBrowser: openInExternalBrowser,
-        showLinkPreviews: showLinkPreviews,
-        showInAppUpdateNotification: showInAppUpdateNotification,
+
+        // --------------------
+        bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
+        bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
         enablePostGestures: enablePostGestures,
         leftPrimaryPostGesture: leftPrimaryPostGesture,
         leftSecondaryPostGesture: leftSecondaryPostGesture,
