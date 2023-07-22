@@ -63,21 +63,21 @@ class _UserSidebarState extends State<UserSidebar> {
     final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
     final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
     Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
-    final accountAgeMonths = ((accountAge.inDays)/30).toDouble();
+    final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
     final num postsPerMonth;
     final num commentsPerMonth;
-    final totalContributionsPerMonth = (totalContributions/accountAgeMonths);
+    final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
     final ThunderState state = context.read<ThunderBloc>().state;
     bool disableScoreCounters = state.disableScoreCounters;
 
-    if (widget.userInfo!.counts.postCount != 0){
-      postsPerMonth = (widget.userInfo!.counts.postCount/accountAgeMonths);
+    if (widget.userInfo!.counts.postCount != 0) {
+      postsPerMonth = (widget.userInfo!.counts.postCount / accountAgeMonths);
     } else {
       postsPerMonth = 0;
     }
 
-    if ((widget.userInfo!.counts.commentCount).toInt() != 0){
-      commentsPerMonth = (widget.userInfo!.counts.commentCount/accountAgeMonths);
+    if ((widget.userInfo!.counts.commentCount).toInt() != 0) {
+      commentsPerMonth = (widget.userInfo!.counts.commentCount / accountAgeMonths);
     } else {
       commentsPerMonth = 0;
     }
@@ -205,18 +205,17 @@ class _UserSidebarState extends State<UserSidebar> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             const SizedBox(height: 5.0),
-                            const Row(
-                                children: [
-                                  Text("Bio"),
-                                  Expanded(
-                                    child: Divider(
-                                      height: 5,
-                                      thickness: 2,
-                                      indent: 15,
-                                      endIndent: 15,
-                                    ),),
-                                ]
-                            ),
+                            const Row(children: [
+                              Text("Bio"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
                             const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -229,19 +228,17 @@ class _UserSidebarState extends State<UserSidebar> {
                               ),
                             ),
                             const SizedBox(height: 10.0),
-                            const Row(
-                                children: [
-                                  Text("Stats"),
-                                  Expanded(
-                                    child: Divider(
-                                      height: 5,
-                                      thickness: 2,
-                                      indent: 15,
-                                      endIndent: 15,
-                                    ),
-                                  ),
-                                ]
-                            ),
+                            const Row(children: [
+                              Text("Stats"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
                             const SizedBox(height: 5.0),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -276,10 +273,15 @@ class _UserSidebarState extends State<UserSidebar> {
                                       ),
                                     ),
                                     Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts ', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts ',
+                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                    ),
                                     Visibility(
                                       visible: !disableScoreCounters,
-                                      child: Text('· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+                                      child: Text(
+                                        '· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score',
+                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -294,12 +296,18 @@ class _UserSidebarState extends State<UserSidebar> {
                                         color: theme.colorScheme.onBackground.withOpacity(0.65),
                                       ),
                                     ),
-                                      Text('${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments ', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
-                                      Visibility(
-                                        visible: !disableScoreCounters,
-                                          child: Text('· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+                                    Text(
+                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments ',
+                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                    ),
+                                    Visibility(
+                                      visible: !disableScoreCounters,
+                                      child: Text(
+                                        '· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score',
+                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
-                                      ],
+                                    ),
+                                  ],
                                 ),
                                 const SizedBox(height: 3.0),
                                 Visibility(
@@ -314,7 +322,9 @@ class _UserSidebarState extends State<UserSidebar> {
                                           color: theme.colorScheme.onBackground.withOpacity(0.65),
                                         ),
                                       ),
-                                      Text('· ${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                      Text(
+                                        '· ${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score',
+                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
                                     ],
                                   ),
@@ -322,19 +332,17 @@ class _UserSidebarState extends State<UserSidebar> {
                               ],
                             ),
                             const SizedBox(height: 10.0),
-                            const Row(
-                                children: [
-                                  Text("Activity"),
-                                  Expanded(
-                                    child: Divider(
-                                      height: 5,
-                                      thickness: 2,
-                                      indent: 15,
-                                      endIndent: 15,
-                                    ),),
-                                ]
-                            ),
-
+                            const Row(children: [
+                              Text("Activity"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
                             const SizedBox(height: 10.0),
                             Row(
                               children: [
@@ -347,7 +355,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Total Posts/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Total Posts/mo',
+                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
                             ),
@@ -363,7 +372,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Total Comments/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Total Comments/mo',
+                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
                             ),
@@ -379,7 +389,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Total Contributions/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Total Contributions/mo',
+                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
                             ),

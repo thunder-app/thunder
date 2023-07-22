@@ -262,19 +262,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 body: widget.communityInfo?.communityView.community.description ?? '',
                               ),
                             ),
-                            const Row(
-                                children: [
-                                  Text("Description"),
-                                  Expanded(
-                                    child: Divider(
-                                      height: 5,
-                                      thickness: 2,
-                                      indent: 15,
-                                      endIndent: 15,
-                                    ),
-                                  ),
-                                ]
-                            ),
+                            const Row(children: [
+                              Text("Description"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
                             const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -416,19 +414,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                               ),
                             ),
                             const SizedBox(height: 20.0),
-                            const Row(
-                                children: [
-                                  Text("Moderators"),
-                                  Expanded(
-                                    child: Divider(
-                                      height: 5,
-                                      thickness: 2,
-                                      indent: 15,
-                                      endIndent: 15,
-                                    ),
-                                  ),
-                                ]
-                            ),
+                            const Row(children: [
+                              Text("Moderators"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
                             const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -509,19 +505,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                   ? Column(
                                       children: [
                                         const SizedBox(height: 20),
-                                        const Row(
-                                            children: [
-                                              Text("Host Instance"),
-                                              Expanded(
-                                                child: Divider(
-                                                  height: 5,
-                                                  thickness: 2,
-                                                  indent: 15,
-                                                  endIndent: 15,
-                                                ),
-                                              ),
-                                            ]
-                                        ),
+                                        const Row(children: [
+                                          Text("Host Instance"),
+                                          Expanded(
+                                            child: Divider(
+                                              height: 5,
+                                              thickness: 2,
+                                              indent: 15,
+                                              endIndent: 15,
+                                            ),
+                                          ),
+                                        ]),
                                         const SizedBox(height: 5.0),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
