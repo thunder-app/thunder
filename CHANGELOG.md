@@ -19,6 +19,9 @@
 - Added blur to external link previews - contribution from @ajsosa
 - Added account settings to manage blocked communities and users - contribution from @micahmo
 - Added very basic initial support for localization
+- Added ability to subscribe to communities without being logged in - contribution from @vbh
+- Added options to show post author, and community icons within the feed - contribution from @sant0s12
+- Added option to disable NSFW content - contribution from @ajsosa
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
@@ -35,7 +38,8 @@
 - Improvements to tap + slide zoom gesture when previewing images - contribution from @CTalvio
 - Downloaded images are now saved in a separate directory/album - contribution from @njshockey
 - Material You theme setting is hidden on non-android devices
-- Comment child count now counts total replies rather than total top level replies contribution from @micahmo
+- Comment child count now counts total replies rather than total top level replies - contribution from @micahmo
+- Desktop builds will always use external browser - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
