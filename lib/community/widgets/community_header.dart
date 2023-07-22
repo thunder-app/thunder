@@ -11,12 +11,10 @@ import 'package:thunder/utils/numbers.dart';
 
 class CommunityHeader extends StatelessWidget {
   final FullCommunityView? communityInfo;
-  final bool? isSidebarOpen;
 
   const CommunityHeader({
     super.key,
     this.communityInfo,
-    this.isSidebarOpen,
   });
 
   @override
@@ -90,11 +88,14 @@ class CommunityHeader extends StatelessWidget {
                             ],
                           ),
                         ),
-                        Icon(
-                          isSidebarOpen != null && isSidebarOpen! ? Icons.chevron_right_rounded : Icons.chevron_left_rounded,
-                          size: 50,
-                          shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 5.0)],
-                        )
+                        Padding(
+                          padding: const EdgeInsets.all(9.0),
+                          child: Icon(
+                            Icons.info_outline_rounded,
+                            size: 25,
+                            shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 10.0), Shadow(color: theme.colorScheme.background, blurRadius: 20.0)],
+                          ),
+                        ),
                       ],
                     ),
                   ],

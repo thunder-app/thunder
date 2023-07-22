@@ -120,7 +120,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     });
                   }
                 },
-                child: widget.personView != null ? UserHeader(userInfo: widget.personView, isSidebarOpen: _displaySidebar) : const SizedBox(),
+                child: widget.personView != null ? UserHeader(userInfo: widget.personView) : const SizedBox(),
               ),
               Container(
                 margin: const EdgeInsets.symmetric(vertical: 16),
@@ -202,7 +202,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           },
                           child: UserHeader(
                             userInfo: widget.personView,
-                            isSidebarOpen: _displaySidebar,
                           ),
                         )
                       : null,
