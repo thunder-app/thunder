@@ -17,6 +17,7 @@ class ThunderState extends Equatable {
     this.defaultSortType = DEFAULT_SORT_TYPE,
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.disableFeedFab = false,
+    this.hideNsfwPosts = false,
 
     // Post Settings
     this.collapseParentCommentOnGesture = true,
@@ -90,6 +91,7 @@ class ThunderState extends Equatable {
   final SortType defaultSortType;
   final CommentSortType defaultCommentSortType;
   final bool disableFeedFab;
+  final bool hideNsfwPosts;
 
   // Post Settings
   final bool collapseParentCommentOnGesture;
@@ -160,6 +162,7 @@ class ThunderState extends Equatable {
     SortType? defaultSortType,
     CommentSortType? defaultCommentSortType,
     bool? disableFeedFab,
+    bool? hideNsfwPosts,
 
     // Post Settings
     bool? collapseParentCommentOnGesture,
@@ -229,6 +232,7 @@ class ThunderState extends Equatable {
       defaultSortType: defaultSortType ?? this.defaultSortType,
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
@@ -306,6 +310,7 @@ class ThunderState extends Equatable {
         showFullHeightImages,
         showEdgeToEdgeImages,
         showTextContent,
+        hideNsfwPosts,
         hideNsfwPreviews,
         useDisplayNames,
         tabletMode,
