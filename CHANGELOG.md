@@ -50,6 +50,7 @@
 - Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
 - Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
 - Fixed broken show link preview option in settings - contribution from @ajsosa
+- Fixed issue where swiping on a comment would cause text to overflow on top of the comment indicators - contribution from @ajsosa
 
 ## 0.2.1+12 - 2023-07-18
 ### Added
