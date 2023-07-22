@@ -108,6 +108,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     disableFabs = state.disableFeedFab;
 
     bool tabletMode = state.tabletMode;
+    bool compactMode = state.useCompactView;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -211,33 +212,40 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               },
             ),
             if (!state.disableFeedFab /*&& _showReturnToTopButton*/)
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: GestureFab(
-                  distance: 60,
-                  children: [
-                    ActionButton(
-                      onPressed: () {dismissRead();},
-                      icon: const Icon(Icons.clear_all_rounded),
-                    ),
-                    ActionButton(
-                      onPressed: null,
-                      icon: const Icon(Icons.insert_photo),
-                    ),
-                    ActionButton(
-                      onPressed: null,
-                      icon: const Icon(Icons.videocam),
-                    ),
-                    ActionButton(
-                      onPressed: null,
-                      icon: const Icon(Icons.videocam),
-                    ),
-                    ActionButton(
-                      onPressed: null,
-                      icon: const Icon(Icons.videocam),
-                    ),
-                  ],
-                ),
+              GestureFab(
+                distance: 60,
+                icon: const Icon(Icons.menu_rounded),
+                children: [
+                  ActionButton(
+                    onPressed: () {dismissRead();},
+                    title: "Dismiss Read",
+                    icon: const Icon(Icons.clear_all_rounded),
+                  ),
+                  const ActionButton(
+                    onPressed: null,
+                    title: "Refresh",
+                    icon: Icon(Icons.refresh),
+                  ),
+                  ActionButton(
+                    onPressed: () {
+                      setState(() {
+                        compactMode = !compactMode;
+                      });
+                    },
+                    title: compactMode ? "Large View" : "Compact View",
+                    icon: compactMode ? const Icon(Icons.crop_din_rounded) : const Icon(Icons.crop_16_9_rounded),
+                  ),
+                  const ActionButton(
+                    onPressed: null,
+                    title: "Subscriptions",
+                    icon: Icon(Icons.people_rounded),
+                  ),
+                  ActionButton(
+                    onPressed: () {scrollToTop();},
+                    title: "Back to Top",
+                    icon: const Icon(Icons.arrow_upward),
+                  ),
+                ],
               ),
           ],
         ),
@@ -275,11 +283,17 @@ class GestureFab extends StatefulWidget {
     this.initialOpen,
     required this.distance,
     required this.children,
+    required this.icon,
+    this.onSlideUp,
+    this.onSlideLeft,
   });
 
   final bool? initialOpen;
   final double distance;
   final List<Widget> children;
+  final Icon icon;
+  final Function? onSlideUp;
+  final Function? onSlideLeft;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -296,7 +310,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
     _open = widget.initialOpen ?? false;
     _controller = AnimationController(
       value: _open ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 250),
+      duration: const Duration(milliseconds: 200),
       vsync: this,
     );
     _expandAnimation = CurvedAnimation(
@@ -326,14 +340,26 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return SizedBox.expand(
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        clipBehavior: Clip.none,
-        children: [
-          _buildTapToCloseFab(),
-          ..._buildExpandingActionButtons(),
-          _buildTapToOpenFab(),
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          clipBehavior: Clip.none,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              child: _open ? Listener(
+                onPointerUp: _open ? (details) {_toggle();} : null,
+                child: Container(
+                  color: Colors.black.withOpacity(0.65),
+                ),
+              ) : null,
+            ),
+            _buildTapToCloseFab(),
+            ..._buildExpandingActionButtons(),
+            _buildTapToOpenFab(),
+          ],
+        ),
       ),
     );
   }
@@ -389,15 +415,19 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           _open ? 0.7 : 1.0,
           1.0,
         ),
-        duration: const Duration(milliseconds: 250),
+        duration: const Duration(milliseconds: 200),
         curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
         child: AnimatedOpacity(
           opacity: _open ? 0.0 : 1.0,
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
-          duration: const Duration(milliseconds: 250),
-          child: FloatingActionButton(
-            onPressed: _toggle,
-            child: const Icon(Icons.create),
+          duration: const Duration(milliseconds: 200),
+          child: GestureDetector(
+            onVerticalDragStart: null,
+            onHorizontalDragStart: null,
+            child: FloatingActionButton(
+              onPressed: _toggle,
+              child: widget.icon,
+            ),
           ),
         ),
       ),
@@ -410,25 +440,33 @@ class ActionButton extends StatelessWidget {
   const ActionButton({
     super.key,
     this.onPressed,
+    this.title,
     required this.icon,
   });
 
   final VoidCallback? onPressed;
   final Widget icon;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      borderRadius: const BorderRadius.all(Radius.circular(8)),
-      clipBehavior: Clip.antiAlias,
-      color: theme.colorScheme.primaryContainer,
-      elevation: 4,
-      child: IconButton(
-        onPressed: onPressed,
-        icon: icon,
-        color: theme.colorScheme.onBackground,
-      ),
+    return Row(
+      children: [
+        title != null ? Text(title!) : Container(),
+        const SizedBox(width: 16),
+        Material(
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          clipBehavior: Clip.antiAlias,
+          color: theme.colorScheme.primaryContainer,
+          elevation: 4,
+          child: IconButton(
+            onPressed: onPressed,
+            icon: icon,
+            color: theme.colorScheme.onBackground,
+          ),
+        ),
+      ],
     );
   }
 }
