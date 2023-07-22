@@ -59,6 +59,27 @@ class _UserSidebarState extends State<UserSidebar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    //custom stats
+    final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
+    final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
+    Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
+    final accountAgeMonths = ((accountAge.inDays)/30).toDouble();
+    final num postsPerMonth;
+    final num commentsPerMonth;
+    final totalContributionsPerMonth = (totalContributions/accountAgeMonths);
+
+    if (widget.userInfo!.counts.postCount != 0){
+      postsPerMonth = (widget.userInfo!.counts.postCount/accountAgeMonths);
+    } else {
+      postsPerMonth = 0;
+    }
+
+    if ((widget.userInfo!.counts.commentCount).toInt() != 0){
+      commentsPerMonth = (widget.userInfo!.counts.commentCount/accountAgeMonths);
+    } else {
+      commentsPerMonth = 0;
+    }
+
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     String locale = Localizations.localeOf(context).languageCode;
 
@@ -181,6 +202,20 @@ class _UserSidebarState extends State<UserSidebar> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                            const SizedBox(height: 5.0),
+                            const Row(
+                                children: [
+                                  Text("Bio"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 15,
+                                    ),),
+                                ]
+                            ),
+                            const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.only(
                                 left: 8.0,
@@ -191,10 +226,24 @@ class _UserSidebarState extends State<UserSidebar> {
                                 body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
                               ),
                             ),
-                            const Divider(),
+                            const SizedBox(height: 10.0),
+                            const Row(
+                                children: [
+                                  Text("Stats"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 15,
+                                    ),),
+                                ]
+                            ),
+                            const SizedBox(height: 5.0),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                const SizedBox(height: 3.0),
                                 Row(
                                   children: [
                                     Padding(
@@ -212,6 +261,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 3.0),
                                 Row(
                                   children: [
                                     Padding(
@@ -228,6 +278,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                     ),
                                   ],
                                 ),
+                                const SizedBox(height: 3.0),
                                 Row(
                                   children: [
                                     Padding(
@@ -243,6 +294,85 @@ class _UserSidebarState extends State<UserSidebar> {
                                       style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                     ),
                                   ],
+                                ),
+                                const SizedBox(height: 3.0),
+                                Row(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                      child: Icon(
+                                        Icons.celebration_rounded,
+                                        size: 18,
+                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                      ),
+                                    ),
+                                    Text(
+                                      '${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score',
+                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10.0),
+                            const Row(
+                                children: [
+                                  Text("Activity"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 15,
+                                    ),),
+                                ]
+                            ),
+
+                            const SizedBox(height: 10.0),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                  child: Icon(
+                                    Icons.wysiwyg_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                  ),
+                                ),
+                                Text(
+                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Total Posts/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                  child: Icon(
+                                    Icons.chat_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                  ),
+                                ),
+                                Text(
+                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Total Comments/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 3.0),
+                            Row(
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                  child: Icon(
+                                    Icons.score_rounded,
+                                    size: 18,
+                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                  ),
+                                ),
+                                Text(
+                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Total Contributions/mo', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
                             ),
@@ -345,9 +475,15 @@ class _UserSidebarState extends State<UserSidebar> {
                   child: widget.isAccountUser
                       ? Column(
                           children: [
-                            const Divider(),
+                            const Divider(
+                              height: 5,
+                              thickness: 2,
+                              indent: 15,
+                              endIndent: 15,
+                            ),
+                            const SizedBox(height: 10.0),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0, left: 12, right: 12),
+                              padding: const EdgeInsets.only(bottom: 10.0, left: 12, right: 12),
                               child: ElevatedButton(
                                 onPressed: null /*() {
                             HapticFeedback.mediumImpact();
