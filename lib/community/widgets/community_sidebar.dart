@@ -234,7 +234,13 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                         )
                       : null,
                 ),
-                const Divider(),
+                const SizedBox(height: 10.0),
+                const Divider(
+                  height: 5,
+                  thickness: 2,
+                  indent: 5,
+                  endIndent: 5,
+                ),
                 Expanded(
                   child: ListView(
                     children: [
@@ -256,7 +262,20 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 body: widget.communityInfo?.communityView.community.description ?? '',
                               ),
                             ),
-                            const Divider(),
+                            const Row(
+                                children: [
+                                  Text("Description"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 15,
+                                    ),
+                                  ),
+                                ]
+                            ),
+                            const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Column(
@@ -396,9 +415,21 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 40.0),
-                            const Text('Moderators:'),
-                            const Divider(),
+                            const SizedBox(height: 20.0),
+                            const Row(
+                                children: [
+                                  Text("Moderators"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 15,
+                                    ),
+                                  ),
+                                ]
+                            ),
+                            const SizedBox(height: 5.0),
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Column(
@@ -477,9 +508,21 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                               child: widget.communityInfo?.site != null
                                   ? Column(
                                       children: [
-                                        const SizedBox(height: 40),
-                                        const Text('Community host instance:'),
-                                        const Divider(),
+                                        const SizedBox(height: 20),
+                                        const Row(
+                                            children: [
+                                              Text("Host Instance"),
+                                              Expanded(
+                                                child: Divider(
+                                                  height: 5,
+                                                  thickness: 2,
+                                                  indent: 15,
+                                                  endIndent: 15,
+                                                ),
+                                              ),
+                                            ]
+                                        ),
+                                        const SizedBox(height: 5.0),
                                         Padding(
                                           padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                           child: Column(

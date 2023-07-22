@@ -7,9 +7,6 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/core/singletons/preferences.dart';
-
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -70,8 +67,8 @@ class _UserSidebarState extends State<UserSidebar> {
     final num postsPerMonth;
     final num commentsPerMonth;
     final totalContributionsPerMonth = (totalContributions/accountAgeMonths);
-    final ThunderState state = context.watch<ThunderBloc>().state;
-    bool _disableScoreCounters = state.disableScoreCounters;
+    final ThunderState state = context.read<ThunderBloc>().state;
+    bool disableScoreCounters = state.disableScoreCounters;
 
     if (widget.userInfo!.counts.postCount != 0){
       postsPerMonth = (widget.userInfo!.counts.postCount/accountAgeMonths);
@@ -241,7 +238,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                       thickness: 2,
                                       indent: 15,
                                       endIndent: 15,
-                                    ),),
+                                    ),
+                                  ),
                                 ]
                             ),
                             const SizedBox(height: 5.0),
@@ -278,8 +276,10 @@ class _UserSidebarState extends State<UserSidebar> {
                                       ),
                                     ),
                                     Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts · ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score',
-                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts ', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+                                    Visibility(
+                                      visible: !disableScoreCounters,
+                                      child: Text('· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
                                     ),
                                   ],
                                 ),
@@ -296,26 +296,28 @@ class _UserSidebarState extends State<UserSidebar> {
                                     ),
                                       Text('${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments ', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
                                       Visibility(
-                                        visible: _disableScoreCounters == false,
-                                          child: Text('${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+                                        visible: !disableScoreCounters,
+                                          child: Text('· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
                                       ),
                                       ],
                                 ),
                                 const SizedBox(height: 3.0),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.celebration_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                Visibility(
+                                  visible: !disableScoreCounters,
+                                  child: Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                        child: Icon(
+                                          Icons.celebration_rounded,
+                                          size: 18,
+                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      '${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                    ),
-                                  ],
+                                      Text('· ${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),
@@ -483,8 +485,8 @@ class _UserSidebarState extends State<UserSidebar> {
                             const Divider(
                               height: 5,
                               thickness: 2,
-                              indent: 15,
-                              endIndent: 15,
+                              indent: 5,
+                              endIndent: 5,
                             ),
                             const SizedBox(height: 10.0),
                             Padding(

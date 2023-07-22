@@ -226,7 +226,7 @@ class ThunderState extends Equatable {
       defaultSortType: defaultSortType ?? this.defaultSortType,
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
-      disableScoreCounters : disableScoreCounters ?? this.disableScoreCounters,
+      disableScoreCounters: disableScoreCounters ?? this.disableScoreCounters,
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
