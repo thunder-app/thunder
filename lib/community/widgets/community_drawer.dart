@@ -10,6 +10,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/utils/instance.dart';
 
 class Destination {
@@ -179,21 +180,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                             },
                                             child: Row(
                                               children: [
-                                                CircleAvatar(
-                                                  backgroundColor: community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                  foregroundImage: community.icon != null ? CachedNetworkImageProvider(community.icon!) : null,
-                                                  maxRadius: 16,
-                                                  child: community.icon == null
-                                                      ? Text(
-                                                          community.name[0].toUpperCase(),
-                                                          semanticsLabel: '',
-                                                          style: const TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 16,
-                                                          ),
-                                                        )
-                                                      : null,
-                                                ),
+                                                CommunityIcon(community: community, radius: 16),
                                                 const SizedBox(width: 16.0),
                                                 Expanded(
                                                   child: Tooltip(

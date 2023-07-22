@@ -25,6 +25,7 @@ class ThunderState extends Equatable {
     this.showLinkPreviews = true,
     this.showVoteActions = true,
     this.showSaveAction = true,
+    this.showCommunityIcons = false,
     this.showFullHeightImages = false,
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
@@ -35,6 +36,7 @@ class ThunderState extends Equatable {
     this.tabletMode = false,
     this.markPostReadOnMediaView = false,
     this.disablePostFabs = false,
+    this.showPostAuthor = false,
 
     // Comment Settings
     this.showCommentButtonActions = false,
@@ -96,7 +98,9 @@ class ThunderState extends Equatable {
   final bool showLinkPreviews;
   final bool showVoteActions;
   final bool showSaveAction;
+  final bool showCommunityIcons;
   final bool showFullHeightImages;
+  final bool showPostAuthor;
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool hideNsfwPreviews;
@@ -164,7 +168,9 @@ class ThunderState extends Equatable {
     bool? showLinkPreviews,
     bool? showVoteActions,
     bool? showSaveAction,
+    bool? showCommunityIcons,
     bool? showFullHeightImages,
+    bool? showPostAuthor,
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? hideNsfwPreviews,
@@ -230,7 +236,9 @@ class ThunderState extends Equatable {
       showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
       showVoteActions: showVoteActions ?? this.showVoteActions,
       showSaveAction: showSaveAction ?? this.showSaveAction,
+      showCommunityIcons: showCommunityIcons ?? this.showCommunityIcons,
       showFullHeightImages: showFullHeightImages ?? this.showFullHeightImages,
+      showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
@@ -293,6 +301,8 @@ class ThunderState extends Equatable {
         showLinkPreviews,
         showVoteActions,
         showSaveAction,
+        showCommunityIcons,
+        showPostAuthor,
         showFullHeightImages,
         showEdgeToEdgeImages,
         showTextContent,
