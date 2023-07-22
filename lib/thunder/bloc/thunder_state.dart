@@ -17,6 +17,7 @@ class ThunderState extends Equatable {
     this.defaultSortType = DEFAULT_SORT_TYPE,
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.disableFeedFab = false,
+    this.disableScoreCounters = false,
 
     // Post Settings
     this.collapseParentCommentOnGesture = true,
@@ -88,6 +89,7 @@ class ThunderState extends Equatable {
   final SortType defaultSortType;
   final CommentSortType defaultCommentSortType;
   final bool disableFeedFab;
+  final bool disableScoreCounters;
 
   // Post Settings
   final bool collapseParentCommentOnGesture;
@@ -156,6 +158,7 @@ class ThunderState extends Equatable {
     SortType? defaultSortType,
     CommentSortType? defaultCommentSortType,
     bool? disableFeedFab,
+    bool? disableScoreCounters,
 
     // Post Settings
     bool? collapseParentCommentOnGesture,
@@ -223,6 +226,7 @@ class ThunderState extends Equatable {
       defaultSortType: defaultSortType ?? this.defaultSortType,
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      disableScoreCounters : disableScoreCounters ?? this.disableScoreCounters,
       // Post Settings
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
