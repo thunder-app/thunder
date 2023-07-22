@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -130,7 +131,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
-              child: Text('Subscriptions', style: Theme.of(context).textTheme.titleSmall),
+              child: Text(AppLocalizations.of(context)!.subscriptions, style: Theme.of(context).textTheme.titleSmall),
             ),
             Padding(
               padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
@@ -223,7 +224,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     : Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 8.0),
                         child: Text(
-                          'No subscriptions available',
+                          'No subscriptions',
                           style: theme.textTheme.labelLarge?.copyWith(color: theme.dividerColor),
                         ),
                       )

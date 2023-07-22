@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -240,26 +241,26 @@ class _ThunderState extends State<Thunder> {
           unselectedFontSize: 20.0,
           selectedFontSize: 20.0,
           elevation: 1,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_rounded),
-              label: 'Feed',
+              icon: const Icon(Icons.dashboard_rounded),
+              label: AppLocalizations.of(context)!.feed,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search_rounded),
-              label: 'Search',
+              icon: const Icon(Icons.search_rounded),
+              label: AppLocalizations.of(context)!.search,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: 'Account',
+              icon: const Icon(Icons.person_rounded),
+              label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.inbox_rounded),
-              label: 'Inbox',
+              icon: const Icon(Icons.inbox_rounded),
+              label: AppLocalizations.of(context)!.inbox,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
+              icon: const Icon(Icons.settings_rounded),
+              label: AppLocalizations.of(context)!.settings,
             ),
           ],
           onTap: (index) {
