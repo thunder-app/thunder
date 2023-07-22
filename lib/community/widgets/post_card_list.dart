@@ -227,7 +227,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             },
                             child: CommunityHeader(
                               communityInfo: widget.communityInfo,
-                              isSidebarOpen: _displaySidebar,
                             ),
                           )
                         : null,
