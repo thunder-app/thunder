@@ -135,7 +135,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     return Container(
       // This is the color "behind" the nested comments filling the indented space
       decoration: BoxDecoration(
-        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
         border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
             ? Border(
                 left: BorderSide(
