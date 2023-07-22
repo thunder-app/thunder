@@ -77,12 +77,12 @@ class PostCardViewCompact extends StatelessWidget {
                             color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                           )),
                       const SizedBox(height: 4.0),
-                    PostCommunityAndAuthor(
-                      showCommunityIcons: false,
-                      showInstanceName: showInstanceName,
-                      postView: postViewMedia.postView,
-                      textStyleCommunity: textStyleCommunityAndAuthor,
-                      textStyleAuthor: textStyleCommunityAndAuthor,
+                      PostCommunityAndAuthor(
+                        showCommunityIcons: false,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
                       ),
                       const SizedBox(height: 8.0),
                     ],
