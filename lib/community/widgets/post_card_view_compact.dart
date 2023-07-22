@@ -10,12 +10,12 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
+  final bool showPostAuthor;
   final bool hideNsfwPreviews;
   final bool showInstanceName;
   final bool markPostReadOnMediaView;
@@ -26,6 +26,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.postViewMedia,
     required this.showThumbnailPreviewOnRight,
     required this.showTextPostIndicator,
+    required this.showPostAuthor,
     required this.hideNsfwPreviews,
     required this.showInstanceName,
     required this.markPostReadOnMediaView,
@@ -36,6 +37,10 @@ class PostCardViewCompact extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -72,15 +77,12 @@ class PostCardViewCompact extends StatelessWidget {
                             color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                           )),
                       const SizedBox(height: 4.0),
-                      GestureDetector(
-                        child: Text(
-                          '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                          ),
-                        ),
-                        onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
+                    PostCommunityAndAuthor(
+                      showCommunityIcons: false,
+                      showInstanceName: showInstanceName,
+                      postView: postViewMedia.postView,
+                      textStyleCommunity: textStyleCommunityAndAuthor,
+                      textStyleAuthor: textStyleCommunityAndAuthor,
                       ),
                       const SizedBox(height: 8.0),
                     ],

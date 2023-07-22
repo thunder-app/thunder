@@ -167,7 +167,8 @@ To build the app from source, a few steps are required.
 1. Set up and install Flutter. For more information, visit https://docs.flutter.dev/get-started/install.
 2. Clone this repository and fetch the dependencies using `flutter pub get`
 3. Generate an empty `.env` file. The `.env` file holds any credentials. At the time of writing, en empty `.env` file with a comment is all that is required.
-3. Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions
+4. Run `flutter gen-l10n` to generate the localization files.
+5. Optional: Run the build script using `dart scripts/build.dart`, which will build both the iOS and Android release versions. This step is only required if you want to build a release version of the app.
 
 ### Building with Docker
 

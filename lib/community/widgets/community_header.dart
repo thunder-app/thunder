@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/shared/community_icon.dart';
 
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
