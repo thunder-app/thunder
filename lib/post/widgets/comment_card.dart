@@ -134,219 +134,222 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return Container(
       // This is the color "behind" the nested comments filling the indented space
-      decoration: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? BoxDecoration(color: theme.dividerColor.withOpacity(.3)) : const BoxDecoration(),
+      decoration: BoxDecoration(
+        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
+        border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
+            ? Border(
+                left: BorderSide(
+                  width: widget.level == 0 || widget.level == 1 ? 0 : 1.0,
+                  // This is the color of the nested comment indicator in thin mode
+                  color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 2) % 6).toInt()] : theme.hintColor.withOpacity(0.25),
+                ),
+              )
+            : const Border(),
+      ),
       child: Container(
-        decoration: BoxDecoration(
-          color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
-          border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
-              ? Border(
-                  left: BorderSide(
-                    width: widget.level == 0 ? 0 : 1.0,
-                    // This is the color of the nested comment indicator in thin mode
-                    color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 1) % 6).toInt()] : theme.hintColor.withOpacity(0.25),
-                  ),
-                )
-              : const Border(),
-        ),
-        // This is the indentation level of the nested comment indicator in both modes
         margin: EdgeInsets.only(
           left: switch (nestedCommentIndicatorStyle) {
             NestedCommentIndicatorStyle.thin => widget.level == 0 ? 0 : 7,
             NestedCommentIndicatorStyle.thick => widget.level == 0 ? 0 : 4,
           },
         ),
-
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const Divider(height: 1),
-            Container(
-              decoration: BoxDecoration(
-                border: widget.level > 0 && nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick
-                    ? Border(
-                        left: BorderSide(
-                          width: 4.0,
-                          // This is the color of the nested comment indicator in thick mode
-                          color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level) % 6).toInt()] : theme.hintColor,
+            Listener(
+              behavior: HitTestBehavior.opaque,
+              onPointerDown: (event) => {},
+              onPointerUp: (event) => {
+                if (swipeAction != null && swipeAction != SwipeAction.none)
+                  {
+                    triggerCommentAction(
+                      context: context,
+                      swipeAction: swipeAction,
+                      onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                      onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                      voteType: myVote ?? VoteType.none,
+                      saved: saved,
+                      commentViewTree: widget.commentViewTree,
+                    ),
+                  }
+              },
+              onPointerCancel: (event) => {},
+              child: Dismissible(
+                direction: state.enableCommentGestures == false ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+                key: ObjectKey(widget.commentViewTree.commentView!.comment.id),
+                resizeDuration: Duration.zero,
+                dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+                confirmDismiss: (DismissDirection direction) async {
+                  return false;
+                },
+                onUpdate: (DismissUpdateDetails details) {
+                  SwipeAction? updatedSwipeAction;
+
+                  if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                    updatedSwipeAction = state.leftPrimaryCommentGesture;
+
+                    // Change the swipe action to edit for comments
+                    if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                      updatedSwipeAction = SwipeAction.edit;
+                    }
+
+                    if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                    if (state.leftSecondaryCommentGesture != SwipeAction.none) {
+                      updatedSwipeAction = state.leftSecondaryCommentGesture;
+                    } else {
+                      updatedSwipeAction = state.leftPrimaryCommentGesture;
+                    }
+
+                    // Change the swipe action to edit for comments
+                    if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                      updatedSwipeAction = SwipeAction.edit;
+                    }
+
+                    if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                    updatedSwipeAction = state.rightPrimaryCommentGesture;
+
+                    // Change the swipe action to edit for comments
+                    if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                      updatedSwipeAction = SwipeAction.edit;
+                    }
+
+                    if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                    if (state.rightSecondaryCommentGesture != SwipeAction.none) {
+                      updatedSwipeAction = state.rightSecondaryCommentGesture;
+                    } else {
+                      updatedSwipeAction = state.rightPrimaryCommentGesture;
+                    }
+
+                    // Change the swipe action to edit for comments
+                    if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
+                      updatedSwipeAction = SwipeAction.edit;
+                    }
+
+                    if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                  } else {
+                    updatedSwipeAction = null;
+                  }
+
+                  setState(() {
+                    dismissThreshold = details.progress;
+                    dismissDirection = details.direction;
+                    swipeAction = updatedSwipeAction;
+                  });
+                },
+                background: dismissDirection == DismissDirection.startToEnd
+                    ? AnimatedContainer(
+                        alignment: Alignment.centerLeft,
+                        color: swipeAction == null
+                            ? getSwipeActionColor(state.leftPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        duration: const Duration(milliseconds: 200),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * dismissThreshold,
+                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                         ),
                       )
-                    : const Border(),
-              ),
-              child: Listener(
-                behavior: HitTestBehavior.opaque,
-                onPointerDown: (event) => {},
-                onPointerUp: (event) => {
-                  if (swipeAction != null && swipeAction != SwipeAction.none)
-                    {
-                      triggerCommentAction(
-                        context: context,
-                        swipeAction: swipeAction,
-                        onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                        onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                        voteType: myVote ?? VoteType.none,
-                        saved: saved,
-                        commentViewTree: widget.commentViewTree,
-                      ),
-                    }
-                },
-                onPointerCancel: (event) => {},
-                child: Dismissible(
-                  direction: state.enableCommentGestures == false ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
-                  key: ObjectKey(widget.commentViewTree.commentView!.comment.id),
-                  resizeDuration: Duration.zero,
-                  dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-                  confirmDismiss: (DismissDirection direction) async {
-                    return false;
-                  },
-                  onUpdate: (DismissUpdateDetails details) {
-                    SwipeAction? updatedSwipeAction;
-
-                    if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                      updatedSwipeAction = state.leftPrimaryCommentGesture;
-
-                      // Change the swipe action to edit for comments
-                      if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                        updatedSwipeAction = SwipeAction.edit;
-                      }
-
-                      if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                    } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-                      if (state.leftSecondaryCommentGesture != SwipeAction.none) {
-                        updatedSwipeAction = state.leftSecondaryCommentGesture;
-                      } else {
-                        updatedSwipeAction = state.leftPrimaryCommentGesture;
-                      }
-
-                      // Change the swipe action to edit for comments
-                      if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                        updatedSwipeAction = SwipeAction.edit;
-                      }
-
-                      if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                    } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                      updatedSwipeAction = state.rightPrimaryCommentGesture;
-
-                      // Change the swipe action to edit for comments
-                      if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                        updatedSwipeAction = SwipeAction.edit;
-                      }
-
-                      if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                    } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-                      if (state.rightSecondaryCommentGesture != SwipeAction.none) {
-                        updatedSwipeAction = state.rightSecondaryCommentGesture;
-                      } else {
-                        updatedSwipeAction = state.rightPrimaryCommentGesture;
-                      }
-
-                      // Change the swipe action to edit for comments
-                      if (updatedSwipeAction == SwipeAction.reply && isOwnComment) {
-                        updatedSwipeAction = SwipeAction.edit;
-                      }
-
-                      if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-                    } else {
-                      updatedSwipeAction = null;
-                    }
-
-                    setState(() {
-                      dismissThreshold = details.progress;
-                      dismissDirection = details.direction;
-                      swipeAction = updatedSwipeAction;
-                    });
-                  },
-                  background: dismissDirection == DismissDirection.startToEnd
-                      ? AnimatedContainer(
-                          alignment: Alignment.centerLeft,
-                          color: swipeAction == null
-                              ? getSwipeActionColor(state.leftPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
-                              : getSwipeActionColor(swipeAction ?? SwipeAction.none),
-                          duration: const Duration(milliseconds: 200),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * dismissThreshold,
-                            child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
-                          ),
-                        )
-                      : AnimatedContainer(
-                          alignment: Alignment.centerRight,
-                          color: swipeAction == null
-                              ? getSwipeActionColor(state.rightPrimaryCommentGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
-                              : getSwipeActionColor(swipeAction ?? SwipeAction.none),
-                          duration: const Duration(milliseconds: 200),
-                          child: SizedBox(
-                            width: MediaQuery.of(context).size.width * dismissThreshold,
-                            child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
-                          ),
+                    : AnimatedContainer(
+                        alignment: Alignment.centerRight,
+                        color: swipeAction == null
+                            ? getSwipeActionColor(state.rightPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        duration: const Duration(milliseconds: 200),
+                        child: SizedBox(
+                          width: MediaQuery.of(context).size.width * dismissThreshold,
+                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
                         ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      GestureDetector(
-                        behavior: HitTestBehavior.translucent,
-                        onLongPress: () {
-                          HapticFeedback.mediumImpact();
-                          showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
-                        },
-                        onTap: () {
-                          widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
-                          setState(() => isHidden = !isHidden);
-                        },
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CommentHeader(
-                              commentViewTree: widget.commentViewTree,
-                              useDisplayNames: state.useDisplayNames,
-                              isCommentNew: isCommentNew,
-                              isOwnComment: isOwnComment,
-                              isHidden: isHidden,
+                      ),
+                child: Container(
+                    decoration: BoxDecoration(
+                      color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
+                      border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
+                          ? Border(
+                              left: BorderSide(
+                                width: widget.level == 0 ? 0 : 1.0,
+                                // This is the color of the nested comment indicator in thin mode
+                                color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 1) % 6).toInt()] : theme.hintColor.withOpacity(0.25),
+                              ),
+                            )
+                          : Border(
+                              left: BorderSide(
+                                width: widget.level == 0 ? 0 : 4.0,
+                                // This is the color of the nested comment indicator in thin mode
+                                color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 1) % 6).toInt()] : theme.hintColor,
+                              ),
                             ),
-                            AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 130),
-                              switchInCurve: Curves.easeInOut,
-                              switchOutCurve: Curves.easeInOut,
-                              transitionBuilder: (Widget child, Animation<double> animation) {
-                                return SizeTransition(
-                                  sizeFactor: animation,
-                                  child: SlideTransition(
-                                    position: _offsetAnimation,
-                                    child: child,
-                                  ),
-                                );
-                              },
-                              child: (isHidden && collapseParentCommentOnGesture)
-                                  ? Container()
-                                  : Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                          child: CommonMarkdownBody(
-                                              body: widget.commentViewTree.commentView!.comment.deleted ? "_deleted by creator_" : widget.commentViewTree.commentView!.comment.content),
-                                        ),
-                                        if (state.showCommentButtonActions && isUserLoggedIn)
-                                          Padding(
-                                            padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                                            child: CommentCardActions(
-                                              commentViewTree: widget.commentViewTree,
-                                              onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                                              isEdit: isOwnComment,
-                                              onSaveAction: widget.onSaveAction,
-                                              onDeleteAction: widget.onDeleteAction,
-                                            ),
-                                          ),
-                                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onLongPress: () {
+                            HapticFeedback.mediumImpact();
+                            showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
+                          },
+                          onTap: () {
+                            widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
+                            setState(() => isHidden = !isHidden);
+                          },
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CommentHeader(
+                                commentViewTree: widget.commentViewTree,
+                                useDisplayNames: state.useDisplayNames,
+                                isCommentNew: isCommentNew,
+                                isOwnComment: isOwnComment,
+                                isHidden: isHidden,
+                              ),
+                              AnimatedSwitcher(
+                                duration: const Duration(milliseconds: 130),
+                                switchInCurve: Curves.easeInOut,
+                                switchOutCurve: Curves.easeInOut,
+                                transitionBuilder: (Widget child, Animation<double> animation) {
+                                  return SizeTransition(
+                                    sizeFactor: animation,
+                                    child: SlideTransition(
+                                      position: _offsetAnimation,
+                                      child: child,
                                     ),
-                            ),
-                          ],
+                                  );
+                                },
+                                child: (isHidden && collapseParentCommentOnGesture)
+                                    ? Container()
+                                    : Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
+                                            child: CommonMarkdownBody(
+                                                body: widget.commentViewTree.commentView!.comment.deleted ? "_deleted by creator_" : widget.commentViewTree.commentView!.comment.content),
+                                          ),
+                                          if (state.showCommentButtonActions && isUserLoggedIn)
+                                            Padding(
+                                              padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                                              child: CommentCardActions(
+                                                commentViewTree: widget.commentViewTree,
+                                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                                isEdit: isOwnComment,
+                                                onSaveAction: widget.onSaveAction,
+                                                onDeleteAction: widget.onDeleteAction,
+                                              ),
+                                            ),
+                                        ],
+                                      ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    )),
               ),
             ),
             AnimatedSwitcher(
