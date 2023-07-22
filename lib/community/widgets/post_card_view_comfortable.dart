@@ -57,6 +57,9 @@ class PostCardViewComfortable extends StatelessWidget {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     final String textContent = postViewMedia.postView.post.body ?? "";
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
     var mediaView = MediaView(
       showLinkPreview: state.showLinkPreviews,
@@ -124,14 +127,12 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
-                          showCommunityIcons: showCommunityIcons,
-                          showInstanceName: showInstanceName,
-                          postView: postViewMedia.postView,
-                          textStyleAuthor: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4)),
-                          textStyleCommunity: theme.textTheme.titleSmall?.copyWith(
-                            fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                          )),
+                        showCommunityIcons: false,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
+                      ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
