@@ -8,6 +8,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -80,6 +81,8 @@ class ThunderApp extends StatelessWidget {
               return OverlaySupport.global(
                 child: MaterialApp.router(
                   title: 'Thunder',
+                  localizationsDelegates: AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
                   routerConfig: router,
                   themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
                   theme: theme,

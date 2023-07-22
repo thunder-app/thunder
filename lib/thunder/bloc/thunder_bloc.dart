@@ -67,6 +67,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTitleFirst = prefs.getBool('setting_general_show_title_first') ?? false;
       bool disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
       bool disableScoreCounters = prefs.getBool('setting_disable_score_counters') ?? false;
+      bool hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
 
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -84,6 +85,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      bool showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
+      bool showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? true;
       bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
@@ -147,6 +150,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showTextPostIndicator: showTextPostIndicator,
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
+        showCommunityIcons: showCommunityIcons,
+        showPostAuthor: showPostAuthor,
         showFullHeightImages: showFullHeightImages,
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         tabletMode: tabletMode,
@@ -159,6 +164,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         disablePostFabs: disablePostFabs,
         disableFeedFab: disableFeedFab,
         disableScoreCounters: disableScoreCounters,
+        hideNsfwPosts: hideNsfwPosts,
         // Comment Actions
         showCommentButtonActions: showCommentButtonActions,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,

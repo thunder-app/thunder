@@ -97,8 +97,10 @@ Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
   bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
   bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+  bool hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
+  Iterable<Future<PostViewMedia>> postFutures =
+      postViews.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;

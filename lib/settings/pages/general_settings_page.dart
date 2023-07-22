@@ -31,6 +31,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool useDisplayNames = true;
   bool disableFeedFab = false;
   bool disableScoreCounters = false;
+  bool hideNsfwPosts = false;
 
   // Post Settings
   bool collapseParentCommentOnGesture = true;
@@ -39,6 +40,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
+  bool showCommunityIcons = false;
   bool showFullHeightImages = false;
   bool showEdgeToEdgeImages = false;
   bool tabletMode = false;
@@ -48,6 +50,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
   bool disablePostFabs = false;
+  bool showPostAuthor = false;
 
   // Comment Settings
   bool showCommentButtonActions = false;
@@ -88,6 +91,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_mark_post_read_on_media_view':
         await prefs.setBool('setting_general_mark_post_read_on_media_view', value);
         setState(() => markPostReadOnMediaView = value);
+        break;
+      case 'setting_general_hide_nsfw_posts':
+        await prefs.setBool('setting_general_hide_nsfw_posts', value);
+        setState(() => hideNsfwPosts = value);
         break;
       case 'setting_general_hide_nsfw_previews':
         await prefs.setBool('setting_general_hide_nsfw_previews', value);
@@ -131,6 +138,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_general_show_save_action', value);
         setState(() => showSaveAction = value);
         break;
+      case 'setting_general_show_community_icons':
+        await prefs.setBool('setting_general_show_community_icons', value);
+        setState(() => showCommunityIcons = value);
+        break;
       case 'setting_general_show_full_height_images':
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
@@ -142,6 +153,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_show_text_content':
         await prefs.setBool('setting_general_show_text_content', value);
         setState(() => showTextContent = value);
+        break;
+      case 'setting_general_show_post_author':
+        await prefs.setBool('setting_general_show_post_author', value);
+        setState(() => showPostAuthor = value);
         break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
@@ -204,6 +219,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
       markPostReadOnMediaView = prefs.getBool('setting_general_mark_post_read_on_media_view') ?? false;
       hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
+      hideNsfwPosts = prefs.getBool('setting_general_hide_nsfw_posts') ?? false;
       useDisplayNames = prefs.getBool('setting_use_display_names_for_users') ?? true;
       disableFeedFab = prefs.getBool('setting_disable_feed_fab') ?? false;
       disableScoreCounters = prefs.getBool('setting_disable_score_counters') ?? false;
@@ -223,17 +239,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
+      showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? false;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
 
       // Comments
       collapseParentCommentOnGesture = prefs.getBool('setting_comments_collapse_parent_comment_on_gesture') ?? true;
-      hideNsfwPreviews = prefs.getBool('setting_general_hide_nsfw_previews') ?? true;
       bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
       bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type") ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -310,12 +327,36 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences('setting_post_tablet_mode', value),
                         ),
                         ToggleOption(
-                          description: 'Hide NSFW Previews',
-                          value: hideNsfwPreviews,
+                          description: 'Hide NSFW Posts from Feed',
+                          value: hideNsfwPosts,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
-                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                          onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_posts', value),
                         ),
+                        AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 250),
+                            switchInCurve: Curves.easeInOut,
+                            switchOutCurve: Curves.easeInOut,
+                            transitionBuilder: (Widget child, Animation<double> animation) {
+                              return SizeTransition(
+                                sizeFactor: animation,
+                                child: SlideTransition(position: _offsetAnimation, child: child),
+                              );
+                            },
+                            child: !hideNsfwPosts
+                                ? Padding(
+                                    padding: const EdgeInsets.only(left: 16.0),
+                                    key: ValueKey(useCompactView),
+                                    child: Column(children: [
+                                      ToggleOption(
+                                        description: 'Hide NSFW Previews',
+                                        value: hideNsfwPreviews,
+                                        iconEnabled: Icons.no_adult_content,
+                                        iconDisabled: Icons.no_adult_content,
+                                        onToggle: (bool value) => setPreferences('setting_general_hide_nsfw_previews', value),
+                                      )
+                                    ]))
+                                : Container()),
                         ToggleOption(
                           description: 'Mark Read After Viewing Media',
                           value: markPostReadOnMediaView,
@@ -491,9 +532,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconDisabled: Icons.star_border_rounded,
                                         onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
                                       ),
+                                      ToggleOption(
+                                        description: 'Show Community Icons',
+                                        value: showCommunityIcons,
+                                        iconEnabled: Icons.groups,
+                                        iconDisabled: Icons.groups,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_community_icons', value),
+                                      ),
                                     ],
                                   ),
                                 ),
+                        ),
+                        ToggleOption(
+                          description: 'Show Post Author',
+                          value: showPostAuthor,
+                          iconEnabled: Icons.person,
+                          iconDisabled: Icons.person,
+                          onToggle: (bool value) => setPreferences('setting_general_show_post_author', value),
                         ),
                       ],
                     ),

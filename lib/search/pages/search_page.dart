@@ -1,3 +1,5 @@
+import 'dart:collection';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -14,6 +17,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/sort_picker.dart';
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
@@ -33,6 +37,8 @@ class _SearchPageState extends State<SearchPage> {
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+  final Set<CommunitySafe> newAnonymousSubscriptions = {};
+  final Set<int> removedSubs = {};
 
   @override
   void initState() {
@@ -59,6 +65,12 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
   }
 
+  @override
+  void deactivate() {
+    _saveToDB();
+    super.deactivate();
+  }
+
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
@@ -78,80 +90,87 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SearchBloc, SearchState>(
-      builder: (context, state) {
-        return Scaffold(
-          appBar: AppBar(
-              toolbarHeight: 90.0,
-              scrolledUnderElevation: 0.0,
-              title: Material(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.circular(50),
-                elevation: 8,
-                child: Stack(
-                  children: [
-                    TextField(
-                      onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
-                      controller: _controller,
-                      onTap: () {
-                        HapticFeedback.selectionClick();
-                      },
-                      decoration: InputDecoration(
-                        fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                        hintText: 'Search for communities',
-                        filled: true,
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(50),
-                          borderSide: const BorderSide(
-                            width: 0,
-                            style: BorderStyle.none,
+    context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
+        BlocListener<SearchBloc, SearchState>(listener: (context, state) {}),
+      ],
+      child: BlocBuilder<SearchBloc, SearchState>(
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+                toolbarHeight: 90.0,
+                scrolledUnderElevation: 0.0,
+                title: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(50),
+                  elevation: 8,
+                  child: Stack(
+                    children: [
+                      TextField(
+                        onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                        controller: _controller,
+                        onTap: () {
+                          HapticFeedback.selectionClick();
+                        },
+                        decoration: InputDecoration(
+                          fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                          hintText: 'Search for communities',
+                          filled: true,
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(50),
+                            borderSide: const BorderSide(
+                              width: 0,
+                              style: BorderStyle.none,
+                            ),
                           ),
-                        ),
-                        suffixIcon: _controller.text.isNotEmpty
-                            ? SizedBox(
-                                width: 90,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.close,
-                                        semanticLabel: 'Clear Search',
+                          suffixIcon: _controller.text.isNotEmpty
+                              ? SizedBox(
+                                  width: 90,
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(
+                                          Icons.close,
+                                          semanticLabel: 'Clear Search',
+                                        ),
+                                        onPressed: () {
+                                          resetTextField();
+                                          context.read<SearchBloc>().add(ResetSearch());
+                                        },
                                       ),
-                                      onPressed: () {
-                                        resetTextField();
-                                        context.read<SearchBloc>().add(ResetSearch());
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              )
-                            : null,
-                        prefixIcon: const Icon(Icons.search_rounded),
-                      ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 7, right: 5),
-                          child: IconButton(
-                            icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                            tooltip: sortTypeLabel,
-                            onPressed: () {
-                              HapticFeedback.mediumImpact();
-                              showSortBottomSheet(context, state);
-                            },
-                          ),
+                                    ],
+                                  ),
+                                )
+                              : null,
+                          prefixIcon: const Icon(Icons.search_rounded),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
-              )),
-          body: _getSearchBody(context, state),
-        );
-      },
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(top: 7, right: 5),
+                            child: IconButton(
+                              icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                              tooltip: sortTypeLabel,
+                              onPressed: () {
+                                HapticFeedback.mediumImpact();
+                                showSortBottomSheet(context, state);
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )),
+            body: _getSearchBody(context, state),
+          );
+        },
+      ),
     );
   }
 
@@ -208,26 +227,13 @@ class _SearchPageState extends State<SearchPage> {
                   : Container();
             } else {
               CommunityView communityView = state.communities![index];
+              final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
               return Tooltip(
                   excludeFromSemantics: true,
                   message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
                   preferBelow: false,
                   child: ListTile(
-                      leading: CircleAvatar(
-                        backgroundColor: communityView.community.icon != null ? Colors.transparent : theme.colorScheme.primaryContainer,
-                        foregroundImage: communityView.community.icon != null ? CachedNetworkImageProvider(communityView.community.icon!) : null,
-                        maxRadius: 25,
-                        child: communityView.community.icon == null
-                            ? Text(
-                                communityView.community.name[0].toUpperCase(),
-                                semanticsLabel: '',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                ),
-                              )
-                            : null,
-                      ),
+                      leading: CommunityIcon(community: communityView.community, radius: 25),
                       title: Text(
                         communityView.community.title,
                         overflow: TextOverflow.ellipsis,
@@ -246,41 +252,35 @@ class _SearchPageState extends State<SearchPage> {
                         const SizedBox(width: 4),
                         const Icon(Icons.people_rounded, size: 16.0),
                       ]),
-                      trailing: isUserLoggedIn
-                          ? IconButton(
-                              onPressed: () {
-                                context.read<SearchBloc>().add(
-                                      ChangeCommunitySubsciptionStatusEvent(
-                                        communityId: communityView.community.id,
-                                        follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                                      ),
-                                    );
-                                SnackBar snackBar = SnackBar(
-                                  content: Text(
-                                      '${communityView.subscribed == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${communityView.subscribed == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                });
-                                context.read<AccountBloc>().add(GetAccountInformation());
-                              },
-                              icon: Icon(
-                                switch (communityView.subscribed) {
-                                  SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                                  SubscribedType.pending => Icons.pending_outlined,
-                                  SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                                },
-                              ),
-                              tooltip: switch (communityView.subscribed) {
-                                SubscribedType.notSubscribed => 'Subscribe',
-                                SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                                SubscribedType.subscribed => 'Unsubscribe',
-                              },
-                              visualDensity: VisualDensity.compact,
-                            )
-                          : null,
+                      trailing: IconButton(
+                        onPressed: () {
+                          SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
+                          _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
+                          SnackBar snackBar = SnackBar(
+                            content: Text(
+                                '${subscriptionStatus == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${subscriptionStatus == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
+                            behavior: SnackBarBehavior.floating,
+                          );
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          });
+                          context.read<AccountBloc>().add(GetAccountInformation());
+                        },
+                        icon: Icon(
+                          switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                            SubscribedType.pending => Icons.pending_outlined,
+                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                          },
+                        ),
+                        tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+                          SubscribedType.notSubscribed => 'Subscribe',
+                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                          SubscribedType.subscribed => 'Unsubscribe',
+                        },
+                        visualDensity: VisualDensity.compact,
+                      ),
                       onTap: () {
                         AccountBloc accountBloc = context.read<AccountBloc>();
                         AuthBloc authBloc = context.read<AuthBloc>();
@@ -332,5 +332,46 @@ class _SearchPageState extends State<SearchPage> {
         },
       ),
     );
+  }
+
+  SubscribedType _getCurrentSubscriptionStatus(bool isUserLoggedIn, CommunityView communityView, Set<int> currentSubscriptions) {
+    if (isUserLoggedIn) {
+      return communityView.subscribed;
+    }
+    bool isSubscribed = newAnonymousSubscriptions.contains(communityView.community) || (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id));
+    return isSubscribed ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+  }
+
+  void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, CommunityView communityView) {
+    if (isUserLoggedIn) {
+      context.read<SearchBloc>().add(ChangeCommunitySubsciptionStatusEvent(
+            communityId: communityView.community.id,
+            follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+          ));
+      return;
+    }
+
+    Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+    setState(() {
+      if (currentSubscriptions.contains(communityView.community.id) && !removedSubs.contains(communityView.community.id)) {
+        removedSubs.add(communityView.community.id);
+      } else if (newAnonymousSubscriptions.contains(communityView.community)) {
+        newAnonymousSubscriptions.remove(communityView.community);
+      } else if (removedSubs.contains(communityView.community.id)) {
+        removedSubs.remove(communityView.community.id);
+      } else {
+        newAnonymousSubscriptions.add(communityView.community);
+      }
+    });
+    return;
+  }
+
+  void _saveToDB() {
+    if (newAnonymousSubscriptions.isNotEmpty) {
+      context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: newAnonymousSubscriptions));
+    }
+    if (removedSubs.isNotEmpty) {
+      context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: removedSubs));
+    }
   }
 }
