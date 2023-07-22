@@ -263,7 +263,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                               ),
                             ),
                             const Row(children: [
-                              Text("Description"),
+                              Text("Stats"),
                               Expanded(
                                 child: Divider(
                                   height: 5,

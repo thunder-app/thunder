@@ -355,7 +355,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Total Posts/mo',
+                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Average Posts/mo',
                                   style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
@@ -372,7 +372,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Total Comments/mo',
+                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Average Comments/mo',
                                   style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
@@ -389,7 +389,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                 ),
                                 Text(
-                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Total Contributions/mo',
+                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Average Contributions/mo',
                                   style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                 ),
                               ],
