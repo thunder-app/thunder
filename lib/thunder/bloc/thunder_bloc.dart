@@ -83,6 +83,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       bool showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       bool showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      bool showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
+      bool showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? true;
       bool showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       bool showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       bool showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
@@ -146,6 +148,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showTextPostIndicator: showTextPostIndicator,
         showVoteActions: showVoteActions,
         showSaveAction: showSaveAction,
+        showCommunityIcons: showCommunityIcons,
+        showPostAuthor: showPostAuthor,
         showFullHeightImages: showFullHeightImages,
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         tabletMode: tabletMode,

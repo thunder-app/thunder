@@ -38,6 +38,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showLinkPreviews = true;
   bool showVoteActions = true;
   bool showSaveAction = true;
+  bool showCommunityIcons = false;
   bool showFullHeightImages = false;
   bool showEdgeToEdgeImages = false;
   bool tabletMode = false;
@@ -47,6 +48,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool bottomNavBarDoubleTapGestures = false;
   bool markPostReadOnMediaView = false;
   bool disablePostFabs = false;
+  bool showPostAuthor = false;
 
   // Comment Settings
   bool showCommentButtonActions = false;
@@ -126,6 +128,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool('setting_general_show_save_action', value);
         setState(() => showSaveAction = value);
         break;
+      case 'setting_general_show_community_icons':
+        await prefs.setBool('setting_general_show_community_icons', value);
+        setState(() => showCommunityIcons = value);
+        break;
       case 'setting_general_show_full_height_images':
         await prefs.setBool('setting_general_show_full_height_images', value);
         setState(() => showFullHeightImages = value);
@@ -137,6 +143,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case 'setting_general_show_text_content':
         await prefs.setBool('setting_general_show_text_content', value);
         setState(() => showTextContent = value);
+        break;
+      case 'setting_general_show_post_author':
+        await prefs.setBool('setting_general_show_post_author', value);
+        setState(() => showPostAuthor = value);
         break;
       case 'setting_instance_default_instance':
         await prefs.setString('setting_instance_default_instance', value);
@@ -217,10 +227,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTextPostIndicator = prefs.getBool('setting_compact_show_text_post_indicator') ?? false;
       showVoteActions = prefs.getBool('setting_general_show_vote_actions') ?? true;
       showSaveAction = prefs.getBool('setting_general_show_save_action') ?? true;
+      showCommunityIcons = prefs.getBool('setting_general_show_community_icons') ?? false;
       showFullHeightImages = prefs.getBool('setting_general_show_full_height_images') ?? false;
       showEdgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
       showTextContent = prefs.getBool('setting_general_show_text_content') ?? false;
       disablePostFabs = prefs.getBool('setting_disable_post_fabs') ?? false;
+      showPostAuthor = prefs.getBool('setting_general_show_post_author') ?? false;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool('setting_general_show_comment_button_actions') ?? false;
@@ -478,9 +490,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconDisabled: Icons.star_border_rounded,
                                         onToggle: (bool value) => setPreferences('setting_general_show_save_action', value),
                                       ),
+                                      ToggleOption(
+                                        description: 'Show Community Icons',
+                                        value: showCommunityIcons,
+                                        iconEnabled: Icons.groups,
+                                        iconDisabled: Icons.groups,
+                                        onToggle: (bool value) => setPreferences('setting_general_show_community_icons', value),
+                                      ),
                                     ],
                                   ),
                                 ),
+                        ),
+                        ToggleOption(
+                          description: 'Show Post Author',
+                          value: showPostAuthor,
+                          iconEnabled: Icons.person,
+                          iconDisabled: Icons.person,
+                          onToggle: (bool value) => setPreferences('setting_general_show_post_author', value),
                         ),
                       ],
                     ),

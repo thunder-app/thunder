@@ -11,7 +11,6 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
   final Function(VoteType) onVoteAction;
@@ -23,9 +22,11 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
   final bool showInstanceName;
+  final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
   final bool showSaveAction;
+  final bool showCommunityIcons;
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
@@ -38,9 +39,11 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
     required this.showInstanceName,
+    required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
     required this.showSaveAction,
+    required this.showCommunityIcons,
     required this.showTextContent,
     required this.isUserLoggedIn,
     required this.onVoteAction,
@@ -120,17 +123,15 @@ class PostCardViewComfortable extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        child: Text(
-                          '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.titleSmall?.copyWith(
+                      PostCommunityAndAuthor(
+                          showCommunityIcons: showCommunityIcons,
+                          showInstanceName: showInstanceName,
+                          postView: postViewMedia.postView,
+                          textStyleAuthor: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4)),
+                          textStyleCommunity: theme.textTheme.titleSmall?.copyWith(
                             fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
                             color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                          ),
-                        ),
-                        onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
-                      ),
+                          )),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
