@@ -39,11 +39,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<GetPostCommentsEvent>(
       _getPostCommentsEvent,

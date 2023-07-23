@@ -37,11 +37,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<ForceRefreshEvent>(
       _forceRefreshEvent,

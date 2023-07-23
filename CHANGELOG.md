@@ -52,6 +52,7 @@
 - Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
 - Fixed broken show link preview option in settings - contribution from @ajsosa
 - Fixed issue where swiping on a comment would cause text to overflow on top of the comment indicators - contribution from @ajsosa
+- Fixed issue where the app was preventing you from voting or saving multiple things within a short timeframe
 
 ## 0.2.1+12 - 2023-07-18
 ### Added
