@@ -118,33 +118,34 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
           NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
-      // --------------------
-      bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
-      bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+      /// -------------------------- Theme Related Settings --------------------------
+      // Theme Settings
+      ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
+      bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+
+      // Font Settings
+      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
+      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
+
+      /// -------------------------- Gesture Related Settings --------------------------
+      // Sidebar Gesture Settings
+      bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
+      bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
 
       // Post Gestures
-      bool enablePostGestures = prefs.getBool('setting_gesture_enable_post_gestures') ?? true;
-      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_primary_gesture') ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_primary_gesture') ?? SwipeAction.save.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_post_right_secondary_gesture') ?? SwipeAction.toggleRead.name);
+      bool enablePostGestures = prefs.getBool(LocalSettings.enablePostGestures.name) ?? true;
+      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightPrimary.name) ?? SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightSecondary.name) ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
-      bool enableCommentGestures = prefs.getBool('setting_gesture_enable_comment_gestures') ?? true;
-      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_primary_gesture') ?? SwipeAction.upvote.name);
-      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_left_secondary_gesture') ?? SwipeAction.downvote.name);
-      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_primary_gesture') ?? SwipeAction.reply.name);
-      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString('setting_gesture_comment_right_secondary_gesture') ?? SwipeAction.save.name);
-
-      // Theme Settings
-      ThemeType themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
-      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString('setting_theme_custom_app_theme') ?? CustomThemeType.deepBlue.name);
-
-      bool useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
-
-      // Font scale
-      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_title_font_size_scale') ?? FontScale.base.name);
-      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_content_font_size_scale') ?? FontScale.base.name);
+      bool enableCommentGestures = prefs.getBool(LocalSettings.enableCommentGestures.name) ?? true;
+      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
+      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -195,25 +196,34 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
 
-        // --------------------
+        /// -------------------------- Theme Related Settings --------------------------
+        // Theme Settings
+        themeType: themeType,
+        selectedTheme: selectedTheme,
+        useMaterialYouTheme: useMaterialYouTheme,
+
+        // Font Settings
+        titleFontSizeScale: titleFontSizeScale,
+        contentFontSizeScale: contentFontSizeScale,
+
+        /// -------------------------- Gesture Related Settings --------------------------
+        // Sidebar Gesture Settings
         bottomNavBarSwipeGestures: bottomNavBarSwipeGestures,
         bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures,
+
+        // Post Gestures
         enablePostGestures: enablePostGestures,
         leftPrimaryPostGesture: leftPrimaryPostGesture,
         leftSecondaryPostGesture: leftSecondaryPostGesture,
         rightPrimaryPostGesture: rightPrimaryPostGesture,
         rightSecondaryPostGesture: rightSecondaryPostGesture,
+
+        // Comment Gestures
         enableCommentGestures: enableCommentGestures,
         leftPrimaryCommentGesture: leftPrimaryCommentGesture,
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
-        // Themes
-        themeType: themeType,
-        selectedTheme: selectedTheme,
-        useMaterialYouTheme: useMaterialYouTheme,
-        titleFontSizeScale: titleFontSizeScale,
-        contentFontSizeScale: contentFontSizeScale,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

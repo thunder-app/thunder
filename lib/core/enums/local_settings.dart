@@ -44,6 +44,35 @@ enum LocalSettings {
   showCommentActionButtons(name: 'setting_general_show_comment_button_actions', label: 'Show Comment Button Actions'),
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
+
+  /// -------------------------- Theme Related Settings --------------------------
+  // Theme Settings
+  appTheme(name: 'setting_theme_app_theme', label: 'Theme'),
+  appThemeAccentColor(name: 'setting_theme_custom_app_theme', label: 'Accent Colors'),
+  useMaterialYouTheme(name: 'setting_theme_use_material_you', label: 'Use Material You Theme'),
+
+  // Font Settings
+  titleFontSizeScale(name: 'setting_theme_title_font_size_scale', label: 'Title Font Scale'),
+  contentFontSizeScale(name: 'setting_theme_content_font_size_scale', label: 'Content Font Scale'),
+
+  /// -------------------------- Gesture Related Settings --------------------------
+  // Sidebar Gesture Settings
+  sidebarBottomNavBarSwipeGesture(name: 'setting_general_enable_swipe_gestures', label: 'Navbar Swipe Gestures'),
+  sidebarBottomNavBarDoubleTapGesture(name: 'setting_general_enable_doubletap_gestures', label: 'Navbar Double-Tap Gestures'),
+
+  // Post Gesture Settings
+  enablePostGestures(name: 'setting_gesture_enable_post_gestures', label: 'Post Swipe Actions'),
+  postGestureLeftPrimary(name: 'setting_gesture_post_left_primary_gesture', label: 'Left Short Swipe'),
+  postGestureLeftSecondary(name: 'setting_gesture_post_left_secondary_gesture', label: 'Left Long Swipe'),
+  postGestureRightPrimary(name: 'setting_gesture_post_right_primary_gesture', label: 'Right Short Swipe'),
+  postGestureRightSecondary(name: 'setting_gesture_post_right_secondary_gesture', label: 'Right Long Swipe'),
+
+  // Comment Gesture Settings
+  enableCommentGestures(name: 'setting_gesture_enable_comment_gestures', label: 'Comment Swipe Actions'),
+  commentGestureLeftPrimary(name: 'setting_gesture_comment_left_primary_gesture', label: 'Left Short Swipe'),
+  commentGestureLeftSecondary(name: 'setting_gesture_comment_left_secondary_gesture', label: 'Left Long Swipe'),
+  commentGestureRightPrimary(name: 'setting_gesture_comment_right_primary_gesture', label: 'Right Short Swipe'),
+  commentGestureRightSecondary(name: 'setting_gesture_comment_right_secondary_gesture', label: 'Right Long Swipe'),
   ;
 
   const LocalSettings({

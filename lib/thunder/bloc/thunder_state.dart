@@ -10,45 +10,55 @@ class ThunderState extends Equatable {
     this.version,
     this.errorMessage,
 
-    // Feed Settings
-    this.useCompactView = false,
-    this.showTitleFirst = false,
+    /// -------------------------- Feed Related Settings --------------------------
+    // Default Listing/Sort Settings
     this.defaultPostListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
-    this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
-    this.disableFeedFab = false,
-    this.hideNsfwPosts = false,
 
-    // Post Settings
-    this.collapseParentCommentOnGesture = true,
+    // NSFW Settings
+    this.hideNsfwPosts = false,
+    this.hideNsfwPreviews = true,
+
+    // Tablet Settings
+    this.tabletMode = false,
+
+    // General Settings
+    this.showLinkPreviews = true,
+    this.openInExternalBrowser = false,
+    this.useDisplayNames = true,
+    this.markPostReadOnMediaView = false,
+    this.disableFeedFab = false,
+    this.showInAppUpdateNotification = true,
+
+    /// -------------------------- Feed Post Related Settings --------------------------
+    // Compact Related Settings
+    this.useCompactView = false,
+    this.showTitleFirst = false,
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
-    this.showLinkPreviews = true,
+
+    // General Settings
     this.showVoteActions = true,
     this.showSaveAction = true,
     this.showCommunityIcons = false,
     this.showFullHeightImages = false,
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
-    this.hideNsfwPreviews = true,
-    this.useDisplayNames = true,
-    this.bottomNavBarSwipeGestures = true,
-    this.bottomNavBarDoubleTapGestures = false,
-    this.tabletMode = false,
-    this.markPostReadOnMediaView = false,
-    this.disablePostFabs = false,
     this.showPostAuthor = false,
 
-    // Comment Settings
+    /// -------------------------- Post Page Related Settings --------------------------
+    this.disablePostFabs = false,
+
+    // Comment Related Settings
+    this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
+    this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
-    // Link Settings
-    this.openInExternalBrowser = false,
-
-    // Notification Settings
-    this.showInAppUpdateNotification = true,
+    // --------------------
+    this.bottomNavBarSwipeGestures = true,
+    this.bottomNavBarDoubleTapGestures = false,
 
     // Post Gestures
     this.enablePostGestures = true,
@@ -78,66 +88,56 @@ class ThunderState extends Equatable {
   });
 
   final ThunderStatus status;
-
   final Version? version;
-
   final String? errorMessage;
 
-  // All the user preferences should be stored here
-  // Feed Settings
-  final bool useCompactView;
-  final bool showTitleFirst;
+  /// -------------------------- Feed Related Settings --------------------------
+  // Default Listing/Sort Settings
   final PostListingType defaultPostListingType;
   final SortType defaultSortType;
-  final CommentSortType defaultCommentSortType;
-  final bool disableFeedFab;
-  final bool hideNsfwPosts;
 
-  // Post Settings
-  final bool collapseParentCommentOnGesture;
+  // NSFW Settings
+  final bool hideNsfwPosts;
+  final bool hideNsfwPreviews;
+
+  // Tablet Settings
+  final bool tabletMode;
+
+  // General Settings
+  final bool showLinkPreviews;
+  final bool openInExternalBrowser;
+  final bool useDisplayNames;
+  final bool markPostReadOnMediaView;
+  final bool disableFeedFab;
+  final bool showInAppUpdateNotification;
+
+  /// -------------------------- Feed Post Related Settings --------------------------
+  /// Compact Related Settings
+  final bool useCompactView;
+  final bool showTitleFirst;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
-  final bool showLinkPreviews;
+
+  // General Settings
   final bool showVoteActions;
   final bool showSaveAction;
   final bool showCommunityIcons;
   final bool showFullHeightImages;
-  final bool showPostAuthor;
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
-  final bool hideNsfwPreviews;
-  final bool useDisplayNames;
-  final bool bottomNavBarSwipeGestures;
-  final bool bottomNavBarDoubleTapGestures;
-  final bool tabletMode;
-  final bool markPostReadOnMediaView;
+  final bool showPostAuthor;
+
+  /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
 
-  // Comment Settings
+  // Comment Related Settings
+  final CommentSortType defaultCommentSortType;
+  final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
-  // Link Settings
-  final bool openInExternalBrowser;
-
-  // Notification Settings
-  final bool showInAppUpdateNotification;
-
-  // Post Gestures
-  final bool enablePostGestures;
-  final SwipeAction leftPrimaryPostGesture;
-  final SwipeAction leftSecondaryPostGesture;
-  final SwipeAction rightPrimaryPostGesture;
-  final SwipeAction rightSecondaryPostGesture;
-
-  // Comment Gestures
-  final bool enableCommentGestures;
-  final SwipeAction leftPrimaryCommentGesture;
-  final SwipeAction leftSecondaryCommentGesture;
-  final SwipeAction rightPrimaryCommentGesture;
-  final SwipeAction rightSecondaryCommentGesture;
-
+  /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   final ThemeType themeType;
   final CustomThemeType selectedTheme;
@@ -147,6 +147,25 @@ class ThunderState extends Equatable {
   final FontScale titleFontSizeScale;
   final FontScale contentFontSizeScale;
 
+  /// -------------------------- Gesture Related Settings --------------------------
+  // Sidebar Gesture Settings
+  final bool bottomNavBarSwipeGestures;
+  final bool bottomNavBarDoubleTapGestures;
+
+  // Post Gesture Settings
+  final bool enablePostGestures;
+  final SwipeAction leftPrimaryPostGesture;
+  final SwipeAction leftSecondaryPostGesture;
+  final SwipeAction rightPrimaryPostGesture;
+  final SwipeAction rightSecondaryPostGesture;
+
+  // Comment Gesture Settings
+  final bool enableCommentGestures;
+  final SwipeAction leftPrimaryCommentGesture;
+  final SwipeAction leftSecondaryCommentGesture;
+  final SwipeAction rightPrimaryCommentGesture;
+  final SwipeAction rightSecondaryCommentGesture;
+
   // Scroll
   final int scrollToTopId;
 
@@ -155,60 +174,53 @@ class ThunderState extends Equatable {
     Version? version,
     String? errorMessage,
 
-    // Feed Settings
-    bool? useCompactView,
-    bool? showTitleFirst,
+    /// -------------------------- Feed Related Settings --------------------------
+    // Default Listing/Sort Settings
     PostListingType? defaultPostListingType,
     SortType? defaultSortType,
-    CommentSortType? defaultCommentSortType,
-    bool? disableFeedFab,
-    bool? hideNsfwPosts,
 
-    // Post Settings
-    bool? collapseParentCommentOnGesture,
+    // NSFW Settings
+    bool? hideNsfwPosts,
+    bool? hideNsfwPreviews,
+
+    // Tablet Settings
+    bool? tabletMode,
+
+    // General Settings
+    bool? showLinkPreviews,
+    bool? openInExternalBrowser,
+    bool? useDisplayNames,
+    bool? markPostReadOnMediaView,
+    bool? disableFeedFab,
+    bool? showInAppUpdateNotification,
+
+    /// -------------------------- Feed Post Related Settings --------------------------
+    /// Compact Related Settings
+    bool? useCompactView,
+    bool? showTitleFirst,
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
-    bool? showLinkPreviews,
+
+    // General Settings
     bool? showVoteActions,
     bool? showSaveAction,
     bool? showCommunityIcons,
     bool? showFullHeightImages,
-    bool? showPostAuthor,
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
-    bool? hideNsfwPreviews,
-    bool? tabletMode,
-    bool? bottomNavBarSwipeGestures,
-    bool? bottomNavBarDoubleTapGestures,
-    bool? markPostReadOnMediaView,
-    bool? useDisplayNames,
+    bool? showPostAuthor,
+
+    /// -------------------------- Post Page Related Settings --------------------------
     bool? disablePostFabs,
 
-    // Comment Settings
+    // Comment Related Settings
+    CommentSortType? defaultCommentSortType,
+    bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
-    // Link Settings
-    bool? openInExternalBrowser,
-
-    // Notification Settings
-    bool? showInAppUpdateNotification,
-
-    // Post Gestures
-    bool? enablePostGestures,
-    SwipeAction? leftPrimaryPostGesture,
-    SwipeAction? leftSecondaryPostGesture,
-    SwipeAction? rightPrimaryPostGesture,
-    SwipeAction? rightSecondaryPostGesture,
-
-    // Comment Gestures
-    bool? enableCommentGestures,
-    SwipeAction? leftPrimaryCommentGesture,
-    SwipeAction? leftSecondaryCommentGesture,
-    SwipeAction? rightPrimaryCommentGesture,
-    SwipeAction? rightSecondaryCommentGesture,
-
+    /// -------------------------- Theme Related Settings --------------------------
     // Theme Settings
     ThemeType? themeType,
     CustomThemeType? selectedTheme,
@@ -218,6 +230,25 @@ class ThunderState extends Equatable {
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
 
+    /// -------------------------- Gesture Related Settings --------------------------
+    // Sidebar Gesture Settings
+    bool? bottomNavBarSwipeGestures,
+    bool? bottomNavBarDoubleTapGestures,
+
+    // Post Gesture Settings
+    bool? enablePostGestures,
+    SwipeAction? leftPrimaryPostGesture,
+    SwipeAction? leftSecondaryPostGesture,
+    SwipeAction? rightPrimaryPostGesture,
+    SwipeAction? rightSecondaryPostGesture,
+
+    // Comment Gesture Settings
+    bool? enableCommentGestures,
+    SwipeAction? leftPrimaryCommentGesture,
+    SwipeAction? leftSecondaryCommentGesture,
+    SwipeAction? rightPrimaryCommentGesture,
+    SwipeAction? rightSecondaryCommentGesture,
+
     // Scroll
     int? scrollToTopId,
   }) {
@@ -225,56 +256,54 @@ class ThunderState extends Equatable {
       status: status ?? this.status,
       version: version ?? this.version,
       errorMessage: errorMessage,
-      // Feed Settings
-      useCompactView: useCompactView ?? this.useCompactView,
-      showTitleFirst: showTitleFirst ?? this.showTitleFirst,
+
+      /// -------------------------- Feed Related Settings --------------------------
+      /// Default Listing/Sort Settings
       defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
-      defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
-      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+
+      // NSFW Settings
       hideNsfwPosts: hideNsfwPosts ?? this.hideNsfwPosts,
-      // Post Settings
-      collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
+      hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
+
+      // Tablet Settings
+      tabletMode: tabletMode ?? this.tabletMode,
+
+      // General Settings
+      showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
+      openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
+      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
+      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
+
+      /// -------------------------- Feed Post Related Settings --------------------------
+      // Compact Related Settings
+      useCompactView: useCompactView ?? this.useCompactView,
+      showTitleFirst: showTitleFirst ?? this.showTitleFirst,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
-      showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
+
+      // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
       showSaveAction: showSaveAction ?? this.showSaveAction,
       showCommunityIcons: showCommunityIcons ?? this.showCommunityIcons,
       showFullHeightImages: showFullHeightImages ?? this.showFullHeightImages,
-      showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
-      hideNsfwPreviews: hideNsfwPreviews ?? this.hideNsfwPreviews,
-      useDisplayNames: useDisplayNames ?? this.useDisplayNames,
-      tabletMode: tabletMode ?? this.tabletMode,
-      bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
-      bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
-      markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
+      showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+
+      /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
 
-      // Comment Settings
+      // Comment Related Settings
+      defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
+      collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
-      // Link Settings
-      openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
-      // Notification Settings
-      showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      // Post Gestures
-      enablePostGestures: enablePostGestures ?? this.enablePostGestures,
-      leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
-      leftSecondaryPostGesture: leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
-      rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
-      rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
-      // Comment Gestures
-      enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
-      leftPrimaryCommentGesture: leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
-      leftSecondaryCommentGesture: leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
-      rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
-      rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
-
+      /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
       themeType: themeType ?? this.themeType,
       selectedTheme: selectedTheme ?? this.selectedTheme,
@@ -283,6 +312,25 @@ class ThunderState extends Equatable {
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
+
+      /// -------------------------- Gesture Related Settings --------------------------
+      // Sidebar Gesture Settings
+      bottomNavBarSwipeGestures: bottomNavBarSwipeGestures ?? this.bottomNavBarSwipeGestures,
+      bottomNavBarDoubleTapGestures: bottomNavBarDoubleTapGestures ?? this.bottomNavBarDoubleTapGestures,
+
+      // Post Gestures
+      enablePostGestures: enablePostGestures ?? this.enablePostGestures,
+      leftPrimaryPostGesture: leftPrimaryPostGesture ?? this.leftPrimaryPostGesture,
+      leftSecondaryPostGesture: leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
+      rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
+      rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
+
+      // Comment Gestures
+      enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
+      leftPrimaryCommentGesture: leftPrimaryCommentGesture ?? this.leftPrimaryCommentGesture,
+      leftSecondaryCommentGesture: leftSecondaryCommentGesture ?? this.leftSecondaryCommentGesture,
+      rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
+      rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
       // Scroll
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -294,48 +342,83 @@ class ThunderState extends Equatable {
         status,
         version,
         errorMessage,
-        useCompactView,
-        showTitleFirst,
+
+        /// -------------------------- Feed Related Settings --------------------------
+        /// Default Listing/Sort Settings
         defaultPostListingType,
         defaultSortType,
-        defaultCommentSortType,
-        collapseParentCommentOnGesture,
+
+        // NSFW Settings
+        hideNsfwPosts,
+        hideNsfwPreviews,
+
+        // Tablet Settings
+        tabletMode,
+
+        // General Settings
+        showLinkPreviews,
+        openInExternalBrowser,
+        useDisplayNames,
+        markPostReadOnMediaView,
+        disableFeedFab,
+        showInAppUpdateNotification,
+
+        /// -------------------------- Feed Post Related Settings --------------------------
+        /// Compact Related Settings
+        useCompactView,
+        showTitleFirst,
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
-        showLinkPreviews,
+
+        // General Settings
         showVoteActions,
         showSaveAction,
         showCommunityIcons,
-        showPostAuthor,
         showFullHeightImages,
         showEdgeToEdgeImages,
         showTextContent,
-        hideNsfwPosts,
-        hideNsfwPreviews,
-        useDisplayNames,
-        tabletMode,
-        bottomNavBarSwipeGestures,
-        bottomNavBarDoubleTapGestures,
-        markPostReadOnMediaView,
+        showPostAuthor,
+
+        /// -------------------------- Post Page Related Settings --------------------------
+        disablePostFabs,
+
+        // Comment Related Settings
+        defaultCommentSortType,
+        collapseParentCommentOnGesture,
         showCommentButtonActions,
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
-        openInExternalBrowser,
-        showInAppUpdateNotification,
+
+        /// -------------------------- Theme Related Settings --------------------------
+        // Theme Settings
+        themeType,
+        selectedTheme,
+        useMaterialYouTheme,
+
+        // Font Scale
+        titleFontSizeScale,
+        contentFontSizeScale,
+
+        /// -------------------------- Gesture Related Settings --------------------------
+        // Sidebar Gesture Settings
+        bottomNavBarSwipeGestures,
+        bottomNavBarDoubleTapGestures,
+
+        // Post Gestures
         enablePostGestures,
         leftPrimaryPostGesture,
         leftSecondaryPostGesture,
         rightPrimaryPostGesture,
         rightSecondaryPostGesture,
+
+        // Comment Gestures
         enableCommentGestures,
         leftPrimaryCommentGesture,
         leftSecondaryCommentGesture,
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
-        themeType,
-        useMaterialYouTheme,
-        titleFontSizeScale,
-        contentFontSizeScale,
+
+        // Scroll
         scrollToTopId,
       ];
 }
