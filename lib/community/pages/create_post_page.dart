@@ -199,55 +199,57 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           maxLines: null,
                           textAlignVertical: TextAlignVertical.top,
                           decoration: const InputDecoration(
-                            border: OutlineInputBorder(),
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
                             hintText: "Post Body",
                           ),
                         ),
                 ),
                 Visibility(visible: !showPreview,
-                  child: Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeLink();
-                          },
-                          icon: const Icon(Icons.link)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeBold();
-                          },
-                          icon: const Icon(Icons.format_bold)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeItalic();
-                          },
-                          icon: const Icon(Icons.format_italic)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeQuote();
-                          },
-                          icon: const Icon(Icons.format_quote)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeStrikethrough();
-                          },
-                          icon: const Icon(Icons.format_strikethrough)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeList();
-                          },
-                          icon: const Icon(Icons.format_list_bulleted)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeSeparator();
-                          },
-                          icon: const Icon(Icons.horizontal_rule)),
-                      IconButton(
-                          onPressed: () {
-                            _bodyTextController.makeCode();
-                          },
-                          icon: const Icon(Icons.code)),
-                    ],
+                  child: SingleChildScrollView(scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeLink();
+                            },
+                            icon: const Icon(Icons.link)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeBold();
+                            },
+                            icon: const Icon(Icons.format_bold)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeItalic();
+                            },
+                            icon: const Icon(Icons.format_italic)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeQuote();
+                            },
+                            icon: const Icon(Icons.format_quote)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeStrikethrough();
+                            },
+                            icon: const Icon(Icons.format_strikethrough)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeList();
+                            },
+                            icon: const Icon(Icons.format_list_bulleted)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeSeparator();
+                            },
+                            icon: const Icon(Icons.horizontal_rule)),
+                        IconButton(
+                            onPressed: () {
+                              _bodyTextController.makeCode();
+                            },
+                            icon: const Icon(Icons.code)),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 8.0),
