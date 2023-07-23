@@ -8,6 +8,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -174,9 +175,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     bool tabletMode;
 
     try {
-      defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
-      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      defaultListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+      tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
     } catch (e) {
       defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);

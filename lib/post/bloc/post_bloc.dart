@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -78,7 +79,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -179,7 +180,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
