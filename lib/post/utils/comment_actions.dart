@@ -17,6 +17,8 @@ void triggerCommentAction({
   required VoteType voteType,
   bool? saved,
   required CommentViewTree commentViewTree,
+  int? selectedCommentId,
+  String? selectedCommentPath,
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
@@ -44,7 +46,7 @@ void triggerCommentAction({
                   BlocProvider<PostBloc>.value(value: postBloc),
                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
                 ],
-                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit),
+                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath),
               ),
             ),
           );

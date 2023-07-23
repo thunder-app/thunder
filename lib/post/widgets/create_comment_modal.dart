@@ -17,6 +17,9 @@ class CreateCommentModal extends StatefulWidget {
   final PostView? postView;
   final CommentViewTree? commentView;
 
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
+
   final Comment? comment; // This is passed in from inbox
   final String? parentCommentAuthor; // This is passed in from inbox
 
@@ -29,6 +32,8 @@ class CreateCommentModal extends StatefulWidget {
     this.comment,
     this.parentCommentAuthor,
     this.isEdit = false,
+    this.selectedCommentId,
+    this.selectedCommentPath,
   });
 
   @override
@@ -168,7 +173,11 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               if (widget.comment != null) {
                                 context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                               } else {
-                                context.read<PostBloc>().add(CreateCommentEvent(content: _bodyTextController.text, parentCommentId: widget.commentView?.commentView!.comment.id));
+                                context.read<PostBloc>().add(CreateCommentEvent(
+                                    content: _bodyTextController.text,
+                                    parentCommentId: widget.commentView?.commentView!.comment.id,
+                                    selectedCommentId: widget.selectedCommentId,
+                                    selectedCommentPath: widget.selectedCommentPath));
                               }
                             },
                       icon: isLoading
