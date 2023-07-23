@@ -196,7 +196,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                   child: widget.subscribedType != SubscribedType.subscribed
                       ? Padding(
                           padding: EdgeInsets.only(
-                            top: isBlocked ? 10 : 8,
+                            top: isBlocked ? 10 : 4,
                             left: 12,
                             right: 12,
                             bottom: 4,

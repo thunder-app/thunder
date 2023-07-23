@@ -104,7 +104,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? true;
+      bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
 
       /// -------------------------- Post Page Related Settings --------------------------
       bool disablePostFabs = prefs.getBool(LocalSettings.disablePostFab.name) ?? false;

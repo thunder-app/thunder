@@ -24,6 +24,7 @@ class CommentCard extends StatefulWidget {
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
+  final String? selectedCommentPath;
   final Function(int, bool) onDeleteAction;
 
   final DateTime now;
@@ -39,6 +40,7 @@ class CommentCard extends StatefulWidget {
     required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
+    this.selectedCommentPath,
     required this.onDeleteAction,
   });
 
@@ -171,6 +173,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       voteType: myVote ?? VoteType.none,
                       saved: saved,
                       commentViewTree: widget.commentViewTree,
+                      selectedCommentId: widget.selectCommentId,
+                      selectedCommentPath: widget.selectedCommentPath,
                     ),
                   }
               },
@@ -414,6 +418,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) => CommentCard(
+                            selectedCommentPath: widget.selectedCommentPath,
                             selectCommentId: widget.selectCommentId,
                             now: widget.now,
                             commentViewTree: widget.commentViewTree.replies[index],

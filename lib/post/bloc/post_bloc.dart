@@ -361,8 +361,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
-      emit(state.copyWith(status: PostStatus.success));
-      emit(state.copyWith(status: PostStatus.refreshing));
+      emit(state.copyWith(status: PostStatus.success, selectedCommentId: event.selectedCommentId));
+      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: event.selectedCommentId));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
         currentTree.commentView = originalCommentView; // Reset this on exception
@@ -371,7 +371,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       currentTree.commentView = commentView;
 
-      return emit(state.copyWith(status: PostStatus.success));
+      return emit(state.copyWith(status: PostStatus.success, selectedCommentId: event.selectedCommentId));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
@@ -424,7 +424,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
-      add(GetPostEvent(postView: state.postView!));
+      add(GetPostEvent(postView: state.postView!, selectedCommentId: event.selectedCommentId, selectedCommentPath: event.selectedCommentPath));
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));

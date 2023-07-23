@@ -42,10 +42,11 @@ class SavePostEvent extends PostEvent {
 }
 
 class VoteCommentEvent extends PostEvent {
+  final int? selectedCommentId;
   final int commentId;
   final VoteType score;
 
-  const VoteCommentEvent({required this.commentId, required this.score});
+  const VoteCommentEvent({required this.commentId, required this.score, this.selectedCommentId});
 }
 
 class SaveCommentEvent extends PostEvent {
@@ -58,8 +59,10 @@ class SaveCommentEvent extends PostEvent {
 class CreateCommentEvent extends PostEvent {
   final String content;
   final int? parentCommentId;
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
 
-  const CreateCommentEvent({required this.content, this.parentCommentId});
+  const CreateCommentEvent({required this.content, this.parentCommentId, this.selectedCommentId, this.selectedCommentPath});
 }
 
 class EditCommentEvent extends PostEvent {
