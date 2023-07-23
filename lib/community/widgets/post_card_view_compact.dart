@@ -49,14 +49,16 @@ class PostCardViewCompact extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
-            MediaView(
-              showLinkPreview: state.showLinkPreviews,
-              postView: postViewMedia,
-              showFullHeightImages: false,
-              hideNsfwPreviews: hideNsfwPreviews,
-              markPostReadOnMediaView: markPostReadOnMediaView,
-              viewMode: ViewMode.compact,
-              isUserLoggedIn: isUserLoggedIn,
+            ExcludeSemantics(
+              child: MediaView(
+                showLinkPreview: state.showLinkPreviews,
+                postView: postViewMedia,
+                showFullHeightImages: false,
+                hideNsfwPreviews: hideNsfwPreviews,
+                markPostReadOnMediaView: markPostReadOnMediaView,
+                viewMode: ViewMode.compact,
+                isUserLoggedIn: isUserLoggedIn,
+              ),
             ),
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
           Flexible(
@@ -103,14 +105,16 @@ class PostCardViewCompact extends StatelessWidget {
           ),
           if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
             if (showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
-              MediaView(
-                showLinkPreview: state.showLinkPreviews,
-                postView: postViewMedia,
-                showFullHeightImages: false,
-                hideNsfwPreviews: hideNsfwPreviews,
-                markPostReadOnMediaView: markPostReadOnMediaView,
-                viewMode: ViewMode.compact,
-                isUserLoggedIn: isUserLoggedIn,
+              ExcludeSemantics(
+                child: MediaView(
+                  showLinkPreview: state.showLinkPreviews,
+                  postView: postViewMedia,
+                  showFullHeightImages: false,
+                  hideNsfwPreviews: hideNsfwPreviews,
+                  markPostReadOnMediaView: markPostReadOnMediaView,
+                  viewMode: ViewMode.compact,
+                  isUserLoggedIn: isUserLoggedIn,
+                ),
               ),
         ],
       ),
