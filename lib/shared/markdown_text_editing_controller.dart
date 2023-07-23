@@ -21,7 +21,9 @@ class MarkdownTextEditingController extends TextEditingController {
   }
 
   void _addBeforeSelection(String toAdd) {
-    value = value.copyWith(text: text.replaceRange(selection.start, selection.start, toAdd));
+    value = value.copyWith(
+        text: text.replaceRange(selection.start, selection.start, toAdd),
+        selection: selection.copyWith(baseOffset: selection.baseOffset + toAdd.length, extentOffset: selection.extentOffset + toAdd.length));
   }
 
   void _addAfterSelection(String toAdd) {
