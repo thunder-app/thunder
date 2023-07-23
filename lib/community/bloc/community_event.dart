@@ -68,3 +68,8 @@ class BlockCommunityEvent extends CommunityEvent {
 
   const BlockCommunityEvent({required this.communityId, this.block = false});
 }
+
+class DismissReadEvent extends CommunityEvent {
+
+  const DismissReadEvent();
+}

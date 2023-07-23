@@ -62,6 +62,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _blockCommunityEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<DismissReadEvent>(
+      _dismissReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
@@ -469,4 +473,161 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       );
     }
   }
+
+  Future<void> _dismissReadEvent(DismissReadEvent event, Emitter<CommunityState> emit) async {
+
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    PostListingType defaultListingType;
+    SortType defaultSortType;
+    bool tabletMode;
+
+    try {
+      defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
+      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+    } catch (e) {
+      defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
+      tabletMode = false;
+    }
+
+    try {
+      Account? account = await fetchActiveProfileAccount();
+
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (event.reset) {
+        emit(state.copyWith(status: CommunityStatus.loading));
+
+        int? communityId = event.communityId;
+        String? communityName = event.communityName;
+        PostListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
+        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
+        // Fetch community's information
+        SubscribedType? subscribedType;
+        FullCommunityView? getCommunityResponse;
+
+        if (communityId != null || communityName != null) {
+          getCommunityResponse = await lemmy.run(GetCommunity(
+            auth: account?.jwt,
+            id: communityId,
+            name: event.communityName,
+          ));
+
+          subscribedType = getCommunityResponse?.communityView.subscribed;
+        }
+
+        // Fetch community's posts
+        List<PostViewMedia> posts = [];
+        Set<int> postIds = {};
+        int currentPage = 1;
+
+        do {
+          List<PostView> batch = await lemmy.run(GetPosts(
+            auth: account?.jwt,
+            page: currentPage,
+            limit: limit,
+            sort: sortType,
+            type: listingType,
+            communityId: communityId ?? getCommunityResponse?.communityView.community.id,
+            communityName: event.communityName,
+          ));
+
+          currentPage++;
+
+          // Parse the posts and add in media information which is used elsewhere in the app
+          List<PostViewMedia> formattedPosts = await parsePostViews(batch);
+          posts.addAll(formattedPosts);
+
+          for (PostViewMedia post in formattedPosts) {
+            postIds.add(post.postView.post.id);
+          }
+
+          emit(
+            state.copyWith(
+              status: CommunityStatus.success,
+              page: tabletMode ? currentPage + 1 : currentPage,
+              postViews: posts,
+              postIds: postIds,
+              listingType: listingType,
+              communityId: communityId,
+              communityName: event.communityName,
+              hasReachedEnd: posts.isEmpty || posts.length < limit,
+              subscribedType: subscribedType,
+              sortType: sortType,
+              communityInfo: getCommunityResponse,
+            ),
+          );
+        } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
+
+        return;
+      } else {
+        if (state.hasReachedEnd) {
+          // Stop extra requests if we've reached the end
+          emit(state.copyWith(status: CommunityStatus.success, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+          return;
+        }
+
+        emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+
+        int? communityId = event.communityId ?? state.communityId;
+        PostListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
+        SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
+
+        // Fetch more posts from the community
+        List<PostViewMedia> posts = List.from(state.postViews ?? []);
+        int currentPage = state.page;
+
+        do {
+          List<PostView> batch = await lemmy.run(GetPosts(
+            auth: account?.jwt,
+            page: currentPage,
+            limit: limit,
+            sort: sortType,
+            type: state.listingType,
+            communityId: state.communityId,
+            communityName: state.communityName,
+          ));
+
+          currentPage++;
+
+          // Parse the posts, and append them to the existing list
+          List<PostViewMedia> postMedias = await parsePostViews(batch);
+
+          Set<int> postIds = Set.from(state.postIds ?? {});
+
+          // Ensure we don't add existing posts to view
+          for (PostViewMedia postMedia in postMedias) {
+            int id = postMedia.postView.post.id;
+            if (!postIds.contains(id)) {
+              postIds.add(id);
+              posts.add(postMedia);
+            }
+          }
+
+          emit(
+            state.copyWith(
+              status: CommunityStatus.success,
+              page: tabletMode ? currentPage + 1 : currentPage,
+              postViews: posts,
+              postIds: postIds,
+              communityId: communityId,
+              communityName: state.communityName,
+              listingType: listingType,
+              hasReachedEnd: posts.isEmpty,
+              subscribedType: state.subscribedType,
+              sortType: sortType,
+            ),
+          );
+        } while (tabletMode && posts.length < limit && currentPage <= state.page + 2); // Fetch two batches
+
+        return;
+      }
+    } catch (e) {
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+    }
+  }
+
 }
