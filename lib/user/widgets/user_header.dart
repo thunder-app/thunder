@@ -11,7 +11,10 @@ import 'package:thunder/utils/numbers.dart';
 class UserHeader extends StatelessWidget {
   final PersonViewSafe? userInfo;
 
-  const UserHeader({super.key, this.userInfo});
+  const UserHeader({
+    super.key,
+    this.userInfo,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,6 +96,14 @@ class UserHeader extends StatelessWidget {
                           ],
                         ),
                       ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(9.0),
+                    child: Icon(
+                      Icons.info_outline_rounded,
+                      size: 25,
+                      shadows: <Shadow>[Shadow(color: theme.colorScheme.background, blurRadius: 10.0), Shadow(color: theme.colorScheme.background, blurRadius: 20.0)],
                     ),
                   ),
                 ],

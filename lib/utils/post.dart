@@ -1,10 +1,13 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
@@ -94,11 +97,13 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
-  bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
-  bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+  bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+  bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+  bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
+  Iterable<Future<PostViewMedia>> postFutures =
+      postViews.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;

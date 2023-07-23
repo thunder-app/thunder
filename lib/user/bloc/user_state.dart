@@ -11,6 +11,8 @@ class UserState extends Equatable {
     this.savedComments = const [],
     this.posts = const [],
     this.savedPosts = const [],
+    this.moderates = const [],
+    this.personBlocks = const [],
     this.page = 1,
     this.savedContentPage = 1,
     this.hasReachedPostEnd = false,
@@ -18,6 +20,7 @@ class UserState extends Equatable {
     this.hasReachedCommentEnd = false,
     this.hasReachedSavedCommentEnd = false,
     this.errorMessage,
+    this.blockedPerson,
   });
 
   final UserStatus status;
@@ -31,6 +34,9 @@ class UserState extends Equatable {
   final List<PostViewMedia> posts;
   final List<PostViewMedia> savedPosts;
 
+  final List<CommunityModeratorView> moderates;
+  final List<PersonBlockView> personBlocks;
+
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
 
@@ -41,6 +47,7 @@ class UserState extends Equatable {
   final int savedContentPage;
 
   final String? errorMessage;
+  final BlockedPerson? blockedPerson;
 
   UserState copyWith({
     required UserStatus status,
@@ -50,6 +57,8 @@ class UserState extends Equatable {
     List<CommentViewTree>? savedComments,
     List<PostViewMedia>? posts,
     List<PostViewMedia>? savedPosts,
+    List<CommunityModeratorView>? moderates,
+    List<PersonBlockView>? personBlocks,
     int? page,
     int? savedContentPage,
     bool? hasReachedPostEnd,
@@ -57,6 +66,7 @@ class UserState extends Equatable {
     bool? hasReachedCommentEnd,
     bool? hasReachedSavedCommentEnd,
     String? errorMessage,
+    BlockedPerson? blockedPerson,
   }) {
     return UserState(
       status: status,
@@ -66,6 +76,7 @@ class UserState extends Equatable {
       savedComments: savedComments ?? this.savedComments,
       posts: posts ?? this.posts,
       savedPosts: savedPosts ?? this.savedPosts,
+      moderates: moderates ?? this.moderates,
       page: page ?? this.page,
       savedContentPage: savedContentPage ?? this.savedContentPage,
       hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,
@@ -73,9 +84,27 @@ class UserState extends Equatable {
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       hasReachedSavedCommentEnd: hasReachedSavedCommentEnd ?? this.hasReachedSavedCommentEnd,
       errorMessage: errorMessage ?? this.errorMessage,
+      personBlocks: personBlocks ?? this.personBlocks,
+      blockedPerson: blockedPerson,
     );
   }
 
   @override
-  List<Object?> get props => [status, userId, personView, comments, posts, page, errorMessage, hasReachedPostEnd, hasReachedSavedPostEnd, hasReachedCommentEnd, hasReachedSavedCommentEnd];
+  List<Object?> get props => [
+        status,
+        userId,
+        personView,
+        comments,
+        posts,
+        page,
+        savedPosts,
+        moderates,
+        errorMessage,
+        hasReachedPostEnd,
+        hasReachedSavedPostEnd,
+        hasReachedCommentEnd,
+        hasReachedSavedCommentEnd,
+        personBlocks,
+        blockedPerson
+      ];
 }

@@ -195,7 +195,7 @@ class CommentHeader extends StatelessWidget {
           Row(
             children: [
               AnimatedOpacity(
-                opacity: (isHidden && (collapseParentCommentOnGesture || commentViewTree.replies.isNotEmpty == true)) ? 1 : 0,
+                opacity: (isHidden && (collapseParentCommentOnGesture || (commentViewTree.commentView?.counts.childCount ?? 0) > 0)) ? 1 : 0,
                 // Matches the collapse animation
                 duration: const Duration(milliseconds: 130),
                 child: Container(
@@ -206,7 +206,7 @@ class CommentHeader extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     child: Text(
-                      '+${commentViewTree.replies.length}',
+                      '+${commentViewTree.commentView!.counts.childCount}',
                       textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                     ),
                   ),

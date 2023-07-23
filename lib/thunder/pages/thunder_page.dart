@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/utils/links.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
@@ -64,7 +67,7 @@ class _ThunderState extends State<Thunder> {
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+    bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
@@ -81,7 +84,7 @@ class _ThunderState extends State<Thunder> {
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+    bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
 
@@ -188,8 +191,8 @@ class _ThunderState extends State<Thunder> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
                                         CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                        BlocProvider(
-                                          create: (context) => SearchBloc(),
+                                        MultiBlocProvider(
+                                          providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
                                           child: const SearchPage(),
                                         ),
                                         const AccountPage(),
@@ -240,26 +243,26 @@ class _ThunderState extends State<Thunder> {
           unselectedFontSize: 20.0,
           selectedFontSize: 20.0,
           elevation: 1,
-          items: const [
+          items: [
             BottomNavigationBarItem(
-              icon: Icon(Icons.dashboard_rounded),
-              label: 'Feed',
+              icon: const Icon(Icons.dashboard_rounded),
+              label: AppLocalizations.of(context)!.feed,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.search_rounded),
-              label: 'Search',
+              icon: const Icon(Icons.search_rounded),
+              label: AppLocalizations.of(context)!.search,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.person_rounded),
-              label: 'Account',
+              icon: const Icon(Icons.person_rounded),
+              label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.inbox_rounded),
-              label: 'Inbox',
+              icon: const Icon(Icons.inbox_rounded),
+              label: AppLocalizations.of(context)!.inbox,
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.settings_rounded),
-              label: 'Settings',
+              icon: const Icon(Icons.settings_rounded),
+              label: AppLocalizations.of(context)!.settings,
             ),
           ],
           onTap: (index) {
