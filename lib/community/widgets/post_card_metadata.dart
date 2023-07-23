@@ -217,6 +217,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return BlocBuilder<ThunderBloc, ThunderState>(builder: (context, state) {
       final String? creatorName = postView.creator.displayName != null && state.useDisplayNames ? postView.creator.displayName : postView.creator.name;
 
@@ -231,23 +233,38 @@ class PostCommunityAndAuthor extends StatelessWidget {
               onTap: () => onTapCommunityName(context, postView.community.id),
             ),
           Expanded(
-            child: Wrap(
-              direction: Axis.horizontal,
-              alignment: WrapAlignment.start,
-              crossAxisAlignment: WrapCrossAlignment.end,
-              spacing: 1.0,
-              children: [
-                if (state.showPostAuthor)
-                  GestureDetector(
-                      child: Text('$creatorName to ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
-                GestureDetector(
-                    child: Text(
-                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      style: textStyleCommunity,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 6.0),
+              child: Wrap(
+                direction: Axis.horizontal,
+                alignment: WrapAlignment.start,
+                crossAxisAlignment: WrapCrossAlignment.end,
+                spacing: 0.0,
+                children: [
+                  if (state.showPostAuthor)
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
+                        Text(
+                          ' to ',
+                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                          ),
+                        ),
+                      ],
                     ),
-                    onTap: () => onTapCommunityName(context, postView.community.id)),
-              ],
+                  GestureDetector(
+                      child: Text(
+                        '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: textStyleCommunity,
+                      ),
+                      onTap: () => onTapCommunityName(context, postView.community.id)),
+                ],
+              ),
             ),
           ),
         ],
