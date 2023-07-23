@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_text_input.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/markdown_text_editing_controller.dart';
 import 'package:thunder/utils/instance.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -36,8 +35,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   // final List<bool> _selectedPostType = <bool>[true, false, false];
   String image = '';
-  String description = '';
-  final TextEditingController _bodyTextController = TextEditingController();
+  final MarkDownTextEditingController _bodyTextController = MarkDownTextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final imageBloc = ImageBloc();
 
@@ -61,16 +59,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Create Post"),
         toolbarHeight: 70.0,
         actions: [
-          IconButton(
-              onPressed: () => setState(() => isNSFW = !isNSFW),
-              icon: isNSFW
-                  ? const Icon(
-                      Icons.eighteen_up_rating,
-                      semanticLabel: "Not Safe For Work",
-                    )
-                  : const Icon(Icons.eighteen_up_rating_outlined, semanticLabel: "Safe For Work")),
           IconButton(
             onPressed: isSubmitButtonDisabled
                 ? null
@@ -112,164 +103,180 @@ class _CreatePostPageState extends State<CreatePostPage> {
         },
         bloc: imageBloc,
         child: SafeArea(
-          child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
-                  Text('Create Post', style: theme.textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.bold)),
+                  // Text('Create Post', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
                   const SizedBox(height: 12.0),
-                  Text(widget.communityInfo?.communityView.community.name ?? 'N/A', style: theme.textTheme.titleLarge),
-                  Text(
-                    fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
-                    style: theme.textTheme.titleMedium?.copyWith(
-                      color: theme.textTheme.titleMedium?.color?.withOpacity(0.7),
-                      fontWeight: FontWeight.w400,
-                    ),
+                  Row(
+                    children: [
+                      Text("Posting To: ", style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(width: 20,),
+                      Text('${widget.communityInfo?.communityView.community.name} '
+                          '· ${fetchInstanceNameFromUrl(
+                          widget.communityInfo?.communityView.community.actorId)}',
+                        style: theme.textTheme.titleSmall,),
+                    ],
                   ),
 
                   const SizedBox(height: 12.0),
-                  // Center(
-                  //   child: ToggleButtons(
-                  //     direction: Axis.horizontal,
-                  //     onPressed: (int index) {
-                  //       setState(() {
-                  //         // The button that is tapped is set to true, and the others to false.
-                  //         for (int i = 0; i < _selectedPostType.length; i++) {
-                  //           _selectedPostType[i] = i == index;
-                  //         }
-                  //       });
-                  //     },
-                  //     borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  //     constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / postTypes.length) - 12.0),
-                  //     isSelected: _selectedPostType,
-                  //     children: postTypes,
-                  //   ),
-                  // ),
-                  ListView(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    children: <Widget>[
-                      TextFormField(
-                        controller: _titleTextController,
-                        decoration: const InputDecoration(
-                          hintText: 'Title',
+                  TextFormField(
+                    controller: _titleTextController,
+                    decoration: const InputDecoration(
+                      hintText: 'Title',
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  error
+                    ? const Text(
+                        'Error occured while uploading',
+                        textAlign: TextAlign.center,
+                      )
+                    : const SizedBox(height: 0),
+                image != '' && image != 'loading'
+                    ? Stack(children: [
+                        ExtendedImage.network(
+                          image,
+                          fit: BoxFit.fitWidth,
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      error
-                          ? const Text(
-                              'Error occured while uploading',
-                              textAlign: TextAlign.center,
-                            )
-                          : const SizedBox(height: 0),
-                      image != '' && image != 'loading'
-                          ? Stack(children: [
-                              ExtendedImage.network(
-                                image,
-                                fit: BoxFit.fitWidth,
-                              ),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: IconButton(
-                                  onPressed: () {
-                                    imageBloc.add(const ImageDeleteEvent());
-                                  },
-                                  icon: const Icon(
-                                    Icons.cancel,
-                                    shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],
-                                  ),
-                                ),
-                              )
-                            ])
-                          : image == 'loading'
-                              ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-                              : const SizedBox(height: 20),
-                      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                        TextButton(
-                          child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
-                          onPressed: () async {
-                            error = false;
-                            final ImagePicker picker = ImagePicker();
-                            XFile? file = await picker.pickImage(source: ImageSource.gallery);
-                            try {
-                              Account? account = await fetchActiveProfileAccount();
-                              String path = file!.path;
-                              imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
-                            } catch (e) {
-                              null;
-                            }
-                          },
+                        Positioned(
+                          top: 0,
+                          right: 0,
+                          child: IconButton(
+                            onPressed: () {
+                              imageBloc.add(const ImageDeleteEvent());
+                            },
+                            icon: const Icon(
+                              Icons.cancel,
+                              shadows: [
+                                Shadow(color: Colors.black, blurRadius: 15.0)
+                              ],
+                            ),
+                          ),
                         )
-                      ]),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 200,
-                            child: showPreview
-                                ? Container(
-                                    decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                    padding: const EdgeInsets.all(12),
-                                    child: SingleChildScrollView(
-                                      child: CommonMarkdownBody(body: description),
-                                    ),
-                                  )
-                                : MarkdownTextInput(
-                                    (String value) => setState(() => description = value),
-                                    description,
-                                    label: 'Post Body',
-                                    maxLines: 5,
-                                    actions: const [
-                                      MarkdownType.link,
-                                      MarkdownType.bold,
-                                      MarkdownType.italic,
-                                      MarkdownType.blockquote,
-                                      MarkdownType.strikethrough,
-                                      MarkdownType.title,
-                                      MarkdownType.list,
-                                      MarkdownType.separator,
-                                      MarkdownType.code,
-                                    ],
-                                    controller: _bodyTextController,
-                                    textStyle: theme.textTheme.bodyLarge,
-                                    // textStyle: const TextStyle(fontSize: 16),
-                                  ),
+                      ])
+                    : image == 'loading'
+                        ? const Center(
+                            child: CircularProgressIndicator(strokeWidth: 2))
+                        : const SizedBox(height: 20),
+                Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                    TextButton(
+                      child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
+                      onPressed: () async {
+                        error = false;
+                        final ImagePicker picker = ImagePicker();
+                        XFile? file = await picker.pickImage(source: ImageSource.gallery);
+                        try {
+                          Account? account = await fetchActiveProfileAccount();
+                          String path = file!.path;
+                          imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
+                        } catch (e) {
+                          null;
+                        }
+                      },
+                    )
+                  ]),
+                  Expanded(
+                  child: showPreview
+                      ? Container(
+                          constraints:
+                              const BoxConstraints(minWidth: double.infinity),
+                          decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.all(12),
+                          child: SingleChildScrollView(
+                            child: CommonMarkdownBody(
+                                body: _bodyTextController.text),
                           ),
-                          const SizedBox(height: 8.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              TextButton(
-                                onPressed: isClearButtonDisabled
-                                    ? null
-                                    : () {
-                                        _bodyTextController.clear();
-                                        setState(() => showPreview = false);
-                                      },
-                                child: const Text('Clear'),
-                              ),
-                              TextButton(
-                                onPressed: () => setState(() => showPreview = !showPreview),
-                                child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                              ),
-                            ],
+                        )
+                      : TextField(
+                          controller: _bodyTextController,
+                          expands: true,
+                          maxLines: null,
+                          textAlignVertical: TextAlignVertical.top,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(),
+                            hintText: "Post Body",
                           ),
-                        ],
-                      ),
+                        ),
+                ),
+                Visibility(visible: !showPreview,
+                  child: Row(
+                    children: [
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeLink();
+                          },
+                          icon: const Icon(Icons.link)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeBold();
+                          },
+                          icon: const Icon(Icons.format_bold)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeItalic();
+                          },
+                          icon: const Icon(Icons.format_italic)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeQuote();
+                          },
+                          icon: const Icon(Icons.format_quote)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeStrikethrough();
+                          },
+                          icon: const Icon(Icons.format_strikethrough)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeList();
+                          },
+                          icon: const Icon(Icons.format_list_bulleted)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeSeparator();
+                          },
+                          icon: const Icon(Icons.horizontal_rule)),
+                      IconButton(
+                          onPressed: () {
+                            _bodyTextController.makeCode();
+                          },
+                          icon: const Icon(Icons.code)),
                     ],
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: isClearButtonDisabled
+                              ? null
+                              : () {
+                            _bodyTextController.clear();
+                            setState(() => showPreview = false);
+                          },
+                          child: const Text('Clear'),
+                        ),
+                        TextButton(
+                          onPressed: () => setState(() => showPreview = !showPreview),
+                          child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ),
-      ),
     );
   }
 }
