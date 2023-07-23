@@ -70,7 +70,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
-            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType, selectedCommentId: widget.selectedCommentId)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
           ),
