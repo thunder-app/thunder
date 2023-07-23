@@ -357,7 +357,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                         ),
                                       ),
                                       Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveHalfYear)} users in six months',
+                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveHalfYear)} users/6 mo',
                                         style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
                                     ],
@@ -373,7 +373,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                         ),
                                       ),
                                       Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveMonth)} users a month',
+                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveMonth)} users/mo',
                                         style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
                                     ],
@@ -389,7 +389,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                         ),
                                       ),
                                       Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveWeek)} users a week',
+                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveWeek)} users/wk',
                                         style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
                                     ],
@@ -405,7 +405,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                         ),
                                       ),
                                       Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveDay)} users a day',
+                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveDay)} users/day',
                                         style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
                                       ),
                                     ],
