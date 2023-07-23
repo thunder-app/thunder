@@ -74,7 +74,7 @@ class _ThunderState extends State<Thunder> {
       final delta = currentPosition - _dragStartX;
 
       if (delta > 0 && selectedPageIndex == 0) {
-        _feedScaffoldKey.currentState?.openEndDrawer();
+        _feedScaffoldKey.currentState?.openDrawer();
       } else if (delta < 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.closeDrawer();
       }
