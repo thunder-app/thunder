@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
-class MarkDownTextEditingController extends TextEditingController {
+class MarkdownTextEditingController extends TextEditingController {
   void makeBold() => _addAroundSelection("**");
 
   void makeItalic() => _addAroundSelection("_");
@@ -21,13 +21,11 @@ class MarkDownTextEditingController extends TextEditingController {
   }
 
   void _addBeforeSelection(String toAdd) {
-    value = value.copyWith(
-        text: text.replaceRange(selection.start, selection.start, toAdd));
+    value = value.copyWith(text: text.replaceRange(selection.start, selection.start, toAdd));
   }
 
   void _addAfterSelection(String toAdd) {
-    value = value.copyWith(
-        text: text.replaceRange(selection.end, selection.end, toAdd));
+    value = value.copyWith(text: text.replaceRange(selection.end, selection.end, toAdd));
   }
 
   void _addAroundSelection(String toAdd) {

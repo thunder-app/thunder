@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/markdown_buttons_view.dart';
 import 'package:thunder/shared/markdown_text_editing_controller.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -35,7 +36,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   // final List<bool> _selectedPostType = <bool>[true, false, false];
   String image = '';
-  final MarkDownTextEditingController _bodyTextController = MarkDownTextEditingController();
+  final MarkdownTextEditingController _bodyTextController = MarkdownTextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final imageBloc = ImageBloc();
 
@@ -103,35 +104,38 @@ class _CreatePostPageState extends State<CreatePostPage> {
         },
         bloc: imageBloc,
         child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    // Text('Create Post', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      children: [
-                        Text("Posting To: ", style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                        const SizedBox(width: 20,),
-                        Text('${widget.communityInfo?.communityView.community.name} '
-                            '· ${fetchInstanceNameFromUrl(
-                            widget.communityInfo?.communityView.community.actorId)}',
-                          style: theme.textTheme.titleSmall,),
-                      ],
-                    ),
-
-                    const SizedBox(height: 12.0),
-                    TextFormField(
-                      controller: _titleTextController,
-                      decoration: const InputDecoration(
-                        hintText: 'Title',
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  // Text('Create Post', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 12.0),
+                  Row(
+                    children: [
+                      Text("Posting To: ", style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                      const SizedBox(
+                        width: 20,
                       ),
+                      Text(
+                        '${widget.communityInfo?.communityView.community.name} '
+                        '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
+                        style: theme.textTheme.titleSmall,
+                      ),
+                    ],
+                  ),
+
+                  const SizedBox(height: 12.0),
+                  TextFormField(
+                    controller: _titleTextController,
+                    decoration: const InputDecoration(
+                      hintText: 'Title',
                     ),
-                    const SizedBox(height: 20),
-                    error
+                  ),
+                  const SizedBox(height: 20),
+                  error
                       ? const Text(
                           'Error occured while uploading',
                           textAlign: TextAlign.center,
@@ -152,133 +156,79 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                               icon: const Icon(
                                 Icons.cancel,
-                                shadows: [
-                                  Shadow(color: Colors.black, blurRadius: 15.0)
-                                ],
+                                shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],
                               ),
                             ),
                           )
                         ])
                       : image == 'loading'
-                          ? const Center(
-                              child: CircularProgressIndicator(strokeWidth: 2))
+                          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
                           : const SizedBox(height: 20),
                   Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                      TextButton(
-                        child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
-                        onPressed: () async {
-                          error = false;
-                          final ImagePicker picker = ImagePicker();
-                          XFile? file = await picker.pickImage(source: ImageSource.gallery);
-                          try {
-                            Account? account = await fetchActiveProfileAccount();
-                            String path = file!.path;
-                            imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
-                          } catch (e) {
-                            null;
-                          }
-                        },
-                      )
-                    ]),
-                    showPreview
-                        ? Container(
-                            constraints:
-                                const BoxConstraints(minWidth: double.infinity),
-                            decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(10)),
-                            padding: const EdgeInsets.all(12),
-                            child: SingleChildScrollView(
-                              child: CommonMarkdownBody(
-                                  body: _bodyTextController.text),
-                            ),
-                          )
-                        : TextField(
-                            controller: _bodyTextController,
-                            maxLines: null,
-                            minLines: 5,
-                            textAlignVertical: TextAlignVertical.top,
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                              hintText: "Post Body",
-                            ),
+                    TextButton(
+                      child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
+                      onPressed: () async {
+                        error = false;
+                        final ImagePicker picker = ImagePicker();
+                        XFile? file = await picker.pickImage(source: ImageSource.gallery);
+                        try {
+                          Account? account = await fetchActiveProfileAccount();
+                          String path = file!.path;
+                          imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
+                        } catch (e) {
+                          null;
+                        }
+                      },
+                    )
+                  ]),
+                  showPreview
+                      ? Container(
+                          constraints: const BoxConstraints(minWidth: double.infinity),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                          padding: const EdgeInsets.all(12),
+                          child: SingleChildScrollView(
+                            child: CommonMarkdownBody(body: _bodyTextController.text),
                           ),
-                  Visibility(visible: !showPreview,
-                    child: SingleChildScrollView(scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeLink();
-                              },
-                              icon: const Icon(Icons.link)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeBold();
-                              },
-                              icon: const Icon(Icons.format_bold)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeItalic();
-                              },
-                              icon: const Icon(Icons.format_italic)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeQuote();
-                              },
-                              icon: const Icon(Icons.format_quote)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeStrikethrough();
-                              },
-                              icon: const Icon(Icons.format_strikethrough)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeList();
-                              },
-                              icon: const Icon(Icons.format_list_bulleted)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeSeparator();
-                              },
-                              icon: const Icon(Icons.horizontal_rule)),
-                          IconButton(
-                              onPressed: () {
-                                _bodyTextController.makeCode();
-                              },
-                              icon: const Icon(Icons.code)),
-                        ],
-                      ),
+                        )
+                      : TextField(
+                          controller: _bodyTextController,
+                          maxLines: null,
+                          minLines: 5,
+                          textAlignVertical: TextAlignVertical.top,
+                          decoration: const InputDecoration(
+                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                            hintText: "Post Body",
+                          ),
+                        ),
+                  Visibility(visible: !showPreview, child: MarkdownButtonsView(controller: _bodyTextController)),
+                  const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          onPressed: isClearButtonDisabled
+                              ? null
+                              : () {
+                                  _bodyTextController.clear();
+                                  setState(() => showPreview = false);
+                                },
+                          child: const Text('Clear'),
+                        ),
+                        TextButton(
+                          onPressed: () => setState(() => showPreview = !showPreview),
+                          child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 8.0),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          TextButton(
-                            onPressed: isClearButtonDisabled
-                                ? null
-                                : () {
-                              _bodyTextController.clear();
-                              setState(() => showPreview = false);
-                            },
-                            child: const Text('Clear'),
-                          ),
-                          TextButton(
-                            onPressed: () => setState(() => showPreview = !showPreview),
-                            child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                ],
               ),
             ),
           ),
         ),
+      ),
     );
   }
 }
