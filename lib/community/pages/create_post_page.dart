@@ -106,125 +106,123 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: <Widget>[
-                  // Text('Create Post', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12.0),
-                  Row(
-                    children: [
-                      Text("Posting To: ", style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
-                      const SizedBox(
-                        width: 20,
-                      ),
-                      Text(
-                        '${widget.communityInfo?.communityView.community.name} '
-                        '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
-                        style: theme.textTheme.titleSmall,
-                      ),
-                    ],
-                  ),
-
-                  const SizedBox(height: 12.0),
-                  TextFormField(
-                    controller: _titleTextController,
-                    decoration: const InputDecoration(
-                      hintText: 'Title',
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  error
-                      ? const Text(
-                          'Error occured while uploading',
-                          textAlign: TextAlign.center,
-                        )
-                      : const SizedBox(height: 0),
-                  image != '' && image != 'loading'
-                      ? Stack(children: [
-                          ExtendedImage.network(
-                            image,
-                            fit: BoxFit.fitWidth,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Column(children: <Widget>[
+                      const SizedBox(height: 12.0),
+                      Row(
+                        children: [
+                          Text("Posting To: ", style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+                          const SizedBox(
+                            width: 20,
                           ),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: IconButton(
-                              onPressed: () {
-                                imageBloc.add(const ImageDeleteEvent());
-                              },
-                              icon: const Icon(
-                                Icons.cancel,
-                                shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],
+                          Text(
+                            '${widget.communityInfo?.communityView.community.name} '
+                            '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
+                            style: theme.textTheme.titleSmall,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12.0),
+                      TextFormField(
+                        controller: _titleTextController,
+                        decoration: const InputDecoration(
+                          hintText: 'Title',
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      error
+                          ? const Text(
+                              'Error occured while uploading',
+                              textAlign: TextAlign.center,
+                            )
+                          : const SizedBox(height: 0),
+                      image != '' && image != 'loading'
+                          ? Stack(children: [
+                              ExtendedImage.network(
+                                image,
+                                fit: BoxFit.fitWidth,
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: IconButton(
+                                  onPressed: () {
+                                    imageBloc.add(const ImageDeleteEvent());
+                                  },
+                                  icon: const Icon(
+                                    Icons.cancel,
+                                    shadows: [Shadow(color: Colors.black, blurRadius: 15.0)],
+                                  ),
+                                ),
+                              )
+                            ])
+                          : image == 'loading'
+                              ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+                              : const SizedBox(height: 20),
+                      Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
+                        TextButton(
+                          child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
+                          onPressed: () async {
+                            error = false;
+                            final ImagePicker picker = ImagePicker();
+                            XFile? file = await picker.pickImage(source: ImageSource.gallery);
+                            try {
+                              Account? account = await fetchActiveProfileAccount();
+                              String path = file!.path;
+                              imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
+                            } catch (e) {
+                              null;
+                            }
+                          },
+                        )
+                      ]),
+                      showPreview
+                          ? Container(
+                              constraints: const BoxConstraints(minWidth: double.infinity),
+                              decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                              padding: const EdgeInsets.all(12),
+                              child: SingleChildScrollView(
+                                child: CommonMarkdownBody(body: _bodyTextController.text),
+                              ),
+                            )
+                          : TextField(
+                              controller: _bodyTextController,
+                              maxLines: null,
+                              minLines: 5,
+                              textAlignVertical: TextAlignVertical.top,
+                              decoration: const InputDecoration(
+                                border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+                                hintText: "Post Body",
                               ),
                             ),
-                          )
-                        ])
-                      : image == 'loading'
-                          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-                          : const SizedBox(height: 20),
-                  Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
-                    TextButton(
-                      child: image == '' ? const Text("Upload Image") : const Text("Upload Image to the Body"),
-                      onPressed: () async {
-                        error = false;
-                        final ImagePicker picker = ImagePicker();
-                        XFile? file = await picker.pickImage(source: ImageSource.gallery);
-                        try {
-                          Account? account = await fetchActiveProfileAccount();
-                          String path = file!.path;
-                          imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!));
-                        } catch (e) {
-                          null;
-                        }
-                      },
-                    )
-                  ]),
-                  showPreview
-                      ? Container(
-                          constraints: const BoxConstraints(minWidth: double.infinity),
-                          decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                          padding: const EdgeInsets.all(12),
-                          child: SingleChildScrollView(
-                            child: CommonMarkdownBody(body: _bodyTextController.text),
-                          ),
-                        )
-                      : TextField(
-                          controller: _bodyTextController,
-                          maxLines: null,
-                          minLines: 5,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: const InputDecoration(
-                            border: OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-                            hintText: "Post Body",
-                          ),
-                        ),
-                  Visibility(visible: !showPreview, child: MarkdownButtonsView(controller: _bodyTextController)),
-                  const SizedBox(height: 8.0),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        TextButton(
-                          onPressed: isClearButtonDisabled
-                              ? null
-                              : () {
-                                  _bodyTextController.clear();
-                                  setState(() => showPreview = false);
-                                },
-                          child: const Text('Clear'),
-                        ),
-                        TextButton(
-                          onPressed: () => setState(() => showPreview = !showPreview),
-                          child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                        ),
-                      ],
-                    ),
+                    ]),
                   ),
-                ],
-              ),
+                ),
+                Visibility(visible: !showPreview, child: MarkdownButtonsView(controller: _bodyTextController)),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      onPressed: isClearButtonDisabled
+                          ? null
+                          : () {
+                              _bodyTextController.clear();
+                              setState(() => showPreview = false);
+                            },
+                      child: const Text('Clear'),
+                    ),
+                    TextButton(
+                      onPressed: () => setState(() => showPreview = !showPreview),
+                      child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
