@@ -124,8 +124,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           Navigator.of(context).push(
             PageRouteBuilder(
               opaque: false,
-              transitionDuration: const Duration(milliseconds: 200),
-              reverseTransitionDuration: const Duration(milliseconds: 200),
+              transitionDuration: const Duration(milliseconds: 100),
+              reverseTransitionDuration: const Duration(milliseconds: 50),
               pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                 String heroKey = generateRandomHeroString();
 
@@ -188,7 +188,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
-        clearMemoryCacheWhenDispose: true,
+        clearMemoryCacheWhenDispose: false,
         cacheWidth: widget.viewMode == ViewMode.compact
             ? (75 * View.of(context).devicePixelRatio.ceil())
             : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
