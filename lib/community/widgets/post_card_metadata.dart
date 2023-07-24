@@ -262,13 +262,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       ],
                     ),
                   GestureDetector(
-                    onTap: compactMode ? null : () => onTapCommunityName(context, postView.community.id),
-                    child: Text(
-                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      style: textStyleCommunity,
-                    )
-                  ),
+                      onTap: compactMode ? null : () => onTapCommunityName(context, postView.community.id),
+                      child: Text(
+                        '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: textStyleCommunity,
+                      )),
                   if (showCommunitySubscription)
                     Padding(
                       padding: const EdgeInsets.only(top: 3),
