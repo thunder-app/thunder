@@ -52,8 +52,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   bool isUserLoggedIn = false;
 
   void _maybeSlide() {
-    setState(() {
-      maybeSlideZooming = true;
+    Timer(const Duration(milliseconds: 30), () {
+      setState(() {
+        maybeSlideZooming = true;
+      });
     });
     Timer(const Duration(milliseconds: 300), () {
       setState(() {
