@@ -241,7 +241,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
-                spacing: 0.0,
+                spacing: 4.0,
                 children: [
                   if (state.showPostAuthor)
                     Row(
@@ -250,7 +250,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         GestureDetector(
                             child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
                         Text(
-                          ' to ',
+                          ' to',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
@@ -259,13 +259,10 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       ],
                     ),
                   GestureDetector(
-                    child: Padding(
-                      padding: EdgeInsets.only(right: showCommunitySubscription ? 6 : 0),
-                      child: Text(
-                        '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: textStyleCommunity,
-                      ),
+                    child: Text(
+                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      style: textStyleCommunity,
                     ),
                     onTap: () => onTapCommunityName(context, postView.community.id),
                   ),
