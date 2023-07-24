@@ -237,6 +237,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             postIds.add(post.postView.post.id);
           }
 
+          // Fetch any taglines from the instance
+          FullSiteView fullSiteView = await lemmy.run(
+            GetSite(
+              auth: account?.jwt,
+            ),
+          );
+
           emit(
             state.copyWith(
               status: CommunityStatus.success,
@@ -250,6 +257,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse,
+              taglines: fullSiteView.taglines,
             ),
           );
         } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches

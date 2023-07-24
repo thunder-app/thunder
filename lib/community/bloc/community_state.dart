@@ -17,6 +17,7 @@ class CommunityState extends Equatable {
     this.communityName,
     this.communityInfo,
     this.blockedCommunity,
+    this.taglines = const [],
   });
 
   final CommunityStatus status;
@@ -39,6 +40,8 @@ class CommunityState extends Equatable {
 
   final BlockedCommunity? blockedCommunity;
 
+  final List<Tagline>? taglines;
+
   CommunityState copyWith({
     CommunityStatus? status,
     int? page,
@@ -53,6 +56,7 @@ class CommunityState extends Equatable {
     String? communityName,
     FullCommunityView? communityInfo,
     BlockedCommunity? blockedCommunity,
+    List<Tagline>? taglines,
   }) {
     return CommunityState(
       status: status ?? this.status,
@@ -68,6 +72,7 @@ class CommunityState extends Equatable {
       sortType: sortType ?? this.sortType,
       communityInfo: communityInfo ?? this.communityInfo,
       blockedCommunity: blockedCommunity,
+      taglines: taglines ?? this.taglines,
     );
   }
 

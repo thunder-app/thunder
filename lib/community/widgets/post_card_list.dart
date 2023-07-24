@@ -26,6 +26,7 @@ class PostCardList extends StatefulWidget {
   final FullCommunityView? communityInfo;
   final SubscribedType? subscribeType;
   final BlockedCommunity? blockedCommunity;
+  final List<Tagline>? taglines;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -47,6 +48,7 @@ class PostCardList extends StatefulWidget {
     required this.onSaveAction,
     required this.onToggleReadAction,
     this.blockedCommunity,
+    this.taglines,
   });
 
   @override
@@ -151,22 +153,34 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               controller: _scrollController,
               itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
-                if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _displaySidebar = true;
-                      });
-                    },
-                    onHorizontalDragUpdate: (details) {
-                      if (details.delta.dx < -3) {
+                if (index == 0) {
+                  if (widget.communityId != null || widget.communityName != null) {
+                    return GestureDetector(
+                      onTap: () {
                         setState(() {
                           _displaySidebar = true;
                         });
-                      }
-                    },
-                    child: CommunityHeader(communityInfo: widget.communityInfo),
-                  );
+                      },
+                      onHorizontalDragUpdate: (details) {
+                        if (details.delta.dx < -3) {
+                          setState(() {
+                            _displaySidebar = true;
+                          });
+                        }
+                      },
+                      child: CommunityHeader(communityInfo: widget.communityInfo),
+                    );
+                  } else if (widget.taglines?.firstOrNull?.content.isNotEmpty == true) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Text(
+                        widget.taglines!.first.content,
+                        style: TextStyle(
+                          color: theme.hintColor,
+                        ),
+                      ),
+                    );
+                  }
                 }
                 if (index == widget.postViews!.length) {
                   if (widget.hasReachedEnd == true) {
