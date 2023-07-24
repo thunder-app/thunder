@@ -537,8 +537,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ToggleOption(
                           description: LocalSettings.showPostAuthor.label,
                           value: showPostAuthor,
-                          iconEnabled: Icons.person,
-                          iconDisabled: Icons.person,
+                          iconEnabled: Icons.person_rounded,
+                          iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
                         ),
                       ],
