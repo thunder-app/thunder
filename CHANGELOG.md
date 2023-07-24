@@ -41,6 +41,7 @@
 - Material You theme setting is hidden on non-android devices
 - Comment child count now counts total replies rather than total top level replies - contribution from @micahmo
 - Desktop builds will always use external browser - contribution from @micahmo
+- Adjusted way permissions are handled when saving media
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
