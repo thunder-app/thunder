@@ -207,6 +207,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
     required this.showInstanceName,
     this.textStyleAuthor,
     this.textStyleCommunity,
+    required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
@@ -214,6 +215,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
   final PostView postView;
   final TextStyle? textStyleAuthor;
   final TextStyle? textStyleCommunity;
+  final bool showCommunitySubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -257,12 +259,25 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       ],
                     ),
                   GestureDetector(
+                    child: Padding(
+                      padding: EdgeInsets.only(right: showCommunitySubscription ? 6 : 0),
                       child: Text(
                         '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: textStyleCommunity,
                       ),
-                      onTap: () => onTapCommunityName(context, postView.community.id)),
+                    ),
+                    onTap: () => onTapCommunityName(context, postView.community.id),
+                  ),
+                  if (showCommunitySubscription)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Icon(
+                        Icons.playlist_add_check_rounded,
+                        size: 16.0,
+                        color: textStyleCommunity?.color,
+                      ),
+                    ),
                 ],
               ),
             ),

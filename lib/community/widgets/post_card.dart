@@ -28,6 +28,8 @@ class PostCard extends StatefulWidget {
   final Function(bool) onSaveAction;
   final Function(bool) onToggleReadAction;
 
+  final PostListingType? listingType;
+
   const PostCard({
     super.key,
     required this.postViewMedia,
@@ -35,6 +37,7 @@ class PostCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
+    required this.listingType,
   });
 
   @override
@@ -190,6 +193,7 @@ class _PostCardState extends State<PostCard> {
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,
                         isUserLoggedIn: isUserLoggedIn,
+                        listingType: widget.listingType,
                       )
                     : PostCardViewComfortable(
                         postViewMedia: widget.postViewMedia,
@@ -208,6 +212,7 @@ class _PostCardState extends State<PostCard> {
                         isUserLoggedIn: isUserLoggedIn,
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
+                        listingType: widget.listingType,
                       ),
                 onLongPress: () => showPostActionBottomModalSheet(
                   context,
