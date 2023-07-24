@@ -23,6 +23,7 @@
 - Added options to show post author, and community icons within the feed - contribution from @sant0s12
 - Added option to disable NSFW content - contribution from @ajsosa
 - Added long-press action on image viewer to show image-only mode - contribution from @CTalvio
+- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo 
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
@@ -41,6 +42,8 @@
 - Material You theme setting is hidden on non-android devices
 - Comment child count now counts total replies rather than total top level replies - contribution from @micahmo
 - Desktop builds will always use external browser - contribution from @micahmo
+- Adjusted way permissions are handled when saving media
+- Adjusted swipe to dismiss on posts to not move divider alongside swipe gesture - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa

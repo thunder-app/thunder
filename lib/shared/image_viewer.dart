@@ -64,21 +64,46 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
+
     if (Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
-    if (androidVersionBelow33) {
-      await Permission.storage.request();
-    } else {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.photos,
-        Permission.photosAddOnly,
-      ].request();
-    }
-    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
+    // Check first if we have permissions
+    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
 
-    return hasPermission;
+    if (androidVersionBelow33 && !hasStoragePermission) {
+      await Permission.storage.request();
+      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    } else if (!androidVersionBelow33 && !hasPhotosPermission) {
+      await Permission.photos.request();
+      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    }
+
+    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    return hasPhotosPermission;
+  }
+
+  /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
+  void showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission Denied'),
+          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: const Text('Open Settings'),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -362,18 +387,26 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 ? null
                                 : () async {
                                     File file = await DefaultCacheManager().getSingleFile(widget.url);
+                                    bool hasPermission = await _requestPermission();
 
-                                    if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                                    if (!hasPermission) {
+                                      if (context.mounted) showPermissionDeniedDialog(context);
+                                    }
+
+                                    if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
                                       if (Platform.isAndroid) {
                                         // Save image to [internal storage]/Pictures/Thunder
                                         GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
                                           setState(() => downloaded = value as bool);
                                         });
                                       } else if (Platform.isIOS) {
-                                        // TODO: Check to make sure this works on iOS
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
+                                          if (value == null || value == false) {
+                                            // If the image cannot be saved to the Thunder album, then just save it to Photos
+                                            GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
+                                          }
 
-                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
-                                          setState(() => downloaded = value as bool);
+                                          setState(() => downloaded = value ?? false);
                                         });
                                       }
                                     } else if (Platform.isLinux || Platform.isWindows) {

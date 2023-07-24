@@ -53,7 +53,7 @@
 		<!-- Permission options for the `photos` group -->
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>We need Photos access to allow you to save media.</string>
-		<key>NSAppleMusicUsageDescription</key>
-		<string>N/A</string>
+ 		<key>NSPhotoLibraryAddUsageDescription</key>
+    	<string>We need Photos access to allow you to save media.</string>
 	</dict>
 </plist>

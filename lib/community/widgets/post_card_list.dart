@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
@@ -107,6 +108,10 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // This allows us to catch subscription changes and update accordingly (i.e., setting the subscription indicator)
+    context.watch<AccountBloc>();
+
     final ThunderState state = context.watch<ThunderBloc>().state;
     disableFabs = state.disableFeedFab;
 
@@ -202,6 +207,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                     onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                     onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                    listingType: widget.listingType,
                   );
                 }
               },

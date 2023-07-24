@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
@@ -30,6 +31,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
+  final PostListingType? listingType;
 
   const PostCardViewComfortable({
     super.key,
@@ -49,12 +51,17 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
+    required this.listingType,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+        isUserLoggedIn &&
+        context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final String textContent = postViewMedia.postView.post.body ?? "";
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
@@ -133,6 +140,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
                         compactMode: false,
+                        showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(

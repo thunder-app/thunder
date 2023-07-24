@@ -610,8 +610,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
-      resolved-ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
+      ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
+      resolved-ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
       url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"
