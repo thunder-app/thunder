@@ -20,7 +20,14 @@ class PostPage extends StatefulWidget {
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
+  const PostPage({
+    super.key,
+    this.postView,
+    this.postId,
+    this.selectedCommentPath,
+    this.selectedCommentId,
+    required this.onPostUpdated,
+  });
 
   @override
   State<PostPage> createState() => _PostPageState();

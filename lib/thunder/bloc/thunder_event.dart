@@ -12,3 +12,12 @@ class UserPreferencesChangeEvent extends ThunderEvent {}
 class InitializeAppEvent extends ThunderEvent {}
 
 class OnScrollToTopEvent extends ThunderEvent {}
+
+class OnDismissPostsEvent extends ThunderEvent {}
+
+class OnFabEvent extends ThunderEvent {
+  final bool isFabOpen;
+
+  const OnFabEvent( this.isFabOpen);
+}
+

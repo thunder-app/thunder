@@ -56,12 +56,13 @@ class PostCardList extends StatefulWidget {
 }
 
 class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin {
-class _PostCardListState extends State<PostCardList> with TickerProviderStateMixin {
   bool _displaySidebar = false;
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
+  int _previousDismissPostsId = 0;
   bool disableFabs = false;
+  bool showRead = true;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -114,7 +115,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     disableFabs = state.disableFeedFab;
 
     bool tabletMode = state.tabletMode;
-    bool compactMode = state.useCompactView;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -126,6 +126,10 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     if (state.scrollToTopId > _previousScrollId) {
       scrollToTop();
       _previousScrollId = state.scrollToTopId;
+    }
+    if (state.dismissPostsId > _previousDismissPostsId) {
+      dismissRead();
+      _previousDismissPostsId = state.dismissPostsId;
     }
 
     return BlocListener<ThunderBloc, ThunderState>(
@@ -186,6 +190,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             style: theme.textTheme.titleSmall,
                           ),
                         ),
+                        const SizedBox(height: 160,)
                       ],
                     );
                   } else {
@@ -298,17 +303,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 ],
               ),
             ),
-            if (!state.disableFeedFab && _showReturnToTopButton)
-              Positioned(
-                bottom: 16,
-                left: 20,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    scrollToTop();
-                  },
-                  child: const Icon(Icons.arrow_upward),
-                ),
-              ),
           ],
         ),
       ),

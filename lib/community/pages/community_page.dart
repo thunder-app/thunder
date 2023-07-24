@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:math' as math;
-
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -23,6 +21,8 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 
+import '../../shared/gesture_fab.dart';
+
 class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
@@ -42,6 +42,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   IconData? sortTypeIcon;
   String? sortTypeLabel;
   CommunityBloc? currentCommunityBloc;
+  bool _previousIsFabOpen = false;
+  bool isFabOpen = false;
 
   @override
   void initState() {
@@ -52,9 +54,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final ThunderState state = context.watch<ThunderBloc>().state;
 
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+
+    if (state.isFabOpen != _previousIsFabOpen) {
+      isFabOpen = state.isFabOpen;
+      _previousIsFabOpen = isFabOpen;
+    }
 
     return MultiBlocProvider(
       providers: [
@@ -193,33 +201,86 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       ],
                     ),
                     drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-              floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
-                  ? FloatingActionButton(
-                            onPressed: () {
-                        CommunityBloc communityBloc = context.read<CommunityBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) {
-                              return MultiBlocProvider(
-                                providers: [
-                                  BlocProvider<CommunityBloc>.value(value: communityBloc),
-                                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                      ],
-                                child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                              );
-                            },
-                                ),
-                        );
-                      },
-                      child: const Icon(
-                        Icons.add,
-                        semanticLabel: 'Create Post',
+                    floatingActionButton: GestureFab(
+                      distance: 60,
+                      icon: const Icon(Icons.menu_rounded),
+                      children: [
+                        ActionButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            context.read<ThunderBloc>().add(OnDismissPostsEvent());
+                          },
+                          title: "Dismiss Read",
+                          icon: const Icon(Icons.clear_all_rounded),
+                        ),
+                        ActionButton(
+                          onPressed: () {
+                            HapticFeedback.lightImpact();
+                            context.read<AccountBloc>().add(GetAccountInformation());
+                            return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                              reset: true,
+                              sortType: sortType,
+                              communityId: state.communityId,
+                              listingType: state.listingType,
+                              communityName: state.communityName,
+                            ));
+                          },
+                          title: "Refresh",
+                          icon: const Icon(Icons.refresh),
+                        ),
+                        /*const ActionButton(
+                          onPressed: (!state.useCompactView) => setPreferences(LocalSettings.useCompactView, value),,
+                          title: state. ? "Large View" : "Compact View",
+                          icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
+                        ),*/
+                        ActionButton(
+                          onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
+                          title: "Subscriptions",
+                          icon: const Icon(Icons.people_rounded),
+                        ),
+                        ActionButton(
+                          onPressed: () { context.read<ThunderBloc>().add(OnScrollToTopEvent()); },
+                          title: "Back to Top",
+                          icon: const Icon(Icons.arrow_upward),
+                        ),
+                        widget.communityId != null || widget.communityName != null ? ActionButton(
+                          onPressed: () {
+                            CommunityBloc communityBloc = context.read<CommunityBloc>();
+                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) {
+                                  return MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<CommunityBloc>.value(value: communityBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    ],
+                                    child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                          title: "New Post",
+                          icon: const Icon(Icons.add),
+                        ) : Container(),
+                      ],
+                    ),
+                          /**/
+                    body: Stack(
+                      children: [
+                        SafeArea(child: _getBody(context, state)),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: isFabOpen ? Listener(
+                            onPointerUp: null,
+                            child: Container(
+                              color: theme.colorScheme.background.withOpacity(0.85),
                             ),
-                          )
-                        : null,
-                    body: SafeArea(child: _getBody(context, state)),
+                          ) : null,
+                        ),
+                      ],
+                    ),
                   );
                 }),
           );
@@ -363,227 +424,4 @@ void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, Communit
 
   ScaffoldMessenger.of(context).clearSnackBars();
   ScaffoldMessenger.of(context).showSnackBar(snackBar);
-}
-
-
-@immutable
-class GestureFab extends StatefulWidget {
-  const GestureFab({
-    super.key,
-    this.initialOpen,
-    required this.distance,
-    required this.children,
-    required this.icon,
-    this.onSlideUp,
-    this.onSlideLeft,
-  });
-
-  final bool? initialOpen;
-  final double distance;
-  final List<Widget> children;
-  final Icon icon;
-  final Function? onSlideUp;
-  final Function? onSlideLeft;
-
-  @override
-  State<GestureFab> createState() => _GestureFabState();
-}
-
-class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-  late final Animation<double> _expandAnimation;
-  bool _open = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _open = widget.initialOpen ?? false;
-    _controller = AnimationController(
-      value: _open ? 1.0 : 0.0,
-      duration: const Duration(milliseconds: 200),
-      vsync: this,
-    );
-    _expandAnimation = CurvedAnimation(
-      curve: Curves.fastOutSlowIn,
-      reverseCurve: Curves.easeOutQuad,
-      parent: _controller,
-    );
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-  }
-
-  void _toggle() {
-    setState(() {
-      _open = !_open;
-      if (_open) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox.expand(
-      child: Stack(
-        alignment: Alignment.bottomRight,
-        clipBehavior: Clip.none,
-        children: [
-          _buildTapToCloseFab(),
-          ..._buildExpandingActionButtons(),
-          _buildTapToOpenFab(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTapToCloseFab() {
-    return SizedBox(
-      width: 56,
-      height: 56,
-      child: Center(
-        child: Material(
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4,
-          child: InkWell(
-            onTap: _toggle,
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.close,
-                color: Theme.of(context).primaryColor,
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  List<Widget> _buildExpandingActionButtons() {
-    final children = <Widget>[];
-    final count = widget.children.length;
-    for (var i = 0, distance = widget.distance;
-    i < count;
-    i++, distance += widget.distance) {
-      children.add(
-        _ExpandingActionButton(
-          maxDistance: distance,
-          progress: _expandAnimation,
-          child: widget.children[i],
-        ),
-      );
-    }
-    return children;
-  }
-
-  Widget _buildTapToOpenFab() {
-    return IgnorePointer(
-      ignoring: _open,
-      child: AnimatedContainer(
-        transformAlignment: Alignment.center,
-        transform: Matrix4.diagonal3Values(
-          _open ? 0.7 : 1.0,
-          _open ? 0.7 : 1.0,
-          1.0,
-        ),
-        duration: const Duration(milliseconds: 200),
-        curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
-        child: AnimatedOpacity(
-          opacity: _open ? 0.0 : 1.0,
-          curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
-          duration: const Duration(milliseconds: 200),
-          child: GestureDetector(
-            onVerticalDragStart: null,
-            onHorizontalDragStart: null,
-            child: FloatingActionButton(
-              onPressed: _toggle,
-              child: widget.icon,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-@immutable
-class ActionButton extends StatelessWidget {
-  const ActionButton({
-    super.key,
-    this.onPressed,
-    this.title,
-    required this.icon,
-  });
-
-  final VoidCallback? onPressed;
-  final Widget icon;
-  final String? title;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Row(
-      children: [
-        title != null ? Text(title!) : Container(),
-        const SizedBox(width: 16),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: Material(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            clipBehavior: Clip.antiAlias,
-            color: theme.colorScheme.primaryContainer,
-            elevation: 4,
-            child: InkWell(
-              onTap: onPressed,
-              child: icon,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-@immutable
-class _ExpandingActionButton extends StatelessWidget {
-  const _ExpandingActionButton({
-
-    required this.maxDistance,
-    required this.progress,
-    required this.child,
-  });
-
-  final double maxDistance;
-  final Animation<double> progress;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: progress,
-      builder: (context, child) {
-        final offset = Offset.fromDirection(
-          90 * (math.pi / 180.0),
-          progress.value * maxDistance,
-        );
-        return Positioned(
-          right: 8.0 + offset.dx,
-          bottom: 10.0 + offset.dy,
-          child: child!,
-        );
-      },
-      child: FadeTransition(
-        opacity: progress,
-        child: child,
-      ),
-    );
-  }
 }

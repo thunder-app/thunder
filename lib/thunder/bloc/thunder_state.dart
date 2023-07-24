@@ -83,8 +83,13 @@ class ThunderState extends Equatable {
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
 
-    // Scroll
+    /// --------------------------------- UI Events ---------------------------------
+    // Scroll to top event
     this.scrollToTopId = 0,
+    // Dismiss posts from loaded view event
+    this.dismissPostsId = 0,
+    // Expand/Close FAB event
+    this.isFabOpen = false,
   });
 
   final ThunderStatus status;
@@ -166,8 +171,14 @@ class ThunderState extends Equatable {
   final SwipeAction rightPrimaryCommentGesture;
   final SwipeAction rightSecondaryCommentGesture;
 
-  // Scroll
+
+  /// --------------------------------- UI Events ---------------------------------
+  // Scroll to top event
   final int scrollToTopId;
+  // Dismiss posts from loaded view event
+  final int dismissPostsId;
+  // Expand/Close FAB event
+  final bool isFabOpen;
 
   ThunderState copyWith({
     ThunderStatus? status,
@@ -249,8 +260,13 @@ class ThunderState extends Equatable {
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
 
-    // Scroll
+    /// --------------------------------- UI Events ---------------------------------
+    // Scroll to top event
     int? scrollToTopId,
+    // Dismiss posts from loaded view event
+    int? dismissPostsId,
+    // Expand/Close FAB event
+    bool? isFabOpen,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -332,8 +348,13 @@ class ThunderState extends Equatable {
       rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
       rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
-      // Scroll
+      /// --------------------------------- UI Events ---------------------------------
+      // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
+      // Dismiss posts from loaded view event
+      dismissPostsId: dismissPostsId ?? this.dismissPostsId,
+      // Expand/Close FAB event
+      isFabOpen: isFabOpen ?? this.isFabOpen,
     );
   }
 
@@ -418,7 +439,13 @@ class ThunderState extends Equatable {
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
 
-        // Scroll
+
+        /// --------------------------------- UI Events ---------------------------------
+        // Scroll to top event
         scrollToTopId,
+        // Dismiss posts from loaded view event
+        dismissPostsId,
+        // Expand/Close FAB event
+        isFabOpen,
       ];
 }

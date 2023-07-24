@@ -40,6 +40,14 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _onScrollToTopEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<OnDismissPostsEvent>(
+      _onDismissPostsEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnFabEvent>(
+      _onFabEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// This event should be triggered at the start of the app.
@@ -232,5 +240,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
   void _onScrollToTopEvent(OnScrollToTopEvent event, Emitter<ThunderState> emit) {
     emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
+  }
+
+  void _onDismissPostsEvent(OnDismissPostsEvent event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(dismissPostsId: state.dismissPostsId + 1));
+  }
+
+  void _onFabEvent(OnFabEvent event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(isFabOpen: !state.isFabOpen));
   }
 }
