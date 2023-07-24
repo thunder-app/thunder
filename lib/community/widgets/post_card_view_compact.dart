@@ -80,6 +80,7 @@ class PostCardViewCompact extends StatelessWidget {
                           )),
                       const SizedBox(height: 4.0),
                       PostCommunityAndAuthor(
+                        compactMode: true,
                         showCommunityIcons: false,
                         showInstanceName: showInstanceName,
                         postView: postViewMedia.postView,
