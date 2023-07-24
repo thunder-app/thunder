@@ -428,7 +428,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
       // @todo: alternatively, insert and scroll to new comment on refetch
-      if(event.parentCommentId != null) {
+      if (event.parentCommentId != null) {
         add(GetPostEvent(postView: state.postView!, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
       } else {
         selectedCommentId = null;
@@ -449,11 +449,21 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.', moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+        return emit(state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: 'You are not logged in. Cannot create a post.',
+            moddingCommentId: event.commentId,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
       if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.', moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+        return emit(state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: 'Could not determine post to comment to.',
+            moddingCommentId: event.commentId,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
       FullCommentView editComment = await lemmy.run(EditComment(
@@ -490,10 +500,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
       updateModifiedComment(state.comments, deletedComment);
 
-      return emit(state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      return emit(
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }
-
 }
