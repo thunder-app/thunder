@@ -18,6 +18,7 @@ class PostState extends Equatable {
       this.sortTypeIcon,
       this.selectedCommentId,
       this.selectedCommentPath,
+      this.moddingCommentId = -1,
       this.viewAllCommentsRefresh = false});
 
   final PostStatus status;
@@ -39,6 +40,9 @@ class PostState extends Equatable {
   final bool hasReachedCommentEnd;
   final int? selectedCommentId;
   final String? selectedCommentPath;
+  // This is to track what comment is being restored or deleted so we can
+  // show a spinner indicator that thunder is working on it
+  final int moddingCommentId;
 
   final String? errorMessage;
 
@@ -57,6 +61,7 @@ class PostState extends Equatable {
     IconData? sortTypeIcon,
     int? selectedCommentId,
     String? selectedCommentPath,
+    int? moddingCommentId,
     bool? viewAllCommentsRefresh = false,
   }) {
     return PostState(
@@ -74,6 +79,7 @@ class PostState extends Equatable {
       sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
       selectedCommentId: selectedCommentId,
       selectedCommentPath: selectedCommentPath,
+      moddingCommentId: moddingCommentId ?? this.moddingCommentId,
       viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
     );
   }
@@ -93,6 +99,7 @@ class PostState extends Equatable {
         sortTypeIcon,
         selectedCommentId,
         selectedCommentPath,
-        viewAllCommentsRefresh
+        viewAllCommentsRefresh,
+        moddingCommentId,
       ];
 }

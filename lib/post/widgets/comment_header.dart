@@ -19,6 +19,7 @@ class CommentHeader extends StatelessWidget {
   final bool isOwnComment;
   final bool isHidden;
   final bool isCommentNew;
+  final int moddingCommentId;
 
   const CommentHeader({
     super.key,
@@ -27,6 +28,7 @@ class CommentHeader extends StatelessWidget {
     this.isCommentNew = false,
     this.isOwnComment = false,
     this.isHidden = false,
+    this.moddingCommentId = -1,
   });
 
   @override
@@ -42,8 +44,6 @@ class CommentHeader extends StatelessWidget {
     //int score = commentViewTree.commentViewTree.comment?.counts.score ?? 0; maybe make combined scores an option?
     int upvotes = commentViewTree.commentView?.counts.upvotes ?? 0;
     int downvotes = commentViewTree.commentView?.counts.downvotes ?? 0;
-
-    int level = commentViewTree.level;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -189,6 +189,14 @@ class CommentHeader extends StatelessWidget {
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),
                   ),
+                if (commentViewTree.commentView!.comment.id == moddingCommentId) ...[
+                  SizedBox(
+                      width: state.contentFontSizeScale.textScaleFactor * 15,
+                      height: state.contentFontSizeScale.textScaleFactor * 15,
+                      child: CircularProgressIndicator(
+                        color: theme.colorScheme.primary,
+                      ))
+                ]
               ],
             ),
           ),

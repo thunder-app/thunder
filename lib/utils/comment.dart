@@ -124,3 +124,21 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
 
   return []; // Return an empty list if the target ID is not found
 }
+
+// Used for modifying the comment current comment tree so we don't have to refresh the whole thing
+bool updateModifiedComment(List<CommentViewTree> commentTrees, FullCommentView moddedComment) {
+
+  for (int i = 0; i < commentTrees.length; i++) {
+    if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
+      commentTrees[i].commentView = moddedComment.commentView;
+      return true;
+    }
+
+    bool done = updateModifiedComment(commentTrees[i].replies, moddedComment);
+    if(done) {
+      return done;
+    }
+  }
+
+  return false;
+}
