@@ -52,10 +52,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   bool isUserLoggedIn = false;
 
   void _maybeSlide() {
-    Timer(const Duration(milliseconds: 30), () {
-      setState(() {
-        maybeSlideZooming = true;
-      });
+    setState(() {
+      maybeSlideZooming = true;
     });
     Timer(const Duration(milliseconds: 300), () {
       setState(() {
@@ -155,7 +153,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         : null,
                     child: Listener(
                       // Start watching for double tap zoom
-                      onPointerDown: (details) {
+                      onPointerUp: (details) {
                         downCoord = details.position;
                         _maybeSlide();
                       },
