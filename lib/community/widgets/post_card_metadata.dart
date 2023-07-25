@@ -207,11 +207,13 @@ class PostCommunityAndAuthor extends StatelessWidget {
     required this.showInstanceName,
     this.textStyleAuthor,
     this.textStyleCommunity,
+    required this.compactMode,
     required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
   final bool showInstanceName;
+  final bool compactMode;
   final PostView postView;
   final TextStyle? textStyleAuthor;
   final TextStyle? textStyleCommunity;
@@ -248,7 +250,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
+                            onTap: compactMode ? null : () => onTapUserName(context, postView.creator.id),
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor)),
                         Text(
                           ' to',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
@@ -259,13 +262,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       ],
                     ),
                   GestureDetector(
-                    child: Text(
-                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      style: textStyleCommunity,
-                    ),
-                    onTap: () => onTapCommunityName(context, postView.community.id),
-                  ),
+                      onTap: compactMode ? null : () => onTapCommunityName(context, postView.community.id),
+                      child: Text(
+                        '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: textStyleCommunity,
+                      )),
                   if (showCommunitySubscription)
                     Padding(
                       padding: const EdgeInsets.only(top: 3),

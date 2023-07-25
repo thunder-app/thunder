@@ -139,6 +139,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
+                        compactMode: false,
                         showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),
