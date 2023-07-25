@@ -1,3 +1,4 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -173,10 +174,25 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   } else if (widget.taglines?.firstOrNull?.content.isNotEmpty == true) {
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
-                      child: Text(
-                        widget.taglines!.first.content,
-                        style: TextStyle(
-                          color: theme.hintColor,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: theme.splashColor,
+                          borderRadius: const BorderRadius.all(
+                            Radius.elliptical(5, 5),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: ExpandableText(
+                            maxLines: 2,
+                            collapseOnTextTap: true,
+                            animation: true,
+                            widget.taglines!.first.content,
+                            expandText: 'Show more...',
+                            style: TextStyle(
+                              color: theme.hintColor,
+                            ),
+                          ),
                         ),
                       ),
                     );
@@ -193,7 +209,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           child: Text(
                             'Hmmm. It seems like you\'ve reached the bottom.',
                             textAlign: TextAlign.center,
-                            style: theme.textTheme.titleSmall,
+                            //style: theme.textTheme.titleSmall,
                           ),
                         ),
                       ],
