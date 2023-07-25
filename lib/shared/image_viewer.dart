@@ -178,7 +178,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         : null,
                     child: Listener(
                       // Start watching for double tap zoom
-                      onPointerDown: (details) {
+                      onPointerUp: (details) {
                         downCoord = details.position;
                         _maybeSlide();
                       },
