@@ -15,7 +15,7 @@ Future<String> getCurrentVersion() async {
 }
 
 Future<Version> fetchVersion() async {
-  const url = 'https://api.github.com/repos/hjiangsu/thunder/releases/latest';
+  const url = 'https://api.github.com/repos/thunder-app/thunder/releases/latest';
 
   try {
     String currentVersion = await getCurrentVersion();

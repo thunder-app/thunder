@@ -28,7 +28,7 @@ class ThunderState extends Equatable {
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
-    this.showInAppUpdateNotification = true,
+    this.showInAppUpdateNotification = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings

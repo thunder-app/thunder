@@ -41,7 +41,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
   bool disableFeedFab = false;
-  bool showInAppUpdateNotification = true;
+  bool showInAppUpdateNotification = false;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -261,7 +261,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
 
       // Notification Settings
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
 
       isLoading = false;
     });
