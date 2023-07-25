@@ -384,6 +384,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
+                                    margin: EdgeInsets.only(
+                                      left: switch (nestedCommentIndicatorStyle) {
+                                        NestedCommentIndicatorStyle.thin => 7,
+                                        NestedCommentIndicatorStyle.thick => 4,
+                                      },
+                                    ),
                                     decoration: BoxDecoration(
                                       border: Border(
                                         left: BorderSide(
