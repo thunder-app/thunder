@@ -210,7 +210,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           child: Text(
                             'Hmmm. It seems like you\'ve reached the bottom.',
                             textAlign: TextAlign.center,
-                            //style: theme.textTheme.titleSmall,
+                            style: theme.textTheme.titleSmall,
                           ),
                         ),
                       ],
