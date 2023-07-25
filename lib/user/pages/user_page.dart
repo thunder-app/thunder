@@ -9,6 +9,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:thunder/user/pages/user_settings_page.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;
@@ -66,9 +67,26 @@ class _UserPageState extends State<UserPage> {
               )
             : null,
         actions: [
+          if (widget.userId != null && widget.isAccountUser)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(4.0, 4.0, 0, 4.0),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => UserSettingsPage(widget.userId),
+                    ),
+                  );
+                },
+                icon: const Icon(
+                  Icons.settings_rounded,
+                  semanticLabel: 'Account Settings',
+                ),
+              ),
+            ),
           if (widget.isAccountUser)
             Padding(
-              padding: const EdgeInsets.all(4.0),
+              padding: const EdgeInsets.fromLTRB(0, 4.0, 4.00, 4.0),
               child: IconButton(
                 onPressed: () => showProfileModalSheet(context),
                 icon: const Icon(
@@ -98,11 +116,13 @@ class _UserPageState extends State<UserPage> {
                 userId: widget.userId,
                 isAccountUser: widget.isAccountUser,
                 personView: state.personView,
+                moderates: state.moderates,
                 commentViewTrees: state.comments,
                 postViews: state.posts,
                 savedPostViews: state.savedPosts,
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
+                blockedPerson: state.blockedPerson,
               );
             case UserStatus.empty:
               return Container();

@@ -8,16 +8,21 @@ class PostState extends Equatable {
       this.postId,
       this.postView,
       this.comments = const [],
-      this.commentResponseList = const [],
+      this.commentResponseMap = const <int, CommentView>{},
       this.commentPage = 1,
       this.commentCount = 0,
       this.communityId,
       this.hasReachedCommentEnd = false,
       this.errorMessage,
       this.sortType,
-      this.sortTypeIcon});
+      this.sortTypeIcon,
+      this.selectedCommentId,
+      this.selectedCommentPath,
+      this.viewAllCommentsRefresh = false});
 
   final PostStatus status;
+
+  final bool viewAllCommentsRefresh;
 
   final CommentSortType? sortType;
   final IconData? sortTypeIcon;
@@ -28,10 +33,12 @@ class PostState extends Equatable {
 
   // Comment related data
   final List<CommentViewTree> comments;
-  final List<CommentView> commentResponseList; // This is the raw list of comments
+  final Map<int, CommentView> commentResponseMap;
   final int commentPage;
   final int commentCount;
   final bool hasReachedCommentEnd;
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
 
   final String? errorMessage;
 
@@ -40,7 +47,7 @@ class PostState extends Equatable {
     int? postId,
     PostViewMedia? postView,
     List<CommentViewTree>? comments,
-    List<CommentView>? commentResponseList,
+    Map<int, CommentView>? commentResponseMap,
     int? commentPage,
     int? commentCount,
     bool? hasReachedCommentEnd,
@@ -48,23 +55,44 @@ class PostState extends Equatable {
     String? errorMessage,
     CommentSortType? sortType,
     IconData? sortTypeIcon,
+    int? selectedCommentId,
+    String? selectedCommentPath,
+    bool? viewAllCommentsRefresh = false,
   }) {
     return PostState(
       status: status,
       postId: postId ?? this.postId,
       postView: postView ?? this.postView,
       comments: comments ?? this.comments,
-      commentResponseList: commentResponseList ?? this.commentResponseList,
+      commentResponseMap: commentResponseMap ?? this.commentResponseMap,
       commentPage: commentPage ?? this.commentPage,
       commentCount: commentCount ?? this.commentCount,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       communityId: communityId ?? this.communityId,
       errorMessage: errorMessage ?? this.errorMessage,
-      sortType: sortType,
-      sortTypeIcon: sortTypeIcon,
+      sortType: sortType ?? this.sortType,
+      sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
+      selectedCommentId: selectedCommentId,
+      selectedCommentPath: selectedCommentPath,
+      viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [status, postId, postView, comments, commentPage, commentCount, communityId, errorMessage, hasReachedCommentEnd, sortType, sortTypeIcon];
+  List<Object?> get props => [
+        status,
+        postId,
+        postView,
+        comments,
+        commentPage,
+        commentCount,
+        communityId,
+        errorMessage,
+        hasReachedCommentEnd,
+        sortType,
+        sortTypeIcon,
+        selectedCommentId,
+        selectedCommentPath,
+        viewAllCommentsRefresh
+      ];
 }

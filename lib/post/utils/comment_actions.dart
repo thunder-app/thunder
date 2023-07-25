@@ -6,7 +6,6 @@ import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -18,6 +17,8 @@ void triggerCommentAction({
   required VoteType voteType,
   bool? saved,
   required CommentViewTree commentViewTree,
+  int? selectedCommentId,
+  String? selectedCommentPath,
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
@@ -45,7 +46,7 @@ void triggerCommentAction({
                   BlocProvider<PostBloc>.value(value: postBloc),
                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
                 ],
-                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit),
+                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath),
               ),
             ),
           );
@@ -61,7 +62,10 @@ void triggerCommentAction({
   }
 }
 
-IconData? getSwipeActionIcon(SwipeAction swipeAction) {
+// Note: This function applies both to posts and comments.
+// The read parameter applies only to posts and can be ignored otherwise.
+// It may be wise to refactor this at some point.
+IconData? getSwipeActionIcon(SwipeAction swipeAction, {bool read = false}) {
   switch (swipeAction) {
     case SwipeAction.upvote:
       return Icons.north_rounded;
@@ -73,11 +77,15 @@ IconData? getSwipeActionIcon(SwipeAction swipeAction) {
       return Icons.edit;
     case SwipeAction.save:
       return Icons.star_rounded;
+    case SwipeAction.toggleRead:
+      return read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined;
     default:
       return null;
   }
 }
 
+// Note: This function applies to both posts and comments.
+// It may be wise to refactor it at some point.
 Color getSwipeActionColor(SwipeAction swipeAction) {
   switch (swipeAction) {
     case SwipeAction.upvote:
@@ -90,6 +98,8 @@ Color getSwipeActionColor(SwipeAction swipeAction) {
       return Colors.green.shade700;
     case SwipeAction.save:
       return Colors.purple.shade700;
+    case SwipeAction.toggleRead:
+      return Colors.teal.shade300;
     default:
       return Colors.transparent;
   }

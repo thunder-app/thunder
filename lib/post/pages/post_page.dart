@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -12,15 +11,16 @@ import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder.dart';
 
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
+  final String? selectedCommentPath;
+  final int? selectedCommentId;
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, required this.onPostUpdated});
+  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -28,9 +28,10 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
-  bool hasScrolledToBottom = true;
+  bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _showReturnToTopButton = false;
+  bool disableFabs = false;
 
   Offset? _currentHorizontalDragStartPosition;
 
@@ -52,9 +53,18 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
-    setState(() {
-      _showReturnToTopButton = _scrollController.offset > 200;
-    });
+
+    if (!disableFabs) {
+      if (_scrollController.offset > 200 && !_showReturnToTopButton) {
+        setState(() {
+          _showReturnToTopButton = true;
+        });
+      } else if (_scrollController.offset <= 200 && _showReturnToTopButton) {
+        setState(() {
+          _showReturnToTopButton = false;
+        });
+      }
+    }
   }
 
   CommentSortType? sortType;
@@ -64,7 +74,8 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
+    disableFabs = thunderState.disablePostFabs;
 
     return BlocProvider<PostBloc>(
       create: (context) => PostBloc(),
@@ -96,42 +107,43 @@ class _PostPageState extends State<PostPage> {
             ),
             floatingActionButton: Stack(
               children: [
-                Positioned(
-                  bottom: 20,
-                  right: 5,
-                  child: FloatingActionButton(
-                    onPressed: () {
-                      PostBloc postBloc = context.read<PostBloc>();
-                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                if (!thunderState.disablePostFabs)
+                  Positioned(
+                    bottom: 20,
+                    right: 5,
+                    child: FloatingActionButton(
+                      onPressed: () {
+                        PostBloc postBloc = context.read<PostBloc>();
+                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                      showModalBottomSheet(
-                        isScrollControlled: true,
-                        context: context,
-                        showDragHandle: true,
-                        builder: (context) {
-                          return Padding(
-                            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                            child: FractionallySizedBox(
-                              heightFactor: 0.8,
-                              child: MultiBlocProvider(
-                                providers: [
-                                  BlocProvider<PostBloc>.value(value: postBloc),
-                                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                ],
-                                child: CreateCommentModal(postView: widget.postView?.postView),
+                        showModalBottomSheet(
+                          isScrollControlled: true,
+                          context: context,
+                          showDragHandle: true,
+                          builder: (context) {
+                            return Padding(
+                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                              child: FractionallySizedBox(
+                                heightFactor: 0.8,
+                                child: MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<PostBloc>.value(value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  ],
+                                  child: CreateCommentModal(postView: widget.postView?.postView),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                    child: const Icon(
-                      Icons.reply_rounded,
-                      semanticLabel: 'Reply to Post',
+                            );
+                          },
+                        );
+                      },
+                      child: const Icon(
+                        Icons.reply_rounded,
+                        semanticLabel: 'Reply to Post',
+                      ),
                     ),
                   ),
-                ),
-                if (_showReturnToTopButton)
+                if (!thunderState.disablePostFabs && _showReturnToTopButton)
                   Positioned(
                     bottom: 20,
                     left: 40,
@@ -139,7 +151,7 @@ class _PostPageState extends State<PostPage> {
                       onPressed: () {
                         _scrollController.animateTo(
                           0,
-                          duration: Duration(milliseconds: 500),
+                          duration: const Duration(milliseconds: 500),
                           curve: Curves.easeInOut,
                         );
                       },
@@ -192,7 +204,6 @@ class _PostPageState extends State<PostPage> {
                         backgroundColor: theme.colorScheme.onErrorContainer,
                         behavior: SnackBarBehavior.floating,
                       );
-
                       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                         ScaffoldMessenger.of(context).clearSnackBars();
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -201,7 +212,9 @@ class _PostPageState extends State<PostPage> {
                     }
                     switch (state.status) {
                       case PostStatus.initial:
-                        context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                        context
+                            .read<PostBloc>()
+                            .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
                         return const Center(child: CircularProgressIndicator());
                       case PostStatus.loading:
                         return const Center(child: CircularProgressIndicator());
@@ -212,9 +225,18 @@ class _PostPageState extends State<PostPage> {
                           return RefreshIndicator(
                             onRefresh: () async {
                               HapticFeedback.mediumImpact();
-                              return context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                              return context
+                                  .read<PostBloc>()
+                                  .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
                             },
-                            child: PostPageSuccess(postView: state.postView!, comments: state.comments, scrollController: _scrollController, hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            child: PostPageSuccess(
+                                postView: state.postView!,
+                                comments: state.comments,
+                                selectedCommentId: state.selectedCommentId,
+                                selectedCommentPath: state.selectedCommentPath,
+                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                                scrollController: _scrollController,
+                                hasReachedCommentEnd: state.hasReachedCommentEnd),
                           );
                         }
                         return ErrorMessage(

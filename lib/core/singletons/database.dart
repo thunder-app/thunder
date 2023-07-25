@@ -44,12 +44,23 @@ class DB {
     batch.execute('ALTER TABLE accounts ADD COLUMN userId INTEGER');
   }
 
+  void _updateTableAccountsV3toV4(Batch batch) {
+    batch.execute(_getAnonymousSubscriptionsTableRawString());
+  }
+
+  String _getAnonymousSubscriptionsTableRawString() {
+    return 'CREATE TABLE anonymous_subscriptions(id int PRIMARY KEY, ' + 'name TEXT, title TEXT, actorId TEXT, icon TEXT)';
+  }
+
   Future<Database> _init() async {
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
-      version: 3,
+      version: 4,
       onCreate: (db, version) {
-        return db.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+        var batch = db.batch();
+        batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+        batch.execute(_getAnonymousSubscriptionsTableRawString());
+        batch.commit();
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         var batch = db.batch();
@@ -59,9 +70,13 @@ class DB {
 
           if (!doesUserIdExist) {
             _updateTableAccountsV1toV2(batch);
-            await batch.commit();
           }
         }
+
+        if (oldVersion < 4) {
+          _updateTableAccountsV3toV4(batch);
+        }
+        await batch.commit();
       },
     );
   }

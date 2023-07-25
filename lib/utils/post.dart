@@ -1,18 +1,19 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/media.dart';
 import 'package:thunder/core/models/media_extension.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
@@ -96,11 +97,13 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool('setting_general_show_full_height_images') ?? false;
-  bool edgeToEdgeImages = prefs.getBool('setting_general_show_edge_to_edge_images') ?? false;
-  bool tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+  bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+  bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+  bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
 
-  Iterable<Future<PostViewMedia>> postFutures = postViews.map<Future<PostViewMedia>>((post) => parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode));
+  Iterable<Future<PostViewMedia>> postFutures =
+      postViews.expand((post) => [if (!hideNsfwPosts || (!post.post.nsfw && hideNsfwPosts)) parsePostView(post, fetchImageDimensions, edgeToEdgeImages, tabletMode)]).toList();
   List<PostViewMedia> posts = await Future.wait(postFutures);
 
   return posts;
@@ -127,26 +130,34 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
     }
   } else if (url != null) {
     if (fetchImageDimensions) {
-      // For external links, attempt to fetch any media associated with it (image, title)
-      LinkInfo linkInfo = await getLinkInfo(url);
+      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
+      } else {
+        // For external links, attempt to fetch any media associated with it (image, title)
+        LinkInfo linkInfo = await getLinkInfo(url);
 
-      try {
-        if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
-          Size result = await retrieveImageDimensions(linkInfo.imageURL!);
+        try {
+          if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
+            Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
-          int mediaHeight = result.height.toInt();
-          int mediaWidth = result.width.toInt();
-          Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
-          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
-        } else {
-          media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
+            int mediaHeight = result.height.toInt();
+            int mediaWidth = result.width.toInt();
+            Size size = MediaExtension.getScaledMediaSize(width: mediaWidth, height: mediaHeight, offset: edgeToEdgeImages ? 0 : 24, tabletMode: tabletMode);
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url, height: size.height, width: size.width));
+          } else {
+            media.add(Media(mediaUrl: linkInfo.imageURL!, mediaType: MediaType.link, originalUrl: url));
+          }
+        } catch (e) {
+          // Default back to a link
+          media.add(Media(mediaType: MediaType.link, originalUrl: url));
         }
-      } catch (e) {
-        // Default back to a link
-        media.add(Media(mediaType: MediaType.link, originalUrl: url));
       }
     } else {
-      media.add(Media(mediaType: MediaType.link, originalUrl: url));
+      if (postView.post.thumbnailUrl?.isNotEmpty == true) {
+        media.add(Media(mediaUrl: postView.post.thumbnailUrl!, mediaType: MediaType.link, originalUrl: url));
+      } else {
+        media.add(Media(mediaType: MediaType.link, originalUrl: url));
+      }
     }
   }
 

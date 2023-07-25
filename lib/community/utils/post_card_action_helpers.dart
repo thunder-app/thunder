@@ -211,3 +211,22 @@ void onTapCommunityName(BuildContext context, int communityId) {
     ),
   );
 }
+
+void onTapUserName(BuildContext context, int userId) {
+  AccountBloc accountBloc = context.read<AccountBloc>();
+  AuthBloc authBloc = context.read<AuthBloc>();
+  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => MultiBlocProvider(
+        providers: [
+          BlocProvider.value(value: accountBloc),
+          BlocProvider.value(value: authBloc),
+          BlocProvider.value(value: thunderBloc),
+        ],
+        child: UserPage(userId: userId),
+      ),
+    ),
+  );
+}

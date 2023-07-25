@@ -20,13 +20,13 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
-import '../../utils/date_time.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
+  final int? selectedCommentId;
 
-  const PostSubview({super.key, required this.useDisplayNames, required this.postViewMedia});
+  const PostSubview({super.key, this.selectedCommentId, required this.useDisplayNames, required this.postViewMedia});
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +38,7 @@ class PostSubview extends StatelessWidget {
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
+    final bool showLinkPreview = thunderState.showLinkPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
@@ -56,6 +57,7 @@ class PostSubview extends StatelessWidget {
             ),
           ),
           MediaView(
+            showLinkPreview: showLinkPreview,
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
@@ -70,7 +72,7 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(left: 0, right: 8.0, top: 16.0),
+            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
@@ -88,7 +90,9 @@ class PostSubview extends StatelessWidget {
                             BlocProvider.value(value: authBloc),
                             BlocProvider.value(value: thunderBloc),
                           ],
-                          child: UserPage(userId: postView.creator.id),
+                          child: UserPage(
+                            userId: postView.creator.id,
+                          ),
                         ),
                       ),
                     );
@@ -298,7 +302,7 @@ class PostSubview extends StatelessWidget {
                 ),
               )
             ],
-          )
+          ),
         ],
       ),
     );

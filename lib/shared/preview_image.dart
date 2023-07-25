@@ -1,12 +1,11 @@
-import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+
+import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+
 import 'package:thunder/core/enums/view_mode.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/shared/webview.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
+import 'package:thunder/utils/links.dart';
 
 class PreviewImage extends StatefulWidget {
   final ViewMode viewMode;
@@ -53,9 +52,9 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
     return Hero(
-      tag: widget.mediaUrl!,
+      tag: widget.mediaUrl,
       child: ExtendedImage.network(
-        widget.mediaUrl!,
+        widget.mediaUrl,
         height: height,
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
@@ -67,7 +66,6 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               _controller.reset();
-
               return Container(
                 color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
                 child: SizedBox(
@@ -98,7 +96,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                   child: InkWell(
                     child: Container(
                       clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(6)),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
                       child: Stack(
                         alignment: Alignment.bottomRight,
                         fit: StackFit.passthrough,
@@ -131,26 +129,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                       ),
                     ),
                     onTap: () {
-                      if (widget.mediaUrl != null) {
-                        if (openInExternalBrowser) {
-                          launchUrl(Uri.parse(widget.mediaUrl!), mode: LaunchMode.externalApplication);
-                        } else {
-                          launch(widget.mediaUrl!,
-                            customTabsOption: CustomTabsOption(
-                              toolbarColor: Theme.of(context).canvasColor,
-                              enableUrlBarHiding: true,
-                              showPageTitle: true,
-                              enableDefaultShare: true,
-                              enableInstantApps: true,
-                            ),
-                            safariVCOption: SafariViewControllerOption(
-                              preferredBarTintColor: Theme.of(context).canvasColor,
-                              preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
-                              barCollapsingEnabled: true,
-                            ),
-                          );
-                        }
-                      }
+                      openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
                     },
                   ),
                 ),

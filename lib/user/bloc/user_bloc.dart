@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:dio/dio.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -54,6 +53,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _markPostAsReadEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<BlockUserEvent>(
+      _blockUserEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
@@ -61,7 +64,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      var exception;
+      Object exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -101,6 +104,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
                 status: UserStatus.success,
                 comments: commentTree,
                 posts: posts,
+                moderates: fullPersonView?.moderates,
                 page: 2,
                 hasReachedPostEnd: posts.length == fullPersonView?.personView.counts.postCount,
                 hasReachedCommentEnd: posts.isEmpty && (fullPersonView?.comments.isEmpty ?? true),
@@ -126,7 +130,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView?.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
@@ -144,16 +148,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             status: UserStatus.success,
             comments: commentViewTree,
             posts: postViewMedias,
+            moderates: fullPersonView.moderates,
             page: state.page + 1,
             hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -163,7 +168,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      var exception;
+      Object exception;
 
       Account? account = await fetchActiveProfileAccount();
 
@@ -249,7 +254,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             hasReachedSavedPostEnd: posts.isEmpty || posts.length < limit,
             hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
@@ -264,27 +269,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       emit(state.copyWith(status: UserStatus.refreshing));
 
       // Optimistically update the post
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      PostViewMedia postViewMedia = state.posts[existingPostViewIndex];
+      PostViewMedia? postViewMedia = _getPost(event.postId);
 
-      PostView originalPostView = state.posts[existingPostViewIndex].postView;
-      PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
-      state.posts[existingPostViewIndex].postView = updatedPostView;
+      if (postViewMedia != null) {
+        PostView originalPostView = postViewMedia.postView;
+        PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.score);
+        _updatePosts(updatedPostView, event.postId);
 
-      // Immediately set the status, and continue
-      emit(state.copyWith(status: UserStatus.success));
-      emit(state.copyWith(status: UserStatus.refreshing));
+        // Immediately set the status, and continue
+        emit(state.copyWith(status: UserStatus.success));
+        emit(state.copyWith(status: UserStatus.refreshing));
 
-      PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
-        state.posts[existingPostViewIndex].postView = originalPostView;
-        throw Exception('Error: Timeout when attempting to vote post');
-      });
+        PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
+          _updatePosts(originalPostView, event.postId);
+          throw Exception('Error: Timeout when attempting to vote post');
+        });
 
-      // Find the specific post to update
-      state.posts[existingPostViewIndex].postView = postView;
+        // Find the specific post to update
+        _updatePosts(postView, event.postId);
+      }
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -295,12 +301,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       PostView postView = await markPostAsRead(event.postId, event.read);
 
-      // Find the specific post to update
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      state.posts[existingPostViewIndex].postView = postView;
+      _updatePosts(postView, event.postId);
 
       return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: UserStatus.failure,
         errorMessage: e.toString(),
@@ -315,12 +319,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
       PostView postView = await savePost(event.postId, event.save);
 
-      // Find the specific post to update
-      int existingPostViewIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      state.posts[existingPostViewIndex].postView = postView;
+      _updatePosts(postView, event.postId);
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -354,7 +356,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -377,8 +379,73 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  PostViewMedia? _getPost(int postId) {
+    int postsIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
+    if (postsIndex >= 0) {
+      return state.posts[postsIndex];
+    }
+
+    int savedPostsIndex = state.savedPosts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
+    if (savedPostsIndex >= 0) {
+      return state.savedPosts[savedPostsIndex];
+    }
+
+    return null;
+  }
+
+  void _updatePosts(PostView postView, int postId) {
+    int postsIndex = state.posts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
+    if (postsIndex >= 0) {
+      state.posts[postsIndex].postView = postView;
+    }
+
+    int savedPostsIndex = state.savedPosts.indexWhere((postViewMedia) => postViewMedia.postView.post.id == postId);
+    if (savedPostsIndex >= 0) {
+      state.savedPosts[savedPostsIndex].postView = postView;
+    }
+  }
+
+  Future<void> _blockUserEvent(BlockUserEvent event, Emitter<UserState> emit) async {
+    try {
+      emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(
+          state.copyWith(
+            status: UserStatus.failure,
+            errorMessage: 'You are not logged in. Cannot block user.',
+            userId: state.userId,
+          ),
+        );
+      }
+
+      BlockedPerson blockedPerson = await lemmy.run(BlockPerson(
+        auth: account!.jwt!,
+        personId: event.personId,
+        block: event.blocked,
+      ));
+
+      return emit(state.copyWith(
+        status: UserStatus.success,
+        personView: state.personView,
+        blockedPerson: blockedPerson,
+      ));
+    } catch (e, s) {
+      return emit(
+        state.copyWith(
+          status: UserStatus.failure,
+          errorMessage: e.toString(),
+          personView: state.personView,
+        ),
+      );
     }
   }
 }

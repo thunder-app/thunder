@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
@@ -12,8 +12,6 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/font_size.dart';
-import 'package:thunder/utils/instance.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
   final Function(VoteType) onVoteAction;
@@ -25,12 +23,15 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
   final bool showInstanceName;
+  final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
   final bool showSaveAction;
+  final bool showCommunityIcons;
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
+  final PostListingType? listingType;
 
   const PostCardViewComfortable({
     super.key,
@@ -40,14 +41,17 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
     required this.showInstanceName,
+    required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
     required this.showSaveAction,
+    required this.showCommunityIcons,
     required this.showTextContent,
     required this.isUserLoggedIn,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
+    required this.listingType,
   });
 
   @override
@@ -55,9 +59,17 @@ class PostCardViewComfortable extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
+    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+        isUserLoggedIn &&
+        context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
+
     final String textContent = postViewMedia.postView.post.body ?? "";
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
     var mediaView = MediaView(
+      showLinkPreview: state.showLinkPreviews,
       postView: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
@@ -121,16 +133,13 @@ class PostCardViewComfortable extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      GestureDetector(
-                        child: Text(
-                          '${postViewMedia.postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)}' : ''}',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.titleSmall?.copyWith(
-                            fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                          ),
-                        ),
-                        onTap: () => onTapCommunityName(context, postViewMedia.postView.community.id),
+                      PostCommunityAndAuthor(
+                        showCommunityIcons: false,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(

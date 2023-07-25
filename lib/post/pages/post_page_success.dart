@@ -11,9 +11,13 @@ import 'package:thunder/post/widgets/comment_view.dart';
 class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
   final List<CommentViewTree> comments;
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
 
   final ScrollController scrollController;
   final bool hasReachedCommentEnd;
+
+  final bool viewFullCommentsRefreshing;
 
   const PostPageSuccess({
     super.key,
@@ -21,6 +25,9 @@ class PostPageSuccess extends StatefulWidget {
     this.comments = const [],
     required this.scrollController,
     this.hasReachedCommentEnd = false,
+    this.selectedCommentId,
+    this.selectedCommentPath,
+    this.viewFullCommentsRefreshing = false,
   });
 
   @override
@@ -41,6 +48,12 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
   }
 
   void _onScroll() {
+    // We don't want to trigger comment fetch when looking at a comment context.
+    // This also fixes a weird behavior that can happen when if the fetch triggers
+    // right before you click view all comments. The fetch for all comments won't happen.
+    if (widget.selectedCommentId != null) {
+      return;
+    }
     if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {
       context.read<PostBloc>().add(const GetPostCommentsEvent());
     }
@@ -52,12 +65,17 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
       children: [
         Expanded(
           child: CommentSubview(
+            viewFullCommentsRefreshing: widget.viewFullCommentsRefreshing,
+            selectedCommentId: widget.selectedCommentId,
+            selectedCommentPath: widget.selectedCommentPath,
+            now: DateTime.now().toUtc(),
             scrollController: widget.scrollController,
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
-            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType, selectedCommentId: widget.selectedCommentId)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+            onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
           ),
         ),
       ],

@@ -5,6 +5,8 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
+import 'date_time.dart';
+
 // Optimistically updates a comment
 CommentView optimisticallyVoteComment(CommentViewTree commentViewTree, VoteType voteType) {
   int newScore = commentViewTree.commentView!.counts.score;
@@ -70,7 +72,11 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
   // Create a map of CommentView objects using the comment path as the key
   for (CommentView commentView in comments) {
+    bool hasBeenEdited = commentView.comment.updated != null ? true : false;
+    String commentTime = hasBeenEdited ? commentView.comment.updated!.toIso8601String() : commentView.comment.published.toIso8601String();
+
     commentMap[commentView.comment.path] = CommentViewTree(
+      datePostedOrEdited: formatTimeToString(dateTime: commentTime),
       commentView: commentView,
       replies: [],
       level: commentView.comment.path.split('.').length - 2,

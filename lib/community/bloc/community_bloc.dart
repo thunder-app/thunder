@@ -8,6 +8,7 @@ import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -36,11 +37,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<ForceRefreshEvent>(
       _forceRefreshEvent,
@@ -94,7 +95,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -131,7 +132,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -153,7 +154,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       state.postViews![existingPostViewIndex].postView = postView;
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType, communityName: state.communityName));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(
         status: CommunityStatus.failure,
         errorMessage: e.toString(),
@@ -174,9 +175,9 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     bool tabletMode;
 
     try {
-      defaultListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
-      defaultSortType = SortType.values.byName(prefs.getString("setting_general_default_sort_type") ?? DEFAULT_SORT_TYPE.name);
-      tabletMode = prefs.getBool('setting_post_tablet_mode') ?? false;
+      defaultListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+      defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+      tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
     } catch (e) {
       defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
@@ -286,9 +287,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           // Parse the posts, and append them to the existing list
           List<PostViewMedia> postMedias = await parsePostViews(batch);
-          posts.addAll(postMedias);
 
-          List<PostViewMedia> postViews = List.from(state.postViews ?? []);
           Set<int> postIds = Set.from(state.postIds ?? {});
 
           // Ensure we don't add existing posts to view
@@ -296,7 +295,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             int id = postMedia.postView.post.id;
             if (!postIds.contains(id)) {
               postIds.add(id);
-              postViews.add(postMedia);
+              posts.add(postMedia);
             }
           }
 
@@ -318,7 +317,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
         return;
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }
   }
@@ -362,7 +361,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityName: state.communityName,
         subscribedType: fullCommunityView.communityView.subscribed,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -417,7 +416,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         listingType: state.listingType,
         communityName: state.communityName,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,
@@ -460,7 +459,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityName: state.communityName,
         blockedCommunity: blockedCommunity,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: CommunityStatus.failure,

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -27,6 +26,9 @@ class PostCard extends StatefulWidget {
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
+  final Function(bool) onToggleReadAction;
+
+  final PostListingType? listingType;
 
   const PostCard({
     super.key,
@@ -34,6 +36,8 @@ class PostCard extends StatefulWidget {
     this.showInstanceName = true,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onToggleReadAction,
+    required this.listingType,
   });
 
   @override
@@ -70,11 +74,11 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
     VoteType? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
+    bool read = widget.postViewMedia.postView.read;
 
     return GestureDetector(
       onHorizontalDragEnd: (details) {
@@ -93,98 +97,103 @@ class _PostCardState extends State<PostCard> {
                 swipeAction: swipeAction,
                 onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
                 onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+                onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
                 voteType: myVote ?? VoteType.none,
                 saved: saved,
+                read: read,
                 postViewMedia: widget.postViewMedia,
               ),
             }
         },
         onPointerCancel: (event) => {},
-        child: Dismissible(
-          direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
-          key: ObjectKey(widget.postViewMedia.postView.post.id),
-          resizeDuration: Duration.zero,
-          dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
-          confirmDismiss: (DismissDirection direction) async {
-            return false;
-          },
-          onUpdate: (DismissUpdateDetails details) {
-            SwipeAction? updatedSwipeAction;
-
-            if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-              updatedSwipeAction = state.leftPrimaryPostGesture;
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
-              if (state.leftSecondaryPostGesture != SwipeAction.none) {
-                updatedSwipeAction = state.leftSecondaryPostGesture;
-              } else {
-                updatedSwipeAction = state.leftPrimaryPostGesture;
-              }
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
-              updatedSwipeAction = state.rightPrimaryPostGesture;
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
-              if (state.rightSecondaryPostGesture != SwipeAction.none) {
-                updatedSwipeAction = state.rightSecondaryPostGesture;
-              } else {
-                updatedSwipeAction = state.rightPrimaryPostGesture;
-              }
-
-              if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
-            } else {
-              updatedSwipeAction = null;
-            }
-
-            setState(() {
-              dismissThreshold = details.progress;
-              dismissDirection = details.direction;
-              swipeAction = updatedSwipeAction;
-            });
-          },
-          background: dismissDirection == DismissDirection.startToEnd
-              ? AnimatedContainer(
-                  alignment: Alignment.centerLeft,
-                  color: swipeAction == null
-                      ? getSwipeActionColor(state.leftPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
-                      : getSwipeActionColor(swipeAction ?? SwipeAction.none),
-                  duration: const Duration(milliseconds: 200),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
-                  ),
-                )
-              : AnimatedContainer(
-                  alignment: Alignment.centerRight,
-                  color: swipeAction == null
-                      ? getSwipeActionColor(state.rightPrimaryPostGesture ?? SwipeAction.none).withOpacity(dismissThreshold / firstActionThreshold)
-                      : getSwipeActionColor(swipeAction ?? SwipeAction.none),
-                  duration: const Duration(milliseconds: 200),
-                  child: SizedBox(
-                    width: MediaQuery.of(context).size.width * dismissThreshold,
-                    child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
-                  ),
-                ),
-          child: Column(
-            children: [
-              Divider(
-                height: 1.0,
-                thickness: 4.0,
-                color: ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ),
+        child: Column(
+          children: [
+            Divider(
+              height: 1.0,
+              thickness: 4.0,
+              color: ElevationOverlay.applySurfaceTint(
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surfaceTint,
+                10,
               ),
-              InkWell(
+            ),
+            Dismissible(
+              direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
+              key: ObjectKey(widget.postViewMedia.postView.post.id),
+              resizeDuration: Duration.zero,
+              dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
+              confirmDismiss: (DismissDirection direction) async {
+                return false;
+              },
+              onUpdate: (DismissUpdateDetails details) {
+                SwipeAction? updatedSwipeAction;
+
+                if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  updatedSwipeAction = state.leftPrimaryPostGesture;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.startToEnd) {
+                  if (state.leftSecondaryPostGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.leftSecondaryPostGesture;
+                  } else {
+                    updatedSwipeAction = state.leftPrimaryPostGesture;
+                  }
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > firstActionThreshold && details.progress < secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  updatedSwipeAction = state.rightPrimaryPostGesture;
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else if (details.progress > secondActionThreshold && details.direction == DismissDirection.endToStart) {
+                  if (state.rightSecondaryPostGesture != SwipeAction.none) {
+                    updatedSwipeAction = state.rightSecondaryPostGesture;
+                  } else {
+                    updatedSwipeAction = state.rightPrimaryPostGesture;
+                  }
+
+                  if (updatedSwipeAction != swipeAction) HapticFeedback.mediumImpact();
+                } else {
+                  updatedSwipeAction = null;
+                }
+
+                setState(() {
+                  dismissThreshold = details.progress;
+                  dismissDirection = details.direction;
+                  swipeAction = updatedSwipeAction;
+                });
+              },
+              background: dismissDirection == DismissDirection.startToEnd
+                  ? AnimatedContainer(
+                      alignment: Alignment.centerLeft,
+                      color: swipeAction == null
+                          ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      duration: const Duration(milliseconds: 200),
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                      ),
+                    )
+                  : AnimatedContainer(
+                      alignment: Alignment.centerRight,
+                      color: swipeAction == null
+                          ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
+                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      duration: const Duration(milliseconds: 200),
+                      child: SizedBox(
+                        width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
+                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                      ),
+                    ),
+              child: InkWell(
                 child: state.useCompactView
                     ? PostCardViewCompact(
                         postViewMedia: widget.postViewMedia,
                         showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
+                        showTextPostIndicator: state.showTextPostIndicator,
+                        showPostAuthor: state.showPostAuthor,
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,
                         isUserLoggedIn: isUserLoggedIn,
+                        listingType: widget.listingType,
                       )
                     : PostCardViewComfortable(
                         postViewMedia: widget.postViewMedia,
@@ -192,15 +201,18 @@ class _PostCardState extends State<PostCard> {
                         hideNsfwPreviews: state.hideNsfwPreviews,
                         markPostReadOnMediaView: state.markPostReadOnMediaView,
                         showInstanceName: widget.showInstanceName,
+                        showPostAuthor: state.showPostAuthor,
                         showFullHeightImages: state.showFullHeightImages,
                         edgeToEdgeImages: state.showEdgeToEdgeImages,
                         showTitleFirst: state.showTitleFirst,
                         showVoteActions: state.showVoteActions,
                         showSaveAction: state.showSaveAction,
+                        showCommunityIcons: state.showCommunityIcons,
                         showTextContent: state.showTextContent,
                         isUserLoggedIn: isUserLoggedIn,
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
+                        listingType: widget.listingType,
                       ),
                 onLongPress: () => showPostActionBottomModalSheet(
                   context,
@@ -254,8 +266,8 @@ class _PostCardState extends State<PostCard> {
                   if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

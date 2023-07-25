@@ -11,17 +11,20 @@ class GetPostEvent extends PostEvent {
   final int? postId;
   final PostViewMedia? postView;
   final CommentSortType? sortType;
+  final String? selectedCommentPath;
+  final int? selectedCommentId;
 
-  const GetPostEvent({this.sortType, this.postView, this.postId});
+  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {
   final int? postId;
   final int? commentParentId;
   final bool reset;
+  final bool viewAllCommentsRefresh;
   final CommentSortType? sortType;
 
-  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.sortType});
+  const GetPostCommentsEvent({this.postId, this.commentParentId, this.reset = false, this.viewAllCommentsRefresh = false, this.sortType});
 }
 
 class VotePostEvent extends PostEvent {
@@ -39,10 +42,11 @@ class SavePostEvent extends PostEvent {
 }
 
 class VoteCommentEvent extends PostEvent {
+  final int? selectedCommentId;
   final int commentId;
   final VoteType score;
 
-  const VoteCommentEvent({required this.commentId, required this.score});
+  const VoteCommentEvent({required this.commentId, required this.score, this.selectedCommentId});
 }
 
 class SaveCommentEvent extends PostEvent {
@@ -55,8 +59,10 @@ class SaveCommentEvent extends PostEvent {
 class CreateCommentEvent extends PostEvent {
   final String content;
   final int? parentCommentId;
+  final int? selectedCommentId;
+  final String? selectedCommentPath;
 
-  const CreateCommentEvent({required this.content, this.parentCommentId});
+  const CreateCommentEvent({required this.content, this.parentCommentId, this.selectedCommentId, this.selectedCommentPath});
 }
 
 class EditCommentEvent extends PostEvent {
@@ -64,4 +70,11 @@ class EditCommentEvent extends PostEvent {
   final int commentId;
 
   const EditCommentEvent({required this.content, required this.commentId});
+}
+
+class DeleteCommentEvent extends PostEvent {
+  final int commentId;
+  final bool deleted;
+
+  const DeleteCommentEvent({required this.deleted, required this.commentId});
 }

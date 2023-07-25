@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/settings/pages/about_settings_page.dart';
 import 'package:thunder/settings/pages/debug_settings_page.dart';
@@ -60,8 +62,12 @@ final GoRouter router = GoRouter(
           name: 'about',
           path: 'about',
           builder: (context, state) {
-            return BlocProvider.value(
-              value: state.extra! as ThunderBloc,
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider.value(value: (state.extra! as List)[0] as ThunderBloc),
+                BlocProvider.value(value: (state.extra! as List)[1] as AccountBloc),
+                BlocProvider.value(value: (state.extra! as List)[2] as AuthBloc),
+              ],
               child: const AboutSettingsPage(),
             );
           },

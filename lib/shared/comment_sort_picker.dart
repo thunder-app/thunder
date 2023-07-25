@@ -88,17 +88,17 @@ class _SortPickerState extends State<CommentSortPicker> {
     return items
         .map(
           (item) => ListTile(
-        title: Text(
-          item.label,
-          style: theme.textTheme.bodyMedium,
-        ),
-        leading: Icon(item.icon),
-        onTap: () {
-          Navigator.of(context).pop();
-          widget.onSelect(item);
-        },
-      ),
-    )
+            title: Text(
+              item.label,
+              style: theme.textTheme.bodyMedium,
+            ),
+            leading: Icon(item.icon),
+            onTap: () {
+              Navigator.of(context).pop();
+              widget.onSelect(item);
+            },
+          ),
+        )
         .toList();
   }
 }

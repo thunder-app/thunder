@@ -1,30 +1,20 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter/services.dart';
+import 'package:gallery_saver/gallery_saver.dart';
 import 'package:share_plus/share_plus.dart';
-
-import 'package:thunder/shared/hero.dart';
-
-import 'package:image_gallery_saver/image_gallery_saver.dart';
-
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
-
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
-import '../account/bloc/account_bloc.dart';
-import '../community/bloc/community_bloc.dart';
-import '../core/auth/bloc/auth_bloc.dart';
-import '../post/pages/post_page.dart';
-import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
-import '../thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/shared/hero.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -47,38 +37,73 @@ class ImageViewer extends StatefulWidget {
 class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin {
   GlobalKey<ExtendedImageSlidePageState> slidePagekey = GlobalKey<ExtendedImageSlidePageState>();
   final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
+  final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
 
-  double slideTransparency = 0.93;
+  double slideTransparency = 0.92;
   double imageTransparency = 1.0;
+
+  bool maybeSlideZooming = false;
+  bool slideZooming = false;
+  bool fullscreen = false;
+  Offset downCoord = Offset.zero;
 
   /// User Settings
   bool isUserLoggedIn = false;
 
-  /*@override
-  void initState() {
-    super.initState();
-
-    isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-  }*/
+  void _maybeSlide() {
+    setState(() {
+      maybeSlideZooming = true;
+    });
+    Timer(const Duration(milliseconds: 300), () {
+      setState(() {
+        maybeSlideZooming = false;
+      });
+    });
+  }
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
+
     if (Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
-    if (androidVersionBelow33) {
-      await Permission.storage.request();
-    } else {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.photos,
-        Permission.photosAddOnly,
-      ].request();
-    }
-    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
+    // Check first if we have permissions
+    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
 
-    return hasPermission;
+    if (androidVersionBelow33 && !hasStoragePermission) {
+      await Permission.storage.request();
+      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    } else if (!androidVersionBelow33 && !hasPhotosPermission) {
+      await Permission.photos.request();
+      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    }
+
+    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    return hasPhotosPermission;
+  }
+
+  /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
+  void showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission Denied'),
+          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: const Text('Open Settings'),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -89,122 +114,173 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
     return ScaffoldMessenger(
       key: _imageViewer,
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: ExtendedImageSlidePage(
-                key: slidePagekey,
-                slideAxis: SlideAxis.both,
-                slideType: SlideType.onlyImage,
-                slidePageBackgroundHandler: (offset, pageSize) {
-                  return Colors.black.withOpacity(slideTransparency);
-                },
-                onSlidingPage: (state) {
-                  // Fade out image and background when sliding to dismiss
-                  var offset = state.offset;
-                  var pageSize = state.pageSize;
-
-                  var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
-
-                  if (state.isSliding) {
-                    setState(() {
-                      slideTransparency = 0.93 - min(0.93, scale * 4);
-                      imageTransparency = 1.0 - min(1.0, scale * 10);
-                    });
-                  }
-                },
-                slideEndHandler: (
-                  // Decrease slide to dismiss threshold so it can be done easier
-                  Offset offset, {
-                  ExtendedImageSlidePageState? state,
-                  ScaleEndDetails? details,
-                }) {
-                  if (state != null) {
-                    var offset = state.offset;
-                    var pageSize = state.pageSize;
-                    return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
-                  }
-                  return true;
-                },
-                child: GestureDetector(
-                  child: HeroWidget(
-                    tag: widget.heroKey,
-                    slideType: SlideType.onlyImage,
-                    slidePagekey: slidePagekey,
-                    child: ExtendedImage.network(
-                      widget.url,
-                      color: Colors.white.withOpacity(imageTransparency),
-                      colorBlendMode: BlendMode.dstIn,
-                      enableSlideOutPage: true,
-                      mode: ExtendedImageMode.gesture,
-                      cache: true,
-                      clearMemoryCacheWhenDispose: true,
-                      initGestureConfigHandler: (ExtendedImageState state) {
-                        return GestureConfig(
-                          minScale: 0.8,
-                          animationMinScale: 0.8,
-                          maxScale: 4.0,
-                          animationMaxScale: 4.0,
-                          speed: 1.0,
-                          inertialSpeed: 100.0,
-                          initialScale: 1.0,
-                          inPageView: false,
-                          initialAlignment: InitialAlignment.center,
-                          reverseMousePointerScrollDirection: true,
-                          gestureDetailsIsChanged: (GestureDetails? details) {},
-                        );
+      child: Stack(
+        children: [
+          AnimatedContainer(
+            duration: const Duration(milliseconds: 400),
+            color: fullscreen ? Colors.black : Colors.transparent,
+          ),
+          Scaffold(
+            appBar: AppBar(
+              iconTheme: IconThemeData(
+                color: fullscreen ? Colors.transparent : Colors.white,
+                shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
+              ),
+              backgroundColor: Colors.transparent,
+            ),
+            backgroundColor: Colors.black.withOpacity(slideTransparency),
+            body: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Expanded(
+                  child: GestureDetector(
+                    onLongPress: () {
+                      HapticFeedback.lightImpact();
+                      setState(() {
+                        fullscreen = !fullscreen;
+                      });
+                    },
+                    onTap: () {
+                      if (!fullscreen) {
+                        slidePagekey.currentState!.popPage();
+                        Navigator.pop(context);
+                      } else {
+                        setState(() {
+                          fullscreen = false;
+                        });
+                      }
+                    },
+                    // Start doubletap zoom if conditions are met
+                    onVerticalDragStart: maybeSlideZooming
+                        ? (details) {
+                            setState(() {
+                              slideZooming = true;
+                            });
+                          }
+                        : null,
+                    // Zoom image in an out based on movement in vertical axis if conditions are met
+                    onVerticalDragUpdate: maybeSlideZooming || slideZooming
+                        ? (details) {
+                            // Need to catch the drag during "maybe" phase or it wont activate fast enough
+                            if (slideZooming) {
+                              double newScale = max(gestureKey.currentState!.gestureDetails!.totalScale! * (1 + (details.delta.dy / 150)), 1);
+                              gestureKey.currentState?.handleDoubleTap(scale: newScale, doubleTapPosition: gestureKey.currentState!.pointerDownPosition);
+                            }
+                          }
+                        : null,
+                    // End doubltap zoom
+                    onVerticalDragEnd: slideZooming
+                        ? (details) {
+                            setState(() {
+                              slideZooming = false;
+                            });
+                          }
+                        : null,
+                    child: Listener(
+                      // Start watching for double tap zoom
+                      onPointerDown: (details) {
+                        downCoord = details.position;
+                        _maybeSlide();
                       },
-                      onDoubleTap: (ExtendedImageGestureState state) {
-                        var pointerDownPosition = state.pointerDownPosition;
-                        double begin = state.gestureDetails!.totalScale!;
-                        double end;
+                      child: ExtendedImageSlidePage(
+                        key: slidePagekey,
+                        slideAxis: SlideAxis.both,
+                        slideType: SlideType.onlyImage,
+                        slidePageBackgroundHandler: (offset, pageSize) {
+                          return Colors.transparent;
+                        },
+                        onSlidingPage: (state) {
+                          // Fade out image and background when sliding to dismiss
+                          var offset = state.offset;
+                          var pageSize = state.pageSize;
 
-                        animation?.removeListener(animationListener);
-                        animationController.stop();
-                        animationController.reset();
+                          var scale = offset.distance / Offset(pageSize.width, pageSize.height).distance;
 
-                        if (begin == 1) {
-                          end = 2;
-                        } else if (begin == 2) {
-                          end = 4;
-                        } else {
-                          end = 1;
-                        }
-                        animationListener = () {
-                          state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
-                        };
-                        animation = animationController.drive(Tween<double>(begin: begin, end: end));
+                          if (state.isSliding) {
+                            setState(() {
+                              slideTransparency = 0.9 - min(0.9, scale * 0.5);
+                              imageTransparency = 1.0 - min(1.0, scale * 10);
+                            });
+                          }
+                        },
+                        slideEndHandler: (
+                          // Decrease slide to dismiss threshold so it can be done easier
+                          Offset offset, {
+                          ExtendedImageSlidePageState? state,
+                          ScaleEndDetails? details,
+                        }) {
+                          if (state != null) {
+                            var offset = state.offset;
+                            var pageSize = state.pageSize;
+                            return offset.distance.greaterThan(Offset(pageSize.width, pageSize.height).distance / 10);
+                          }
+                          return true;
+                        },
+                        child: HeroWidget(
+                          tag: widget.heroKey,
+                          slideType: SlideType.onlyImage,
+                          slidePagekey: slidePagekey,
+                          child: ExtendedImage.network(
+                            widget.url,
+                            color: Colors.white.withOpacity(imageTransparency),
+                            colorBlendMode: BlendMode.dstIn,
+                            enableSlideOutPage: true,
+                            mode: ExtendedImageMode.gesture,
+                            extendedImageGestureKey: gestureKey,
+                            cache: true,
+                            clearMemoryCacheWhenDispose: true,
+                            initGestureConfigHandler: (ExtendedImageState state) {
+                              return GestureConfig(
+                                minScale: 0.8,
+                                animationMinScale: 0.8,
+                                maxScale: 4.0,
+                                animationMaxScale: 4.0,
+                                speed: 1.0,
+                                inertialSpeed: 100.0,
+                                initialScale: 1.0,
+                                inPageView: false,
+                                initialAlignment: InitialAlignment.center,
+                                reverseMousePointerScrollDirection: true,
+                                gestureDetailsIsChanged: (GestureDetails? details) {},
+                              );
+                            },
+                            onDoubleTap: (ExtendedImageGestureState state) {
+                              var pointerDownPosition = state.pointerDownPosition;
+                              double begin = state.gestureDetails!.totalScale!;
+                              double end;
 
-                        animation!.addListener(animationListener);
+                              animation?.removeListener(animationListener);
+                              animationController.stop();
+                              animationController.reset();
 
-                        animationController.forward();
-                      },
+                              if (begin == 1) {
+                                end = 2;
+                              } else if (begin > 1.99 && begin < 2.01) {
+                                end = 4;
+                              } else {
+                                end = 1;
+                              }
+                              animationListener = () {
+                                state.handleDoubleTap(scale: animation!.value, doubleTapPosition: pointerDownPosition);
+                              };
+                              animation = animationController.drive(Tween<double>(begin: begin, end: end));
+
+                              animation!.addListener(animationListener);
+
+                              animationController.forward();
+                            },
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  onTap: () {
-                    slidePagekey.currentState!.popPage();
-                    Navigator.pop(context);
-                  },
-                  onDoubleTapCancel: () {
-                    setState(() {
-                      // Somehow set a number based on how far finger is moved
-                      /*gestureDetails(GestureDetails: 4.0)*/
-                    });
-                  },
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(color: Colors.black.withOpacity(slideTransparency)),
-              padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
-              child: Row(
-                children: [
-                  Expanded(flex: 2, child: Container()),
-                  Expanded(
-                    flex: 3,
+                AnimatedOpacity(
+                  opacity: fullscreen ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 200),
+                  child: Container(
+                    decoration: const BoxDecoration(color: Colors.transparent),
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -213,7 +289,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             child: widget.postId != null ? Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(15.0),
                                   child: IconButton(
                                     onPressed: () async {
                                       AccountBloc accountBloc = context.read<AccountBloc>();
@@ -252,84 +328,120 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             ) : null,
                           ),*/
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: IconButton(
-                            onPressed: () async {
-                              try {
-                                // Try to get the cached image first
-                                var media = await DefaultCacheManager().getFileFromCache(widget.url!);
-                                File? mediaFile = media?.file;
+                            onPressed: fullscreen
+                                ? null
+                                : () async {
+                                    try {
+                                      // Try to get the cached image first
+                                      var media = await DefaultCacheManager().getFileFromCache(widget.url);
+                                      File? mediaFile = media?.file;
 
-                                if (media == null) {
-                                  // Tell user we're downloading the image
-                                  SnackBar snackBar = const SnackBar(
-                                    content: Text('Downloading media to share...'),
-                                    behavior: SnackBarBehavior.floating,
-                                  );
-                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                    _imageViewer.currentState?.clearSnackBars();
-                                    _imageViewer.currentState?.showSnackBar(snackBar);
-                                  });
+                                      if (media == null) {
+                                        // Tell user we're downloading the image
+                                        SnackBar snackBar = const SnackBar(
+                                          content: Text('Downloading media to share...'),
+                                          behavior: SnackBarBehavior.floating,
+                                        );
+                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                          _imageViewer.currentState?.clearSnackBars();
+                                          _imageViewer.currentState?.showSnackBar(snackBar);
+                                        });
 
-                                  // Download
-                                  mediaFile = await DefaultCacheManager().getSingleFile(widget.url!);
+                                        // Download
+                                        mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
 
-                                  // Hide snackbar
-                                  WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                    _imageViewer.currentState?.clearSnackBars();
-                                  });
-                                }
+                                        // Hide snackbar
+                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                          _imageViewer.currentState?.clearSnackBars();
+                                        });
+                                      }
 
-                                // Share
-                                await Share.shareXFiles([XFile(mediaFile!.path)]);
-                              } catch (e) {
-                                // Tell the user that the download failed
-                                SnackBar snackBar = SnackBar(
-                                  content: Text('There was an error downloading the media file to share: $e'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  _imageViewer.currentState?.clearSnackBars();
-                                  _imageViewer.currentState?.showSnackBar(snackBar);
-                                });
-                              }
-                            },
-                            icon: const Icon(Icons.share_rounded, semanticLabel: "Comments", color: Colors.white),
+                                      // Share
+                                      await Share.shareXFiles([XFile(mediaFile!.path)]);
+                                    } catch (e) {
+                                      // Tell the user that the download failed
+                                      SnackBar snackBar = SnackBar(
+                                        content: Text('There was an error downloading the media file to share: $e'),
+                                        behavior: SnackBarBehavior.floating,
+                                      );
+                                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                                        _imageViewer.currentState?.clearSnackBars();
+                                        _imageViewer.currentState?.showSnackBar(snackBar);
+                                      });
+                                    }
+                                  },
+                            icon: Icon(
+                              Icons.share_rounded,
+                              semanticLabel: "Comments",
+                              color: Colors.white.withOpacity(0.90),
+                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                            ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(4.0),
                           child: IconButton(
-                            onPressed: () async {
-                              File file = await DefaultCacheManager().getSingleFile(widget.url);
+                            onPressed: fullscreen
+                                ? null
+                                : () async {
+                                    File file = await DefaultCacheManager().getSingleFile(widget.url);
+                                    bool hasPermission = await _requestPermission();
 
-                              if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
-                                final result = await ImageGallerySaver.saveFile(file.path);
+                                    if (!hasPermission) {
+                                      if (context.mounted) showPermissionDeniedDialog(context);
+                                    }
 
-                                setState(() => downloaded = result['isSuccess'] == true);
-                              } else if (Platform.isLinux || Platform.isWindows) {
-                                final filePath = '${(await getApplicationDocumentsDirectory()).path}/ThunderImages/${basename(file.path)}';
+                                    if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
+                                      if (Platform.isAndroid) {
+                                        // Save image to [internal storage]/Pictures/Thunder
+                                        GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
+                                          setState(() => downloaded = value as bool);
+                                        });
+                                      } else if (Platform.isIOS) {
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
+                                          if (value == null || value == false) {
+                                            // If the image cannot be saved to the Thunder album, then just save it to Photos
+                                            GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
+                                          }
 
-                                File(filePath)
-                                  ..createSync(recursive: true)
-                                  ..writeAsBytesSync(file.readAsBytesSync());
+                                          setState(() => downloaded = value ?? false);
+                                        });
+                                      }
+                                    } else if (Platform.isLinux || Platform.isWindows) {
+                                      final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
-                                setState(() => downloaded = true);
-                              }
-                            },
+                                      File(filePath)
+                                        ..createSync(recursive: true)
+                                        ..writeAsBytesSync(file.readAsBytesSync());
+
+                                      setState(() => downloaded = true);
+                                    }
+                                  },
                             icon: downloaded
-                                ? const Icon(Icons.check_circle, semanticLabel: 'Downloaded', color: Colors.white)
-                                : const Icon(Icons.download, semanticLabel: "Download", color: Colors.white),
+                                ? const Icon(
+                                    Icons.check_circle,
+                                    semanticLabel: 'Downloaded',
+                                    color: Colors.white,
+                                    shadows: <Shadow>[Shadow(color: Colors.black45, blurRadius: 50.0)],
+                                  )
+                                : Icon(
+                                    Icons.download,
+                                    semanticLabel: "Download",
+                                    color: Colors.white.withOpacity(0.90),
+                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                  ),
                           ),
                         ),
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

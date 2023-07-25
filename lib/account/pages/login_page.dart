@@ -182,6 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 12.0),
                   TextField(
+                    textInputAction: TextInputAction.next,
                     autocorrect: false,
                     controller: _instanceTextEditingController,
                     inputFormatters: [LowerCaseTextFormatter()],
@@ -200,6 +201,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Column(
                       children: <Widget>[
                         TextField(
+                          textInputAction: TextInputAction.next,
                           autocorrect: false,
                           controller: _usernameTextEditingController,
                           autofillHints: const [AutofillHints.username],
@@ -212,6 +214,10 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                         const SizedBox(height: 12.0),
                         TextField(
+                          onSubmitted:
+                              (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                                  ? (_) => _handleLogin()
+                                  : null,
                           autocorrect: false,
                           controller: _passwordTextEditingController,
                           obscureText: !showPassword,
@@ -267,18 +273,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
-                        ? () {
-                            TextInput.finishAutofillContext();
-                            // Perform login authentication
-                            context.read<AuthBloc>().add(
-                                  LoginAttempt(
-                                    username: _usernameTextEditingController.text,
-                                    password: _passwordTextEditingController.text,
-                                    instance: _instanceTextEditingController.text.trim(),
-                                    totp: _totpTextEditingController.text,
-                                  ),
-                                );
-                          }
+                        ? _handleLogin
                         : null,
                     child: Text('Login', style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
@@ -295,5 +290,18 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
     );
+  }
+
+  void _handleLogin() {
+    TextInput.finishAutofillContext();
+    // Perform login authentication
+    context.read<AuthBloc>().add(
+          LoginAttempt(
+            username: _usernameTextEditingController.text,
+            password: _passwordTextEditingController.text,
+            instance: _instanceTextEditingController.text.trim(),
+            totp: _totpTextEditingController.text,
+          ),
+        );
   }
 }

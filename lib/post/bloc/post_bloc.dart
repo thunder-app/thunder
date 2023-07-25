@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -19,6 +20,7 @@ import 'package:thunder/utils/post.dart';
 import '../../utils/constants.dart';
 
 part 'post_event.dart';
+
 part 'post_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
@@ -37,11 +39,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<GetPostCommentsEvent>(
       _getPostCommentsEvent,
@@ -63,6 +65,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       _editCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<DeleteCommentEvent>(
+      _deleteCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -73,13 +79,13 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       var exception;
 
       SharedPreferences prefs = await SharedPreferences.getInstance();
-      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
       Account? account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: PostStatus.loading));
+          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -102,20 +108,26 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           emit(
             state.copyWith(
-              status: PostStatus.success,
-              postId: postView?.postView.post.id,
-              postView: postView,
-              communityId: postView?.postView.post.communityId,
-            ),
+                status: PostStatus.success,
+                postId: postView?.postView.post.id,
+                postView: postView,
+                communityId: postView?.postView.post.communityId,
+                selectedCommentPath: event.selectedCommentPath,
+                selectedCommentId: event.selectedCommentId),
           );
 
-          emit(state.copyWith(status: PostStatus.refreshing));
+          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
+          int? parentId;
+          if (event.selectedCommentPath != null) {
+            parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
+          }
+
           List<CommentView> getCommentsResponse = await lemmy
               .run(GetComments(
-            page: 1,
+            page: event.selectedCommentId == null ? 1 : null,
             auth: account?.jwt,
             communityId: postView?.postView.post.communityId,
             maxDepth: COMMENT_MAX_DEPTH,
@@ -123,6 +135,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             type: CommentListingType.all,
+            parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch comments');
@@ -131,26 +144,33 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
+          Map<int, CommentView> responseMap = {};
+          for (CommentView comment in getCommentsResponse) {
+            responseMap[comment.comment.id] = comment;
+          }
+
           return emit(
             state.copyWith(
                 status: PostStatus.success,
                 postId: postView?.postView.post.id,
                 postView: postView,
                 comments: commentTree,
-                commentResponseList: getCommentsResponse,
-                commentPage: state.commentPage + 1,
+                commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
+                commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.length,
                 hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
-                sortType: sortType),
+                sortType: sortType,
+                selectedCommentId: event.selectedCommentId,
+                selectedCommentPath: event.selectedCommentPath),
           );
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
       emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -160,7 +180,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString("setting_post_default_comment_sort_type")?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
+    CommentSortType defaultSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name)?.toLowerCase() ?? DEFAULT_COMMENT_SORT_TYPE.name);
 
     CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -173,8 +193,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         try {
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          if (event.reset) {
-            emit(state.copyWith(status: PostStatus.loading));
+          if (event.reset || event.viewAllCommentsRefresh) {
+            if (event.viewAllCommentsRefresh) {
+              emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, viewAllCommentsRefresh: true, sortType: sortType));
+            } else {
+              emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
+            }
 
             List<CommentView> getCommentsResponse = await lemmy
                 .run(GetComments(
@@ -195,13 +219,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             // Build the tree view from the flattened comments
             List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
 
+            Map<int, CommentView> responseMap = {};
+            for (CommentView comment in getCommentsResponse) {
+              responseMap[comment.comment.id] = comment;
+            }
+
             return emit(
               state.copyWith(
+                  selectedCommentId: null,
+                  selectedCommentPath: null,
                   status: PostStatus.success,
                   comments: commentTree,
-                  commentResponseList: getCommentsResponse,
+                  commentResponseMap: responseMap,
                   commentPage: 1,
-                  commentCount: getCommentsResponse.length,
+                  commentCount: responseMap.length,
                   hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                   sortType: sortType),
             );
@@ -220,7 +251,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             sort: sortType,
             limit: commentLimit,
             maxDepth: COMMENT_MAX_DEPTH,
-            page: event.commentParentId != null ? 1 : state.commentPage,
+            page: state.commentPage,
+            //event.commentParentId != null ? 1 : state.commentPage,
             type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
@@ -228,32 +260,38 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           });
 
           // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseList)..addAll(getCommentsResponse);
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
 
+          for (CommentView comment in getCommentsResponse) {
+            state.commentResponseMap[comment.comment.id] = comment;
+          }
           // Build the tree view from the flattened comments
           List<CommentViewTree> commentViewTree = buildCommentViewTree(fullCommentResponseList);
 
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
+            sortType: sortType,
             status: PostStatus.success,
+            selectedCommentPath: null,
+            selectedCommentId: null,
             comments: commentViewTree,
-            commentResponseList: fullCommentResponseList,
+            commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
-            commentCount: fullCommentResponseList.length,
-            hasReachedCommentEnd: event.commentParentId != null && (getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit),
+            commentCount: state.commentResponseMap.length,
+            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
-        } catch (e, s) {
+        } catch (e) {
           exception = e;
           attemptCount++;
         }
       }
 
-      if (exception != null && is50xError(exception.toString()) != null) {
+      if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -280,7 +318,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -296,7 +334,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       state.postView?.postView = postView;
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -323,8 +361,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = updatedCommentView;
 
       // Immediately set the status, and continue
-      emit(state.copyWith(status: PostStatus.success));
-      emit(state.copyWith(status: PostStatus.refreshing));
+      emit(state.copyWith(status: PostStatus.success, selectedCommentId: event.selectedCommentId));
+      emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: event.selectedCommentId));
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
         currentTree.commentView = originalCommentView; // Reset this on exception
@@ -333,8 +371,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       currentTree.commentView = commentView;
 
-      return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+      return emit(state.copyWith(status: PostStatus.success, selectedCommentId: event.selectedCommentId));
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -357,7 +395,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -386,9 +424,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
-      add(GetPostEvent(postView: state.postView!));
+      add(GetPostEvent(postView: state.postView!, selectedCommentId: event.selectedCommentId, selectedCommentPath: event.selectedCommentPath));
       return emit(state.copyWith(status: PostStatus.success));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -417,6 +455,32 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       // for now, refresh the post and refetch the comments
       // @todo: insert the new comment in place without requiring a refetch
       add(GetPostEvent(postView: state.postView!));
+      return emit(state.copyWith(status: PostStatus.success));
+    } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _deleteCommentEvent(DeleteCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.'));
+      }
+
+      if (state.postView?.postView.post.id == null) {
+        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to delete the comment.'));
+      }
+
+      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
+      currentTree.commentView = deletedComment.commentView;
       return emit(state.copyWith(status: PostStatus.success));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
