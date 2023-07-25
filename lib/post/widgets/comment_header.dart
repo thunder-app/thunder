@@ -189,14 +189,6 @@ class CommentHeader extends StatelessWidget {
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),
                   ),
-                if (commentViewTree.commentView!.comment.id == moddingCommentId) ...[
-                  SizedBox(
-                      width: state.contentFontSizeScale.textScaleFactor * 15,
-                      height: state.contentFontSizeScale.textScaleFactor * 15,
-                      child: CircularProgressIndicator(
-                        color: theme.colorScheme.primary,
-                      ))
-                ]
               ],
             ),
           ),
@@ -249,13 +241,23 @@ class CommentHeader extends StatelessWidget {
                               SizedBox(width: 5)
                             ])
                           : Container(),
-                      Text(
-                        commentViewTree.datePostedOrEdited,
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onBackground,
+                      if (commentViewTree.commentView!.comment.id == moddingCommentId) ...[
+                        Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: SizedBox(
+                                width: state.contentFontSizeScale.textScaleFactor * 15,
+                                height: state.contentFontSizeScale.textScaleFactor * 15,
+                                child: CircularProgressIndicator(
+                                  color: theme.colorScheme.primary,
+                                )))
+                      ] else
+                        Text(
+                          commentViewTree.datePostedOrEdited,
+                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.colorScheme.onBackground,
+                          ),
                         ),
-                      ),
                     ],
                   ),
                 ),
