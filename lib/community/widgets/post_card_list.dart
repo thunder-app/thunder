@@ -184,11 +184,12 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: ExpandableText(
+                            widget.taglines!.first.content,
+                            expandText: 'Show more...',
                             maxLines: 2,
                             collapseOnTextTap: true,
                             animation: true,
-                            widget.taglines!.first.content,
-                            expandText: 'Show more...',
+                            linkColor: theme.primaryColor,
                             style: TextStyle(
                               color: theme.hintColor,
                             ),
