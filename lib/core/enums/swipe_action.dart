@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 enum SwipeAction {
   upvote(label: 'Upvote'),
   downvote(label: 'Downvote'),
-  reply(label: 'Reply'),
+  reply(label: 'Reply/Edit'),
   save(label: 'Save'),
   edit(label: 'Edit'),
   toggleRead(label: 'Mark As Read/Unread'),
