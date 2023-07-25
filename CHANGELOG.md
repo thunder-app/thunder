@@ -1,4 +1,8 @@
 ## Unreleased
+### Fixed
+- Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
+
+## 0.2.1+13 - 2023-07-25
 ### Added
 - Added swipe gesture to toggle read/unread status on posts - contribution from @micahmo
 - Added option to enable/disable text post indicator on compact view - contribution from @micahmo
@@ -23,7 +27,7 @@
 - Added options to show post author, and community icons within the feed - contribution from @sant0s12
 - Added option to disable NSFW content - contribution from @ajsosa
 - Added long-press action on image viewer to show image-only mode - contribution from @CTalvio
-- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo 
+- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
