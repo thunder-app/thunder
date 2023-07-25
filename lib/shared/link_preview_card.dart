@@ -253,22 +253,29 @@ class LinkPreviewCard extends StatelessWidget {
 
     if (viewMode == ViewMode.compact) {
       return Container(
+        alignment: Alignment.topRight,
+        height: 75,
+        width: 75,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
         child: Container(
-          height: 75,
-          width: 75,
-          color: (mediaURL != null || originURL != null) && viewMode == ViewMode.compact
-              ? ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ).withOpacity(0.65)
-              : ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ),
+          height: 28,
+          width: 28,
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(12),),
+            color: (mediaURL != null || originURL != null) && viewMode == ViewMode.compact
+                ? ElevationOverlay.applySurfaceTint(
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primary,
+              10,
+            ).withOpacity(0.85)
+                : ElevationOverlay.applySurfaceTint(
+              Theme.of(context).colorScheme.primary,
+              Theme.of(context).colorScheme.primary,
+              10,
+            ),
+          ),
           child: Icon(
             Icons.link_rounded,
             color: theme.colorScheme.onSecondaryContainer,

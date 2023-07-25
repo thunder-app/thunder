@@ -80,12 +80,12 @@ class PostCardViewCompact extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Text(postViewMedia.postView.post.name,
-                          textScaleFactor: state.titleFontSizeScale.textScaleFactor,
+                          textScaleFactor: state.titleFontSizeScale.textScaleFactor*1.05,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             fontWeight: FontWeight.w600,
                             color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
                           )),
-                      const SizedBox(height: 4.0),
+                      const SizedBox(height: 10.0),
                       PostCommunityAndAuthor(
                         showCommunityIcons: false,
                         showInstanceName: showInstanceName,
@@ -94,7 +94,7 @@ class PostCardViewCompact extends StatelessWidget {
                         textStyleAuthor: textStyleCommunityAndAuthor,
                         showCommunitySubscription: showCommunitySubscription,
                       ),
-                      const SizedBox(height: 8.0),
+                      const SizedBox(height: 2.0),
                     ],
                   ),
                   PostCardMetaData(

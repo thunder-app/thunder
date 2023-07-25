@@ -69,7 +69,7 @@ class PostCardMetaData extends StatelessWidget {
                               : theme.textTheme.titleSmall?.color?.withOpacity(0.75)),
                   padding: 2.0,
                 ),
-                const SizedBox(width: 12.0),
+                const SizedBox(width: 10.0),
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
@@ -93,6 +93,17 @@ class PostCardMetaData extends StatelessWidget {
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatTimeToString(dateTime: published.toIso8601String()),
+                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                ),
+                const SizedBox(width: 10.0),
+                IconText(
+                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                  icon: Icon(
+                    Icons.public,
+                    size: 19.0,
+                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                  ),
+                  text: 'link.com',
                   textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
                 const SizedBox(width: 14.0),
