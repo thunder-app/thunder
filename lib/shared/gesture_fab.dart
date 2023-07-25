@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
@@ -16,6 +17,7 @@ class GestureFab extends StatefulWidget {
     required this.icon,
     this.onSlideUp,
     this.onSlideLeft,
+    this.onSlideDown,
   });
 
   final bool? initialOpen;
@@ -24,6 +26,7 @@ class GestureFab extends StatefulWidget {
   final Icon icon;
   final Function? onSlideUp;
   final Function? onSlideLeft;
+  final Function? onSlideDown;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -33,14 +36,15 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
   late final Function(String val)? toggle;
-  bool _open = false;
+  bool _previousIsFabOpen = false;
+  bool isFabOpen = false;
 
   @override
   void initState() {
     super.initState();
-    _open = widget.initialOpen ?? false;
+    isFabOpen = widget.initialOpen ?? false;
     _controller = AnimationController(
-      value: _open ? 1.0 : 0.0,
+      value: isFabOpen ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
@@ -57,20 +61,19 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  void _toggle() {
-    setState(() {
-      _open = !_open;
-      context.read<ThunderBloc>().add(OnFabEvent(!_open));
-      if (_open) {
+  @override
+  Widget build(BuildContext context) {
+    final ThunderState state = context.watch<ThunderBloc>().state;
+    if (state.isFabOpen != _previousIsFabOpen) {
+      isFabOpen = state.isFabOpen;
+      _previousIsFabOpen = isFabOpen;
+      if (isFabOpen) {
         _controller.forward();
       } else {
         _controller.reverse();
       }
-    });
-  }
+    }
 
-  @override
-  Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Stack(
         alignment: Alignment.bottomRight,
@@ -94,7 +97,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           clipBehavior: Clip.antiAlias,
           elevation: 4,
           child: InkWell(
-            onTap: _toggle,
+            onTap: () { context.read<ThunderBloc>().add(OnFabEvent(false)); },
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Icon(
@@ -127,25 +130,35 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   Widget _buildTapToOpenFab() {
     return IgnorePointer(
-      ignoring: _open,
+      ignoring: isFabOpen,
       child: AnimatedContainer(
         transformAlignment: Alignment.center,
         transform: Matrix4.diagonal3Values(
-          _open ? 0.7 : 1.0,
-          _open ? 0.7 : 1.0,
+          isFabOpen ? 0.7 : 1.0,
+          isFabOpen ? 0.7 : 1.0,
           1.0,
         ),
         duration: const Duration(milliseconds: 250),
         curve: const Interval(0.0, 0.5, curve: Curves.easeOut),
         child: AnimatedOpacity(
-          opacity: _open ? 0.0 : 1.0,
+          opacity: isFabOpen ? 0.0 : 1.0,
           curve: const Interval(0.25, 1.0, curve: Curves.easeInOut),
           duration: const Duration(milliseconds: 250),
           child: GestureDetector(
-            onVerticalDragStart: null,
+            onVerticalDragUpdate: (details) {
+              if (details.delta.dy < -5) {
+                context.read<ThunderBloc>().add(OnFabEvent(true));
+              }
+              if (details.delta.dy > 5) {
+                widget.onSlideDown?.call();
+              }
+            },
             onHorizontalDragStart: null,
             child: FloatingActionButton(
-              onPressed: _toggle,
+              onPressed: () {
+                HapticFeedback.lightImpact();
+                context.read<ThunderBloc>().add(OnDismissPostsEvent());
+              },
               child: widget.icon,
             ),
           ),
@@ -184,7 +197,10 @@ class ActionButton extends StatelessWidget {
             color: theme.colorScheme.primaryContainer,
             elevation: 4,
             child: InkWell(
-              onTap: onPressed,
+              onTap: () {
+                context.read<ThunderBloc>().add(OnFabEvent(true));
+                onPressed?.call();
+              },
               child: icon,
             ),
           ),

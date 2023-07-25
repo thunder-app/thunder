@@ -28,7 +28,12 @@ class CommunityPage extends StatefulWidget {
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage({
+    super.key,
+    this.communityId,
+    this.communityName,
+    this.scaffoldKey
+  });
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -44,6 +49,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   CommunityBloc? currentCommunityBloc;
   bool _previousIsFabOpen = false;
   bool isFabOpen = false;
+  bool isFabSummoned = true;
+  bool? disableFabs;
 
   @override
   void initState() {
@@ -58,6 +65,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    disableFabs = state.disableFeedFab;
 
     if (state.isFabOpen != _previousIsFabOpen) {
       isFabOpen = state.isFabOpen;
@@ -201,79 +209,96 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       ],
                     ),
                     drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-                    floatingActionButton: GestureFab(
-                      distance: 60,
-                      icon: const Icon(Icons.menu_rounded),
-                      children: [
-                        ActionButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            context.read<ThunderBloc>().add(OnDismissPostsEvent());
+                    floatingActionButton: !disableFabs! ? AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: isFabSummoned ? GestureFab(
+                        distance: 60,
+                        icon: const Icon(Icons.clear_all_rounded, size: 35,),
+                        onSlideDown: () {
+                          setState(() {
+                            isFabSummoned = false;
+                          });
+                        },
+                        children: [
+                          ActionButton(
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              context.read<ThunderBloc>().add(OnDismissPostsEvent());
+                            },
+                            title: "Dismiss Read",
+                            icon: const Icon(Icons.clear_all_rounded),
+                          ),
+                          ActionButton(
+                            onPressed: () {
+                              HapticFeedback.lightImpact();
+                              context.read<AccountBloc>().add(GetAccountInformation());
+                              return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                                reset: true,
+                                sortType: sortType,
+                                communityId: state.communityId,
+                                listingType: state.listingType,
+                                communityName: state.communityName,
+                              ));
+                            },
+                            title: "Refresh",
+                            icon: const Icon(Icons.refresh),
+                          ),
+                          /*const ActionButton(
+                            onPressed: (!state.useCompactView) => setPreferences(LocalSettings.useCompactView, value),,
+                            title: state. ? "Large View" : "Compact View",
+                            icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
+                          ),*/
+                          ActionButton(
+                            onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
+                            title: "Subscriptions",
+                            icon: const Icon(Icons.people_rounded),
+                          ),
+                          ActionButton(
+                            onPressed: () { context.read<ThunderBloc>().add(OnScrollToTopEvent()); },
+                            title: "Back to Top",
+                            icon: const Icon(Icons.arrow_upward),
+                          ),
+                          widget.communityId != null || widget.communityName != null ? ActionButton(
+                            onPressed: () {
+                              CommunityBloc communityBloc = context.read<CommunityBloc>();
+                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) {
+                                    return MultiBlocProvider(
+                                      providers: [
+                                        BlocProvider<CommunityBloc>.value(value: communityBloc),
+                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                      ],
+                                      child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                            title: "New Post",
+                            icon: const Icon(Icons.add),
+                          ) : Container(),
+                        ],
+                      ) : SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: GestureDetector(
+                          onLongPress: () {
+                            setState(() {
+                              isFabSummoned = true;
+                            });
                           },
-                          title: "Dismiss Read",
-                          icon: const Icon(Icons.clear_all_rounded),
                         ),
-                        ActionButton(
-                          onPressed: () {
-                            HapticFeedback.lightImpact();
-                            context.read<AccountBloc>().add(GetAccountInformation());
-                            return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                              reset: true,
-                              sortType: sortType,
-                              communityId: state.communityId,
-                              listingType: state.listingType,
-                              communityName: state.communityName,
-                            ));
-                          },
-                          title: "Refresh",
-                          icon: const Icon(Icons.refresh),
-                        ),
-                        /*const ActionButton(
-                          onPressed: (!state.useCompactView) => setPreferences(LocalSettings.useCompactView, value),,
-                          title: state. ? "Large View" : "Compact View",
-                          icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
-                        ),*/
-                        ActionButton(
-                          onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
-                          title: "Subscriptions",
-                          icon: const Icon(Icons.people_rounded),
-                        ),
-                        ActionButton(
-                          onPressed: () { context.read<ThunderBloc>().add(OnScrollToTopEvent()); },
-                          title: "Back to Top",
-                          icon: const Icon(Icons.arrow_upward),
-                        ),
-                        widget.communityId != null || widget.communityName != null ? ActionButton(
-                          onPressed: () {
-                            CommunityBloc communityBloc = context.read<CommunityBloc>();
-                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) {
-                                  return MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<CommunityBloc>.value(value: communityBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    ],
-                                    child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                                  );
-                                },
-                              ),
-                            );
-                          },
-                          title: "New Post",
-                          icon: const Icon(Icons.add),
-                        ) : Container(),
-                      ],
-                    ),
-                          /**/
+                      ),
+                    ) : null,
                     body: Stack(
                       children: [
                         SafeArea(child: _getBody(context, state)),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           child: isFabOpen ? Listener(
-                            onPointerUp: null,
+                            onPointerUp: (details) { context.read<ThunderBloc>().add(OnFabEvent(false)); },
                             child: Container(
                               color: theme.colorScheme.background.withOpacity(0.85),
                             ),
