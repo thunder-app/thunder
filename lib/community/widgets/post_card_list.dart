@@ -154,7 +154,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               mainAxisSpacing: 0,
               cacheExtent: 500,
               controller: _scrollController,
-              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
+              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 2 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
                 if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
                   return GestureDetector(
@@ -173,7 +173,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     child: CommunityHeader(communityInfo: widget.communityInfo),
                   );
                 }
-                if (index == widget.postViews!.length) {
+                if (index == ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
                   if (widget.hasReachedEnd == true) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
