@@ -75,6 +75,7 @@ dependencies:
   back_button_interceptor: ^6.0.2
   flutter_localizations:
     sdk: flutter
+  version: ^3.0.2
 
 dev_dependencies:
   flutter_test:
