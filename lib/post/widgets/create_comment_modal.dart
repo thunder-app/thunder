@@ -317,7 +317,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   String getCommentContents() {
     String deletedMsg = "_deleted by creator_";
     if (widget.commentView != null) {
-      if(widget.commentView!.commentView!.comment.deleted) {
+      if (widget.commentView!.commentView!.comment.deleted) {
         return deletedMsg;
       }
       return widget.commentView?.commentView?.comment.content ?? 'N/A';
