@@ -25,6 +25,7 @@ class CommentCard extends StatefulWidget {
   final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
+  final int? moddingCommentId;
   final Function(int, bool) onDeleteAction;
 
   final DateTime now;
@@ -41,6 +42,7 @@ class CommentCard extends StatefulWidget {
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
+    this.moddingCommentId,
     required this.onDeleteAction,
   });
 
@@ -305,6 +307,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CommentHeader(
+                                moddingCommentId: widget.moddingCommentId ?? -1,
                                 commentViewTree: widget.commentViewTree,
                                 useDisplayNames: state.useDisplayNames,
                                 isCommentNew: isCommentNew,
@@ -424,6 +427,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) => CommentCard(
+                            moddingCommentId: widget.moddingCommentId,
                             selectedCommentPath: widget.selectedCommentPath,
                             selectCommentId: widget.selectCommentId,
                             now: widget.now,

@@ -234,6 +234,7 @@ class _PostPageState extends State<PostPage> {
                                 comments: state.comments,
                                 selectedCommentId: state.selectedCommentId,
                                 selectedCommentPath: state.selectedCommentPath,
+                                moddingCommentId: state.moddingCommentId,
                                 viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
                                 scrollController: _scrollController,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd),
@@ -242,7 +243,7 @@ class _PostPageState extends State<PostPage> {
                         return ErrorMessage(
                           message: state.errorMessage,
                           action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
                           },
                           actionText: 'Refresh Content',
                         );

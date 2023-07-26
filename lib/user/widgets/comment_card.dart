@@ -4,12 +4,15 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+
+import '../../utils/numbers.dart';
 
 class CommentCard extends StatelessWidget {
   final CommentView comment;
@@ -19,6 +22,11 @@ class CommentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    int upvotes = comment.counts.upvotes ?? 0;
+    int downvotes = comment.counts.downvotes ?? 0;
+
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -49,13 +57,44 @@ class CommentCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
                     comment.creator.name,
                     style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                   ),
-                  Text(formatTimeToString(dateTime: comment.comment.published.toIso8601String()))
+                  const SizedBox(width: 2.0),
+                  Icon(
+                    Icons.north_rounded,
+                    size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                    color: theme.colorScheme.onBackground,
+                  ),
+                  const SizedBox(width: 2.0),
+                  Text(
+                    formatNumberToK(upvotes),
+                    semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onBackground,
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Icon(
+                    Icons.south_rounded,
+                    size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                    color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
+                  ),
+                  const SizedBox(width: 2.0),
+                  if (downvotes != 0)
+                    Text(
+                      formatNumberToK(downvotes),
+                      semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
+                      ),
+                    ),
+                  Expanded(child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(formatTimeToString(dateTime: comment.comment.published.toIso8601String()))]))
                 ],
               ),
               GestureDetector(
