@@ -49,6 +49,10 @@ class SwipePicker<T> extends StatelessWidget {
                       bottomLeft: Radius.circular(12),
                     ),
                     child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        bottomLeft: Radius.circular(12),
+                      ),
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
@@ -138,6 +142,10 @@ class SwipePicker<T> extends StatelessWidget {
                       bottomRight: Radius.circular(12),
                     ),
                     child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
