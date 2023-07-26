@@ -2,6 +2,8 @@
 ### Added
 - Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
 - Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
+- Show instance taglines in the feed - contribution from @micahmo
+- Added new visual swipe gesture picker within settings - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
