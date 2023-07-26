@@ -28,6 +28,7 @@ class MediaView extends StatefulWidget {
   final bool isUserLoggedIn;
   final bool? showLinkPreview;
   final ViewMode viewMode;
+  final void Function()? navigateToPost;
 
   const MediaView({
     super.key,
@@ -40,6 +41,7 @@ class MediaView extends StatefulWidget {
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
     this.showLinkPreview,
+    this.navigateToPost,
   });
 
   @override
@@ -133,6 +135,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   url: widget.postView!.media.first.mediaUrl!,
                   heroKey: heroKey,
                   postId: widget.postView!.postView.post.id,
+                  navigateToPost: widget.navigateToPost,
                 );
               },
               transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
