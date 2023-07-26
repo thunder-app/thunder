@@ -209,7 +209,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         child: CommonMarkdownBody(
-                          body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
+                          body: getCommentContents(),
                           isSelectableText: true,
                         ),
                       ),
@@ -312,5 +312,21 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
         ),
       ),
     );
+  }
+
+  String getCommentContents() {
+    String deletedMsg = "_deleted by creator_";
+    if (widget.commentView != null) {
+      if(widget.commentView!.commentView!.comment.deleted) {
+        return deletedMsg;
+      }
+      return widget.commentView?.commentView?.comment.content ?? 'N/A';
+    }
+
+    if (widget.comment != null && widget.comment!.deleted) {
+      return deletedMsg;
+    }
+
+    return widget.comment?.content ?? 'N/A';
   }
 }
