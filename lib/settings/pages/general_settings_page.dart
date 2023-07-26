@@ -49,6 +49,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showTitleFirst = false;
   bool showThumbnailPreviewOnRight = false;
   bool showTextPostIndicator = false;
+  bool tappableAuthorCommunity = false;
 
   // General Settings
   bool showVoteActions = true;
@@ -147,6 +148,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
         setState(() => showTextPostIndicator = value);
         break;
+      case LocalSettings.tappableAuthorCommunity:
+        await prefs.setBool(LocalSettings.tappableAuthorCommunity.name, value);
+        setState(() => tappableAuthorCommunity = value);
+        break;
 
       // General Settings
       case LocalSettings.showPostVoteActions:
@@ -237,6 +242,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+      tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
       showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
       showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
       showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
@@ -472,6 +478,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconEnabled: Icons.article,
                                         iconDisabled: Icons.article_outlined,
                                         onToggle: (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.tappableAuthorCommunity.label,
+                                        value: tappableAuthorCommunity,
+                                        iconEnabled: Icons.touch_app_rounded,
+                                        iconDisabled: Icons.touch_app_outlined,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
                                       ),
                                     ],
                                   ),

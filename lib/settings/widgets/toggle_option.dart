@@ -35,12 +35,15 @@ class ToggleOption extends StatelessWidget {
           children: [
             Icon(value ? iconEnabled : iconDisabled),
             const SizedBox(width: 8.0),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(description, style: theme.textTheme.bodyMedium),
-                if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
-              ],
+            ConstrainedBox(
+              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(description, style: theme.textTheme.bodyMedium),
+                  if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                ],
+              ),
             ),
           ],
         ),

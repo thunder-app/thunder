@@ -76,7 +76,8 @@ class PostSubview extends StatelessWidget {
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
-                GestureDetector(
+                InkWell(
+                  borderRadius: BorderRadius.circular(6),
                   onTap: () {
                     account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
@@ -117,7 +118,8 @@ class PostSubview extends StatelessWidget {
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
                 ),
-                GestureDetector(
+                InkWell(
+                  borderRadius: BorderRadius.circular(6),
                   onTap: () {
                     account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
