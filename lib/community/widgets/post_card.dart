@@ -162,24 +162,20 @@ class _PostCardState extends State<PostCard> {
               background: dismissDirection == DismissDirection.startToEnd
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
-                      color: swipeAction == null
-                          ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      color: swipeAction == null ? state.leftPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: swipeAction == null
-                          ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      color: swipeAction == null ? state.rightPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
                       ),
                     ),
               child: InkWell(

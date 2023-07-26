@@ -249,24 +249,20 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 background: dismissDirection == DismissDirection.startToEnd
                     ? AnimatedContainer(
                         alignment: Alignment.centerLeft,
-                        color: swipeAction == null
-                            ? getSwipeActionColor(state.leftPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        color: swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                         duration: const Duration(milliseconds: 200),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * dismissThreshold,
-                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                          child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                         ),
                       )
                     : AnimatedContainer(
                         alignment: Alignment.centerRight,
-                        color: swipeAction == null
-                            ? getSwipeActionColor(state.rightPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        color: swipeAction == null ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                         duration: const Duration(milliseconds: 200),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * dismissThreshold,
-                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                          child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                         ),
                       ),
                 child: Container(
