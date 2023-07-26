@@ -51,6 +51,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   /// User Settings
   bool isUserLoggedIn = false;
 
+  bool isDownloadingMedia = false;
+
   void _maybeSlide() {
     setState(() {
       maybeSlideZooming = true;
@@ -287,11 +289,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         // TODO make go to post work
                         /*Container(
                             child: widget.postId != null ? Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: IconButton(
-                                    onPressed: () async {
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(15.0),
+                                      child: IconButton(
+                                        onPressed: () async {
                                       AccountBloc accountBloc = context.read<AccountBloc>();
                                       AuthBloc authBloc = context.read<AuthBloc>();
                                       ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -320,11 +322,11 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         ),
                                       );
                                       if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                                    },
-                                    icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
-                                  ),
-                                ),
-                              ],
+                                        },
+                                        icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
+                                      ),
+                                    ),
+                                  ],
                             ) : null,
                           ),*/
                         Padding(
@@ -339,23 +341,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       File? mediaFile = media?.file;
 
                                       if (media == null) {
-                                        // Tell user we're downloading the image
-                                        SnackBar snackBar = const SnackBar(
-                                          content: Text('Downloading media to share...'),
-                                          behavior: SnackBarBehavior.floating,
-                                        );
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                          _imageViewer.currentState?.showSnackBar(snackBar);
-                                        });
+                                        setState(() => isDownloadingMedia = true);
 
                                         // Download
                                         mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
-
-                                        // Hide snackbar
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                        });
                                       }
 
                                       // Share
@@ -370,14 +359,24 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         _imageViewer.currentState?.clearSnackBars();
                                         _imageViewer.currentState?.showSnackBar(snackBar);
                                       });
+                                    } finally {
+                                      setState(() => isDownloadingMedia = false);
                                     }
                                   },
-                            icon: Icon(
-                              Icons.share_rounded,
-                              semanticLabel: "Comments",
-                              color: Colors.white.withOpacity(0.90),
-                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                            ),
+                            icon: isDownloadingMedia
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.share_rounded,
+                                    semanticLabel: "Comments",
+                                    color: Colors.white.withOpacity(0.90),
+                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                  ),
                           ),
                         ),
                         Padding(
