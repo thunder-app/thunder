@@ -1,6 +1,18 @@
 ## Unreleased
+### Added
+- Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
+- Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
+
+### Changed
+- Removed tap zones for author/community on compact post cards - contribution from @CTalvio
+- Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
+
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
+- Fixed the gesture conflict that can occur between pinch to zoom and tap slide to zoom - contribution from @CTalvio
+- Fixed incorrect indentation to load more replies card within comments - contribution from @ajsosa
+- Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
+- Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
