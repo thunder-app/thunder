@@ -8,6 +8,7 @@
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
 - Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
+- Added caching to images to improve overall experience - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -15,6 +16,7 @@
 - Fixed incorrect indentation to load more replies card within comments - contribution from @ajsosa
 - Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
 - Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
+- Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
