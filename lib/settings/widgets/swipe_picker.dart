@@ -105,47 +105,13 @@ class SwipePicker<T> extends StatelessWidget {
                   child: const PostPlaceholder(),
                 ),
               ),
-              if (side == SwipePickerSide.right && items.isNotEmpty)
-                SizedBox(
-                  width: 100,
-                  height: 65,
-                  child: Material(
-                    color: items[0].value.getColor(),
-                    child: InkWell(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          showDragHandle: true,
-                          builder: (context) => BottomSheetListPicker(
-                            title: items[0].label,
-                            items: items[0].options,
-                            onSelect: (value) {
-                              items[0].onChanged(value);
-                            },
-                          ),
-                        );
-                      },
-                      child: Icon(
-                        items[0].value.getIcon(),
-                      ),
-                    ),
-                  ),
-                ),
               if (side == SwipePickerSide.right && items.length >= 2)
                 SizedBox(
                   width: 100,
                   height: 65,
                   child: Material(
                     color: items[1].value.getColor(),
-                    borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(12),
-                      bottomRight: Radius.circular(12),
-                    ),
                     child: InkWell(
-                      borderRadius: const BorderRadius.only(
-                        topRight: Radius.circular(12),
-                        bottomRight: Radius.circular(12),
-                      ),
                       onTap: () {
                         showModalBottomSheet(
                           context: context,
@@ -161,6 +127,40 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[1].value.getIcon(),
+                      ),
+                    ),
+                  ),
+                ),
+              if (side == SwipePickerSide.right && items.isNotEmpty)
+                SizedBox(
+                  width: 100,
+                  height: 65,
+                  child: Material(
+                    color: items[0].value.getColor(),
+                    borderRadius: const BorderRadius.only(
+                      topRight: Radius.circular(12),
+                      bottomRight: Radius.circular(12),
+                    ),
+                    child: InkWell(
+                      borderRadius: const BorderRadius.only(
+                        topRight: Radius.circular(12),
+                        bottomRight: Radius.circular(12),
+                      ),
+                      onTap: () {
+                        showModalBottomSheet(
+                          context: context,
+                          showDragHandle: true,
+                          builder: (context) => BottomSheetListPicker(
+                            title: items[0].label,
+                            items: items[0].options,
+                            onSelect: (value) {
+                              items[0].onChanged(value);
+                            },
+                          ),
+                        );
+                      },
+                      child: Icon(
+                        items[0].value.getIcon(),
                       ),
                     ),
                   ),
