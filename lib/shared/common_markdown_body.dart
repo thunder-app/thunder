@@ -59,7 +59,7 @@ class CommonMarkdownBody extends StatelessWidget {
           parsedUrl = parsedUrl.replaceFirst('mailto:', '');
         }
 
-        String? communityName = checkLemmyInstanceUrl(parsedUrl);
+        String? communityName = await getLemmyCommunity(parsedUrl);
 
         if (communityName != null) {
           navigateToCommunityByName(context, communityName);
