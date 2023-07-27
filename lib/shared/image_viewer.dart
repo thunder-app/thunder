@@ -373,7 +373,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   )
                                 : Icon(
                                     Icons.share_rounded,
-                                    semanticLabel: "Comments",
+                                    semanticLabel: "Share",
                                     color: Colors.white.withOpacity(0.90),
                                     shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
                                   ),
