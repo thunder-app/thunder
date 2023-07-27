@@ -8,6 +8,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'inbox_event.dart';
+
 part 'inbox_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
