@@ -330,8 +330,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                            child: CommonMarkdownBody(
-                                                body: widget.commentViewTree.commentView!.comment.content),
+                                            child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
                                           ),
                                           if (state.showCommentButtonActions && isUserLoggedIn)
                                             Padding(
