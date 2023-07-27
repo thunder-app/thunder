@@ -6,6 +6,7 @@
 - Added new visual swipe gesture picker within settings - contribution from @micahmo
 - Added option to toggle tappable authors and communities in the feed - contribution from @micahmo
 - Added spinner indicator when sharing media - contribution from @micahmo
+- Added inbox unread indicators on the bottom navigation bar
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
