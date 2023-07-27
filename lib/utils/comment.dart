@@ -77,7 +77,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-      commentView: commentView,
+      commentView: commentView.comment.deleted ? convertToDeletedComment(commentView) : commentView,
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
@@ -140,4 +140,32 @@ bool updateModifiedComment(List<CommentViewTree> commentTrees, FullCommentView m
   }
 
   return false;
+}
+
+CommentView convertToDeletedComment(CommentView commentView) {
+  Comment deletedComment = Comment(
+      id: commentView.comment.id,
+      creatorId: commentView.comment.creatorId,
+      postId: commentView.comment.postId,
+      content: "_deleted by creator_",
+      removed: commentView.comment.removed,
+      distinguished: commentView.comment.distinguished,
+      published: commentView.comment.published,
+      deleted: commentView.comment.deleted,
+      apId: commentView.comment.apId,
+      local: commentView.comment.local,
+      languageId: commentView.comment.languageId,
+      instanceHost: commentView.comment.instanceHost,
+      path: commentView.comment.path);
+
+  return CommentView(
+      comment: deletedComment,
+      creator: commentView.creator,
+      post: commentView.post,
+      community: commentView.community,
+      counts: commentView.counts,
+      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+      saved: commentView.saved,
+      creatorBlocked: commentView.creatorBlocked,
+      instanceHost: commentView.instanceHost);
 }

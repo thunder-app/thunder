@@ -85,9 +85,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
-                privateMessages: privateMessageViews,
-                mentions: personMentionViews,
-                replies: commentViews,
+                privateMessages: removeDeleteMessages(privateMessageViews),
+                mentions: removeDeleteMentions(personMentionViews),
+                replies: removeDeleteReplies(commentViews),
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -140,9 +140,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           return emit(
             state.copyWith(
               status: InboxStatus.success,
-              privateMessages: privateMessages,
-              mentions: mentions,
-              replies: replies,
+              privateMessages: removeDeleteMessages(privateMessages),
+              mentions: removeDeleteMentions(mentions),
+              replies: removeDeleteReplies(replies),
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -241,5 +241,47 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
+  }
+
+  List<PrivateMessageView> removeDeleteMessages(List<PrivateMessageView> messages) {
+    List<PrivateMessageView> nonDeletedMessages = [];
+
+    for (PrivateMessageView message in messages) {
+      if (message.privateMessage.deleted) {
+        continue;
+      }
+
+      nonDeletedMessages.add(message);
+    }
+
+    return nonDeletedMessages;
+  }
+
+  List<PersonMentionView> removeDeleteMentions(List<PersonMentionView> mentions) {
+    List<PersonMentionView> nonDeletedMentions = [];
+
+    for (PersonMentionView mention in mentions) {
+      if (mention.comment.deleted) {
+        continue;
+      }
+
+      nonDeletedMentions.add(mention);
+    }
+
+    return nonDeletedMentions;
+  }
+
+  List<CommentView> removeDeleteReplies(List<CommentView> replies) {
+    List<CommentView> nonDeletedReplies = [];
+
+    for (CommentView reply in replies) {
+      if (reply.comment.deleted) {
+        continue;
+      }
+
+      nonDeletedReplies.add(reply);
+    }
+
+    return nonDeletedReplies;
   }
 }
