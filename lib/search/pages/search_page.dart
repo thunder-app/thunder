@@ -30,7 +30,10 @@ class SearchPage extends StatefulWidget {
   State<SearchPage> createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMixin<SearchPage> {
+  @override
+  bool get wantKeepAlive => true;
+
   final TextEditingController _controller = TextEditingController();
   final _scrollController = ScrollController(initialScrollOffset: 0);
   SharedPreferences? prefs;
@@ -39,6 +42,8 @@ class _SearchPageState extends State<SearchPage> {
   String? sortTypeLabel;
   final Set<CommunitySafe> newAnonymousSubscriptions = {};
   final Set<int> removedSubs = {};
+  int _previousFocusSearchId = 0;
+  final searchTextFieldFocus = FocusNode();
 
   @override
   void initState() {
@@ -80,7 +85,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void resetTextField() {
-    FocusScope.of(context).unfocus(); // Unfocus the search field
+    searchTextFieldFocus.requestFocus();
     _controller.clear(); // Clear the search field
   }
 
@@ -90,14 +95,28 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
         BlocListener<SearchBloc, SearchState>(listener: (context, state) {}),
+        BlocListener<AccountBloc, AccountState>(listener: (context, state) {
+          // When account changes, that means our instance most likely changed, so reset search.
+          _controller.clear();
+          context.read<SearchBloc>().add(ResetSearch());
+          setState(() {});
+        }),
       ],
       child: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
+          if (state.focusSearchId > _previousFocusSearchId) {
+            searchTextFieldFocus.requestFocus();
+            _previousFocusSearchId = state.focusSearchId;
+          }
+
           return Scaffold(
             appBar: AppBar(
                 toolbarHeight: 90.0,
@@ -109,6 +128,7 @@ class _SearchPageState extends State<SearchPage> {
                   child: Stack(
                     children: [
                       TextField(
+                        focusNode: searchTextFieldFocus,
                         onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                         controller: _controller,
                         onTap: () {

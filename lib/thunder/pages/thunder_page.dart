@@ -137,6 +137,8 @@ class _ThunderState extends State<Thunder> {
         providers: [
           BlocProvider(create: (context) => ThunderBloc()),
           BlocProvider(create: (context) => InboxBloc()),
+          BlocProvider(create: (context) => SearchBloc()),
+          BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: WillPopScope(
           onWillPop: () async {
@@ -196,10 +198,7 @@ class _ThunderState extends State<Thunder> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
                                         CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                        MultiBlocProvider(
-                                          providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
-                                          child: const SearchPage(),
-                                        ),
+                                        const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),
                                         SettingsPage(),
@@ -278,6 +277,10 @@ class _ThunderState extends State<Thunder> {
           onTap: (index) {
             if (selectedPageIndex == 0 && index == 0) {
               context.read<ThunderBloc>().add(OnScrollToTopEvent());
+            }
+
+            if (selectedPageIndex == 1 && index == 1) {
+              context.read<SearchBloc>().add(FocusSearchEvent());
             }
 
             if (selectedPageIndex != index) {
