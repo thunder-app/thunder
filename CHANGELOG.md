@@ -8,6 +8,7 @@
 - Added spinner indicator when sharing media - contribution from @micahmo
 - Added inbox unread indicators on the bottom navigation bar
 - Added more robust community navigation - contribution from @micahmo
+- Added support for navigating from image preview to comments - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
