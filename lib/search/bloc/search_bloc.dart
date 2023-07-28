@@ -9,6 +9,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/instance.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
@@ -57,6 +58,21 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         limit: 15,
         sort: event.sortType,
       ));
+
+      // If there are no search results, see if this is an exact search
+      if (searchResponse.communities.isEmpty) {
+        // Note: We could jump straight to GetCommunity here.
+        // However, getLemmyCommunity has a nice instance check that can short-circuit things
+        // if the instance is not valid to start.
+        String? communityName = await getLemmyCommunity(event.query);
+        if (communityName != null) {
+          final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+            name: communityName,
+          ));
+
+          searchResponse = searchResponse.copyWith(communities: [getCommunityResponse.communityView]);
+        }
+      }
 
       return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, page: 2));
     } catch (e) {
