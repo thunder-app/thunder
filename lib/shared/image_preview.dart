@@ -14,6 +14,7 @@ class ImagePreview extends StatefulWidget {
   final bool isExpandable;
   final bool showFullHeightImages;
   final int? postId;
+  final void Function()? navigateToPost;
 
   const ImagePreview({
     super.key,
@@ -25,6 +26,7 @@ class ImagePreview extends StatefulWidget {
     this.isExpandable = true,
     this.showFullHeightImages = false,
     this.postId,
+    this.navigateToPost,
   });
 
   @override
@@ -56,6 +58,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             url: widget.url,
             heroKey: heroKey,
             postId: widget.postId,
+            navigateToPost: widget.navigateToPost,
           );
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {

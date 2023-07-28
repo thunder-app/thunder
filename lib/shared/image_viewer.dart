@@ -20,12 +20,14 @@ class ImageViewer extends StatefulWidget {
   final String url;
   final String heroKey;
   final int? postId;
+  final void Function()? navigateToPost;
 
   const ImageViewer({
     super.key,
     required this.url,
     required this.heroKey,
     this.postId,
+    this.navigateToPost,
   });
 
   get postViewMedia => null;
@@ -286,49 +288,17 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // TODO make go to post work
-                        /*Container(
-                            child: widget.postId != null ? Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.all(15.0),
-                                      child: IconButton(
-                                        onPressed: () async {
-                                      AccountBloc accountBloc = context.read<AccountBloc>();
-                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                      CommunityBloc communityBloc = context.read<CommunityBloc>();
-
-                                      // Mark post as read when tapped
-                                      if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
-
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                                BlocProvider.value(value: communityBloc),
-                                                BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                              ],
-                                              child: PostPage(
-                                                postView: widget.postViewMedia,
-                                                onPostUpdated: () {},
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                      if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                                        },
-                                        icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
-                                      ),
-                                    ),
-                                  ],
-                            ) : null,
-                          ),*/
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
