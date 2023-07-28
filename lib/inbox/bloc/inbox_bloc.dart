@@ -7,6 +7,8 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
+import '../../utils/comment.dart';
+
 part 'inbox_event.dart';
 
 part 'inbox_state.dart';
@@ -86,9 +88,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
-                privateMessages: removeDeleteMessages(privateMessageViews),
-                mentions: removeDeleteMentions(personMentionViews),
-                replies: removeDeleteReplies(commentViews),
+                privateMessages: cleanDeletedMessages(privateMessageViews),
+                mentions: cleanDeletedMentions(personMentionViews),
+                replies: cleanDeletedReplies(commentViews),
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -141,9 +143,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           return emit(
             state.copyWith(
               status: InboxStatus.success,
-              privateMessages: removeDeleteMessages(privateMessages),
-              mentions: removeDeleteMentions(mentions),
-              replies: removeDeleteReplies(replies),
+              privateMessages: cleanDeletedMessages(privateMessages),
+              mentions: cleanDeletedMentions(mentions),
+              replies: cleanDeletedReplies(replies),
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -244,45 +246,74 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
   }
 
-  List<PrivateMessageView> removeDeleteMessages(List<PrivateMessageView> messages) {
-    List<PrivateMessageView> nonDeletedMessages = [];
+  List<PrivateMessageView> cleanDeletedMessages(List<PrivateMessageView> messages) {
+    List<PrivateMessageView> cleanMessages = [];
 
     for (PrivateMessageView message in messages) {
-      if (message.privateMessage.deleted) {
-        continue;
-      }
-
-      nonDeletedMessages.add(message);
+      cleanMessages.add(cleanDeletedPrivateMessage(message));
     }
 
-    return nonDeletedMessages;
+    return cleanMessages;
   }
 
-  List<PersonMentionView> removeDeleteMentions(List<PersonMentionView> mentions) {
-    List<PersonMentionView> nonDeletedMentions = [];
+  List<PersonMentionView> cleanDeletedMentions(List<PersonMentionView> mentions) {
+    List<PersonMentionView> cleanedMentions = [];
 
     for (PersonMentionView mention in mentions) {
-      if (mention.comment.deleted) {
-        continue;
-      }
-
-      nonDeletedMentions.add(mention);
+      cleanedMentions.add(cleanDeletedMention(mention));
     }
 
-    return nonDeletedMentions;
+    return cleanedMentions;
   }
 
-  List<CommentView> removeDeleteReplies(List<CommentView> replies) {
-    List<CommentView> nonDeletedReplies = [];
+  List<CommentView> cleanDeletedReplies(List<CommentView> replies) {
+    List<CommentView> cleanedReplies = [];
 
     for (CommentView reply in replies) {
-      if (reply.comment.deleted) {
-        continue;
-      }
-
-      nonDeletedReplies.add(reply);
+      cleanedReplies.add(cleanDeletedCommentView(reply));
     }
 
-    return nonDeletedReplies;
+    return cleanedReplies;
+  }
+
+  PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {
+    if (!message.privateMessage.deleted) {
+      return message;
+    }
+
+    PrivateMessage privateMessage = PrivateMessage(
+        id: message.privateMessage.id,
+        creatorId: message.privateMessage.creatorId,
+        recipientId: message.privateMessage.recipientId,
+        content: "_deleted by creator_",
+        deleted: message.privateMessage.deleted,
+        read: message.privateMessage.read,
+        published: message.privateMessage.published,
+        apId: message.privateMessage.apId,
+        local: message.privateMessage.local,
+        instanceHost: message.privateMessage.instanceHost);
+
+    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient, instanceHost: message.instanceHost);
+  }
+
+  PersonMentionView cleanDeletedMention(PersonMentionView mention) {
+    if (!mention.comment.deleted) {
+      return mention;
+    }
+
+    Comment deletedComment = convertToDeletedComment(mention.comment);
+
+    return PersonMentionView(
+        personMention: mention.personMention,
+        comment: deletedComment,
+        creator: mention.creator,
+        post: mention.post,
+        community: mention.community,
+        recipient: mention.recipient,
+        counts: mention.counts,
+        creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
+        saved: mention.saved,
+        creatorBlocked: mention.creatorBlocked,
+        instanceHost: mention.instanceHost);
   }
 }
