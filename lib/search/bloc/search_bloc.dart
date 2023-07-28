@@ -66,11 +66,18 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         // if the instance is not valid to start.
         String? communityName = await getLemmyCommunity(event.query);
         if (communityName != null) {
-          final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-            name: communityName,
-          ));
+          try {
+            Account? account = await fetchActiveProfileAccount();
 
-          searchResponse = searchResponse.copyWith(communities: [getCommunityResponse.communityView]);
+            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+              name: communityName,
+              auth: account?.jwt,
+            ));
+
+            searchResponse = searchResponse.copyWith(communities: [getCommunityResponse.communityView]);
+          } catch (e) {
+            // Ignore any exceptions here and return an empty response below
+          }
         }
       }
 
