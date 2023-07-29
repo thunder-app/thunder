@@ -85,9 +85,10 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                   child: isBlocked == false
                       ? Padding(
                           padding: const EdgeInsets.only(
-                            top: 8.0,
+                            top: 10,
                             left: 12,
                             right: 12,
+                            bottom: 4,
                           ),
                           child: Row(
                             children: [
@@ -133,7 +134,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 ),
                               ),
                               const SizedBox(
-                                width: 8,
+                                width: 10,
                                 height: 8,
                               ),
                               Expanded(
@@ -194,10 +195,11 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                   },
                   child: widget.subscribedType != SubscribedType.subscribed
                       ? Padding(
-                          padding: const EdgeInsets.only(
-                            top: 8.0,
+                          padding: EdgeInsets.only(
+                            top: isBlocked ? 10 : 4,
                             left: 12,
                             right: 12,
+                            bottom: 4,
                           ),
                           child: ElevatedButton(
                             onPressed: isUserLoggedIn

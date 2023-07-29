@@ -82,6 +82,22 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
 
+            // Tally up how many unread messages/mentions/replies there are so far
+            // This will only tally up at most 20 for each type for a total of 60 unread counts
+            int totalUnreadCount = 0;
+
+            for (PrivateMessageView privateMessageView in privateMessageViews) {
+              if (privateMessageView.privateMessage.read == false) totalUnreadCount++;
+            }
+
+            for (PersonMentionView personMentionView in personMentionViews) {
+              if (personMentionView.personMention.read == false) totalUnreadCount++;
+            }
+
+            for (CommentView commentView in commentViews) {
+              if (commentView.commentReply?.read == false) totalUnreadCount++;
+            }
+
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
@@ -92,6 +108,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
                 inboxPrivateMessagePage: 2,
+                totalUnreadCount: totalUnreadCount,
                 hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
                 hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
                 hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,

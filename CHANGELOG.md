@@ -1,5 +1,30 @@
 ## Unreleased
 ### Added
+- Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
+- Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
+- Show instance taglines in the feed - contribution from @micahmo
+- Added new visual swipe gesture picker within settings - contribution from @micahmo
+- Added option to toggle tappable authors and communities in the feed - contribution from @micahmo
+- Added spinner indicator when sharing media - contribution from @micahmo
+- Added inbox unread indicators on the bottom navigation bar
+- Added more robust community navigation - contribution from @micahmo
+- Added support for navigating from image preview to comments - contribution from @micahmo
+
+### Changed
+- Removed tap zones for author/community on compact post cards - contribution from @CTalvio
+- Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
+- Added caching to images to improve overall experience - contribution from @micahmo
+
+### Fixed
+- Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
+- Fixed the gesture conflict that can occur between pinch to zoom and tap slide to zoom - contribution from @CTalvio
+- Fixed incorrect indentation to load more replies card within comments - contribution from @ajsosa
+- Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
+- Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
+- Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
+
+## 0.2.1+13 - 2023-07-25
+### Added
 - Added swipe gesture to toggle read/unread status on posts - contribution from @micahmo
 - Added option to enable/disable text post indicator on compact view - contribution from @micahmo
 - Added improvements to link previews to be more stable, and to work more often - contribution from @micahmo
@@ -22,6 +47,8 @@
 - Added ability to subscribe to communities without being logged in - contribution from @vbh
 - Added options to show post author, and community icons within the feed - contribution from @sant0s12
 - Added option to disable NSFW content - contribution from @ajsosa
+- Added long-press action on image viewer to show image-only mode - contribution from @CTalvio
+- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo
@@ -40,6 +67,8 @@
 - Material You theme setting is hidden on non-android devices
 - Comment child count now counts total replies rather than total top level replies - contribution from @micahmo
 - Desktop builds will always use external browser - contribution from @micahmo
+- Adjusted way permissions are handled when saving media
+- Adjusted swipe to dismiss on posts to not move divider alongside swipe gesture - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where comment thread would show spinning indicator even after all comments have been loaded - contribution from @ajsosa
@@ -50,6 +79,8 @@
 - Fixed issue where interacting with saved posts from profile was throwing an error - contribution from @micahmo
 - Fixed issue where markdown preview was not working when creating a post - contribution from @micahmo
 - Fixed broken show link preview option in settings - contribution from @ajsosa
+- Fixed issue where swiping on a comment would cause text to overflow on top of the comment indicators - contribution from @ajsosa
+- Fixed issue where the app was preventing you from voting or saving multiple things within a short timeframe
 
 ## 0.2.1+12 - 2023-07-18
 ### Added

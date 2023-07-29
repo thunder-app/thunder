@@ -1,9 +1,11 @@
+import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
@@ -26,6 +28,7 @@ class PostCardList extends StatefulWidget {
   final FullCommunityView? communityInfo;
   final SubscribedType? subscribeType;
   final BlockedCommunity? blockedCommunity;
+  final List<Tagline>? taglines;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -47,6 +50,7 @@ class PostCardList extends StatefulWidget {
     required this.onSaveAction,
     required this.onToggleReadAction,
     this.blockedCommunity,
+    this.taglines,
   });
 
   @override
@@ -107,6 +111,10 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    // This allows us to catch subscription changes and update accordingly (i.e., setting the subscription indicator)
+    context.watch<AccountBloc>();
+
     final ThunderState state = context.watch<ThunderBloc>().state;
     disableFabs = state.disableFeedFab;
 
@@ -149,26 +157,54 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               mainAxisSpacing: 0,
               cacheExtent: 500,
               controller: _scrollController,
-              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length + 1) : 1,
+              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 2 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
-                if (index == 0 && (widget.communityId != null || widget.communityName != null)) {
-                  return GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        _displaySidebar = true;
-                      });
-                    },
-                    onHorizontalDragUpdate: (details) {
-                      if (details.delta.dx < -3) {
+                if (index == 0) {
+                  if (widget.communityId != null || widget.communityName != null) {
+                    return GestureDetector(
+                      onTap: () {
                         setState(() {
                           _displaySidebar = true;
                         });
-                      }
-                    },
-                    child: CommunityHeader(communityInfo: widget.communityInfo),
-                  );
+                      },
+                      onHorizontalDragUpdate: (details) {
+                        if (details.delta.dx < -3) {
+                          setState(() {
+                            _displaySidebar = true;
+                          });
+                        }
+                      },
+                      child: CommunityHeader(communityInfo: widget.communityInfo),
+                    );
+                  } else if (widget.taglines?.firstOrNull?.content.isNotEmpty == true) {
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: theme.splashColor,
+                          borderRadius: const BorderRadius.all(
+                            Radius.elliptical(5, 5),
+                          ),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: ExpandableText(
+                            widget.taglines!.first.content,
+                            expandText: 'Show more...',
+                            maxLines: 2,
+                            collapseOnTextTap: true,
+                            animation: true,
+                            linkColor: theme.primaryColor,
+                            style: TextStyle(
+                              color: theme.hintColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
                 }
-                if (index == widget.postViews!.length) {
+                if (index == ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
                   if (widget.hasReachedEnd == true) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -202,6 +238,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                     onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                     onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                    listingType: widget.listingType,
                   );
                 }
               },
@@ -227,7 +264,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             },
                             child: CommunityHeader(
                               communityInfo: widget.communityInfo,
-                              isSidebarOpen: _displaySidebar,
                             ),
                           )
                         : null,

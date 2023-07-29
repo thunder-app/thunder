@@ -14,6 +14,7 @@ class ImagePreview extends StatefulWidget {
   final bool isExpandable;
   final bool showFullHeightImages;
   final int? postId;
+  final void Function()? navigateToPost;
 
   const ImagePreview({
     super.key,
@@ -25,6 +26,7 @@ class ImagePreview extends StatefulWidget {
     this.isExpandable = true,
     this.showFullHeightImages = false,
     this.postId,
+    this.navigateToPost,
   });
 
   @override
@@ -47,8 +49,8 @@ class _ImagePreviewState extends State<ImagePreview> {
       // TODO This is probably where BlocProvider breaks
       PageRouteBuilder(
         opaque: false,
-        transitionDuration: const Duration(milliseconds: 200),
-        reverseTransitionDuration: const Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 50),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
@@ -56,6 +58,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             url: widget.url,
             heroKey: heroKey,
             postId: widget.postId,
+            navigateToPost: widget.navigateToPost,
           );
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
@@ -100,7 +103,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,
-            clearMemoryCacheWhenDispose: true,
+            clearMemoryCacheIfFailed: false,
             cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
           ),
           TweenAnimationBuilder<double>(

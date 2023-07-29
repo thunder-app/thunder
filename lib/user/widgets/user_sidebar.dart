@@ -113,9 +113,10 @@ class _UserSidebarState extends State<UserSidebar> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.only(
-                                top: 8,
+                                top: 10,
                                 left: 12,
                                 right: 12,
+                                bottom: 4,
                               ),
                               child: Row(
                                 children: [
@@ -145,7 +146,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                     ),
                                   ),
                                   const SizedBox(
-                                    width: 8,
+                                    width: 10,
                                     height: 8,
                                   ),
                                   Expanded(

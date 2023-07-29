@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.1"
+  expandable_text:
+    dependency: "direct main"
+    description:
+      name: expandable_text
+      sha256: "7d03ea48af6987b20ece232678b744862aa3250d4a71e2aaf1e4af90015d76b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -610,8 +618,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
-      resolved-ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
+      ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
+      resolved-ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
       url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"

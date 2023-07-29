@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
@@ -66,14 +67,14 @@ class _ThunderState extends State<Thunder> {
   // Handles drag on bottom nav bar to open the drawer
   void _handleDragUpdate(DragUpdateDetails details) async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarSwipeGestures = prefs.getBool('setting_general_enable_swipe_gestures') ?? true;
+    bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
       final currentPosition = details.globalPosition.dx;
       final delta = currentPosition - _dragStartX;
 
       if (delta > 0 && selectedPageIndex == 0) {
-        _feedScaffoldKey.currentState?.openEndDrawer();
+        _feedScaffoldKey.currentState?.openDrawer();
       } else if (delta < 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.closeDrawer();
       }
@@ -83,7 +84,7 @@ class _ThunderState extends State<Thunder> {
   // Handles double-tap to open the drawer
   void _handleDoubleTap() async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-    bool bottomNavBarDoubleTapGestures = prefs.getBool('setting_general_enable_doubletap_gestures') ?? false;
+    bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
 
     final bool scaffoldState = _feedScaffoldKey.currentState!.isDrawerOpen;
 
@@ -146,6 +147,7 @@ class _ThunderState extends State<Thunder> {
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
+                  context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                   return const Center(child: CircularProgressIndicator());
                 case ThunderStatus.loading:
                   return const Center(child: CircularProgressIndicator());
@@ -153,7 +155,11 @@ class _ThunderState extends State<Thunder> {
                 case ThunderStatus.success:
                   FlutterNativeSplash.remove();
                   return Scaffold(
-                      bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
+                      bottomNavigationBar: BlocBuilder<InboxBloc, InboxState>(
+                        builder: (context, state) {
+                          return _getScaffoldBottomNavigationBar(context);
+                        },
+                      ),
                       body: MultiBlocProvider(
                           providers: [
                             BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
@@ -222,6 +228,7 @@ class _ThunderState extends State<Thunder> {
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+    final InboxState inboxState = context.read<InboxBloc>().state;
 
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
@@ -256,7 +263,11 @@ class _ThunderState extends State<Thunder> {
               label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.inbox_rounded),
+              icon: Badge(
+                isLabelVisible: inboxState.totalUnreadCount != 0,
+                label: Text(inboxState.totalUnreadCount > 9 ? '9+' : inboxState.totalUnreadCount.toString()),
+                child: const Icon(Icons.inbox_rounded),
+              ),
               label: AppLocalizations.of(context)!.inbox,
             ),
             BottomNavigationBarItem(

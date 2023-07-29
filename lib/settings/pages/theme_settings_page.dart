@@ -7,6 +7,7 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
@@ -23,17 +24,20 @@ class ThemeSettingsPage extends StatefulWidget {
 }
 
 class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
+  /// -------------------------- Theme Related Settings --------------------------
+  // Theme Settings
   ThemeType themeType = ThemeType.system;
   bool useMaterialYouTheme = false;
+  CustomThemeType selectedTheme = CustomThemeType.deepBlue;
 
   // For now, we will use the pre-made themes provided by FlexScheme
   // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
-  CustomThemeType selectedTheme = CustomThemeType.deepBlue;
 
   List<ListPickerItem> customThemeOptions = CustomThemeType.values.map((CustomThemeType scheme) {
     return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
   }).toList();
 
+  // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
 
@@ -60,28 +64,32 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      case 'setting_theme_app_theme':
-        await prefs.setInt('setting_theme_app_theme', value);
+      /// -------------------------- Theme Related Settings --------------------------
+      // Theme Settings
+      case LocalSettings.appTheme:
+        await prefs.setInt(LocalSettings.appTheme.name, value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
-      case 'setting_theme_custom_app_theme':
-        await prefs.setString('setting_theme_custom_app_theme', (value as CustomThemeType).name);
+      case LocalSettings.appThemeAccentColor:
+        await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
         setState(() => selectedTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
-      case 'setting_theme_use_material_you':
-        await prefs.setBool('setting_theme_use_material_you', value);
+      case LocalSettings.useMaterialYouTheme:
+        await prefs.setBool(LocalSettings.useMaterialYouTheme.name, value);
         setState(() => useMaterialYouTheme = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
-      case 'setting_theme_title_font_size_scale':
-        await prefs.setString('setting_theme_title_font_size_scale', (value as FontScale).name);
+
+      // Font Settings
+      case LocalSettings.titleFontSizeScale:
+        await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
-      case 'setting_theme_content_font_size_scale':
-        await prefs.setString('setting_theme_content_font_size_scale', (value as FontScale).name);
+      case LocalSettings.contentFontSizeScale:
+        await prefs.setString(LocalSettings.contentFontSizeScale.name, (value as FontScale).name);
         setState(() => contentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
@@ -96,15 +104,15 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
+      /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
-      themeType = ThemeType.values[prefs.getInt('setting_theme_app_theme') ?? ThemeType.system.index];
-      selectedTheme = CustomThemeType.values.byName(prefs.getString('setting_theme_custom_app_theme') ?? CustomThemeType.deepBlue.name);
+      themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
+      useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
-      useMaterialYouTheme = prefs.getBool('setting_theme_use_material_you') ?? false;
-
-      // Font scale
-      titleFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_title_font_size_scale') ?? FontScale.base.name);
-      contentFontSizeScale = FontScale.values.byName(prefs.getString('setting_theme_content_font_size_scale') ?? FontScale.base.name);
+      // Font Settings
+      titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
+      contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
 
       isLoading = false;
     });
@@ -141,25 +149,25 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                         ),
                         ListOption(
-                            description: 'Theme',
+                            description: LocalSettings.appTheme.label,
                             value: ListPickerItem(label: themeType.name.capitalize, icon: Icons.wallpaper_rounded, payload: themeType),
                             options: themeOptions,
                             icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences('setting_theme_app_theme', value.payload.index)),
+                            onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
                         ListOption(
-                            description: 'Accent Colors',
+                            description: LocalSettings.appThemeAccentColor.label,
                             value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
                             options: customThemeOptions,
                             icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences('setting_theme_custom_app_theme', value.payload)),
+                            onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload)),
                         if (Platform.isAndroid) ...[
                           ToggleOption(
-                            description: 'Use Material You Theme',
+                            description: LocalSettings.useMaterialYouTheme.label,
                             subtitle: 'Overrides the selected custom theme',
                             value: useMaterialYouTheme,
                             iconEnabled: Icons.color_lens_rounded,
                             iconDisabled: Icons.color_lens_rounded,
-                            onToggle: (bool value) => setPreferences('setting_theme_use_material_you', value),
+                            onToggle: (bool value) => setPreferences(LocalSettings.useMaterialYouTheme, value),
                           )
                         ],
                       ],
@@ -180,18 +188,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           // setting_theme_title_font_size_scale
                         ),
                         ListOption(
-                          description: 'Title Font Scale',
+                          description: LocalSettings.titleFontSizeScale.label,
                           value: ListPickerItem(label: titleFontSizeScale.name.capitalize, icon: Icons.feed, payload: titleFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences('setting_theme_title_font_size_scale', value.payload),
+                          onChanged: (value) => setPreferences(LocalSettings.titleFontSizeScale, value.payload),
                         ),
                         ListOption(
-                          description: 'Content Font Scale',
+                          description: LocalSettings.contentFontSizeScale.label,
                           value: ListPickerItem(label: contentFontSizeScale.name.capitalize, icon: Icons.feed, payload: contentFontSizeScale),
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
-                          onChanged: (value) => setPreferences('setting_theme_content_font_size_scale', value.payload),
+                          onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
                         ),
                       ],
                     ),

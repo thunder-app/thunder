@@ -16,6 +16,7 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -256,6 +257,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
+          taglines: state.taglines,
         );
       case CommunityStatus.empty:
         return const Center(child: Text('No posts found'));
@@ -306,7 +308,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       final canPop = Navigator.of(context).canPop();
 
       final prefs = (await UserPreferences.instance).sharedPreferences;
-      final desiredPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+      final desiredPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 

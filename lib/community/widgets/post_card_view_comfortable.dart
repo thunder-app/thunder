@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
@@ -30,6 +31,8 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
+  final PostListingType? listingType;
+  final void Function()? navigateToPost;
 
   const PostCardViewComfortable({
     super.key,
@@ -49,6 +52,8 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
+    required this.listingType,
+    this.navigateToPost,
   });
 
   @override
@@ -56,7 +61,14 @@ class PostCardViewComfortable extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
+    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+        isUserLoggedIn &&
+        context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
+
     final String textContent = postViewMedia.postView.post.body ?? "";
+    final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+    );
 
     var mediaView = MediaView(
       showLinkPreview: state.showLinkPreviews,
@@ -66,6 +78,7 @@ class PostCardViewComfortable extends StatelessWidget {
       edgeToEdgeImages: edgeToEdgeImages,
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
+      navigateToPost: navigateToPost,
     );
 
     return Padding(
@@ -124,14 +137,14 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
-                          showCommunityIcons: showCommunityIcons,
-                          showInstanceName: showInstanceName,
-                          postView: postViewMedia.postView,
-                          textStyleAuthor: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4)),
-                          textStyleCommunity: theme.textTheme.titleSmall?.copyWith(
-                            fontSize: theme.textTheme.titleSmall!.fontSize! * 1.05,
-                            color: postViewMedia.postView.read ? theme.textTheme.titleSmall?.color?.withOpacity(0.4) : theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                          )),
+                        showCommunityIcons: false,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        compactMode: false,
+                        showCommunitySubscription: showCommunitySubscription,
+                      ),
                       const SizedBox(height: 8.0),
                       PostCardMetaData(
                         score: postViewMedia.postView.counts.score,
