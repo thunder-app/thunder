@@ -626,10 +626,11 @@ packages:
   link_preview_generator:
     dependency: "direct main"
     description:
-      name: link_preview_generator
-      sha256: f296d4f662810b235335c4e539a70d4b551ae7b80e2941a3a8357e37421ae575
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: fce54c8f67ddfb89bf62e870e00d4f466605b166
+      resolved-ref: fce54c8f67ddfb89bf62e870e00d4f466605b166
+      url: "https://github.com/thunder-app/link_preview_generator.git"
+    source: git
     version: "1.2.0"
   lints:
     dependency: transitive
