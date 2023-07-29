@@ -40,12 +40,16 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _onScrollToTopEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnDismissPostsEvent>(
-      _onDismissPostsEvent,
+    on<OnDismissEvent>(
+      _onDismissEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnFabEvent>(
-      _onFabEvent,
+    on<OnFabToggle>(
+      _onFabToggle,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnFabSummonToggle>(
+      _onFabSummonToggle,
       transformer: throttleDroppable(throttleDuration),
     );
   }
@@ -95,7 +99,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      bool disableFeedFab = prefs.getBool(LocalSettings.disableFeedFab.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -115,8 +118,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
 
       /// -------------------------- Post Page Related Settings --------------------------
-      bool disablePostFabs = prefs.getBool(LocalSettings.disablePostFab.name) ?? false;
-
       // Comment Related Settings
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
@@ -155,6 +156,17 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
+      /// -------------------------- FAB Related Settings --------------------------
+      bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? false;
+      bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? false;
+
+      bool enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
+      bool enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
+      bool enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
+      bool enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
+      bool enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
+      bool enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -175,7 +187,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         openInExternalBrowser: openInExternalBrowser,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
-        disableFeedFab: disableFeedFab,
         showInAppUpdateNotification: showInAppUpdateNotification,
 
         /// -------------------------- Feed Post Related Settings --------------------------
@@ -195,8 +206,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showPostAuthor: showPostAuthor,
 
         /// -------------------------- Post Page Related Settings --------------------------
-        disablePostFabs: disablePostFabs,
-
         // Comment Related Settings
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
@@ -232,6 +241,17 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
+
+        /// -------------------------- FAB Related Settings --------------------------
+        enablePostsFab: enablePostsFab,
+        enableFeedsFab: enableFeedsFab,
+
+        enableBackToTop: enableBackToTop,
+        enableSubscriptions: enableSubscriptions,
+        enableRefresh: enableRefresh,
+        enableDismissRead: enableDismissRead,
+        enableChangeSort: enableChangeSort,
+        enableNewPost: enableNewPost,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
@@ -242,11 +262,15 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
   }
 
-  void _onDismissPostsEvent(OnDismissPostsEvent event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(dismissPostsId: state.dismissPostsId + 1));
+  void _onDismissEvent(OnDismissEvent event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(dismissEvent: !state.dismissEvent));
   }
 
-  void _onFabEvent(OnFabEvent event, Emitter<ThunderState> emit) {
+  void _onFabToggle(OnFabToggle event, Emitter<ThunderState> emit) {
     emit(state.copyWith(isFabOpen: !state.isFabOpen));
+  }
+
+  void _onFabSummonToggle(OnFabSummonToggle event, Emitter<ThunderState> emit) {
+    emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
   }
 }

@@ -60,7 +60,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
-  int _previousDismissPostsId = 0;
   bool disableFabs = false;
   bool showRead = true;
 
@@ -127,9 +126,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       scrollToTop();
       _previousScrollId = state.scrollToTopId;
     }
-    if (state.dismissPostsId > _previousDismissPostsId) {
+    if (state.dismissEvent == true) {
       dismissRead();
-      _previousDismissPostsId = state.dismissPostsId;
+      context.read<ThunderBloc>().add(const OnDismissEvent(false));
     }
 
     return BlocListener<ThunderBloc, ThunderState>(
@@ -190,7 +189,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             style: theme.textTheme.titleSmall,
                           ),
                         ),
-                        const SizedBox(height: 160,)
+                        const SizedBox(
+                          height: 160,
+                        )
                       ],
                     );
                   } else {
@@ -216,22 +217,24 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           ),
                         ),
                         child: SizeTransition(
-                          sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                            CurvedAnimation(
-                              parent: animation,
-                              curve: const Interval(0.5, 1.0),
+                            sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                              CurvedAnimation(
+                                parent: animation,
+                                curve: const Interval(0.5, 1.0),
+                              ),
                             ),
-                          ),
-                          child: child),
+                            child: child),
                       );
                     },
-                    child: !postViewMedia.postView.read || showRead ? PostCard(
-                      postViewMedia: postViewMedia,
-                      showInstanceName: widget.communityId == null,
-                      onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
-                      onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
-                      onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
-                    ) : Container(),
+                    child: !postViewMedia.postView.read || showRead
+                        ? PostCard(
+                            postViewMedia: postViewMedia,
+                            showInstanceName: widget.communityId == null,
+                            onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                            onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                            onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                          )
+                        : null,
                   );
                 }
               },
@@ -314,9 +317,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       setState(() {
         showRead = false;
       });
-      await Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
-        widget.postViews!.removeWhere( (e) => e.postView.read);
+        widget.postViews!.removeWhere((e) => e.postView.read);
         showRead = true;
       });
       widget.onScrollEndReached();

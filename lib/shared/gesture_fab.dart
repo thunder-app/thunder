@@ -1,11 +1,9 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
-
 
 @immutable
 class GestureFab extends StatefulWidget {
@@ -18,6 +16,7 @@ class GestureFab extends StatefulWidget {
     this.onSlideUp,
     this.onSlideLeft,
     this.onSlideDown,
+    this.onPressed,
   });
 
   final bool? initialOpen;
@@ -27,6 +26,7 @@ class GestureFab extends StatefulWidget {
   final Function? onSlideUp;
   final Function? onSlideLeft;
   final Function? onSlideDown;
+  final Function? onPressed;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -97,7 +97,9 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           clipBehavior: Clip.antiAlias,
           elevation: 4,
           child: InkWell(
-            onTap: () { context.read<ThunderBloc>().add(OnFabEvent(false)); },
+            onTap: () {
+              context.read<ThunderBloc>().add(const OnFabToggle(false));
+            },
             child: Padding(
               padding: const EdgeInsets.all(8),
               child: Icon(
@@ -114,9 +116,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   List<Widget> _buildExpandingActionButtons() {
     final children = <Widget>[];
     final count = widget.children.length;
-    for (var i = 0, distance = widget.distance;
-    i < count;
-    i++, distance += widget.distance) {
+    for (var i = 0, distance = widget.distance; i < count; i++, distance += widget.distance) {
       children.add(
         _ExpandingActionButton(
           maxDistance: distance,
@@ -147,17 +147,16 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           child: GestureDetector(
             onVerticalDragUpdate: (details) {
               if (details.delta.dy < -5) {
-                context.read<ThunderBloc>().add(OnFabEvent(true));
+                context.read<ThunderBloc>().add(const OnFabToggle(true));
               }
               if (details.delta.dy > 5) {
-                widget.onSlideDown?.call();
+                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
               }
             },
             onHorizontalDragStart: null,
             child: FloatingActionButton(
               onPressed: () {
-                HapticFeedback.lightImpact();
-                context.read<ThunderBloc>().add(OnDismissPostsEvent());
+                widget.onPressed?.call();
               },
               child: widget.icon,
             ),
@@ -198,7 +197,7 @@ class ActionButton extends StatelessWidget {
             elevation: 4,
             child: InkWell(
               onTap: () {
-                context.read<ThunderBloc>().add(OnFabEvent(true));
+                context.read<ThunderBloc>().add(const OnFabToggle(true));
                 onPressed?.call();
               },
               child: icon,
@@ -213,7 +212,6 @@ class ActionButton extends StatelessWidget {
 @immutable
 class _ExpandingActionButton extends StatelessWidget {
   const _ExpandingActionButton({
-
     required this.maxDistance,
     required this.progress,
     required this.child,

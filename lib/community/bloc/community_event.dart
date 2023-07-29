@@ -70,6 +70,5 @@ class BlockCommunityEvent extends CommunityEvent {
 }
 
 class DismissReadEvent extends CommunityEvent {
-
   const DismissReadEvent();
 }

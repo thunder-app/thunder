@@ -13,11 +13,17 @@ class InitializeAppEvent extends ThunderEvent {}
 
 class OnScrollToTopEvent extends ThunderEvent {}
 
-class OnDismissPostsEvent extends ThunderEvent {}
-
-class OnFabEvent extends ThunderEvent {
-  final bool isFabOpen;
-
-  const OnFabEvent( this.isFabOpen);
+class OnDismissEvent extends ThunderEvent {
+  final bool isBeingDismissed;
+  const OnDismissEvent(this.isBeingDismissed);
 }
 
+class OnFabToggle extends ThunderEvent {
+  final bool isFabOpen;
+  const OnFabToggle(this.isFabOpen);
+}
+
+class OnFabSummonToggle extends ThunderEvent {
+  final bool isFabSummoned;
+  const OnFabSummonToggle(this.isFabSummoned);
+}

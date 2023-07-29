@@ -484,5 +484,4 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
-
 }

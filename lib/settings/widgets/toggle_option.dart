@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 class ToggleOption extends StatelessWidget {
   // Appearance
-  final IconData iconEnabled;
-  final IconData iconDisabled;
+  final IconData? iconEnabled;
+  final IconData? iconDisabled;
 
   // General
   final String description;
@@ -19,8 +19,8 @@ class ToggleOption extends StatelessWidget {
     required this.description,
     this.subtitle,
     required this.value,
-    required this.iconEnabled,
-    required this.iconDisabled,
+    this.iconEnabled,
+    this.iconDisabled,
     required this.onToggle,
   });
 
@@ -33,8 +33,8 @@ class ToggleOption extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(value ? iconEnabled : iconDisabled),
-            const SizedBox(width: 8.0),
+            if (iconEnabled != null && iconEnabled != null) Icon(value ? iconEnabled : iconDisabled),
+            if (iconEnabled != null && iconEnabled != null) const SizedBox(width: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [

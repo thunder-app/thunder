@@ -83,13 +83,25 @@ class ThunderState extends Equatable {
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
 
+    /// -------------------------- FAB Related Settings --------------------------
+    this.enableFeedsFab = false,
+    this.enablePostsFab = false,
+    this.enableBackToTop = true,
+    this.enableSubscriptions = true,
+    this.enableRefresh = true,
+    this.enableDismissRead = true,
+    this.enableChangeSort = true,
+    this.enableNewPost = true,
+
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
     this.scrollToTopId = 0,
     // Dismiss posts from loaded view event
-    this.dismissPostsId = 0,
+    this.dismissEvent = false,
     // Expand/Close FAB event
     this.isFabOpen = false,
+    // Summon/Unsummon FAB event
+    this.isFabSummoned = false,
   });
 
   final ThunderStatus status;
@@ -171,14 +183,26 @@ class ThunderState extends Equatable {
   final SwipeAction rightPrimaryCommentGesture;
   final SwipeAction rightSecondaryCommentGesture;
 
+  /// -------------------------- FAB Related Settings --------------------------
+  final bool enableFeedsFab;
+  final bool enablePostsFab;
+
+  final bool enableBackToTop;
+  final bool enableSubscriptions;
+  final bool enableRefresh;
+  final bool enableDismissRead;
+  final bool enableChangeSort;
+  final bool enableNewPost;
 
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
   // Dismiss posts from loaded view event
-  final int dismissPostsId;
+  final bool dismissEvent;
   // Expand/Close FAB event
   final bool isFabOpen;
+  // Expand/Close FAB event
+  final bool isFabSummoned;
 
   ThunderState copyWith({
     ThunderStatus? status,
@@ -202,7 +226,6 @@ class ThunderState extends Equatable {
     bool? openInExternalBrowser,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
-    bool? disableFeedFab,
     bool? showInAppUpdateNotification,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -222,8 +245,6 @@ class ThunderState extends Equatable {
     bool? showPostAuthor,
 
     /// -------------------------- Post Page Related Settings --------------------------
-    bool? disablePostFabs,
-
     // Comment Related Settings
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
@@ -260,13 +281,25 @@ class ThunderState extends Equatable {
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
 
+    /// -------------------------- FAB Related Settings --------------------------
+    bool? enableFeedsFab,
+    bool? enablePostsFab,
+    bool? enableBackToTop,
+    bool? enableSubscriptions,
+    bool? enableRefresh,
+    bool? enableDismissRead,
+    bool? enableChangeSort,
+    bool? enableNewPost,
+
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
     int? scrollToTopId,
     // Dismiss posts from loaded view event
-    int? dismissPostsId,
+    bool? dismissEvent,
     // Expand/Close FAB event
     bool? isFabOpen,
+    // Summon/Unsummon FAB event
+    bool? isFabSummoned,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -348,13 +381,26 @@ class ThunderState extends Equatable {
       rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
       rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
+      /// -------------------------- FAB Related Settings --------------------------
+      enableFeedsFab: enableFeedsFab ?? this.enableFeedsFab,
+      enablePostsFab: enablePostsFab ?? this.enablePostsFab,
+
+      enableBackToTop: enableBackToTop ?? this.enableBackToTop,
+      enableSubscriptions: enableSubscriptions ?? this.enableSubscriptions,
+      enableRefresh: enableRefresh ?? this.enableRefresh,
+      enableDismissRead: enableDismissRead ?? this.enableDismissRead,
+      enableChangeSort: enableChangeSort ?? this.enableChangeSort,
+      enableNewPost: enableNewPost ?? this.enableNewPost,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
       // Dismiss posts from loaded view event
-      dismissPostsId: dismissPostsId ?? this.dismissPostsId,
+      dismissEvent: dismissEvent ?? this.dismissEvent,
       // Expand/Close FAB event
       isFabOpen: isFabOpen ?? this.isFabOpen,
+      // Summon/Unsummon FAB event
+      isFabSummoned: isFabSummoned ?? this.isFabSummoned,
     );
   }
 
@@ -439,13 +485,23 @@ class ThunderState extends Equatable {
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
 
+        /// -------------------------- FAB Related Settings --------------------------
+        enableFeedsFab,
+        enablePostsFab,
+
+        enableBackToTop,
+        enableSubscriptions,
+        enableRefresh,
+        enableDismissRead,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event
         scrollToTopId,
         // Dismiss posts from loaded view event
-        dismissPostsId,
+        dismissEvent,
         // Expand/Close FAB event
         isFabOpen,
+        // Expand/Close FAB event
+        isFabSummoned,
       ];
 }
