@@ -8,6 +8,7 @@ import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 class CommonMarkdownBody extends StatelessWidget {
   final String body;
@@ -62,8 +63,26 @@ class CommonMarkdownBody extends StatelessWidget {
         String? communityName = await getLemmyCommunity(parsedUrl);
 
         if (communityName != null) {
-          navigateToCommunityByName(context, communityName);
-        } else if (url != null) {
+          try {
+            await navigateToCommunityByName(context, communityName);
+            return;
+          } catch (e) {
+            // Ignore exception, if it's not a valid community we'll perform the next fallback
+          }
+        }
+
+        String? username = await getLemmyUser(parsedUrl);
+
+        if (username != null) {
+          try {
+            await navigateToUserByName(context, username);
+            return;
+          } catch (e) {
+            // Ignore exception, if it's not a valid user, we'll perform the next fallback
+          }
+        }
+
+        if (url != null) {
           openLink(context, url: parsedUrl, openInExternalBrowser: openInExternalBrowser);
         }
       },

@@ -14,8 +14,9 @@ import 'package:thunder/user/pages/user_settings_page.dart';
 class UserPage extends StatefulWidget {
   final int? userId;
   final bool isAccountUser;
+  final String? username;
 
-  const UserPage({super.key, this.userId, this.isAccountUser = false});
+  const UserPage({super.key, this.userId, this.isAccountUser = false, this.username});
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -105,7 +106,7 @@ class _UserPageState extends State<UserPage> {
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           switch (state.status) {
             case UserStatus.initial:
-              context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
+              context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
               context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, reset: true));
               return const Center(child: CircularProgressIndicator());
             case UserStatus.loading:
