@@ -627,8 +627,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: fce54c8f67ddfb89bf62e870e00d4f466605b166
-      resolved-ref: fce54c8f67ddfb89bf62e870e00d4f466605b166
+      ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
+      resolved-ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
       url: "https://github.com/thunder-app/link_preview_generator.git"
     source: git
     version: "1.2.0"
