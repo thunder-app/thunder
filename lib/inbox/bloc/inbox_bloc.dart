@@ -7,7 +7,10 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
+import '../../utils/comment.dart';
+
 part 'inbox_event.dart';
+
 part 'inbox_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
@@ -101,9 +104,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
-                privateMessages: privateMessageViews,
-                mentions: personMentionViews,
-                replies: commentViews,
+                privateMessages: cleanDeletedMessages(privateMessageViews),
+                mentions: cleanDeletedMentions(personMentionViews),
+                replies: cleanDeletedReplies(commentViews),
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
@@ -157,9 +160,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           return emit(
             state.copyWith(
               status: InboxStatus.success,
-              privateMessages: privateMessages,
-              mentions: mentions,
-              replies: replies,
+              privateMessages: cleanDeletedMessages(privateMessages),
+              mentions: cleanDeletedMentions(mentions),
+              replies: cleanDeletedReplies(replies),
               showUnreadOnly: state.showUnreadOnly,
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
@@ -258,5 +261,76 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
+  }
+
+  List<PrivateMessageView> cleanDeletedMessages(List<PrivateMessageView> messages) {
+    List<PrivateMessageView> cleanMessages = [];
+
+    for (PrivateMessageView message in messages) {
+      cleanMessages.add(cleanDeletedPrivateMessage(message));
+    }
+
+    return cleanMessages;
+  }
+
+  List<PersonMentionView> cleanDeletedMentions(List<PersonMentionView> mentions) {
+    List<PersonMentionView> cleanedMentions = [];
+
+    for (PersonMentionView mention in mentions) {
+      cleanedMentions.add(cleanDeletedMention(mention));
+    }
+
+    return cleanedMentions;
+  }
+
+  List<CommentView> cleanDeletedReplies(List<CommentView> replies) {
+    List<CommentView> cleanedReplies = [];
+
+    for (CommentView reply in replies) {
+      cleanedReplies.add(cleanDeletedCommentView(reply));
+    }
+
+    return cleanedReplies;
+  }
+
+  PrivateMessageView cleanDeletedPrivateMessage(PrivateMessageView message) {
+    if (!message.privateMessage.deleted) {
+      return message;
+    }
+
+    PrivateMessage privateMessage = PrivateMessage(
+        id: message.privateMessage.id,
+        creatorId: message.privateMessage.creatorId,
+        recipientId: message.privateMessage.recipientId,
+        content: "_deleted by creator_",
+        deleted: message.privateMessage.deleted,
+        read: message.privateMessage.read,
+        published: message.privateMessage.published,
+        apId: message.privateMessage.apId,
+        local: message.privateMessage.local,
+        instanceHost: message.privateMessage.instanceHost);
+
+    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient, instanceHost: message.instanceHost);
+  }
+
+  PersonMentionView cleanDeletedMention(PersonMentionView mention) {
+    if (!mention.comment.deleted) {
+      return mention;
+    }
+
+    Comment deletedComment = convertToDeletedComment(mention.comment);
+
+    return PersonMentionView(
+        personMention: mention.personMention,
+        comment: deletedComment,
+        creator: mention.creator,
+        post: mention.post,
+        community: mention.community,
+        recipient: mention.recipient,
+        counts: mention.counts,
+        creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
+        saved: mention.saved,
+        creatorBlocked: mention.creatorBlocked,
+        instanceHost: mention.instanceHost);
   }
 }
