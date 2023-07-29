@@ -14,6 +14,7 @@
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
 - Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
 - Added caching to images to improve overall experience - contribution from @micahmo
+- Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
