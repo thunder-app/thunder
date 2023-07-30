@@ -284,72 +284,73 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               ),
                             ),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onLongPress: () {
-                            HapticFeedback.mediumImpact();
-                            showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
-                          },
-                          onTap: () {
-                            widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
-                            setState(() => isHidden = !isHidden);
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              CommentHeader(
-                                moddingCommentId: widget.moddingCommentId ?? -1,
-                                commentViewTree: widget.commentViewTree,
-                                useDisplayNames: state.useDisplayNames,
-                                isCommentNew: isCommentNew,
-                                isOwnComment: isOwnComment,
-                                isHidden: isHidden,
-                              ),
-                              AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 130),
-                                switchInCurve: Curves.easeInOut,
-                                switchOutCurve: Curves.easeInOut,
-                                transitionBuilder: (Widget child, Animation<double> animation) {
-                                  return SizeTransition(
-                                    sizeFactor: animation,
-                                    child: SlideTransition(
-                                      position: _offsetAnimation,
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                child: (isHidden && collapseParentCommentOnGesture)
-                                    ? Container()
-                                    : Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                            child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
-                                          ),
-                                          if (state.showCommentButtonActions && isUserLoggedIn)
-                                            Padding(
-                                              padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                                              child: CommentCardActions(
-                                                commentViewTree: widget.commentViewTree,
-                                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                                                isEdit: isOwnComment,
-                                                onSaveAction: widget.onSaveAction,
-                                                onDeleteAction: widget.onDeleteAction,
-                                              ),
-                                            ),
-                                        ],
+                    child: Material(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          InkWell(
+                            onLongPress: () {
+                              HapticFeedback.mediumImpact();
+                              showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
+                            },
+                            onTap: () {
+                              widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
+                              setState(() => isHidden = !isHidden);
+                            },
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                CommentHeader(
+                                  moddingCommentId: widget.moddingCommentId ?? -1,
+                                  commentViewTree: widget.commentViewTree,
+                                  useDisplayNames: state.useDisplayNames,
+                                  isCommentNew: isCommentNew,
+                                  isOwnComment: isOwnComment,
+                                  isHidden: isHidden,
+                                ),
+                                AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 130),
+                                  switchInCurve: Curves.easeInOut,
+                                  switchOutCurve: Curves.easeInOut,
+                                  transitionBuilder: (Widget child, Animation<double> animation) {
+                                    return SizeTransition(
+                                      sizeFactor: animation,
+                                      child: SlideTransition(
+                                        position: _offsetAnimation,
+                                        child: child,
                                       ),
-                              ),
-                            ],
+                                    );
+                                  },
+                                  child: (isHidden && collapseParentCommentOnGesture)
+                                      ? Container()
+                                      : Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
+                                              child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
+                                            ),
+                                            if (state.showCommentButtonActions && isUserLoggedIn)
+                                              Padding(
+                                                padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                                                child: CommentCardActions(
+                                                  commentViewTree: widget.commentViewTree,
+                                                  onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                                  isEdit: isOwnComment,
+                                                  onSaveAction: widget.onSaveAction,
+                                                  onDeleteAction: widget.onDeleteAction,
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     )),
               ),
             ),
