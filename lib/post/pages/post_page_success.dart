@@ -13,6 +13,7 @@ class PostPageSuccess extends StatefulWidget {
   final List<CommentViewTree> comments;
   final int? selectedCommentId;
   final String? selectedCommentPath;
+  final int? moddingCommentId;
 
   final ScrollController scrollController;
   final bool hasReachedCommentEnd;
@@ -27,6 +28,7 @@ class PostPageSuccess extends StatefulWidget {
     this.hasReachedCommentEnd = false,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
   });
 
@@ -66,6 +68,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
         Expanded(
           child: CommentSubview(
             viewFullCommentsRefreshing: widget.viewFullCommentsRefreshing,
+            moddingCommentId: widget.moddingCommentId,
             selectedCommentId: widget.selectedCommentId,
             selectedCommentPath: widget.selectedCommentPath,
             now: DateTime.now().toUtc(),
@@ -73,7 +76,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             postViewMedia: widget.postView,
             comments: widget.comments,
             hasReachedCommentEnd: widget.hasReachedCommentEnd,
-            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType, selectedCommentId: widget.selectedCommentId)),
+            onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
           ),

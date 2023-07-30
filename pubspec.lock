@@ -241,6 +241,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.0.1"
+  expandable_text:
+    dependency: "direct main"
+    description:
+      name: expandable_text
+      sha256: "7d03ea48af6987b20ece232678b744862aa3250d4a71e2aaf1e4af90015d76b1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.3.0"
   extended_image:
     dependency: "direct main"
     description:
@@ -610,18 +618,19 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
-      resolved-ref: "45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5"
+      ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
+      resolved-ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
       url: "https://github.com/hjiangsu/lemmy_api_client.git"
     source: git
     version: "0.21.0"
   link_preview_generator:
     dependency: "direct main"
     description:
-      name: link_preview_generator
-      sha256: f296d4f662810b235335c4e539a70d4b551ae7b80e2941a3a8357e37421ae575
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
+      resolved-ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
+      url: "https://github.com/thunder-app/link_preview_generator.git"
+    source: git
     version: "1.2.0"
   lints:
     dependency: transitive
@@ -651,8 +660,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "2.2.1+2"
-      resolved-ref: "4ca167ef880d860358e34df3463bc2d50c59b996"
+      ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
+      resolved-ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
       url: "https://github.com/hjiangsu/markdown-editable-textinput.git"
     source: git
     version: "2.2.1"

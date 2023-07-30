@@ -37,11 +37,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<VotePostEvent>(
       _votePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SavePostEvent>(
       _savePostEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<ForceRefreshEvent>(
       _forceRefreshEvent,
@@ -241,6 +241,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             postIds.add(post.postView.post.id);
           }
 
+          // Fetch any taglines from the instance
+          FullSiteView fullSiteView = await lemmy.run(
+            GetSite(
+              auth: account?.jwt,
+            ),
+          );
+
           emit(
             state.copyWith(
               status: CommunityStatus.success,
@@ -254,6 +261,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse,
+              taglines: fullSiteView.taglines,
             ),
           );
         } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
@@ -312,7 +320,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: communityId,
               communityName: state.communityName,
               listingType: listingType,
-              hasReachedEnd: posts.isEmpty,
+              hasReachedEnd: postMedias.isEmpty || state.postIds!.length == postIds.length,
               subscribedType: state.subscribedType,
               sortType: sortType,
             ),

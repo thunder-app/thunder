@@ -36,6 +36,7 @@ class ThunderState extends Equatable {
     this.showTitleFirst = false,
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
+    this.tappableAuthorCommunity = false,
 
     // General Settings
     this.showVoteActions = true,
@@ -134,6 +135,7 @@ class ThunderState extends Equatable {
   final bool showTitleFirst;
   final bool showThumbnailPreviewOnRight;
   final bool showTextPostIndicator;
+  final bool tappableAuthorCommunity;
 
   // General Settings
   final bool showVoteActions;
@@ -234,6 +236,7 @@ class ThunderState extends Equatable {
     bool? showTitleFirst,
     bool? showThumbnailPreviewOnRight,
     bool? showTextPostIndicator,
+    bool? tappableAuthorCommunity,
 
     // General Settings
     bool? showVoteActions,
@@ -332,6 +335,7 @@ class ThunderState extends Equatable {
       showTitleFirst: showTitleFirst ?? this.showTitleFirst,
       showThumbnailPreviewOnRight: showThumbnailPreviewOnRight ?? this.showThumbnailPreviewOnRight,
       showTextPostIndicator: showTextPostIndicator ?? this.showTextPostIndicator,
+      tappableAuthorCommunity: tappableAuthorCommunity ?? this.tappableAuthorCommunity,
 
       // General Settings
       showVoteActions: showVoteActions ?? this.showVoteActions,
@@ -436,6 +440,7 @@ class ThunderState extends Equatable {
         showTitleFirst,
         showThumbnailPreviewOnRight,
         showTextPostIndicator,
+        tappableAuthorCommunity,
 
         // General Settings
         showVoteActions,

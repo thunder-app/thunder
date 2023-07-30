@@ -207,13 +207,17 @@ class PostCommunityAndAuthor extends StatelessWidget {
     required this.showInstanceName,
     this.textStyleAuthor,
     this.textStyleCommunity,
+    required this.compactMode,
+    required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
   final bool showInstanceName;
+  final bool compactMode;
   final PostView postView;
   final TextStyle? textStyleAuthor;
   final TextStyle? textStyleCommunity;
+  final bool showCommunitySubscription;
 
   @override
   Widget build(BuildContext context) {
@@ -239,16 +243,18 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
-                spacing: 0.0,
+                spacing: 4.0,
                 children: [
                   if (state.showPostAuthor)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        GestureDetector(
-                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
+                        InkWell(
+                            borderRadius: BorderRadius.circular(6),
+                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapUserName(context, postView.creator.id),
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor)),
                         Text(
-                          ' to ',
+                          ' to',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
@@ -256,13 +262,23 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         ),
                       ],
                     ),
-                  GestureDetector(
+                  InkWell(
+                      borderRadius: BorderRadius.circular(6),
+                      onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapCommunityName(context, postView.community.id),
                       child: Text(
                         '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
                         textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                         style: textStyleCommunity,
+                      )),
+                  if (showCommunitySubscription)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 3),
+                      child: Icon(
+                        Icons.playlist_add_check_rounded,
+                        size: 16.0,
+                        color: textStyleCommunity?.color,
                       ),
-                      onTap: () => onTapCommunityName(context, postView.community.id)),
+                    ),
                 ],
               ),
             ),

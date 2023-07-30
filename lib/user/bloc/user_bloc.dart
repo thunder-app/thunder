@@ -150,7 +150,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             posts: postViewMedias,
             moderates: fullPersonView.moderates,
             page: state.page + 1,
-            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
+            // It's possible that sometimes the instance you belong to might not have all the posts for a
+            // user from a different instance. Lemmy's web view will simply just list what it has with no
+            // indication that it's not complete. This is despite having the correct post count stat.
+            // For this reason we are marking hasReachedPostEnd as true when what was fetched last is under the max limit.
+            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount || posts.length < limit,
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
         } catch (e) {

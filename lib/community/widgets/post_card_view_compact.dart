@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -20,6 +21,8 @@ class PostCardViewCompact extends StatelessWidget {
   final bool showInstanceName;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
+  final PostListingType? listingType;
+  final void Function()? navigateToPost;
 
   const PostCardViewCompact({
     super.key,
@@ -31,12 +34,18 @@ class PostCardViewCompact extends StatelessWidget {
     required this.showInstanceName,
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
+    required this.listingType,
+    this.navigateToPost,
   });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+
+    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+        isUserLoggedIn &&
+        context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
       color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
@@ -58,6 +67,7 @@ class PostCardViewCompact extends StatelessWidget {
                 markPostReadOnMediaView: markPostReadOnMediaView,
                 viewMode: ViewMode.compact,
                 isUserLoggedIn: isUserLoggedIn,
+                navigateToPost: navigateToPost,
               ),
             ),
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
@@ -80,11 +90,13 @@ class PostCardViewCompact extends StatelessWidget {
                           )),
                       const SizedBox(height: 4.0),
                       PostCommunityAndAuthor(
+                        compactMode: true,
                         showCommunityIcons: false,
                         showInstanceName: showInstanceName,
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
+                        showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),
                     ],
@@ -114,6 +126,7 @@ class PostCardViewCompact extends StatelessWidget {
                   markPostReadOnMediaView: markPostReadOnMediaView,
                   viewMode: ViewMode.compact,
                   isUserLoggedIn: isUserLoggedIn,
+                  navigateToPost: navigateToPost,
                 ),
               ),
         ],

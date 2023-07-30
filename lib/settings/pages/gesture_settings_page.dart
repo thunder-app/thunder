@@ -7,6 +7,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/swipe_picker.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -42,20 +43,20 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
   bool isLoading = true;
 
   /// The available gesture options
-  List<ListPickerItem> postGestureOptions = [
-    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
-    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
-    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
-    ListPickerItem(icon: Icons.markunread_outlined, label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
-    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
+  List<ListPickerItem<SwipeAction>> postGestureOptions = [
+    ListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: SwipeAction.toggleRead.getIcon(), label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
+    ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
-  List<ListPickerItem> commentGestureOptions = [
-    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
-    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
-    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
-    ListPickerItem(icon: Icons.reply_rounded, label: SwipeAction.reply.label, payload: SwipeAction.reply),
-    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
+  List<ListPickerItem<SwipeAction>> commentGestureOptions = [
+    ListPickerItem(icon: SwipeAction.upvote.getIcon(), label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
+    ListPickerItem(icon: SwipeAction.downvote.getIcon(), label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
+    ListPickerItem(icon: SwipeAction.save.getIcon(), label: SwipeAction.save.label, payload: SwipeAction.save),
+    ListPickerItem(icon: SwipeAction.reply.getIcon(), label: SwipeAction.reply.label, payload: SwipeAction.reply),
+    ListPickerItem(icon: SwipeAction.none.getIcon(), label: SwipeAction.none.label, payload: SwipeAction.none),
   ];
 
   void setPreferences(attribute, value) async {
@@ -242,6 +243,15 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enablePostGestures, value),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'Customize swipe actions (tap to change)',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
+                          ),
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
@@ -253,44 +263,46 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                             );
                           },
                           child: enablePostGestures
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    children: [
-                                      ListOption(
-                                        description: LocalSettings.postGestureLeftPrimary.label,
-                                        value: ListPickerItem(label: leftPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryPostGesture),
-                                        options: postGestureOptions,
-                                        icon: Icons.keyboard_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.postGestureLeftPrimary, value.payload),
-                                        disabled: !enablePostGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.postGestureLeftSecondary.label,
-                                        value: ListPickerItem(label: leftSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryPostGesture),
-                                        options: postGestureOptions,
-                                        icon: Icons.keyboard_double_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.postGestureLeftSecondary, value.payload),
-                                        disabled: !enablePostGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.postGestureRightPrimary.label,
-                                        value: ListPickerItem(label: rightPrimaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryPostGesture),
-                                        options: postGestureOptions,
-                                        icon: Icons.keyboard_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.postGestureRightPrimary, value.payload),
-                                        disabled: !enablePostGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.postGestureRightSecondary.label,
-                                        value: ListPickerItem(label: rightSecondaryPostGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryPostGesture),
-                                        options: postGestureOptions,
-                                        icon: Icons.keyboard_double_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.postGestureRightSecondary, value.payload),
-                                        disabled: !enablePostGestures,
-                                      ),
-                                    ],
-                                  ),
+                              ? Column(
+                                  children: [
+                                    SwipePicker(
+                                      side: SwipePickerSide.left,
+                                      items: [
+                                        SwipePickerItem(
+                                          label: LocalSettings.postGestureLeftPrimary.label,
+                                          options: postGestureOptions,
+                                          value: leftPrimaryPostGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.postGestureLeftPrimary, value.payload),
+                                        ),
+                                        SwipePickerItem(
+                                          label: LocalSettings.postGestureLeftSecondary.label,
+                                          options: postGestureOptions,
+                                          value: leftSecondaryPostGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.postGestureLeftSecondary, value.payload),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    SwipePicker(
+                                      side: SwipePickerSide.right,
+                                      items: [
+                                        SwipePickerItem(
+                                          label: LocalSettings.postGestureRightPrimary.label,
+                                          options: postGestureOptions,
+                                          value: rightPrimaryPostGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.postGestureRightPrimary, value.payload),
+                                        ),
+                                        SwipePickerItem(
+                                          label: LocalSettings.postGestureRightSecondary.label,
+                                          options: postGestureOptions,
+                                          value: rightSecondaryPostGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.postGestureRightSecondary, value.payload),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 )
                               : null,
                         ),
@@ -326,6 +338,15 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enableCommentGestures, value),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: Text(
+                            'Customize swipe actions (tap to change)',
+                            style: TextStyle(
+                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                            ),
+                          ),
+                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
@@ -337,44 +358,46 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                             );
                           },
                           child: enableCommentGestures
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    children: [
-                                      ListOption(
-                                        description: LocalSettings.commentGestureLeftPrimary.label,
-                                        value: ListPickerItem(label: leftPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftPrimaryCommentGesture),
-                                        options: commentGestureOptions,
-                                        icon: Icons.keyboard_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftPrimary, value.payload),
-                                        disabled: !enableCommentGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.commentGestureLeftSecondary.label,
-                                        value: ListPickerItem(label: leftSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: leftSecondaryCommentGesture),
-                                        options: commentGestureOptions,
-                                        icon: Icons.keyboard_double_arrow_right_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftSecondary, value.payload),
-                                        disabled: !enableCommentGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.commentGestureRightPrimary.label,
-                                        value: ListPickerItem(label: rightPrimaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightPrimaryCommentGesture),
-                                        options: commentGestureOptions,
-                                        icon: Icons.keyboard_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.commentGestureRightPrimary, value.payload),
-                                        disabled: !enableCommentGestures,
-                                      ),
-                                      ListOption(
-                                        description: LocalSettings.commentGestureRightSecondary.label,
-                                        value: ListPickerItem(label: rightSecondaryCommentGesture.name.capitalize, icon: Icons.feed, payload: rightSecondaryCommentGesture),
-                                        options: commentGestureOptions,
-                                        icon: Icons.keyboard_double_arrow_left_rounded,
-                                        onChanged: (value) => setPreferences(LocalSettings.commentGestureRightSecondary, value.payload),
-                                        disabled: !enableCommentGestures,
-                                      ),
-                                    ],
-                                  ),
+                              ? Column(
+                                  children: [
+                                    SwipePicker(
+                                      side: SwipePickerSide.left,
+                                      items: [
+                                        SwipePickerItem(
+                                          label: LocalSettings.commentGestureLeftPrimary.label,
+                                          options: commentGestureOptions,
+                                          value: leftPrimaryCommentGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftPrimary, value.payload),
+                                        ),
+                                        SwipePickerItem(
+                                          label: LocalSettings.commentGestureLeftSecondary.label,
+                                          options: commentGestureOptions,
+                                          value: leftSecondaryCommentGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureLeftSecondary, value.payload),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(
+                                      height: 5,
+                                    ),
+                                    SwipePicker(
+                                      side: SwipePickerSide.right,
+                                      items: [
+                                        SwipePickerItem(
+                                          label: LocalSettings.commentGestureRightPrimary.label,
+                                          options: commentGestureOptions,
+                                          value: rightPrimaryCommentGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureRightPrimary, value.payload),
+                                        ),
+                                        SwipePickerItem(
+                                          label: LocalSettings.commentGestureRightSecondary.label,
+                                          options: commentGestureOptions,
+                                          value: rightSecondaryCommentGesture,
+                                          onChanged: (value) => setPreferences(LocalSettings.commentGestureRightSecondary, value.payload),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 )
                               : null,
                         ),

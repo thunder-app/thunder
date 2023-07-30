@@ -20,12 +20,14 @@ class ImageViewer extends StatefulWidget {
   final String url;
   final String heroKey;
   final int? postId;
+  final void Function()? navigateToPost;
 
   const ImageViewer({
     super.key,
     required this.url,
     required this.heroKey,
     this.postId,
+    this.navigateToPost,
   });
 
   get postViewMedia => null;
@@ -51,6 +53,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   /// User Settings
   bool isUserLoggedIn = false;
 
+  bool isDownloadingMedia = false;
+
   void _maybeSlide() {
     setState(() {
       maybeSlideZooming = true;
@@ -64,21 +68,46 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
+
     if (Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
-    if (androidVersionBelow33) {
-      await Permission.storage.request();
-    } else {
-      Map<Permission, PermissionStatus> statuses = await [
-        Permission.photos,
-        Permission.photosAddOnly,
-      ].request();
-    }
-    bool hasPermission = await Permission.photos.isGranted || await Permission.photos.isLimited || await Permission.storage.isGranted || await Permission.storage.isLimited;
+    // Check first if we have permissions
+    bool hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    bool hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
 
-    return hasPermission;
+    if (androidVersionBelow33 && !hasStoragePermission) {
+      await Permission.storage.request();
+      hasStoragePermission = await Permission.storage.isGranted || await Permission.storage.isLimited;
+    } else if (!androidVersionBelow33 && !hasPhotosPermission) {
+      await Permission.photos.request();
+      hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
+    }
+
+    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    return hasPhotosPermission;
+  }
+
+  /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
+  void showPermissionDeniedDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Permission Denied'),
+          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                openAppSettings();
+              },
+              child: const Text('Open Settings'),
+            )
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -153,7 +182,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         : null,
                     child: Listener(
                       // Start watching for double tap zoom
-                      onPointerDown: (details) {
+                      onPointerUp: (details) {
                         downCoord = details.position;
                         _maybeSlide();
                       },
@@ -203,7 +232,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             mode: ExtendedImageMode.gesture,
                             extendedImageGestureKey: gestureKey,
                             cache: true,
-                            clearMemoryCacheWhenDispose: true,
+                            clearMemoryCacheWhenDispose: false,
                             initGestureConfigHandler: (ExtendedImageState state) {
                               return GestureConfig(
                                 minScale: 0.8,
@@ -259,49 +288,17 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // TODO make go to post work
-                        /*Container(
-                            child: widget.postId != null ? Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      AccountBloc accountBloc = context.read<AccountBloc>();
-                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                      CommunityBloc communityBloc = context.read<CommunityBloc>();
-
-                                      // Mark post as read when tapped
-                                      if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
-
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                                BlocProvider.value(value: communityBloc),
-                                                BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                              ],
-                                              child: PostPage(
-                                                postView: widget.postViewMedia,
-                                                onPostUpdated: () {},
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                      if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                                    },
-                                    icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ) : null,
-                          ),*/
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
+                            ),
+                          ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
@@ -314,23 +311,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       File? mediaFile = media?.file;
 
                                       if (media == null) {
-                                        // Tell user we're downloading the image
-                                        SnackBar snackBar = const SnackBar(
-                                          content: Text('Downloading media to share...'),
-                                          behavior: SnackBarBehavior.floating,
-                                        );
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                          _imageViewer.currentState?.showSnackBar(snackBar);
-                                        });
+                                        setState(() => isDownloadingMedia = true);
 
                                         // Download
                                         mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
-
-                                        // Hide snackbar
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                        });
                                       }
 
                                       // Share
@@ -345,14 +329,24 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         _imageViewer.currentState?.clearSnackBars();
                                         _imageViewer.currentState?.showSnackBar(snackBar);
                                       });
+                                    } finally {
+                                      setState(() => isDownloadingMedia = false);
                                     }
                                   },
-                            icon: Icon(
-                              Icons.share_rounded,
-                              semanticLabel: "Comments",
-                              color: Colors.white.withOpacity(0.90),
-                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                            ),
+                            icon: isDownloadingMedia
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.share_rounded,
+                                    semanticLabel: "Share",
+                                    color: Colors.white.withOpacity(0.90),
+                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                  ),
                           ),
                         ),
                         Padding(
@@ -362,18 +356,26 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 ? null
                                 : () async {
                                     File file = await DefaultCacheManager().getSingleFile(widget.url);
+                                    bool hasPermission = await _requestPermission();
 
-                                    if ((Platform.isAndroid || Platform.isIOS) && await _requestPermission()) {
+                                    if (!hasPermission) {
+                                      if (context.mounted) showPermissionDeniedDialog(context);
+                                    }
+
+                                    if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
                                       if (Platform.isAndroid) {
                                         // Save image to [internal storage]/Pictures/Thunder
                                         GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
                                           setState(() => downloaded = value as bool);
                                         });
                                       } else if (Platform.isIOS) {
-                                        // TODO: Check to make sure this works on iOS
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
+                                          if (value == null || value == false) {
+                                            // If the image cannot be saved to the Thunder album, then just save it to Photos
+                                            GallerySaver.saveImage(file.path).then((value) => setState(() => downloaded = value as bool));
+                                          }
 
-                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
-                                          setState(() => downloaded = value as bool);
+                                          setState(() => downloaded = value ?? false);
                                         });
                                       }
                                     } else if (Platform.isLinux || Platform.isWindows) {

@@ -147,6 +147,7 @@ class _ThunderState extends State<Thunder> {
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
+                  context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                   return const Center(child: CircularProgressIndicator());
                 case ThunderStatus.loading:
                   return const Center(child: CircularProgressIndicator());
@@ -154,7 +155,11 @@ class _ThunderState extends State<Thunder> {
                 case ThunderStatus.success:
                   FlutterNativeSplash.remove();
                   return Scaffold(
-                      bottomNavigationBar: _getScaffoldBottomNavigationBar(context),
+                      bottomNavigationBar: BlocBuilder<InboxBloc, InboxState>(
+                        builder: (context, state) {
+                          return _getScaffoldBottomNavigationBar(context);
+                        },
+                      ),
                       body: MultiBlocProvider(
                           providers: [
                             BlocProvider<AccountBloc>(create: (context) => AccountBloc()),
@@ -223,6 +228,7 @@ class _ThunderState extends State<Thunder> {
   Widget _getScaffoldBottomNavigationBar(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
+    final InboxState inboxState = context.read<InboxBloc>().state;
 
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
@@ -257,7 +263,11 @@ class _ThunderState extends State<Thunder> {
               label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.inbox_rounded),
+              icon: Badge(
+                isLabelVisible: inboxState.totalUnreadCount != 0,
+                label: Text(inboxState.totalUnreadCount > 9 ? '9+' : inboxState.totalUnreadCount.toString()),
+                child: const Icon(Icons.inbox_rounded),
+              ),
               label: AppLocalizations.of(context)!.inbox,
             ),
             BottomNavigationBarItem(

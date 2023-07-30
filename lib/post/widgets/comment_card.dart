@@ -25,6 +25,7 @@ class CommentCard extends StatefulWidget {
   final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
+  final int? moddingCommentId;
   final Function(int, bool) onDeleteAction;
 
   final DateTime now;
@@ -41,6 +42,7 @@ class CommentCard extends StatefulWidget {
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
+    this.moddingCommentId,
     required this.onDeleteAction,
   });
 
@@ -247,24 +249,20 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 background: dismissDirection == DismissDirection.startToEnd
                     ? AnimatedContainer(
                         alignment: Alignment.centerLeft,
-                        color: swipeAction == null
-                            ? getSwipeActionColor(state.leftPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        color: swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                         duration: const Duration(milliseconds: 200),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * dismissThreshold,
-                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                          child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                         ),
                       )
                     : AnimatedContainer(
                         alignment: Alignment.centerRight,
-                        color: swipeAction == null
-                            ? getSwipeActionColor(state.rightPrimaryCommentGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                            : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                        color: swipeAction == null ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                         duration: const Duration(milliseconds: 200),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * dismissThreshold,
-                          child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none)),
+                          child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
                         ),
                       ),
                 child: Container(
@@ -305,6 +303,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               CommentHeader(
+                                moddingCommentId: widget.moddingCommentId ?? -1,
                                 commentViewTree: widget.commentViewTree,
                                 useDisplayNames: state.useDisplayNames,
                                 isCommentNew: isCommentNew,
@@ -331,8 +330,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                            child: CommonMarkdownBody(
-                                                body: widget.commentViewTree.commentView!.comment.deleted ? "_deleted by creator_" : widget.commentViewTree.commentView!.comment.content),
+                                            child: CommonMarkdownBody(body: widget.commentViewTree.commentView!.comment.content),
                                           ),
                                           if (state.showCommentButtonActions && isUserLoggedIn)
                                             Padding(
@@ -384,6 +382,12 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Container(
+                                    margin: EdgeInsets.only(
+                                      left: switch (nestedCommentIndicatorStyle) {
+                                        NestedCommentIndicatorStyle.thin => 7,
+                                        NestedCommentIndicatorStyle.thick => 4,
+                                      },
+                                    ),
                                     decoration: BoxDecoration(
                                       border: Border(
                                         left: BorderSide(
@@ -418,6 +422,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) => CommentCard(
+                            moddingCommentId: widget.moddingCommentId,
                             selectedCommentPath: widget.selectedCommentPath,
                             selectCommentId: widget.selectCommentId,
                             now: widget.now,

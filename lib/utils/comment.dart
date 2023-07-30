@@ -77,7 +77,7 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
 
     commentMap[commentView.comment.path] = CommentViewTree(
       datePostedOrEdited: formatTimeToString(dateTime: commentTime),
-      commentView: commentView,
+      commentView: cleanDeletedCommentView(commentView),
       replies: [],
       level: commentView.comment.path.split('.').length - 2,
     );
@@ -123,4 +123,57 @@ List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTre
   }
 
   return []; // Return an empty list if the target ID is not found
+}
+
+// Used for modifying the comment current comment tree so we don't have to refresh the whole thing
+bool updateModifiedComment(List<CommentViewTree> commentTrees, FullCommentView moddedComment) {
+  for (int i = 0; i < commentTrees.length; i++) {
+    if (commentTrees[i].commentView!.comment.id == moddedComment.commentView.comment.id) {
+      commentTrees[i].commentView = moddedComment.commentView;
+      return true;
+    }
+
+    bool done = updateModifiedComment(commentTrees[i].replies, moddedComment);
+    if (done) {
+      return done;
+    }
+  }
+
+  return false;
+}
+
+CommentView cleanDeletedCommentView(CommentView commentView) {
+  if (!commentView.comment.deleted) {
+    return commentView;
+  }
+
+  Comment deletedComment = convertToDeletedComment(commentView.comment);
+
+  return CommentView(
+      comment: deletedComment,
+      creator: commentView.creator,
+      post: commentView.post,
+      community: commentView.community,
+      counts: commentView.counts,
+      creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
+      saved: commentView.saved,
+      creatorBlocked: commentView.creatorBlocked,
+      instanceHost: commentView.instanceHost);
+}
+
+Comment convertToDeletedComment(Comment comment) {
+  return Comment(
+      id: comment.id,
+      creatorId: comment.creatorId,
+      postId: comment.postId,
+      content: "_deleted by creator_",
+      removed: comment.removed,
+      distinguished: comment.distinguished,
+      published: comment.published,
+      deleted: comment.deleted,
+      apId: comment.apId,
+      local: comment.local,
+      languageId: comment.languageId,
+      instanceHost: comment.instanceHost,
+      path: comment.path);
 }

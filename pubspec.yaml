@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.1-alpha.3+13
+version: 0.2.1+13
 
 environment:
   sdk: "^3.0.0"
@@ -21,7 +21,7 @@ dependencies:
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git
-      ref: 2.2.1+2
+      ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
   extended_image:
     git:
       url: https://github.com/hjiangsu/extended_image.git
@@ -29,7 +29,11 @@ dependencies:
   lemmy_api_client:
     git:
       url: https://github.com/hjiangsu/lemmy_api_client.git
-      ref: 45c17fdfcf861cd237aa6b5df774fbc4f4ae33f5
+      ref: 77f50e5a6cdd76ae177f188e574c2df11b75a14d
+  link_preview_generator:
+    git:
+      url: https://github.com/thunder-app/link_preview_generator.git
+      ref: 3bc5390f6c2757afa4879db893b8de0f8cb6baef
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3
@@ -71,10 +75,10 @@ dependencies:
   image_picker: ^1.0.0
   flutter_staggered_grid_view: ^0.6.2
   flutter_custom_tabs: ^1.0.4
-  link_preview_generator: ^1.2.0
   back_button_interceptor: ^6.0.2
   flutter_localizations:
     sdk: flutter
+  expandable_text: ^2.3.0
 
 dev_dependencies:
   flutter_test:
