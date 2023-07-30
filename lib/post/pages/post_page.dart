@@ -186,7 +186,7 @@ class _PostPageState extends State<PostPage> {
                             ],
                           )
                         : null,
-                    )
+                  )
                 : null,
             body: GestureDetector(
               onHorizontalDragStart: (details) {
@@ -271,7 +271,7 @@ class _PostPageState extends State<PostPage> {
                             return ErrorMessage(
                               message: state.errorMessage,
                               action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
+                                context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
                               },
                               actionText: 'Refresh Content',
                             );
