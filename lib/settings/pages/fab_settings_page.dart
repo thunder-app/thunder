@@ -174,7 +174,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                 ),
                               ),
                               Text(
-                                '- Long tap the lower right corner to bring it back',
+                                '- Swipe up from lower right corner to bring it back',
                                 style: TextStyle(
                                   color: theme.colorScheme.onBackground.withOpacity(0.75),
                                 ),

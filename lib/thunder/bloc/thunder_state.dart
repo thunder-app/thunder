@@ -101,7 +101,7 @@ class ThunderState extends Equatable {
     // Expand/Close FAB event
     this.isFabOpen = false,
     // Summon/Unsummon FAB event
-    this.isFabSummoned = false,
+    this.isFabSummoned = true,
   });
 
   final ThunderStatus status;
