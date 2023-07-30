@@ -207,23 +207,29 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 } else {
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
                   return AnimatedSwitcher(
-                    duration: Duration(milliseconds: postViewMedia.postView.read ? 500 : 0),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
+                    switchInCurve: Curves.ease,
+                    switchOutCurve: Curves.ease,
+                    duration: Duration(milliseconds: postViewMedia.postView.read ? 400 : 0),
+                    transitionBuilder: (child, animation) {
                       return FadeTransition(
                         opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
                           CurvedAnimation(
                             parent: animation,
-                            curve: const Interval(0.0, 0.5),
+                            curve: const Interval(0.5, 1.0),
                           ),
                         ),
-                        child: SizeTransition(
+                        child: SlideTransition(
+                          position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                          child: SizeTransition(
                             sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                              CurvedAnimation(
-                                parent: animation,
-                                curve: const Interval(0.5, 1.0),
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: const Interval(0.0, 0.25),
+                                ),
                               ),
-                            ),
-                            child: child),
+                            child: child,
+                          ),
+                        ),
                       );
                     },
                     child: !postViewMedia.postView.read || showRead
@@ -317,7 +323,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       setState(() {
         showRead = false;
       });
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 400));
       setState(() {
         widget.postViews!.removeWhere((e) => e.postView.read);
         showRead = true;

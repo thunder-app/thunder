@@ -217,7 +217,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
                     floatingActionButton: enableFab
                         ? AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 250),
+                            duration: const Duration(milliseconds: 200),
+                            switchInCurve: Curves.ease,
+                            switchOutCurve: Curves.ease,
+                            transitionBuilder: (child, animation) {
+                              return SlideTransition(
+                                position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
+                                child: child,
+                              );
+                            },
                             child: isFabSummoned
                                 ? GestureFab(
                                     distance: 60,
