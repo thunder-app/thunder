@@ -12,6 +12,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/link_preview_card.dart';
+import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 
@@ -53,11 +54,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
 
     _urlTextController.addListener(() {
-      if (url != _urlTextController.text) {
-        setState(() {
-          url = _urlTextController.text;
-        });
-      }
+      url = _urlTextController.text;
+      debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
     });
   }
 
@@ -253,6 +251,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
       imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
     } catch (e) {
       null;
+    }
+  }
+
+  void _updatePreview(String text) {
+    if (url == text) {
+      setState(() {});
     }
   }
 }
