@@ -222,11 +222,11 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
                           child: SizeTransition(
                             sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                CurvedAnimation(
-                                  parent: animation,
-                                  curve: const Interval(0.0, 0.25),
-                                ),
+                              CurvedAnimation(
+                                parent: animation,
+                                curve: const Interval(0.0, 0.25),
                               ),
+                            ),
                             child: child,
                           ),
                         ),
