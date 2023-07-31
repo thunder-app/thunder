@@ -16,6 +16,7 @@
 - Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
 - Added caching to images to improve overall experience - contribution from @micahmo
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
+- Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
