@@ -20,7 +20,7 @@ class PostPageSuccess extends StatefulWidget {
 
   final bool viewFullCommentsRefreshing;
 
-  final FullCommunityView? community;
+  final List<CommunityModeratorView>? moderators;
 
   const PostPageSuccess({
     super.key,
@@ -32,7 +32,7 @@ class PostPageSuccess extends StatefulWidget {
     this.selectedCommentPath,
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
-    required this.community,
+    required this.moderators,
   });
 
   @override
@@ -82,7 +82,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-            community: widget.community,
+            moderators: widget.moderators,
           ),
         ),
       ],

@@ -10,7 +10,7 @@ bool commentAuthorIsPostAuthor(Post? post, Comment? comment) {
   return post != null && post.creatorId == comment?.creatorId;
 }
 
-/// Checks whether the given [person] is a moderator of the given [community].
-bool isModerator(PersonSafe? person, FullCommunityView? community) {
-  return person != null && community?.moderators.any((moderator) => moderator.moderator?.id == person.id) == true;
+/// Checks whether the given [person] is a moderator of the given [moderators].
+bool isModerator(PersonSafe? person, List<CommunityModeratorView>? moderators) {
+  return person != null && moderators?.any((moderator) => moderator.moderator?.id == person.id) == true;
 }

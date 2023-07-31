@@ -26,14 +26,14 @@ class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
-  final FullCommunityView? community;
+  final List<CommunityModeratorView>? moderators;
 
   const PostSubview({
     super.key,
     this.selectedCommentId,
     required this.useDisplayNames,
     required this.postViewMedia,
-    required this.community,
+    required this.moderators,
   });
 
   @override
@@ -326,7 +326,7 @@ class PostSubview extends StatelessWidget {
 
     if (isOwnPost) descriptor += 'me';
     if (isAdmin(postView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (isModerator(postView.creator, community)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
+    if (isModerator(postView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 

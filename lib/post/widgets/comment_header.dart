@@ -21,7 +21,7 @@ class CommentHeader extends StatelessWidget {
   final bool isHidden;
   final bool isCommentNew;
   final int moddingCommentId;
-  final FullCommunityView? community;
+  final List<CommunityModeratorView>? moderators;
 
   const CommentHeader({
     super.key,
@@ -31,7 +31,7 @@ class CommentHeader extends StatelessWidget {
     this.isOwnComment = false,
     this.isHidden = false,
     this.moddingCommentId = -1,
-    required this.community,
+    required this.moderators,
   });
 
   @override
@@ -120,7 +120,7 @@ class CommentHeader extends StatelessWidget {
                                             : Container(),
                                       ),
                                       Container(
-                                        child: isModerator(commentViewTree.commentView?.creator, community)
+                                        child: isModerator(commentViewTree.commentView?.creator, moderators)
                                             ? Padding(
                                                 padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
@@ -277,7 +277,7 @@ class CommentHeader extends StatelessWidget {
 
     if (isOwnComment) return theme.colorScheme.primary;
     if (isAdmin(commentView.creator)) return theme.colorScheme.tertiary;
-    if (isModerator(commentView.creator, community)) return theme.colorScheme.primaryContainer;
+    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.primaryContainer;
     if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondary;
 
     return null;
@@ -290,7 +290,7 @@ class CommentHeader extends StatelessWidget {
 
     if (isOwnComment) descriptor += 'me';
     if (isAdmin(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (isModerator(commentView.creator, community)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
+    if (isModerator(commentView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
     if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}original poster';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
@@ -301,6 +301,6 @@ class CommentHeader extends StatelessWidget {
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
     CommentView commentView = commentViewTree.commentView!;
 
-    return isOwnComment || isAdmin(commentView.creator) || isModerator(commentView.creator, community) || commentAuthorIsPostAuthor(commentView.post, commentView.comment);
+    return isOwnComment || isAdmin(commentView.creator) || isModerator(commentView.creator, moderators) || commentAuthorIsPostAuthor(commentView.post, commentView.comment);
   }
 }

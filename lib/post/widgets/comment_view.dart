@@ -30,7 +30,7 @@ class CommentSubview extends StatefulWidget {
   final DateTime now;
   final Function(int, bool) onDeleteAction;
 
-  final FullCommunityView? community;
+  final List<CommunityModeratorView>? moderators;
 
   const CommentSubview({
     super.key,
@@ -47,7 +47,7 @@ class CommentSubview extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.onDeleteAction,
-    required this.community,
+    required this.moderators,
   });
 
   @override
@@ -104,7 +104,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               selectedCommentId: widget.selectedCommentId,
               useDisplayNames: state.useDisplayNames,
               postViewMedia: widget.postViewMedia!,
-              community: widget.community,
+              moderators: widget.moderators,
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
@@ -157,7 +157,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                      community: widget.community,
+                      moderators: widget.moderators,
                     ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[

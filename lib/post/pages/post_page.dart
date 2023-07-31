@@ -236,7 +236,7 @@ class _PostPageState extends State<PostPage> {
                               viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
                               scrollController: _scrollController,
                               hasReachedCommentEnd: state.hasReachedCommentEnd,
-                              community: state.community,
+                              moderators: state.moderators,
                             ),
                           );
                         }
