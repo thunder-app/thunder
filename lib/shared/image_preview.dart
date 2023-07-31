@@ -99,13 +99,13 @@ class _ImagePreviewState extends State<ImagePreview> {
       child: Stack(
         children: [
           ExtendedImage.network(
-            constraints: widget.isComment != null && widget.isComment!
+            constraints: widget.isComment == true
                 ? BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.width * 0.55,
                     maxWidth: MediaQuery.of(context).size.width * 0.60,
                   )
                 : null,
-            alignment: widget.isComment != null && widget.isComment! ? Alignment.topCenter : Alignment.center,
+            alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
             widget.url,
             height: widget.height,
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
