@@ -65,18 +65,6 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
-
-    /*if (enableFab) {
-      if (_scrollController.offset > 200 && !_showReturnToTopButton) {
-        setState(() {
-          _showReturnToTopButton = true;
-        });
-      } else if (_scrollController.offset <= 200 && _showReturnToTopButton) {
-        setState(() {
-          _showReturnToTopButton = false;
-        });
-      }
-    }*/
   }
 
   CommentSortType? sortType;
@@ -86,7 +74,7 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final ThunderState thunderState = context.watch<ThunderBloc>().state;
     enableFab = thunderState.enablePostsFab;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
