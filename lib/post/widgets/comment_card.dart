@@ -30,6 +30,8 @@ class CommentCard extends StatefulWidget {
 
   final DateTime now;
 
+  final List<CommunityModeratorView>? moderators;
+
   const CommentCard({
     super.key,
     required this.commentViewTree,
@@ -44,6 +46,7 @@ class CommentCard extends StatefulWidget {
     this.selectedCommentPath,
     this.moddingCommentId,
     required this.onDeleteAction,
+    required this.moderators,
   });
 
   /// CommentViewTree containing relevant information
@@ -321,6 +324,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   isCommentNew: isCommentNew,
                                   isOwnComment: isOwnComment,
                                   isHidden: isHidden,
+                                  moderators: widget.moderators,
                                 ),
                                 AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 130),
@@ -447,6 +451,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             onSaveAction: widget.onSaveAction,
                             onCollapseCommentChange: widget.onCollapseCommentChange,
                             onDeleteAction: widget.onDeleteAction,
+                            moderators: widget.moderators,
                           ),
                           itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,
                         ),

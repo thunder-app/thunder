@@ -7,6 +7,7 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
+import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
@@ -20,6 +21,7 @@ class CommentHeader extends StatelessWidget {
   final bool isHidden;
   final bool isCommentNew;
   final int moddingCommentId;
+  final List<CommunityModeratorView>? moderators;
 
   const CommentHeader({
     super.key,
@@ -29,6 +31,7 @@ class CommentHeader extends StatelessWidget {
     this.isOwnComment = false,
     this.isHidden = false,
     this.moddingCommentId = -1,
+    required this.moderators,
   });
 
   @override
@@ -104,21 +107,8 @@ class CommentHeader extends StatelessWidget {
                                                 ))
                                             : Container(),
                                       ),
-                                      // Container(
-                                      //   // TODO: Figure out how to determine mods
-                                      //   child: true
-                                      //     ? Padding(
-                                      //       padding: const EdgeInsets.only(left: 1),
-                                      //       child: Icon(
-                                      //         Thunder.shield,
-                                      //         size: 14.0 * state.contentFontSizeScale.textScaleFactor,
-                                      //         color: Colors.white,
-                                      //       ),
-                                      //     )
-                                      //     : Container(),
-                                      // ),
                                       Container(
-                                        child: commentViewTree.commentView?.creator.admin == true
+                                        child: isAdmin(commentViewTree.commentView?.creator)
                                             ? Padding(
                                                 padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
@@ -130,7 +120,19 @@ class CommentHeader extends StatelessWidget {
                                             : Container(),
                                       ),
                                       Container(
-                                        child: commentViewTree.commentView != null && commentViewTree.commentView?.post.creatorId == commentViewTree.commentView?.comment.creatorId
+                                        child: isModerator(commentViewTree.commentView?.creator, moderators)
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.shield,
+                                                  size: 14.0 * state.contentFontSizeScale.textScaleFactor,
+                                                  color: Colors.white,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                      Container(
+                                        child: commentAuthorIsPostAuthor(commentViewTree.commentView?.post, commentViewTree.commentView?.comment)
                                             ? Padding(
                                                 padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
@@ -274,8 +276,9 @@ class CommentHeader extends StatelessWidget {
     final theme = Theme.of(context);
 
     if (isOwnComment) return theme.colorScheme.primary;
-    if (commentView.creator.admin == true) return theme.colorScheme.tertiary;
-    if (commentView.post.creatorId == commentView.comment.creatorId) return theme.colorScheme.secondary;
+    if (isAdmin(commentView.creator)) return theme.colorScheme.tertiary;
+    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.primaryContainer;
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondary;
 
     return null;
   }
@@ -286,8 +289,9 @@ class CommentHeader extends StatelessWidget {
     String descriptor = '';
 
     if (isOwnComment) descriptor += 'me';
-    if (commentView.creator.admin == true) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (commentView.post.creatorId == commentView.comment.creatorId) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}original poster';
+    if (isAdmin(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+    if (isModerator(commentView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}original poster';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 
@@ -297,6 +301,6 @@ class CommentHeader extends StatelessWidget {
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
     CommentView commentView = commentViewTree.commentView!;
 
-    return isOwnComment || commentView.creator.admin == true || commentView.post.creatorId == commentView.comment.creatorId;
+    return isOwnComment || isAdmin(commentView.creator) || isModerator(commentView.creator, moderators) || commentAuthorIsPostAuthor(commentView.post, commentView.comment);
   }
 }
