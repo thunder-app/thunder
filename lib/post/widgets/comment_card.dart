@@ -144,7 +144,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 left: BorderSide(
                   width: widget.level == 0 || widget.level == 1 ? 0 : 1.0,
                   // This is the color of the nested comment indicator in thin mode
-                  color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 2) % 6).toInt()] : theme.hintColor.withOpacity(0.25),
+                  color: widget.level == 0 || widget.level == 1
+                      ? theme.colorScheme.background
+                      : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
+                          ? colors[((widget.level - 2) % 6).toInt()]
+                          : theme.hintColor.withOpacity(0.25),
                 ),
               )
             : const Border(),
@@ -273,14 +277,22 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               left: BorderSide(
                                 width: widget.level == 0 ? 0 : 1.0,
                                 // This is the color of the nested comment indicator in thin mode
-                                color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 1) % 6).toInt()] : theme.hintColor.withOpacity(0.25),
+                                color: widget.level == 0
+                                    ? theme.colorScheme.background
+                                    : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
+                                        ? colors[((widget.level - 1) % 6).toInt()]
+                                        : theme.hintColor.withOpacity(0.25),
                               ),
                             )
                           : Border(
                               left: BorderSide(
                                 width: widget.level == 0 ? 0 : 4.0,
                                 // This is the color of the nested comment indicator in thin mode
-                                color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level - 1) % 6).toInt()] : theme.hintColor,
+                                color: widget.level == 0
+                                    ? theme.colorScheme.background
+                                    : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
+                                        ? colors[((widget.level - 1) % 6).toInt()]
+                                        : theme.hintColor,
                               ),
                             ),
                     ),
