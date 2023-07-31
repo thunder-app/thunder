@@ -399,6 +399,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           options: allSortTypeItems,
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
+                          isBottomModalScrollControlled: true,
                           customListPicker: SortPicker(
                             title: LocalSettings.defaultFeedSortType.label,
                             onSelect: (value) {
