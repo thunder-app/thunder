@@ -228,14 +228,16 @@ class _PostPageState extends State<PostPage> {
                                   .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
                             },
                             child: PostPageSuccess(
-                                postView: state.postView!,
-                                comments: state.comments,
-                                selectedCommentId: state.selectedCommentId,
-                                selectedCommentPath: state.selectedCommentPath,
-                                moddingCommentId: state.moddingCommentId,
-                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                scrollController: _scrollController,
-                                hasReachedCommentEnd: state.hasReachedCommentEnd),
+                              postView: state.postView!,
+                              comments: state.comments,
+                              selectedCommentId: state.selectedCommentId,
+                              selectedCommentPath: state.selectedCommentPath,
+                              moddingCommentId: state.moddingCommentId,
+                              viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                              scrollController: _scrollController,
+                              hasReachedCommentEnd: state.hasReachedCommentEnd,
+                              community: state.community,
+                            ),
                           );
                         }
                         return ErrorMessage(

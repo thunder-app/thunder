@@ -98,6 +98,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           PostViewMedia? postView = event.postView;
+          FullCommunityView? community;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
@@ -106,12 +107,24 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
           }
 
+          // Get the full community in which the post resides
+          if (postView != null) {
+            try {
+              community = await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+                throw Exception();
+              });
+            } catch (e) {
+              // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
+            }
+          }
+
           emit(
             state.copyWith(
                 status: PostStatus.success,
                 postId: postView?.postView.post.id,
                 postView: postView,
                 communityId: postView?.postView.post.communityId,
+                community: community,
                 selectedCommentPath: event.selectedCommentPath,
                 selectedCommentId: event.selectedCommentId),
           );
