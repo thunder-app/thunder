@@ -12,13 +12,13 @@ import 'package:thunder/utils/instance.dart';
 class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
-  final bool isComment;
+  final bool? isComment;
 
   const CommonMarkdownBody({
     super.key,
     required this.body,
     this.isSelectableText = false,
-    this.isComment = false,
+    this.isComment,
   });
 
   @override
@@ -32,12 +32,18 @@ class CommonMarkdownBody extends StatelessWidget {
       // TODO We need spoiler support here
       data: body,
       imageBuilder: (uri, title, alt) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60),
-          child: ImagePreview(
-            url: uri.toString(),
-            isExpandable: true,
-            showFullHeightImages: true,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ImagePreview(
+                url: uri.toString(),
+                isExpandable: true,
+                isComment: isComment,
+                showFullHeightImages: true,
+              ),
+            ],
           ),
         );
       },
