@@ -9,6 +9,7 @@ import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/screen.dart';
 
 import '../bloc/post_bloc.dart';
 
@@ -52,6 +53,7 @@ class CommentSubview extends StatefulWidget {
 }
 
 class _CommentSubviewState extends State<CommentSubview> with SingleTickerProviderStateMixin {
+  final GlobalKey _reachedEndKey = GlobalKey();
   Set collapsedCommentSet = {}; // Retains the collapsed state of any comments
   bool _animatingOut = false;
   bool _animatingIn = false;
@@ -156,6 +158,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Container(
+                            key: _reachedEndKey,
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
@@ -164,6 +167,12 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
                             ),
+                          ),
+                          SizedBox(
+                            height: _reachedEndKey.currentContext?.findRenderObject() is RenderBox
+                                // Subtract the available screen height from the height of the "reached the bottom" widget, so that it's the only thing that shows
+                                ? getScreenHeightWithoutOs(context) - (_reachedEndKey.currentContext?.findRenderObject() as RenderBox).size.height
+                                : 0,
                           ),
                         ],
                       )
