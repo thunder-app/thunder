@@ -6,20 +6,20 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/pages/user_page.dart';
 
-Future<void> navigateToCommunityByName(BuildContext context, String communityName) async {
+Future<void> navigateToUserByName(BuildContext context, String username) async {
   // Get the id from the name
-  int? communityId;
+  int? userId;
   Account? account = await fetchActiveProfileAccount();
-  final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+  final fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
     auth: account?.jwt,
-    name: communityName,
+    username: username,
   ));
 
-  communityId = getCommunityResponse.communityView.community.id;
+  userId = fullPersonView.personView.person.id;
 
   // Push navigation
   AccountBloc accountBloc = context.read<AccountBloc>();
@@ -34,7 +34,10 @@ Future<void> navigateToCommunityByName(BuildContext context, String communityNam
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
         ],
-        child: CommunityPage(communityName: communityName, communityId: communityId),
+        child: UserPage(
+          userId: userId,
+          username: username,
+        ),
       ),
     ),
   );
