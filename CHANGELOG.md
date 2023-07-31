@@ -9,6 +9,7 @@
 - Added inbox unread indicators on the bottom navigation bar
 - Added more robust community navigation - contribution from @micahmo
 - Added support for navigating from image preview to comments - contribution from @micahmo
+- Added inkwell effect to comments - contribution from @CTalvio
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
@@ -23,6 +24,7 @@
 - Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
 - Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
 - Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
+- Removed sliver of border color that was present on root comments for both thick and thin style comments - contribution from @ajsosa
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
