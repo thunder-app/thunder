@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -15,6 +16,8 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+
+import '../../utils/numbers.dart';
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentView> replies;
@@ -36,6 +39,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState state = context.read<ThunderBloc>().state;
 
     if (widget.replies.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
@@ -46,8 +50,11 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.replies.length,
       itemBuilder: (context, index) {
-        return Card(
-          clipBehavior: Clip.hardEdge,
+        int upvotes = widget.replies[index].counts.upvotes ?? 0;
+        int downvotes = widget.replies[index].counts.downvotes ?? 0;
+        return Container(
+          margin: const EdgeInsets.only(top: 4),
+          /*clipBehavior: Clip.hardEdge,*/
           child: InkWell(
             onTap: () async {
               AccountBloc accountBloc = context.read<AccountBloc>();
@@ -64,102 +71,114 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(
-                      selectedCommentId: widget.replies[index].comment.id,
-                      selectedCommentPath: widget.replies[index].comment.path,
-                      postId: widget.replies[index].post.id,
-                      onPostUpdated: () => {},
-                    ),
+                    child: PostPage(postId: widget.replies[index].post.id, selectedCommentPath: widget.replies[index].comment.path, selectedCommentId: widget.replies[index].comment.id, onPostUpdated: () => {}),
                   ),
                 ),
               );
             },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        widget.replies[index].creator.name,
-                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
-                      ),
-                      Text(formatTimeToString(dateTime: widget.replies[index].comment.published.toIso8601String()))
-                    ],
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Divider(
+                  height: 1.0,
+                  thickness: 4.0,
+                  color: ElevationOverlay.applySurfaceTint(
+                    Theme.of(context).colorScheme.surface,
+                    Theme.of(context).colorScheme.surfaceTint,
+                    10,
                   ),
-                  GestureDetector(
-                    child: Text(
-                      '${widget.replies[index].community.name}${' · ${fetchInstanceNameFromUrl(widget.replies[index].community.actorId)}'}',
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                      ),
-                    ),
-                    onTap: () => onTapCommunityName(context, widget.replies[index].community.id),
-                  ),
-                  const SizedBox(height: 10),
-                  CommonMarkdownBody(body: widget.replies[index].comment.content),
-                  const Divider(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
                     children: [
-                      if (widget.replies[index].commentReply?.read == false)
-                        // Check to see which reply is curremntly marked as read
-                        inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
-                            ? IconButton(
-                                onPressed: () {
-                                  setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
-                                  context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
-                                },
-                                icon: const Icon(
-                                  Icons.check,
-                                  semanticLabel: 'Mark as read',
-                                ),
-                                visualDensity: VisualDensity.compact,
-                              )
-                            : const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              widget.replies[index].post.name,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontWeight: FontWeight.w600,
                               ),
-                      IconButton(
-                        onPressed: () {
-                          InboxBloc inboxBloc = context.read<InboxBloc>();
-                          PostBloc postBloc = context.read<PostBloc>();
-                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            showDragHandle: true,
-                            builder: (context) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                                child: FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    ],
-                                    child: CreateCommentModal(comment: widget.replies[index].comment, parentCommentAuthor: widget.replies[index].creator.name),
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.reply_rounded,
-                          semanticLabel: 'Reply',
-                        ),
-                        visualDensity: VisualDensity.compact,
+                            ),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'in ',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                            ),
+                          ),
+                          Text(
+                            '${widget.replies[index].community.name}${' · ${fetchInstanceNameFromUrl(widget.replies[index].community.actorId)}'}',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
-                  )
-                ],
-              ),
+                  ),
+                ),
+                const Divider(height: 1),
+                Padding(
+                  padding: const EdgeInsets.only(left: 18.0, right: 8, top: 8, bottom: 16,),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.replies[index].creator.name,
+                            style: theme.textTheme.titleSmall,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Icon(
+                            Icons.north_rounded,
+                            size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                            color: widget.replies[index].myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                          ),
+                          const SizedBox(width: 2.0),
+                          Text(
+                            formatNumberToK(upvotes),
+                            semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: widget.replies[index].myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                            ),
+                          ),
+                          const SizedBox(width: 10.0),
+                          Icon(
+                            Icons.south_rounded,
+                            size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                            color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
+                          ),
+                          const SizedBox(width: 2.0),
+                          if (downvotes != 0)
+                            Text(
+                              formatNumberToK(downvotes),
+                              semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
+                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
+                              ),
+                            ),
+                          const Spacer(),
+                          Text(formatTimeToString(dateTime: widget.replies[index].comment.published.toIso8601String())),
+                        ],
+                      ),
+                      const SizedBox(height: 10),
+                      CommonMarkdownBody(body: widget.replies[index].comment.content),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ),
         );
