@@ -12,6 +12,7 @@
 - Added inkwell effect to comments - contribution from @CTalvio
 - Redesigned UI for creating posts - contribution from @coslu
 - Added moderator identifier to comments - contribution from @micahmo
+- Added ability to navigate to user's profile from comment body - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
