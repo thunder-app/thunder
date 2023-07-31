@@ -19,6 +19,7 @@
 - Added caching to images to improve overall experience - contribution from @micahmo
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
 - Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
+- Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
