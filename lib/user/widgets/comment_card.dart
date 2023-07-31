@@ -28,9 +28,8 @@ class CommentCard extends StatelessWidget {
 
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    return Container(
-      margin: const EdgeInsets.only(top: 4),
-      /*clipBehavior: Clip.hardEdge,*/
+    return Card(
+      clipBehavior: Clip.hardEdge,
       child: InkWell(
         onTap: () async {
           AccountBloc accountBloc = context.read<AccountBloc>();
@@ -52,109 +51,99 @@ class CommentCard extends StatelessWidget {
             ),
           );
         },
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Divider(
-              height: 1.0,
-              thickness: 4.0,
-              color: ElevationOverlay.applySurfaceTint(
-                Theme.of(context).colorScheme.surface,
-                Theme.of(context).colorScheme.surfaceTint,
-                10,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          comment.post.name,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                    ],
+                  Text(
+                    comment.creator.name,
+                    style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'in ',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                        ),
-                      ),
-                      Text(
-                        '${comment.community.name}${' · ${fetchInstanceNameFromUrl(comment.community.actorId)}'}',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                        ),
-                      ),
-                    ],
+                  const SizedBox(width: 2.0),
+                  Icon(
+                    Icons.north_rounded,
+                    size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                    color: theme.colorScheme.onBackground,
                   ),
-                ],
-              ),
-            ),
-            const Divider(height: 1),
-            Padding(
-              padding: const EdgeInsets.only(left: 18.0, right: 8, top: 8, bottom: 16,),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        comment.creator.name,
-                        style: theme.textTheme.titleSmall,
-                      ),
-                      const SizedBox(width: 8.0),
-                      Icon(
-                        Icons.north_rounded,
-                        size: 12.0 * state.contentFontSizeScale.textScaleFactor,
-                        color: comment.myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
-                      ),
-                      const SizedBox(width: 2.0),
-                      Text(
-                        formatNumberToK(upvotes),
-                        semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: comment.myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
-                        ),
-                      ),
-                      const SizedBox(width: 10.0),
-                      Icon(
-                        Icons.south_rounded,
-                        size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                  const SizedBox(width: 2.0),
+                  Text(
+                    formatNumberToK(upvotes),
+                    semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onBackground,
+                    ),
+                  ),
+                  const SizedBox(width: 10.0),
+                  Icon(
+                    Icons.south_rounded,
+                    size: 12.0 * state.contentFontSizeScale.textScaleFactor,
+                    color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
+                  ),
+                  const SizedBox(width: 2.0),
+                  if (downvotes != 0)
+                    Text(
+                      formatNumberToK(downvotes),
+                      semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
                       ),
-                      const SizedBox(width: 2.0),
-                      if (downvotes != 0)
-                        Text(
-                          formatNumberToK(downvotes),
-                          semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
-                          ),
-                        ),
-                      const Spacer(),
-                      Text(formatTimeToString(dateTime: comment.comment.published.toIso8601String())),
-                    ],
-                  ),
-                  const SizedBox(height: 10),
-                  CommonMarkdownBody(body: comment.comment.content),
+                    ),
+                  Expanded(child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [Text(formatTimeToString(dateTime: comment.comment.published.toIso8601String()))]))
                 ],
               ),
-            ),
-          ],
+              GestureDetector(
+                child: Text(
+                  '${comment.community.name}${' · ${fetchInstanceNameFromUrl(comment.community.actorId)}'}',
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                  ),
+                ),
+                onTap: () => onTapCommunityName(context, comment.community.id),
+              ),
+              const SizedBox(height: 10),
+              CommonMarkdownBody(body: comment.comment.content),
+              const Divider(height: 20),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // IconButton(
+                  //   onPressed: () {
+                  //     InboxBloc inboxBloc = context.read<InboxBloc>();
+
+                  //     showModalBottomSheet(
+                  //       isScrollControlled: true,
+                  //       context: context,
+                  //       showDragHandle: true,
+                  //       builder: (context) {
+                  //         return Padding(
+                  //           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                  //           child: FractionallySizedBox(
+                  //             heightFactor: 0.8,
+                  //             child: BlocProvider<InboxBloc>.value(
+                  //               value: inboxBloc,
+                  //               child: CreateCommentModal(comment: comment.comment, parentCommentAuthor: comment.creator.name),
+                  //             ),
+                  //           ),
+                  //         );
+                  //       },
+                  //     );
+                  //   },
+                  //   icon: const Icon(
+                  //     Icons.reply_rounded,
+                  //     semanticLabel: 'Reply',
+                  //   ),
+                  //   visualDensity: VisualDensity.compact,
+                  // ),
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
