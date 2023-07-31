@@ -22,41 +22,43 @@ class UserHeader extends StatelessWidget {
 
     return Stack(
       children: [
-        if (userInfo?.person.banner != null) Positioned.fill(
-          child: Row(
-            children: [
-              Expanded(flex: 1,child: Container()),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(userInfo!.person.banner!),
-                      fit: BoxFit.cover,
+        if (userInfo?.person.banner != null)
+          Positioned.fill(
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(userInfo!.person.banner!),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        if (userInfo?.person.banner != null) Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  theme.colorScheme.background,
-                  theme.colorScheme.background,
-                  theme.colorScheme.background.withOpacity(0.85),
-                  theme.colorScheme.background.withOpacity(0.4),
-                  Colors.transparent,
-                ],
+        if (userInfo?.person.banner != null)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    theme.colorScheme.background,
+                    theme.colorScheme.background,
+                    theme.colorScheme.background.withOpacity(0.85),
+                    theme.colorScheme.background.withOpacity(0.4),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         Padding(
           padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: Column(

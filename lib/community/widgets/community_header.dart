@@ -24,41 +24,43 @@ class CommunityHeader extends StatelessWidget {
 
     return Stack(
       children: [
-        if (communityInfo?.communityView.community.banner != null) Positioned.fill(
-          child: Row(
-            children: [
-              Expanded(flex: 1,child: Container()),
-              Expanded(
-                flex: 3,
-                child: Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: CachedNetworkImageProvider(communityInfo!.communityView.community.banner!),
-                      fit: BoxFit.cover,
+        if (communityInfo?.communityView.community.banner != null)
+          Positioned.fill(
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(communityInfo!.communityView.community.banner!),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        if (communityInfo?.communityView.community.banner != null)  Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-                colors: [
-                  theme.colorScheme.background,
-                  theme.colorScheme.background,
-                  theme.colorScheme.background.withOpacity(0.85),
-                  theme.colorScheme.background.withOpacity(0.4),
-                  Colors.transparent,
-                ],
+        if (communityInfo?.communityView.community.banner != null)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                  colors: [
+                    theme.colorScheme.background,
+                    theme.colorScheme.background,
+                    theme.colorScheme.background.withOpacity(0.85),
+                    theme.colorScheme.background.withOpacity(0.4),
+                    Colors.transparent,
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         Column(
           children: [
             Padding(
