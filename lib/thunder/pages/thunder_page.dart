@@ -55,30 +55,33 @@ class _ThunderState extends State<Thunder> {
 
   /// This is used for the swipe drag gesture on the bottom nav bar
   double _dragStartX = 0.0;
+  double _dragEndX = 0.0;
 
   void _handleDragStart(DragStartDetails details) {
     _dragStartX = details.globalPosition.dx;
   }
 
-  void _handleDragEnd(DragEndDetails details) {
-    _dragStartX = 0.0;
-  }
-
-  // Handles drag on bottom nav bar to open the drawer
-  void _handleDragUpdate(DragUpdateDetails details) async {
+  void _handleDragEnd(DragEndDetails details) async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
     bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
-      final currentPosition = details.globalPosition.dx;
-      final delta = currentPosition - _dragStartX;
+      final delta = _dragEndX - _dragStartX;
 
-      if (delta > 0 && selectedPageIndex == 0) {
+      // Set some threshold to also allow for swipe up to reveal FAB
+      if (delta > 20 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.openDrawer();
       } else if (delta < 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.closeDrawer();
       }
     }
+
+    _dragStartX = 0.0;
+  }
+
+  // Handles drag on bottom nav bar to open the drawer
+  void _handleDragUpdate(DragUpdateDetails details) async {
+    _dragEndX = details.globalPosition.dx;
   }
 
   // Handles double-tap to open the drawer
