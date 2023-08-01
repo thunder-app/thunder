@@ -15,6 +15,7 @@ class ListOption<T> extends StatelessWidget {
   final void Function(ListPickerItem<T>) onChanged;
 
   final BottomSheetListPicker? customListPicker;
+  final bool? isBottomModalScrollControlled;
 
   final bool disabled;
 
@@ -26,6 +27,7 @@ class ListOption<T> extends StatelessWidget {
     required this.icon,
     required this.onChanged,
     this.customListPicker,
+    this.isBottomModalScrollControlled,
     this.disabled = false,
   });
 
@@ -41,6 +43,7 @@ class ListOption<T> extends StatelessWidget {
               showModalBottomSheet(
                 context: context,
                 showDragHandle: true,
+                isScrollControlled: isBottomModalScrollControlled ?? false,
                 builder: (context) =>
                     customListPicker ??
                     BottomSheetListPicker(

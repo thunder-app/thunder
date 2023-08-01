@@ -11,8 +11,9 @@ class GetUserEvent extends UserEvent {
   final int? userId;
   final bool reset;
   final bool isAccountUser;
+  final String? username;
 
-  const GetUserEvent({this.userId, this.reset = false, this.isAccountUser = false});
+  const GetUserEvent({this.userId, this.reset = false, this.isAccountUser = false, this.username});
 }
 
 class GetUserSavedEvent extends UserEvent {
