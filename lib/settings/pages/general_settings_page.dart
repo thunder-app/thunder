@@ -59,7 +59,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showTextContent = false;
   bool showPostAuthor = false;
   bool disableScoreCounters = false;
-  bool disableFeedFab = false;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -123,15 +122,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
-      case LocalSettings.disableFeedFab:
-        await prefs.setBool(LocalSettings.disableFeedFab.name, value);
-        setState(() => disableFeedFab = value);
-        break;
       case LocalSettings.disableScoreCounters:
         await prefs.setBool(LocalSettings.disableScoreCounters.name, value);
         setState(() => disableScoreCounters = value);
         break;
-
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
       case LocalSettings.useCompactView:
@@ -223,7 +217,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      disableFeedFab = prefs.getBool(LocalSettings.disableFeedFab.name) ?? false;
       disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
 
       try {
@@ -370,13 +363,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.disableFeedFab.label,
-                          value: disableFeedFab,
-                          iconEnabled: Icons.visibility_off,
-                          iconDisabled: Icons.visibility,
-                          onToggle: (bool value) => setPreferences(LocalSettings.disableFeedFab, value),
                         ),
                         ToggleOption(
                           description: 'Disable All Score Counters',
