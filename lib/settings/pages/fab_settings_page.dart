@@ -265,15 +265,6 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
-                        /*Padding(
-                    padding: const EdgeInsets.all(6.0),
-                    child: Text(
-                      'Looking to use buttons instead? Change what buttons appear on post cards in general settings.',
-                      style: TextStyle(
-                        color: theme.colorScheme.onBackground.withOpacity(0.75),
-                      ),
-                    ),
-                  ),*/
                         ToggleOption(
                           description: LocalSettings.enablePostsFab.label,
                           value: enablePostsFab,

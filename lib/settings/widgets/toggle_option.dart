@@ -33,8 +33,8 @@ class ToggleOption extends StatelessWidget {
       children: [
         Row(
           children: [
-            if (iconEnabled != null && iconEnabled != null) Icon(value ? iconEnabled : iconDisabled),
-            if (iconEnabled != null && iconEnabled != null) const SizedBox(width: 8.0),
+            if (iconEnabled != null && iconDisabled != null) Icon(value ? iconEnabled : iconDisabled),
+            if (iconEnabled != null && iconDisabled != null) const SizedBox(width: 8.0),
             Column(
               children: [
                 ConstrainedBox(
