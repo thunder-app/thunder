@@ -22,7 +22,8 @@ class GeneralSettingsPage extends StatefulWidget {
   State<GeneralSettingsPage> createState() => _GeneralSettingsPageState();
 }
 
-class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
+class _GeneralSettingsPageState extends State<GeneralSettingsPage>
+    with SingleTickerProviderStateMixin {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
@@ -64,8 +65,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   SortType defaultSortType = DEFAULT_SORT_TYPE;
   bool collapseParentCommentOnGesture = true;
   bool showCommentButtonActions = false;
-  NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
-  NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
+  NestedCommentIndicatorStyle nestedIndicatorStyle =
+      DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
+  NestedCommentIndicatorColor nestedIndicatorColor =
+      DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
 
   // Page State
   bool isLoading = true;
@@ -79,11 +82,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Default Listing/Sort Settings
       case LocalSettings.defaultFeedListingType:
         await prefs.setString(LocalSettings.defaultFeedListingType.name, value);
-        setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultPostListingType =
+            PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
-        setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
+        setState(() => defaultSortType =
+            SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
         break;
 
       // NSFW Settings
@@ -107,7 +112,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showLinkPreviews = value);
         break;
       case LocalSettings.openLinksInExternalBrowser:
-        await prefs.setBool(LocalSettings.openLinksInExternalBrowser.name, value);
+        await prefs.setBool(
+            LocalSettings.openLinksInExternalBrowser.name, value);
         setState(() => openInExternalBrowser = value);
         break;
       case LocalSettings.useDisplayNamesForUsers:
@@ -115,17 +121,20 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => useDisplayNames = value);
         break;
       case LocalSettings.markPostAsReadOnMediaView:
-        await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
+        await prefs.setBool(
+            LocalSettings.markPostAsReadOnMediaView.name, value);
         setState(() => markPostReadOnMediaView = value);
         break;
       case LocalSettings.showInAppUpdateNotification:
-        await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
+        await prefs.setBool(
+            LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
       case LocalSettings.disableScoreCounters:
         await prefs.setBool(LocalSettings.disableScoreCounters.name, value);
         setState(() => disableScoreCounters = value);
         break;
+
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
       case LocalSettings.useCompactView:
@@ -137,7 +146,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showTitleFirst = value);
         break;
       case LocalSettings.showThumbnailPreviewOnRight:
-        await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
+        await prefs.setBool(
+            LocalSettings.showThumbnailPreviewOnRight.name, value);
         setState(() => showThumbnailPreviewOnRight = value);
         break;
       case LocalSettings.showTextPostIndicator:
@@ -171,7 +181,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showEdgeToEdgeImages = value);
         break;
       case LocalSettings.showPostTextContentPreview:
-        await prefs.setBool(LocalSettings.showPostTextContentPreview.name, value);
+        await prefs.setBool(
+            LocalSettings.showPostTextContentPreview.name, value);
         setState(() => showTextContent = value);
         break;
       case LocalSettings.showPostAuthor:
@@ -182,10 +193,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Comment Related Settings
       case LocalSettings.defaultCommentSortType:
         await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
-        setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        setState(() => defaultCommentSortType = CommentSortType.values
+            .byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
         break;
       case LocalSettings.collapseParentCommentBodyOnGesture:
-        await prefs.setBool(LocalSettings.collapseParentCommentBodyOnGesture.name, value);
+        await prefs.setBool(
+            LocalSettings.collapseParentCommentBodyOnGesture.name, value);
         setState(() => collapseParentCommentOnGesture = value);
         break;
       case LocalSettings.showCommentActionButtons:
@@ -193,12 +206,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => showCommentButtonActions = value);
         break;
       case LocalSettings.nestedCommentIndicatorStyle:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorStyle.name, value);
-        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
+        await prefs.setString(
+            LocalSettings.nestedCommentIndicatorStyle.name, value);
+        setState(() => nestedIndicatorStyle = NestedCommentIndicatorStyle.values
+            .byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name));
         break;
       case LocalSettings.nestedCommentIndicatorColor:
-        await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
-        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
+        await prefs.setString(
+            LocalSettings.nestedCommentIndicatorColor.name, value);
+        setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values
+            .byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
     }
 
@@ -213,50 +230,84 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     setState(() {
       // Feed Settings
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
-      markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      markPostReadOnMediaView =
+          prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      hideNsfwPreviews =
+          prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
+      useDisplayNames =
+          prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      disableScoreCounters =
+          prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
 
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(
+            prefs.getString(LocalSettings.defaultFeedListingType.name) ??
+                DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(
+            prefs.getString(LocalSettings.defaultFeedSortType.name) ??
+                DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultPostListingType =
+            PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
       // Post Settings
-      useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
-      showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
-      tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
-      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
-      showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      useCompactView =
+          prefs.getBool(LocalSettings.useCompactView.name) ?? false;
+      showTitleFirst =
+          prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      showThumbnailPreviewOnRight =
+          prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ??
+              false;
+      showTextPostIndicator =
+          prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+      tappableAuthorCommunity =
+          prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      showVoteActions =
+          prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
+      showSaveAction =
+          prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
+      showCommunityIcons =
+          prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+      showFullHeightImages =
+          prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      showEdgeToEdgeImages =
+          prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+      showTextContent =
+          prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
+      showPostAuthor =
+          prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
 
       // Comment Settings
-      showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      showCommentButtonActions =
+          prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
 
       // Comments
-      collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
+      collapseParentCommentOnGesture = prefs
+              .getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ??
+          true;
 
-      defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
-      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
-      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+      defaultCommentSortType = CommentSortType.values.byName(
+          prefs.getString(LocalSettings.defaultCommentSortType.name) ??
+              DEFAULT_COMMENT_SORT_TYPE.name);
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(
+          prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(
+          prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ??
+              DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       // Links
-      openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
-      showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
+      openInExternalBrowser =
+          prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      showLinkPreviews =
+          prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
 
       // Notification Settings
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      showInAppUpdateNotification =
+          prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
 
       isLoading = false;
     });
@@ -300,7 +351,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -317,23 +369,27 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: tabletMode,
                           iconEnabled: Icons.tablet_rounded,
                           iconDisabled: Icons.smartphone_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.useTabletMode, value),
                         ),
                         ToggleOption(
                           description: LocalSettings.hideNsfwPosts.label,
                           value: hideNsfwPosts,
                           iconEnabled: Icons.no_adult_content,
                           iconDisabled: Icons.no_adult_content,
-                          onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.hideNsfwPosts, value),
                         ),
                         AnimatedSwitcher(
                             duration: const Duration(milliseconds: 250),
                             switchInCurve: Curves.easeInOut,
                             switchOutCurve: Curves.easeInOut,
-                            transitionBuilder: (Widget child, Animation<double> animation) {
+                            transitionBuilder:
+                                (Widget child, Animation<double> animation) {
                               return SizeTransition(
                                 sizeFactor: animation,
-                                child: SlideTransition(position: _offsetAnimation, child: child),
+                                child: SlideTransition(
+                                    position: _offsetAnimation, child: child),
                               );
                             },
                             child: !hideNsfwPosts
@@ -342,49 +398,76 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                     key: ValueKey(useCompactView),
                                     child: Column(children: [
                                       ToggleOption(
-                                        description: LocalSettings.hideNsfwPreviews.label,
+                                        description: LocalSettings
+                                            .hideNsfwPreviews.label,
                                         value: hideNsfwPreviews,
                                         iconEnabled: Icons.no_adult_content,
                                         iconDisabled: Icons.no_adult_content,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings.hideNsfwPreviews,
+                                                value),
                                       )
                                     ]))
                                 : Container()),
                         ToggleOption(
-                          description: LocalSettings.markPostAsReadOnMediaView.label,
+                          description:
+                              LocalSettings.markPostAsReadOnMediaView.label,
                           value: markPostReadOnMediaView,
                           iconEnabled: Icons.visibility,
                           iconDisabled: Icons.remove_red_eye_outlined,
-                          onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.markPostAsReadOnMediaView, value),
                         ),
                         ToggleOption(
-                          description: LocalSettings.useDisplayNamesForUsers.label,
+                          description:
+                              LocalSettings.useDisplayNamesForUsers.label,
                           value: useDisplayNames,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.useDisplayNamesForUsers, value),
                         ),
                         ToggleOption(
                           description: 'Disable All Score Counters',
                           value: disableScoreCounters,
                           iconEnabled: Icons.score_rounded,
                           iconDisabled: Icons.score_rounded,
-                          onToggle: (bool value) => setPreferences('setting_disable_score_counters', value),
+                          onToggle: (bool value) => setPreferences(
+                              'setting_disable_score_counters', value),
                         ),
                         ListOption(
-                          description: LocalSettings.defaultFeedListingType.label,
-                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
+                          description:
+                              LocalSettings.defaultFeedListingType.label,
+                          value: ListPickerItem(
+                              label: defaultPostListingType.value,
+                              icon: Icons.feed,
+                              payload: defaultPostListingType),
                           options: [
-                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
-                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
-                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
+                            ListPickerItem(
+                                icon: Icons.view_list_rounded,
+                                label: PostListingType.subscribed.value,
+                                payload: PostListingType.subscribed),
+                            ListPickerItem(
+                                icon: Icons.home_rounded,
+                                label: PostListingType.all.value,
+                                payload: PostListingType.all),
+                            ListPickerItem(
+                                icon: Icons.grid_view_rounded,
+                                label: PostListingType.local.value,
+                                payload: PostListingType.local),
                           ],
                           icon: Icons.filter_alt_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
+                          onChanged: (value) => setPreferences(
+                              LocalSettings.defaultFeedListingType,
+                              value.payload.name),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedSortType.label,
-                          value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
+                          value: ListPickerItem(
+                              label: defaultSortType.value,
+                              icon: Icons.local_fire_department_rounded,
+                              payload: defaultSortType),
                           options: allSortTypeItems,
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
@@ -392,7 +475,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           customListPicker: SortPicker(
                             title: LocalSettings.defaultFeedSortType.label,
                             onSelect: (value) {
-                              setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
+                              setPreferences(LocalSettings.defaultFeedSortType,
+                                  value.payload.name);
                             },
                           ),
                         ),
@@ -400,7 +484,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -417,7 +502,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           child: Text(
                             'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
                             style: TextStyle(
-                              color: theme.colorScheme.onBackground.withOpacity(0.75),
+                              color: theme.colorScheme.onBackground
+                                  .withOpacity(0.75),
                             ),
                           ),
                         ),
@@ -430,16 +516,19 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: useCompactView,
                           iconEnabled: Icons.crop_16_9_rounded,
                           iconDisabled: Icons.crop_din_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useCompactView, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.useCompactView, value),
                         ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 250),
                           switchInCurve: Curves.easeInOut,
                           switchOutCurve: Curves.easeInOut,
-                          transitionBuilder: (Widget child, Animation<double> animation) {
+                          transitionBuilder:
+                              (Widget child, Animation<double> animation) {
                             return SizeTransition(
                               sizeFactor: animation,
-                              child: SlideTransition(position: _offsetAnimation, child: child),
+                              child: SlideTransition(
+                                  position: _offsetAnimation, child: child),
                             );
                           },
                           child: useCompactView
@@ -449,25 +538,40 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                   child: Column(
                                     children: [
                                       ToggleOption(
-                                        description: LocalSettings.showThumbnailPreviewOnRight.label,
+                                        description: LocalSettings
+                                            .showThumbnailPreviewOnRight.label,
                                         value: showThumbnailPreviewOnRight,
                                         iconEnabled: Icons.switch_left_rounded,
-                                        iconDisabled: Icons.switch_right_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
+                                        iconDisabled:
+                                            Icons.switch_right_rounded,
+                                        onToggle: (bool value) => setPreferences(
+                                            LocalSettings
+                                                .showThumbnailPreviewOnRight,
+                                            value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showTextPostIndicator.label,
+                                        description: LocalSettings
+                                            .showTextPostIndicator.label,
                                         value: showTextPostIndicator,
                                         iconEnabled: Icons.article,
                                         iconDisabled: Icons.article_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showTextPostIndicator,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.tappableAuthorCommunity.label,
+                                        description: LocalSettings
+                                            .tappableAuthorCommunity.label,
                                         value: tappableAuthorCommunity,
                                         iconEnabled: Icons.touch_app_rounded,
                                         iconDisabled: Icons.touch_app_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .tappableAuthorCommunity,
+                                                value),
                                       ),
                                     ],
                                   ),
@@ -478,53 +582,92 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                   child: Column(
                                     children: [
                                       ToggleOption(
-                                        description: LocalSettings.showPostTitleFirst.label,
+                                        description: LocalSettings
+                                            .showPostTitleFirst.label,
                                         value: showTitleFirst,
-                                        iconEnabled: Icons.vertical_align_top_rounded,
-                                        iconDisabled: Icons.vertical_align_bottom_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
+                                        iconEnabled:
+                                            Icons.vertical_align_top_rounded,
+                                        iconDisabled:
+                                            Icons.vertical_align_bottom_rounded,
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostTitleFirst,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostFullHeightImages.label,
+                                        description: LocalSettings
+                                            .showPostFullHeightImages.label,
                                         value: showFullHeightImages,
                                         iconEnabled: Icons.image_rounded,
                                         iconDisabled: Icons.image_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostFullHeightImages,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostEdgeToEdgeImages.label,
+                                        description: LocalSettings
+                                            .showPostEdgeToEdgeImages.label,
                                         value: showEdgeToEdgeImages,
                                         iconEnabled: Icons.fit_screen_rounded,
                                         iconDisabled: Icons.fit_screen_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostEdgeToEdgeImages,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostTextContentPreview.label,
+                                        description: LocalSettings
+                                            .showPostTextContentPreview.label,
                                         value: showTextContent,
                                         iconEnabled: Icons.notes_rounded,
                                         iconDisabled: Icons.notes_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostTextContentPreview,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostVoteActions.label,
+                                        description: LocalSettings
+                                            .showPostVoteActions.label,
                                         value: showVoteActions,
-                                        iconEnabled: Icons.import_export_rounded,
-                                        iconDisabled: Icons.import_export_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
+                                        iconEnabled:
+                                            Icons.import_export_rounded,
+                                        iconDisabled:
+                                            Icons.import_export_rounded,
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostVoteActions,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostSaveAction.label,
+                                        description: LocalSettings
+                                            .showPostSaveAction.label,
                                         value: showSaveAction,
                                         iconEnabled: Icons.star_rounded,
                                         iconDisabled: Icons.star_border_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostSaveAction,
+                                                value),
                                       ),
                                       ToggleOption(
-                                        description: LocalSettings.showPostCommunityIcons.label,
+                                        description: LocalSettings
+                                            .showPostCommunityIcons.label,
                                         value: showCommunityIcons,
                                         iconEnabled: Icons.groups,
                                         iconDisabled: Icons.groups,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
+                                        onToggle: (bool value) =>
+                                            setPreferences(
+                                                LocalSettings
+                                                    .showPostCommunityIcons,
+                                                value),
                                       ),
                                     ],
                                   ),
@@ -535,13 +678,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: showPostAuthor,
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.showPostAuthor, value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -554,57 +699,96 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: LocalSettings.collapseParentCommentBodyOnGesture.label,
+                          description: LocalSettings
+                              .collapseParentCommentBodyOnGesture.label,
                           value: collapseParentCommentOnGesture,
                           iconEnabled: Icons.mode_comment_outlined,
                           iconDisabled: Icons.comment_outlined,
-                          onToggle: (bool value) => setPreferences(LocalSettings.collapseParentCommentBodyOnGesture, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.collapseParentCommentBodyOnGesture,
+                              value),
                         ),
                         ToggleOption(
-                          description: LocalSettings.showCommentActionButtons.label,
+                          description:
+                              LocalSettings.showCommentActionButtons.label,
                           value: showCommentButtonActions,
                           iconEnabled: Icons.mode_comment_rounded,
                           iconDisabled: Icons.mode_comment_outlined,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.showCommentActionButtons, value),
                         ),
                         ListOption(
-                          description: LocalSettings.defaultCommentSortType.label,
-                          value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
+                          description:
+                              LocalSettings.defaultCommentSortType.label,
+                          value: ListPickerItem(
+                              label: defaultCommentSortType.value,
+                              icon: Icons.local_fire_department_rounded,
+                              payload: defaultCommentSortType),
                           options: commentSortTypeItems,
                           icon: Icons.comment_bank_rounded,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
                             title: 'Comment Sort Type',
                             onSelect: (value) {
-                              setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
+                              setPreferences(
+                                  LocalSettings.defaultCommentSortType,
+                                  value.payload.name);
                             },
                           ),
                         ),
                         ListOption(
-                          description: LocalSettings.nestedCommentIndicatorStyle.label,
-                          value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                          description:
+                              LocalSettings.nestedCommentIndicatorStyle.label,
+                          value: ListPickerItem(
+                              label: nestedIndicatorStyle.value,
+                              icon: Icons.local_fire_department_rounded,
+                              payload: nestedIndicatorStyle),
                           options: [
-                            ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                            ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                            ListPickerItem(
+                                icon: Icons.view_list_rounded,
+                                label: NestedCommentIndicatorStyle.thick.value,
+                                payload: NestedCommentIndicatorStyle.thick),
+                            ListPickerItem(
+                                icon: Icons.format_list_bulleted_rounded,
+                                label: NestedCommentIndicatorStyle.thin.value,
+                                payload: NestedCommentIndicatorStyle.thin),
                           ],
                           icon: Icons.format_list_bulleted_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+                          onChanged: (value) => setPreferences(
+                              LocalSettings.nestedCommentIndicatorStyle,
+                              value.payload.name),
                         ),
                         ListOption(
-                          description: LocalSettings.nestedCommentIndicatorColor.label,
-                          value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                          description:
+                              LocalSettings.nestedCommentIndicatorColor.label,
+                          value: ListPickerItem(
+                              label: nestedIndicatorColor.value,
+                              icon: Icons.local_fire_department_rounded,
+                              payload: nestedIndicatorColor),
                           options: [
-                            ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                            ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                            ListPickerItem(
+                                icon: Icons.invert_colors_on_rounded,
+                                label:
+                                    NestedCommentIndicatorColor.colorful.value,
+                                payload: NestedCommentIndicatorColor.colorful),
+                            ListPickerItem(
+                                icon: Icons.invert_colors_off_rounded,
+                                label: NestedCommentIndicatorColor
+                                    .monochrome.value,
+                                payload:
+                                    NestedCommentIndicatorColor.monochrome),
                           ],
                           icon: Icons.color_lens_outlined,
-                          onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+                          onChanged: (value) => setPreferences(
+                              LocalSettings.nestedCommentIndicatorColor,
+                              value.payload.name),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -622,20 +806,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: showLinkPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showLinkPreviews, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.showLinkPreviews, value),
                         ),
                         ToggleOption(
-                          description: LocalSettings.openLinksInExternalBrowser.label,
+                          description:
+                              LocalSettings.openLinksInExternalBrowser.label,
                           value: openInExternalBrowser,
                           iconEnabled: Icons.add_link_rounded,
                           iconDisabled: Icons.link_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.openLinksInExternalBrowser, value),
                         ),
                       ],
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 8.0, horizontal: 16.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -648,11 +836,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: LocalSettings.showInAppUpdateNotification.label,
+                          description:
+                              LocalSettings.showInAppUpdateNotification.label,
                           value: showInAppUpdateNotification,
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
+                          onToggle: (bool value) => setPreferences(
+                              LocalSettings.showInAppUpdateNotification, value),
                         ),
                       ],
                     ),
