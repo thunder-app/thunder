@@ -9,12 +9,19 @@
 - Added inbox unread indicators on the bottom navigation bar
 - Added more robust community navigation - contribution from @micahmo
 - Added support for navigating from image preview to comments - contribution from @micahmo
+- Added inkwell effect to comments - contribution from @CTalvio
+- Redesigned UI for creating posts - contribution from @coslu
+- Added moderator identifier to comments - contribution from @micahmo
+- Added ability to navigate to user's profile from comment body - contribution from @micahmo
+- Added support for exact community name search - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
 - Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
 - Added caching to images to improve overall experience - contribution from @micahmo
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
+- Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
+- Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -23,6 +30,7 @@
 - Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
 - Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
 - Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
+- Removed sliver of border color that was present on root comments for both thick and thin style comments - contribution from @ajsosa
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

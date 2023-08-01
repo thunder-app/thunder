@@ -317,6 +317,7 @@ class _SearchPageState extends State<SearchPage> {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: 'Sort Options',
         onSelect: (selected) {

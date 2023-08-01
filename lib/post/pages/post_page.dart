@@ -189,71 +189,73 @@ class _PostPageState extends State<PostPage> {
                 alignment: Alignment.bottomRight,
                 children: [
                   SafeArea(
-                    child: BlocConsumer<PostBloc, PostState>(
-                      listenWhen: (previous, current) {
-                        if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
-                          setState(() => resetFailureMessage = true);
-                        }
-                        return true;
-                      },
-                      listener: (context, state) {
-                        if (state.status == PostStatus.success && widget.postView != null) {
-                          // Update the community's post
-                          context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
-                        }
-                      },
-                      builder: (context, state) {
-                        if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                          SnackBar snackBar = SnackBar(
-                            content: Row(
-                              children: [
-                                Icon(
-                                  Icons.warning_rounded,
-                                  color: theme.colorScheme.errorContainer,
-                                ),
-                                const SizedBox(width: 8.0),
-                                Flexible(
-                                  child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
-                                )
-                              ],
+                child: BlocConsumer<PostBloc, PostState>(
+                  listenWhen: (previous, current) {
+                    if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                      setState(() => resetFailureMessage = true);
+                    }
+                    return true;
+                  },
+                  listener: (context, state) {
+                    if (state.status == PostStatus.success && widget.postView != null) {
+                      // Update the community's post
+                      context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                    }
+                  },
+                  builder: (context, state) {
+                    if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                      SnackBar snackBar = SnackBar(
+                        content: Row(
+                          children: [
+                            Icon(
+                              Icons.warning_rounded,
+                              color: theme.colorScheme.errorContainer,
                             ),
-                            backgroundColor: theme.colorScheme.onErrorContainer,
-                            behavior: SnackBarBehavior.floating,
-                          );
-                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            setState(() => resetFailureMessage = false);
-                          });
-                        }
-                        switch (state.status) {
-                          case PostStatus.initial:
-                            context
-                                .read<PostBloc>()
-                                .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
-                            return const Center(child: CircularProgressIndicator());
-                          case PostStatus.loading:
-                            return const Center(child: CircularProgressIndicator());
-                          case PostStatus.refreshing:
-                          case PostStatus.success:
-                          case PostStatus.failure:
-                            if (state.postView != null) {
-                              return RefreshIndicator(
-                                onRefresh: () async {
-                                  HapticFeedback.mediumImpact();
-                                  return context
-                                      .read<PostBloc>()
-                                      .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-                                },
-                                child: PostPageSuccess(
-                                    postView: state.postView!,
-                                    comments: state.comments,
-                                    selectedCommentId: state.selectedCommentId,
-                                    selectedCommentPath: state.selectedCommentPath,
-                                    moddingCommentId: state.moddingCommentId,
-                                    viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                    scrollController: _scrollController,
-                                    hasReachedCommentEnd: state.hasReachedCommentEnd),
+                            const SizedBox(width: 8.0),
+                            Flexible(
+                              child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
+                            )
+                          ],
+                        ),
+                        backgroundColor: theme.colorScheme.onErrorContainer,
+                        behavior: SnackBarBehavior.floating,
+                      );
+                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                        ScaffoldMessenger.of(context).clearSnackBars();
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        setState(() => resetFailureMessage = false);
+                      });
+                    }
+                    switch (state.status) {
+                      case PostStatus.initial:
+                        context
+                            .read<PostBloc>()
+                            .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
+                        return const Center(child: CircularProgressIndicator());
+                      case PostStatus.loading:
+                        return const Center(child: CircularProgressIndicator());
+                      case PostStatus.refreshing:
+                      case PostStatus.success:
+                      case PostStatus.failure:
+                        if (state.postView != null) {
+                          return RefreshIndicator(
+                            onRefresh: () async {
+                              HapticFeedback.mediumImpact();
+                              return context
+                                  .read<PostBloc>()
+                                  .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                            },
+                            child: PostPageSuccess(
+                              postView: state.postView!,
+                              comments: state.comments,
+                              selectedCommentId: state.selectedCommentId,
+                              selectedCommentPath: state.selectedCommentPath,
+                              moddingCommentId: state.moddingCommentId,
+                              viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                              scrollController: _scrollController,
+                              hasReachedCommentEnd: state.hasReachedCommentEnd,
+                              moderators: state.moderators,
+                            ),
                               );
                             }
                             return ErrorMessage(

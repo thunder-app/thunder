@@ -30,6 +30,8 @@ class CommentSubview extends StatefulWidget {
   final DateTime now;
   final Function(int, bool) onDeleteAction;
 
+  final List<CommunityModeratorView>? moderators;
+
   const CommentSubview({
     super.key,
     required this.comments,
@@ -45,6 +47,7 @@ class CommentSubview extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.onDeleteAction,
+    required this.moderators,
   });
 
   @override
@@ -97,7 +100,12 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (widget.postViewMedia != null && index == 0) {
-          return PostSubview(selectedCommentId: widget.selectedCommentId, useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
+            return PostSubview(
+              selectedCommentId: widget.selectedCommentId,
+              useDisplayNames: state.useDisplayNames,
+              postViewMedia: widget.postViewMedia!,
+              moderators: widget.moderators,
+            );
         }
         if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
           return Column(
@@ -156,6 +164,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                     onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                     onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                     onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                    moderators: widget.moderators,
                   ),
                 if (index == widget.comments.length + 1) ...[
                   if (widget.hasReachedCommentEnd == true) ...[

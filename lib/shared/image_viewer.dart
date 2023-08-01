@@ -240,7 +240,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 maxScale: 4.0,
                                 animationMaxScale: 4.0,
                                 speed: 1.0,
-                                inertialSpeed: 100.0,
+                                inertialSpeed: 600.0,
                                 initialScale: 1.0,
                                 inPageView: false,
                                 initialAlignment: InitialAlignment.center,
@@ -296,7 +296,12 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 Navigator.pop(context);
                                 widget.navigateToPost!();
                               },
-                              icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
+                              icon: Icon(
+                                Icons.chat_rounded,
+                                semanticLabel: "Comments",
+                                color: Colors.white.withOpacity(0.90),
+                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              ),
                             ),
                           ),
                         Padding(

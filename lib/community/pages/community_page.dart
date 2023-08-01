@@ -398,6 +398,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: 'Sort Options',
         onSelect: (selected) {
