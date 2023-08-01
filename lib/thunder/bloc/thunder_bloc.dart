@@ -23,8 +23,7 @@ part 'thunder_state.dart';
 const throttleDuration = Duration(milliseconds: 300);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
-  return (events, mapper) =>
-      droppable<E>().call(events.throttle(duration), mapper);
+  return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
 }
 
 class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
@@ -58,8 +57,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
   /// This event should be triggered at the start of the app.
   ///
   /// It initializes the local database, checks for updates from GitHub, and loads the user's preferences.
-  Future<void> _initializeAppEvent(
-      InitializeAppEvent event, Emitter<ThunderState> emit) async {
+  Future<void> _initializeAppEvent(InitializeAppEvent event, Emitter<ThunderState> emit) async {
     try {
       // Check for any updates from GitHub
       Version version = await fetchVersion();
@@ -67,186 +65,109 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       add(UserPreferencesChangeEvent());
       emit(state.copyWith(status: ThunderStatus.success, version: version));
     } catch (e) {
-      return emit(state.copyWith(
-          status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  Future<void> _userPreferencesChangeEvent(
-      UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
+  Future<void> _userPreferencesChangeEvent(UserPreferencesChangeEvent event, Emitter<ThunderState> emit) async {
     try {
       emit(state.copyWith(status: ThunderStatus.refreshing));
 
-      SharedPreferences prefs =
-          (await UserPreferences.instance).sharedPreferences;
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
       PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(
-            prefs.getString(LocalSettings.defaultFeedListingType.name) ??
-                DEFAULT_LISTING_TYPE.name);
-        defaultSortType = SortType.values.byName(
-            prefs.getString(LocalSettings.defaultFeedSortType.name) ??
-                DEFAULT_SORT_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType =
-            PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
       // NSFW Settings
-      bool hideNsfwPosts =
-          prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      bool hideNsfwPreviews =
-          prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
+      bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
+      bool hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
 
       // Tablet Settings
-      bool tabletMode =
-          prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+      bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
 
       // General Settings
-      bool showLinkPreviews =
-          prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
-      bool openInExternalBrowser =
-          prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
-      bool useDisplayNames =
-          prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      bool markPostReadOnMediaView =
-          prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      bool showInAppUpdateNotification =
-          prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      bool showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
+      bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
+      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
-      bool useCompactView =
-          prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      bool showTitleFirst =
-          prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      bool showThumbnailPreviewOnRight =
-          prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ??
-              false;
-      bool showTextPostIndicator =
-          prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
-      bool tappableAuthorCommunity =
-          prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      bool useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
+      bool showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
+      bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
+      bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+      bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
 
       // General Settings
-      bool showVoteActions =
-          prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      bool showSaveAction =
-          prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      bool showCommunityIcons =
-          prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
-      bool showFullHeightImages =
-          prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
-      bool showEdgeToEdgeImages =
-          prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      bool showTextContent =
-          prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      bool showPostAuthor =
-          prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      bool disableScoreCounters =
-          prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
+      bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
+      bool showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
+      bool showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+      bool showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+      bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
+      bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
+      bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      bool disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
-      CommentSortType defaultCommentSortType = CommentSortType.values.byName(
-          prefs.getString(LocalSettings.defaultCommentSortType.name) ??
-              DEFAULT_COMMENT_SORT_TYPE.name);
-      bool collapseParentCommentOnGesture = prefs
-              .getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ??
-          true;
-      bool showCommentButtonActions =
-          prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
+      bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
-          NestedCommentIndicatorStyle.values.byName(
-              prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ??
-                  DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+          NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
-          NestedCommentIndicatorColor.values.byName(
-              prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ??
-                  DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+          NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
-      ThemeType themeType = ThemeType.values[
-          prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
-      CustomThemeType selectedTheme = CustomThemeType.values.byName(
-          prefs.getString(LocalSettings.appThemeAccentColor.name) ??
-              CustomThemeType.deepBlue.name);
-      bool useMaterialYouTheme =
-          prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
+      ThemeType themeType = ThemeType.values[prefs.getInt(LocalSettings.appTheme.name) ?? ThemeType.system.index];
+      CustomThemeType selectedTheme = CustomThemeType.values.byName(prefs.getString(LocalSettings.appThemeAccentColor.name) ?? CustomThemeType.deepBlue.name);
+      bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Font Settings
-      FontScale titleFontSizeScale = FontScale.values.byName(
-          prefs.getString(LocalSettings.titleFontSizeScale.name) ??
-              FontScale.base.name);
-      FontScale contentFontSizeScale = FontScale.values.byName(
-          prefs.getString(LocalSettings.contentFontSizeScale.name) ??
-              FontScale.base.name);
+      FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
+      FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
-      bool bottomNavBarSwipeGestures =
-          prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ??
-              true;
-      bool bottomNavBarDoubleTapGestures = prefs.getBool(
-              LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ??
-          false;
+      bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
+      bool bottomNavBarDoubleTapGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarDoubleTapGesture.name) ?? false;
 
       // Post Gestures
-      bool enablePostGestures =
-          prefs.getBool(LocalSettings.enablePostGestures.name) ?? true;
-      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.postGestureLeftPrimary.name) ??
-              SwipeAction.upvote.name);
-      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.postGestureLeftSecondary.name) ??
-              SwipeAction.downvote.name);
-      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.postGestureRightPrimary.name) ??
-              SwipeAction.save.name);
-      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.postGestureRightSecondary.name) ??
-              SwipeAction.toggleRead.name);
+      bool enablePostGestures = prefs.getBool(LocalSettings.enablePostGestures.name) ?? true;
+      SwipeAction leftPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightPrimary.name) ?? SwipeAction.save.name);
+      SwipeAction rightSecondaryPostGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.postGestureRightSecondary.name) ?? SwipeAction.toggleRead.name);
 
       // Comment Gestures
-      bool enableCommentGestures =
-          prefs.getBool(LocalSettings.enableCommentGestures.name) ?? true;
-      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.commentGestureLeftPrimary.name) ??
-              SwipeAction.upvote.name);
-      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.commentGestureLeftSecondary.name) ??
-              SwipeAction.downvote.name);
-      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.commentGestureRightPrimary.name) ??
-              SwipeAction.reply.name);
-      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(
-          prefs.getString(LocalSettings.commentGestureRightSecondary.name) ??
-              SwipeAction.save.name);
+      bool enableCommentGestures = prefs.getBool(LocalSettings.enableCommentGestures.name) ?? true;
+      SwipeAction leftPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftPrimary.name) ?? SwipeAction.upvote.name);
+      SwipeAction leftSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureLeftSecondary.name) ?? SwipeAction.downvote.name);
+      SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
+      SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
       /// -------------------------- FAB Related Settings --------------------------
-      bool enableFeedsFab =
-          prefs.getBool(LocalSettings.enableFeedsFab.name) ?? false;
-      bool enablePostsFab =
-          prefs.getBool(LocalSettings.enablePostsFab.name) ?? false;
+      bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? false;
+      bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? false;
 
-      bool enableBackToTop =
-          prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
-      bool enableSubscriptions =
-          prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
-      bool enableRefresh =
-          prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
-      bool enableDismissRead =
-          prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
-      bool enableChangeSort =
-          prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
-      bool enableNewPost =
-          prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+      bool enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
+      bool enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
+      bool enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
+      bool enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
+      bool enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
+      bool enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -337,13 +258,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         enableNewPost: enableNewPost,
       ));
     } catch (e) {
-      return emit(state.copyWith(
-          status: ThunderStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
   }
 
-  void _onScrollToTopEvent(
-      OnScrollToTopEvent event, Emitter<ThunderState> emit) {
+  void _onScrollToTopEvent(OnScrollToTopEvent event, Emitter<ThunderState> emit) {
     emit(state.copyWith(scrollToTopId: state.scrollToTopId + 1));
   }
 
