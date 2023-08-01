@@ -50,9 +50,8 @@ class PostCardViewCompact extends StatelessWidget {
     );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator))
@@ -68,35 +67,30 @@ class PostCardViewCompact extends StatelessWidget {
               ),
             ),
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
-          Flexible(
+          Expanded(
             child: Padding(
               padding: const EdgeInsets.only(right: 6.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
+                /*mainAxisAlignment: MainAxisAlignment.spaceBetween,*/
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(postViewMedia.postView.post.name,
-                          textScaleFactor: state.titleFontSizeScale.textScaleFactor*1.05,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
-                          )),
-                      const SizedBox(height: 10.0),
-                      PostCommunityAndAuthor(
-                        showCommunityIcons: false,
-                        showInstanceName: showInstanceName,
-                        postView: postViewMedia.postView,
-                        textStyleCommunity: textStyleCommunityAndAuthor,
-                        textStyleAuthor: textStyleCommunityAndAuthor,
-                        showCommunitySubscription: showCommunitySubscription,
-                      ),
-                      const SizedBox(height: 2.0),
-                    ],
+                  Text(postViewMedia.postView.post.name,
+                      textScaleFactor: state.titleFontSizeScale.textScaleFactor*1.06,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                      )
                   ),
+                  const SizedBox(height: 6.0),
+                  PostCommunityAndAuthor(
+                    showCommunityIcons: false,
+                    showInstanceName: showInstanceName,
+                    postView: postViewMedia.postView,
+                    textStyleCommunity: textStyleCommunityAndAuthor,
+                    textStyleAuthor: textStyleCommunityAndAuthor,
+                    showCommunitySubscription: showCommunitySubscription,
+                  ),
+                  const SizedBox(height: 6.0),
                   PostCardMetaData(
                     score: postViewMedia.postView.counts.score,
                     voteType: postViewMedia.postView.myVote ?? VoteType.none,
@@ -106,7 +100,7 @@ class PostCardViewCompact extends StatelessWidget {
                     published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                     saved: postViewMedia.postView.saved,
                     distinguised: postViewMedia.postView.post.featuredCommunity,
-                  )
+                  ),
                 ],
               ),
             ),

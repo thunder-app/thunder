@@ -47,7 +47,8 @@ class PostCardMetaData extends StatelessWidget {
         final bool useCompactView = state.useCompactView;
 
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisSize: MainAxisSize.min,
@@ -61,7 +62,7 @@ class PostCardMetaData extends StatelessWidget {
                           ? downVoteColor
                           : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                   icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
-                      size: 18.0,
+                      size: 20.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
                           : voteType == VoteType.down
@@ -74,7 +75,7 @@ class PostCardMetaData extends StatelessWidget {
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
-                    size: 17.0,
+                    size: 15.0,
                     color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
                         theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
@@ -89,7 +90,7 @@ class PostCardMetaData extends StatelessWidget {
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
-                    size: 19.0,
+                    size: 15.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: formatTimeToString(dateTime: published.toIso8601String()),
@@ -100,27 +101,32 @@ class PostCardMetaData extends StatelessWidget {
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                   icon: Icon(
                     Icons.public,
-                    size: 19.0,
+                    size: 15.0,
                     color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
                   ),
                   text: 'link.com',
                   textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
                 ),
-                const SizedBox(width: 14.0),
-                if (distinguised)
-                  Icon(
-                    Icons.campaign_rounded,
-                    size: 24.0,
-                    color: Colors.green.shade800,
-                  ),
               ],
             ),
+            if (distinguised)
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Icon(
+                  Icons.campaign_rounded,
+                  size: 24.0,
+                  color: Colors.green.shade800,
+                ),
+              ),
             if (useCompactView)
-              Icon(
-                saved ? Icons.star_rounded : null,
-                color: saved ? savedColor : null,
-                size: 22.0,
-                semanticLabel: saved ? 'Saved' : '',
+              Padding(
+                padding: const EdgeInsets.only(left: 10.0),
+                child: Icon(
+                  saved ? Icons.star_rounded : null,
+                  color: saved ? savedColor : null,
+                  size: 22.0,
+                  semanticLabel: saved ? 'Saved' : '',
+                ),
               ),
           ],
         );
