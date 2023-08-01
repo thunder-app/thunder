@@ -100,12 +100,12 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       itemCount: getCommentsListLength(),
       itemBuilder: (context, index) {
         if (widget.postViewMedia != null && index == 0) {
-            return PostSubview(
-              selectedCommentId: widget.selectedCommentId,
-              useDisplayNames: state.useDisplayNames,
-              postViewMedia: widget.postViewMedia!,
-              moderators: widget.moderators,
-            );
+          return PostSubview(
+            selectedCommentId: widget.selectedCommentId,
+            useDisplayNames: state.useDisplayNames,
+            postViewMedia: widget.postViewMedia!,
+            moderators: widget.moderators,
+          );
         }
         if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
           return Column(
