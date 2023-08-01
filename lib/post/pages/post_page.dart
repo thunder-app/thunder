@@ -12,6 +12,8 @@ import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
+import '../../shared/gesture_fab.dart';
+
 class PostPage extends StatefulWidget {
   final PostViewMedia? postView;
   final int? postId;
@@ -20,7 +22,14 @@ class PostPage extends StatefulWidget {
 
   final VoidCallback onPostUpdated;
 
-  const PostPage({super.key, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, required this.onPostUpdated});
+  const PostPage({
+    super.key,
+    this.postView,
+    this.postId,
+    this.selectedCommentPath,
+    this.selectedCommentId,
+    required this.onPostUpdated,
+  });
 
   @override
   State<PostPage> createState() => _PostPageState();
@@ -30,8 +39,11 @@ class _PostPageState extends State<PostPage> {
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
-  bool _showReturnToTopButton = false;
-  bool disableFabs = false;
+  bool _previousIsFabOpen = false;
+  bool isFabOpen = false;
+  bool _previousIsFabSummoned = true;
+  bool isFabSummoned = true;
+  bool enableFab = false;
 
   Offset? _currentHorizontalDragStartPosition;
 
@@ -53,18 +65,6 @@ class _PostPageState extends State<PostPage> {
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
     }
-
-    if (!disableFabs) {
-      if (_scrollController.offset > 200 && !_showReturnToTopButton) {
-        setState(() {
-          _showReturnToTopButton = true;
-        });
-      } else if (_scrollController.offset <= 200 && _showReturnToTopButton) {
-        setState(() {
-          _showReturnToTopButton = false;
-        });
-      }
-    }
   }
 
   CommentSortType? sortType;
@@ -74,8 +74,18 @@ class _PostPageState extends State<PostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState thunderState = context.read<ThunderBloc>().state;
-    disableFabs = thunderState.disablePostFabs;
+    final ThunderState thunderState = context.watch<ThunderBloc>().state;
+    enableFab = thunderState.enablePostsFab;
+
+    if (thunderState.isFabOpen != _previousIsFabOpen) {
+      isFabOpen = thunderState.isFabOpen;
+      _previousIsFabOpen = isFabOpen;
+    }
+
+    if (thunderState.isFabSummoned != _previousIsFabSummoned) {
+      isFabSummoned = thunderState.isFabSummoned;
+      _previousIsFabSummoned = isFabSummoned;
+    }
 
     return BlocProvider<PostBloc>(
       create: (context) => PostBloc(),
@@ -105,62 +115,67 @@ class _PostPageState extends State<PostPage> {
               centerTitle: false,
               toolbarHeight: 70.0,
             ),
-            floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-            floatingActionButton: Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  if (!thunderState.disablePostFabs && _showReturnToTopButton)
-                    FloatingActionButton(
-                      onPressed: () {
-                        _scrollController.animateTo(
-                          0,
-                          duration: const Duration(milliseconds: 500),
-                          curve: Curves.easeInOut,
-                        );
-                      },
-                      child: const Icon(
-                        Icons.arrow_upward_rounded,
-                        semanticLabel: 'Return to Top',
-                      ),
-                    ),
-                  if (thunderState.disablePostFabs || !_showReturnToTopButton) const Spacer(),
-                  if (!thunderState.disablePostFabs)
-                    FloatingActionButton(
-                      onPressed: () {
-                        PostBloc postBloc = context.read<PostBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
+            floatingActionButton: enableFab
+                ? AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 250),
+                    child: isFabSummoned
+                        ? GestureFab(
+                            distance: 60,
+                            icon: const Icon(
+                              Icons.reply_rounded,
+                              semanticLabel: 'Reply to Post',
+                              size: 35,
+                            ),
+                            onPressed: () {
+                              PostBloc postBloc = context.read<PostBloc>();
+                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                        showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          showDragHandle: true,
-                          builder: (context) {
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                              child: FractionallySizedBox(
-                                heightFactor: 0.8,
-                                child: MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider<PostBloc>.value(value: postBloc),
-                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                  ],
-                                  child: CreateCommentModal(postView: widget.postView?.postView),
-                                ),
+                              showModalBottomSheet(
+                                isScrollControlled: true,
+                                context: context,
+                                showDragHandle: true,
+                                builder: (context) {
+                                  return Padding(
+                                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                                    child: FractionallySizedBox(
+                                      heightFactor: 0.8,
+                                      child: MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider<PostBloc>.value(value: postBloc),
+                                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                        ],
+                                        child: CreateCommentModal(postView: widget.postView?.postView),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            },
+                            children: [
+                              ActionButton(
+                                onPressed: () {
+                                  HapticFeedback.mediumImpact();
+                                  showSortBottomSheet(context, state);
+                                },
+                                title: "Change Sort",
+                                icon: Icon(sortTypeIcon),
                               ),
-                            );
-                          },
-                        );
-                      },
-                      child: const Icon(
-                        Icons.reply_rounded,
-                        semanticLabel: 'Reply to Post',
-                      ),
-                    )
-                ],
-              ),
-            ),
+                              ActionButton(
+                                onPressed: () {
+                                  _scrollController.animateTo(
+                                    0,
+                                    duration: const Duration(milliseconds: 500),
+                                    curve: Curves.easeInOut,
+                                  );
+                                },
+                                title: "Back to Top",
+                                icon: const Icon(Icons.arrow_upward),
+                              ),
+                            ],
+                          )
+                        : null,
+                  )
+                : null,
             body: GestureDetector(
               onHorizontalDragStart: (details) {
                 _currentHorizontalDragStartPosition = details.globalPosition;
@@ -170,94 +185,123 @@ class _PostPageState extends State<PostPage> {
                   Navigator.of(context).pop();
                 }
               },
-              child: SafeArea(
-                child: BlocConsumer<PostBloc, PostState>(
-                  listenWhen: (previous, current) {
-                    if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
-                      setState(() => resetFailureMessage = true);
-                    }
-                    return true;
-                  },
-                  listener: (context, state) {
-                    if (state.status == PostStatus.success && widget.postView != null) {
-                      // Update the community's post
-                      context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
-                    }
-                  },
-                  builder: (context, state) {
-                    if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                      SnackBar snackBar = SnackBar(
-                        content: Row(
-                          children: [
-                            Icon(
-                              Icons.warning_rounded,
-                              color: theme.colorScheme.errorContainer,
-                            ),
-                            const SizedBox(width: 8.0),
-                            Flexible(
-                              child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
-                            )
-                          ],
-                        ),
-                        backgroundColor: theme.colorScheme.onErrorContainer,
-                        behavior: SnackBarBehavior.floating,
-                      );
-                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                        ScaffoldMessenger.of(context).clearSnackBars();
-                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                        setState(() => resetFailureMessage = false);
-                      });
-                    }
-                    switch (state.status) {
-                      case PostStatus.initial:
-                        context
-                            .read<PostBloc>()
-                            .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
-                        return const Center(child: CircularProgressIndicator());
-                      case PostStatus.loading:
-                        return const Center(child: CircularProgressIndicator());
-                      case PostStatus.refreshing:
-                      case PostStatus.success:
-                      case PostStatus.failure:
-                        if (state.postView != null) {
-                          return RefreshIndicator(
-                            onRefresh: () async {
-                              HapticFeedback.mediumImpact();
-                              return context
-                                  .read<PostBloc>()
-                                  .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-                            },
-                            child: PostPageSuccess(
-                              postView: state.postView!,
-                              comments: state.comments,
-                              selectedCommentId: state.selectedCommentId,
-                              selectedCommentPath: state.selectedCommentPath,
-                              moddingCommentId: state.moddingCommentId,
-                              viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                              scrollController: _scrollController,
-                              hasReachedCommentEnd: state.hasReachedCommentEnd,
-                              moderators: state.moderators,
-                            ),
-                          );
+              child: Stack(
+                alignment: Alignment.bottomRight,
+                children: [
+                  SafeArea(
+                    child: BlocConsumer<PostBloc, PostState>(
+                      listenWhen: (previous, current) {
+                        if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                          setState(() => resetFailureMessage = true);
                         }
-                        return ErrorMessage(
-                          message: state.errorMessage,
-                          action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
-                          },
-                          actionText: 'Refresh Content',
-                        );
-                      case PostStatus.empty:
-                        return ErrorMessage(
-                          message: state.errorMessage,
-                          action: () {
-                            context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                          },
-                          actionText: 'Refresh Content',
-                        );
-                    }
-                  },
-                ),
+                        return true;
+                      },
+                      listener: (context, state) {
+                        if (state.status == PostStatus.success && widget.postView != null) {
+                          // Update the community's post
+                          context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                          SnackBar snackBar = SnackBar(
+                            content: Row(
+                              children: [
+                                Icon(
+                                  Icons.warning_rounded,
+                                  color: theme.colorScheme.errorContainer,
+                                ),
+                                const SizedBox(width: 8.0),
+                                Flexible(
+                                  child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
+                                )
+                              ],
+                            ),
+                            backgroundColor: theme.colorScheme.onErrorContainer,
+                            behavior: SnackBarBehavior.floating,
+                          );
+                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                            ScaffoldMessenger.of(context).clearSnackBars();
+                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            setState(() => resetFailureMessage = false);
+                          });
+                        }
+                        switch (state.status) {
+                          case PostStatus.initial:
+                            context
+                                .read<PostBloc>()
+                                .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
+                            return const Center(child: CircularProgressIndicator());
+                          case PostStatus.loading:
+                            return const Center(child: CircularProgressIndicator());
+                          case PostStatus.refreshing:
+                          case PostStatus.success:
+                          case PostStatus.failure:
+                            if (state.postView != null) {
+                              return RefreshIndicator(
+                                onRefresh: () async {
+                                  HapticFeedback.mediumImpact();
+                                  return context
+                                      .read<PostBloc>()
+                                      .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                                },
+                                child: PostPageSuccess(
+                                  postView: state.postView!,
+                                  comments: state.comments,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
+                                  moddingCommentId: state.moddingCommentId,
+                                  viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                                  scrollController: _scrollController,
+                                  hasReachedCommentEnd: state.hasReachedCommentEnd,
+                                  moderators: state.moderators,
+                                ),
+                              );
+                            }
+                            return ErrorMessage(
+                              message: state.errorMessage,
+                              action: () {
+                                context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
+                              },
+                              actionText: 'Refresh Content',
+                            );
+                          case PostStatus.empty:
+                            return ErrorMessage(
+                              message: state.errorMessage,
+                              action: () {
+                                context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                              },
+                              actionText: 'Refresh Content',
+                            );
+                        }
+                      },
+                    ),
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 200),
+                    child: isFabOpen
+                        ? Listener(
+                            onPointerUp: (details) {
+                              context.read<ThunderBloc>().add(const OnFabToggle(false));
+                            },
+                            child: Container(
+                              color: theme.colorScheme.background.withOpacity(0.85),
+                            ),
+                          )
+                        : null,
+                  ),
+                  SizedBox(
+                    height: 70,
+                    width: 70,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        if (details.delta.dy < -5) {
+                          context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        }
+                      },
+                    ),
+                  ),
+                ],
               ),
             ),
           );
