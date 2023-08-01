@@ -23,6 +23,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  UserBloc? userBloc;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,9 +70,19 @@ class _UserPageState extends State<UserPage> {
               )
             : null,
         actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+            child: IconButton(
+              onPressed: () => userBloc?.add(ResetUserEvent()),
+              icon: const Icon(
+                Icons.refresh_rounded,
+                semanticLabel: 'Refresh',
+              ),
+            ),
+          ),
           if (widget.userId != null && widget.isAccountUser)
             Padding(
-              padding: const EdgeInsets.fromLTRB(4.0, 4.0, 0, 4.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
               child: IconButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -87,7 +99,7 @@ class _UserPageState extends State<UserPage> {
             ),
           if (widget.isAccountUser)
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4.0, 4.00, 4.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
               child: IconButton(
                 onPressed: () => showProfileModalSheet(context),
                 icon: const Icon(
@@ -104,6 +116,8 @@ class _UserPageState extends State<UserPage> {
           BlocProvider(create: (context) => community.CommunityBloc()),
         ],
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+          userBloc = context.read<UserBloc>();
+
           switch (state.status) {
             case UserStatus.initial:
               context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
