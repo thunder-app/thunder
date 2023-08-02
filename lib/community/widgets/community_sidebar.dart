@@ -193,7 +193,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                       child: FadeTransition(opacity: animation, child: child),
                     );
                   },
-                  child: widget.subscribedType != SubscribedType.subscribed
+                  child: widget.subscribedType != SubscribedType.subscribed && widget.subscribedType != SubscribedType.pending
                       ? Padding(
                           padding: EdgeInsets.only(
                             top: isBlocked ? 10 : 4,
