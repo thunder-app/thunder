@@ -46,8 +46,10 @@ class PostCardViewCompact extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
+
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -78,7 +80,7 @@ class PostCardViewCompact extends StatelessWidget {
                       textScaleFactor: state.titleFontSizeScale.textScaleFactor*1.06,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : null,
+                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                       )
                   ),
                   const SizedBox(height: 6.0),
@@ -92,6 +94,7 @@ class PostCardViewCompact extends StatelessWidget {
                   ),
                   const SizedBox(height: 6.0),
                   PostCardMetaData(
+                    readColor: readColor,
                     score: postViewMedia.postView.counts.score,
                     voteType: postViewMedia.postView.myVote ?? VoteType.none,
                     comments: postViewMedia.postView.counts.comments,
@@ -100,6 +103,7 @@ class PostCardViewCompact extends StatelessWidget {
                     published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
                     saved: postViewMedia.postView.saved,
                     distinguised: postViewMedia.postView.post.featuredCommunity,
+                    hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
                 ],
               ),

@@ -149,6 +149,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   runAlignment: WrapAlignment.center,
                   children: [
                     PostCardMetaData(
+                      hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                       score: postViewMedia.postView.counts.score,
                       voteType: postViewMedia.postView.myVote ?? VoteType.none,
                       comments: postViewMedia.postView.counts.comments,

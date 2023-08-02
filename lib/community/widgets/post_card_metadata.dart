@@ -21,6 +21,8 @@ class PostCardMetaData extends StatelessWidget {
   final DateTime published;
   final bool saved;
   final bool distinguised;
+  final String? hostURL;
+  final Color? readColor;
 
   const PostCardMetaData({
     super.key,
@@ -32,6 +34,8 @@ class PostCardMetaData extends StatelessWidget {
     required this.published,
     required this.saved,
     required this.distinguised,
+    this.hostURL,
+    this.readColor,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -60,14 +64,14 @@ class PostCardMetaData extends StatelessWidget {
                       ? upVoteColor
                       : voteType == VoteType.down
                           ? downVoteColor
-                          : theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                          : readColor,
                   icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                       size: 20.0,
                       color: voteType == VoteType.up
                           ? upVoteColor
                           : voteType == VoteType.down
                               ? downVoteColor
-                              : theme.textTheme.titleSmall?.color?.withOpacity(0.75)),
+                              : readColor),
                   padding: 2.0,
                 ),
                 const SizedBox(width: 10.0),
@@ -77,12 +81,12 @@ class PostCardMetaData extends StatelessWidget {
                     /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                     size: 15.0,
                     color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                        theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                    readColor,
                   ),
                   text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
                       formatNumberToK(comments),
                   textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                      theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                    readColor,
                   padding: 5.0,
                 ),
                 const SizedBox(width: 10.0),
@@ -91,22 +95,25 @@ class PostCardMetaData extends StatelessWidget {
                   icon: Icon(
                     hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 15.0,
-                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                    color: readColor,
                   ),
                   text: formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+                  textColor: readColor,
                 ),
-                const SizedBox(width: 10.0),
-                IconText(
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  icon: Icon(
-                    Icons.public,
-                    size: 15.0,
-                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+                if ( hostURL != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left:10.0),
+                    child: IconText(
+                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      icon: Icon(
+                        Icons.public,
+                        size: 15.0,
+                        color: readColor,
+                      ),
+                      text: Uri.parse(hostURL!).host,
+                      textColor: readColor,
+                    ),
                   ),
-                  text: 'link.com',
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                ),
               ],
             ),
             if (distinguised)
