@@ -61,7 +61,7 @@ class CommentHeader extends StatelessWidget {
                   preferBelow: false,
                   child: Row(
                     children: [
-                      GestureDetector(
+                      InkWell(
                         onTap: () {
                           account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                           AuthBloc authBloc = context.read<AuthBloc>();
