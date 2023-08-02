@@ -131,6 +131,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
               ),
               backgroundColor: Colors.transparent,
+              toolbarHeight: 70.0,
             ),
             backgroundColor: Colors.black.withOpacity(slideTransparency),
             body: Column(
