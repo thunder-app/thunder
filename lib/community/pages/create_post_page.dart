@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
@@ -64,7 +65,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     final theme = Theme.of(context);
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Create Post"),
+        title: Text(AppLocalizations.of(context)!.createPost),
         toolbarHeight: 70.0,
         actions: [
           IconButton(
@@ -76,9 +77,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
                     Navigator.of(context).pop();
                   },
-            icon: const Icon(
+            icon: Icon(
               Icons.send_rounded,
-              semanticLabel: 'Create Post',
+              semanticLabel: AppLocalizations.of(context)!.createPost,
             ),
           ),
         ],
@@ -93,7 +94,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
             _urlTextController.text = state.imageUrl;
           }
           if (state.status == ImageStatus.failure) {
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error when uploading image")));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
           }
         },
         bloc: imageBloc,
@@ -124,8 +125,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       const SizedBox(height: 12.0),
                       TextFormField(
                         controller: _titleTextController,
-                        decoration: const InputDecoration(
-                          hintText: 'Title',
+                        decoration: InputDecoration(
+                          hintText: AppLocalizations.of(context)!.postTitle,
                         ),
                       ),
                       const SizedBox(
@@ -134,7 +135,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       TextFormField(
                         controller: _urlTextController,
                         decoration: InputDecoration(
-                            hintText: 'URL',
+                            hintText: AppLocalizations.of(context)!.postURL,
                             suffixIcon: IconButton(
                                 onPressed: () {
                                   _uploadImage(postImage: true);
@@ -165,7 +166,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         height: 10,
                       ),
                       Row(children: <Widget>[
-                        const Expanded(child: Text("Mark as NSFW")),
+                        Expanded(child: Text(AppLocalizations.of(context)!.postNSFW)),
                         Switch(
                             value: isNSFW,
                             onChanged: (bool value) {
@@ -190,7 +191,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               controller: _bodyTextController,
                               focusNode: _markdownFocusNode,
                               initialValue: _bodyTextController.text,
-                              label: 'Post Body',
+                              label: AppLocalizations.of(context)!.postBody,
                               minLines: 8,
                               maxLines: null,
                               textStyle: theme.textTheme.bodyLarge,
@@ -227,7 +228,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           icon: Icon(
                             showPreview ? Icons.visibility_outlined : Icons.visibility,
                             color: theme.colorScheme.onSecondary,
-                            semanticLabel: "Toggle Preview",
+                            semanticLabel: AppLocalizations.of(context)!.postTogglePreview,
                           ),
                           visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
                           style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary)),
