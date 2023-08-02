@@ -157,9 +157,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     if (widget.isAccountUser)
                       Expanded(
                         child: Padding(
-                          padding: savedToggle ? const EdgeInsets.only(right: 8.0) :  const EdgeInsets.only(left: 8.0) ,
+                          padding: savedToggle ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
                           child: TextButton(
-
                             onPressed: () {
                               setState(() {
                                 savedToggle = !savedToggle;
@@ -172,21 +171,23 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               fixedSize: const Size.fromHeight(35),
                               padding: EdgeInsets.zero,
                             ),
-                            child: !savedToggle ? const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(width: 8.0),
-                                Text('Saved'),
-                                Icon(Icons.chevron_right),
-                              ],
-                            ):const Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(Icons.chevron_left),
-                                Text('History'),
-                                SizedBox(width: 8.0),
-                              ],
-                            ),
+                            child: !savedToggle
+                                ? const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: 8.0),
+                                      Text('Saved'),
+                                      Icon(Icons.chevron_right),
+                                    ],
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.chevron_left),
+                                      Text('History'),
+                                      SizedBox(width: 8.0),
+                                    ],
+                                  ),
                           ),
                         ),
                       ),
