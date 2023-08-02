@@ -160,23 +160,24 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             )
                           : null,
                     ),
-                    ToggleButtons(
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                      direction: Axis.horizontal,
-                      onPressed: (int index) {
-                        setState(() {
-                          savedToggle = !savedToggle;
-                          _savedToggle[index] = savedToggle;
-                        });
-                        if (savedToggle) {
-                          context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
-                        }
-                      },
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / 3) - 12.0),
-                      isSelected: _savedToggle,
-                      children: savedToggleType,
-                    ),
+                    if (widget.isAccountUser)
+                      ToggleButtons(
+                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        direction: Axis.horizontal,
+                        onPressed: (int index) {
+                          setState(() {
+                            savedToggle = !savedToggle;
+                            _savedToggle[index] = savedToggle;
+                          });
+                          if (savedToggle) {
+                            context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                          }
+                        },
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
+                        constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / 3) - 12.0),
+                        isSelected: _savedToggle,
+                        children: savedToggleType,
+                      ),
                     AnimatedSwitcher(
                       switchOutCurve: Curves.easeInOut,
                       switchInCurve: Curves.easeInOut,
