@@ -288,22 +288,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        if (widget.navigateToPost != null)
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                widget.navigateToPost!();
-                              },
-                              icon: Icon(
-                                Icons.chat_rounded,
-                                semanticLabel: "Comments",
-                                color: Colors.white.withOpacity(0.90),
-                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                              ),
-                            ),
-                          ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
@@ -408,6 +392,22 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ),
                           ),
                         ),
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: Icon(
+                                Icons.chat_rounded,
+                                semanticLabel: "Comments",
+                                color: Colors.white.withOpacity(0.90),
+                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
