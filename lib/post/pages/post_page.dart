@@ -145,7 +145,10 @@ class _PostPageState extends State<PostPage> {
                                     replyToPost();
                                   },
                                   title: AppLocalizations.of(context)!.replyToPost,
-                                  icon: const Icon(Icons.reply_rounded),
+                                  icon: Icon(
+                                    Icons.reply_rounded,
+                                    semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                  ),
                                 ),
                                 ActionButton(
                                   onPressed: () {
@@ -153,7 +156,10 @@ class _PostPageState extends State<PostPage> {
                                     showSortBottomSheet(context, state);
                                   },
                                   title: AppLocalizations.of(context)!.changeSort,
-                                  icon: Icon(sortTypeIcon),
+                                  icon: Icon(
+                                    sortTypeIcon,
+                                    semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                  ),
                                 ),
                                 ActionButton(
                                   onPressed: () {
@@ -164,7 +170,10 @@ class _PostPageState extends State<PostPage> {
                                     );
                                   },
                                   title: AppLocalizations.of(context)!.backToTop,
-                                  icon: const Icon(Icons.arrow_upward),
+                                  icon: Icon(
+                                    Icons.arrow_upward,
+                                    semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                  ),
                                 ),
                               ],
                             )

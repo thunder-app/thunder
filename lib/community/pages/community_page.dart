@@ -241,8 +241,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                               child: isFabSummoned
                                   ? GestureFab(
                                       distance: 60,
-                                      icon: const Icon(
+                                      icon: Icon(
                                         Icons.clear_all_rounded,
+                                        semanticLabel: AppLocalizations.of(context)!.dismissRead,
                                         size: 35,
                                       ),
                                       onPressed: () {
@@ -257,7 +258,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                               context.read<ThunderBloc>().add(const OnDismissEvent(true));
                                             },
                                             title: AppLocalizations.of(context)!.dismissRead,
-                                            icon: const Icon(Icons.clear_all_rounded),
+                                            icon: Icon(
+                                              Icons.clear_all_rounded,
+                                              semanticLabel: AppLocalizations.of(context)!.dismissRead,
+                                            ),
                                           ),
                                         if (enableRefresh)
                                           ActionButton(
@@ -273,7 +277,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                                   ));
                                             },
                                             title: AppLocalizations.of(context)!.refresh,
-                                            icon: const Icon(Icons.refresh_rounded),
+                                            icon: Icon(
+                                              Icons.refresh_rounded,
+                                              semanticLabel: AppLocalizations.of(context)!.refresh,
+                                            ),
                                           ),
                                         if (enableChangeSort)
                                           ActionButton(
@@ -282,13 +289,19 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                               showSortBottomSheet(context, state);
                                             },
                                             title: AppLocalizations.of(context)!.changeSort,
-                                            icon: Icon(sortTypeIcon),
+                                            icon: Icon(
+                                              sortTypeIcon,
+                                              semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                            ),
                                           ),
                                         if (widget.scaffoldKey != null && enableSubscriptions)
                                           ActionButton(
                                             onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
                                             title: AppLocalizations.of(context)!.subscriptions,
-                                            icon: const Icon(Icons.people_rounded),
+                                            icon: Icon(
+                                              Icons.people_rounded,
+                                              semanticLabel: AppLocalizations.of(context)!.subscriptions,
+                                            ),
                                           ),
                                         /*const ActionButton(
                             onPressed: (!state.useCompactView) => setPreferences(LocalSettings.useCompactView, value),,
@@ -301,7 +314,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                               context.read<ThunderBloc>().add(OnScrollToTopEvent());
                                             },
                                             title: AppLocalizations.of(context)!.backToTop,
-                                            icon: const Icon(Icons.arrow_upward),
+                                            icon: Icon(
+                                              Icons.arrow_upward,
+                                              semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                            ),
                                           ),
                                         if (state.communityId != null && enableNewPost || state.communityName != null && enableNewPost)
                                           ActionButton(
@@ -323,7 +339,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                               );
                                             },
                                             title: AppLocalizations.of(context)!.createPost,
-                                            icon: const Icon(Icons.add),
+                                            icon: Icon(
+                                              Icons.add,
+                                              semanticLabel: AppLocalizations.of(context)!.createPost,
+                                            ),
                                           ),
                                       ],
                                     )
