@@ -11,6 +11,7 @@ import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../shared/gesture_fab.dart';
 
@@ -114,7 +115,10 @@ class _PostPageState extends State<PostPage> {
               appBar: AppBar(
                 actions: [
                   IconButton(
-                    icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                    icon: Icon(
+                      sortTypeIcon,
+                      semanticLabel: AppLocalizations.of(context)!.sortBy,
+                    ),
                     tooltip: sortTypeLabel,
                     onPressed: () => showSortBottomSheet(context, state),
                   ),
@@ -128,9 +132,9 @@ class _PostPageState extends State<PostPage> {
                       child: isFabSummoned
                           ? GestureFab(
                               distance: 60,
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.reply_rounded,
-                                semanticLabel: 'Reply to Post',
+                                semanticLabel: AppLocalizations.of(context)!.replyToPost,
                                 size: 35,
                               ),
                               onPressed: replyToPost,
@@ -140,7 +144,7 @@ class _PostPageState extends State<PostPage> {
                                     HapticFeedback.mediumImpact();
                                     replyToPost();
                                   },
-                                  title: "Reply to Post",
+                                  title: AppLocalizations.of(context)!.replyToPost,
                                   icon: const Icon(Icons.reply_rounded),
                                 ),
                                 ActionButton(
@@ -148,7 +152,7 @@ class _PostPageState extends State<PostPage> {
                                     HapticFeedback.mediumImpact();
                                     showSortBottomSheet(context, state);
                                   },
-                                  title: "Change Sort",
+                                  title: AppLocalizations.of(context)!.changeSort,
                                   icon: Icon(sortTypeIcon),
                                 ),
                                 ActionButton(
@@ -159,7 +163,7 @@ class _PostPageState extends State<PostPage> {
                                       curve: Curves.easeInOut,
                                     );
                                   },
-                                  title: "Back to Top",
+                                  title: AppLocalizations.of(context)!.backToTop,
                                   icon: const Icon(Icons.arrow_upward),
                                 ),
                               ],
@@ -204,7 +208,7 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                   const SizedBox(width: 8.0),
                                   Flexible(
-                                    child: Text(state.errorMessage ?? 'No error message available', maxLines: 4),
+                                    child: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, maxLines: 4),
                                   )
                                 ],
                               ),
@@ -253,7 +257,7 @@ class _PostPageState extends State<PostPage> {
                                 action: () {
                                   context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
                                 },
-                                actionText: 'Refresh Content',
+                                actionText: AppLocalizations.of(context)!.refreshContent,
                               );
                             case PostStatus.empty:
                               return ErrorMessage(
@@ -261,7 +265,7 @@ class _PostPageState extends State<PostPage> {
                                 action: () {
                                   context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
                                 },
-                                actionText: 'Refresh Content',
+                                actionText: AppLocalizations.of(context)!.refreshContent,
                               );
                           }
                         },
@@ -307,7 +311,7 @@ class _PostPageState extends State<PostPage> {
       showDragHandle: true,
       context: context,
       builder: (builderContext) => CommentSortPicker(
-        title: 'Sort Options',
+        title: AppLocalizations.of(context)!.sortOptions,
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
