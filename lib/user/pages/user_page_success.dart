@@ -16,10 +16,6 @@ const List<Widget> userOptionTypes = <Widget>[
   Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
 ];
 
-const List<Widget> savedToggleType = <Widget>[
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Saved')),
-];
-
 class UserPageSuccess extends StatefulWidget {
   final int? userId;
   final PersonViewSafe? personView;
@@ -61,8 +57,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
 
   int selectedUserOption = 0;
   List<bool> _selectedUserOption = <bool>[true, false];
-
-  List<bool> _savedToggle = <bool>[false];
   bool savedToggle = false;
 
   late final AnimationController _controller = AnimationController(
@@ -124,7 +118,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                 child: widget.personView != null ? UserHeader(userInfo: widget.personView) : const SizedBox(),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 color: theme.colorScheme.background,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -154,29 +148,47 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 });
                               },
                               borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 1 : 0))) - 12.0),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
                               isSelected: _selectedUserOption,
                               children: userOptionTypes,
                             )
                           : null,
                     ),
                     if (widget.isAccountUser)
-                      ToggleButtons(
-                        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                        direction: Axis.horizontal,
-                        onPressed: (int index) {
-                          setState(() {
-                            savedToggle = !savedToggle;
-                            _savedToggle[index] = savedToggle;
-                          });
-                          if (savedToggle) {
-                            context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
-                          }
-                        },
-                        borderRadius: const BorderRadius.all(Radius.circular(8)),
-                        constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / 3) - 12.0),
-                        isSelected: _savedToggle,
-                        children: savedToggleType,
+                      Expanded(
+                        child: Padding(
+                          padding: savedToggle ? const EdgeInsets.only(right: 8.0) :  const EdgeInsets.only(left: 8.0) ,
+                          child: TextButton(
+
+                            onPressed: () {
+                              setState(() {
+                                savedToggle = !savedToggle;
+                              });
+                              if (savedToggle) {
+                                context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              fixedSize: const Size.fromHeight(35),
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: !savedToggle ? const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                SizedBox(width: 8.0),
+                                Text('Saved'),
+                                Icon(Icons.chevron_right),
+                              ],
+                            ):const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.chevron_left),
+                                Text('History'),
+                                SizedBox(width: 8.0),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                     AnimatedSwitcher(
                       switchOutCurve: Curves.easeInOut,
@@ -207,7 +219,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 }
                               },
                               borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 1 : 0))) - 12.0),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
                               isSelected: _selectedUserOption,
                               children: userOptionTypes,
                             )
