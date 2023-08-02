@@ -53,7 +53,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
     super.initState();
   }
 
