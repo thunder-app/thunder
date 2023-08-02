@@ -68,7 +68,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[0].value.getIcon(),
-                        semanticLabel: 'First left gesture, set to ${items[0].value.label}',
+                        semanticLabel: 'Short swipe right, ${items[0].value.label}',
                       ),
                     ),
                   ),
@@ -95,7 +95,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[1].value.getIcon(),
-                        semanticLabel: 'Second left gesture, set to ${items[1].value.label}',
+                        semanticLabel: 'Long swipe right, ${items[1].value.label}',
                       ),
                     ),
                   ),
@@ -129,7 +129,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[1].value.getIcon(),
-                        semanticLabel: 'Second right gesture, set to ${items[1].value.label}',
+                        semanticLabel: 'Long swipe left, ${items[1].value.label}',
                       ),
                     ),
                   ),
@@ -164,7 +164,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[0].value.getIcon(),
-                        semanticLabel: 'First right gesture, set to ${items[0].value.label}',
+                        semanticLabel: 'Short swipe left, ${items[0].value.label}',
                       ),
                     ),
                   ),
