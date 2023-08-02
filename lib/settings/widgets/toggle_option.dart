@@ -3,8 +3,8 @@ import 'package:flutter/services.dart';
 
 class ToggleOption extends StatelessWidget {
   // Appearance
-  final IconData iconEnabled;
-  final IconData iconDisabled;
+  final IconData? iconEnabled;
+  final IconData? iconDisabled;
 
   // General
   final String description;
@@ -19,8 +19,8 @@ class ToggleOption extends StatelessWidget {
     required this.description,
     this.subtitle,
     required this.value,
-    required this.iconEnabled,
-    required this.iconDisabled,
+    this.iconEnabled,
+    this.iconDisabled,
     required this.onToggle,
   });
 
@@ -33,17 +33,21 @@ class ToggleOption extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(value ? iconEnabled : iconDisabled),
-            const SizedBox(width: 8.0),
-            ConstrainedBox(
-              constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(description, style: theme.textTheme.bodyMedium),
-                  if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
-                ],
-              ),
+            if (iconEnabled != null && iconDisabled != null) Icon(value ? iconEnabled : iconDisabled),
+            if (iconEnabled != null && iconDisabled != null) const SizedBox(width: 8.0),
+            Column(
+              children: [
+                ConstrainedBox(
+                  constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width - 140),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(description, style: theme.textTheme.bodyMedium),
+                      if (subtitle != null) Text(subtitle!, style: theme.textTheme.bodySmall?.copyWith(color: theme.textTheme.bodySmall?.color?.withOpacity(0.8))),
+                    ],
+                  ),
+                ),
+              ],
             ),
           ],
         ),

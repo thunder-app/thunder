@@ -63,6 +63,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _blockCommunityEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<DismissReadEvent>(
+      _dismissReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
@@ -476,6 +480,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           listingType: state.listingType,
         ),
       );
+    }
+  }
+
+  Future<void> _dismissReadEvent(DismissReadEvent event, Emitter<CommunityState> emit) async {
+    // Take existing post list, and remove read entries, then emit, I think
+
+    try {
+      return;
+    } catch (e) {
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
 }

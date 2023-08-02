@@ -131,6 +131,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
               ),
               backgroundColor: Colors.transparent,
+              toolbarHeight: 70.0,
             ),
             backgroundColor: Colors.black.withOpacity(slideTransparency),
             body: Column(
@@ -288,22 +289,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        if (widget.navigateToPost != null)
-                          Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: IconButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                widget.navigateToPost!();
-                              },
-                              icon: Icon(
-                                Icons.chat_rounded,
-                                semanticLabel: "Comments",
-                                color: Colors.white.withOpacity(0.90),
-                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                              ),
-                            ),
-                          ),
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
@@ -370,7 +355,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
                                       if (Platform.isAndroid) {
                                         // Save image to [internal storage]/Pictures/Thunder
-                                        GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
                                           setState(() => downloaded = value as bool);
                                         });
                                       } else if (Platform.isIOS) {
@@ -408,6 +393,22 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ),
                           ),
                         ),
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: Icon(
+                                Icons.chat_rounded,
+                                semanticLabel: "Comments",
+                                color: Colors.white.withOpacity(0.90),
+                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),
