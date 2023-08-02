@@ -187,8 +187,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       _ => Icons.add_circle_outline_rounded,
                                     },
                                     semanticLabel: (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null)
-                                        ? 'Subscribe'
-                                        : 'Unsubscribe',
+                                        ? AppLocalizations.of(context)!.subscribe
+                                        : AppLocalizations.of(context)!.unsubscribe,
                                   ),
                                   tooltip: switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
                                     SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
