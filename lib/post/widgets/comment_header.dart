@@ -61,30 +61,31 @@ class CommentHeader extends StatelessWidget {
                   preferBelow: false,
                   child: Row(
                     children: [
-                      InkWell(
-                        onTap: () {
-                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                          AuthBloc authBloc = context.read<AuthBloc>();
-                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                      Material(
+                        color: isSpecialUser(context, isOwnComment) ? fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground : null,
+                        borderRadius: isSpecialUser(context, isOwnComment) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                        child: InkWell(
+                          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+                          onTap: () {
+                            account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                            AuthBloc authBloc = context.read<AuthBloc>();
+                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => MultiBlocProvider(
-                                providers: [
-                                  BlocProvider.value(value: accountBloc),
-                                  BlocProvider.value(value: authBloc),
-                                  BlocProvider.value(value: thunderBloc),
-                                ],
-                                child: UserPage(userId: commentViewTree.commentView!.creator.id),
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider.value(value: accountBloc),
+                                    BlocProvider.value(value: authBloc),
+                                    BlocProvider.value(value: thunderBloc),
+                                  ],
+                                  child: UserPage(userId: commentViewTree.commentView!.creator.id),
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                        child: isSpecialUser(context, isOwnComment)
-                            ? Container(
-                                decoration:
-                                    BoxDecoration(color: fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground, borderRadius: const BorderRadius.all(Radius.elliptical(5, 5))),
-                                child: Padding(
+                            );
+                          },
+                          child: isSpecialUser(context, isOwnComment)
+                              ? Padding(
                                   padding: const EdgeInsets.only(left: 5, right: 5),
                                   child: Row(
                                     children: [
@@ -145,17 +146,17 @@ class CommentHeader extends StatelessWidget {
                                       ),
                                     ],
                                   ),
+                                )
+                              : Text(
+                                  commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                      ? commentViewTree.commentView!.creator.displayName!
+                                      : commentViewTree.commentView!.creator.name,
+                                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                  style: theme.textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
-                              )
-                            : Text(
-                                commentViewTree.commentView!.creator.displayName != null && useDisplayNames
-                                    ? commentViewTree.commentView!.creator.displayName!
-                                    : commentViewTree.commentView!.creator.name,
-                                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
+                        ),
                       ),
                       const SizedBox(width: 8.0),
                     ],
