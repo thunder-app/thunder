@@ -355,7 +355,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
                                       if (Platform.isAndroid) {
                                         // Save image to [internal storage]/Pictures/Thunder
-                                        GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
                                           setState(() => downloaded = value as bool);
                                         });
                                       } else if (Platform.isIOS) {
