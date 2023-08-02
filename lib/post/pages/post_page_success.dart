@@ -56,7 +56,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
     // We don't want to trigger comment fetch when looking at a comment context.
     // This also fixes a weird behavior that can happen when if the fetch triggers
     // right before you click view all comments. The fetch for all comments won't happen.
-    if (widget.selectedCommentId != null) {
+    if (widget.selectedCommentId != null || widget.hasReachedCommentEnd) {
       return;
     }
     if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {

@@ -255,7 +255,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+            emit(state.copyWith(status: state.status, hasReachedCommentEnd: state.commentCount == state.postView!.postView.counts.comments));
+            return;
+          }
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy
