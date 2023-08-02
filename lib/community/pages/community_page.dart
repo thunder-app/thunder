@@ -1,18 +1,22 @@
 import 'dart:async';
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+
+// Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// External Packages
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 
+// Internal
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -103,7 +107,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         listener: (context, state) {
           if (state.status == CommunityStatus.failure) {
             SnackBar snackBar = SnackBar(
-              content: Text(state.errorMessage ?? 'No error message available'),
+              content: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage),
               behavior: SnackBarBehavior.floating,
             );
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
@@ -179,9 +183,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
                                 ),
                                 tooltip: switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
-                                  SubscribedType.notSubscribed => 'Subscribe',
-                                  SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                                  SubscribedType.subscribed => 'Unsubscribe',
+                                  SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
+                                  SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
+                                  SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
                                   _ => null,
                                 },
                                 onPressed: () {
@@ -190,7 +194,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 },
                               ),
                             IconButton(
-                                icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                                icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
                                   context.read<AccountBloc>().add(GetAccountInformation());
@@ -203,7 +207,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
@@ -244,7 +248,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                             HapticFeedback.lightImpact();
                                             context.read<ThunderBloc>().add(const OnDismissEvent(true));
                                           },
-                                          title: "Dismiss Read",
+                                          title: AppLocalizations.of(context)!.dismissRead,
                                           icon: const Icon(Icons.clear_all_rounded),
                                         ),
                                       if (enableRefresh)
@@ -260,7 +264,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                                   communityName: state.communityName,
                                                 ));
                                           },
-                                          title: "Refresh",
+                                          title: AppLocalizations.of(context)!.refresh,
                                           icon: const Icon(Icons.refresh_rounded),
                                         ),
                                       if (enableChangeSort)
@@ -269,13 +273,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                             HapticFeedback.mediumImpact();
                                             showSortBottomSheet(context, state);
                                           },
-                                          title: "Change Sort",
+                                          title: AppLocalizations.of(context)!.changeSort,
                                           icon: Icon(sortTypeIcon),
                                         ),
                                       if (enableSubscriptions)
                                         ActionButton(
                                           onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
-                                          title: "Subscriptions",
+                                          title: AppLocalizations.of(context)!.subscriptions,
                                           icon: const Icon(Icons.people_rounded),
                                         ),
                                       /*const ActionButton(
@@ -288,7 +292,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           onPressed: () {
                                             context.read<ThunderBloc>().add(OnScrollToTopEvent());
                                           },
-                                          title: "Back to Top",
+                                          title: AppLocalizations.of(context)!.backToTop,
                                           icon: const Icon(Icons.arrow_upward),
                                         ),
                                       if (widget.communityId != null && enableNewPost || widget.communityName != null && enableNewPost)
@@ -310,7 +314,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                               ),
                                             );
                                           },
-                                          title: "New Post",
+                                          title: AppLocalizations.of(context)!.createPost,
                                           icon: const Icon(Icons.add),
                                         ),
                                     ],
@@ -390,7 +394,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           taglines: state.taglines,
         );
       case CommunityStatus.empty:
-        return const Center(child: Text('No posts found'));
+        return Center(child: Text(AppLocalizations.of(context)!.noPosts));
     }
   }
 
@@ -400,7 +404,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       showDragHandle: true,
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
-        title: 'Sort Options',
+        title: AppLocalizations.of(context)!.sortOptions,
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
@@ -426,7 +430,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     if (state.communityId != null || state.communityName != null) {
-      // return state.postViews?.firstOrNull?.community.name ?? '';
       return '';
     }
 
@@ -482,11 +485,11 @@ void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, Communit
   if (community == null) return;
 
   Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-  SnackBar snackBar = const SnackBar(content: Text("Subscribed"));
+  SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.subscribed));
 
   if (currentSubscriptions.contains(state.communityId)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {state.communityId!}));
-    snackBar = const SnackBar(content: Text("Unsubscribed"));
+    snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.unsubscribed));
   } else {
     context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {state.communityInfo!.communityView.community}));
   }

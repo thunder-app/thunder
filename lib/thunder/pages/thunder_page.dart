@@ -1,16 +1,19 @@
 import 'dart:async';
 
+// Flutter
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Packages
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Internal
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
@@ -108,7 +111,7 @@ class _ThunderState extends State<Thunder> {
         backgroundColor: theme.primaryColorDark,
         width: 190,
         duration: const Duration(milliseconds: 3500),
-        content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
+        content: Center(child: Text(AppLocalizations.of(context)!.tapToExit, style: snackBarTextColor)),
       ),
     );
   }
@@ -219,7 +222,7 @@ class _ThunderState extends State<Thunder> {
                   return ErrorMessage(
                     message: thunderBlocState.errorMessage,
                     action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                    actionText: 'Refresh Content',
+                    actionText: AppLocalizations.of(context)!.refreshContent,
                   );
               }
             },
@@ -314,7 +317,7 @@ class _ThunderState extends State<Thunder> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Update released: ${version?.latestVersion}',
+              AppLocalizations.of(context)!.updateReleased(version?.latestVersion ?? ''),
               style: theme.textTheme.titleMedium,
             ),
             Icon(
