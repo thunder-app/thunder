@@ -27,5 +27,8 @@
   "postBody": "Post Body",
   "postTogglePreview": "Toggle Preview",
   "postUploadImageError": "Error when uploading image",
-  "postNSFW": "Mark as NSFW"
+  "postNSFW": "Mark as NSFW",
+  "accountSettings": "Account Settings",
+  "profiles": "Profiles",
+  "logOut": "Log out"
 }

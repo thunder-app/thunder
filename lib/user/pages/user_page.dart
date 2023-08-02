@@ -11,6 +11,8 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class UserPage extends StatefulWidget {
   final int? userId;
   final bool isAccountUser;
@@ -63,10 +65,11 @@ class _UserPageState extends State<UserPage> {
                             ),
                           ));
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.logout,
-                  semanticLabel: 'Log out',
+                  semanticLabel: AppLocalizations.of(context)!.logOut,
                 ),
+                tooltip: AppLocalizations.of(context)!.logOut,
               )
             : null,
         actions: [
@@ -74,10 +77,11 @@ class _UserPageState extends State<UserPage> {
             padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
             child: IconButton(
               onPressed: () => userBloc?.add(ResetUserEvent()),
-              icon: const Icon(
+              icon: Icon(
                 Icons.refresh_rounded,
-                semanticLabel: 'Refresh',
+                semanticLabel: AppLocalizations.of(context)!.refresh,
               ),
+              tooltip: AppLocalizations.of(context)!.refresh,
             ),
           ),
           if (widget.userId != null && widget.isAccountUser)
@@ -91,10 +95,11 @@ class _UserPageState extends State<UserPage> {
                     ),
                   );
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.settings_rounded,
-                  semanticLabel: 'Account Settings',
+                  semanticLabel: AppLocalizations.of(context)!.accountSettings,
                 ),
+                tooltip: AppLocalizations.of(context)!.accountSettings,
               ),
             ),
           if (widget.isAccountUser)
@@ -102,10 +107,11 @@ class _UserPageState extends State<UserPage> {
               padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
               child: IconButton(
                 onPressed: () => showProfileModalSheet(context),
-                icon: const Icon(
+                icon: Icon(
                   Icons.people_alt_rounded,
-                  semanticLabel: 'Profiles',
+                  semanticLabel: AppLocalizations.of(context)!.profiles,
                 ),
+                tooltip: AppLocalizations.of(context)!.profiles,
               ),
             ),
         ],
