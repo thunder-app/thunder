@@ -50,8 +50,10 @@ enum LocalSettings {
   useMaterialYouTheme(name: 'setting_theme_use_material_you', label: 'Use Material You Theme'),
 
   // Font Settings
-  titleFontSizeScale(name: 'setting_theme_title_font_size_scale', label: 'Title Font Scale'),
-  contentFontSizeScale(name: 'setting_theme_content_font_size_scale', label: 'Content Font Scale'),
+  titleFontSizeScale(name: 'setting_theme_title_font_size_scale', label: 'Post Title Font Scale'),
+  contentFontSizeScale(name: 'setting_theme_content_font_size_scale', label: 'Post Content Font Scale'),
+  commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', label: 'Comment Content Font Scale'),
+  metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', label: 'Metadata Font Scale'),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings

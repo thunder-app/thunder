@@ -83,6 +83,8 @@ class ThunderState extends Equatable {
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
+    this.commentFontSizeScale = FontScale.base,
+    this.metadataFontSizeScale = FontScale.base,
 
     /// -------------------------- FAB Related Settings --------------------------
     this.enableFeedsFab = false,
@@ -165,6 +167,8 @@ class ThunderState extends Equatable {
   // Font Scale
   final FontScale titleFontSizeScale;
   final FontScale contentFontSizeScale;
+  final FontScale commentFontSizeScale;
+  final FontScale metadataFontSizeScale;
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -264,6 +268,8 @@ class ThunderState extends Equatable {
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
+    FontScale? commentFontSizeScale,
+    FontScale? metadataFontSizeScale,
 
     /// -------------------------- Gesture Related Settings --------------------------
     // Sidebar Gesture Settings
@@ -365,6 +371,8 @@ class ThunderState extends Equatable {
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
+      commentFontSizeScale: commentFontSizeScale ?? this.commentFontSizeScale,
+      metadataFontSizeScale: metadataFontSizeScale ?? this.metadataFontSizeScale,
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
@@ -470,6 +478,8 @@ class ThunderState extends Equatable {
         // Font Scale
         titleFontSizeScale,
         contentFontSizeScale,
+        commentFontSizeScale,
+        metadataFontSizeScale,
 
         /// -------------------------- Gesture Related Settings --------------------------
         // Sidebar Gesture Settings
