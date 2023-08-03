@@ -58,7 +58,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showEdgeToEdgeImages = false;
   bool showTextContent = false;
   bool showPostAuthor = false;
-  bool disableScoreCounters = false;
+  bool disableScoreCounters = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -218,7 +218,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? false;
+      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
