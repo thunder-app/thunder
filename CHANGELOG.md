@@ -41,6 +41,7 @@
 - Fixed issue where saving an image on Android would save to Pictures/Pictures/Thunder instead of Pictures/Thunder
 - Fixed comment highlighting for comment context regression - contribution from @ajsosa 
 - Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
+- Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
