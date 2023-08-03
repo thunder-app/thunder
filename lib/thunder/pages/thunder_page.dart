@@ -282,6 +282,10 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
           onTap: (index) {
+            if (context.read<ThunderBloc>().state.isFabOpen) {
+              context.read<ThunderBloc>().add(const OnFabToggle(false));
+            }
+
             if (selectedPageIndex == 0 && index == 0) {
               context.read<ThunderBloc>().add(OnScrollToTopEvent());
             }
