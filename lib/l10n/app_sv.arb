@@ -30,5 +30,8 @@
   "postNSFW": "Mark as NSFW",
   "replyToPost": "Reply to Post",
   "changeSort": "Change Sort",
-  "backToTop": "Back to Top"
+  "backToTop": "Back to Top",
+  "accountSettings": "Account Settings",
+  "profiles": "Profiles",
+  "logOut": "Log out"
 }

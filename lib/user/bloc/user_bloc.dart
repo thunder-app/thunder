@@ -25,6 +25,10 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(const UserState()) {
+    on<ResetUserEvent>(
+      _resetUserEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<GetUserEvent>(
       _getUserEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -57,6 +61,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       _blockUserEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+  }
+
+  Future<void> _resetUserEvent(ResetUserEvent event, emit) async {
+    return emit(state.copyWith(status: UserStatus.initial));
   }
 
   Future<void> _getUserEvent(GetUserEvent event, emit) async {

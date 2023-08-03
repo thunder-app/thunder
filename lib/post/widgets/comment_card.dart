@@ -274,7 +274,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       ),
                 child: Container(
                     decoration: BoxDecoration(
-                      color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
                       border: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thin
                           ? Border(
                               left: BorderSide(
@@ -300,6 +299,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             ),
                     ),
                     child: Material(
+                      color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.start,

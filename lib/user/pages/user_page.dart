@@ -11,6 +11,8 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 class UserPage extends StatefulWidget {
   final int? userId;
   final bool isAccountUser;
@@ -23,6 +25,8 @@ class UserPage extends StatefulWidget {
 }
 
 class _UserPageState extends State<UserPage> {
+  UserBloc? userBloc;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -61,16 +65,28 @@ class _UserPageState extends State<UserPage> {
                             ),
                           ));
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.logout,
-                  semanticLabel: 'Log out',
+                  semanticLabel: AppLocalizations.of(context)!.logOut,
                 ),
+                tooltip: AppLocalizations.of(context)!.logOut,
               )
             : null,
         actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 4.0),
+            child: IconButton(
+              onPressed: () => userBloc?.add(ResetUserEvent()),
+              icon: Icon(
+                Icons.refresh_rounded,
+                semanticLabel: AppLocalizations.of(context)!.refresh,
+              ),
+              tooltip: AppLocalizations.of(context)!.refresh,
+            ),
+          ),
           if (widget.userId != null && widget.isAccountUser)
             Padding(
-              padding: const EdgeInsets.fromLTRB(4.0, 4.0, 0, 4.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
               child: IconButton(
                 onPressed: () {
                   Navigator.of(context).push(
@@ -79,21 +95,23 @@ class _UserPageState extends State<UserPage> {
                     ),
                   );
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.settings_rounded,
-                  semanticLabel: 'Account Settings',
+                  semanticLabel: AppLocalizations.of(context)!.accountSettings,
                 ),
+                tooltip: AppLocalizations.of(context)!.accountSettings,
               ),
             ),
           if (widget.isAccountUser)
             Padding(
-              padding: const EdgeInsets.fromLTRB(0, 4.0, 4.00, 4.0),
+              padding: const EdgeInsets.fromLTRB(0.0, 4.0, 4.0, 4.0),
               child: IconButton(
                 onPressed: () => showProfileModalSheet(context),
-                icon: const Icon(
+                icon: Icon(
                   Icons.people_alt_rounded,
-                  semanticLabel: 'Profiles',
+                  semanticLabel: AppLocalizations.of(context)!.profiles,
                 ),
+                tooltip: AppLocalizations.of(context)!.profiles,
               ),
             ),
         ],
@@ -104,6 +122,8 @@ class _UserPageState extends State<UserPage> {
           BlocProvider(create: (context) => community.CommunityBloc()),
         ],
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+          userBloc = context.read<UserBloc>();
+
           switch (state.status) {
             case UserStatus.initial:
               context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
