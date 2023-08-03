@@ -17,8 +17,6 @@ class UserSidebarActivity extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
-    bool disableScoreCounters = state.disableScoreCounters;
 
     return Row(
       children: [
@@ -30,13 +28,7 @@ class UserSidebarActivity extends StatelessWidget {
             color: theme.colorScheme.onBackground.withOpacity(0.65),
           ),
         ),
-        Visibility(
-          visible: !disableScoreCounters,
-          child: Text(
-            '$scoreMetric $scoreLabel',
-            style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-          ),
-        ),
+    Text('$scoreMetric $scoreLabel', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
       ],
     );
   }
