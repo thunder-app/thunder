@@ -52,10 +52,9 @@ class PostCardMetaData extends StatelessWidget {
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
+            Wrap(
+              alignment: WrapAlignment.start,
               children: [
                 IconText(
                   textScaleFactor: state.contentFontSizeScale.textScaleFactor,

@@ -68,6 +68,8 @@ class PostCardViewComfortable extends StatelessWidget {
       color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+
     var mediaView = MediaView(
       showLinkPreview: state.showLinkPreviews,
       postView: postViewMedia,
@@ -90,7 +92,7 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text(postViewMedia.postView.post.name,
                   textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                    color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                   ),
                   softWrap: true),
             ),
@@ -106,7 +108,7 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text(postViewMedia.postView.post.name,
                   textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                   style: theme.textTheme.titleMedium?.copyWith(
-                    color: postViewMedia.postView.read ? theme.textTheme.titleMedium?.color?.withOpacity(0.4) : null,
+                    color:  postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                   ),
                   softWrap: true),
             ),
@@ -127,75 +129,65 @@ class PostCardViewComfortable extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+            child: Row(
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    PostCommunityAndAuthor(
-                      showCommunityIcons: false,
-                      showInstanceName: showInstanceName,
-                      postView: postViewMedia.postView,
-                      textStyleCommunity: textStyleCommunityAndAuthor,
-                      textStyleAuthor: textStyleCommunityAndAuthor,
-                      showCommunitySubscription: showCommunitySubscription,
-                    ),
-                  ],
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PostCommunityAndAuthor(
+                        showCommunityIcons: false,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        showCommunitySubscription: showCommunitySubscription,
+                      ),
+                      const SizedBox(height: 8.0),
+                      PostCardMetaData(
+                        readColor: readColor,
+                        hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                        score: postViewMedia.postView.counts.score,
+                        voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                        comments: postViewMedia.postView.counts.comments,
+                        unreadComments: postViewMedia.postView.unreadComments,
+                        hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                        published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
+                        saved: postViewMedia.postView.saved,
+                        distinguised: postViewMedia.postView.post.featuredCommunity,
+                      )
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 8.0),
-                Wrap(
-                  alignment: WrapAlignment.spaceBetween,
-                  runAlignment: WrapAlignment.center,
-                  children: [
-                    PostCardMetaData(
-                      hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                      score: postViewMedia.postView.counts.score,
-                      voteType: postViewMedia.postView.myVote ?? VoteType.none,
-                      comments: postViewMedia.postView.counts.comments,
-                      unreadComments: postViewMedia.postView.unreadComments,
-                      hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                      published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                      saved: postViewMedia.postView.saved,
-                      distinguised: postViewMedia.postView.post.featuredCommunity,
+                IconButton(
+                    icon: const Icon(
+                      Icons.more_horiz_rounded,
+                      semanticLabel: 'Actions',
                     ),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(
-                            Icons.more_horiz_rounded,
-                            semanticLabel: 'Actions',
-                          ),
-                          visualDensity: VisualDensity.compact,
-                          onPressed: () {
-                            showPostActionBottomModalSheet(
-                              context,
-                              postViewMedia,
-                              actionsToInclude: [
-                                PostCardAction.visitProfile,
-                                PostCardAction.visitCommunity,
-                                PostCardAction.blockCommunity,
-                                PostCardAction.sharePost,
-                                PostCardAction.shareMedia,
-                                PostCardAction.shareLink,
-                              ],
-                            );
-                            HapticFeedback.mediumImpact();
-                          },
-                        ),
-                        if (isUserLoggedIn)
-                          PostCardActions(
-                            postId: postViewMedia.postView.post.id,
-                            voteType: postViewMedia.postView.myVote ?? VoteType.none,
-                            saved: postViewMedia.postView.saved,
-                            onVoteAction: onVoteAction,
-                            onSaveAction: onSaveAction,
-                          ),
-                      ],
-                    ),
-                  ],
-                ),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      showPostActionBottomModalSheet(
+                        context,
+                        postViewMedia,
+                        actionsToInclude: [
+                          PostCardAction.visitProfile,
+                          PostCardAction.visitCommunity,
+                          PostCardAction.blockCommunity,
+                          PostCardAction.sharePost,
+                          PostCardAction.shareMedia,
+                          PostCardAction.shareLink,
+                        ],
+                      );
+                      HapticFeedback.mediumImpact();
+                    }),
+                if (isUserLoggedIn)
+                  PostCardActions(
+                    postId: postViewMedia.postView.post.id,
+                    voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                    saved: postViewMedia.postView.saved,
+                    onVoteAction: onVoteAction,
+                    onSaveAction: onSaveAction,
+                  ),
               ],
             ),
           )

@@ -49,7 +49,7 @@ class PostCardViewCompact extends StatelessWidget {
       color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
@@ -73,7 +73,6 @@ class PostCardViewCompact extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.only(right: 6.0),
               child: Column(
-                /*mainAxisAlignment: MainAxisAlignment.spaceBetween,*/
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(postViewMedia.postView.post.name,
