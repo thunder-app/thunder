@@ -49,7 +49,7 @@ class CommentHeader extends StatelessWidget {
     int downvotes = commentViewTree.commentView?.counts.downvotes ?? 0;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+      padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
       child: Row(
         children: [
           Expanded(
@@ -84,10 +84,10 @@ class CommentHeader extends StatelessWidget {
                               ),
                             );
                           },
-                          child: isSpecialUser(context, isOwnComment)
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 5, right: 5),
-                                  child: Row(
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 5),
+                            child: isSpecialUser(context, isOwnComment)
+                                ? Row(
                                     children: [
                                       Text(
                                         commentViewTree.commentView!.creator.displayName != null && useDisplayNames
@@ -145,17 +145,17 @@ class CommentHeader extends StatelessWidget {
                                             : Container(),
                                       ),
                                     ],
+                                  )
+                                : Text(
+                                    commentViewTree.commentView!.creator.displayName != null && useDisplayNames
+                                        ? commentViewTree.commentView!.creator.displayName!
+                                        : commentViewTree.commentView!.creator.name,
+                                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
-                                )
-                              : Text(
-                                  commentViewTree.commentView!.creator.displayName != null && useDisplayNames
-                                      ? commentViewTree.commentView!.creator.displayName!
-                                      : commentViewTree.commentView!.creator.name,
-                                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                                  style: theme.textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
+                          ),
                         ),
                       ),
                       const SizedBox(width: 8.0),
