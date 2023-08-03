@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -11,7 +12,10 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/user/widgets/user_sidebar_activity.dart';
+import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
 
 import '../../community/pages/community_page.dart';
@@ -263,72 +267,29 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ],
                                 ),
                                 const SizedBox(height: 3.0),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.wysiwyg_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts ',
-                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                    ),
-                                    Visibility(
-                                      visible: !disableScoreCounters,
-                                      child: Text(
-                                        '· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ),
-                                  ],
+                                UserSidebarStats(
+                                    icon: Icons.wysiwyg_rounded,
+                                    label: ' Posts',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
                                 ),
                                 const SizedBox(height: 3.0),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.chat_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments ',
-                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                    ),
-                                    Visibility(
-                                      visible: !disableScoreCounters,
-                                      child: Text(
-                                        '· ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ),
-                                  ],
+                                UserSidebarStats(
+                                    icon: Icons.chat_rounded,
+                                    label: ' Comments',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
                                 ),
                                 const SizedBox(height: 3.0),
                                 Visibility(
                                   visible: !disableScoreCounters,
-                                  child: Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                        child: Icon(
-                                          Icons.celebration_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '· ${NumberFormat("#,###,###,###").format(totalContributions)} Total · ${NumberFormat("#,###,###,###").format(totalScore)} total score',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
+                                  child: UserSidebarActivity(
+                                    icon: Icons.celebration_rounded,
+                                    scoreLabel: ' Total Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
+                                  )
                                 ),
                               ],
                             ),
@@ -345,55 +306,22 @@ class _UserSidebarState extends State<UserSidebar> {
                               ),
                             ]),
                             const SizedBox(height: 10.0),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                  child: Icon(
-                                    Icons.wysiwyg_rounded,
-                                    size: 18,
-                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                  ),
-                                ),
-                                Text(
-                                  '${NumberFormat("#,###,###,###").format(postsPerMonth)} Average Posts/mo',
-                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                ),
-                              ],
+                            UserSidebarActivity(
+                                icon: Icons.wysiwyg_rounded,
+                                scoreLabel: ' Average Posts/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(postsPerMonth),
                             ),
                             const SizedBox(height: 3.0),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                  child: Icon(
-                                    Icons.chat_rounded,
-                                    size: 18,
-                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                  ),
-                                ),
-                                Text(
-                                  '${NumberFormat("#,###,###,###").format(commentsPerMonth)} Average Comments/mo',
-                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                ),
-                              ],
+                            UserSidebarActivity(
+                                icon: Icons.chat_rounded,
+                                scoreLabel: ' Average Comments/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(commentsPerMonth),
                             ),
                             const SizedBox(height: 3.0),
-                            Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                  child: Icon(
-                                    Icons.score_rounded,
-                                    size: 18,
-                                    color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                  ),
-                                ),
-                                Text(
-                                  '${NumberFormat("#,###,###,###").format(totalContributionsPerMonth)} Average Contributions/mo',
-                                  style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                ),
-                              ],
+                            UserSidebarActivity(
+                                icon: Icons.score_rounded,
+                                scoreLabel: ' Average Contributions/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
                             ),
                             const SizedBox(height: 40.0),
                             Container(
