@@ -43,6 +43,12 @@ class PostPageSuccess extends StatefulWidget {
 }
 
 class _PostPageSuccessState extends State<PostPageSuccess> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => widget.itemScrollController.primaryScrollController?.addListener(_onScroll));
+  }
+
   void _onScroll() {
     // We don't want to trigger comment fetch when looking at a comment context.
     // This also fixes a weird behavior that can happen when if the fetch triggers
@@ -57,7 +63,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
 
   @override
   Widget build(BuildContext context) {
-    Widget result = Column(
+    return Column(
       children: [
         Expanded(
           child: CommentSubview(
@@ -79,10 +85,5 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
         ),
       ],
     );
-
-    // Can't add a listener until the primaryScrollController is build by the widget
-    widget.itemScrollController.primaryScrollController?.addListener(_onScroll);
-
-    return result;
   }
 }
