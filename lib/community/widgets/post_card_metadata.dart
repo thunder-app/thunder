@@ -19,8 +19,6 @@ class PostCardMetaData extends StatelessWidget {
   final int comments;
   final bool hasBeenEdited;
   final DateTime published;
-  final bool saved;
-  final bool distinguised;
   final String? hostURL;
   final Color? readColor;
 
@@ -32,15 +30,12 @@ class PostCardMetaData extends StatelessWidget {
     required this.comments,
     required this.hasBeenEdited,
     required this.published,
-    required this.saved,
-    required this.distinguised,
     this.hostURL,
     this.readColor,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
   final MaterialColor downVoteColor = Colors.blue;
-  final MaterialColor savedColor = Colors.purple;
 
   @override
   Widget build(BuildContext context) {
@@ -48,92 +43,81 @@ class PostCardMetaData extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-        final bool useCompactView = state.useCompactView;
 
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Wrap(
-              alignment: WrapAlignment.start,
-              children: [
-                IconText(
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  text: formatNumberToK(score),
-                  textColor: voteType == VoteType.up
-                      ? upVoteColor
-                      : voteType == VoteType.down
-                          ? downVoteColor
-                          : readColor,
-                  icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
-                      size: 20.0,
-                      color: voteType == VoteType.up
-                          ? upVoteColor
-                          : voteType == VoteType.down
-                              ? downVoteColor
-                              : readColor),
-                  padding: 2.0,
-                ),
-                const SizedBox(width: 10.0),
-                IconText(
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  icon: Icon(
-                    /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
-                    size: 15.0,
-                    color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                    readColor,
-                  ),
-                  text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
-                      formatNumberToK(comments),
-                  textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                    readColor,
-                  padding: 5.0,
-                ),
-                const SizedBox(width: 10.0),
-                IconText(
-                  textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                  icon: Icon(
-                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
-                    size: 15.0,
-                    color: readColor,
-                  ),
-                  text: formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor: readColor,
-                ),
-                if ( hostURL != null)
-                  Padding(
-                    padding: const EdgeInsets.only(left:10.0),
-                    child: IconText(
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      icon: Icon(
-                        Icons.public,
-                        size: 15.0,
-                        color: readColor,
+            Flexible(
+              child: Wrap(
+                alignment: WrapAlignment.start,
+                runSpacing: 2,
+                children: [
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconText(
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        text: formatNumberToK(score),
+                        textColor: voteType == VoteType.up
+                            ? upVoteColor
+                            : voteType == VoteType.down
+                                ? downVoteColor
+                                : readColor,
+                        icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
+                            size: 20.0,
+                            color: voteType == VoteType.up
+                                ? upVoteColor
+                                : voteType == VoteType.down
+                                    ? downVoteColor
+                                    : readColor),
+                        padding: 2.0,
                       ),
-                      text: Uri.parse(hostURL!).host,
-                      textColor: readColor,
-                    ),
+                      const SizedBox(width: 10.0),
+                      IconText(
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        icon: Icon(
+                          /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
+                          size: 15.0,
+                          color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
+                          readColor,
+                        ),
+                        text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
+                            formatNumberToK(comments),
+                        textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
+                          readColor,
+                        padding: 5.0,
+                      ),
+                      const SizedBox(width: 10.0),
+                      IconText(
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        icon: Icon(
+                          hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                          size: 15.0,
+                          color: readColor,
+                        ),
+                        text: formatTimeToString(dateTime: published.toIso8601String()),
+                        textColor: readColor,
+                      ),
+                      const SizedBox(width: 8.0),
+                    ],
                   ),
-              ],
+                  if ( hostURL != null)
+                    Padding(
+                      padding: const EdgeInsets.only(left: 2.0),
+                      child: IconText(
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        icon: Icon(
+                          Icons.public,
+                          size: 15.0,
+                          color: readColor,
+                        ),
+                        text: Uri.parse(hostURL!).host.replaceAll('www.',''),
+                        textColor: readColor,
+                      ),
+                    ),
+                ],
+              ),
             ),
-            if (distinguised)
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Icon(
-                  Icons.campaign_rounded,
-                  size: 24.0,
-                  color: Colors.green.shade800,
-                ),
-              ),
-            if (useCompactView)
-              Padding(
-                padding: const EdgeInsets.only(left: 10.0),
-                child: Icon(
-                  saved ? Icons.star_rounded : null,
-                  color: saved ? savedColor : null,
-                  size: 22.0,
-                  semanticLabel: saved ? 'Saved' : '',
-                ),
-              ),
           ],
         );
       },
@@ -264,40 +248,45 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 direction: Axis.horizontal,
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
-                spacing: 4.0,
                 children: [
                   if (state.showPostAuthor)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
-                        Text(
-                          ' to',
-                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                          ),
-                        ),
+                            child: Text('$creatorName ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
                       ],
                     ),
                   GestureDetector(
-                    child: Text(
-                      '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                      style: textStyleCommunity,
-                    ),
                     onTap: () => onTapCommunityName(context, postView.community.id),
-                  ),
-                  if (showCommunitySubscription)
-                    Padding(
-                      padding: const EdgeInsets.only(top: 3),
-                      child: Icon(
-                        Icons.playlist_add_check_rounded,
-                        size: 16.0,
-                        color: textStyleCommunity?.color,
-                      ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (state.showPostAuthor)
+                          Text(
+                            'to ',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                            ),
+                          ),
+                        Text(
+                          '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
+                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                          style: textStyleCommunity,
+                        ),
+                        if (showCommunitySubscription)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 3, left: 4,),
+                            child: Icon(
+                              Icons.playlist_add_check_rounded,
+                              size: 16.0,
+                              color: textStyleCommunity?.color,
+                            ),
+                          ),
+                      ],
                     ),
+                  ),
                 ],
               ),
             ),

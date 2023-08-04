@@ -75,12 +75,42 @@ class PostCardViewCompact extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(postViewMedia.postView.post.name,
-                      textScaleFactor: state.titleFontSizeScale.textScaleFactor*1.06,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
-                      )
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        if (postViewMedia.postView.post.featuredCommunity)
+                          const WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.push_pin_rounded,
+                                size: 18.0,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        if (postViewMedia.postView.saved)
+                          const WidgetSpan(
+                            child: Padding(
+                              padding: EdgeInsets.only(right: 8.0),
+                              child: Icon(
+                                Icons.star_rounded,
+                                color: Colors.purple,
+                                size: 18.0,
+                                semanticLabel:'Saved',
+                              ),
+                            ),
+                          ),
+                        TextSpan(
+                          text: postViewMedia.postView.post.name,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontSize: 14.2 * state.titleFontSizeScale.textScaleFactor,
+                            fontWeight: FontWeight.w600,
+                            color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 6.0),
                   PostCommunityAndAuthor(
@@ -100,8 +130,6 @@ class PostCardViewCompact extends StatelessWidget {
                     unreadComments: postViewMedia.postView.unreadComments,
                     hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
                     published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                    saved: postViewMedia.postView.saved,
-                    distinguised: postViewMedia.postView.post.featuredCommunity,
                     hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                   ),
                 ],
