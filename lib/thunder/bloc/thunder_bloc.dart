@@ -158,8 +158,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
       /// -------------------------- FAB Related Settings --------------------------
-      bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? false;
-      bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? false;
+      bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
+      bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
 
       bool enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
       bool enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
@@ -167,6 +167,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
       bool enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
       bool enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+
+      bool postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
+      bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
+      bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -254,6 +258,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         enableDismissRead: enableDismissRead,
         enableChangeSort: enableChangeSort,
         enableNewPost: enableNewPost,
+
+        postFabEnableBackToTop: postFabEnableBackToTop,
+        postFabEnableChangeSort: postFabEnableChangeSort,
+        postFabEnableReplyToPost: postFabEnableReplyToPost,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

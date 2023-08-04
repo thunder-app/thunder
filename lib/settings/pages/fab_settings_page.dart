@@ -21,8 +21,8 @@ class FabSettingsPage extends StatefulWidget {
 class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMixin {
   /// -------------------------- FAB Related Settings --------------------------
   // FAB Settings
-  bool enableFeedsFab = false;
-  bool enablePostsFab = false;
+  bool enableFeedsFab = true;
+  bool enablePostsFab = true;
 
   bool enableBackToTop = true;
   bool enableSubscriptions = true;
@@ -30,6 +30,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool enableRefresh = true;
   bool enableDismissRead = true;
   bool enableNewPost = true;
+
+  bool postFabEnableBackToTop = true;
+  bool postFabEnableChangeSort = true;
+  bool postFabEnableReplyToPost = true;
 
   /// Loading
   bool isLoading = true;
@@ -81,6 +85,18 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.enableNewPost.name, value);
         setState(() => enableNewPost = value);
         break;
+      case LocalSettings.postFabEnableBackToTop:
+        await prefs.setBool(LocalSettings.postFabEnableBackToTop.name, value);
+        setState(() => postFabEnableBackToTop = value);
+        break;
+      case LocalSettings.postFabEnableChangeSort:
+        await prefs.setBool(LocalSettings.postFabEnableChangeSort.name, value);
+        setState(() => postFabEnableChangeSort = value);
+        break;
+      case LocalSettings.postFabEnableReplyToPost:
+        await prefs.setBool(LocalSettings.postFabEnableReplyToPost.name, value);
+        setState(() => postFabEnableReplyToPost = value);
+        break;
     }
 
     if (context.mounted) {
@@ -92,15 +108,19 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     setState(() {
-      enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? false;
-      enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? false;
+      enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
+      enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
 
-      enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? false;
-      enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? false;
-      enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? false;
-      enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? false;
-      enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? false;
-      enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? false;
+      enableBackToTop = prefs.getBool(LocalSettings.enableBackToTop.name) ?? true;
+      enableSubscriptions = prefs.getBool(LocalSettings.enableSubscriptions.name) ?? true;
+      enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
+      enableRefresh = prefs.getBool(LocalSettings.enableRefresh.name) ?? true;
+      enableDismissRead = prefs.getBool(LocalSettings.enableDismissRead.name) ?? true;
+      enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
+
+      postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
+      postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
+      postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
       isLoading = false;
     });
@@ -269,6 +289,47 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                           description: LocalSettings.enablePostsFab.label,
                           value: enablePostsFab,
                           onToggle: (bool value) => setPreferences(LocalSettings.enablePostsFab, value),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(position: _offsetAnimation, child: child),
+                            );
+                          },
+                          child: enablePostsFab
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  child: Column(
+                                    children: [
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableBackToTop.label,
+                                        value: postFabEnableBackToTop,
+                                        iconEnabled: Icons.arrow_upward,
+                                        iconDisabled: Icons.arrow_upward,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableBackToTop, value),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableChangeSort.label,
+                                        value: postFabEnableChangeSort,
+                                        iconEnabled: Icons.sort_rounded,
+                                        iconDisabled: Icons.sort_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableChangeSort, value),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableReplyToPost.label,
+                                        value: postFabEnableReplyToPost,
+                                        iconEnabled: Icons.reply_rounded,
+                                        iconDisabled: Icons.reply_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableReplyToPost, value),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : null,
                         ),
                       ],
                     ),
