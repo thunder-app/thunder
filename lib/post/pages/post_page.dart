@@ -49,8 +49,6 @@ class _PostPageState extends State<PostPage> {
   bool isFabSummoned = true;
   bool enableFab = false;
 
-  Offset? _currentHorizontalDragStartPosition;
-
   @override
   void initState() {
     super.initState();
@@ -69,7 +67,7 @@ class _PostPageState extends State<PostPage> {
     if (context.read<ThunderBloc>().state.isFabOpen) {
       context.read<ThunderBloc>().add(const OnFabToggle(false));
     }
-    return true;
+    return false;
   }
 
   void _onScroll() {
@@ -335,7 +333,6 @@ class _PostPageState extends State<PostPage> {
                 postId: widget.postId,
                 sortType: sortType,
               ));
-          //Navigator.of(context).pop();
         },
       ),
     );
