@@ -18,6 +18,7 @@ import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to pr
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../user/bloc/user_bloc.dart';
 
@@ -254,6 +255,7 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
+        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(
             providers: [

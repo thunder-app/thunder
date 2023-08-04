@@ -23,6 +23,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -289,6 +290,7 @@ class _SearchPageState extends State<SearchPage> {
 
                         Navigator.of(context).push(
                           SwipeablePageRoute(
+                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                             builder: (context) => MultiBlocProvider(
                               providers: [
                                 BlocProvider.value(value: accountBloc),

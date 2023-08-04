@@ -22,6 +22,7 @@ import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -94,6 +95,7 @@ class PostSubview extends StatelessWidget {
 
                     Navigator.of(context).push(
                       SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -136,6 +138,7 @@ class PostSubview extends StatelessWidget {
 
                     Navigator.of(context).push(
                       SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),

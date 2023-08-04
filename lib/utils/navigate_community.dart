@@ -10,6 +10,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/swipe.dart';
 
 Future<void> navigateToCommunityByName(BuildContext context, String communityName) async {
   // Get the id from the name
@@ -29,6 +30,7 @@ Future<void> navigateToCommunityByName(BuildContext context, String communityNam
 
   Navigator.of(context).push(
     SwipeablePageRoute(
+      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: accountBloc),

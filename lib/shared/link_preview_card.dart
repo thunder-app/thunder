@@ -16,6 +16,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -234,6 +235,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       Navigator.of(context).push(
         SwipeablePageRoute(
+          canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
           builder: (context) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: accountBloc),

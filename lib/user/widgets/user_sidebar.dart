@@ -14,6 +14,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
@@ -269,6 +270,7 @@ class _UserSidebarState extends State<UserSidebar> {
 
                                                     Navigator.of(context).push(
                                                       SwipeablePageRoute(
+                                                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                                                         builder: (context) => MultiBlocProvider(
                                                           providers: [
                                                             BlocProvider.value(value: accountBloc),
