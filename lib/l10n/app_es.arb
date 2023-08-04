@@ -32,6 +32,7 @@
   "accountSettings": "Account Settings",
   "profiles": "Profiles",
   "logOut": "Log out",
+  "close": "Close",
   "navigateUp": "Navigate to previous comment",
   "navigateDown": "Navigate to next comment"
 }

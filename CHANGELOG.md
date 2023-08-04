@@ -18,6 +18,7 @@
 - Added additional localization strings to Thunder, and added temporary language files for Swedish/Finnish
 - Added manual refreshing to the user account page - contribution from @micahmo 
 - Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
+- Long-pressing on FAB shows extended actions - contribution from @micahmo
 - Added comment navigation buttons - contribution from @micahmo
 
 ### Changed

@@ -2,6 +2,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
 
@@ -105,6 +106,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
               child: Icon(
                 Icons.close,
                 color: Theme.of(context).primaryColor,
+                semanticLabel: AppLocalizations.of(context)!.close,
               ),
             ),
           ),
@@ -154,6 +156,9 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
               }
             },
             onHorizontalDragStart: null,
+            onLongPress: () {
+              context.read<ThunderBloc>().add(const OnFabToggle(true));
+            },
             child: FloatingActionButton(
               onPressed: () {
                 widget.onPressed?.call();
