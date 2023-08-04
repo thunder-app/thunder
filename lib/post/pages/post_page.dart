@@ -52,14 +52,6 @@ class _PostPageState extends State<PostPage> {
 
   Offset? _currentHorizontalDragStartPosition;
 
-  void _onScroll() {
-    if ((_itemScrollController.primaryScrollController?.position.pixels ?? 0) >= (_itemScrollController.primaryScrollController?.position.maxScrollExtent ?? 0) * 0.95) {
-      if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
-    } else {
-      if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
-    }
-  }
-
   CommentSortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
@@ -86,7 +78,7 @@ class _PostPageState extends State<PostPage> {
       _previousIsFabSummoned = isFabSummoned;
     }
 
-    Widget result = WillPopScope(
+    return WillPopScope(
       onWillPop: () {
         if (context.read<ThunderBloc>().state.isFabOpen) {
           context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -334,11 +326,6 @@ class _PostPageState extends State<PostPage> {
         ),
       ),
     );
-
-    // Can't add a listener until the primaryScrollController is build by the widget
-    _itemScrollController.primaryScrollController?.addListener(_onScroll);
-
-    return result;
   }
 
 //TODO: More or less duplicate from community_page.dart
