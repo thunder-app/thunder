@@ -19,6 +19,7 @@
 - Added manual refreshing to the user account page - contribution from @micahmo 
 - Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
 - Added additional font scaling options for comments and metadata
+- Long-pressing on FAB shows extended actions - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
@@ -43,6 +44,7 @@
 - Fixed issue where saving an image on Android would save to Pictures/Pictures/Thunder instead of Pictures/Thunder
 - Fixed comment highlighting for comment context regression - contribution from @ajsosa 
 - Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
+- Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

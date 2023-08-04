@@ -87,14 +87,17 @@ class ThunderState extends Equatable {
     this.metadataFontSizeScale = FontScale.base,
 
     /// -------------------------- FAB Related Settings --------------------------
-    this.enableFeedsFab = false,
-    this.enablePostsFab = false,
+    this.enableFeedsFab = true,
+    this.enablePostsFab = true,
     this.enableBackToTop = true,
     this.enableSubscriptions = true,
     this.enableRefresh = true,
     this.enableDismissRead = true,
     this.enableChangeSort = true,
     this.enableNewPost = true,
+    this.postFabEnableBackToTop = true,
+    this.postFabEnableChangeSort = true,
+    this.postFabEnableReplyToPost = true,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -200,6 +203,10 @@ class ThunderState extends Equatable {
   final bool enableChangeSort;
   final bool enableNewPost;
 
+  final bool postFabEnableBackToTop;
+  final bool postFabEnableChangeSort;
+  final bool postFabEnableReplyToPost;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -299,6 +306,9 @@ class ThunderState extends Equatable {
     bool? enableDismissRead,
     bool? enableChangeSort,
     bool? enableNewPost,
+    bool? postFabEnableBackToTop,
+    bool? postFabEnableChangeSort,
+    bool? postFabEnableReplyToPost,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -403,6 +413,9 @@ class ThunderState extends Equatable {
       enableDismissRead: enableDismissRead ?? this.enableDismissRead,
       enableChangeSort: enableChangeSort ?? this.enableChangeSort,
       enableNewPost: enableNewPost ?? this.enableNewPost,
+      postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
+      postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
+      postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
 
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
@@ -508,6 +521,9 @@ class ThunderState extends Equatable {
         enableSubscriptions,
         enableRefresh,
         enableDismissRead,
+        postFabEnableBackToTop,
+        postFabEnableChangeSort,
+        postFabEnableReplyToPost,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

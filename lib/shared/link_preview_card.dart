@@ -59,10 +59,10 @@ class LinkPreviewCard extends StatelessWidget {
       return Padding(
         padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
         child: InkWell(
-          borderRadius: BorderRadius.circular(12), // Image border
+          borderRadius: BorderRadius.circular(edgeToEdgeImages ? 0 : 12), // Image border
           child: Container(
             clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(edgeToEdgeImages ? 0 : 12)),
             child: Stack(
               alignment: Alignment.bottomRight,
               fit: StackFit.passthrough,

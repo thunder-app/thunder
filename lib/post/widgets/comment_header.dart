@@ -62,7 +62,7 @@ class CommentHeader extends StatelessWidget {
                   child: Row(
                     children: [
                       Material(
-                        color: isSpecialUser(context, isOwnComment) ? fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground : null,
+                        color: isSpecialUser(context, isOwnComment) ? fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground : Colors.transparent,
                         borderRadius: isSpecialUser(context, isOwnComment) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),

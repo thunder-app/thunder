@@ -33,5 +33,6 @@
   "backToTop": "Back to Top",
   "accountSettings": "Account Settings",
   "profiles": "Profiles",
-  "logOut": "Log out"
+  "logOut": "Log out",
+  "close": "Close"
 }

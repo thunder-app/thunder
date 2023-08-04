@@ -78,6 +78,10 @@ class _PostPageState extends State<PostPage> {
     final ThunderState thunderState = context.watch<ThunderBloc>().state;
     enableFab = thunderState.enablePostsFab;
 
+    bool enableBackToTop = thunderState.postFabEnableBackToTop;
+    bool enableChangeSort = thunderState.postFabEnableChangeSort;
+    bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
+
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
       _previousIsFabOpen = isFabOpen;
@@ -139,42 +143,45 @@ class _PostPageState extends State<PostPage> {
                               ),
                               onPressed: replyToPost,
                               children: [
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    replyToPost();
-                                  },
-                                  title: AppLocalizations.of(context)!.replyToPost,
-                                  icon: Icon(
-                                    Icons.reply_rounded,
-                                    semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                if (enableReplyToPost)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      replyToPost();
+                                    },
+                                    title: AppLocalizations.of(context)!.replyToPost,
+                                    icon: Icon(
+                                      Icons.reply_rounded,
+                                      semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                    ),
                                   ),
-                                ),
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    showSortBottomSheet(context, state);
-                                  },
-                                  title: AppLocalizations.of(context)!.changeSort,
-                                  icon: Icon(
-                                    sortTypeIcon,
-                                    semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                if (enableChangeSort)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      showSortBottomSheet(context, state);
+                                    },
+                                    title: AppLocalizations.of(context)!.changeSort,
+                                    icon: Icon(
+                                      sortTypeIcon,
+                                      semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                    ),
                                   ),
-                                ),
-                                ActionButton(
-                                  onPressed: () {
-                                    _scrollController.animateTo(
-                                      0,
-                                      duration: const Duration(milliseconds: 500),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  title: AppLocalizations.of(context)!.backToTop,
-                                  icon: Icon(
-                                    Icons.arrow_upward,
-                                    semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                if (enableBackToTop)
+                                  ActionButton(
+                                    onPressed: () {
+                                      _scrollController.animateTo(
+                                        0,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    title: AppLocalizations.of(context)!.backToTop,
+                                    icon: Icon(
+                                      Icons.arrow_upward,
+                                      semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                    ),
                                   ),
-                                ),
                               ],
                             )
                           : null,
