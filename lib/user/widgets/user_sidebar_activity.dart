@@ -28,7 +28,10 @@ class UserSidebarActivity extends StatelessWidget {
             color: theme.colorScheme.onBackground.withOpacity(0.65),
           ),
         ),
-    Text('$scoreMetric $scoreLabel', style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),),
+        Text(
+          '$scoreMetric $scoreLabel',
+          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+        ),
       ],
     );
   }
