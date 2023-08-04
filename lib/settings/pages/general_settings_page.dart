@@ -370,7 +370,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           value: disableScoreCounters,
                           iconEnabled: Icons.score_rounded,
                           iconDisabled: Icons.score_rounded,
-                          onToggle: (bool value) => setPreferences('setting_disable_score_counters', value),
+                          onToggle: (bool value) => setPreferences(LocalSettings.disableScoreCounters, value),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
