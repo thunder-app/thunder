@@ -24,12 +24,11 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/utils/swipe.dart';
 
-class PostSubview extends StatelessWidget {
+class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
-
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -39,10 +38,18 @@ class PostSubview extends StatelessWidget {
   });
 
   @override
+  State<PostSubview> createState() => _PostSubview();
+
+}
+
+class _PostSubview extends State<PostSubview> with AutomaticKeepAliveClientMixin {
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     final theme = Theme.of(context);
 
-    final PostView postView = postViewMedia.postView;
+    final PostView postView = widget.postViewMedia.postView;
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
@@ -69,12 +76,12 @@ class PostSubview extends StatelessWidget {
           MediaView(
             scrapeMissingPreviews: scrapeMissingPreviews,
             post: post,
-            postView: postViewMedia,
+            postView: widget.postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
             isUserLoggedIn: isUserLoggedIn,
           ),
-          if (postViewMedia.postView.post.body != null)
+          if (widget.postViewMedia.postView.post.body != null)
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: CommonMarkdownBody(
@@ -167,9 +174,9 @@ class PostSubview extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
                   child: PostViewMetaData(
-                    comments: postViewMedia.postView.counts.comments,
-                    unreadComments: postViewMedia.postView.unreadComments,
-                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                    comments: widget.postViewMedia.postView.counts.comments,
+                    unreadComments: widget.postViewMedia.postView.unreadComments,
+                    hasBeenEdited: widget.postViewMedia.postView.post.updated != null ? true : false,
                     published: post.published,
                     saved: postView.saved,
                   ),
@@ -205,7 +212,7 @@ class PostSubview extends StatelessWidget {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        formatNumberToK(postViewMedia.postView.counts.upvotes),
+                        formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
                         style: TextStyle(
                           color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
@@ -240,7 +247,7 @@ class PostSubview extends StatelessWidget {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        formatNumberToK(postViewMedia.postView.counts.downvotes),
+                        formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
                         style: TextStyle(
                           color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                         ),
@@ -306,11 +313,11 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: postViewMedia.media.isEmpty
+                  onPressed: widget.postViewMedia.media.isEmpty
                       ? () => Share.share(post.apId)
                       : () => showPostActionBottomModalSheet(
                             context,
-                            postViewMedia,
+                    widget.postViewMedia,
                             actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                           ),
                 ),
@@ -323,17 +330,20 @@ class PostSubview extends StatelessWidget {
   }
 
   String fetchUsernameDescriptor(BuildContext context) {
-    PostView postView = postViewMedia.postView;
+    PostView postView = widget.postViewMedia.postView;
     final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     String descriptor = '';
 
     if (isOwnPost) descriptor += 'me';
     if (isAdmin(postView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (isModerator(postView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
+    if (isModerator(postView.creator, widget.moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 
     return descriptor;
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

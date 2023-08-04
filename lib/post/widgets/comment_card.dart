@@ -63,7 +63,7 @@ class CommentCard extends StatefulWidget {
   State<CommentCard> createState() => _CommentCardState();
 }
 
-class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin {
+class _CommentCardState extends State<CommentCard> with SingleTickerProviderStateMixin, AutomaticKeepAliveClientMixin {
   // @todo - make this themeable
   List<Color> colors = [
     Colors.red.shade300,
@@ -496,4 +496,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }
