@@ -28,14 +28,13 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
         borderRadius: BorderRadius.circular(50),
         child: Stack(
           children: [
-            const Positioned.fill(
+            Positioned.fill(
               child: Align(
                 child: SizedBox(
-                  width: 100,
                   height: 45,
                   child: Material(
-                    shape: RoundedRectangleBorder(),
-                    child: InkWell(),
+                    borderRadius: BorderRadius.circular(50),
+                    child: const InkWell(),
                   ),
                 ),
               ),
@@ -48,8 +47,9 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                   height: 45,
                   child: Material(
                     clipBehavior: Clip.antiAlias,
-                    shape: const CircleBorder(),
+                    color: Colors.transparent,
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
                       onTap: navigateUp,
                       child: Icon(
                         Icons.keyboard_arrow_up_rounded,
@@ -64,8 +64,9 @@ class _CommentNavigatorFabState extends State<CommentNavigatorFab> {
                   height: 45,
                   child: Material(
                     clipBehavior: Clip.antiAlias,
-                    shape: const CircleBorder(),
+                    color: Colors.transparent,
                     child: InkWell(
+                      borderRadius: BorderRadius.circular(50),
                       onTap: navigateDown,
                       child: Icon(
                         Icons.keyboard_arrow_down_rounded,
