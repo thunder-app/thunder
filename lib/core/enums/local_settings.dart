@@ -82,6 +82,10 @@ enum LocalSettings {
   enableDismissRead(name: 'setting_enable_dismiss_read_fab', label: 'Dismiss Read'),
   enableChangeSort(name: 'setting_enable_change_sort_fab', label: 'Change Sort'),
   enableNewPost(name: 'setting_enable_new_post_fab', label: 'New Post'),
+
+  postFabEnableBackToTop(name: 'setting_post_fab_enable_back_to_top', label: 'Back to Top'),
+  postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
+  postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
   ;
 
   const LocalSettings({
