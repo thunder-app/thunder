@@ -29,6 +29,7 @@ class PostSubview extends StatefulWidget {
   final bool useDisplayNames;
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
+
   const PostSubview({
     super.key,
     this.selectedCommentId,
@@ -39,7 +40,6 @@ class PostSubview extends StatefulWidget {
 
   @override
   State<PostSubview> createState() => _PostSubview();
-
 }
 
 class _PostSubview extends State<PostSubview> with AutomaticKeepAliveClientMixin {
@@ -317,7 +317,7 @@ class _PostSubview extends State<PostSubview> with AutomaticKeepAliveClientMixin
                       ? () => Share.share(post.apId)
                       : () => showPostActionBottomModalSheet(
                             context,
-                    widget.postViewMedia,
+                            widget.postViewMedia,
                             actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                           ),
                 ),
