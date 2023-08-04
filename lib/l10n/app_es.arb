@@ -34,5 +34,6 @@
   "accountSettings": "Account Settings",
   "profiles": "Profiles",
   "logOut": "Log out",
-  "close": "Close"
+  "close": "Close",
+  "back": "Back"
 }

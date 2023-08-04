@@ -120,6 +120,18 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back,
+                  semanticLabel: AppLocalizations.of(context)!.back,
+                ),
+                onPressed: () {
+                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
               actions: [
                 IconButton(
                   icon: Icon(
