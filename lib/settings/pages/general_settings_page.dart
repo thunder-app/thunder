@@ -65,6 +65,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showCommentButtonActions = false;
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
   NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
+  bool enableCommentNavigation = true;
 
   // Page State
   bool isLoading = true;
@@ -196,6 +197,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setString(LocalSettings.nestedCommentIndicatorColor.name, value);
         setState(() => nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(value ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name));
         break;
+      case LocalSettings.enableCommentNavigation:
+        await prefs.setBool(LocalSettings.enableCommentNavigation.name, value);
+        setState(() => enableCommentNavigation = value);
+        break;
     }
 
     if (context.mounted) {
@@ -245,6 +250,8 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+
+      enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
 
       // Links
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
@@ -587,6 +594,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ],
                           icon: Icons.color_lens_outlined,
                           onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+                        ),
+                        ToggleOption(
+                          description: LocalSettings.enableCommentNavigation.label,
+                          value: enableCommentNavigation,
+                          iconEnabled: Icons.unfold_more_rounded,
+                          iconDisabled: Icons.unfold_less_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.enableCommentNavigation, value),
                         ),
                       ],
                     ),

@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -37,7 +39,8 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final _scrollController = ScrollController(initialScrollOffset: 0);
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
   bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _previousIsFabOpen = false;
@@ -45,23 +48,12 @@ class _PostPageState extends State<PostPage> {
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool enableCommentNavigation = true;
 
   Offset? _currentHorizontalDragStartPosition;
 
-  @override
-  void initState() {
-    super.initState();
-    _scrollController.addListener(_onScroll);
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
+    if ((_itemScrollController.primaryScrollController?.position.pixels ?? 0) >= (_itemScrollController.primaryScrollController?.position.maxScrollExtent ?? 0) * 0.95) {
       if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
     } else {
       if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
@@ -77,6 +69,7 @@ class _PostPageState extends State<PostPage> {
     final theme = Theme.of(context);
     final ThunderState thunderState = context.watch<ThunderBloc>().state;
     enableFab = thunderState.enablePostsFab;
+    enableCommentNavigation = thunderState.enableCommentNavigation;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
@@ -88,7 +81,7 @@ class _PostPageState extends State<PostPage> {
       _previousIsFabSummoned = isFabSummoned;
     }
 
-    return WillPopScope(
+    Widget result = WillPopScope(
       onWillPop: () {
         if (context.read<ThunderBloc>().state.isFabOpen) {
           context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -126,60 +119,80 @@ class _PostPageState extends State<PostPage> {
                 centerTitle: false,
                 toolbarHeight: 70.0,
               ),
-              floatingActionButton: enableFab
-                  ? AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 250),
-                      child: isFabSummoned
-                          ? GestureFab(
-                              distance: 60,
-                              icon: Icon(
-                                Icons.reply_rounded,
-                                semanticLabel: AppLocalizations.of(context)!.replyToPost,
-                                size: 35,
-                              ),
-                              onPressed: replyToPost,
-                              children: [
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    replyToPost();
-                                  },
-                                  title: AppLocalizations.of(context)!.replyToPost,
-                                  icon: Icon(
-                                    Icons.reply_rounded,
-                                    semanticLabel: AppLocalizations.of(context)!.replyToPost,
-                                  ),
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+              floatingActionButton: Stack(
+                alignment: Alignment.center,
+                children: [
+                  if (enableFab)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16),
+                      child: AnimatedSwitcher(
+                        duration: const Duration(milliseconds: 250),
+                        child: isFabSummoned
+                            ? GestureFab(
+                                distance: 60,
+                                icon: Icon(
+                                  Icons.reply_rounded,
+                                  semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                  size: 35,
                                 ),
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    showSortBottomSheet(context, state);
-                                  },
-                                  title: AppLocalizations.of(context)!.changeSort,
-                                  icon: Icon(
-                                    sortTypeIcon,
-                                    semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                onPressed: replyToPost,
+                                children: [
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      replyToPost();
+                                    },
+                                    title: AppLocalizations.of(context)!.replyToPost,
+                                    icon: Icon(
+                                      Icons.reply_rounded,
+                                      semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                    ),
                                   ),
-                                ),
-                                ActionButton(
-                                  onPressed: () {
-                                    _scrollController.animateTo(
-                                      0,
-                                      duration: const Duration(milliseconds: 500),
-                                      curve: Curves.easeInOut,
-                                    );
-                                  },
-                                  title: AppLocalizations.of(context)!.backToTop,
-                                  icon: Icon(
-                                    Icons.arrow_upward,
-                                    semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      showSortBottomSheet(context, state);
+                                    },
+                                    title: AppLocalizations.of(context)!.changeSort,
+                                    icon: Icon(
+                                      sortTypeIcon,
+                                      semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )
-                          : null,
-                    )
-                  : null,
+                                  ActionButton(
+                                    onPressed: () {
+                                      _itemScrollController.scrollTo(
+                                        index: 0,
+                                        duration: const Duration(milliseconds: 500),
+                                        curve: Curves.easeInOut,
+                                      );
+                                    },
+                                    title: AppLocalizations.of(context)!.backToTop,
+                                    icon: Icon(
+                                      Icons.arrow_upward,
+                                      semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : null,
+                      ),
+                    ),
+                  if (enableCommentNavigation)
+                    Positioned.fill(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 5),
+                        child: Align(
+                          alignment: Alignment.bottomCenter,
+                          child: CommentNavigatorFab(
+                            itemPositionsListener: _itemPositionsListener,
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
               body: GestureDetector(
                 onHorizontalDragStart: (details) {
                   _currentHorizontalDragStartPosition = details.globalPosition;
@@ -255,7 +268,8 @@ class _PostPageState extends State<PostPage> {
                                     selectedCommentPath: state.selectedCommentPath,
                                     moddingCommentId: state.moddingCommentId,
                                     viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                    scrollController: _scrollController,
+                                    itemScrollController: _itemScrollController,
+                                    itemPositionsListener: _itemPositionsListener,
                                     hasReachedCommentEnd: state.hasReachedCommentEnd,
                                     moderators: state.moderators,
                                   ),
@@ -312,6 +326,11 @@ class _PostPageState extends State<PostPage> {
         ),
       ),
     );
+
+    // Can't add a listener until the primaryScrollController is build by the widget
+    _itemScrollController.primaryScrollController?.addListener(_onScroll);
+
+    return result;
   }
 
 //TODO: More or less duplicate from community_page.dart

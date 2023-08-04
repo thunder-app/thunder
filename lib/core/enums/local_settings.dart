@@ -82,6 +82,8 @@ enum LocalSettings {
   enableDismissRead(name: 'setting_enable_dismiss_read_fab', label: 'Dismiss Read'),
   enableChangeSort(name: 'setting_enable_change_sort_fab', label: 'Change Sort'),
   enableNewPost(name: 'setting_enable_new_post_fab', label: 'New Post'),
+
+  enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   ;
 
   const LocalSettings({

@@ -93,6 +93,7 @@ class ThunderState extends Equatable {
     this.enableDismissRead = true,
     this.enableChangeSort = true,
     this.enableNewPost = true,
+    this.enableCommentNavigation = true,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -196,6 +197,8 @@ class ThunderState extends Equatable {
   final bool enableChangeSort;
   final bool enableNewPost;
 
+  final bool enableCommentNavigation;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -293,6 +296,7 @@ class ThunderState extends Equatable {
     bool? enableDismissRead,
     bool? enableChangeSort,
     bool? enableNewPost,
+    bool? enableCommentNavigation,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -396,6 +400,8 @@ class ThunderState extends Equatable {
       enableChangeSort: enableChangeSort ?? this.enableChangeSort,
       enableNewPost: enableNewPost ?? this.enableNewPost,
 
+      enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -498,6 +504,8 @@ class ThunderState extends Equatable {
         enableSubscriptions,
         enableRefresh,
         enableDismissRead,
+
+        enableCommentNavigation,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

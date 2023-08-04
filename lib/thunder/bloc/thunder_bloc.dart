@@ -168,6 +168,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableChangeSort = prefs.getBool(LocalSettings.enableChangeSort.name) ?? true;
       bool enableNewPost = prefs.getBool(LocalSettings.enableNewPost.name) ?? true;
 
+      bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -254,6 +256,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         enableDismissRead: enableDismissRead,
         enableChangeSort: enableChangeSort,
         enableNewPost: enableNewPost,
+
+        enableCommentNavigation: enableCommentNavigation,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

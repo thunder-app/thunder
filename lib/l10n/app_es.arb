@@ -29,9 +29,9 @@
   "postUploadImageError": "Error when uploading image",
   "postNSFW": "Mark as NSFW",
   "replyToPost": "Reply to Post",
-  "changeSort": "Change Sort",
-  "backToTop": "Back to Top",
   "accountSettings": "Account Settings",
   "profiles": "Profiles",
-  "logOut": "Log out"
+  "logOut": "Log out",
+  "navigateUp": "Navigate to previous comment",
+  "navigateDown": "Navigate to next comment"
 }
