@@ -5,6 +5,7 @@ import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -117,7 +118,7 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                         Navigator.of(context).push(
-                          MaterialPageRoute(
+                          SwipeablePageRoute(
                             builder: (context) => MultiBlocProvider(
                               providers: [
                                 BlocProvider.value(value: accountBloc),
@@ -199,7 +200,7 @@ void onTapCommunityName(BuildContext context, int communityId) {
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
   Navigator.of(context).push(
-    MaterialPageRoute(
+    SwipeablePageRoute(
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: accountBloc),
@@ -218,7 +219,7 @@ void onTapUserName(BuildContext context, int userId) {
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
   Navigator.of(context).push(
-    MaterialPageRoute(
+    SwipeablePageRoute(
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: accountBloc),

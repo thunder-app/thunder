@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -92,7 +93,7 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -134,7 +135,7 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),

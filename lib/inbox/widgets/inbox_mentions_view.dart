@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -42,7 +43,7 @@ class InboxMentionsView extends StatelessWidget {
 
               // To to specific post for now, in the future, will be best to scroll to the position of the comment
               await Navigator.of(context).push(
-                MaterialPageRoute(
+                SwipeablePageRoute(
                   builder: (context) => MultiBlocProvider(
                     providers: [
                       BlocProvider.value(value: accountBloc),
@@ -146,7 +147,7 @@ class InboxMentionsView extends StatelessWidget {
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
     Navigator.of(context).push(
-      MaterialPageRoute(
+      SwipeablePageRoute(
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider.value(value: accountBloc),

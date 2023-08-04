@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -252,7 +253,7 @@ class _PostCardState extends State<PostCard> {
     }
 
     await Navigator.of(context).push(
-      MaterialPageRoute(
+      SwipeablePageRoute(
         builder: (context) {
           return MultiBlocProvider(
             providers: [
