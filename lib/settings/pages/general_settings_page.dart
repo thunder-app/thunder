@@ -295,13 +295,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4, bottom: 8.0),
                           child: Text(
                             'Feed',
                             style: theme.textTheme.titleLarge,
@@ -388,13 +388,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Posts',
                             style: theme.textTheme.titleLarge,
@@ -529,13 +529,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Comments',
                             style: theme.textTheme.titleLarge,
@@ -592,13 +592,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Links',
                             style: theme.textTheme.titleLarge,
@@ -623,13 +623,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Notifications',
                             style: theme.textTheme.titleLarge,

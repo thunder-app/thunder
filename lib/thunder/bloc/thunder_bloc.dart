@@ -172,6 +172,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
+      String feedFabSinglePressAction = prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? LocalSettings.enableDismissRead.name;
+      String feedFabLongPressAction = prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? 'open_fab';
+      String postFabSinglePressAction = prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? LocalSettings.postFabEnableReplyToPost.name;
+      String postFabLongPressAction = prefs.getString(LocalSettings.postFabLongPressAction.name) ?? 'open_fab';
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -262,6 +267,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabEnableBackToTop: postFabEnableBackToTop,
         postFabEnableChangeSort: postFabEnableChangeSort,
         postFabEnableReplyToPost: postFabEnableReplyToPost,
+
+        feedFabSinglePressAction: feedFabSinglePressAction,
+        feedFabLongPressAction: feedFabLongPressAction,
+        postFabSinglePressAction: postFabSinglePressAction,
+        postFabLongPressAction: postFabLongPressAction,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

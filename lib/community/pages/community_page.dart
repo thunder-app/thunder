@@ -72,6 +72,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     bool enableRefresh = state.enableRefresh;
     bool enableDismissRead = state.enableDismissRead;
     bool enableNewPost = state.enableNewPost;
+    String singlePressAction = state.feedFabSinglePressAction;
+    String longPressAction = state.feedFabLongPressAction;
 
     if (state.isFabOpen != _previousIsFabOpen) {
       isFabOpen = state.isFabOpen;
@@ -242,65 +244,68 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   ? GestureFab(
                                       distance: 60,
                                       icon: Icon(
-                                        Icons.clear_all_rounded,
-                                        semanticLabel: AppLocalizations.of(context)!.dismissRead,
+                                        isFabActionAllowed(singlePressAction, state) == true
+                                            ? getFabActionIcon(singlePressAction, override: singlePressAction == LocalSettings.enableChangeSort.name ? sortTypeIcon : null)
+                                            : getFabActionIcon(LocalSettings.enableDismissRead.name),
+                                        semanticLabel:
+                                            isFabActionAllowed(singlePressAction, state) == true ? getFabActionTitle(singlePressAction) : getFabActionTitle(LocalSettings.enableDismissRead.name),
                                         size: 35,
                                       ),
                                       onPressed: () {
                                         HapticFeedback.lightImpact();
-                                        context.read<ThunderBloc>().add(const OnDismissEvent(true));
+                                        isFabActionAllowed(singlePressAction, state) == true
+                                            ? executeFabAction(singlePressAction, state, bloc: context.read<CommunityBloc>())
+                                            : executeFabAction(LocalSettings.enableDismissRead.name, state);
+                                      },
+                                      onLongPress: () {
+                                        isFabActionAllowed(longPressAction, state) == true
+                                            ? executeFabAction(longPressAction, state, bloc: context.read<CommunityBloc>())
+                                            : executeFabAction('open_fab', state);
                                       },
                                       children: [
-                                        if (enableDismissRead)
+                                        if (isFabActionAllowed(LocalSettings.enableDismissRead.name, state) == true && enableDismissRead)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              context.read<ThunderBloc>().add(const OnDismissEvent(true));
+                                              executeFabAction(LocalSettings.enableDismissRead.name, state);
                                             },
-                                            title: AppLocalizations.of(context)!.dismissRead,
+                                            title: getFabActionTitle(LocalSettings.enableDismissRead.name),
                                             icon: Icon(
-                                              Icons.clear_all_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.dismissRead,
+                                              getFabActionIcon(LocalSettings.enableDismissRead.name),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableDismissRead.name),
                                             ),
                                           ),
-                                        if (enableRefresh)
+                                        if (isFabActionAllowed(LocalSettings.enableRefresh.name, state) == true && enableRefresh)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              context.read<AccountBloc>().add(GetAccountInformation());
-                                              return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                                    reset: true,
-                                                    sortType: sortType,
-                                                    communityId: state.communityId,
-                                                    listingType: state.listingType,
-                                                    communityName: state.communityName,
-                                                  ));
+                                              executeFabAction(LocalSettings.enableRefresh.name, state, bloc: context.read<CommunityBloc>());
                                             },
-                                            title: AppLocalizations.of(context)!.refresh,
+                                            title: getFabActionTitle(LocalSettings.enableRefresh.name),
                                             icon: Icon(
-                                              Icons.refresh_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.refresh,
+                                              getFabActionIcon(LocalSettings.enableRefresh.name),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableRefresh.name),
                                             ),
                                           ),
-                                        if (enableChangeSort)
+                                        if (isFabActionAllowed(LocalSettings.enableChangeSort.name, state) == true && enableChangeSort)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.mediumImpact();
-                                              showSortBottomSheet(context, state);
+                                              executeFabAction(LocalSettings.enableChangeSort.name, state);
                                             },
-                                            title: AppLocalizations.of(context)!.changeSort,
+                                            title: getFabActionTitle(LocalSettings.enableChangeSort.name),
                                             icon: Icon(
-                                              sortTypeIcon,
-                                              semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                              getFabActionIcon(LocalSettings.enableChangeSort.name, override: sortTypeIcon),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableChangeSort.name),
                                             ),
                                           ),
-                                        if (widget.scaffoldKey != null && enableSubscriptions)
+                                        if (isFabActionAllowed(LocalSettings.enableSubscriptions.name, state) == true && enableSubscriptions)
                                           ActionButton(
-                                            onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
-                                            title: AppLocalizations.of(context)!.subscriptions,
+                                            onPressed: () => executeFabAction(LocalSettings.enableSubscriptions.name, state),
+                                            title: getFabActionTitle(LocalSettings.enableSubscriptions.name),
                                             icon: Icon(
-                                              Icons.people_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.subscriptions,
+                                              getFabActionIcon(LocalSettings.enableSubscriptions.name),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableSubscriptions.name),
                                             ),
                                           ),
                                         /*const ActionButton(
@@ -308,40 +313,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             title: state. ? "Large View" : "Compact View",
                             icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
                           ),*/
-                                        if (enableBackToTop)
+                                        if (isFabActionAllowed(LocalSettings.enableBackToTop.name, state) == true && enableBackToTop)
                                           ActionButton(
                                             onPressed: () {
-                                              context.read<ThunderBloc>().add(OnScrollToTopEvent());
+                                              executeFabAction(LocalSettings.enableBackToTop.name, state);
                                             },
-                                            title: AppLocalizations.of(context)!.backToTop,
+                                            title: getFabActionTitle(LocalSettings.enableBackToTop.name),
                                             icon: Icon(
-                                              Icons.arrow_upward,
-                                              semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                              getFabActionIcon(LocalSettings.enableBackToTop.name),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableBackToTop.name),
                                             ),
                                           ),
-                                        if (state.communityId != null && enableNewPost || state.communityName != null && enableNewPost)
+                                        if (isFabActionAllowed(LocalSettings.enableNewPost.name, state) == true && enableNewPost)
                                           ActionButton(
                                             onPressed: () {
-                                              CommunityBloc communityBloc = context.read<CommunityBloc>();
-                                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return MultiBlocProvider(
-                                                      providers: [
-                                                        BlocProvider<CommunityBloc>.value(value: communityBloc),
-                                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                                      ],
-                                                      child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                                                    );
-                                                  },
-                                                ),
-                                              );
+                                              executeFabAction(LocalSettings.enableNewPost.name, state, bloc: context.read<CommunityBloc>());
                                             },
-                                            title: AppLocalizations.of(context)!.createPost,
+                                            title: getFabActionTitle(LocalSettings.enableNewPost.name),
                                             icon: Icon(
-                                              Icons.add,
-                                              semanticLabel: AppLocalizations.of(context)!.createPost,
+                                              getFabActionIcon(LocalSettings.enableNewPost.name),
+                                              semanticLabel: getFabActionTitle(LocalSettings.enableNewPost.name),
                                             ),
                                           ),
                                       ],
@@ -489,6 +480,107 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return false;
+  }
+
+  bool? isFabActionAllowed(String name, CommunityState state) {
+    if (name == 'open_fab') {
+      return true;
+    } else if (name == LocalSettings.enableBackToTop.name) {
+      return true;
+    } else if (name == LocalSettings.enableSubscriptions.name) {
+      return widget.scaffoldKey != null;
+    } else if (name == LocalSettings.enableChangeSort.name) {
+      return true;
+    } else if (name == LocalSettings.enableRefresh.name) {
+      return true;
+    } else if (name == LocalSettings.enableDismissRead.name) {
+      return true;
+    } else if (name == LocalSettings.enableNewPost.name) {
+      return state.communityId != null || state.communityName != null;
+    }
+    return null;
+  }
+
+  IconData? getFabActionIcon(String name, {IconData? override}) {
+    if (override != null) {
+      return override;
+    }
+
+    if (name == 'open_fab') {
+      return Icons.more_horiz_rounded;
+    } else if (name == LocalSettings.enableBackToTop.name) {
+      return Icons.arrow_upward;
+    } else if (name == LocalSettings.enableSubscriptions.name) {
+      return Icons.people_rounded;
+    } else if (name == LocalSettings.enableChangeSort.name) {
+      return Icons.sort_rounded;
+    } else if (name == LocalSettings.enableRefresh.name) {
+      return Icons.refresh_rounded;
+    } else if (name == LocalSettings.enableDismissRead.name) {
+      return Icons.clear_all_rounded;
+    } else if (name == LocalSettings.enableNewPost.name) {
+      return Icons.add_rounded;
+    }
+    return null;
+  }
+
+  String? getFabActionTitle(String name) {
+    if (name == 'open_fab') {
+      return AppLocalizations.of(context)!.open;
+    } else if (name == LocalSettings.enableBackToTop.name) {
+      return AppLocalizations.of(context)!.backToTop;
+    } else if (name == LocalSettings.enableSubscriptions.name) {
+      return AppLocalizations.of(context)!.subscriptions;
+    } else if (name == LocalSettings.enableChangeSort.name) {
+      return AppLocalizations.of(context)!.changeSort;
+    } else if (name == LocalSettings.enableRefresh.name) {
+      return AppLocalizations.of(context)!.refresh;
+    } else if (name == LocalSettings.enableDismissRead.name) {
+      return AppLocalizations.of(context)!.dismissRead;
+    } else if (name == LocalSettings.enableNewPost.name) {
+      return AppLocalizations.of(context)!.createPost;
+    }
+    return null;
+  }
+
+  void executeFabAction(String name, CommunityState state, {CommunityBloc? bloc}) {
+    if (name == 'open_fab') {
+      context.read<ThunderBloc>().add(const OnFabToggle(true));
+    } else if (name == LocalSettings.enableBackToTop.name) {
+      context.read<ThunderBloc>().add(OnScrollToTopEvent());
+    } else if (name == LocalSettings.enableSubscriptions.name) {
+      widget.scaffoldKey!.currentState!.openDrawer();
+    } else if (name == LocalSettings.enableChangeSort.name) {
+      showSortBottomSheet(context, state);
+    } else if (name == LocalSettings.enableRefresh.name) {
+      context.read<AccountBloc>().add(GetAccountInformation());
+      bloc?.add(
+        GetCommunityPostsEvent(
+          reset: true,
+          sortType: sortType,
+          communityId: state.communityId,
+          listingType: state.listingType,
+          communityName: state.communityName,
+        ),
+      );
+    } else if (name == LocalSettings.enableDismissRead.name) {
+      context.read<ThunderBloc>().add(const OnDismissEvent(true));
+    } else if (name == LocalSettings.enableNewPost.name && bloc != null) {
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<CommunityBloc>.value(value: bloc),
+                BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              ],
+              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+            );
+          },
+        ),
+      );
+    }
   }
 }
 

@@ -96,6 +96,10 @@ class ThunderState extends Equatable {
     this.postFabEnableBackToTop = true,
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
+    this.feedFabSinglePressAction = 'setting_enable_dismiss_read_fab',
+    this.feedFabLongPressAction = 'open_fab',
+    this.postFabSinglePressAction = 'setting_post_fab_enable_reply_to_post',
+    this.postFabLongPressAction = 'open_fab',
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -203,6 +207,11 @@ class ThunderState extends Equatable {
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
 
+  final String feedFabSinglePressAction;
+  final String feedFabLongPressAction;
+  final String postFabSinglePressAction;
+  final String postFabLongPressAction;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -303,6 +312,10 @@ class ThunderState extends Equatable {
     bool? postFabEnableBackToTop,
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
+    String? feedFabSinglePressAction,
+    String? feedFabLongPressAction,
+    String? postFabSinglePressAction,
+    String? postFabLongPressAction,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -408,6 +421,10 @@ class ThunderState extends Equatable {
       postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
+      feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
+      feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
+      postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
+      postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
 
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
@@ -514,6 +531,10 @@ class ThunderState extends Equatable {
         postFabEnableBackToTop,
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
+        feedFabSinglePressAction,
+        feedFabLongPressAction,
+        postFabSinglePressAction,
+        postFabLongPressAction,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

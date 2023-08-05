@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -82,6 +83,9 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
+    var singlePressAction = thunderState.postFabSinglePressAction;
+    var longPressAction = thunderState.postFabLongPressAction;
+
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
       _previousIsFabOpen = isFabOpen;
@@ -137,49 +141,46 @@ class _PostPageState extends State<PostPage> {
                           ? GestureFab(
                               distance: 60,
                               icon: Icon(
-                                Icons.reply_rounded,
-                                semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                getFabActionIcon(singlePressAction, override: singlePressAction == LocalSettings.postFabEnableChangeSort.name ? sortTypeIcon : null),
+                                semanticLabel: getFabActionTitle(singlePressAction),
                                 size: 35,
                               ),
-                              onPressed: replyToPost,
+                              onPressed: () => executeFabAction(singlePressAction, state),
+                              onLongPress: () => executeFabAction(longPressAction, state),
                               children: [
                                 if (enableReplyToPost)
                                   ActionButton(
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
-                                      replyToPost();
+                                      executeFabAction(LocalSettings.postFabEnableReplyToPost.name, state);
                                     },
-                                    title: AppLocalizations.of(context)!.replyToPost,
+                                    title: getFabActionTitle(LocalSettings.postFabEnableReplyToPost.name),
                                     icon: Icon(
-                                      Icons.reply_rounded,
-                                      semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                      getFabActionIcon(LocalSettings.postFabEnableReplyToPost.name),
+                                      semanticLabel: getFabActionTitle(LocalSettings.postFabEnableReplyToPost.name),
                                     ),
                                   ),
                                 if (enableChangeSort)
                                   ActionButton(
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
-                                      showSortBottomSheet(context, state);
+                                      executeFabAction(LocalSettings.postFabEnableChangeSort.name, state);
                                     },
-                                    title: AppLocalizations.of(context)!.changeSort,
+                                    title: getFabActionTitle(LocalSettings.postFabEnableChangeSort.name),
                                     icon: Icon(
-                                      sortTypeIcon,
-                                      semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                      getFabActionIcon(LocalSettings.postFabEnableChangeSort.name, override: sortTypeIcon),
+                                      semanticLabel: getFabActionTitle(LocalSettings.postFabEnableChangeSort.name),
                                     ),
                                   ),
                                 if (enableBackToTop)
                                   ActionButton(
                                     onPressed: () {
-                                      _scrollController.animateTo(
-                                        0,
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                      );
+                                      executeFabAction(LocalSettings.postFabEnableBackToTop.name, state);
                                     },
-                                    title: AppLocalizations.of(context)!.backToTop,
+                                    title: getFabActionTitle(LocalSettings.postFabEnableBackToTop.name),
                                     icon: Icon(
-                                      Icons.arrow_upward,
-                                      semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                      getFabActionIcon(LocalSettings.postFabEnableBackToTop.name),
+                                      semanticLabel: getFabActionTitle(LocalSettings.postFabEnableBackToTop.name),
                                     ),
                                   ),
                               ],
@@ -370,5 +371,51 @@ class _PostPageState extends State<PostPage> {
         );
       },
     );
+  }
+
+  IconData? getFabActionIcon(String name, {IconData? override}) {
+    if (override != null) {
+      return override;
+    }
+
+    if (name == 'open_fab') {
+      return Icons.more_horiz_rounded;
+    } else if (name == LocalSettings.postFabEnableBackToTop.name) {
+      return Icons.arrow_upward;
+    } else if (name == LocalSettings.postFabEnableChangeSort.name) {
+      return Icons.sort_rounded;
+    } else if (name == LocalSettings.postFabEnableReplyToPost.name) {
+      return Icons.reply_rounded;
+    }
+    return null;
+  }
+
+  String? getFabActionTitle(String name) {
+    if (name == 'open_fab') {
+      return AppLocalizations.of(context)!.open;
+    } else if (name == LocalSettings.postFabEnableBackToTop.name) {
+      return AppLocalizations.of(context)!.backToTop;
+    } else if (name == LocalSettings.postFabEnableChangeSort.name) {
+      return AppLocalizations.of(context)!.changeSort;
+    } else if (name == LocalSettings.postFabEnableReplyToPost.name) {
+      return AppLocalizations.of(context)!.replyToPost;
+    }
+    return null;
+  }
+
+  void executeFabAction(String name, PostState state) {
+    if (name == 'open_fab') {
+      context.read<ThunderBloc>().add(const OnFabToggle(true));
+    } else if (name == LocalSettings.postFabEnableBackToTop.name) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
+      );
+    } else if (name == LocalSettings.postFabEnableChangeSort.name) {
+      showSortBottomSheet(context, state);
+    } else if (name == LocalSettings.postFabEnableReplyToPost.name) {
+      replyToPost();
+    }
   }
 }
