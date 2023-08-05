@@ -20,18 +20,31 @@ class UserHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
-      decoration: userInfo?.person.banner != null
-          ? BoxDecoration(
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(userInfo!.person.banner!),
-                fit: BoxFit.cover,
-              ),
-            )
-          : null,
-      child: Container(
-        decoration: userInfo?.person.banner != null
-            ? BoxDecoration(
+    return Stack(
+      children: [
+        if (userInfo?.person.banner != null)
+          Positioned.fill(
+            child: Row(
+              children: [
+                Expanded(flex: 1, child: Container()),
+                Expanded(
+                  flex: 3,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      image: DecorationImage(
+                        image: CachedNetworkImageProvider(userInfo!.person.banner!),
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        if (userInfo?.person.banner != null)
+          Positioned.fill(
+            child: Container(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
@@ -43,9 +56,10 @@ class UserHeader extends StatelessWidget {
                     Colors.transparent,
                   ],
                 ),
-              )
-            : null,
-        child: Padding(
+              ),
+            ),
+          ),
+        Padding(
           padding: const EdgeInsets.only(top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,7 +125,7 @@ class UserHeader extends StatelessWidget {
             ],
           ),
         ),
-      ),
+      ],
     );
   }
 }

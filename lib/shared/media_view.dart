@@ -28,6 +28,7 @@ class MediaView extends StatefulWidget {
   final bool isUserLoggedIn;
   final bool? showLinkPreview;
   final ViewMode viewMode;
+  final void Function()? navigateToPost;
 
   const MediaView({
     super.key,
@@ -40,6 +41,7 @@ class MediaView extends StatefulWidget {
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
     this.showLinkPreview,
+    this.navigateToPost,
   });
 
   @override
@@ -51,7 +53,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
     super.initState();
   }
 
@@ -153,8 +155,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
-                      transitionDuration: const Duration(milliseconds: 200),
-                      reverseTransitionDuration: const Duration(milliseconds: 200),
+                      transitionDuration: const Duration(milliseconds: 100),
+                      reverseTransitionDuration: const Duration(milliseconds: 50),
                       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
                         String heroKey = generateRandomHeroString();
 
@@ -162,6 +164,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                           url: widget.postView!.media.first.mediaUrl!,
                           heroKey: heroKey,
                           postId: widget.postView!.postView.post.id,
+                          navigateToPost: widget.navigateToPost,
                         );
                       },
                       transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
@@ -200,7 +203,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
-        clearMemoryCacheWhenDispose: true,
+        clearMemoryCacheWhenDispose: false,
         cacheWidth: widget.viewMode == ViewMode.compact
             ? (75 * View.of(context).devicePixelRatio.ceil())
             : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),

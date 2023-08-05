@@ -32,6 +32,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
   final PostListingType? listingType;
+  final void Function()? navigateToPost;
 
   const PostCardViewComfortable({
     super.key,
@@ -52,6 +53,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
+    this.navigateToPost,
   });
 
   @override
@@ -78,6 +80,7 @@ class PostCardViewComfortable extends StatelessWidget {
       edgeToEdgeImages: edgeToEdgeImages,
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
+      navigateToPost: navigateToPost,
     );
 
     final bool useSaveButton = state.showSaveAction;
@@ -221,6 +224,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
+                        compactMode: false,
                         showCommunitySubscription: showCommunitySubscription,
                       ),
                       const SizedBox(height: 8.0),

@@ -24,6 +24,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
   final PostListingType? listingType;
+  final void Function()? navigateToPost;
 
   const PostCardViewCompact({
     super.key,
@@ -36,6 +37,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     required this.listingType,
+    this.navigateToPost,
   });
 
   @override
@@ -72,6 +74,7 @@ class PostCardViewCompact extends StatelessWidget {
                 markPostReadOnMediaView: markPostReadOnMediaView,
                 viewMode: ViewMode.compact,
                 isUserLoggedIn: isUserLoggedIn,
+                navigateToPost: navigateToPost,
               ),
             ),
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
@@ -126,6 +129,7 @@ class PostCardViewCompact extends StatelessWidget {
                   ),
                   const SizedBox(height: 6.0),
                   PostCommunityAndAuthor(
+                    compactMode: true,
                     showCommunityIcons: false,
                     showInstanceName: showInstanceName,
                     postView: postViewMedia.postView,
@@ -168,6 +172,7 @@ class PostCardViewCompact extends StatelessWidget {
                         markPostReadOnMediaView: markPostReadOnMediaView,
                         viewMode: ViewMode.compact,
                         isUserLoggedIn: isUserLoggedIn,
+                  navigateToPost: navigateToPost,
                       ),
                     ),
                     Padding(

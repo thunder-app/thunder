@@ -18,6 +18,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -25,8 +26,15 @@ class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
+  final List<CommunityModeratorView>? moderators;
 
-  const PostSubview({super.key, this.selectedCommentId, required this.useDisplayNames, required this.postViewMedia});
+  const PostSubview({
+    super.key,
+    this.selectedCommentId,
+    required this.useDisplayNames,
+    required this.postViewMedia,
+    required this.moderators,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +84,8 @@ class PostSubview extends StatelessWidget {
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
-                GestureDetector(
+                InkWell(
+                  borderRadius: BorderRadius.circular(6),
                   onTap: () {
                     account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
@@ -117,7 +126,8 @@ class PostSubview extends StatelessWidget {
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
                 ),
-                GestureDetector(
+                InkWell(
+                  borderRadius: BorderRadius.circular(6),
                   onTap: () {
                     account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
@@ -315,7 +325,8 @@ class PostSubview extends StatelessWidget {
     String descriptor = '';
 
     if (isOwnPost) descriptor += 'me';
-    if (postView.creator.admin == true) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+    if (isAdmin(postView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+    if (isModerator(postView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 

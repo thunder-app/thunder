@@ -117,6 +117,7 @@ class PostCardMetaData extends StatelessWidget {
                 ],
               ),
             ),
+            ),
           ],
         );
       },
@@ -213,11 +214,13 @@ class PostCommunityAndAuthor extends StatelessWidget {
     required this.showInstanceName,
     this.textStyleAuthor,
     this.textStyleCommunity,
+    required this.compactMode,
     required this.showCommunitySubscription,
   });
 
   final bool showCommunityIcons;
   final bool showInstanceName;
+  final bool compactMode;
   final PostView postView;
   final TextStyle? textStyleAuthor;
   final TextStyle? textStyleCommunity;
@@ -252,8 +255,10 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        GestureDetector(
-                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
+                        InkWell(
+                            borderRadius: BorderRadius.circular(6),
+                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapUserName(context, postView.creator.id),
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor)),
                         Text(
                           ' to ',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
@@ -263,8 +268,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         ),
                       ],
                     ),
-                  GestureDetector(
-                    onTap: () => onTapCommunityName(context, postView.community.id),
+                  InkWell(
+                    borderRadius: BorderRadius.circular(6),
+                    onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapCommunityName(context, postView.community.id),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [

@@ -63,6 +63,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       _blockCommunityEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<DismissReadEvent>(
+      _dismissReadEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _updatePostEvent(UpdatePostEvent event, Emitter<CommunityState> emit) async {
@@ -237,6 +241,13 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
             postIds.add(post.postView.post.id);
           }
 
+          // Fetch any taglines from the instance
+          FullSiteView fullSiteView = await lemmy.run(
+            GetSite(
+              auth: account?.jwt,
+            ),
+          );
+
           emit(
             state.copyWith(
               status: CommunityStatus.success,
@@ -250,6 +261,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse,
+              taglines: fullSiteView.taglines,
             ),
           );
         } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
@@ -308,7 +320,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               communityId: communityId,
               communityName: state.communityName,
               listingType: listingType,
-              hasReachedEnd: posts.isEmpty,
+              hasReachedEnd: postMedias.isEmpty || state.postIds!.length == postIds.length,
               subscribedType: state.subscribedType,
               sortType: sortType,
             ),
@@ -468,6 +480,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           listingType: state.listingType,
         ),
       );
+    }
+  }
+
+  Future<void> _dismissReadEvent(DismissReadEvent event, Emitter<CommunityState> emit) async {
+    // Take existing post list, and remove read entries, then emit, I think
+
+    try {
+      return;
+    } catch (e) {
+      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString()));
     }
   }
 }

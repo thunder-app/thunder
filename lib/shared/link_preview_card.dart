@@ -181,7 +181,6 @@ class LinkPreviewCard extends StatelessWidget {
                     ],
                   ),
                 ),
-              /*linkInformation(context),*/
             ],
           ),
         ),
@@ -195,7 +194,6 @@ class LinkPreviewCard extends StatelessWidget {
           child: const Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
-            /*children: [linkInformation(context)],*/
           ),
         ),
       );
@@ -213,7 +211,7 @@ class LinkPreviewCard extends StatelessWidget {
     }
   }
 
-  void triggerOnTap(BuildContext context) {
+  void triggerOnTap(BuildContext context) async {
     final ThunderState state = context.read<ThunderBloc>().state;
     final openInExternalBrowser = state.openInExternalBrowser;
 
@@ -233,7 +231,7 @@ class LinkPreviewCard extends StatelessWidget {
       AuthBloc authBloc = context.read<AuthBloc>();
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-      String? communityName = generateCommunityInstanceUrl(originURL);
+      String? communityName = await getLemmyCommunity(originURL!);
 
       Navigator.of(context).push(
         MaterialPageRoute(

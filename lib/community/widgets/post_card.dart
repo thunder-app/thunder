@@ -162,24 +162,20 @@ class _PostCardState extends State<PostCard> {
               background: dismissDirection == DismissDirection.startToEnd
                   ? AnimatedContainer(
                       alignment: Alignment.centerLeft,
-                      color: swipeAction == null
-                          ? getSwipeActionColor(state.leftPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      color: swipeAction == null ? state.leftPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1) * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
                       ),
                     )
                   : AnimatedContainer(
                       alignment: Alignment.centerRight,
-                      color: swipeAction == null
-                          ? getSwipeActionColor(state.rightPrimaryPostGesture).withOpacity(dismissThreshold / firstActionThreshold)
-                          : getSwipeActionColor(swipeAction ?? SwipeAction.none),
+                      color: swipeAction == null ? state.rightPrimaryPostGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
                       duration: const Duration(milliseconds: 200),
                       child: SizedBox(
                         width: (MediaQuery.of(context).size.width * (state.tabletMode ? 0.5 : 1)) * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon(getSwipeActionIcon(swipeAction ?? SwipeAction.none, read: read)),
+                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon(read: read)),
                       ),
                     ),
               child: InkWell(
@@ -194,6 +190,7 @@ class _PostCardState extends State<PostCard> {
                         showInstanceName: widget.showInstanceName,
                         isUserLoggedIn: isUserLoggedIn,
                         listingType: widget.listingType,
+                        navigateToPost: () async => await navigateToPost(context),
                       )
                     : PostCardViewComfortable(
                         postViewMedia: widget.postViewMedia,
@@ -213,6 +210,7 @@ class _PostCardState extends State<PostCard> {
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
                         listingType: widget.listingType,
+                        navigateToPost: () async => await navigateToPost(context),
                       ),
                 onLongPress: () => showPostActionBottomModalSheet(
                   context,
@@ -226,50 +224,52 @@ class _PostCardState extends State<PostCard> {
                     PostCardAction.shareLink,
                   ],
                 ),
-                onTap: () async {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  AuthBloc authBloc = context.read<AuthBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  CommunityBloc communityBloc = context.read<CommunityBloc>();
-
-                  // Mark post as read when tapped
-                  if (isUserLoggedIn) {
-                    int postId = widget.postViewMedia.postView.post.id;
-                    try {
-                      UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                    } catch (e) {
-                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-                    }
-                  }
-
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: accountBloc),
-                            BlocProvider.value(value: authBloc),
-                            BlocProvider.value(value: thunderBloc),
-                            BlocProvider.value(value: communityBloc),
-                            BlocProvider(create: (context) => post_bloc.PostBloc()),
-                          ],
-                          child: PostPage(
-                            postView: widget.postViewMedia,
-                            onPostUpdated: () {},
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                  if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                },
+                onTap: () async => await navigateToPost(context),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> navigateToPost(BuildContext context) async {
+    AccountBloc accountBloc = context.read<AccountBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    CommunityBloc communityBloc = context.read<CommunityBloc>();
+
+    // Mark post as read when tapped
+    if (isUserLoggedIn) {
+      int postId = widget.postViewMedia.postView.post.id;
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+      } catch (e) {
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+      }
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: accountBloc),
+              BlocProvider.value(value: authBloc),
+              BlocProvider.value(value: thunderBloc),
+              BlocProvider.value(value: communityBloc),
+              BlocProvider(create: (context) => post_bloc.PostBloc()),
+            ],
+            child: PostPage(
+              postView: widget.postViewMedia,
+              onPostUpdated: () {},
+            ),
+          );
+        },
+      ),
+    );
+    if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
   }
 }

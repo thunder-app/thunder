@@ -16,7 +16,6 @@ enum LocalSettings {
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
-  disableFeedFab(name: 'setting_disable_feed_fab', label: 'Disable Floating Buttons on Feed'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Show in-app Update Notification'),
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -25,6 +24,7 @@ enum LocalSettings {
   showPostTitleFirst(name: 'setting_general_show_title_first', label: 'Show Title First'),
   showThumbnailPreviewOnRight(name: 'setting_compact_show_thumbnail_on_right', label: 'Thumbnails on the Right'),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', label: 'Show Text Post Indicator'),
+  tappableAuthorCommunity(name: 'setting_compact_tappable_author_community', label: 'Tappable Authors & Communities'),
 
   // General Settings
   showPostVoteActions(name: 'setting_general_show_vote_actions', label: 'Show Vote Buttons'),
@@ -36,8 +36,6 @@ enum LocalSettings {
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
 
   /// -------------------------- Post Page Related Settings --------------------------
-  disablePostFab(name: 'setting_disable_post_fabs', label: 'Disable Floating Buttons on Posts'),
-
   // Comment Related Settings
   defaultCommentSortType(name: 'setting_post_default_comment_sort_type', label: 'Default Comment Sort Type'),
   collapseParentCommentBodyOnGesture(name: 'setting_comments_collapse_parent_comment_on_gesture', label: 'Hide Parent Comment on Collapse'),
@@ -73,6 +71,21 @@ enum LocalSettings {
   commentGestureLeftSecondary(name: 'setting_gesture_comment_left_secondary_gesture', label: 'Left Long Swipe'),
   commentGestureRightPrimary(name: 'setting_gesture_comment_right_primary_gesture', label: 'Right Short Swipe'),
   commentGestureRightSecondary(name: 'setting_gesture_comment_right_secondary_gesture', label: 'Right Long Swipe'),
+
+  /// -------------------------- FAB Related Settings --------------------------
+  enableFeedsFab(name: 'setting_enable_feed_fab', label: 'Enable Floating Button on Feeds'),
+  enablePostsFab(name: 'setting_enable_post_fab', label: 'Enable Floating Button on Posts'),
+
+  enableBackToTop(name: 'setting_enable_back_to_top_fab', label: 'Back to Top'),
+  enableSubscriptions(name: 'setting_enable_subscribed_fab', label: 'Subscriptions'),
+  enableRefresh(name: 'setting_enable_refresh_fab', label: 'Refresh'),
+  enableDismissRead(name: 'setting_enable_dismiss_read_fab', label: 'Dismiss Read'),
+  enableChangeSort(name: 'setting_enable_change_sort_fab', label: 'Change Sort'),
+  enableNewPost(name: 'setting_enable_new_post_fab', label: 'New Post'),
+
+  postFabEnableBackToTop(name: 'setting_post_fab_enable_back_to_top', label: 'Back to Top'),
+  postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
+  postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
   ;
 
   const LocalSettings({
