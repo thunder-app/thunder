@@ -39,8 +39,6 @@ class PostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
         return Row(
@@ -116,7 +114,6 @@ class PostCardMetaData extends StatelessWidget {
                     ),
                 ],
               ),
-            ),
             ),
           ],
         );
