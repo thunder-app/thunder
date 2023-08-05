@@ -95,29 +95,6 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 20.0 * textScaleFactor,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ),
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: Colors.purple,
-                            size: 20.0 * textScaleFactor,
-                            semanticLabel:'Saved',
-                          ),
-                        ),
-                      ),
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -126,6 +103,33 @@ class PostCardViewComfortable extends StatelessWidget {
                         color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                       ),
                     ),
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    if (!useSaveButton && postViewMedia.postView.saved)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: Colors.purple,
+                            size: 16.0 * textScaleFactor,
+                            semanticLabel: 'Saved',
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -142,29 +146,6 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 20.0 * textScaleFactor,
-                            color: Colors.green,
-                          ),
-                        ),
-                      ),
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: Colors.purple,
-                            size: 20.0 * textScaleFactor,
-                            semanticLabel:'Saved',
-                          ),
-                        ),
-                      ),
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.titleMedium?.copyWith(
@@ -173,6 +154,33 @@ class PostCardViewComfortable extends StatelessWidget {
                         color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                       ),
                     ),
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: Colors.green,
+                          ),
+                        ),
+                      ),
+                    if (!useSaveButton && postViewMedia.postView.saved)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: Colors.purple,
+                            size: 16.0 * textScaleFactor,
+                            semanticLabel: 'Saved',
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),

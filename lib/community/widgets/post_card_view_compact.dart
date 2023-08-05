@@ -50,9 +50,13 @@ class PostCardViewCompact extends StatelessWidget {
     );
 
     final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 8.0),
+      padding: const EdgeInsets.only(
+        bottom: 8.0,
+        top: 6,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -71,44 +75,50 @@ class PostCardViewCompact extends StatelessWidget {
           if (!showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)) const SizedBox(width: 8.0),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(right: 6.0),
+              padding: const EdgeInsets.only(right: 10.0, left: 10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text.rich(
                     TextSpan(
                       children: [
-                        if (postViewMedia.postView.post.featuredCommunity)
-                          const WidgetSpan(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.push_pin_rounded,
-                                size: 18.0,
-                                color: Colors.green,
-                              ),
-                            ),
-                          ),
-                        if (postViewMedia.postView.saved)
-                          const WidgetSpan(
-                            child: Padding(
-                              padding: EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.star_rounded,
-                                color: Colors.purple,
-                                size: 18.0,
-                                semanticLabel:'Saved',
-                              ),
-                            ),
-                          ),
                         TextSpan(
                           text: postViewMedia.postView.post.name,
                           style: theme.textTheme.titleMedium?.copyWith(
                             fontSize: 14.2 * state.titleFontSizeScale.textScaleFactor,
                             fontWeight: FontWeight.w600,
-                            color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
+                            color: postViewMedia.postView.post.featuredCommunity
+                                ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
+                                : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
                           ),
                         ),
+                        if (postViewMedia.postView.post.featuredCommunity)
+                          WidgetSpan(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                              ),
+                              child: Icon(
+                                Icons.push_pin_rounded,
+                                size: 17.0 * textScaleFactor,
+                                color: Colors.green,
+                              ),
+                            ),
+                          ),
+                        if (postViewMedia.postView.saved)
+                          WidgetSpan(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                              ),
+                              child: Icon(
+                                Icons.star_rounded,
+                                color: Colors.purple,
+                                size: 16.0 * textScaleFactor,
+                                semanticLabel: 'Saved',
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

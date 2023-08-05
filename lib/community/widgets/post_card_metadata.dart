@@ -43,7 +43,6 @@ class PostCardMetaData extends StatelessWidget {
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-
         return Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -79,12 +78,12 @@ class PostCardMetaData extends StatelessWidget {
                           /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                           size: 15.0,
                           color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                          readColor,
+                              readColor,
                         ),
                         text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
                             formatNumberToK(comments),
                         textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                          readColor,
+                            readColor,
                         padding: 5.0,
                       ),
                       const SizedBox(width: 10.0),
@@ -101,7 +100,7 @@ class PostCardMetaData extends StatelessWidget {
                       const SizedBox(width: 8.0),
                     ],
                   ),
-                  if ( hostURL != null)
+                  if (hostURL != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 2.0),
                       child: IconText(
@@ -111,7 +110,7 @@ class PostCardMetaData extends StatelessWidget {
                           size: 15.0,
                           color: readColor,
                         ),
-                        text: Uri.parse(hostURL!).host.replaceAll('www.',''),
+                        text: Uri.parse(hostURL!).host.replaceAll('www.', ''),
                         textColor: readColor,
                       ),
                     ),
@@ -254,7 +253,8 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            child: Text('$creatorName ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
+                            child: Text('$creatorName ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor),
+                            onTap: () => onTapUserName(context, postView.creator.id)),
                       ],
                     ),
                   GestureDetector(
@@ -277,7 +277,10 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         ),
                         if (showCommunitySubscription)
                           Padding(
-                            padding: const EdgeInsets.only(top: 3, left: 4,),
+                            padding: const EdgeInsets.only(
+                              top: 3,
+                              left: 4,
+                            ),
                             child: Icon(
                               Icons.playlist_add_check_rounded,
                               size: 16.0,
