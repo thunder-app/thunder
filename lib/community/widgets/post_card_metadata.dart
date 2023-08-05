@@ -253,8 +253,15 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            child: Text('$creatorName ', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor),
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor),
                             onTap: () => onTapUserName(context, postView.creator.id)),
+                        Text(
+                          ' to ',
+                          textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                          ),
+                        ),
                       ],
                     ),
                   GestureDetector(
@@ -262,14 +269,6 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (state.showPostAuthor)
-                          Text(
-                            'to ',
-                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                            ),
-                          ),
                         Text(
                           '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,
