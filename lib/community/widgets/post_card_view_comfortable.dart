@@ -101,13 +101,9 @@ class PostCardViewComfortable extends StatelessWidget {
                         fontSize: 15 * textScaleFactor,
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.post.featuredCommunity
-                            ? (postViewMedia.postView.read
-                            ? Colors.green.withOpacity(0.65)
-                            : Colors.green)
-                            : (postViewMedia.postView.read
-                            ? theme.textTheme.bodyMedium?.color
-                            ?.withOpacity(0.65)
-                            : null),                      ),
+                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
+                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
+                      ),
                     ),
                     if (postViewMedia.postView.post.featuredCommunity)
                       WidgetSpan(
@@ -140,13 +136,14 @@ class PostCardViewComfortable extends StatelessWidget {
                 ),
               ),
             ),
-          if (edgeToEdgeImages) Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8),
-            child: mediaView,
-          ),
-          if (!edgeToEdgeImages)
+          if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: mediaView,
+            ),
+          if (postViewMedia.media.isNotEmpty && !edgeToEdgeImages)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               child: mediaView,
             ),
           if (!showTitleFirst)

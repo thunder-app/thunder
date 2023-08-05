@@ -55,66 +55,76 @@ class LinkPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
-      return InkWell(
-        borderRadius: BorderRadius.circular(12), // Image border
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-          child: Stack(
-            alignment: Alignment.bottomRight,
-            fit: StackFit.passthrough,
-            children: [
-              if (showLinkPreviews)
-                mediaURL != null
-                    ? ImagePreview(
-                        url: mediaURL ?? originURL!,
-                        height: showFullHeightImages ? mediaHeight : 150,
-                        width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
-                        isExpandable: false,
-                      )
-                    : SizedBox(
-                        height: 150,
-                        child: hideNsfw
-                            ? ImageFiltered(
-                                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                                child: LinkPreviewGenerator(
-                                  link: originURL!,
-                                  showBody: false,
-                                  showTitle: false,
-                                  placeholderWidget: Container(
-                                    margin: const EdgeInsets.all(15),
-                                    child: const CircularProgressIndicator(),
-                                  ),
-                                  cacheDuration: Duration.zero,
-                                ))
-                            : LinkPreviewGenerator(
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+        ),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          fit: StackFit.passthrough,
+          children: [
+            if (showLinkPreviews)
+              mediaURL != null
+                  ? ImagePreview(
+                      url: mediaURL ?? originURL!,
+                      height: showFullHeightImages ? mediaHeight : 150,
+                      width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                      isExpandable: false,
+                    )
+                  : SizedBox(
+                      height: 150,
+                      child: hideNsfw
+                          ? ImageFiltered(
+                              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                              child: LinkPreviewGenerator(
                                 link: originURL!,
                                 showBody: false,
                                 showTitle: false,
-                                placeholderWidget: const Center(
-                                  child: CircularProgressIndicator(),
+                                placeholderWidget: Container(
+                                  margin: const EdgeInsets.all(15),
+                                  child: const CircularProgressIndicator(),
                                 ),
                                 cacheDuration: Duration.zero,
+                              ))
+                          : LinkPreviewGenerator(
+                              link: originURL!,
+                              showBody: false,
+                              showTitle: false,
+                              placeholderWidget: const Center(
+                                child: CircularProgressIndicator(),
                               ),
-                      ),
-              if (hideNsfw)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: const Column(
-                    children: [
-                      Icon(Icons.warning_rounded, size: 55),
-                      // This won't show but it does cause the icon above to center
-                      Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
-                    ],
-                  ),
+                              cacheDuration: Duration.zero,
+                            ),
+                    ),
+            if (hideNsfw)
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(20),
+                child: const Column(
+                  children: [
+                    Icon(Icons.warning_rounded, size: 55),
+                    // This won't show but it does cause the icon above to center
+                    Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                  ],
                 ),
-              linkInformation(context),
-            ],
-          ),
+              ),
+            linkInformation(context),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                  onTap: () => triggerOnTap(context),
+                  borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+                ),
+              ),
+            ),
+          ],
         ),
-        onTap: () => triggerOnTap(context),
       );
     } else if ((mediaURL != null || originURL != null) && viewMode == ViewMode.compact) {
       return InkWell(

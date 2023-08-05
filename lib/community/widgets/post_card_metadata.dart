@@ -253,8 +253,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         GestureDetector(
-                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor),
-                            onTap: () => onTapUserName(context, postView.creator.id)),
+                            child: Text('$creatorName', textScaleFactor: state.contentFontSizeScale.textScaleFactor, style: textStyleAuthor), onTap: () => onTapUserName(context, postView.creator.id)),
                         Text(
                           ' to ',
                           textScaleFactor: state.contentFontSizeScale.textScaleFactor,

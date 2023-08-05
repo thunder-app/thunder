@@ -137,7 +137,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                splashColor: theme.colorScheme.tertiary.withOpacity(0.4),
+                splashColor: theme.colorScheme.primary.withOpacity(0.4),
                 borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
                 onTap: () {
                   if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
@@ -236,42 +236,42 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 color: theme.cardColor.darken(3),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: InkWell(
-                    onTap: () {
-                      if (widget.post?.url != null) {
-                        openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
-                      }
-                    },
-                    child: Material(
-                      clipBehavior: Clip.hardEdge,
-                      borderRadius: BorderRadius.circular(12),
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        fit: StackFit.passthrough,
-                        children: [
-                          Container(
-                            color: theme.colorScheme.secondary.withOpacity(0.4),
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Icon(
-                                    Icons.link,
-                                  ),
+                  child: Material(
+                    clipBehavior: Clip.hardEdge,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      fit: StackFit.passthrough,
+                      children: [
+                        Container(
+                          color: theme.colorScheme.secondary.withOpacity(0.4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Icon(
+                                  Icons.link,
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    widget.post?.url ?? '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.post?.url ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodyMedium,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (widget.post?.url != null) {
+                              openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                 ),
