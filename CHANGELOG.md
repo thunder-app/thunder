@@ -28,6 +28,7 @@
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
 - Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
 - Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
+- Minor sidebar shadow adjustment - contribution from @CTalvio
 - Snappier image load transition - contribution from @micahmo 
 - Align back button in image preview with the back button in the main pages - contribution from @micahmo 
 - Moved location of comment button within image preview - contribution from @micahmo 

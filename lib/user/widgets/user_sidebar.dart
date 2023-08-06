@@ -244,19 +244,19 @@ class _UserSidebarState extends State<UserSidebar> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                            const SizedBox(height: 5.0),
-                            const Row(children: [
-                              Text("Bio"),
-                              Expanded(
-                                child: Divider(
-                                  height: 5,
-                                  thickness: 2,
-                                  indent: 15,
-                                  endIndent: 15,
+                              const SizedBox(height: 5.0),
+                              const Row(children: [
+                                Text("Bio"),
+                                Expanded(
+                                  child: Divider(
+                                    height: 5,
+                                    thickness: 2,
+                                    indent: 15,
+                                    endIndent: 15,
+                                  ),
                                 ),
-                              ),
-                            ]),
-                            const SizedBox(height: 5.0),
+                              ]),
+                              const SizedBox(height: 5.0),
                               Padding(
                                 padding: const EdgeInsets.only(
                                   left: 8.0,
@@ -267,23 +267,23 @@ class _UserSidebarState extends State<UserSidebar> {
                                   body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
                                 ),
                               ),
-                            const SizedBox(height: 10.0),
-                            const Row(children: [
-                              Text("Stats"),
-                              Expanded(
-                                child: Divider(
-                                  height: 5,
-                                  thickness: 2,
-                                  indent: 15,
-                                  endIndent: 15,
+                              const SizedBox(height: 10.0),
+                              const Row(children: [
+                                Text("Stats"),
+                                Expanded(
+                                  child: Divider(
+                                    height: 5,
+                                    thickness: 2,
+                                    indent: 15,
+                                    endIndent: 15,
+                                  ),
                                 ),
-                              ),
-                            ]),
-                            const SizedBox(height: 5.0),
+                              ]),
+                              const SizedBox(height: 5.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                const SizedBox(height: 3.0),
+                                  const SizedBox(height: 3.0),
                                   Row(
                                     children: [
                                       Padding(
@@ -301,61 +301,61 @@ class _UserSidebarState extends State<UserSidebar> {
                                       ),
                                     ],
                                   ),
-                                const SizedBox(height: 3.0),
-                                UserSidebarStats(
-                                  icon: Icons.wysiwyg_rounded,
-                                  label: ' Posts',
-                                  metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
-                                  scoreLabel: ' Score',
-                                  scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
-                                      ),
-                                const SizedBox(height: 3.0),
-                                UserSidebarStats(
-                                  icon: Icons.chat_rounded,
-                                  label: ' Comments',
-                                  metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
-                                  scoreLabel: ' Score',
-                                  scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
-                                      ),
-                                const SizedBox(height: 3.0),
-                                Visibility(
-                                    visible: !disableScoreCounters,
-                                    child: UserSidebarActivity(
-                                      icon: Icons.celebration_rounded,
-                                      scoreLabel: ' Total Score',
-                                      scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
-                                    )),
-                                    ],
+                                  const SizedBox(height: 3.0),
+                                  UserSidebarStats(
+                                    icon: Icons.wysiwyg_rounded,
+                                    label: ' Posts',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
                                   ),
-                            const SizedBox(height: 10.0),
-                            const Row(children: [
-                              Text("Activity"),
-                              Expanded(
-                                child: Divider(
-                                  height: 5,
-                                  thickness: 2,
-                                  indent: 15,
-                                  endIndent: 15,
-                                        ),
-                                      ),
-                            ]),
-                            const SizedBox(height: 10.0),
-                            UserSidebarActivity(
-                              icon: Icons.wysiwyg_rounded,
-                              scoreLabel: ' Average Posts/mo',
-                              scoreMetric: NumberFormat("#,###,###,###").format(postsPerMonth),
-                                      ),
-                            const SizedBox(height: 3.0),
-                            UserSidebarActivity(
-                              icon: Icons.chat_rounded,
-                              scoreLabel: ' Average Comments/mo',
-                              scoreMetric: NumberFormat("#,###,###,###").format(commentsPerMonth),
+                                  const SizedBox(height: 3.0),
+                                  UserSidebarStats(
+                                    icon: Icons.chat_rounded,
+                                    label: ' Comments',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
                                   ),
-                            const SizedBox(height: 3.0),
-                            UserSidebarActivity(
-                              icon: Icons.score_rounded,
-                              scoreLabel: ' Average Contributions/mo',
-                              scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
+                                  const SizedBox(height: 3.0),
+                                  Visibility(
+                                      visible: !disableScoreCounters,
+                                      child: UserSidebarActivity(
+                                        icon: Icons.celebration_rounded,
+                                        scoreLabel: ' Total Score',
+                                        scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
+                                      )),
+                                ],
+                              ),
+                              const SizedBox(height: 10.0),
+                              const Row(children: [
+                                Text("Activity"),
+                                Expanded(
+                                  child: Divider(
+                                    height: 5,
+                                    thickness: 2,
+                                    indent: 15,
+                                    endIndent: 15,
+                                  ),
+                                ),
+                              ]),
+                              const SizedBox(height: 10.0),
+                              UserSidebarActivity(
+                                icon: Icons.wysiwyg_rounded,
+                                scoreLabel: ' Average Posts/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(postsPerMonth),
+                              ),
+                              const SizedBox(height: 3.0),
+                              UserSidebarActivity(
+                                icon: Icons.chat_rounded,
+                                scoreLabel: ' Average Comments/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(commentsPerMonth),
+                              ),
+                              const SizedBox(height: 3.0),
+                              UserSidebarActivity(
+                                icon: Icons.score_rounded,
+                                scoreLabel: ' Average Contributions/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
                               ),
                               const SizedBox(height: 40.0),
                               Container(
@@ -456,15 +456,15 @@ class _UserSidebarState extends State<UserSidebar> {
                     child: widget.isAccountUser
                         ? Column(
                             children: [
-                            const Divider(
-                              height: 5,
-                              thickness: 2,
-                              indent: 5,
-                              endIndent: 5,
-                            ),
-                            const SizedBox(height: 10.0),
+                              const Divider(
+                                height: 5,
+                                thickness: 2,
+                                indent: 5,
+                                endIndent: 5,
+                              ),
+                              const SizedBox(height: 10.0),
                               Padding(
-                              padding: const EdgeInsets.only(bottom: 10.0, left: 12, right: 12),
+                                padding: const EdgeInsets.only(bottom: 10.0, left: 12, right: 12),
                                 child: ElevatedButton(
                                   onPressed: null /*() {
                               HapticFeedback.mediumImpact();
