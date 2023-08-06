@@ -118,6 +118,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      bool disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -138,6 +139,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // Font Settings
       FontScale titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       FontScale contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
+      FontScale commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
+      FontScale metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
@@ -216,6 +219,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
+        disableScoreCounters: disableScoreCounters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
@@ -234,6 +238,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // Font Settings
         titleFontSizeScale: titleFontSizeScale,
         contentFontSizeScale: contentFontSizeScale,
+        commentFontSizeScale: commentFontSizeScale,
+        metadataFontSizeScale: metadataFontSizeScale,
 
         /// -------------------------- Gesture Related Settings --------------------------
         // Sidebar Gesture Settings

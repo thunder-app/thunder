@@ -18,6 +18,7 @@
 - Added additional localization strings to Thunder, and added temporary language files for Swedish/Finnish
 - Added manual refreshing to the user account page - contribution from @micahmo 
 - Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
+- Added additional font scaling options for comments and metadata
 - Long-pressing on FAB shows extended actions - contribution from @micahmo
 - Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
 
@@ -31,6 +32,7 @@
 - Snappier image load transition - contribution from @micahmo 
 - Align back button in image preview with the back button in the main pages - contribution from @micahmo 
 - Moved location of comment button within image preview - contribution from @micahmo 
+- Adjusted font scaling to be platform specific
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
