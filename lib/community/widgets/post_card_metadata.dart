@@ -102,7 +102,7 @@ class PostCardMetaData extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 2.0),
                       child: IconText(
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                         icon: Icon(
                           Icons.public,
                           size: 15.0,
