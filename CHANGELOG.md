@@ -32,6 +32,7 @@
 - Align back button in image preview with the back button in the main pages - contribution from @micahmo 
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
+- Improve behavior of deferred comment indicator - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa

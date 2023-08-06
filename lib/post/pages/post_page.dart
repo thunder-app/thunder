@@ -220,7 +220,6 @@ class _PostPageState extends State<PostPage> {
                                 ],
                               ),
                               backgroundColor: theme.colorScheme.onErrorContainer,
-                              behavior: SnackBarBehavior.floating,
                             );
                             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               ScaffoldMessenger.of(context).clearSnackBars();
