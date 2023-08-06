@@ -55,7 +55,6 @@ class _PostPageState extends State<PostPage> {
   void initState() {
     super.initState();
     BackButtonInterceptor.add(_handleBack);
-    _scrollController.addListener(_onScroll);
   }
 
   @override
@@ -70,14 +69,6 @@ class _PostPageState extends State<PostPage> {
       context.read<ThunderBloc>().add(const OnFabToggle(false));
     }
     return false;
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
-      if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
-    } else {
-      if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
-    }
   }
 
   CommentSortType? sortType;
