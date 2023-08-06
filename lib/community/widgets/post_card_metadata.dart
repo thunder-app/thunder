@@ -53,7 +53,7 @@ class PostCardMetaData extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconText(
-                  textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                         text: formatNumberToK(score),
                         textColor: voteType == VoteType.up
                             ? upVoteColor
@@ -71,7 +71,7 @@ class PostCardMetaData extends StatelessWidget {
                       ),
                       const SizedBox(width: 10.0),
                       IconText(
-                  textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                         icon: Icon(
                           /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                           size: 15.0,
@@ -86,7 +86,7 @@ class PostCardMetaData extends StatelessWidget {
                       ),
                       const SizedBox(width: 10.0),
                       IconText(
-                  textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                         icon: Icon(
                           hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                           size: 15.0,
@@ -273,7 +273,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         Text(
                           '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                          textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                           style: textStyleCommunity,
                         ),
                         if (showCommunitySubscription)
