@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -11,7 +12,10 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/user/widgets/user_sidebar_activity.dart';
+import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
 
 import '../../community/pages/community_page.dart';
@@ -58,6 +62,29 @@ class _UserSidebarState extends State<UserSidebar> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    //custom stats
+    final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
+    final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
+    Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
+    final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
+    final num postsPerMonth;
+    final num commentsPerMonth;
+    final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
+    final ThunderState state = context.read<ThunderBloc>().state;
+    bool disableScoreCounters = state.disableScoreCounters;
+
+    if (widget.userInfo!.counts.postCount != 0) {
+      postsPerMonth = (widget.userInfo!.counts.postCount / accountAgeMonths);
+    } else {
+      postsPerMonth = 0;
+    }
+
+    if ((widget.userInfo!.counts.commentCount).toInt() != 0) {
+      commentsPerMonth = (widget.userInfo!.counts.commentCount / accountAgeMonths);
+    } else {
+      commentsPerMonth = 0;
+    }
 
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     String locale = Localizations.localeOf(context).languageCode;
@@ -217,6 +244,19 @@ class _UserSidebarState extends State<UserSidebar> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                            const SizedBox(height: 5.0),
+                            const Row(children: [
+                              Text("Bio"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
+                            const SizedBox(height: 5.0),
                               Padding(
                                 padding: const EdgeInsets.only(
                                   left: 8.0,
@@ -227,10 +267,23 @@ class _UserSidebarState extends State<UserSidebar> {
                                   body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
                                 ),
                               ),
-                              const Divider(),
+                            const SizedBox(height: 10.0),
+                            const Row(children: [
+                              Text("Stats"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
+                                ),
+                              ),
+                            ]),
+                            const SizedBox(height: 5.0),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                const SizedBox(height: 3.0),
                                   Row(
                                     children: [
                                       Padding(
@@ -248,39 +301,61 @@ class _UserSidebarState extends State<UserSidebar> {
                                       ),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                        child: Icon(
-                                          Icons.wysiwyg_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
+                                const SizedBox(height: 3.0),
+                                UserSidebarStats(
+                                  icon: Icons.wysiwyg_rounded,
+                                  label: ' Posts',
+                                  metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
+                                  scoreLabel: ' Score',
+                                  scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
                                       ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts · ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                const SizedBox(height: 3.0),
+                                UserSidebarStats(
+                                  icon: Icons.chat_rounded,
+                                  label: ' Comments',
+                                  metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
+                                  scoreLabel: ' Score',
+                                  scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
                                       ),
+                                const SizedBox(height: 3.0),
+                                Visibility(
+                                    visible: !disableScoreCounters,
+                                    child: UserSidebarActivity(
+                                      icon: Icons.celebration_rounded,
+                                      scoreLabel: ' Total Score',
+                                      scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
+                                    )),
                                     ],
                                   ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                        child: Icon(
-                                          Icons.chat_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
+                            const SizedBox(height: 10.0),
+                            const Row(children: [
+                              Text("Activity"),
+                              Expanded(
+                                child: Divider(
+                                  height: 5,
+                                  thickness: 2,
+                                  indent: 15,
+                                  endIndent: 15,
                                         ),
                                       ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments · ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                            ]),
+                            const SizedBox(height: 10.0),
+                            UserSidebarActivity(
+                              icon: Icons.wysiwyg_rounded,
+                              scoreLabel: ' Average Posts/mo',
+                              scoreMetric: NumberFormat("#,###,###,###").format(postsPerMonth),
                                       ),
-                                    ],
+                            const SizedBox(height: 3.0),
+                            UserSidebarActivity(
+                              icon: Icons.chat_rounded,
+                              scoreLabel: ' Average Comments/mo',
+                              scoreMetric: NumberFormat("#,###,###,###").format(commentsPerMonth),
                                   ),
-                                ],
+                            const SizedBox(height: 3.0),
+                            UserSidebarActivity(
+                              icon: Icons.score_rounded,
+                              scoreLabel: ' Average Contributions/mo',
+                              scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
                               ),
                               const SizedBox(height: 40.0),
                               Container(
@@ -381,9 +456,15 @@ class _UserSidebarState extends State<UserSidebar> {
                     child: widget.isAccountUser
                         ? Column(
                             children: [
-                              const Divider(),
+                            const Divider(
+                              height: 5,
+                              thickness: 2,
+                              indent: 5,
+                              endIndent: 5,
+                            ),
+                            const SizedBox(height: 10.0),
                               Padding(
-                                padding: const EdgeInsets.only(bottom: 8.0, left: 12, right: 12),
+                              padding: const EdgeInsets.only(bottom: 10.0, left: 12, right: 12),
                                 child: ElevatedButton(
                                   onPressed: null /*() {
                               HapticFeedback.mediumImpact();
