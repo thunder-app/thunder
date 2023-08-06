@@ -3,20 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'community_sidebar.dart';
-import '../../account/bloc/account_bloc.dart';
 
 class PostCardList extends StatefulWidget {
   final List<PostViewMedia>? postViews;
@@ -223,6 +221,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             'Hmmm. It seems like you\'ve reached the bottom.',
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,
+                            textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                           ),
                         ),
                         const SizedBox(

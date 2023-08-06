@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:thunder/core/enums/custom_theme_type.dart';
 
+import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -40,6 +40,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
+  FontScale commentFontSizeScale = FontScale.base;
+  FontScale metadataFontSizeScale = FontScale.base;
 
   //Theme
   List<ListPickerItem> themeOptions = [
@@ -93,6 +95,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         setState(() => contentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case LocalSettings.commentFontSizeScale:
+        await prefs.setString(LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
+        setState(() => commentFontSizeScale = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+      case LocalSettings.metadataFontSizeScale:
+        await prefs.setString(LocalSettings.metadataFontSizeScale.name, (value as FontScale).name);
+        setState(() => metadataFontSizeScale = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
     }
 
     if (context.mounted) {
@@ -113,6 +125,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
+      commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
+      metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
 
       isLoading = false;
     });
@@ -181,11 +195,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text(
-                            'Fonts',
-                            style: theme.textTheme.titleLarge,
-                          ),
-                          // setting_theme_title_font_size_scale
+                          child: Text('Fonts', style: theme.textTheme.titleLarge),
                         ),
                         ListOption(
                           description: LocalSettings.titleFontSizeScale.label,
@@ -200,6 +210,20 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                        ),
+                        ListOption(
+                          description: LocalSettings.commentFontSizeScale.label,
+                          value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                          options: fontScaleOptions,
+                          icon: Icons.text_fields_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                        ),
+                        ListOption(
+                          description: LocalSettings.metadataFontSizeScale.label,
+                          value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                          options: fontScaleOptions,
+                          icon: Icons.text_fields_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
                         ),
                       ],
                     ),
