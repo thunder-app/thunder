@@ -58,6 +58,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showEdgeToEdgeImages = false;
   bool showTextContent = false;
   bool showPostAuthor = false;
+  bool disableScoreCounters = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -120,6 +121,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.showInAppUpdateNotification:
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
+        break;
+      case LocalSettings.disableScoreCounters:
+        await prefs.setBool(LocalSettings.disableScoreCounters.name, value);
+        setState(() => disableScoreCounters = value);
         break;
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -213,6 +218,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
+      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
@@ -358,6 +364,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
+                        ),
+                        ToggleOption(
+                          description: 'Disable All Score Counters',
+                          value: disableScoreCounters,
+                          iconEnabled: Icons.score_rounded,
+                          iconDisabled: Icons.score_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.disableScoreCounters, value),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,

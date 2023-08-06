@@ -51,21 +51,12 @@ class _PostPageState extends State<PostPage> {
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScroll);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
-  }
-
-  void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.95) {
-      if (hasScrolledToBottom == false) setState(() => hasScrolledToBottom = true);
-    } else {
-      if (hasScrolledToBottom == true) setState(() => hasScrolledToBottom = false);
-    }
   }
 
   CommentSortType? sortType;

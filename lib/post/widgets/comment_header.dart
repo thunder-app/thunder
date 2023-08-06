@@ -186,8 +186,8 @@ class CommentHeader extends StatelessWidget {
                 if (downvotes != 0)
                   Text(
                     formatNumberToK(downvotes),
-                    semanticsLabel: '${formatNumberToK(upvotes)} downvotes',
                     textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                    semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),

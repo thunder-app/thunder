@@ -117,6 +117,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      bool disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -212,6 +213,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showEdgeToEdgeImages: showEdgeToEdgeImages,
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
+        disableScoreCounters: disableScoreCounters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings

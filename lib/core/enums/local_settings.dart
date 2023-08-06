@@ -17,6 +17,7 @@ enum LocalSettings {
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Show in-app Update Notification'),
+  disableScoreCounters(name: 'setting_disable_score_counters', label: "Disable Score Counters App-wide"),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
