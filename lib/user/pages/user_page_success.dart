@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/widgets/comment_card.dart';
 
+import '../../shared/comment_content.dart';
 import '../widgets/user_sidebar.dart';
 
 const List<Widget> userOptionTypes = <Widget>[
@@ -164,7 +166,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                   child: ListView.builder(
                     controller: _scrollController,
                     itemCount: widget.commentViewTrees?.length,
-                    itemBuilder: (context, index) => CommentCard(comment: widget.commentViewTrees![index].commentView!),
+                    itemBuilder: (context, index) => CommentReference(comment: widget.commentViewTrees![index].commentView!),
                   ),
                 ),
               if (selectedUserOption == 2)
