@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
@@ -265,7 +266,10 @@ class _ThunderState extends State<Thunder> {
               label: AppLocalizations.of(context)!.search,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.person_rounded),
+              icon: GestureDetector(
+                onLongPress: () => showProfileModalSheet(context),
+                child: const Icon(Icons.person_rounded)
+              ),
               label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(
