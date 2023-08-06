@@ -46,6 +46,7 @@
 - Fixed comment highlighting for comment context regression - contribution from @ajsosa 
 - Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
 - Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
+- Fixed missing community icons in feed - contribution from @sant0s12
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
