@@ -35,5 +35,6 @@
   "profiles": "Profiles",
   "logOut": "Log out",
   "close": "Close",
-  "back": "Back"
+  "back": "Back",
+  "open": "Open"
 }
