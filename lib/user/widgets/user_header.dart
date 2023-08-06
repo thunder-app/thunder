@@ -24,7 +24,7 @@ class UserHeader extends StatelessWidget {
       children: [
         if (userInfo?.person.banner == null)
           Positioned.fill(
-            child: Container( color: theme.colorScheme.background),
+            child: Container(color: theme.colorScheme.background),
           ),
         if (userInfo?.person.banner != null)
           Positioned.fill(
