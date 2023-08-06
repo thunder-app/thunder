@@ -136,7 +136,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             HapticFeedback.mediumImpact();
                                             CommunityBloc communityBloc = context.read<CommunityBloc>();
                                             Navigator.of(context).push(
-                                              MaterialPageRoute(
+                                              SwipeablePageRoute(
                                                 builder: (context) {
                                                   return BlocProvider<CommunityBloc>.value(
                                                     value: communityBloc,
@@ -478,7 +478,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                                           Navigator.of(context).push(
-                                            MaterialPageRoute(
+                                            SwipeablePageRoute(
                                               builder: (context) => MultiBlocProvider(
                                                 providers: [
                                                   BlocProvider.value(value: accountBloc),

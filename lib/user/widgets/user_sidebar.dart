@@ -393,7 +393,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                       ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                                                       Navigator.of(context).push(
-                                                        MaterialPageRoute(
+                                                        SwipeablePageRoute(
                                                           builder: (context) => MultiBlocProvider(
                                                             providers: [
                                                               BlocProvider.value(value: accountBloc),

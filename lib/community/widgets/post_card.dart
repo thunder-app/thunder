@@ -65,6 +65,9 @@ class _PostCardState extends State<PostCard> {
   /// User Settings
   bool isUserLoggedIn = false;
 
+  /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
+  bool isOverridingSwipeGestureAction = false;
+
   @override
   void initState() {
     super.initState();
@@ -91,23 +94,40 @@ class _PostCardState extends State<PostCard> {
       child: Listener(
         behavior: HitTestBehavior.opaque,
         onPointerDown: (event) => {},
-        onPointerUp: (event) => {
-          if (swipeAction != null && swipeAction != SwipeAction.none)
-            {
-              triggerPostAction(
-                context: context,
-                swipeAction: swipeAction,
-                onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-                onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
-                onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
-                voteType: myVote ?? VoteType.none,
-                saved: saved,
-                read: read,
-                postViewMedia: widget.postViewMedia,
-              ),
-            }
+        onPointerUp: (event) {
+          setState(() => isOverridingSwipeGestureAction = false);
+
+          if (swipeAction != null && swipeAction != SwipeAction.none) {
+            triggerPostAction(
+              context: context,
+              swipeAction: swipeAction,
+              onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
+              onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+              onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
+              voteType: myVote ?? VoteType.none,
+              saved: saved,
+              read: read,
+              postViewMedia: widget.postViewMedia,
+            );
+          }
         },
         onPointerCancel: (event) => {},
+        onPointerMove: (PointerMoveEvent event) {
+          // Get the horizontal drag distance
+          double horizontalDragDistance = event.delta.dx;
+
+          // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
+          // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
+          if (horizontalDragDistance > 0) {
+            if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+              setState(() => isOverridingSwipeGestureAction = true);
+            }
+          } else {
+            if (determinePostSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+              setState(() => isOverridingSwipeGestureAction = false);
+            }
+          }
+        },
         child: Column(
           children: [
             Divider(
@@ -120,7 +140,7 @@ class _PostCardState extends State<PostCard> {
               ),
             ),
             Dismissible(
-              direction: state.enablePostGestures == false ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
+              direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determinePostSwipeDirection(isUserLoggedIn, state),
               key: ObjectKey(widget.postViewMedia.postView.post.id),
               resizeDuration: Duration.zero,
               dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},
