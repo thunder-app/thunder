@@ -22,6 +22,10 @@ class UserHeader extends StatelessWidget {
 
     return Stack(
       children: [
+        if (userInfo?.person.banner == null)
+          Positioned.fill(
+            child: Container( color: theme.colorScheme.background),
+          ),
         if (userInfo?.person.banner != null)
           Positioned.fill(
             child: Row(

@@ -24,6 +24,10 @@ class CommunityHeader extends StatelessWidget {
 
     return Stack(
       children: [
+        if (communityInfo?.communityView.community.banner == null)
+          Positioned.fill(
+            child: Container( color: theme.colorScheme.background),
+          ),
         if (communityInfo?.communityView.community.banner != null)
           Positioned.fill(
             child: Row(
