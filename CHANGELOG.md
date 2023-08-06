@@ -20,6 +20,7 @@
 - Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
 - Added additional font scaling options for comments and metadata
 - Long-pressing on FAB shows extended actions - contribution from @micahmo
+- Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio

@@ -19,6 +19,7 @@ import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -72,6 +73,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     bool enableRefresh = state.enableRefresh;
     bool enableDismissRead = state.enableDismissRead;
     bool enableNewPost = state.enableNewPost;
+    FeedFabAction singlePressAction = state.feedFabSinglePressAction;
+    FeedFabAction longPressAction = state.feedFabLongPressAction;
 
     if (state.isFabOpen != _previousIsFabOpen) {
       isFabOpen = state.isFabOpen;
@@ -242,65 +245,75 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   ? GestureFab(
                                       distance: 60,
                                       icon: Icon(
-                                        Icons.clear_all_rounded,
-                                        semanticLabel: AppLocalizations.of(context)!.dismissRead,
+                                        singlePressAction.isAllowed(state: state, widget: widget)
+                                            ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
+                                            : FeedFabAction.dismissRead.getIcon(),
+                                        semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
                                         size: 35,
                                       ),
                                       onPressed: () {
                                         HapticFeedback.lightImpact();
-                                        context.read<ThunderBloc>().add(const OnDismissEvent(true));
+                                        singlePressAction.isAllowed(state: state, widget: widget)
+                                            ? singlePressAction.execute(context, state,
+                                                bloc: context.read<CommunityBloc>(),
+                                                widget: widget,
+                                                override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                                sortType: sortType)
+                                            : FeedFabAction.dismissRead.execute(context, state);
+                                      },
+                                      onLongPress: () {
+                                        longPressAction.isAllowed(state: state, widget: widget)
+                                            ? longPressAction.execute(context, state,
+                                                bloc: context.read<CommunityBloc>(),
+                                                widget: widget,
+                                                override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                                sortType: sortType)
+                                            : FeedFabAction.openFab.execute(context, state);
                                       },
                                       children: [
-                                        if (enableDismissRead)
+                                        if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              context.read<ThunderBloc>().add(const OnDismissEvent(true));
+                                              FeedFabAction.dismissRead.execute(context, state);
                                             },
-                                            title: AppLocalizations.of(context)!.dismissRead,
+                                            title: FeedFabAction.dismissRead.getTitle(context),
                                             icon: Icon(
-                                              Icons.clear_all_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.dismissRead,
+                                              FeedFabAction.dismissRead.getIcon(),
+                                              semanticLabel: FeedFabAction.dismissRead.getTitle(context),
                                             ),
                                           ),
-                                        if (enableRefresh)
+                                        if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              context.read<AccountBloc>().add(GetAccountInformation());
-                                              return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                                    reset: true,
-                                                    sortType: sortType,
-                                                    communityId: state.communityId,
-                                                    listingType: state.listingType,
-                                                    communityName: state.communityName,
-                                                  ));
+                                              FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
                                             },
-                                            title: AppLocalizations.of(context)!.refresh,
+                                            title: FeedFabAction.refresh.getTitle(context),
                                             icon: Icon(
-                                              Icons.refresh_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.refresh,
+                                              FeedFabAction.refresh.getIcon(),
+                                              semanticLabel: FeedFabAction.refresh.getTitle(context),
                                             ),
                                           ),
-                                        if (enableChangeSort)
+                                        if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.mediumImpact();
-                                              showSortBottomSheet(context, state);
+                                              FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
                                             },
-                                            title: AppLocalizations.of(context)!.changeSort,
+                                            title: FeedFabAction.changeSort.getTitle(context),
                                             icon: Icon(
-                                              sortTypeIcon,
-                                              semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                              FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                              semanticLabel: FeedFabAction.changeSort.getTitle(context),
                                             ),
                                           ),
-                                        if (widget.scaffoldKey != null && enableSubscriptions)
+                                        if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
                                           ActionButton(
-                                            onPressed: () => widget.scaffoldKey!.currentState!.openDrawer(),
-                                            title: AppLocalizations.of(context)!.subscriptions,
+                                            onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
+                                            title: FeedFabAction.subscriptions.getTitle(context),
                                             icon: Icon(
-                                              Icons.people_rounded,
-                                              semanticLabel: AppLocalizations.of(context)!.subscriptions,
+                                              FeedFabAction.subscriptions.getIcon(),
+                                              semanticLabel: FeedFabAction.subscriptions.getTitle(context),
                                             ),
                                           ),
                                         /*const ActionButton(
@@ -308,40 +321,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             title: state. ? "Large View" : "Compact View",
                             icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
                           ),*/
-                                        if (enableBackToTop)
+                                        if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
                                           ActionButton(
                                             onPressed: () {
-                                              context.read<ThunderBloc>().add(OnScrollToTopEvent());
+                                              FeedFabAction.backToTop.execute(context, state);
                                             },
-                                            title: AppLocalizations.of(context)!.backToTop,
+                                            title: FeedFabAction.backToTop.getTitle(context),
                                             icon: Icon(
-                                              Icons.arrow_upward,
-                                              semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                              FeedFabAction.backToTop.getIcon(),
+                                              semanticLabel: FeedFabAction.backToTop.getTitle(context),
                                             ),
                                           ),
-                                        if (state.communityId != null && enableNewPost || state.communityName != null && enableNewPost)
+                                        if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
                                           ActionButton(
                                             onPressed: () {
-                                              CommunityBloc communityBloc = context.read<CommunityBloc>();
-                                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (context) {
-                                                    return MultiBlocProvider(
-                                                      providers: [
-                                                        BlocProvider<CommunityBloc>.value(value: communityBloc),
-                                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                                      ],
-                                                      child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                                                    );
-                                                  },
-                                                ),
-                                              );
+                                              FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
                                             },
-                                            title: AppLocalizations.of(context)!.createPost,
+                                            title: FeedFabAction.newPost.getTitle(context),
                                             icon: Icon(
-                                              Icons.add,
-                                              semanticLabel: AppLocalizations.of(context)!.createPost,
+                                              FeedFabAction.newPost.getIcon(),
+                                              semanticLabel: FeedFabAction.newPost.getTitle(context),
                                             ),
                                           ),
                                       ],

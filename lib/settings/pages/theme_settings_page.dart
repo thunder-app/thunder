@@ -150,13 +150,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Theme',
                             style: theme.textTheme.titleLarge,
@@ -188,14 +188,17 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: Text('Fonts', style: theme.textTheme.titleLarge),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          child: Text(
+                            'Fonts',
+                            style: theme.textTheme.titleLarge,
+                          ),
                         ),
                         ListOption(
                           description: LocalSettings.titleFontSizeScale.label,

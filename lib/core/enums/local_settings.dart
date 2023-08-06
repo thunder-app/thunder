@@ -89,6 +89,11 @@ enum LocalSettings {
   postFabEnableBackToTop(name: 'setting_post_fab_enable_back_to_top', label: 'Back to Top'),
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
+
+  feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
+  feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
+  postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),
+  postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
   ;
 
   const LocalSettings({
