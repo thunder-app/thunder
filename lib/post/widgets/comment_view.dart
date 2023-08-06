@@ -190,7 +190,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
                               widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
-                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
                             ),
