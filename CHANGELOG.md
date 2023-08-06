@@ -21,6 +21,8 @@
 - Added additional font scaling options for comments and metadata
 - Long-pressing on FAB shows extended actions - contribution from @micahmo
 - Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
+- Added thumbnail badges to posts for more clarity - contribution from @CTalvio
+- Added domain for posts linking to external websites - contribution from @CTalvio
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
