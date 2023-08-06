@@ -108,7 +108,7 @@ class PostCardMetaData extends StatelessWidget {
                           size: 15.0,
                           color: readColor,
                         ),
-                        text: Uri.parse(hostURL!).host.replaceAll('www.', ''),
+                        text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
                         textColor: readColor,
                       ),
                     ),

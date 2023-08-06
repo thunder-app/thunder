@@ -6,6 +6,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -194,72 +195,6 @@ class PostCardViewCompact extends StatelessWidget {
                   ),
                 ),
         ],
-      ),
-    );
-  }
-}
-
-class TypeBadge extends StatelessWidget {
-  const TypeBadge({
-    super.key,
-    required this.postViewMedia,
-  });
-
-  final PostViewMedia postViewMedia;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SizedBox(
-      height: 28,
-      width: 28,
-      child: Material(
-        borderRadius: const BorderRadius.only(
-          topLeft: Radius.circular(15),
-          bottomLeft: Radius.circular(4),
-          bottomRight: Radius.circular(12),
-          topRight: Radius.circular(4),
-        ),
-        color: theme.colorScheme.background,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            left: 2.5,
-            top: 2.5,
-          ),
-          child: postViewMedia == null || postViewMedia.media.isEmpty
-              ? Material(
-                  borderRadius: const BorderRadius.only(
-                    bottomLeft: Radius.circular(4),
-                    bottomRight: Radius.circular(12),
-                    topLeft: Radius.circular(12),
-                    topRight: Radius.circular(4),
-                  ),
-                  color: theme.colorScheme.tertiary,
-                  child: const Icon(size: 17, Icons.wysiwyg_rounded),
-                )
-              : postViewMedia.media.firstOrNull?.mediaType == MediaType.link
-                  ? Material(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(4),
-                        bottomRight: Radius.circular(12),
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(4),
-                      ),
-                      color: theme.colorScheme.secondary,
-                      child: const Icon(size: 19, Icons.link_rounded),
-                    )
-                  : Material(
-                      borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(4),
-                        bottomRight: Radius.circular(12),
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(4),
-                      ),
-                      color: theme.colorScheme.primary,
-                      child: const Icon(size: 17, Icons.image_outlined),
-                    ),
-        ),
       ),
     );
   }
