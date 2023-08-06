@@ -57,131 +57,140 @@ class LinkPreviewCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(edgeToEdgeImages ? 0 : 12), // Image border
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(edgeToEdgeImages ? 0 : 12)),
-            child: Stack(
-              alignment: Alignment.bottomRight,
-              fit: StackFit.passthrough,
-              children: [
-                if (showLinkPreviews)
-                  mediaURL != null
-                      ? ImagePreview(
-                          url: mediaURL ?? originURL!,
-                          height: showFullHeightImages ? mediaHeight : 150,
-                          width: mediaWidth ?? MediaQuery.of(context).size.width - 24,
-                          isExpandable: false,
-                        )
-                      : SizedBox(
-                          height: 150,
-                          child: hideNsfw
-                              ? ImageFiltered(
-                                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                                  child: LinkPreviewGenerator(
-                                    link: originURL!,
-                                    showBody: false,
-                                    showTitle: false,
-                                    placeholderWidget: Container(
-                                      margin: const EdgeInsets.all(15),
-                                      child: const CircularProgressIndicator(),
-                                    ),
-                                    cacheDuration: Duration.zero,
-                                  ))
-                              : LinkPreviewGenerator(
-                                  link: originURL!,
-                                  showBody: false,
-                                  showTitle: false,
-                                  placeholderWidget: const Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  cacheDuration: Duration.zero,
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+        ),
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          fit: StackFit.passthrough,
+          children: [
+            if (showLinkPreviews)
+              mediaURL != null
+                  ? ImagePreview(
+                      url: mediaURL ?? originURL!,
+                      height: showFullHeightImages ? mediaHeight : 150,
+                      width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                      isExpandable: false,
+                    )
+                  : SizedBox(
+                      height: 150,
+                      child: hideNsfw
+                          ? ImageFiltered(
+                              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                              child: LinkPreviewGenerator(
+                                link: originURL!,
+                                showBody: false,
+                                showTitle: false,
+                                placeholderWidget: Container(
+                                  margin: const EdgeInsets.all(15),
+                                  child: const CircularProgressIndicator(),
                                 ),
-                        ),
-                if (hideNsfw)
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(20),
-                    child: const Column(
-                      children: [
-                        Icon(Icons.warning_rounded, size: 55),
-                        // Thid won't show but it does cause the icon above to center
-                        Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
-                      ],
+                                cacheDuration: Duration.zero,
+                              ))
+                          : LinkPreviewGenerator(
+                              link: originURL!,
+                              showBody: false,
+                              showTitle: false,
+                              placeholderWidget: const Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                              cacheDuration: Duration.zero,
+                            ),
                     ),
-                  ),
-                linkInformation(context),
-              ],
+            if (hideNsfw)
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(20),
+                child: const Column(
+                  children: [
+                    Icon(Icons.warning_rounded, size: 55),
+                    // This won't show but it does cause the icon above to center
+                    Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                  ],
+                ),
+              ),
+            linkInformation(context),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                  onTap: () => triggerOnTap(context),
+                  borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+                ),
+              ),
             ),
-          ),
-          onTap: () => triggerOnTap(context),
+          ],
         ),
       );
     } else if ((mediaURL != null || originURL != null) && viewMode == ViewMode.compact) {
-      return Padding(
-        padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-        child: InkWell(
-          onTap: () => triggerOnTap(context),
-          child: Container(
-            clipBehavior: Clip.hardEdge,
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-            child: Stack(
-              alignment: Alignment.center,
-              fit: StackFit.passthrough,
-              children: [
-                if (showLinkPreviews)
-                  mediaURL != null
-                      ? ImagePreview(
-                          url: mediaURL!,
-                          height: 75,
-                          width: 75,
-                          isExpandable: false,
-                        )
-                      : SizedBox(
-                          height: 75,
-                          width: 75,
-                          child: hideNsfw
-                              ? ImageFiltered(
-                                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                                  child: LinkPreviewGenerator(
-                                    link: originURL!,
-                                    showBody: false,
-                                    showTitle: false,
-                                    placeholderWidget: Container(
-                                      margin: const EdgeInsets.all(15),
-                                      child: const CircularProgressIndicator(),
-                                    ),
-                                    cacheDuration: Duration.zero,
-                                  ))
-                              : LinkPreviewGenerator(
-                                  link: originURL!,
-                                  showBody: false,
-                                  showTitle: false,
-                                  placeholderWidget: Container(
-                                    margin: const EdgeInsets.all(15),
-                                    child: const CircularProgressIndicator(),
-                                  ),
-                                  cacheDuration: Duration.zero,
+      return Container(
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+        child: Stack(
+          alignment: Alignment.center,
+          fit: StackFit.passthrough,
+          children: [
+            if (showLinkPreviews)
+              mediaURL != null
+                  ? ImagePreview(
+                      url: mediaURL!,
+                      height: 75,
+                      width: 75,
+                      isExpandable: false,
+                    )
+                  : SizedBox(
+                      height: 75,
+                      width: 75,
+                      child: hideNsfw
+                          ? ImageFiltered(
+                              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                              child: LinkPreviewGenerator(
+                                link: originURL!,
+                                showBody: false,
+                                showTitle: false,
+                                placeholderWidget: Container(
+                                  margin: const EdgeInsets.all(15),
+                                  child: const CircularProgressIndicator(),
                                 ),
-                        ),
-                if (hideNsfw)
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(20),
-                    child: const Column(
-                      children: [
-                        Icon(Icons.warning_rounded, size: 30),
-                      ],
+                                cacheDuration: Duration.zero,
+                              ))
+                          : LinkPreviewGenerator(
+                              link: originURL!,
+                              showBody: false,
+                              showTitle: false,
+                              placeholderWidget: Container(
+                                margin: const EdgeInsets.all(15),
+                                child: const CircularProgressIndicator(),
+                              ),
+                              cacheDuration: Duration.zero,
+                            ),
                     ),
-                  ),
-                linkInformation(context),
-              ],
+            if (hideNsfw)
+              Container(
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(20),
+                child: const Column(
+                  children: [
+                    Icon(Icons.warning_rounded, size: 30),
+                  ],
+                ),
+              ),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                  onTap: () => triggerOnTap(context),
+                ),
+              ),
             ),
-          ),
+          ],
         ),
       );
     } else {
@@ -190,10 +199,9 @@ class LinkPreviewCard extends StatelessWidget {
         child: Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-          child: Stack(
+          child: const Stack(
             alignment: Alignment.center,
             fit: StackFit.passthrough,
-            children: [linkInformation(context)],
           ),
         ),
       );
@@ -253,59 +261,32 @@ class LinkPreviewCard extends StatelessWidget {
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-
-    if (viewMode == ViewMode.compact) {
-      return Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-        child: Container(
-          height: 75,
-          width: 75,
-          color: (mediaURL != null || originURL != null) && viewMode == ViewMode.compact
-              ? ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ).withOpacity(0.65)
-              : ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ),
-          child: Icon(
-            Icons.link_rounded,
-            color: theme.colorScheme.onSecondaryContainer,
+    return Container(
+      color: ElevationOverlay.applySurfaceTint(
+        Theme.of(context).colorScheme.surface.withOpacity(0.8),
+        Theme.of(context).colorScheme.surfaceTint,
+        10,
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      child: Row(
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: Icon(
+              Icons.link,
+              color: theme.colorScheme.onSecondaryContainer,
+            ),
           ),
-        ),
-      );
-    } else {
-      return Container(
-        color: ElevationOverlay.applySurfaceTint(
-          Theme.of(context).colorScheme.surface,
-          Theme.of(context).colorScheme.surfaceTint,
-          10,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-        child: Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Icon(
-                Icons.link,
-                color: theme.colorScheme.onSecondaryContainer,
+          if (viewMode != ViewMode.compact)
+            Expanded(
+              child: Text(
+                originURL!,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium,
               ),
             ),
-            if (viewMode != ViewMode.compact)
-              Expanded(
-                child: Text(
-                  originURL!,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ),
-          ],
-        ),
-      );
-    }
+        ],
+      ),
+    );
   }
 }
