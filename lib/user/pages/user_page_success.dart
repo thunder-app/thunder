@@ -166,7 +166,20 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                   child: ListView.builder(
                     controller: _scrollController,
                     itemCount: widget.commentViewTrees?.length,
-                    itemBuilder: (context, index) => CommentReference(comment: widget.commentViewTrees![index].commentView!),
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        Divider(
+                          height: 1.0,
+                          thickness: 4.0,
+                          color: ElevationOverlay.applySurfaceTint(
+                            Theme.of(context).colorScheme.surface,
+                            Theme.of(context).colorScheme.surfaceTint,
+                            10,
+                          ),
+                        ),
+                        CommentReference(comment: widget.commentViewTrees![index].commentView!),
+                      ],
+                    ),
                   ),
                 ),
               if (selectedUserOption == 2)
