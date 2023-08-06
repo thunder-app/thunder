@@ -18,6 +18,7 @@ class GestureFab extends StatefulWidget {
     this.onSlideLeft,
     this.onSlideDown,
     this.onPressed,
+    this.onLongPress,
   });
 
   final bool? initialOpen;
@@ -28,6 +29,7 @@ class GestureFab extends StatefulWidget {
   final Function? onSlideLeft;
   final Function? onSlideDown;
   final Function? onPressed;
+  final Function? onLongPress;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -157,7 +159,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
             },
             onHorizontalDragStart: null,
             onLongPress: () {
-              context.read<ThunderBloc>().add(const OnFabToggle(true));
+              widget.onLongPress?.call();
             },
             child: FloatingActionButton(
               onPressed: () {

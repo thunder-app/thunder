@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -11,7 +12,10 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/user/widgets/user_sidebar_activity.dart';
+import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
 
 import '../../community/pages/community_page.dart';
@@ -59,16 +63,39 @@ class _UserSidebarState extends State<UserSidebar> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    //custom stats
+    final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
+    final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
+    Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
+    final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
+    final num postsPerMonth;
+    final num commentsPerMonth;
+    final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
+    final ThunderState state = context.read<ThunderBloc>().state;
+    bool disableScoreCounters = state.disableScoreCounters;
+
+    if (widget.userInfo!.counts.postCount != 0) {
+      postsPerMonth = (widget.userInfo!.counts.postCount / accountAgeMonths);
+    } else {
+      postsPerMonth = 0;
+    }
+
+    if ((widget.userInfo!.counts.commentCount).toInt() != 0) {
+      commentsPerMonth = (widget.userInfo!.counts.commentCount / accountAgeMonths);
+    } else {
+      commentsPerMonth = 0;
+    }
+
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     String locale = Localizations.localeOf(context).languageCode;
 
-/*    if ( widget.personBlocks !=  null ) {
-      for (var user in widget.personBlocks! ) {
-        if ( user.person.id == widget.userInfo!.person.id ){
+    if (widget.personBlocks != null) {
+      for (var user in widget.personBlocks!) {
+        if (user.person.id == widget.userInfo!.person.id) {
           isBlocked = true;
         }
       }
-    }*/
+    }
 
     if (widget.blockedPerson != null) {
       isBlocked = widget.blockedPerson!.blocked;
@@ -80,309 +107,411 @@ class _UserSidebarState extends State<UserSidebar> {
         widthFactor: 0.8,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: Container(
-            color: theme.colorScheme.background,
-            child: Column(
-              children: [
-                Container(
-                  child: !widget.isAccountUser
-                      ? Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                top: 10,
-                                left: 12,
-                                right: 12,
-                                bottom: 4,
-                              ),
-                              child: Row(
-                                children: [
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: null /*() {
-                                  HapticFeedback.mediumImpact();
-                                }*/
-                                      ,
-                                      style: TextButton.styleFrom(
-                                        fixedSize: const Size.fromHeight(40),
-                                        padding: EdgeInsets.zero,
-                                      ),
-                                      child: const Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.mail_outline_rounded,
-                                            semanticLabel: 'Message User',
-                                          ),
-                                          SizedBox(width: 4.0),
-                                          Text(
-                                            'Message User',
-                                          ),
-                                        ],
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.alphaBlend(Colors.black.withOpacity(0.25), theme.colorScheme.background),
+                          theme.colorScheme.background,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: theme.colorScheme.background,
+                    ),
+                  ),
+                  Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        end: Alignment.topCenter,
+                        begin: Alignment.bottomCenter,
+                        colors: [
+                          Color.alphaBlend(Colors.black.withOpacity(0.25), theme.colorScheme.background),
+                          theme.colorScheme.background,
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  Container(
+                    child: !widget.isAccountUser
+                        ? Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  top: 10,
+                                  left: 12,
+                                  right: 12,
+                                  bottom: 4,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: null /*() {
+                                    HapticFeedback.mediumImpact();
+                                  }*/
+                                        ,
+                                        style: TextButton.styleFrom(
+                                          fixedSize: const Size.fromHeight(40),
+                                          padding: EdgeInsets.zero,
+                                        ),
+                                        child: const Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              Icons.mail_outline_rounded,
+                                              semanticLabel: 'Message User',
+                                            ),
+                                            SizedBox(width: 4.0),
+                                            Text(
+                                              'Message User',
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    width: 10,
-                                    height: 8,
-                                  ),
-                                  Expanded(
-                                    child: ElevatedButton(
-                                      onPressed: isLoggedIn
-                                          ? () {
-                                              HapticFeedback.heavyImpact();
-                                              ScaffoldMessenger.of(context).clearSnackBars();
-                                              context.read<UserBloc>().add(
-                                                    BlockUserEvent(
-                                                      personId: widget.userInfo!.person.id,
-                                                      blocked: isBlocked == true ? false : true,
-                                                    ),
-                                                  );
-                                            }
-                                          : null,
-                                      style: TextButton.styleFrom(
-                                        fixedSize: const Size.fromHeight(40),
-                                        foregroundColor: Colors.redAccent,
-                                        padding: EdgeInsets.zero,
+                                    const SizedBox(
+                                      width: 10,
+                                      height: 8,
+                                    ),
+                                    Expanded(
+                                      child: ElevatedButton(
+                                        onPressed: isLoggedIn
+                                            ? () {
+                                                HapticFeedback.heavyImpact();
+                                                ScaffoldMessenger.of(context).clearSnackBars();
+                                                context.read<UserBloc>().add(
+                                                      BlockUserEvent(
+                                                        personId: widget.userInfo!.person.id,
+                                                        blocked: isBlocked == true ? false : true,
+                                                      ),
+                                                    );
+                                              }
+                                            : null,
+                                        style: TextButton.styleFrom(
+                                          fixedSize: const Size.fromHeight(40),
+                                          foregroundColor: Colors.redAccent,
+                                          padding: EdgeInsets.zero,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Icon(
+                                              isBlocked == true ? Icons.undo_rounded : Icons.block,
+                                              semanticLabel: isBlocked == true ? 'Unblock User' : 'Block User',
+                                            ),
+                                            const SizedBox(width: 4.0),
+                                            Text(
+                                              isBlocked == true ? 'Unblock User' : 'Block User',
+                                              style: const TextStyle(
+                                                color: null,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.center,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Divider(),
+                            ],
+                          )
+                        : null,
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(top: 6.0, bottom: 6),
+                                child: Row(children: [
+                                  Text("Bio"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8,
+                                  bottom: 8,
+                                ),
+                                child: CommonMarkdownBody(
+                                  body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10.0, bottom: 6),
+                                child: Row(children: [
+                                  Text("Stats"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 3.0),
+                                  Row(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
+                                        child: Icon(
+                                          Icons.cake_rounded,
+                                          size: 18,
+                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                        ),
+                                      ),
+                                      // TODO Make this use device date format
+                                      Text(
+                                        'Joined ${DateFormat.yMMMMd().format(widget.userInfo!.person.published)} · ${formatTimeToString(dateTime: widget.userInfo!.person.published.toIso8601String())} ago',
+                                        style: TextStyle(color: theme.colorScheme.onBackground.withOpacity(0.65)),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 3.0),
+                                  UserSidebarStats(
+                                    icon: Icons.wysiwyg_rounded,
+                                    label: ' Posts',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
+                                  ),
+                                  const SizedBox(height: 3.0),
+                                  UserSidebarStats(
+                                    icon: Icons.chat_rounded,
+                                    label: ' Comments',
+                                    metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
+                                    scoreLabel: ' Score',
+                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
+                                  ),
+                                  const SizedBox(height: 3.0),
+                                  Visibility(
+                                      visible: !disableScoreCounters,
+                                      child: UserSidebarActivity(
+                                        icon: Icons.celebration_rounded,
+                                        scoreLabel: ' Total Score',
+                                        scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
+                                      )),
+                                ],
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 12.0, bottom: 6),
+                                child: Row(children: [
+                                  Text("Activity"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              UserSidebarActivity(
+                                icon: Icons.wysiwyg_rounded,
+                                scoreLabel: ' Average Posts/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(postsPerMonth),
+                              ),
+                              const SizedBox(height: 3.0),
+                              UserSidebarActivity(
+                                icon: Icons.chat_rounded,
+                                scoreLabel: ' Average Comments/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(commentsPerMonth),
+                              ),
+                              const SizedBox(height: 3.0),
+                              UserSidebarActivity(
+                                icon: Icons.score_rounded,
+                                scoreLabel: ' Average Contributions/mo',
+                                scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
+                              ),
+                              Container(
+                                child: widget.moderates!.isNotEmpty
+                                    ? Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Icon(
-                                            isBlocked == true ? Icons.undo_rounded : Icons.block,
-                                            semanticLabel: isBlocked == true ? 'Unblock User' : 'Block User',
+                                          const Padding(
+                                            padding: EdgeInsets.only(top: 16.0, bottom: 8),
+                                            child: Row(children: [
+                                              Text("Moderates"),
+                                              Expanded(
+                                                child: Divider(
+                                                  height: 5,
+                                                  thickness: 2,
+                                                  indent: 15,
+                                                  endIndent: 5,
+                                                ),
+                                              ),
+                                            ]),
                                           ),
-                                          const SizedBox(width: 4.0),
-                                          Text(
-                                            isBlocked == true ? 'Unblock User' : 'Block User',
-                                            style: const TextStyle(
-                                              color: null,
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: Column(
+                                              children: [
+                                                for (var mods in widget.moderates!)
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                                                      AuthBloc authBloc = context.read<AuthBloc>();
+                                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                                                      Navigator.of(context).push(
+                                                        MaterialPageRoute(
+                                                          builder: (context) => MultiBlocProvider(
+                                                            providers: [
+                                                              BlocProvider.value(value: accountBloc),
+                                                              BlocProvider.value(value: authBloc),
+                                                              BlocProvider.value(value: thunderBloc),
+                                                            ],
+                                                            child: CommunityPage(communityId: mods.community.id),
+                                                          ),
+                                                        ),
+                                                      );
+                                                    },
+                                                    child: Padding(
+                                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                                      child: Row(
+                                                        children: [
+                                                          CircleAvatar(
+                                                            backgroundColor: mods.community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                                            foregroundImage: mods.community.icon != null ? CachedNetworkImageProvider(mods.community.icon!) : null,
+                                                            maxRadius: 20,
+                                                            child: Text(
+                                                              mods.community.name[0].toUpperCase() ?? '',
+                                                              semanticsLabel: '',
+                                                              style: const TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          const SizedBox(width: 16.0),
+                                                          Expanded(
+                                                            child: Column(
+                                                              mainAxisAlignment: MainAxisAlignment.start,
+                                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                                              children: [
+                                                                Text(
+                                                                  mods.community.title ?? mods.community.name ?? '',
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  maxLines: 1,
+                                                                  style: const TextStyle(
+                                                                    fontWeight: FontWeight.bold,
+                                                                    fontSize: 16,
+                                                                  ),
+                                                                ),
+                                                                Text(
+                                                                  '${mods.community.name ?? ''} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
+                                                                  overflow: TextOverflow.ellipsis,
+                                                                  style: TextStyle(
+                                                                    color: theme.colorScheme.onBackground.withOpacity(0.6),
+                                                                    fontSize: 13,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ],
                                             ),
                                           ),
                                         ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
+                                      )
+                                    : null,
                               ),
-                            ),
-                            const Divider(),
-                          ],
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 128,
                         )
-                      : null,
-                ),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8,
-                                bottom: 8,
-                              ),
-                              child: CommonMarkdownBody(
-                                body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
-                              ),
-                            ),
-                            const Divider(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.cake_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                      ),
-                                    ),
-                                    // TODO Make this use device date format
-                                    Text(
-                                      'Joined ${DateFormat.yMMMMd().format(widget.userInfo!.person.published)} · ${formatTimeToString(dateTime: widget.userInfo!.person.published.toIso8601String())} ago',
-                                      style: TextStyle(color: theme.colorScheme.onBackground.withOpacity(0.65)),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.wysiwyg_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount)} Posts · ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore)} score',
-                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2),
-                                      child: Icon(
-                                        Icons.chat_rounded,
-                                        size: 18,
-                                        color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                      ),
-                                    ),
-                                    Text(
-                                      '${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount)} Comments · ${NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore)} score',
-                                      style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 40.0),
-                            Container(
-                              child: widget.moderates!.isNotEmpty
-                                  ? Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        const Text('Moderates:'),
-                                        const Divider(),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: Column(
-                                            children: [
-                                              for (var mods in widget.moderates!)
-                                                GestureDetector(
-                                                  onTap: () {
-                                                    account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                                                    AuthBloc authBloc = context.read<AuthBloc>();
-                                                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                                    Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) => MultiBlocProvider(
-                                                          providers: [
-                                                            BlocProvider.value(value: accountBloc),
-                                                            BlocProvider.value(value: authBloc),
-                                                            BlocProvider.value(value: thunderBloc),
-                                                          ],
-                                                          child: CommunityPage(communityId: mods.community.id),
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.only(bottom: 8.0),
-                                                    child: Row(
-                                                      children: [
-                                                        CircleAvatar(
-                                                          backgroundColor: mods.community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                          foregroundImage: mods.community.icon != null ? CachedNetworkImageProvider(mods.community.icon!) : null,
-                                                          maxRadius: 20,
-                                                          child: Text(
-                                                            mods.community.name[0].toUpperCase() ?? '',
-                                                            semanticsLabel: '',
-                                                            style: const TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 16,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(width: 16.0),
-                                                        Expanded(
-                                                          child: Column(
-                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            children: [
-                                                              Text(
-                                                                mods.community.title ?? mods.community.name ?? '',
-                                                                overflow: TextOverflow.ellipsis,
-                                                                maxLines: 1,
-                                                                style: const TextStyle(
-                                                                  fontWeight: FontWeight.bold,
-                                                                  fontSize: 16,
-                                                                ),
-                                                              ),
-                                                              Text(
-                                                                '${mods.community.name ?? ''} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
-                                                                overflow: TextOverflow.ellipsis,
-                                                                style: TextStyle(
-                                                                  color: theme.colorScheme.onBackground.withOpacity(0.6),
-                                                                  fontSize: 13,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    )
-                                  : null,
-                            ),
-                          ],
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 128,
-                      )
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Container(
-                  child: widget.isAccountUser
-                      ? Column(
-                          children: [
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0, left: 12, right: 12),
-                              child: ElevatedButton(
-                                onPressed: null /*() {
-                            HapticFeedback.mediumImpact();
-                          }*/
-                                ,
-                                style: TextButton.styleFrom(
-                                  fixedSize: const Size.fromHeight(40),
-                                  foregroundColor: null,
-                                  padding: EdgeInsets.zero,
-                                ),
-                                child: const Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      Icons.edit,
-                                      semanticLabel: 'Edit Profile',
-                                    ),
-                                    SizedBox(width: 4.0),
-                                    Text(
-                                      'Edit Profile',
-                                      style: TextStyle(
-                                        color: null,
+                  Container(
+                    child: widget.isAccountUser
+                        ? Column(
+                            children: [
+                              const Divider(
+                                height: 0,
+                                thickness: 2,
+                              ),
+                              const SizedBox(height: 10.0),
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 10.0, left: 12, right: 12),
+                                child: ElevatedButton(
+                                  onPressed: null /*() {
+                              HapticFeedback.mediumImpact();
+                            }*/
+                                  ,
+                                  style: TextButton.styleFrom(
+                                    fixedSize: const Size.fromHeight(40),
+                                    foregroundColor: null,
+                                    padding: EdgeInsets.zero,
+                                  ),
+                                  child: const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.edit,
+                                        semanticLabel: 'Edit Profile',
                                       ),
-                                    ),
-                                  ],
+                                      SizedBox(width: 4.0),
+                                      Text(
+                                        'Edit Profile',
+                                        style: TextStyle(
+                                          color: null,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
-                            ),
-                          ],
-                        )
-                      : null,
-                ),
-              ],
-            ),
+                            ],
+                          )
+                        : null,
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
       ),

@@ -219,7 +219,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       PostCommunityAndAuthor(
-                        showCommunityIcons: false,
+                        showCommunityIcons: showCommunityIcons,
                         showInstanceName: showInstanceName,
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
