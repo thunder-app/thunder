@@ -244,19 +244,20 @@ class _UserSidebarState extends State<UserSidebar> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              const SizedBox(height: 5.0),
-                              const Row(children: [
-                                Text("Bio"),
-                                Expanded(
-                                  child: Divider(
-                                    height: 5,
-                                    thickness: 2,
-                                    indent: 15,
-                                    endIndent: 15,
+                              const Padding(
+                                padding: EdgeInsets.only(top: 6.0, bottom: 4),
+                                child: Row(children: [
+                                  Text("Bio"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
                                   ),
-                                ),
-                              ]),
-                              const SizedBox(height: 5.0),
+                                ]),
+                              ),
                               Padding(
                                 padding: const EdgeInsets.only(
                                   left: 8.0,
@@ -267,19 +268,20 @@ class _UserSidebarState extends State<UserSidebar> {
                                   body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
                                 ),
                               ),
-                              const SizedBox(height: 10.0),
-                              const Row(children: [
-                                Text("Stats"),
-                                Expanded(
-                                  child: Divider(
-                                    height: 5,
-                                    thickness: 2,
-                                    indent: 15,
-                                    endIndent: 15,
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10.0, bottom: 4),
+                                child: Row(children: [
+                                  Text("Stats"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
                                   ),
-                                ),
-                              ]),
-                              const SizedBox(height: 5.0),
+                                ]),
+                              ),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
@@ -327,19 +329,20 @@ class _UserSidebarState extends State<UserSidebar> {
                                       )),
                                 ],
                               ),
-                              const SizedBox(height: 10.0),
-                              const Row(children: [
-                                Text("Activity"),
-                                Expanded(
-                                  child: Divider(
-                                    height: 5,
-                                    thickness: 2,
-                                    indent: 15,
-                                    endIndent: 15,
+                              const Padding(
+                                padding: EdgeInsets.only(top: 10.0, bottom: 4),
+                                child: Row(children: [
+                                  Text("Activity"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
                                   ),
-                                ),
-                              ]),
-                              const SizedBox(height: 10.0),
+                                ]),
+                              ),
                               UserSidebarActivity(
                                 icon: Icons.wysiwyg_rounded,
                                 scoreLabel: ' Average Posts/mo',
@@ -357,14 +360,25 @@ class _UserSidebarState extends State<UserSidebar> {
                                 scoreLabel: ' Average Contributions/mo',
                                 scoreMetric: NumberFormat("#,###,###,###").format(totalContributionsPerMonth),
                               ),
-                              const SizedBox(height: 40.0),
                               Container(
                                 child: widget.moderates!.isNotEmpty
                                     ? Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          const Text('Moderates:'),
-                                          const Divider(),
+                                          const Padding(
+                                            padding: EdgeInsets.only(top: 10.0, bottom: 6),
+                                            child: Row(children: [
+                                              Text("Moderates"),
+                                              Expanded(
+                                                child: Divider(
+                                                  height: 5,
+                                                  thickness: 2,
+                                                  indent: 15,
+                                                  endIndent: 5,
+                                                ),
+                                              ),
+                                            ]),
+                                          ),
                                           Padding(
                                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                             child: Column(
@@ -457,10 +471,8 @@ class _UserSidebarState extends State<UserSidebar> {
                         ? Column(
                             children: [
                               const Divider(
-                                height: 5,
+                                height: 0,
                                 thickness: 2,
-                                indent: 5,
-                                endIndent: 5,
                               ),
                               const SizedBox(height: 10.0),
                               Padding(
