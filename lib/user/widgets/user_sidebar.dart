@@ -245,7 +245,7 @@ class _UserSidebarState extends State<UserSidebar> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Padding(
-                                padding: EdgeInsets.only(top: 6.0, bottom: 4),
+                                padding: EdgeInsets.only(top: 6.0, bottom: 6),
                                 child: Row(children: [
                                   Text("Bio"),
                                   Expanded(
@@ -269,7 +269,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(top: 10.0, bottom: 4),
+                                padding: EdgeInsets.only(top: 10.0, bottom: 6),
                                 child: Row(children: [
                                   Text("Stats"),
                                   Expanded(
@@ -330,7 +330,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ],
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(top: 10.0, bottom: 4),
+                                padding: EdgeInsets.only(top: 12.0, bottom: 6),
                                 child: Row(children: [
                                   Text("Activity"),
                                   Expanded(
@@ -366,7 +366,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Padding(
-                                            padding: EdgeInsets.only(top: 10.0, bottom: 6),
+                                            padding: EdgeInsets.only(top: 16.0, bottom: 8),
                                             child: Row(children: [
                                               Text("Moderates"),
                                               Expanded(
