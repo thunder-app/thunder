@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -172,10 +173,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
-      String feedFabSinglePressAction = prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? LocalSettings.enableDismissRead.name;
-      String feedFabLongPressAction = prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? 'open_fab';
-      String postFabSinglePressAction = prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? LocalSettings.postFabEnableReplyToPost.name;
-      String postFabLongPressAction = prefs.getString(LocalSettings.postFabLongPressAction.name) ?? 'open_fab';
+      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
+      PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
+      PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
 
       return emit(state.copyWith(
         status: ThunderStatus.success,

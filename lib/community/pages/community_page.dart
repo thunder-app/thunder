@@ -19,6 +19,7 @@ import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -72,8 +73,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     bool enableRefresh = state.enableRefresh;
     bool enableDismissRead = state.enableDismissRead;
     bool enableNewPost = state.enableNewPost;
-    String singlePressAction = state.feedFabSinglePressAction;
-    String longPressAction = state.feedFabLongPressAction;
+    FeedFabAction singlePressAction = state.feedFabSinglePressAction;
+    FeedFabAction longPressAction = state.feedFabLongPressAction;
 
     if (state.isFabOpen != _previousIsFabOpen) {
       isFabOpen = state.isFabOpen;
@@ -244,68 +245,75 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   ? GestureFab(
                                       distance: 60,
                                       icon: Icon(
-                                        isFabActionAllowed(singlePressAction, state) == true
-                                            ? getFabActionIcon(singlePressAction, override: singlePressAction == LocalSettings.enableChangeSort.name ? sortTypeIcon : null)
-                                            : getFabActionIcon(LocalSettings.enableDismissRead.name),
-                                        semanticLabel:
-                                            isFabActionAllowed(singlePressAction, state) == true ? getFabActionTitle(singlePressAction) : getFabActionTitle(LocalSettings.enableDismissRead.name),
+                                        singlePressAction.isAllowed(state: state, widget: widget)
+                                            ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
+                                            : FeedFabAction.dismissRead.getIcon(),
+                                        semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
                                         size: 35,
                                       ),
                                       onPressed: () {
                                         HapticFeedback.lightImpact();
-                                        isFabActionAllowed(singlePressAction, state) == true
-                                            ? executeFabAction(singlePressAction, state, bloc: context.read<CommunityBloc>())
-                                            : executeFabAction(LocalSettings.enableDismissRead.name, state);
+                                        singlePressAction.isAllowed(state: state, widget: widget)
+                                            ? singlePressAction.execute(context, state,
+                                                bloc: context.read<CommunityBloc>(),
+                                                widget: widget,
+                                                override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                                sortType: sortType)
+                                            : FeedFabAction.dismissRead.execute(context, state);
                                       },
                                       onLongPress: () {
-                                        isFabActionAllowed(longPressAction, state) == true
-                                            ? executeFabAction(longPressAction, state, bloc: context.read<CommunityBloc>())
-                                            : executeFabAction('open_fab', state);
+                                        longPressAction.isAllowed(state: state, widget: widget)
+                                            ? longPressAction.execute(context, state,
+                                                bloc: context.read<CommunityBloc>(),
+                                                widget: widget,
+                                                override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                                sortType: sortType)
+                                            : FeedFabAction.openFab.execute(context, state);
                                       },
                                       children: [
-                                        if (isFabActionAllowed(LocalSettings.enableDismissRead.name, state) == true && enableDismissRead)
+                                        if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              executeFabAction(LocalSettings.enableDismissRead.name, state);
+                                              FeedFabAction.dismissRead.execute(context, state);
                                             },
-                                            title: getFabActionTitle(LocalSettings.enableDismissRead.name),
+                                            title: FeedFabAction.dismissRead.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableDismissRead.name),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableDismissRead.name),
+                                              FeedFabAction.dismissRead.getIcon(),
+                                              semanticLabel: FeedFabAction.dismissRead.getTitle(context),
                                             ),
                                           ),
-                                        if (isFabActionAllowed(LocalSettings.enableRefresh.name, state) == true && enableRefresh)
+                                        if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.lightImpact();
-                                              executeFabAction(LocalSettings.enableRefresh.name, state, bloc: context.read<CommunityBloc>());
+                                              FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
                                             },
-                                            title: getFabActionTitle(LocalSettings.enableRefresh.name),
+                                            title: FeedFabAction.refresh.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableRefresh.name),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableRefresh.name),
+                                              FeedFabAction.refresh.getIcon(),
+                                              semanticLabel: FeedFabAction.refresh.getTitle(context),
                                             ),
                                           ),
-                                        if (isFabActionAllowed(LocalSettings.enableChangeSort.name, state) == true && enableChangeSort)
+                                        if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
                                           ActionButton(
                                             onPressed: () {
                                               HapticFeedback.mediumImpact();
-                                              executeFabAction(LocalSettings.enableChangeSort.name, state);
+                                              FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
                                             },
-                                            title: getFabActionTitle(LocalSettings.enableChangeSort.name),
+                                            title: FeedFabAction.changeSort.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableChangeSort.name, override: sortTypeIcon),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableChangeSort.name),
+                                              FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                              semanticLabel: FeedFabAction.changeSort.getTitle(context),
                                             ),
                                           ),
-                                        if (isFabActionAllowed(LocalSettings.enableSubscriptions.name, state) == true && enableSubscriptions)
+                                        if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
                                           ActionButton(
-                                            onPressed: () => executeFabAction(LocalSettings.enableSubscriptions.name, state),
-                                            title: getFabActionTitle(LocalSettings.enableSubscriptions.name),
+                                            onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
+                                            title: FeedFabAction.subscriptions.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableSubscriptions.name),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableSubscriptions.name),
+                                              FeedFabAction.subscriptions.getIcon(),
+                                              semanticLabel: FeedFabAction.subscriptions.getTitle(context),
                                             ),
                                           ),
                                         /*const ActionButton(
@@ -313,26 +321,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             title: state. ? "Large View" : "Compact View",
                             icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
                           ),*/
-                                        if (isFabActionAllowed(LocalSettings.enableBackToTop.name, state) == true && enableBackToTop)
+                                        if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
                                           ActionButton(
                                             onPressed: () {
-                                              executeFabAction(LocalSettings.enableBackToTop.name, state);
+                                              FeedFabAction.backToTop.execute(context, state);
                                             },
-                                            title: getFabActionTitle(LocalSettings.enableBackToTop.name),
+                                            title: FeedFabAction.backToTop.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableBackToTop.name),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableBackToTop.name),
+                                              FeedFabAction.backToTop.getIcon(),
+                                              semanticLabel: FeedFabAction.backToTop.getTitle(context),
                                             ),
                                           ),
-                                        if (isFabActionAllowed(LocalSettings.enableNewPost.name, state) == true && enableNewPost)
+                                        if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
                                           ActionButton(
                                             onPressed: () {
-                                              executeFabAction(LocalSettings.enableNewPost.name, state, bloc: context.read<CommunityBloc>());
+                                              FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
                                             },
-                                            title: getFabActionTitle(LocalSettings.enableNewPost.name),
+                                            title: FeedFabAction.newPost.getTitle(context),
                                             icon: Icon(
-                                              getFabActionIcon(LocalSettings.enableNewPost.name),
-                                              semanticLabel: getFabActionTitle(LocalSettings.enableNewPost.name),
+                                              FeedFabAction.newPost.getIcon(),
+                                              semanticLabel: FeedFabAction.newPost.getTitle(context),
                                             ),
                                           ),
                                       ],
@@ -480,107 +488,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return false;
-  }
-
-  bool? isFabActionAllowed(String name, CommunityState state) {
-    if (name == 'open_fab') {
-      return true;
-    } else if (name == LocalSettings.enableBackToTop.name) {
-      return true;
-    } else if (name == LocalSettings.enableSubscriptions.name) {
-      return widget.scaffoldKey != null;
-    } else if (name == LocalSettings.enableChangeSort.name) {
-      return true;
-    } else if (name == LocalSettings.enableRefresh.name) {
-      return true;
-    } else if (name == LocalSettings.enableDismissRead.name) {
-      return true;
-    } else if (name == LocalSettings.enableNewPost.name) {
-      return state.communityId != null || state.communityName != null;
-    }
-    return null;
-  }
-
-  IconData? getFabActionIcon(String name, {IconData? override}) {
-    if (override != null) {
-      return override;
-    }
-
-    if (name == 'open_fab') {
-      return Icons.more_horiz_rounded;
-    } else if (name == LocalSettings.enableBackToTop.name) {
-      return Icons.arrow_upward;
-    } else if (name == LocalSettings.enableSubscriptions.name) {
-      return Icons.people_rounded;
-    } else if (name == LocalSettings.enableChangeSort.name) {
-      return Icons.sort_rounded;
-    } else if (name == LocalSettings.enableRefresh.name) {
-      return Icons.refresh_rounded;
-    } else if (name == LocalSettings.enableDismissRead.name) {
-      return Icons.clear_all_rounded;
-    } else if (name == LocalSettings.enableNewPost.name) {
-      return Icons.add_rounded;
-    }
-    return null;
-  }
-
-  String? getFabActionTitle(String name) {
-    if (name == 'open_fab') {
-      return AppLocalizations.of(context)!.open;
-    } else if (name == LocalSettings.enableBackToTop.name) {
-      return AppLocalizations.of(context)!.backToTop;
-    } else if (name == LocalSettings.enableSubscriptions.name) {
-      return AppLocalizations.of(context)!.subscriptions;
-    } else if (name == LocalSettings.enableChangeSort.name) {
-      return AppLocalizations.of(context)!.changeSort;
-    } else if (name == LocalSettings.enableRefresh.name) {
-      return AppLocalizations.of(context)!.refresh;
-    } else if (name == LocalSettings.enableDismissRead.name) {
-      return AppLocalizations.of(context)!.dismissRead;
-    } else if (name == LocalSettings.enableNewPost.name) {
-      return AppLocalizations.of(context)!.createPost;
-    }
-    return null;
-  }
-
-  void executeFabAction(String name, CommunityState state, {CommunityBloc? bloc}) {
-    if (name == 'open_fab') {
-      context.read<ThunderBloc>().add(const OnFabToggle(true));
-    } else if (name == LocalSettings.enableBackToTop.name) {
-      context.read<ThunderBloc>().add(OnScrollToTopEvent());
-    } else if (name == LocalSettings.enableSubscriptions.name) {
-      widget.scaffoldKey!.currentState!.openDrawer();
-    } else if (name == LocalSettings.enableChangeSort.name) {
-      showSortBottomSheet(context, state);
-    } else if (name == LocalSettings.enableRefresh.name) {
-      context.read<AccountBloc>().add(GetAccountInformation());
-      bloc?.add(
-        GetCommunityPostsEvent(
-          reset: true,
-          sortType: sortType,
-          communityId: state.communityId,
-          listingType: state.listingType,
-          communityName: state.communityName,
-        ),
-      );
-    } else if (name == LocalSettings.enableDismissRead.name) {
-      context.read<ThunderBloc>().add(const OnDismissEvent(true));
-    } else if (name == LocalSettings.enableNewPost.name && bloc != null) {
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) {
-            return MultiBlocProvider(
-              providers: [
-                BlocProvider<CommunityBloc>.value(value: bloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              ],
-              child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-            );
-          },
-        ),
-      );
-    }
   }
 }
 

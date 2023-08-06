@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -35,10 +36,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool postFabEnableChangeSort = true;
   bool postFabEnableReplyToPost = true;
 
-  String feedFabSinglePressAction = LocalSettings.enableDismissRead.name;
-  String feedFabLongPressAction = 'open_fab';
-  String postFabSinglePressAction = LocalSettings.postFabEnableReplyToPost.name;
-  String postFabLongPressAction = 'open_fab';
+  FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
+  FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
+  PostFabAction postFabSinglePressAction = PostFabAction.replyToPost;
+  PostFabAction postFabLongPressAction = PostFabAction.openFab;
 
   /// Loading
   bool isLoading = true;
@@ -103,19 +104,19 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         setState(() => postFabEnableReplyToPost = value);
         break;
       case LocalSettings.feedFabSinglePressAction:
-        await prefs.setString(LocalSettings.feedFabSinglePressAction.name, value);
+        await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
         break;
       case LocalSettings.feedFabLongPressAction:
-        await prefs.setString(LocalSettings.feedFabLongPressAction.name, value);
+        await prefs.setString(LocalSettings.feedFabLongPressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabLongPressAction = value);
         break;
       case LocalSettings.postFabSinglePressAction:
-        await prefs.setString(LocalSettings.postFabSinglePressAction.name, value);
+        await prefs.setString(LocalSettings.postFabSinglePressAction.name, (value as PostFabAction).name);
         setState(() => postFabSinglePressAction = value);
         break;
       case LocalSettings.postFabLongPressAction:
-        await prefs.setString(LocalSettings.postFabLongPressAction.name, value);
+        await prefs.setString(LocalSettings.postFabLongPressAction.name, (value as PostFabAction).name);
         setState(() => postFabLongPressAction = value);
         break;
     }
@@ -143,10 +144,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
-      feedFabSinglePressAction = prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? LocalSettings.enableDismissRead.name;
-      feedFabLongPressAction = prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? 'open_fab';
-      postFabSinglePressAction = prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? LocalSettings.postFabEnableReplyToPost.name;
-      postFabLongPressAction = prefs.getString(LocalSettings.postFabLongPressAction.name) ?? 'open_fab';
+      feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
+      postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
+      postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
 
       isLoading = false;
     });
@@ -292,17 +293,17 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.more_horiz_rounded,
                                         onToggle: (_) {},
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == 'open_fab')
+                                          if (feedFabSinglePressAction == FeedFabAction.openFab)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == 'open_fab')
+                                          if (feedFabLongPressAction == FeedFabAction.openFab)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker('open_fab'),
-                                        onTap: () => showFeedFabActionPicker('open_fab'),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.openFab),
+                                        onTap: () => showFeedFabActionPicker(FeedFabAction.openFab),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableBackToTop.label,
@@ -311,16 +312,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.arrow_upward,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableBackToTop, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableBackToTop.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.backToTop)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableBackToTop.name)
+                                          if (feedFabLongPressAction == FeedFabAction.backToTop)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableBackToTop.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.backToTop),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableSubscriptions.label,
@@ -329,16 +330,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.people_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableSubscriptions, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableSubscriptions.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.subscriptions)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableSubscriptions.name)
+                                          if (feedFabLongPressAction == FeedFabAction.subscriptions)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableSubscriptions.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.subscriptions),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableChangeSort.label,
@@ -347,16 +348,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.sort_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableChangeSort, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableChangeSort.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.changeSort)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableChangeSort.name)
+                                          if (feedFabLongPressAction == FeedFabAction.changeSort)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableChangeSort.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.changeSort),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableRefresh.label,
@@ -365,16 +366,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.refresh_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableRefresh, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableRefresh.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.refresh)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableRefresh.name)
+                                          if (feedFabLongPressAction == FeedFabAction.refresh)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableRefresh.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.refresh),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableDismissRead.label,
@@ -383,16 +384,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.clear_all_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableDismissRead, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableDismissRead.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.dismissRead)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableDismissRead.name)
+                                          if (feedFabLongPressAction == FeedFabAction.dismissRead)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableDismissRead.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.dismissRead),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.enableNewPost.label,
@@ -401,16 +402,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.add_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableNewPost, value),
                                         additionalWidgets: [
-                                          if (feedFabSinglePressAction == LocalSettings.enableNewPost.name)
+                                          if (feedFabSinglePressAction == FeedFabAction.newPost)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (feedFabLongPressAction == LocalSettings.enableNewPost.name)
+                                          if (feedFabLongPressAction == FeedFabAction.newPost)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showFeedFabActionPicker(LocalSettings.enableNewPost.name),
+                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.newPost),
                                       ),
                                     ],
                                   ),
@@ -460,17 +461,17 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.more_horiz_rounded,
                                         onToggle: (_) {},
                                         additionalWidgets: [
-                                          if (postFabSinglePressAction == 'open_fab')
+                                          if (postFabSinglePressAction == PostFabAction.openFab)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (postFabLongPressAction == 'open_fab')
+                                          if (postFabLongPressAction == PostFabAction.openFab)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showPostFabActionPicker('open_fab'),
-                                        onTap: () => showPostFabActionPicker('open_fab'),
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.openFab),
+                                        onTap: () => showPostFabActionPicker(PostFabAction.openFab),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableBackToTop.label,
@@ -479,16 +480,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.arrow_upward,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableBackToTop, value),
                                         additionalWidgets: [
-                                          if (postFabSinglePressAction == LocalSettings.postFabEnableBackToTop.name)
+                                          if (postFabSinglePressAction == PostFabAction.backToTop)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (postFabLongPressAction == LocalSettings.postFabEnableBackToTop.name)
+                                          if (postFabLongPressAction == PostFabAction.backToTop)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showPostFabActionPicker(LocalSettings.postFabEnableBackToTop.name),
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.backToTop),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableChangeSort.label,
@@ -497,16 +498,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.sort_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableChangeSort, value),
                                         additionalWidgets: [
-                                          if (postFabSinglePressAction == LocalSettings.postFabEnableChangeSort.name)
+                                          if (postFabSinglePressAction == PostFabAction.changeSort)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (postFabLongPressAction == LocalSettings.postFabEnableChangeSort.name)
+                                          if (postFabLongPressAction == PostFabAction.changeSort)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showPostFabActionPicker(LocalSettings.postFabEnableChangeSort.name),
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.changeSort),
                                       ),
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableReplyToPost.label,
@@ -515,16 +516,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         iconDisabled: Icons.reply_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableReplyToPost, value),
                                         additionalWidgets: [
-                                          if (postFabSinglePressAction == LocalSettings.postFabEnableReplyToPost.name)
+                                          if (postFabSinglePressAction == PostFabAction.replyToPost)
                                             const Icon(
                                               Icons.touch_app_outlined,
                                             ),
-                                          if (postFabLongPressAction == LocalSettings.postFabEnableReplyToPost.name)
+                                          if (postFabLongPressAction == PostFabAction.replyToPost)
                                             const Icon(
                                               Icons.touch_app_rounded,
                                             ),
                                         ],
-                                        onLongPress: () => showPostFabActionPicker(LocalSettings.postFabEnableReplyToPost.name),
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.replyToPost),
                                       ),
                                     ],
                                   ),
@@ -543,7 +544,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     );
   }
 
-  void showFeedFabActionPicker(String actionName) {
+  void showFeedFabActionPicker(FeedFabAction action) {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -555,17 +556,17 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
-            setPreferences(LocalSettings.feedFabSinglePressAction, actionName);
+            setPreferences(LocalSettings.feedFabSinglePressAction, action);
           }
           if (value.payload == 'long') {
-            setPreferences(LocalSettings.feedFabLongPressAction, actionName);
+            setPreferences(LocalSettings.feedFabLongPressAction, action);
           }
         },
       ),
     );
   }
 
-  void showPostFabActionPicker(String actionName) {
+  void showPostFabActionPicker(PostFabAction action) {
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
@@ -577,10 +578,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
-            setPreferences(LocalSettings.postFabSinglePressAction, actionName);
+            setPreferences(LocalSettings.postFabSinglePressAction, action);
           }
           if (value.payload == 'long') {
-            setPreferences(LocalSettings.postFabLongPressAction, actionName);
+            setPreferences(LocalSettings.postFabLongPressAction, action);
           }
         },
       ),

@@ -96,10 +96,10 @@ class ThunderState extends Equatable {
     this.postFabEnableBackToTop = true,
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
-    this.feedFabSinglePressAction = 'setting_enable_dismiss_read_fab',
-    this.feedFabLongPressAction = 'open_fab',
-    this.postFabSinglePressAction = 'setting_post_fab_enable_reply_to_post',
-    this.postFabLongPressAction = 'open_fab',
+    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.feedFabLongPressAction = FeedFabAction.openFab,
+    this.postFabSinglePressAction = PostFabAction.replyToPost,
+    this.postFabLongPressAction = PostFabAction.openFab,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -207,10 +207,10 @@ class ThunderState extends Equatable {
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
 
-  final String feedFabSinglePressAction;
-  final String feedFabLongPressAction;
-  final String postFabSinglePressAction;
-  final String postFabLongPressAction;
+  final FeedFabAction feedFabSinglePressAction;
+  final FeedFabAction feedFabLongPressAction;
+  final PostFabAction postFabSinglePressAction;
+  final PostFabAction postFabLongPressAction;
 
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
@@ -312,10 +312,10 @@ class ThunderState extends Equatable {
     bool? postFabEnableBackToTop,
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
-    String? feedFabSinglePressAction,
-    String? feedFabLongPressAction,
-    String? postFabSinglePressAction,
-    String? postFabLongPressAction,
+    FeedFabAction? feedFabSinglePressAction,
+    FeedFabAction? feedFabLongPressAction,
+    PostFabAction? postFabSinglePressAction,
+    PostFabAction? postFabLongPressAction,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
