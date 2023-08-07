@@ -95,6 +95,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   /// Whether we are fetching more comments from this comment
   bool isFetchingMoreComments = false;
 
+  /// This is used to temporarily disable the swipe action to allow for detection of full screen swipe to go back
+  bool isOverridingSwipeGestureAction = false;
+
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -178,25 +181,42 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               Listener(
                 behavior: HitTestBehavior.opaque,
                 onPointerDown: (event) => {},
-                onPointerUp: (event) => {
-                  if (swipeAction != null && swipeAction != SwipeAction.none)
-                    {
-                      triggerCommentAction(
-                        context: context,
-                        swipeAction: swipeAction,
-                        onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                        onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                        voteType: myVote ?? VoteType.none,
-                        saved: saved,
-                        commentViewTree: widget.commentViewTree,
-                        selectedCommentId: widget.selectCommentId,
-                        selectedCommentPath: widget.selectedCommentPath,
-                      ),
-                    }
+                onPointerUp: (event) {
+                  setState(() => isOverridingSwipeGestureAction = false);
+
+                  if (swipeAction != null && swipeAction != SwipeAction.none) {
+                    triggerCommentAction(
+                      context: context,
+                      swipeAction: swipeAction,
+                      onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
+                      onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                      voteType: myVote ?? VoteType.none,
+                      saved: saved,
+                      commentViewTree: widget.commentViewTree,
+                      selectedCommentId: widget.selectCommentId,
+                      selectedCommentPath: widget.selectedCommentPath,
+                    );
+                  }
                 },
                 onPointerCancel: (event) => {},
+                onPointerMove: (PointerMoveEvent event) {
+                  // Get the horizontal drag distance
+                  double horizontalDragDistance = event.delta.dx;
+
+                  // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
+                  // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
+                  if (horizontalDragDistance > 0) {
+                    if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                      setState(() => isOverridingSwipeGestureAction = true);
+                    }
+                  } else {
+                    if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+                      setState(() => isOverridingSwipeGestureAction = false);
+                    }
+                  }
+                },
                 child: Dismissible(
-                  direction: state.enableCommentGestures == false ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
+                  direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
                   key: ObjectKey(widget.commentViewTree.commentView!.comment.id),
                   resizeDuration: Duration.zero,
                   dismissThresholds: const {DismissDirection.endToStart: 1, DismissDirection.startToEnd: 1},

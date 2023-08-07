@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
@@ -45,6 +46,8 @@ class _ThunderState extends State<Thunder> {
   final GlobalKey<ScaffoldState> _feedScaffoldKey = GlobalKey<ScaffoldState>();
 
   bool hasShownUpdateDialog = false;
+
+  bool _isFabOpen = false;
 
   @override
   void initState() {
@@ -115,6 +118,10 @@ class _ThunderState extends State<Thunder> {
       return Future.value(false);
     }
 
+    if (_isFabOpen == true) {
+      return Future.value(false);
+    }
+
     if (appExitCounter == 0) {
       appExitCounter++;
       _showExitWarning();
@@ -150,6 +157,10 @@ class _ThunderState extends State<Thunder> {
                 case ThunderStatus.refreshing:
                 case ThunderStatus.success:
                   FlutterNativeSplash.remove();
+
+                  // Update the variable so that it can be used in _handleBackButtonPress
+                  _isFabOpen = thunderBlocState.isFabOpen;
+
                   return Scaffold(
                       bottomNavigationBar: BlocBuilder<InboxBloc, InboxState>(
                         builder: (context, state) {
@@ -255,7 +266,7 @@ class _ThunderState extends State<Thunder> {
               label: AppLocalizations.of(context)!.search,
             ),
             BottomNavigationBarItem(
-              icon: const Icon(Icons.person_rounded),
+              icon: GestureDetector(onLongPress: () => showProfileModalSheet(context), child: const Icon(Icons.person_rounded)),
               label: AppLocalizations.of(context)!.account,
             ),
             BottomNavigationBarItem(

@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 // Internal
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
@@ -61,6 +62,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
@@ -86,285 +93,266 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       _previousIsFabSummoned = isFabSummoned;
     }
 
-    return WillPopScope(
-      onWillPop: () {
-        if (context.read<ThunderBloc>().state.isFabOpen) {
-          context.read<ThunderBloc>().add(const OnFabToggle(false));
-        }
-        return Future.value(true);
-      },
-      child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (context) => currentCommunityBloc = CommunityBloc()),
-          BlocProvider(create: (context) => AnonymousSubscriptionsBloc()..add(GetSubscribedCommunitiesEvent())),
-        ],
-        child: BlocConsumer<CommunityBloc, CommunityState>(
-          listenWhen: (previousState, currentState) {
-            if (previousState.subscribedType != currentState.subscribedType) {
-              context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
-            }
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => currentCommunityBloc = CommunityBloc()),
+        BlocProvider(create: (context) => AnonymousSubscriptionsBloc()..add(GetSubscribedCommunitiesEvent())),
+      ],
+      child: BlocConsumer<CommunityBloc, CommunityState>(
+        listenWhen: (previousState, currentState) {
+          if (previousState.subscribedType != currentState.subscribedType) {
+            context.read<account_bloc.AccountBloc>().add(account_bloc.GetAccountInformation());
+          }
 
-            if (previousState.sortType != currentState.sortType) {
-              setState(() {
-                sortType = currentState.sortType;
-                final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
-                sortTypeIcon = sortTypeItem.icon;
-                sortTypeLabel = sortTypeItem.label;
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              sortTypeIcon = sortTypeItem.icon;
+              sortTypeLabel = sortTypeItem.label;
+            });
+          }
+
+          return true;
+        },
+        listener: (context, state) {
+          if (state.status == CommunityStatus.failure) {
+            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+          }
+
+          if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
+            if (state.blockedCommunity?.blocked == true) {
+              showSnackbar(context, AppLocalizations.of(context)!.successfullyBlockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'), undoAction: () {
+                context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
               });
+            } else {
+              showSnackbar(context, AppLocalizations.of(context)!.successfullyUnblockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'));
             }
-
-            return true;
-          },
-          listener: (context, state) {
-            if (state.status == CommunityStatus.failure) {
-              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
-            }
-
-            if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
-              if (state.blockedCommunity?.blocked == true) {
-                showSnackbar(context, AppLocalizations.of(context)!.successfullyBlockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'), undoAction: () {
-                  context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
-                });
-              } else {
-                showSnackbar(context, AppLocalizations.of(context)!.successfullyUnblockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'));
+          }
+        },
+        builder: (context, state) {
+          return BlocListener<AuthBloc, AuthState>(
+            listenWhen: (previous, current) {
+              if (previous.account == null && current.account != null && previous.account?.id != current.account?.id) {
+                context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType));
+                return true;
               }
-            }
-          },
-          builder: (context, state) {
-            return BlocListener<AuthBloc, AuthState>(
-              listenWhen: (previous, current) {
-                if (previous.account == null && current.account != null && previous.account?.id != current.account?.id) {
-                  context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType));
-                  return true;
-                }
 
-                return false;
-              },
-              listener: (context, state) {},
-              child: BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
-                  listener: (c, s) {},
-                  builder: (c, subscriptionsState) {
-                    return Scaffold(
-                      key: widget.scaffoldKey,
-                      appBar: AppBar(
-                        title: Text(getCommunityName(state)),
-                        centerTitle: false,
-                        toolbarHeight: 70.0,
-                        actions: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              if (state.communityId != null || state.communityName != null)
-                                IconButton(
-                                  icon: Icon(
-                                    switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
-                                      SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                                      SubscribedType.pending => Icons.pending_outlined,
-                                      SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                                      _ => Icons.add_circle_outline_rounded,
-                                    },
-                                    semanticLabel: (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null)
-                                        ? AppLocalizations.of(context)!.subscribe
-                                        : AppLocalizations.of(context)!.unsubscribe,
-                                  ),
-                                  tooltip: switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
-                                    SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
-                                    SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
-                                    SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
-                                    _ => null,
+              return false;
+            },
+            listener: (context, state) {},
+            child: BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
+                listener: (c, s) {},
+                builder: (c, subscriptionsState) {
+                  return Scaffold(
+                    key: widget.scaffoldKey,
+                    appBar: AppBar(
+                      title: Text(getCommunityName(state)),
+                      centerTitle: false,
+                      toolbarHeight: 70.0,
+                      actions: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            if (state.communityId != null || state.communityName != null)
+                              IconButton(
+                                icon: Icon(
+                                  switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
+                                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                                    SubscribedType.pending => Icons.pending_outlined,
+                                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                                    _ => Icons.add_circle_outline_rounded,
                                   },
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    _onSubscribeIconPressed(isUserLoggedIn, context, state);
-                                  },
+                                  semanticLabel: (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null)
+                                      ? AppLocalizations.of(context)!.subscribe
+                                      : AppLocalizations.of(context)!.unsubscribe,
                                 ),
-                              IconButton(
-                                  icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    context.read<AccountBloc>().add(GetAccountInformation());
-                                    return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                          reset: true,
-                                          sortType: sortType,
-                                          communityId: state.communityId,
-                                          listingType: state.listingType,
-                                          communityName: state.communityName,
-                                        ));
-                                  }),
-                              IconButton(
-                                  icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
-                                  tooltip: sortTypeLabel,
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    showSortBottomSheet(context, state);
-                                  }),
-                              const SizedBox(width: 8.0),
-                            ],
-                          )
-                        ],
-                      ),
-                      drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-                      floatingActionButton: enableFab
-                          ? AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 200),
-                              switchInCurve: Curves.ease,
-                              switchOutCurve: Curves.ease,
-                              transitionBuilder: (child, animation) {
-                                return SlideTransition(
-                                  position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
-                                  child: child,
-                                );
-                              },
-                              child: isFabSummoned
-                                  ? GestureFab(
-                                      distance: 60,
-                                      icon: Icon(
-                                        singlePressAction.isAllowed(state: state, widget: widget)
-                                            ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
-                                            : FeedFabAction.dismissRead.getIcon(),
-                                        semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
-                                        size: 35,
-                                      ),
-                                      onPressed: () {
-                                        HapticFeedback.lightImpact();
-                                        singlePressAction.isAllowed(state: state, widget: widget)
-                                            ? singlePressAction.execute(context, state,
-                                                bloc: context.read<CommunityBloc>(),
-                                                widget: widget,
-                                                override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-                                                sortType: sortType)
-                                            : FeedFabAction.dismissRead.execute(context, state);
-                                      },
-                                      onLongPress: () {
-                                        longPressAction.isAllowed(state: state, widget: widget)
-                                            ? longPressAction.execute(context, state,
-                                                bloc: context.read<CommunityBloc>(),
-                                                widget: widget,
-                                                override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-                                                sortType: sortType)
-                                            : FeedFabAction.openFab.execute(context, state);
-                                      },
-                                      children: [
-                                        if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
-                                          ActionButton(
-                                            onPressed: () {
-                                              HapticFeedback.lightImpact();
-                                              FeedFabAction.dismissRead.execute(context, state);
-                                            },
-                                            title: FeedFabAction.dismissRead.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.dismissRead.getIcon(),
-                                              semanticLabel: FeedFabAction.dismissRead.getTitle(context),
-                                            ),
-                                          ),
-                                        if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
-                                          ActionButton(
-                                            onPressed: () {
-                                              HapticFeedback.lightImpact();
-                                              FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
-                                            },
-                                            title: FeedFabAction.refresh.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.refresh.getIcon(),
-                                              semanticLabel: FeedFabAction.refresh.getTitle(context),
-                                            ),
-                                          ),
-                                        if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
-                                          ActionButton(
-                                            onPressed: () {
-                                              HapticFeedback.mediumImpact();
-                                              FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
-                                            },
-                                            title: FeedFabAction.changeSort.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
-                                              semanticLabel: FeedFabAction.changeSort.getTitle(context),
-                                            ),
-                                          ),
-                                        if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
-                                          ActionButton(
-                                            onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
-                                            title: FeedFabAction.subscriptions.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.subscriptions.getIcon(),
-                                              semanticLabel: FeedFabAction.subscriptions.getTitle(context),
-                                            ),
-                                          ),
-                                        /*const ActionButton(
-                            onPressed: (!state.useCompactView) => setPreferences(LocalSettings.useCompactView, value),,
-                            title: state. ? "Large View" : "Compact View",
-                            icon: state.useCompactView ? const Icon(Icons.crop_din_rounded) : Icon(Icons.crop_16_9_rounded),
-                          ),*/
-                                        if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
-                                          ActionButton(
-                                            onPressed: () {
-                                              FeedFabAction.backToTop.execute(context, state);
-                                            },
-                                            title: FeedFabAction.backToTop.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.backToTop.getIcon(),
-                                              semanticLabel: FeedFabAction.backToTop.getTitle(context),
-                                            ),
-                                          ),
-                                        if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
-                                          ActionButton(
-                                            onPressed: () {
-                                              FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
-                                            },
-                                            title: FeedFabAction.newPost.getTitle(context),
-                                            icon: Icon(
-                                              FeedFabAction.newPost.getIcon(),
-                                              semanticLabel: FeedFabAction.newPost.getTitle(context),
-                                            ),
-                                          ),
-                                      ],
-                                    )
-                                  : null,
-                            )
-                          : null,
-                      body: Stack(
-                        alignment: Alignment.bottomRight,
-                        children: [
-                          SafeArea(child: _getBody(context, state)),
-                          AnimatedSwitcher(
+                                tooltip: switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
+                                  SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
+                                  SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
+                                  SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
+                                  _ => null,
+                                },
+                                onPressed: () {
+                                  HapticFeedback.mediumImpact();
+                                  _onSubscribeIconPressed(isUserLoggedIn, context, state);
+                                },
+                              ),
+                            IconButton(
+                                icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
+                                onPressed: () {
+                                  HapticFeedback.mediumImpact();
+                                  context.read<AccountBloc>().add(GetAccountInformation());
+                                  return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
+                                        reset: true,
+                                        sortType: sortType,
+                                        communityId: state.communityId,
+                                        listingType: state.listingType,
+                                        communityName: state.communityName,
+                                      ));
+                                }),
+                            IconButton(
+                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
+                                tooltip: sortTypeLabel,
+                                onPressed: () {
+                                  HapticFeedback.mediumImpact();
+                                  showSortBottomSheet(context, state);
+                                }),
+                            const SizedBox(width: 8.0),
+                          ],
+                        )
+                      ],
+                    ),
+                    drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+                    floatingActionButton: enableFab
+                        ? AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
-                            child: isFabOpen
-                                ? Listener(
-                                    onPointerUp: (details) {
-                                      context.read<ThunderBloc>().add(const OnFabToggle(false));
-                                    },
-                                    child: Container(
-                                      color: theme.colorScheme.background.withOpacity(0.85),
+                            switchInCurve: Curves.ease,
+                            switchOutCurve: Curves.ease,
+                            transitionBuilder: (child, animation) {
+                              return SlideTransition(
+                                position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
+                                child: child,
+                              );
+                            },
+                            child: isFabSummoned
+                                ? GestureFab(
+                                    distance: 60,
+                                    icon: Icon(
+                                      singlePressAction.isAllowed(state: state, widget: widget)
+                                          ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
+                                          : FeedFabAction.dismissRead.getIcon(),
+                                      semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
+                                      size: 35,
                                     ),
+                                    onPressed: () {
+                                      HapticFeedback.lightImpact();
+                                      singlePressAction.isAllowed(state: state, widget: widget)
+                                          ? singlePressAction.execute(context, state,
+                                              bloc: context.read<CommunityBloc>(),
+                                              widget: widget,
+                                              override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              sortType: sortType)
+                                          : FeedFabAction.dismissRead.execute(context, state);
+                                    },
+                                    onLongPress: () {
+                                      longPressAction.isAllowed(state: state, widget: widget)
+                                          ? longPressAction.execute(context, state,
+                                              bloc: context.read<CommunityBloc>(),
+                                              widget: widget,
+                                              override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              sortType: sortType)
+                                          : FeedFabAction.openFab.execute(context, state);
+                                    },
+                                    children: [
+                                      if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.lightImpact();
+                                            FeedFabAction.dismissRead.execute(context, state);
+                                          },
+                                          title: FeedFabAction.dismissRead.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.dismissRead.getIcon(),
+                                            semanticLabel: FeedFabAction.dismissRead.getTitle(context),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.lightImpact();
+                                            FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
+                                          },
+                                          title: FeedFabAction.refresh.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.refresh.getIcon(),
+                                            semanticLabel: FeedFabAction.refresh.getTitle(context),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.mediumImpact();
+                                            FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
+                                          },
+                                          title: FeedFabAction.changeSort.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                            semanticLabel: FeedFabAction.changeSort.getTitle(context),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
+                                        ActionButton(
+                                          onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
+                                          title: FeedFabAction.subscriptions.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.subscriptions.getIcon(),
+                                            semanticLabel: FeedFabAction.subscriptions.getTitle(context),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
+                                        ActionButton(
+                                          onPressed: () {
+                                            FeedFabAction.backToTop.execute(context, state);
+                                          },
+                                          title: FeedFabAction.backToTop.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.backToTop.getIcon(),
+                                            semanticLabel: FeedFabAction.backToTop.getTitle(context),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
+                                        ActionButton(
+                                          onPressed: () {
+                                            FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
+                                          },
+                                          title: FeedFabAction.newPost.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.newPost.getIcon(),
+                                            semanticLabel: FeedFabAction.newPost.getTitle(context),
+                                          ),
+                                        ),
+                                    ],
                                   )
                                 : null,
-                          ),
-                          SizedBox(
-                            height: 70,
-                            width: 70,
-                            child: GestureDetector(
-                              onVerticalDragUpdate: (details) {
-                                if (details.delta.dy < -5) {
-                                  context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                                }
-                              },
-                            ),
                           )
-                        ],
-                      ),
-                    );
-                  }),
-            );
-          },
-        ),
+                        : null,
+                    body: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        SafeArea(child: _getBody(context, state)),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: isFabOpen
+                              ? Listener(
+                                  onPointerUp: (details) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  },
+                                  child: Container(
+                                    color: theme.colorScheme.background.withOpacity(0.85),
+                                  ),
+                                )
+                              : null,
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: GestureDetector(
+                            onVerticalDragUpdate: (details) {
+                              if (details.delta.dy < -5) {
+                                context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
+                  );
+                }),
+          );
+        },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    BackButtonInterceptor.remove(_handleBack);
-    super.dispose();
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
@@ -438,6 +426,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (context.read<ThunderBloc>().state.isFabOpen) {
+      context.read<ThunderBloc>().add(const OnFabToggle(false));
+    }
+
     if (currentCommunityBloc != null) {
       // This restricts back button handling to when we're already at the top level of navigation
       final canPop = Navigator.of(context).canPop();

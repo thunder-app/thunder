@@ -81,6 +81,16 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+
+    // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+
+      if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+        widget.onScrollEndReached();
+      }
+    });
+
     super.initState();
   }
 
@@ -160,7 +170,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
               crossAxisSpacing: 40,
               mainAxisSpacing: 0,
-              cacheExtent: 500,
+              cacheExtent: 1000,
               controller: _scrollController,
               itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 2 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
@@ -171,13 +181,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         setState(() {
                           _displaySidebar = true;
                         });
-                      },
-                      onHorizontalDragUpdate: (details) {
-                        if (details.delta.dx < -3) {
-                          setState(() {
-                            _displaySidebar = true;
-                          });
-                        }
                       },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );

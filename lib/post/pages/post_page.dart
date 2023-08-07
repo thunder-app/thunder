@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -53,11 +56,28 @@ class _PostPageState extends State<PostPage> {
   bool enableFab = false;
   bool enableCommentNavigation = true;
 
-  Offset? _currentHorizontalDragStartPosition;
-
   CommentSortType? sortType;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
+
+  @override
+  void initState() {
+    super.initState();
+    BackButtonInterceptor.add(_handleBack);
+  }
+
+  @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (context.read<ThunderBloc>().state.isFabOpen) {
+      context.read<ThunderBloc>().add(const OnFabToggle(false));
+    }
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -84,271 +104,254 @@ class _PostPageState extends State<PostPage> {
       _previousIsFabSummoned = isFabSummoned;
     }
 
-    return WillPopScope(
-      onWillPop: () {
-        if (context.read<ThunderBloc>().state.isFabOpen) {
-          context.read<ThunderBloc>().add(const OnFabToggle(false));
-        }
-        return Future.value(true);
-      },
-      child: BlocProvider<PostBloc>(
-        create: (context) => PostBloc(),
-        child: BlocConsumer<PostBloc, PostState>(
-          listenWhen: (previousState, currentState) {
-            if (previousState.sortType != currentState.sortType) {
-              setState(() {
-                sortType = currentState.sortType;
-                final sortTypeItem = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
-                sortTypeIcon = sortTypeItem.icon;
-                sortTypeLabel = sortTypeItem.label;
-              });
-            }
-            return true;
-          },
-          listener: (context, state) {},
-          builder: (context, state) {
-            return Scaffold(
-              appBar: AppBar(
-                actions: [
-                  IconButton(
-                    icon: Icon(
-                      sortTypeIcon,
-                      semanticLabel: AppLocalizations.of(context)!.sortBy,
-                    ),
-                    tooltip: sortTypeLabel,
-                    onPressed: () => showSortBottomSheet(context, state),
+    return BlocProvider<PostBloc>(
+      create: (context) => PostBloc(),
+      child: BlocConsumer<PostBloc, PostState>(
+        listenWhen: (previousState, currentState) {
+          if (previousState.sortType != currentState.sortType) {
+            setState(() {
+              sortType = currentState.sortType;
+              final sortTypeItem = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              sortTypeIcon = sortTypeItem.icon;
+              sortTypeLabel = sortTypeItem.label;
+            });
+          }
+          return true;
+        },
+        listener: (context, state) {},
+        builder: (context, state) {
+          return Scaffold(
+            appBar: AppBar(
+              actions: [
+                IconButton(
+                  icon: Icon(
+                    sortTypeIcon,
+                    semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
-                ],
-                centerTitle: false,
-                toolbarHeight: 70.0,
-              ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (enableFab)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 250),
-                        child: isFabSummoned
-                            ? GestureFab(
-                                distance: 60,
-                                icon: Icon(
-                                  singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
-                                  semanticLabel: singlePressAction.getTitle(context),
-                                  size: 35,
-                                ),
-                                onPressed: () => singlePressAction.execute(
-                                    context: context,
-                                    override: singlePressAction == PostFabAction.backToTop
-                                        ? () => {
-                                              _itemScrollController.scrollTo(
-                                                index: 0,
-                                                duration: const Duration(milliseconds: 500),
-                                                curve: Curves.easeInOut,
-                                              )
-                                            }
-                                        : singlePressAction == PostFabAction.changeSort
-                                            ? () => showSortBottomSheet(context, state)
-                                            : singlePressAction == PostFabAction.replyToPost
-                                                ? replyToPost
-                                                : null),
-                                onLongPress: () => longPressAction.execute(
-                                    context: context,
-                                    override: singlePressAction == PostFabAction.backToTop
-                                        ? () => {
-                                              _itemScrollController.scrollTo(
-                                                index: 0,
-                                                duration: const Duration(milliseconds: 500),
-                                                curve: Curves.easeInOut,
-                                              )
-                                            }
-                                        : singlePressAction == PostFabAction.changeSort
-                                            ? () => showSortBottomSheet(context, state)
-                                            : singlePressAction == PostFabAction.replyToPost
-                                                ? replyToPost
-                                                : null),
-                                children: [
-                                  if (enableReplyToPost)
-                                    ActionButton(
-                                      onPressed: () {
-                                        HapticFeedback.mediumImpact();
-                                        PostFabAction.replyToPost.execute(
-                                          override: replyToPost,
-                                        );
-                                      },
-                                      title: PostFabAction.replyToPost.getTitle(context),
-                                      icon: Icon(
-                                        PostFabAction.replyToPost.getIcon(),
-                                        semanticLabel: PostFabAction.replyToPost.getTitle(context),
-                                      ),
-                                    ),
-                                  if (enableChangeSort)
-                                    ActionButton(
-                                      onPressed: () {
-                                        HapticFeedback.mediumImpact();
-                                        PostFabAction.changeSort.execute(
-                                          override: () => showSortBottomSheet(context, state),
-                                        );
-                                      },
-                                      title: PostFabAction.changeSort.getTitle(context),
-                                      icon: Icon(
-                                        PostFabAction.changeSort.getIcon(),
-                                        semanticLabel: PostFabAction.changeSort.getTitle(context),
-                                      ),
-                                    ),
-                                  if (enableBackToTop)
-                                    ActionButton(
-                                      onPressed: () {
-                                        PostFabAction.backToTop.execute(
-                                            override: () => {
-                                                  _itemScrollController.scrollTo(
-                                                    index: 0,
-                                                    duration: const Duration(milliseconds: 500),
-                                                    curve: Curves.easeInOut,
-                                                  )
-                                                });
-                                      },
-                                      title: PostFabAction.backToTop.getTitle(context),
-                                      icon: Icon(
-                                        PostFabAction.backToTop.getIcon(),
-                                        semanticLabel: PostFabAction.backToTop.getTitle(context),
-                                      ),
-                                    ),
-                                ],
-                              )
-                            : null,
-                      ),
-                    ),
-                  if (enableCommentNavigation)
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: CommentNavigatorFab(
-                            itemPositionsListener: _itemPositionsListener,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              body: GestureDetector(
-                onHorizontalDragStart: (details) {
-                  _currentHorizontalDragStartPosition = details.globalPosition;
-                },
-                onHorizontalDragEnd: (details) {
-                  if (details.primaryVelocity! > 0 && (_currentHorizontalDragStartPosition?.dx ?? 0) > 45) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    SafeArea(
-                      child: BlocConsumer<PostBloc, PostState>(
-                        listenWhen: (previous, current) {
-                          if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
-                            setState(() => resetFailureMessage = true);
-                          }
-                          return true;
-                        },
-                        listener: (context, state) {
-                          if (state.status == PostStatus.success && widget.postView != null) {
-                            // Update the community's post
-                            context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
-                          }
-                        },
-                        builder: (context, state) {
-                          if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, mode: SnackBarMode.warning);
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              setState(() => resetFailureMessage = false);
-                            });
-                          }
-                          switch (state.status) {
-                            case PostStatus.initial:
-                              context
-                                  .read<PostBloc>()
-                                  .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
-                              return const Center(child: CircularProgressIndicator());
-                            case PostStatus.loading:
-                              return const Center(child: CircularProgressIndicator());
-                            case PostStatus.refreshing:
-                            case PostStatus.success:
-                            case PostStatus.failure:
-                              if (state.postView != null) {
-                                return RefreshIndicator(
-                                  onRefresh: () async {
-                                    HapticFeedback.mediumImpact();
-                                    return context.read<PostBloc>().add(
-                                        GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-                                  },
-                                  child: PostPageSuccess(
-                                    postView: state.postView!,
-                                    comments: state.comments,
-                                    selectedCommentId: state.selectedCommentId,
-                                    selectedCommentPath: state.selectedCommentPath,
-                                    moddingCommentId: state.moddingCommentId,
-                                    viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                    itemScrollController: _itemScrollController,
-                                    itemPositionsListener: _itemPositionsListener,
-                                    hasReachedCommentEnd: state.hasReachedCommentEnd,
-                                    moderators: state.moderators,
-                                  ),
-                                );
-                              }
-                              return ErrorMessage(
-                                message: state.errorMessage,
-                                action: () {
-                                  context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
-                                },
-                                actionText: AppLocalizations.of(context)!.refreshContent,
-                              );
-                            case PostStatus.empty:
-                              return ErrorMessage(
-                                message: state.errorMessage,
-                                action: () {
-                                  context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
-                                },
-                                actionText: AppLocalizations.of(context)!.refreshContent,
-                              );
-                          }
-                        },
-                      ),
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      child: isFabOpen
-                          ? Listener(
-                              onPointerUp: (details) {
-                                context.read<ThunderBloc>().add(const OnFabToggle(false));
-                              },
-                              child: Container(
-                                color: theme.colorScheme.background.withOpacity(0.85),
+                  tooltip: sortTypeLabel,
+                  onPressed: () => showSortBottomSheet(context, state),
+                ),
+              ],
+              centerTitle: false,
+              toolbarHeight: 70.0,
+            ),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (enableFab)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: isFabSummoned
+                          ? GestureFab(
+                              distance: 60,
+                              icon: Icon(
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
+                                semanticLabel: singlePressAction.getTitle(context),
+                                size: 35,
                               ),
+                              onPressed: () => singlePressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _itemScrollController.scrollTo(
+                                              index: 0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              onLongPress: () => longPressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _itemScrollController.scrollTo(
+                                              index: 0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              children: [
+                                if (enableReplyToPost)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.replyToPost.execute(
+                                        override: replyToPost,
+                                      );
+                                    },
+                                    title: PostFabAction.replyToPost.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.replyToPost.getIcon(),
+                                      semanticLabel: PostFabAction.replyToPost.getTitle(context),
+                                    ),
+                                  ),
+                                if (enableChangeSort)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.changeSort.execute(
+                                        override: () => showSortBottomSheet(context, state),
+                                      );
+                                    },
+                                    title: PostFabAction.changeSort.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.changeSort.getIcon(),
+                                      semanticLabel: PostFabAction.changeSort.getTitle(context),
+                                    ),
+                                  ),
+                                if (enableBackToTop)
+                                  ActionButton(
+                                    onPressed: () {
+                                      PostFabAction.backToTop.execute(
+                                          override: () => {
+                                                _itemScrollController.scrollTo(
+                                                  index: 0,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.easeInOut,
+                                                )
+                                              });
+                                    },
+                                    title: PostFabAction.backToTop.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.backToTop.getIcon(),
+                                      semanticLabel: PostFabAction.backToTop.getTitle(context),
+                                    ),
+                                  ),
+                              ],
                             )
                           : null,
                     ),
-                    SizedBox(
-                      height: 70,
-                      width: 70,
-                      child: GestureDetector(
-                        onVerticalDragUpdate: (details) {
-                          if (details.delta.dy < -5) {
-                            context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                          }
-                        },
+                  ),
+                if (enableCommentNavigation)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CommentNavigatorFab(
+                          itemPositionsListener: _itemPositionsListener,
+                        ),
                       ),
                     ),
-                  ],
+                  ),
+              ],
+            ),
+            body: Stack(
+              alignment: Alignment.bottomRight,
+              children: [
+                SafeArea(
+                  child: BlocConsumer<PostBloc, PostState>(
+                    listenWhen: (previous, current) {
+                      if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                        setState(() => resetFailureMessage = true);
+                      }
+                      return true;
+                    },
+                    listener: (context, state) {
+                      if (state.status == PostStatus.success && widget.postView != null) {
+                        // Update the community's post
+                        context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state.status == PostStatus.failure && resetFailureMessage == true) {
+                        showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, mode: SnackBarMode.warning);
+                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+                          setState(() => resetFailureMessage = false);
+                        });
+                      }
+                      switch (state.status) {
+                        case PostStatus.initial:
+                          context
+                              .read<PostBloc>()
+                              .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentPath: widget.selectedCommentPath, selectedCommentId: widget.selectedCommentId));
+                          return const Center(child: CircularProgressIndicator());
+                        case PostStatus.loading:
+                          return const Center(child: CircularProgressIndicator());
+                        case PostStatus.refreshing:
+                        case PostStatus.success:
+                        case PostStatus.failure:
+                          if (state.postView != null) {
+                            return RefreshIndicator(
+                              onRefresh: () async {
+                                HapticFeedback.mediumImpact();
+                                return context
+                                    .read<PostBloc>()
+                                    .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                              },
+                              child: PostPageSuccess(
+                                postView: state.postView!,
+                                comments: state.comments,
+                                selectedCommentId: state.selectedCommentId,
+                                selectedCommentPath: state.selectedCommentPath,
+                                moddingCommentId: state.moddingCommentId,
+                                viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
+                                itemScrollController: _itemScrollController,
+                                itemPositionsListener: _itemPositionsListener,
+                                hasReachedCommentEnd: state.hasReachedCommentEnd,
+                                moderators: state.moderators,
+                              ),
+                            );
+                          }
+                          return ErrorMessage(
+                            message: state.errorMessage,
+                            action: () {
+                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: null));
+                            },
+                            actionText: AppLocalizations.of(context)!.refreshContent,
+                          );
+                        case PostStatus.empty:
+                          return ErrorMessage(
+                            message: state.errorMessage,
+                            action: () {
+                              context.read<PostBloc>().add(GetPostEvent(postView: widget.postView, postId: widget.postId));
+                            },
+                            actionText: AppLocalizations.of(context)!.refreshContent,
+                          );
+                      }
+                    },
+                  ),
                 ),
-              ),
-            );
-          },
-        ),
+                AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 200),
+                  child: isFabOpen
+                      ? Listener(
+                          onPointerUp: (details) {
+                            context.read<ThunderBloc>().add(const OnFabToggle(false));
+                          },
+                          child: Container(
+                            color: theme.colorScheme.background.withOpacity(0.85),
+                          ),
+                        )
+                      : null,
+                ),
+                SizedBox(
+                  height: 70,
+                  width: 70,
+                  child: GestureDetector(
+                    onVerticalDragUpdate: (details) {
+                      if (details.delta.dy < -5) {
+                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

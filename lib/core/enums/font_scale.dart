@@ -14,7 +14,7 @@ extension FontScaleExtension on FontScale {
         if (Platform.isIOS) return 0.85;
         return 0.9;
       case FontScale.base:
-        if (Platform.isIOS) return 0.9;
+        if (Platform.isIOS) return 0.93;
         return 0.95;
       case FontScale.large:
         if (Platform.isIOS) return 1.15;

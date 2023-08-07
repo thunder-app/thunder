@@ -62,193 +62,197 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   @override
+  void dispose() {
+    _bodyTextController.dispose();
+    _titleTextController.dispose();
+    _urlTextController.dispose();
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return WillPopScope(
-      onWillPop: () async {
-        // Dismiss keyboard when we go back
+    return GestureDetector(
+      onTap: () {
+        // Dismiss keyboard when we go tap anywhere on the screen
         FocusManager.instance.primaryFocus?.unfocus();
-        return true;
       },
-      child: GestureDetector(
-        onTap: () {
-          // Dismiss keyboard when we go tap anywhere on the screen
-          FocusManager.instance.primaryFocus?.unfocus();
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: Text(AppLocalizations.of(context)!.createPost),
-            toolbarHeight: 70.0,
-            actions: [
-              IconButton(
-                onPressed: isSubmitButtonDisabled
-                    ? null
-                    : () {
-                        url != ''
-                            ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
-                            : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
-                        Navigator.of(context).pop();
-                      },
-                icon: Icon(
-                  Icons.send_rounded,
-                  semanticLabel: AppLocalizations.of(context)!.createPost,
-                ),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(AppLocalizations.of(context)!.createPost),
+          toolbarHeight: 70.0,
+          actions: [
+            IconButton(
+              onPressed: isSubmitButtonDisabled
+                  ? null
+                  : () {
+                      url != ''
+                          ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
+                          : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                      Navigator.of(context).pop();
+                    },
+              icon: Icon(
+                Icons.send_rounded,
+                semanticLabel: AppLocalizations.of(context)!.createPost,
               ),
-            ],
-          ),
-          body: BlocListener<ImageBloc, ImageState>(
-            listenWhen: (previous, current) => (previous.status != current.status),
-            listener: (context, state) {
-              if (state.status == ImageStatus.success) {
-                _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
-              }
-              if (state.status == ImageStatus.successPostImage) {
-                _urlTextController.text = state.imageUrl;
-              }
-              if (state.status == ImageStatus.failure) {
-                showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError);
-              }
-            },
-            bloc: imageBloc,
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: <Widget>[
-                    Expanded(
-                      child: SingleChildScrollView(
-                        child: Column(children: <Widget>[
-                          const SizedBox(height: 12.0),
-                          Row(
-                            children: [
-                              CommunityIcon(community: widget.communityInfo?.communityView.community, radius: 16),
-                              const SizedBox(
-                                width: 20,
-                              ),
-                              Text(
-                                '${widget.communityInfo?.communityView.community.name} '
-                                '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
-                                style: theme.textTheme.titleSmall,
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 12.0),
-                          TextFormField(
-                            controller: _titleTextController,
-                            decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)!.postTitle,
+            ),
+          ],
+        ),
+        body: BlocListener<ImageBloc, ImageState>(
+          listenWhen: (previous, current) => (previous.status != current.status),
+          listener: (context, state) {
+            if (state.status == ImageStatus.success) {
+              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+            }
+            if (state.status == ImageStatus.successPostImage) {
+              _urlTextController.text = state.imageUrl;
+            }
+            if (state.status == ImageStatus.failure) {
+              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError);
+            }
+          },
+          bloc: imageBloc,
+          child: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(children: <Widget>[
+                        const SizedBox(height: 12.0),
+                        Row(
+                          children: [
+                            CommunityIcon(community: widget.communityInfo?.communityView.community, radius: 16),
+                            const SizedBox(
+                              width: 20,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          TextFormField(
-                            controller: _urlTextController,
-                            decoration: InputDecoration(
-                                hintText: AppLocalizations.of(context)!.postURL,
-                                suffixIcon: IconButton(
-                                    onPressed: () {
-                                      _uploadImage(postImage: true);
-                                    },
-                                    icon: const Icon(Icons.image))),
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Visibility(
-                            visible: url.isNotEmpty,
-                            child: LinkPreviewCard(
-                              hideNsfw: false,
-                              showLinkPreviews: true,
-                              originURL: url,
-                              mediaURL: isImageUrl(url) ? url : null,
-                              mediaHeight: null,
-                              mediaWidth: null,
-                              showFullHeightImages: false,
-                              edgeToEdgeImages: false,
-                              viewMode: ViewMode.comfortable,
-                              postId: null,
-                              markPostReadOnMediaView: false,
-                              isUserLoggedIn: true,
+                            Text(
+                              '${widget.communityInfo?.communityView.community.name} '
+                              '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
+                              style: theme.textTheme.titleSmall,
                             ),
+                          ],
+                        ),
+                        const SizedBox(height: 12.0),
+                        TextFormField(
+                          controller: _titleTextController,
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!.postTitle,
                           ),
-                          const SizedBox(
-                            height: 10,
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        TextFormField(
+                          controller: _urlTextController,
+                          decoration: InputDecoration(
+                              hintText: AppLocalizations.of(context)!.postURL,
+                              suffixIcon: IconButton(
+                                  onPressed: () {
+                                    _uploadImage(postImage: true);
+                                  },
+                                  icon: const Icon(Icons.image))),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Visibility(
+                          visible: url.isNotEmpty,
+                          child: LinkPreviewCard(
+                            hideNsfw: false,
+                            showLinkPreviews: true,
+                            originURL: url,
+                            mediaURL: isImageUrl(url) ? url : null,
+                            mediaHeight: null,
+                            mediaWidth: null,
+                            showFullHeightImages: false,
+                            edgeToEdgeImages: false,
+                            viewMode: ViewMode.comfortable,
+                            postId: null,
+                            markPostReadOnMediaView: false,
+                            isUserLoggedIn: true,
                           ),
-                          Row(children: <Widget>[
-                            Expanded(child: Text(AppLocalizations.of(context)!.postNSFW)),
-                            Switch(
-                                value: isNSFW,
-                                onChanged: (bool value) {
-                                  setState(() {
-                                    isNSFW = value;
-                                  });
-                                }),
-                          ]),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          showPreview
-                              ? Container(
-                                  constraints: const BoxConstraints(minWidth: double.infinity),
-                                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                  padding: const EdgeInsets.all(12),
-                                  child: SingleChildScrollView(
-                                    child: CommonMarkdownBody(body: _bodyTextController.text),
-                                  ),
-                                )
-                              : MarkdownTextInputField(
-                                  controller: _bodyTextController,
-                                  focusNode: _markdownFocusNode,
-                                  initialValue: _bodyTextController.text,
-                                  label: AppLocalizations.of(context)!.postBody,
-                                  minLines: 8,
-                                  maxLines: null,
-                                  textStyle: theme.textTheme.bodyLarge,
-                                ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Row(children: <Widget>[
+                          Expanded(child: Text(AppLocalizations.of(context)!.postNSFW)),
+                          Switch(
+                              value: isNSFW,
+                              onChanged: (bool value) {
+                                setState(() {
+                                  isNSFW = value;
+                                });
+                              }),
                         ]),
-                      ),
-                    ),
-                    const Divider(),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: MarkdownButtons(
-                            controller: _bodyTextController,
-                            focusNode: _markdownFocusNode,
-                            actions: const [
-                              MarkdownType.image,
-                              MarkdownType.link,
-                              MarkdownType.bold,
-                              MarkdownType.italic,
-                              MarkdownType.blockquote,
-                              MarkdownType.strikethrough,
-                              MarkdownType.title,
-                              MarkdownType.list,
-                              MarkdownType.separator,
-                              MarkdownType.code,
-                            ],
-                            customImageButtonAction: _uploadImage,
-                          ),
+                        const SizedBox(
+                          height: 10,
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
-                          child: IconButton(
-                              onPressed: () => setState(() => showPreview = !showPreview),
-                              icon: Icon(
-                                showPreview ? Icons.visibility_outlined : Icons.visibility,
-                                color: theme.colorScheme.onSecondary,
-                                semanticLabel: AppLocalizations.of(context)!.postTogglePreview,
+                        showPreview
+                            ? Container(
+                                constraints: const BoxConstraints(minWidth: double.infinity),
+                                decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                                padding: const EdgeInsets.all(12),
+                                child: SingleChildScrollView(
+                                  child: CommonMarkdownBody(body: _bodyTextController.text),
+                                ),
+                              )
+                            : MarkdownTextInputField(
+                                controller: _bodyTextController,
+                                focusNode: _markdownFocusNode,
+                                initialValue: _bodyTextController.text,
+                                label: AppLocalizations.of(context)!.postBody,
+                                minLines: 8,
+                                maxLines: null,
+                                textStyle: theme.textTheme.bodyLarge,
                               ),
-                              visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
-                              style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary)),
-                        ),
-                      ],
+                      ]),
                     ),
-                  ],
-                ),
+                  ),
+                  const Divider(),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: MarkdownButtons(
+                          controller: _bodyTextController,
+                          focusNode: _markdownFocusNode,
+                          actions: const [
+                            MarkdownType.image,
+                            MarkdownType.link,
+                            MarkdownType.bold,
+                            MarkdownType.italic,
+                            MarkdownType.blockquote,
+                            MarkdownType.strikethrough,
+                            MarkdownType.title,
+                            MarkdownType.list,
+                            MarkdownType.separator,
+                            MarkdownType.code,
+                          ],
+                          customImageButtonAction: _uploadImage,
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                        child: IconButton(
+                            onPressed: () => setState(() => showPreview = !showPreview),
+                            icon: Icon(
+                              showPreview ? Icons.visibility_outlined : Icons.visibility,
+                              color: theme.colorScheme.onSecondary,
+                              semanticLabel: AppLocalizations.of(context)!.postTogglePreview,
+                            ),
+                            visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
+                            style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary)),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),

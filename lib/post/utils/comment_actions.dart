@@ -65,6 +65,8 @@ void triggerCommentAction({
 DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
 
+  if (state.enableCommentGestures == false) return DismissDirection.none;
+
   // If all of the actions are none, then disable swiping
   if (state.leftPrimaryCommentGesture == SwipeAction.none &&
       state.leftSecondaryCommentGesture == SwipeAction.none &&

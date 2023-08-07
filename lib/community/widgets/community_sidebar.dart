@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -14,6 +15,7 @@ import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
@@ -135,7 +137,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             HapticFeedback.mediumImpact();
                                             CommunityBloc communityBloc = context.read<CommunityBloc>();
                                             Navigator.of(context).push(
-                                              MaterialPageRoute(
+                                              SwipeablePageRoute(
                                                 builder: (context) {
                                                   return BlocProvider<CommunityBloc>.value(
                                                     value: communityBloc,
@@ -477,7 +479,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                                           Navigator.of(context).push(
-                                            MaterialPageRoute(
+                                            SwipeablePageRoute(
                                               builder: (context) => MultiBlocProvider(
                                                 providers: [
                                                   BlocProvider.value(value: accountBloc),

@@ -44,6 +44,8 @@ void triggerPostAction({
 DismissDirection determinePostSwipeDirection(bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
 
+  if (state.enablePostGestures == false) return DismissDirection.none;
+
   // If all of the actions are none, then disable swiping
   if (state.leftPrimaryPostGesture == SwipeAction.none &&
       state.leftSecondaryPostGesture == SwipeAction.none &&

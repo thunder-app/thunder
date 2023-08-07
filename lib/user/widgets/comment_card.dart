@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../utils/numbers.dart';
 
@@ -38,7 +40,8 @@ class CommentCard extends StatelessWidget {
 
           // To to specific post for now, in the future, will be best to scroll to the position of the comment
           await Navigator.of(context).push(
-            MaterialPageRoute(
+            SwipeablePageRoute(
+              canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
               builder: (context) => MultiBlocProvider(
                 providers: [
                   BlocProvider.value(value: accountBloc),
