@@ -33,6 +33,7 @@
   "profiles": "Profiles",
   "logOut": "Log out",
   "close": "Close",
+  "back": "Back",
   "open": "Open",
   "loadMoreSingular": "Load {count} more reply...",
   "loadMorePlural": "Load {count} more replies...",

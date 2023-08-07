@@ -172,13 +172,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           _displaySidebar = true;
                         });
                       },
-                      onHorizontalDragUpdate: (details) {
-                        if (details.delta.dx < -3) {
-                          setState(() {
-                            _displaySidebar = true;
-                          });
-                        }
-                      },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );
                   } else if (widget.taglines?.firstOrNull?.content.isNotEmpty == true) {

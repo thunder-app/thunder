@@ -45,6 +45,8 @@ class _ThunderState extends State<Thunder> {
 
   bool hasShownUpdateDialog = false;
 
+  bool _isFabOpen = false;
+
   @override
   void initState() {
     super.initState();
@@ -125,6 +127,10 @@ class _ThunderState extends State<Thunder> {
       return Future.value(false);
     }
 
+    if (_isFabOpen == true) {
+      return Future.value(false);
+    }
+
     if (appExitCounter == 0) {
       appExitCounter++;
       _showExitWarning();
@@ -160,6 +166,10 @@ class _ThunderState extends State<Thunder> {
                 case ThunderStatus.refreshing:
                 case ThunderStatus.success:
                   FlutterNativeSplash.remove();
+
+                  // Update the variable so that it can be used in _handleBackButtonPress
+                  _isFabOpen = thunderBlocState.isFabOpen;
+
                   return Scaffold(
                       bottomNavigationBar: BlocBuilder<InboxBloc, InboxState>(
                         builder: (context, state) {

@@ -41,6 +41,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.0.2"
+  black_hole_flutter:
+    dependency: transitive
+    description:
+      name: black_hole_flutter
+      sha256: "43a5b16b0cbd55e762afa6e438daa179b86d7b93277737e07298b82b83b946a9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.3"
   bloc:
     dependency: "direct main"
     description:
@@ -640,6 +648,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  list_diff:
+    dependency: transitive
+    description:
+      name: list_diff
+      sha256: ac2d99c4379d5175f1e4943850808e1bf4d5604fd46c1ec3060e7fb0c0fdab05
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.1"
   logging:
     dependency: transitive
     description:
@@ -1055,6 +1071,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  swipeable_page_route:
+    dependency: "direct main"
+    description:
+      name: swipeable_page_route
+      sha256: a309b550436463735d20d20f9ae1d577a95d341114115b9f269e24ee1f0169d7
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.4.0"
   synchronized:
     dependency: transitive
     description:
@@ -1191,6 +1215,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  web:
+    dependency: transitive
+    description:
+      name: web
+      sha256: dc8ccd225a2005c1be616fe02951e2e342092edf968cf0844220383757ef8f10
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.4-beta"
   web_socket_channel:
     dependency: transitive
     description:
@@ -1272,5 +1304,5 @@ packages:
     source: hosted
     version: "3.1.2"
 sdks:
-  dart: ">=3.0.0 <4.0.0"
+  dart: ">=3.1.0-185.0.dev <4.0.0"
   flutter: ">=3.10.6"
