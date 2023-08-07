@@ -20,6 +20,9 @@
 - Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
 - Added additional font scaling options for comments and metadata
 - Long-pressing on FAB shows extended actions - contribution from @micahmo
+- Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
+- Added thumbnail badges to posts for more clarity - contribution from @CTalvio
+- Added domain for posts linking to external websites - contribution from @CTalvio
 - Added comment navigation buttons - contribution from @micahmo
 
 ### Changed
@@ -29,10 +32,12 @@
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
 - Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
 - Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
+- Minor sidebar shadow adjustment - contribution from @CTalvio
 - Snappier image load transition - contribution from @micahmo 
 - Align back button in image preview with the back button in the main pages - contribution from @micahmo 
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
+- Improve behavior of deferred comment indicator - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -46,6 +51,7 @@
 - Fixed comment highlighting for comment context regression - contribution from @ajsosa 
 - Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
 - Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
+- Fixed missing community icons in feed - contribution from @sant0s12
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

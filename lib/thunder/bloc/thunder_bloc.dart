@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -175,6 +176,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
 
+      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
+      PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
+      PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
+
       bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
 
       return emit(state.copyWith(
@@ -270,6 +276,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabEnableBackToTop: postFabEnableBackToTop,
         postFabEnableChangeSort: postFabEnableChangeSort,
         postFabEnableReplyToPost: postFabEnableReplyToPost,
+
+        feedFabSinglePressAction: feedFabSinglePressAction,
+        feedFabLongPressAction: feedFabLongPressAction,
+        postFabSinglePressAction: postFabSinglePressAction,
+        postFabLongPressAction: postFabLongPressAction,
 
         enableCommentNavigation: enableCommentNavigation,
       ));

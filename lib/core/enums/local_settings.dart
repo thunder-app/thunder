@@ -90,6 +90,11 @@ enum LocalSettings {
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
 
+  feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
+  feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
+  postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),
+  postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
+
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   ;
 

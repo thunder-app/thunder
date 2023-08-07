@@ -5,6 +5,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -66,6 +68,9 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
+    PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
+    PostFabAction longPressAction = thunderState.postFabLongPressAction;
+
     enableCommentNavigation = thunderState.enableCommentNavigation;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
@@ -116,83 +121,99 @@ class _PostPageState extends State<PostPage> {
                 centerTitle: false,
                 toolbarHeight: 70.0,
               ),
-              floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-              floatingActionButton: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (enableFab)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 16),
-                      child: AnimatedSwitcher(
-                        duration: const Duration(milliseconds: 250),
-                        child: isFabSummoned
-                            ? GestureFab(
-                                distance: 60,
-                                icon: Icon(
-                                  Icons.reply_rounded,
-                                  semanticLabel: AppLocalizations.of(context)!.replyToPost,
-                                  size: 35,
-                                ),
-                                onPressed: replyToPost,
-                                children: [
-                                  if (enableReplyToPost)
-                                    ActionButton(
-                                      onPressed: () {
-                                        HapticFeedback.mediumImpact();
-                                        replyToPost();
-                                      },
-                                      title: AppLocalizations.of(context)!.replyToPost,
-                                      icon: Icon(
-                                        Icons.reply_rounded,
-                                        semanticLabel: AppLocalizations.of(context)!.replyToPost,
-                                      ),
+              floatingActionButton: enableFab
+                  ? AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: isFabSummoned
+                          ? GestureFab(
+                              distance: 60,
+                              icon: Icon(
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
+                                semanticLabel: singlePressAction.getTitle(context),
+                                size: 35,
+                              ),
+                              onPressed: () => singlePressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _scrollController.animateTo(
+                                              0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              onLongPress: () => longPressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _scrollController.animateTo(
+                                              0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              children: [
+                                if (enableReplyToPost)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.replyToPost.execute(
+                                        override: replyToPost,
+                                      );
+                                    },
+                                    title: PostFabAction.replyToPost.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.replyToPost.getIcon(),
+                                      semanticLabel: PostFabAction.replyToPost.getTitle(context),
                                     ),
-                                  if (enableChangeSort)
-                                    ActionButton(
-                                      onPressed: () {
-                                        HapticFeedback.mediumImpact();
-                                        showSortBottomSheet(context, state);
-                                      },
-                                      title: AppLocalizations.of(context)!.changeSort,
-                                      icon: Icon(
-                                        sortTypeIcon,
-                                        semanticLabel: AppLocalizations.of(context)!.changeSort,
-                                      ),
+                                  ),
+                                if (enableChangeSort)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.changeSort.execute(
+                                        override: () => showSortBottomSheet(context, state),
+                                      );
+                                    },
+                                    title: PostFabAction.changeSort.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.changeSort.getIcon(),
+                                      semanticLabel: PostFabAction.changeSort.getTitle(context),
                                     ),
-                                  if (enableBackToTop)
-                                    ActionButton(
-                                      onPressed: () {
-                                        _itemScrollController.scrollTo(
-                                          index: 0,
-                                          duration: const Duration(milliseconds: 500),
-                                          curve: Curves.easeInOut,
-                                        );
-                                      },
-                                      title: AppLocalizations.of(context)!.backToTop,
-                                      icon: Icon(
-                                        Icons.arrow_upward,
-                                        semanticLabel: AppLocalizations.of(context)!.backToTop,
-                                      ),
+                                  ),
+                                if (enableBackToTop)
+                                  ActionButton(
+                                    onPressed: () {
+                                      PostFabAction.backToTop.execute(
+                                          override: () => {
+                                                _scrollController.animateTo(
+                                                  0,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.easeInOut,
+                                                )
+                                              });
+                                    },
+                                    title: PostFabAction.backToTop.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.backToTop.getIcon(),
+                                      semanticLabel: PostFabAction.backToTop.getTitle(context),
                                     ),
-                                ],
-                              )
-                            : null,
-                      ),
-                    ),
-                  if (enableCommentNavigation)
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.only(bottom: 5),
-                        child: Align(
-                          alignment: Alignment.bottomCenter,
-                          child: CommentNavigatorFab(
-                            itemPositionsListener: _itemPositionsListener,
-                          ),
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+                                  ),
+                              ],
+                            )
+                          : null,
+                    )
+                  : null,
               body: GestureDetector(
                 onHorizontalDragStart: (details) {
                   _currentHorizontalDragStartPosition = details.globalPosition;
@@ -235,7 +256,6 @@ class _PostPageState extends State<PostPage> {
                                 ],
                               ),
                               backgroundColor: theme.colorScheme.onErrorContainer,
-                              behavior: SnackBarBehavior.floating,
                             );
                             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                               ScaffoldMessenger.of(context).clearSnackBars();

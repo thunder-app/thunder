@@ -183,13 +183,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Sidebar',
                             style: theme.textTheme.titleLarge,
@@ -215,13 +215,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Posts',
                             style: theme.textTheme.titleLarge,
@@ -310,13 +310,13 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Comments',
                             style: theme.textTheme.titleLarge,
