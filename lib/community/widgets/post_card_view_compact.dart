@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -12,8 +11,6 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
-import '../../core/enums/media_type.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -103,8 +100,7 @@ class PostCardViewCompact extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 14.2 * state.titleFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: postViewMedia.postView.post.featuredCommunity
                               ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
@@ -140,6 +136,7 @@ class PostCardViewCompact extends StatelessWidget {
                         ),
                     ],
                   ),
+                  textScaleFactor: state.titleFontSizeScale.textScaleFactor,
                 ),
                 const SizedBox(height: 6.0),
                 PostCommunityAndAuthor(

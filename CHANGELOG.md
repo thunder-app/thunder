@@ -1,5 +1,6 @@
 ## Unreleased
 ### Added
+- Added long press on profile icon to bring up profile modal @zdzoz
 - Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
 - Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
 - Show instance taglines in the feed - contribution from @micahmo
@@ -23,6 +24,7 @@
 - Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
 - Added thumbnail badges to posts for more clarity - contribution from @CTalvio
 - Added domain for posts linking to external websites - contribution from @CTalvio
+- Added comment navigation buttons - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio

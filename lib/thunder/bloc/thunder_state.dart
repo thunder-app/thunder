@@ -103,6 +103,7 @@ class ThunderState extends Equatable {
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
+    this.enableCommentNavigation = true,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -218,6 +219,8 @@ class ThunderState extends Equatable {
   final PostFabAction postFabSinglePressAction;
   final PostFabAction postFabLongPressAction;
 
+  final bool enableCommentNavigation;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -325,6 +328,7 @@ class ThunderState extends Equatable {
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
     PostFabAction? postFabLongPressAction,
+    bool? enableCommentNavigation,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -438,6 +442,8 @@ class ThunderState extends Equatable {
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
       postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
 
+      enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -549,6 +555,8 @@ class ThunderState extends Equatable {
         feedFabLongPressAction,
         postFabSinglePressAction,
         postFabLongPressAction,
+
+        enableCommentNavigation,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

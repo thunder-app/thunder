@@ -181,6 +181,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
       PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
 
+      bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -279,6 +281,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         feedFabLongPressAction: feedFabLongPressAction,
         postFabSinglePressAction: postFabSinglePressAction,
         postFabLongPressAction: postFabLongPressAction,
+
+        enableCommentNavigation: enableCommentNavigation,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
