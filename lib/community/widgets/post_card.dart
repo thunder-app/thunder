@@ -190,6 +190,7 @@ class _PostCardState extends State<PostCard> {
                         showInstanceName: widget.showInstanceName,
                         isUserLoggedIn: isUserLoggedIn,
                         listingType: widget.listingType,
+                        navigateToPost: () async => await navigateToPost(context),
                       )
                     : PostCardViewComfortable(
                         postViewMedia: widget.postViewMedia,
@@ -209,6 +210,7 @@ class _PostCardState extends State<PostCard> {
                         onVoteAction: widget.onVoteAction,
                         onSaveAction: widget.onSaveAction,
                         listingType: widget.listingType,
+                        navigateToPost: () async => await navigateToPost(context),
                       ),
                 onLongPress: () => showPostActionBottomModalSheet(
                   context,
@@ -222,50 +224,52 @@ class _PostCardState extends State<PostCard> {
                     PostCardAction.shareLink,
                   ],
                 ),
-                onTap: () async {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  AuthBloc authBloc = context.read<AuthBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  CommunityBloc communityBloc = context.read<CommunityBloc>();
-
-                  // Mark post as read when tapped
-                  if (isUserLoggedIn) {
-                    int postId = widget.postViewMedia.postView.post.id;
-                    try {
-                      UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                    } catch (e) {
-                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-                    }
-                  }
-
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: accountBloc),
-                            BlocProvider.value(value: authBloc),
-                            BlocProvider.value(value: thunderBloc),
-                            BlocProvider.value(value: communityBloc),
-                            BlocProvider(create: (context) => post_bloc.PostBloc()),
-                          ],
-                          child: PostPage(
-                            postView: widget.postViewMedia,
-                            onPostUpdated: () {},
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                  if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                },
+                onTap: () async => await navigateToPost(context),
               ),
             ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> navigateToPost(BuildContext context) async {
+    AccountBloc accountBloc = context.read<AccountBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    CommunityBloc communityBloc = context.read<CommunityBloc>();
+
+    // Mark post as read when tapped
+    if (isUserLoggedIn) {
+      int postId = widget.postViewMedia.postView.post.id;
+      try {
+        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+        userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+      } catch (e) {
+        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+      }
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider.value(value: accountBloc),
+              BlocProvider.value(value: authBloc),
+              BlocProvider.value(value: thunderBloc),
+              BlocProvider.value(value: communityBloc),
+              BlocProvider(create: (context) => post_bloc.PostBloc()),
+            ],
+            child: PostPage(
+              postView: widget.postViewMedia,
+              onPostUpdated: () {},
+            ),
+          );
+        },
+      ),
+    );
+    if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
   }
 }

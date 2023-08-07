@@ -8,17 +8,18 @@ import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 class CommonMarkdownBody extends StatelessWidget {
   final String body;
   final bool isSelectableText;
-  final bool isComment;
+  final bool? isComment;
 
   const CommonMarkdownBody({
     super.key,
     required this.body,
     this.isSelectableText = false,
-    this.isComment = false,
+    this.isComment,
   });
 
   @override
@@ -32,12 +33,18 @@ class CommonMarkdownBody extends StatelessWidget {
       // TODO We need spoiler support here
       data: body,
       imageBuilder: (uri, title, alt) {
-        return ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: MediaQuery.of(context).size.width * 0.55, maxWidth: MediaQuery.of(context).size.width * 0.60),
-          child: ImagePreview(
-            url: uri.toString(),
-            isExpandable: true,
-            showFullHeightImages: true,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              ImagePreview(
+                url: uri.toString(),
+                isExpandable: true,
+                isComment: isComment,
+                showFullHeightImages: true,
+              ),
+            ],
           ),
         );
       },
@@ -62,13 +69,32 @@ class CommonMarkdownBody extends StatelessWidget {
         String? communityName = await getLemmyCommunity(parsedUrl);
 
         if (communityName != null) {
-          navigateToCommunityByName(context, communityName);
-        } else if (url != null) {
+          try {
+            await navigateToCommunityByName(context, communityName);
+            return;
+          } catch (e) {
+            // Ignore exception, if it's not a valid community we'll perform the next fallback
+          }
+        }
+
+        String? username = await getLemmyUser(parsedUrl);
+
+        if (username != null) {
+          try {
+            await navigateToUserByName(context, username);
+            return;
+          } catch (e) {
+            // Ignore exception, if it's not a valid user, we'll perform the next fallback
+          }
+        }
+
+        if (url != null) {
           openLink(context, url: parsedUrl, openInExternalBrowser: openInExternalBrowser);
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+        // If its a comment, use the commentFontSizeScale, otherwise fallback to the contentFontSizeScale (for posts and other widgets using CommonMarkdownBody)
+        textScaleFactor: isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor,
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,

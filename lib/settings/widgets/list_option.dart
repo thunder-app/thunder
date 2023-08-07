@@ -15,6 +15,7 @@ class ListOption<T> extends StatelessWidget {
   final void Function(ListPickerItem<T>) onChanged;
 
   final BottomSheetListPicker? customListPicker;
+  final bool? isBottomModalScrollControlled;
 
   final bool disabled;
 
@@ -26,6 +27,7 @@ class ListOption<T> extends StatelessWidget {
     required this.icon,
     required this.onChanged,
     this.customListPicker,
+    this.isBottomModalScrollControlled,
     this.disabled = false,
   });
 
@@ -33,14 +35,15 @@ class ListOption<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+    return InkWell(
+      borderRadius: const BorderRadius.all(Radius.circular(50)),
       onTap: disabled
           ? null
           : () {
               showModalBottomSheet(
                 context: context,
                 showDragHandle: true,
+                isScrollControlled: isBottomModalScrollControlled ?? false,
                 builder: (context) =>
                     customListPicker ??
                     BottomSheetListPicker(
@@ -52,36 +55,39 @@ class ListOption<T> extends StatelessWidget {
                     ),
               );
             },
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
-            children: [
-              Icon(icon),
-              const SizedBox(width: 8.0),
-              Text(description, style: theme.textTheme.bodyMedium),
-            ],
-          ),
-          Row(
-            children: [
-              Text(
-                value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                  return ' ${match.group(0)}';
-                }),
-                style: theme.textTheme.titleSmall?.copyWith(
-                  color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 4.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Icon(icon),
+                const SizedBox(width: 8.0),
+                Text(description, style: theme.textTheme.bodyMedium),
+              ],
+            ),
+            Row(
+              children: [
+                Text(
+                  value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                    return ' ${match.group(0)}';
+                  }),
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+                  ),
                 ),
-              ),
-              Icon(
-                Icons.chevron_right_rounded,
-                color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
-              ),
-              const SizedBox(
-                height: 42.0,
-              )
-            ],
-          )
-        ],
+                Icon(
+                  Icons.chevron_right_rounded,
+                  color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,
+                ),
+                const SizedBox(
+                  height: 42.0,
+                )
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

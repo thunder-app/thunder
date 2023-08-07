@@ -1,16 +1,19 @@
 import 'dart:async';
 
+// Flutter
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// Packages
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+// Internal
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
@@ -55,30 +58,33 @@ class _ThunderState extends State<Thunder> {
 
   /// This is used for the swipe drag gesture on the bottom nav bar
   double _dragStartX = 0.0;
+  double _dragEndX = 0.0;
 
   void _handleDragStart(DragStartDetails details) {
     _dragStartX = details.globalPosition.dx;
   }
 
-  void _handleDragEnd(DragEndDetails details) {
-    _dragStartX = 0.0;
-  }
-
-  // Handles drag on bottom nav bar to open the drawer
-  void _handleDragUpdate(DragUpdateDetails details) async {
+  void _handleDragEnd(DragEndDetails details) async {
     final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
     bool bottomNavBarSwipeGestures = prefs.getBool(LocalSettings.sidebarBottomNavBarSwipeGesture.name) ?? true;
 
     if (bottomNavBarSwipeGestures == true) {
-      final currentPosition = details.globalPosition.dx;
-      final delta = currentPosition - _dragStartX;
+      final delta = _dragEndX - _dragStartX;
 
-      if (delta > 0 && selectedPageIndex == 0) {
+      // Set some threshold to also allow for swipe up to reveal FAB
+      if (delta > 20 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.openDrawer();
       } else if (delta < 0 && selectedPageIndex == 0) {
         _feedScaffoldKey.currentState?.closeDrawer();
       }
     }
+
+    _dragStartX = 0.0;
+  }
+
+  // Handles drag on bottom nav bar to open the drawer
+  void _handleDragUpdate(DragUpdateDetails details) async {
+    _dragEndX = details.globalPosition.dx;
   }
 
   // Handles double-tap to open the drawer
@@ -105,7 +111,7 @@ class _ThunderState extends State<Thunder> {
         backgroundColor: theme.primaryColorDark,
         width: 190,
         duration: const Duration(milliseconds: 3500),
-        content: const Center(child: Text('Press back twice to exit', style: snackBarTextColor)),
+        content: Center(child: Text(AppLocalizations.of(context)!.tapToExit, style: snackBarTextColor)),
       ),
     );
   }
@@ -215,7 +221,7 @@ class _ThunderState extends State<Thunder> {
                   return ErrorMessage(
                     message: thunderBlocState.errorMessage,
                     action: () => {context.read<AuthBloc>().add(CheckAuth())},
-                    actionText: 'Refresh Content',
+                    actionText: AppLocalizations.of(context)!.refreshContent,
                   );
               }
             },
@@ -275,6 +281,10 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
           onTap: (index) {
+            if (context.read<ThunderBloc>().state.isFabOpen) {
+              context.read<ThunderBloc>().add(const OnFabToggle(false));
+            }
+
             if (selectedPageIndex == 0 && index == 0) {
               context.read<ThunderBloc>().add(OnScrollToTopEvent());
             }
@@ -314,7 +324,7 @@ class _ThunderState extends State<Thunder> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Update released: ${version?.latestVersion}',
+              AppLocalizations.of(context)!.updateReleased(version?.latestVersion ?? ''),
               style: theme.textTheme.titleMedium,
             ),
             Icon(

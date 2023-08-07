@@ -20,6 +20,8 @@ class PostPageSuccess extends StatefulWidget {
 
   final bool viewFullCommentsRefreshing;
 
+  final List<CommunityModeratorView>? moderators;
+
   const PostPageSuccess({
     super.key,
     required this.postView,
@@ -30,6 +32,7 @@ class PostPageSuccess extends StatefulWidget {
     this.selectedCommentPath,
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
+    required this.moderators,
   });
 
   @override
@@ -53,7 +56,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
     // We don't want to trigger comment fetch when looking at a comment context.
     // This also fixes a weird behavior that can happen when if the fetch triggers
     // right before you click view all comments. The fetch for all comments won't happen.
-    if (widget.selectedCommentId != null) {
+    if (widget.selectedCommentId != null || widget.hasReachedCommentEnd) {
       return;
     }
     if (widget.scrollController.position.pixels >= widget.scrollController.position.maxScrollExtent * 0.6) {
@@ -79,6 +82,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+            moderators: widget.moderators,
           ),
         ),
       ],

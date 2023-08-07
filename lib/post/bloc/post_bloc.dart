@@ -98,12 +98,27 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           PostViewMedia? postView = event.postView;
+          List<CommunityModeratorView>? moderators;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
 
             postView = posts.first;
+
+            moderators = getPostResponse.moderators;
+          }
+
+          // If we can't get mods from the post response, fallback to getting the whole community.
+          if (moderators == null && postView != null) {
+            try {
+              moderators = (await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+                throw Exception();
+              }))
+                  .moderators;
+            } catch (e) {
+              // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
+            }
           }
 
           emit(
@@ -112,6 +127,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 communityId: postView?.postView.post.communityId,
+                moderators: moderators,
                 selectedCommentPath: event.selectedCommentPath,
                 selectedCommentId: event.selectedCommentId),
           );
@@ -239,7 +255,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+            if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
+              emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
+            }
+            return;
+          }
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy

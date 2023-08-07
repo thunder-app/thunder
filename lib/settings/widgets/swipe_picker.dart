@@ -68,6 +68,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[0].value.getIcon(),
+                        semanticLabel: 'Short swipe right, ${items[0].value.label}',
                       ),
                     ),
                   ),
@@ -94,6 +95,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[1].value.getIcon(),
+                        semanticLabel: 'Long swipe right, ${items[1].value.label}',
                       ),
                     ),
                   ),
@@ -127,6 +129,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[1].value.getIcon(),
+                        semanticLabel: 'Long swipe left, ${items[1].value.label}',
                       ),
                     ),
                   ),
@@ -161,6 +164,7 @@ class SwipePicker<T> extends StatelessWidget {
                       },
                       child: Icon(
                         items[0].value.getIcon(),
+                        semanticLabel: 'Short swipe left, ${items[0].value.label}',
                       ),
                     ),
                   ),

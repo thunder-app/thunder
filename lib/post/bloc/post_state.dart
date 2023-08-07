@@ -12,6 +12,7 @@ class PostState extends Equatable {
       this.commentPage = 1,
       this.commentCount = 0,
       this.communityId,
+      this.moderators,
       this.hasReachedCommentEnd = false,
       this.errorMessage,
       this.sortType,
@@ -30,6 +31,7 @@ class PostState extends Equatable {
 
   final int? postId;
   final int? communityId;
+  final List<CommunityModeratorView>? moderators;
   final PostViewMedia? postView;
 
   // Comment related data
@@ -56,6 +58,7 @@ class PostState extends Equatable {
     int? commentCount,
     bool? hasReachedCommentEnd,
     int? communityId,
+    List<CommunityModeratorView>? moderators,
     String? errorMessage,
     CommentSortType? sortType,
     IconData? sortTypeIcon,
@@ -74,6 +77,7 @@ class PostState extends Equatable {
       commentCount: commentCount ?? this.commentCount,
       hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       communityId: communityId ?? this.communityId,
+      moderators: moderators ?? this.moderators,
       errorMessage: errorMessage ?? this.errorMessage,
       sortType: sortType ?? this.sortType,
       sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
@@ -93,6 +97,7 @@ class PostState extends Equatable {
         commentPage,
         commentCount,
         communityId,
+        moderators,
         errorMessage,
         hasReachedCommentEnd,
         sortType,

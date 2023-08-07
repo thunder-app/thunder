@@ -70,483 +70,557 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
         widthFactor: 0.8,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
-          child: Container(
-            color: theme.colorScheme.background,
-            child: Column(
-              children: [
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 100),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return SizeTransition(
-                      sizeFactor: animation,
-                      child: FadeTransition(opacity: animation, child: child),
-                    );
-                  },
-                  child: isBlocked == false
-                      ? Padding(
-                          padding: const EdgeInsets.only(
-                            top: 10,
-                            left: 12,
-                            right: 12,
-                            bottom: 4,
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: isUserLoggedIn
-                                      ? () {
-                                          HapticFeedback.mediumImpact();
-                                          CommunityBloc communityBloc = context.read<CommunityBloc>();
-                                          Navigator.of(context).push(
-                                            MaterialPageRoute(
-                                              builder: (context) {
-                                                return BlocProvider<CommunityBloc>.value(
-                                                  value: communityBloc,
-                                                  child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
-                                                );
-                                              },
-                                            ),
-                                          );
-                                        }
-                                      : null,
-                                  style: TextButton.styleFrom(
-                                    fixedSize: const Size.fromHeight(40),
-                                    foregroundColor: null,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: const Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.library_books_rounded,
-                                        semanticLabel: 'New Post',
-                                      ),
-                                      SizedBox(width: 4.0),
-                                      Text(
-                                        'New Post',
-                                        style: TextStyle(
-                                          color: null,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 10,
-                                height: 8,
-                              ),
-                              Expanded(
-                                child: ElevatedButton(
-                                  onPressed: isUserLoggedIn
-                                      ? () {
-                                          HapticFeedback.mediumImpact();
-                                          context.read<CommunityBloc>().add(
-                                                ChangeCommunitySubsciptionStatusEvent(
-                                                  communityId: widget.communityInfo!.communityView.community.id,
-                                                  follow: (widget.subscribedType == null) ? true : (widget.subscribedType == SubscribedType.notSubscribed ? true : false),
-                                                ),
-                                              );
-                                        }
-                                      : null,
-                                  style: TextButton.styleFrom(
-                                    fixedSize: const Size.fromHeight(40),
-                                    foregroundColor: null,
-                                    padding: EdgeInsets.zero,
-                                  ),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        switch (widget.subscribedType) {
-                                          SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                                          SubscribedType.pending => Icons.pending_outlined,
-                                          SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                                          _ => Icons.add_circle_outline_rounded,
-                                        },
-                                        semanticLabel: (widget.subscribedType == SubscribedType.notSubscribed || widget.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
-                                      ),
-                                      const SizedBox(width: 4.0),
-                                      Text(
-                                        switch (widget.subscribedType) {
-                                          SubscribedType.notSubscribed => 'Subscribe',
-                                          SubscribedType.pending => 'Pending...',
-                                          SubscribedType.subscribed => 'Unsubscribe',
-                                          _ => '',
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
-                      : null,
-                ),
-                AnimatedSwitcher(
-                  duration: const Duration(milliseconds: 150),
-                  transitionBuilder: (Widget child, Animation<double> animation) {
-                    return SizeTransition(
-                      sizeFactor: animation,
-                      child: FadeTransition(opacity: animation, child: child),
-                    );
-                  },
-                  child: widget.subscribedType != SubscribedType.subscribed
-                      ? Padding(
-                          padding: EdgeInsets.only(
-                            top: isBlocked ? 10 : 4,
-                            left: 12,
-                            right: 12,
-                            bottom: 4,
-                          ),
-                          child: ElevatedButton(
-                            onPressed: isUserLoggedIn
-                                ? () {
-                                    HapticFeedback.heavyImpact();
-                                    ScaffoldMessenger.of(context).clearSnackBars();
-                                    context.read<CommunityBloc>().add(
-                                          BlockCommunityEvent(
-                                            communityId: widget.communityInfo!.communityView.community.id,
-                                            block: isBlocked == true ? false : true,
-                                          ),
-                                        );
-                                  }
-                                : null,
-                            style: TextButton.styleFrom(
-                              fixedSize: const Size.fromHeight(40),
-                              foregroundColor: Colors.redAccent,
-                              padding: EdgeInsets.zero,
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          Color.alphaBlend(Colors.black.withOpacity(0.25), theme.colorScheme.background),
+                          theme.colorScheme.background,
+                        ],
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      color: theme.colorScheme.background,
+                    ),
+                  ),
+                  Container(
+                    height: 6,
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        end: Alignment.topCenter,
+                        begin: Alignment.bottomCenter,
+                        colors: [
+                          Color.alphaBlend(Colors.black.withOpacity(0.25), theme.colorScheme.background),
+                          theme.colorScheme.background,
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Column(
+                children: [
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 100),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return SizeTransition(
+                        sizeFactor: animation,
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                    child: isBlocked == false
+                        ? Padding(
+                            padding: const EdgeInsets.only(
+                              top: 10,
+                              left: 12,
+                              right: 12,
+                              bottom: 4,
                             ),
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Icon(
-                                  isBlocked == true ? Icons.undo_rounded : Icons.block_rounded,
-                                  semanticLabel: isBlocked == true ? 'Unblock Community' : 'Block Community',
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: isUserLoggedIn
+                                        ? () {
+                                            HapticFeedback.mediumImpact();
+                                            CommunityBloc communityBloc = context.read<CommunityBloc>();
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) {
+                                                  return BlocProvider<CommunityBloc>.value(
+                                                    value: communityBloc,
+                                                    child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          }
+                                        : null,
+                                    style: TextButton.styleFrom(
+                                      fixedSize: const Size.fromHeight(40),
+                                      foregroundColor: null,
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: const Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.library_books_rounded,
+                                          semanticLabel: 'New Post',
+                                        ),
+                                        SizedBox(width: 4.0),
+                                        Text(
+                                          'New Post',
+                                          style: TextStyle(
+                                            color: null,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                                const SizedBox(width: 4.0),
-                                Text(
-                                  isBlocked == true ? 'Unblock Community' : 'Block Community',
+                                const SizedBox(
+                                  width: 10,
+                                  height: 8,
+                                ),
+                                Expanded(
+                                  child: ElevatedButton(
+                                    onPressed: isUserLoggedIn
+                                        ? () {
+                                            HapticFeedback.mediumImpact();
+                                            context.read<CommunityBloc>().add(
+                                                  ChangeCommunitySubsciptionStatusEvent(
+                                                    communityId: widget.communityInfo!.communityView.community.id,
+                                                    follow: (widget.subscribedType == null) ? true : (widget.subscribedType == SubscribedType.notSubscribed ? true : false),
+                                                  ),
+                                                );
+                                          }
+                                        : null,
+                                    style: TextButton.styleFrom(
+                                      fixedSize: const Size.fromHeight(40),
+                                      foregroundColor: null,
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          switch (widget.subscribedType) {
+                                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                                            SubscribedType.pending => Icons.pending_outlined,
+                                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                                            _ => Icons.add_circle_outline_rounded,
+                                          },
+                                          semanticLabel: (widget.subscribedType == SubscribedType.notSubscribed || widget.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                                        ),
+                                        const SizedBox(width: 4.0),
+                                        Text(
+                                          switch (widget.subscribedType) {
+                                            SubscribedType.notSubscribed => 'Subscribe',
+                                            SubscribedType.pending => 'Pending...',
+                                            SubscribedType.subscribed => 'Unsubscribe',
+                                            _ => '',
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
-                          ),
-                        )
-                      : null,
-                ),
-                const Divider(),
-                Expanded(
-                  child: ListView(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0,
-                          vertical: 8,
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                right: 8,
-                                bottom: 8,
-                              ),
-                              child: CommonMarkdownBody(
-                                body: widget.communityInfo?.communityView.community.description ?? '',
-                              ),
+                          )
+                        : null,
+                  ),
+                  AnimatedSwitcher(
+                    duration: const Duration(milliseconds: 150),
+                    transitionBuilder: (Widget child, Animation<double> animation) {
+                      return SizeTransition(
+                        sizeFactor: animation,
+                        child: FadeTransition(opacity: animation, child: child),
+                      );
+                    },
+                    child: widget.subscribedType != SubscribedType.subscribed
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                              top: isBlocked ? 10 : 4,
+                              left: 12,
+                              right: 12,
+                              bottom: 4,
                             ),
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                            child: ElevatedButton(
+                              onPressed: isUserLoggedIn
+                                  ? () {
+                                      HapticFeedback.heavyImpact();
+                                      ScaffoldMessenger.of(context).clearSnackBars();
+                                      context.read<CommunityBloc>().add(
+                                            BlockCommunityEvent(
+                                              communityId: widget.communityInfo!.communityView.community.id,
+                                              block: isBlocked == true ? false : true,
+                                            ),
+                                          );
+                                    }
+                                  : null,
+                              style: TextButton.styleFrom(
+                                fixedSize: const Size.fromHeight(40),
+                                foregroundColor: Colors.redAccent,
+                                padding: EdgeInsets.zero,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  // TODO Make this use device date format
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.cake_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        'Created ${DateFormat.yMMMMd().format(widget.communityInfo!.communityView.community.published)} · ${formatTimeToString(dateTime: widget.communityInfo!.communityView.community.published.toIso8601String())} ago',
-                                        style: TextStyle(color: theme.colorScheme.onBackground.withOpacity(0.65)),
-                                      ),
-                                    ],
+                                  Icon(
+                                    isBlocked == true ? Icons.undo_rounded : Icons.block_rounded,
+                                    semanticLabel: isBlocked == true ? 'Unblock Community' : 'Block Community',
                                   ),
-                                  const SizedBox(height: 8.0),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.people_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.subscribers)} Subscribers',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.wysiwyg_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.posts)} Posts',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.chat_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.comments)} Comments',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(height: 8.0),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.calendar_month_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveHalfYear)} users in six months',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.calendar_view_month_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveMonth)} users a month',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.calendar_view_week_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveWeek)} users a week',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-                                        child: Icon(
-                                          Icons.calendar_view_day_rounded,
-                                          size: 18,
-                                          color: theme.colorScheme.onBackground.withOpacity(0.65),
-                                        ),
-                                      ),
-                                      Text(
-                                        '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveDay)} users a day',
-                                        style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
-                                      ),
-                                    ],
+                                  const SizedBox(width: 4.0),
+                                  Text(
+                                    isBlocked == true ? 'Unblock Community' : 'Block Community',
                                   ),
                                 ],
                               ),
                             ),
-                            const SizedBox(height: 40.0),
-                            const Text('Moderators:'),
-                            const Divider(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Column(
-                                children: [
-                                  for (var mods in widget.communityInfo!.moderators)
-                                    GestureDetector(
-                                      onTap: () {
-                                        account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                                        AuthBloc authBloc = context.read<AuthBloc>();
-                                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) => MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                              ],
-                                              child: UserPage(userId: mods.moderator!.id),
-                                            ),
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 10.0),
+                  const Divider(
+                    height: 0,
+                    thickness: 2,
+                  ),
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 8,
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(
+                                  left: 8.0,
+                                  right: 8,
+                                  bottom: 8,
+                                ),
+                                child: CommonMarkdownBody(
+                                  body: widget.communityInfo?.communityView.community.description ?? '',
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 12.0, bottom: 6),
+                                child: Row(children: [
+                                  Text("Stats"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    // TODO Make this use device date format
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.cake_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
                                           ),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(bottom: 8.0),
-                                        child: Row(
-                                          children: [
-                                            CircleAvatar(
-                                              backgroundColor: mods.moderator?.avatar != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                              foregroundImage: mods.moderator?.avatar != null ? CachedNetworkImageProvider(mods.moderator!.avatar!) : null,
-                                              maxRadius: 20,
-                                              child: Text(
-                                                mods.moderator!.name[0].toUpperCase() ?? '',
-                                                semanticsLabel: '',
-                                                style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16,
+                                        ),
+                                        Text(
+                                          'Created ${DateFormat.yMMMMd().format(widget.communityInfo!.communityView.community.published)} · ${formatTimeToString(dateTime: widget.communityInfo!.communityView.community.published.toIso8601String())} ago',
+                                          style: TextStyle(color: theme.colorScheme.onBackground.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.people_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.subscribers)} Subscribers',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.wysiwyg_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.posts)} Posts',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.chat_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.comments)} Comments',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.calendar_month_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveHalfYear)} users/6 mo',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.calendar_view_month_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveMonth)} users/mo',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.calendar_view_week_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveWeek)} users/wk',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
+                                          child: Icon(
+                                            Icons.calendar_view_day_rounded,
+                                            size: 18,
+                                            color: theme.colorScheme.onBackground.withOpacity(0.65),
+                                          ),
+                                        ),
+                                        Text(
+                                          '${NumberFormat("#,###,###,###").format(widget.communityInfo?.communityView.counts.usersActiveDay)} users/day',
+                                          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.only(top: 16.0, bottom: 8),
+                                child: Row(children: [
+                                  Text("Moderators"),
+                                  Expanded(
+                                    child: Divider(
+                                      height: 5,
+                                      thickness: 2,
+                                      indent: 15,
+                                      endIndent: 5,
+                                    ),
+                                  ),
+                                ]),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Column(
+                                  children: [
+                                    for (var mods in widget.communityInfo!.moderators)
+                                      GestureDetector(
+                                        onTap: () {
+                                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                                          AuthBloc authBloc = context.read<AuthBloc>();
+                                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                                          Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                              builder: (context) => MultiBlocProvider(
+                                                providers: [
+                                                  BlocProvider.value(value: accountBloc),
+                                                  BlocProvider.value(value: authBloc),
+                                                  BlocProvider.value(value: thunderBloc),
+                                                ],
+                                                child: UserPage(userId: mods.moderator!.id),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(bottom: 8.0),
+                                          child: Row(
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundColor: mods.moderator?.avatar != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                                foregroundImage: mods.moderator?.avatar != null ? CachedNetworkImageProvider(mods.moderator!.avatar!) : null,
+                                                maxRadius: 20,
+                                                child: Text(
+                                                  mods.moderator!.name[0].toUpperCase() ?? '',
+                                                  semanticsLabel: '',
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 16,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 16.0),
-                                            Expanded(
-                                              child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    mods.moderator!.displayName ?? mods.moderator!.name ?? '',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    style: const TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 16,
+                                              const SizedBox(width: 16.0),
+                                              Expanded(
+                                                child: Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    Text(
+                                                      mods.moderator!.displayName ?? mods.moderator!.name ?? '',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: const TextStyle(
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 16,
+                                                      ),
                                                     ),
-                                                  ),
-                                                  Text(
-                                                    '${mods.moderator!.name ?? ''} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      color: theme.colorScheme.onBackground.withOpacity(0.6),
-                                                      fontSize: 13,
+                                                    Text(
+                                                      '${mods.moderator!.name ?? ''} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      style: TextStyle(
+                                                        color: theme.colorScheme.onBackground.withOpacity(0.6),
+                                                        fontSize: 13,
+                                                      ),
                                                     ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              child: widget.communityInfo?.site != null
-                                  ? Column(
-                                      children: [
-                                        const SizedBox(height: 40),
-                                        const Text('Community host instance:'),
-                                        const Divider(),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                          child: Column(
-                                            children: [
-                                              Row(
-                                                children: [
-                                                  CircleAvatar(
-                                                    backgroundColor: widget.communityInfo?.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                    foregroundImage: widget.communityInfo?.site?.icon != null ? CachedNetworkImageProvider(widget.communityInfo!.site!.icon!) : null,
-                                                    maxRadius: 24,
-                                                    child: widget.communityInfo?.site?.icon == null
-                                                        ? Text(
-                                                            widget.communityInfo?.moderators.first.moderator!.name[0].toUpperCase() ?? '',
-                                                            semanticsLabel: '',
-                                                            style: const TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 16,
-                                                            ),
-                                                          )
-                                                        : null,
-                                                  ),
-                                                  const SizedBox(width: 16.0),
-                                                  Expanded(
-                                                    child: Column(
-                                                      mainAxisAlignment: MainAxisAlignment.start,
-                                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                                      children: [
-                                                        Text(
-                                                          widget.communityInfo?.site?.name ?? /*widget.communityInfo?.instanceHost ??*/ '',
-                                                          overflow: TextOverflow.ellipsis,
-                                                          maxLines: 1,
-                                                          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                                                        ),
-                                                        Text(
-                                                          widget.communityInfo?.site?.description ?? '',
-                                                          style: theme.textTheme.bodyMedium,
-                                                          overflow: TextOverflow.visible,
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              const Divider(),
-                                              CommonMarkdownBody(
-                                                body: widget.communityInfo?.site?.sidebar ?? '' /*?? widget.communityInfo?.instanceHost*/,
+                                                  ],
+                                                ),
                                               ),
                                             ],
                                           ),
                                         ),
-                                      ],
-                                    )
-                                  : null,
-                            ),
-                          ],
+                                      ),
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                child: widget.communityInfo?.site != null
+                                    ? Column(
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.only(top: 12.0, bottom: 4),
+                                            child: Row(children: [
+                                              Text("Host Instance"),
+                                              Expanded(
+                                                child: Divider(
+                                                  height: 5,
+                                                  thickness: 2,
+                                                  indent: 15,
+                                                ),
+                                              ),
+                                            ]),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    CircleAvatar(
+                                                      backgroundColor: widget.communityInfo?.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                                      foregroundImage: widget.communityInfo?.site?.icon != null ? CachedNetworkImageProvider(widget.communityInfo!.site!.icon!) : null,
+                                                      maxRadius: 24,
+                                                      child: widget.communityInfo?.site?.icon == null
+                                                          ? Text(
+                                                              widget.communityInfo?.moderators.first.moderator!.name[0].toUpperCase() ?? '',
+                                                              semanticsLabel: '',
+                                                              style: const TextStyle(
+                                                                fontWeight: FontWeight.bold,
+                                                                fontSize: 16,
+                                                              ),
+                                                            )
+                                                          : null,
+                                                    ),
+                                                    const SizedBox(width: 16.0),
+                                                    Expanded(
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.start,
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        children: [
+                                                          Text(
+                                                            widget.communityInfo?.site?.name ?? /*widget.communityInfo?.instanceHost ??*/ '',
+                                                            overflow: TextOverflow.ellipsis,
+                                                            maxLines: 1,
+                                                            style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                                          ),
+                                                          Text(
+                                                            widget.communityInfo?.site?.description ?? '',
+                                                            style: theme.textTheme.bodyMedium,
+                                                            overflow: TextOverflow.visible,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                const Divider(),
+                                                CommonMarkdownBody(
+                                                  body: widget.communityInfo?.site?.sidebar ?? '' /*?? widget.communityInfo?.instanceHost*/,
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      )
+                                    : null,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      const SizedBox(
-                        height: 128,
-                      )
-                    ],
+                        const SizedBox(
+                          height: 128,
+                        )
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
           ),
         ),
       ),
