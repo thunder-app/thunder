@@ -23,6 +23,7 @@
 - Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
 - Added thumbnail badges to posts for more clarity - contribution from @CTalvio
 - Added domain for posts linking to external websites - contribution from @CTalvio
+- Added comment navigation buttons - contribution from @micahmo
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
@@ -36,6 +37,7 @@
 - Align back button in image preview with the back button in the main pages - contribution from @micahmo 
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
+- Improve behavior of deferred comment indicator - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa

@@ -20,8 +20,6 @@
   "createPost": "Create Post",
   "noPosts": "No posts found",
   "dismissRead": "Dismiss Read",
-  "backToTop": "Back To Top",
-  "changeSort": "Change Sort",
   "postTitle": "Title",
   "postURL": "URL",
   "postBody": "Post Body",
@@ -36,5 +34,9 @@
   "logOut": "Log out",
   "close": "Close",
   "back": "Back",
-  "open": "Open"
+  "open": "Open",
+  "loadMoreSingular": "Load {count} more reply...",
+  "loadMorePlural": "Load {count} more replies...",
+  "navigateUp": "Navigate to previous comment",
+  "navigateDown": "Navigate to next comment"
 }

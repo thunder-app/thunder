@@ -29,12 +29,14 @@
   "postUploadImageError": "Error when uploading image",
   "postNSFW": "Mark as NSFW",
   "replyToPost": "Reply to Post",
-  "changeSort": "Change Sort",
-  "backToTop": "Back to Top",
   "accountSettings": "Account Settings",
   "profiles": "Profiles",
   "logOut": "Log out",
   "close": "Close",
   "back": "Back",
-  "open": "Open"
+  "open": "Open",
+  "loadMoreSingular": "Load {count} more reply...",
+  "loadMorePlural": "Load {count} more replies...",
+  "navigateUp": "Navigate to previous comment",
+  "navigateDown": "Navigate to next comment"
 }

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -13,6 +14,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -42,7 +44,8 @@ class PostPage extends StatefulWidget {
 }
 
 class _PostPageState extends State<PostPage> {
-  final _scrollController = ScrollController(initialScrollOffset: 0);
+  final ItemScrollController _itemScrollController = ItemScrollController();
+  final ItemPositionsListener _itemPositionsListener = ItemPositionsListener.create();
   bool hasScrolledToBottom = false;
   bool resetFailureMessage = true;
   bool _previousIsFabOpen = false;
@@ -50,6 +53,11 @@ class _PostPageState extends State<PostPage> {
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool enableCommentNavigation = true;
+
+  CommentSortType? sortType;
+  IconData? sortTypeIcon;
+  String? sortTypeLabel;
 
   @override
   void initState() {
@@ -60,7 +68,7 @@ class _PostPageState extends State<PostPage> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(_handleBack);
-    _scrollController.dispose();
+    _itemScrollController.dispose();
     super.dispose();
   }
 
@@ -70,10 +78,6 @@ class _PostPageState extends State<PostPage> {
     }
     return false;
   }
-
-  CommentSortType? sortType;
-  IconData? sortTypeIcon;
-  String? sortTypeLabel;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +91,8 @@ class _PostPageState extends State<PostPage> {
 
     PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
     PostFabAction longPressAction = thunderState.postFabLongPressAction;
+
+    enableCommentNavigation = thunderState.enableCommentNavigation;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
@@ -129,99 +135,119 @@ class _PostPageState extends State<PostPage> {
               centerTitle: false,
               toolbarHeight: 70.0,
             ),
-            floatingActionButton: enableFab
-                ? AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    child: isFabSummoned
-                        ? GestureFab(
-                            distance: 60,
-                            icon: Icon(
-                              singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
-                              semanticLabel: singlePressAction.getTitle(context),
-                              size: 35,
-                            ),
-                            onPressed: () => singlePressAction.execute(
-                                context: context,
-                                override: singlePressAction == PostFabAction.backToTop
-                                    ? () => {
-                                          _scrollController.animateTo(
-                                            0,
-                                            duration: const Duration(milliseconds: 500),
-                                            curve: Curves.easeInOut,
-                                          )
-                                        }
-                                    : singlePressAction == PostFabAction.changeSort
-                                        ? () => showSortBottomSheet(context, state)
-                                        : singlePressAction == PostFabAction.replyToPost
-                                            ? replyToPost
-                                            : null),
-                            onLongPress: () => longPressAction.execute(
-                                context: context,
-                                override: singlePressAction == PostFabAction.backToTop
-                                    ? () => {
-                                          _scrollController.animateTo(
-                                            0,
-                                            duration: const Duration(milliseconds: 500),
-                                            curve: Curves.easeInOut,
-                                          )
-                                        }
-                                    : singlePressAction == PostFabAction.changeSort
-                                        ? () => showSortBottomSheet(context, state)
-                                        : singlePressAction == PostFabAction.replyToPost
-                                            ? replyToPost
-                                            : null),
-                            children: [
-                              if (enableReplyToPost)
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    PostFabAction.replyToPost.execute(
-                                      override: replyToPost,
-                                    );
-                                  },
-                                  title: PostFabAction.replyToPost.getTitle(context),
-                                  icon: Icon(
-                                    PostFabAction.replyToPost.getIcon(),
-                                    semanticLabel: PostFabAction.replyToPost.getTitle(context),
+            floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (enableFab)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 250),
+                      child: isFabSummoned
+                          ? GestureFab(
+                              distance: 60,
+                              icon: Icon(
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
+                                semanticLabel: singlePressAction.getTitle(context),
+                                size: 35,
+                              ),
+                              onPressed: () => singlePressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _itemScrollController.scrollTo(
+                                              index: 0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              onLongPress: () => longPressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _itemScrollController.scrollTo(
+                                              index: 0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              children: [
+                                if (enableReplyToPost)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.replyToPost.execute(
+                                        override: replyToPost,
+                                      );
+                                    },
+                                    title: PostFabAction.replyToPost.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.replyToPost.getIcon(),
+                                      semanticLabel: PostFabAction.replyToPost.getTitle(context),
+                                    ),
                                   ),
-                                ),
-                              if (enableChangeSort)
-                                ActionButton(
-                                  onPressed: () {
-                                    HapticFeedback.mediumImpact();
-                                    PostFabAction.changeSort.execute(
-                                      override: () => showSortBottomSheet(context, state),
-                                    );
-                                  },
-                                  title: PostFabAction.changeSort.getTitle(context),
-                                  icon: Icon(
-                                    PostFabAction.changeSort.getIcon(),
-                                    semanticLabel: PostFabAction.changeSort.getTitle(context),
+                                if (enableChangeSort)
+                                  ActionButton(
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.changeSort.execute(
+                                        override: () => showSortBottomSheet(context, state),
+                                      );
+                                    },
+                                    title: PostFabAction.changeSort.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.changeSort.getIcon(),
+                                      semanticLabel: PostFabAction.changeSort.getTitle(context),
+                                    ),
                                   ),
-                                ),
-                              if (enableBackToTop)
-                                ActionButton(
-                                  onPressed: () {
-                                    PostFabAction.backToTop.execute(
-                                        override: () => {
-                                              _scrollController.animateTo(
-                                                0,
-                                                duration: const Duration(milliseconds: 500),
-                                                curve: Curves.easeInOut,
-                                              )
-                                            });
-                                  },
-                                  title: PostFabAction.backToTop.getTitle(context),
-                                  icon: Icon(
-                                    PostFabAction.backToTop.getIcon(),
-                                    semanticLabel: PostFabAction.backToTop.getTitle(context),
+                                if (enableBackToTop)
+                                  ActionButton(
+                                    onPressed: () {
+                                      PostFabAction.backToTop.execute(
+                                          override: () => {
+                                                _itemScrollController.scrollTo(
+                                                  index: 0,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.easeInOut,
+                                                )
+                                              });
+                                    },
+                                    title: PostFabAction.backToTop.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.backToTop.getIcon(),
+                                      semanticLabel: PostFabAction.backToTop.getTitle(context),
+                                    ),
                                   ),
-                                ),
-                            ],
-                          )
-                        : null,
-                  )
-                : null,
+                              ],
+                            )
+                          : null,
+                    ),
+                  ),
+                if (enableCommentNavigation)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CommentNavigatorFab(
+                          itemPositionsListener: _itemPositionsListener,
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
             body: Stack(
               alignment: Alignment.bottomRight,
               children: [
@@ -255,7 +281,6 @@ class _PostPageState extends State<PostPage> {
                             ],
                           ),
                           backgroundColor: theme.colorScheme.onErrorContainer,
-                          behavior: SnackBarBehavior.floating,
                         );
                         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                           ScaffoldMessenger.of(context).clearSnackBars();
@@ -289,7 +314,8 @@ class _PostPageState extends State<PostPage> {
                                 selectedCommentPath: state.selectedCommentPath,
                                 moddingCommentId: state.moddingCommentId,
                                 viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
-                                scrollController: _scrollController,
+                                itemScrollController: _itemScrollController,
+                                itemPositionsListener: _itemPositionsListener,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
                               ),
@@ -365,6 +391,7 @@ class _PostPageState extends State<PostPage> {
                 postId: widget.postId,
                 sortType: sortType,
               ));
+          //Navigator.of(context).pop();
         },
       ),
     );
