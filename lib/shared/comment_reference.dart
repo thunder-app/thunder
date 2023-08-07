@@ -13,14 +13,25 @@ import 'comment_content.dart';
 
 class CommentReference extends StatelessWidget {
   final CommentView comment;
-  final PersonMentionView? mention;
+  final DateTime now;
+  final bool isOwnComment;
+  final Function(int, VoteType) onVoteAction;
+  final Function(int, bool) onSaveAction;
+  final Function(int, bool) onDeleteAction;
 
-  const CommentReference({super.key, required this.comment});
+  const CommentReference({super.key,
+    required this.comment,
+    required this.now,
+    required this.onVoteAction,
+    required this.onSaveAction,
+    required this.onDeleteAction,
+    required this.isOwnComment,
+  });
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState state = context.read<ThunderBloc>().state;
 
     return InkWell(
@@ -67,38 +78,43 @@ class CommentReference extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Row(
+                    children: [
+                      Text(
+                        'in ',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                        ),
+                      ),
+                      Text(
+                        '${comment.community.name}${' · ${fetchInstanceNameFromUrl(comment.community.actorId)}'}',
+                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
             /*const Divider(height: 1),*/
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              padding: const EdgeInsets.symmetric(horizontal: 0.0),
               child: Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(0.0),
                 ),
-                child: CommentContent(comment: comment)
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-              child: Row(
-                children: [
-                  Text(
-                    'in ',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                    ),
-                  ),
-                  Text(
-                    '${comment.community.name}${' · ${fetchInstanceNameFromUrl(comment.community.actorId)}'}',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                    ),
-                  ),
-                ],
+                child: CommentContent(
+                  comment: comment,
+                  isUserLoggedIn: isUserLoggedIn,
+                  now: now,
+                  onSaveAction: (int commentId, bool save) => onSaveAction(commentId, save),
+                  onVoteAction: (int commentId, VoteType voteType) => onVoteAction(commentId, voteType),
+                  onDeleteAction: (int commentId, bool deleted) => onDeleteAction(commentId, deleted),
+                  isOwnComment: isOwnComment,
+                ),
               ),
             ),
           ],

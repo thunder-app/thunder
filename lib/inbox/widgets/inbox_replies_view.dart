@@ -30,6 +30,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
 
   @override
   Widget build(BuildContext context) {
+    final DateTime now = DateTime.now().toUtc();
 
     if (widget.replies.isEmpty) {
       return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
@@ -40,45 +41,48 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.replies.length,
       itemBuilder: (context, index) {
-        return Container(
-          margin: const EdgeInsets.only(top: 4),
-          /*clipBehavior: Clip.hardEdge,*/
-          child: Column(
-            children: [
-              Divider(
-                height: 1.0,
-                thickness: 4.0,
-                color: ElevationOverlay.applySurfaceTint(
-                  Theme.of(context).colorScheme.surface,
-                  Theme.of(context).colorScheme.surfaceTint,
-                  10,
-                ),
+        return Column(
+          children: [
+            Divider(
+              height: 1.0,
+              thickness: 4.0,
+              color: ElevationOverlay.applySurfaceTint(
+                Theme.of(context).colorScheme.surface,
+                Theme.of(context).colorScheme.surfaceTint,
+                10,
               ),
-              InkWell(
-                onTap: () async {
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-                  AuthBloc authBloc = context.read<AuthBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
+            ),
+            InkWell(
+              onTap: () async {
+                AccountBloc accountBloc = context.read<AccountBloc>();
+                AuthBloc authBloc = context.read<AuthBloc>();
+                ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                  // To to specific post for now, in the future, will be best to scroll to the position of the comment
-                  await Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => MultiBlocProvider(
-                        providers: [
-                          BlocProvider.value(value: accountBloc),
-                          BlocProvider.value(value: authBloc),
-                          BlocProvider.value(value: thunderBloc),
-                          BlocProvider(create: (context) => PostBloc()),
-                        ],
-                        child: PostPage(postId: widget.replies[0].post.id, selectedCommentPath: widget.replies[0].comment.path, selectedCommentId: widget.replies[0].comment.id, onPostUpdated: () => {}),
-                      ),
+                // To to specific post for now, in the future, will be best to scroll to the position of the comment
+                await Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => MultiBlocProvider(
+                      providers: [
+                        BlocProvider.value(value: accountBloc),
+                        BlocProvider.value(value: authBloc),
+                        BlocProvider.value(value: thunderBloc),
+                        BlocProvider(create: (context) => PostBloc()),
+                      ],
+                      child: PostPage(postId: widget.replies[index].post.id, selectedCommentPath: widget.replies[index].comment.path, selectedCommentId: widget.replies[index].comment.id, onPostUpdated: () => {}),
                     ),
-                  );
-                },
-                child: CommentReference( comment: widget.replies[0], )
+                  ),
+                );
+              },
+              child: CommentReference(
+                comment: widget.replies[index],
+                now: now,
+                onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
               ),
-            ],
-          ),
+            ),
+          ],
         );
       },
     );

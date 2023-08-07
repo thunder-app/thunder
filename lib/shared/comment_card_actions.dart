@@ -11,7 +11,7 @@ import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CommentCardActions extends StatelessWidget {
-  final CommentViewTree commentViewTree;
+  final CommentView commentView;
   final bool isEdit;
   final double iconSize = 22;
 
@@ -21,7 +21,7 @@ class CommentCardActions extends StatelessWidget {
 
   const CommentCardActions({
     super.key,
-    required this.commentViewTree,
+    required this.commentView,
     this.isEdit = false,
     required this.onVoteAction,
     required this.onSaveAction,
@@ -33,7 +33,7 @@ class CommentCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoteType voteType = commentViewTree.commentView!.myVote ?? VoteType.none;
+    final VoteType voteType = commentView.myVote ?? VoteType.none;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
@@ -52,7 +52,7 @@ class CommentCardActions extends StatelessWidget {
                   ),
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
+                    showCommentActionBottomModalSheet(context, commentView, onSaveAction, onDeleteAction);
                     HapticFeedback.mediumImpact();
                   }),
             ),
@@ -81,7 +81,7 @@ class CommentCardActions extends StatelessWidget {
                               BlocProvider<PostBloc>.value(value: postBloc),
                               BlocProvider<ThunderBloc>.value(value: thunderBloc),
                             ],
-                            child: CreateCommentModal(commentView: commentViewTree, isEdit: isEdit),
+                            child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
                           ),
                         ),
                       );
@@ -103,7 +103,7 @@ class CommentCardActions extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                    onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
                   }),
             ),
             SizedBox(
@@ -119,7 +119,7 @@ class CommentCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                  onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
                 },
               ),
             ),

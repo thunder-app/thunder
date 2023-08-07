@@ -9,8 +9,8 @@ import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
-import 'package:thunder/post/widgets/comment_card_actions.dart';
-import 'package:thunder/post/widgets/comment_header.dart';
+import 'package:thunder/shared/comment_card_actions.dart';
+import 'package:thunder/shared/comment_header.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -121,7 +121,6 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
-    bool? isCommentNew = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes < 15;
 
     final theme = Theme.of(context);
 
@@ -174,7 +173,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                       voteType: myVote ?? VoteType.none,
                       saved: saved,
-                      commentViewTree: widget.commentViewTree,
+                      commentView: widget.commentViewTree.commentView!,
                       selectedCommentId: widget.selectCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
                     ),
@@ -292,7 +291,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           behavior: HitTestBehavior.translucent,
                           onLongPress: () {
                             HapticFeedback.mediumImpact();
-                            showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
+                            showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
                           },
                           onTap: () {
                             widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
@@ -304,9 +303,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             children: [
                               CommentHeader(
                                 moddingCommentId: widget.moddingCommentId ?? -1,
-                                commentViewTree: widget.commentViewTree,
-                                useDisplayNames: state.useDisplayNames,
-                                isCommentNew: isCommentNew,
+                                comment: widget.commentViewTree.commentView!,
+                                now: widget.now,
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
                               ),
@@ -336,7 +334,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                             Padding(
                                               padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
                                               child: CommentCardActions(
-                                                commentViewTree: widget.commentViewTree,
+                                                commentView: widget.commentViewTree.commentView!,
                                                 onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                                                 isEdit: isOwnComment,
                                                 onSaveAction: widget.onSaveAction,

@@ -103,6 +103,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final DateTime now = DateTime.now().toUtc();
 
     return Center(
       child: Stack(
@@ -177,7 +178,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             10,
                           ),
                         ),
-                        CommentReference(comment: widget.commentViewTrees![index].commentView!),
+                        CommentReference(
+                          comment: widget.commentViewTrees![index].commentView!,
+                          now: now,
+                          onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                          onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                          onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                          isOwnComment: widget.isAccountUser,
+                        ),
                       ],
                     ),
                   ),

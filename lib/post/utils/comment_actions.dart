@@ -16,16 +16,16 @@ void triggerCommentAction({
   required Function(int, bool) onSaveAction,
   required VoteType voteType,
   bool? saved,
-  required CommentViewTree commentViewTree,
+  required CommentView commentView,
   int? selectedCommentId,
   String? selectedCommentPath,
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
-      onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
@@ -46,7 +46,7 @@ void triggerCommentAction({
                   BlocProvider<PostBloc>.value(value: postBloc),
                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
                 ],
-                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath),
+                child: CreateCommentModal(commentView: commentView, isEdit: swipeAction == SwipeAction.edit, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath),
               ),
             ),
           );
@@ -55,7 +55,7 @@ void triggerCommentAction({
 
       break;
     case SwipeAction.save:
-      onSaveAction(commentViewTree.commentView!.comment.id, !(saved ?? false));
+      onSaveAction(commentView.comment.id, !(saved ?? false));
       break;
     default:
       break;

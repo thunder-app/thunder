@@ -15,7 +15,7 @@ const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link'
 
 class CreateCommentModal extends StatefulWidget {
   final PostView? postView;
-  final CommentViewTree? commentView;
+  final CommentView? commentView;
 
   final int? selectedCommentId;
   final String? selectedCommentPath;
@@ -63,7 +63,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
     super.initState();
 
     if (widget.isEdit) {
-      String content = widget.commentView?.commentView?.comment.content ?? '';
+      String content = widget.commentView?.comment.content ?? '';
 
       setState(() => description = content);
 
@@ -167,7 +167,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                           ? null
                           : () {
                               if (widget.isEdit) {
-                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
+                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                               }
 
                               if (widget.comment != null) {
@@ -175,7 +175,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                               } else {
                                 context.read<PostBloc>().add(CreateCommentEvent(
                                     content: _bodyTextController.text,
-                                    parentCommentId: widget.commentView?.commentView!.comment.id,
+                                    parentCommentId: widget.commentView!.comment.id,
                                     selectedCommentId: widget.selectedCommentId,
                                     selectedCommentPath: widget.selectedCommentPath));
                               }
@@ -191,7 +191,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                 ),
                 const SizedBox(height: 12.0),
                 if (widget.commentView != null && widget.isEdit == false)
-                  Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+                  Text('Replying to ${widget.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
                 if (widget.comment != null && widget.isEdit == false)
                   Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
@@ -209,7 +209,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
                       child: SingleChildScrollView(
                         controller: _scrollController,
                         child: CommonMarkdownBody(
-                          body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
+                          body: widget.commentView != null ? (widget.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
                           isSelectableText: true,
                         ),
                       ),

@@ -64,3 +64,10 @@ class BlockUserEvent extends UserEvent {
 
   const BlockUserEvent({required this.personId, required this.blocked});
 }
+
+class DeleteCommentEvent extends UserEvent {
+  final int commentId;
+  final bool deleted;
+
+  const DeleteCommentEvent({required this.deleted, required this.commentId});
+}
