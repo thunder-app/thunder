@@ -1,21 +1,17 @@
+import '../../globals.dart' as globals;
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:package_info_plus/package_info_plus.dart';
-
 import 'package:thunder/core/models/version.dart';
 import 'package:version/version.dart' as version_parser;
 
 Future<String> getCurrentVersion() async {
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-  String version = packageInfo.version;
-  String build = packageInfo.buildNumber;
-
-  return 'v$version+$build';
+  return 'v${globals.currentVersion}';
 }
 
 Future<Version> fetchVersion() async {
-  const url = 'https://api.github.com/repos/thunder-app/thunder/releases/latest';
+  const url = 'https://api.github.com/repos/thunder-app/thunder/releases';
 
   try {
     String currentVersion = await getCurrentVersion();
@@ -25,11 +21,11 @@ Future<Version> fetchVersion() async {
 
     if (response.statusCode == 200) {
       final release = json.decode(response.body);
-      String latestVersion = release['tag_name'];
+      String latestVersion = release[0]['tag_name'];
 
       version_parser.Version latestVersionParsed = version_parser.Version.parse(_trimV(latestVersion));
 
-      if (latestVersionParsed > currentVersionParsed) {
+      if (compareVersions(currentVersionParsed, latestVersionParsed)) {
         return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {
         return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
@@ -45,4 +41,16 @@ Future<Version> fetchVersion() async {
 String _trimV(String version) {
   if (version.startsWith('v')) return version.substring(1);
   return version;
+}
+
+/// Returns true if [second] is greater than [first]
+bool compareVersions(version_parser.Version first, version_parser.Version second) {
+  // Handle different builds (which are not normally part of semver sorting)
+  int? firstBuild = int.tryParse(first.build);
+  int? secondBuild = int.tryParse(second.build);
+  if (firstBuild != null && secondBuild != null && firstBuild != secondBuild) {
+    return secondBuild > firstBuild;
+  }
+
+  return second > first;
 }
