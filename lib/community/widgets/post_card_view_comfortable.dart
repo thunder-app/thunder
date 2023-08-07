@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -100,8 +101,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: postViewMedia.postView.post.name,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 15 * textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.post.featuredCommunity
                             ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
@@ -137,6 +137,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                   ],
                 ),
+                textScaleFactor: textScaleFactor,
               ),
             ),
           if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
@@ -157,8 +158,7 @@ class PostCardViewComfortable extends StatelessWidget {
                   children: [
                     TextSpan(
                       text: postViewMedia.postView.post.name,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontSize: 15 * textScaleFactor,
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                       ),
@@ -192,6 +192,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                   ],
                 ),
+                textScaleFactor: textScaleFactor,
               ),
             ),
           Visibility(
