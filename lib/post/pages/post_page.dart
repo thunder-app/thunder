@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -73,6 +75,9 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
+    PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
+    PostFabAction longPressAction = thunderState.postFabLongPressAction;
+
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
       _previousIsFabOpen = isFabOpen;
@@ -128,49 +133,85 @@ class _PostPageState extends State<PostPage> {
                           ? GestureFab(
                               distance: 60,
                               icon: Icon(
-                                Icons.reply_rounded,
-                                semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
+                                semanticLabel: singlePressAction.getTitle(context),
                                 size: 35,
                               ),
-                              onPressed: replyToPost,
+                              onPressed: () => singlePressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _scrollController.animateTo(
+                                              0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
+                              onLongPress: () => longPressAction.execute(
+                                  context: context,
+                                  override: singlePressAction == PostFabAction.backToTop
+                                      ? () => {
+                                            _scrollController.animateTo(
+                                              0,
+                                              duration: const Duration(milliseconds: 500),
+                                              curve: Curves.easeInOut,
+                                            )
+                                          }
+                                      : singlePressAction == PostFabAction.changeSort
+                                          ? () => showSortBottomSheet(context, state)
+                                          : singlePressAction == PostFabAction.replyToPost
+                                              ? replyToPost
+                                              : null),
                               children: [
                                 if (enableReplyToPost)
                                   ActionButton(
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
-                                      replyToPost();
+                                      PostFabAction.replyToPost.execute(
+                                        override: replyToPost,
+                                      );
                                     },
-                                    title: AppLocalizations.of(context)!.replyToPost,
+                                    title: PostFabAction.replyToPost.getTitle(context),
                                     icon: Icon(
-                                      Icons.reply_rounded,
-                                      semanticLabel: AppLocalizations.of(context)!.replyToPost,
+                                      PostFabAction.replyToPost.getIcon(),
+                                      semanticLabel: PostFabAction.replyToPost.getTitle(context),
                                     ),
                                   ),
                                 if (enableChangeSort)
                                   ActionButton(
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
-                                      showSortBottomSheet(context, state);
+                                      PostFabAction.changeSort.execute(
+                                        override: () => showSortBottomSheet(context, state),
+                                      );
                                     },
-                                    title: AppLocalizations.of(context)!.changeSort,
+                                    title: PostFabAction.changeSort.getTitle(context),
                                     icon: Icon(
-                                      sortTypeIcon,
-                                      semanticLabel: AppLocalizations.of(context)!.changeSort,
+                                      PostFabAction.changeSort.getIcon(),
+                                      semanticLabel: PostFabAction.changeSort.getTitle(context),
                                     ),
                                   ),
                                 if (enableBackToTop)
                                   ActionButton(
                                     onPressed: () {
-                                      _scrollController.animateTo(
-                                        0,
-                                        duration: const Duration(milliseconds: 500),
-                                        curve: Curves.easeInOut,
-                                      );
+                                      PostFabAction.backToTop.execute(
+                                          override: () => {
+                                                _scrollController.animateTo(
+                                                  0,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.easeInOut,
+                                                )
+                                              });
                                     },
-                                    title: AppLocalizations.of(context)!.backToTop,
+                                    title: PostFabAction.backToTop.getTitle(context),
                                     icon: Icon(
-                                      Icons.arrow_upward,
-                                      semanticLabel: AppLocalizations.of(context)!.backToTop,
+                                      PostFabAction.backToTop.getIcon(),
+                                      semanticLabel: PostFabAction.backToTop.getTitle(context),
                                     ),
                                   ),
                               ],
