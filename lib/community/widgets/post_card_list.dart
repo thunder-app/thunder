@@ -100,12 +100,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     super.dispose();
   }
 
-  // @override
-  // void didUpdateWidget(covariant PostCardList oldWidget) {
-
-  //   super.didUpdateWidget(oldWidget);
-  // }
-
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
       widget.onScrollEndReached();
