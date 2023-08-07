@@ -15,6 +15,8 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/navigate_community.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -231,27 +233,29 @@ class LinkPreviewCard extends StatelessWidget {
       }
     }
 
-    if (originURL != null && originURL!.contains('/c/')) {
-      // Push navigation
-      AccountBloc accountBloc = context.read<AccountBloc>();
-      AuthBloc authBloc = context.read<AuthBloc>();
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
+    if (originURL != null) {
       String? communityName = await getLemmyCommunity(originURL!);
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: accountBloc),
-              BlocProvider.value(value: authBloc),
-              BlocProvider.value(value: thunderBloc),
-            ],
-            child: CommunityPage(communityName: communityName),
-          ),
-        ),
-      );
-    } else if (originURL != null) {
+      if (communityName != null) {
+        try {
+          await navigateToCommunityByName(context, communityName);
+          return;
+        } catch (e) {
+          // Ignore exception, if it's not a valid community we'll perform the next fallback
+        }
+      }
+
+      String? username = await getLemmyUser(originURL!);
+
+      if (username != null) {
+        try {
+          await navigateToUserByName(context, username);
+          return;
+        } catch (e) {
+          // Ignore exception, if it's not a valid user, we'll perform the next fallback
+        }
+      }
+
       openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
     }
   }
