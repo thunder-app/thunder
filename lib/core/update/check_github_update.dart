@@ -25,7 +25,7 @@ Future<Version> fetchVersion() async {
 
       version_parser.Version latestVersionParsed = version_parser.Version.parse(_trimV(latestVersion));
 
-      if (compareVersions(currentVersionParsed, latestVersionParsed)) {
+      if (_compareVersions(currentVersionParsed, latestVersionParsed)) {
         return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {
         return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
@@ -44,7 +44,7 @@ String _trimV(String version) {
 }
 
 /// Returns true if [second] is greater than [first]
-bool compareVersions(version_parser.Version first, version_parser.Version second) {
+bool _compareVersions(version_parser.Version first, version_parser.Version second) {
   // Handle different builds (which are not normally part of semver sorting)
   int? firstBuild = int.tryParse(first.build);
   int? secondBuild = int.tryParse(second.build);
