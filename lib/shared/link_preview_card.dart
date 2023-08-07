@@ -107,11 +107,11 @@ class LinkPreviewCard extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(20),
-                child: const Column(
+                child: Column(
                   children: [
                     Icon(Icons.warning_rounded, size: 55),
                     // This won't show but it does cause the icon above to center
-                    Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                    Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                   ],
                 ),
               ),
