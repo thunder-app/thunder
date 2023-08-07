@@ -68,7 +68,6 @@ class _PostPageState extends State<PostPage> {
   @override
   void dispose() {
     BackButtonInterceptor.remove(_handleBack);
-    _itemScrollController.dispose();
     super.dispose();
   }
 
