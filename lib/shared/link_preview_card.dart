@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -15,6 +16,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -240,7 +242,8 @@ class LinkPreviewCard extends StatelessWidget {
       String? communityName = await getLemmyCommunity(originURL!);
 
       Navigator.of(context).push(
-        MaterialPageRoute(
+        SwipeablePageRoute(
+          canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
           builder: (context) => MultiBlocProvider(
             providers: [
               BlocProvider.value(value: accountBloc),

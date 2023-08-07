@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
@@ -43,7 +44,7 @@ class ProfileModalBody extends StatelessWidget {
         page = LoginPage(popRegister: popRegister);
         break;
     }
-    return MaterialPageRoute<dynamic>(
+    return SwipeablePageRoute<dynamic>(
       builder: (context) {
         return page;
       },
