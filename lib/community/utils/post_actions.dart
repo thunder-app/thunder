@@ -4,7 +4,9 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void triggerPostAction({
   required BuildContext context,
@@ -26,16 +28,7 @@ void triggerPostAction({
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:
-      SnackBar snackBar = const SnackBar(
-        content: Text('Replying from this view is currently not supported yet'),
-        behavior: SnackBarBehavior.floating,
-      );
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).clearSnackBars();
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      }
-
+      showSnackbar(context, AppLocalizations.of(context)!.replyNotSupported);
       break;
     case SwipeAction.save:
       onSaveAction(postViewMedia.postView.post.id, !(saved ?? false));

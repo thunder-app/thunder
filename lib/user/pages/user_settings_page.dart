@@ -1,8 +1,10 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final int? userId;
@@ -34,78 +36,33 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
           listener: (context, state) {
             if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
-              SnackBar snackBar = SnackBar(
-                content: Text('Failed to ${state.status == UserSettingsStatus.failure ? 'un' : ''}block: ${state.errorMessage}'),
-                behavior: SnackBarBehavior.floating,
-              );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
+              if (state.status == UserSettingsStatus.failure) {
+                showSnackbar(
+                    context,
+                    state.status == UserSettingsStatus.failure
+                        ? AppLocalizations.of(context)!.failedToUnblock(state.errorMessage ?? 'UNKNOWN')
+                        : AppLocalizations.of(context)!.failedToBlock(state.errorMessage ?? 'UNKNOWN'));
+              }
             } else if (state.status == UserSettingsStatus.failure) {
-              SnackBar snackBar = SnackBar(
-                content: Text('Failed to load blocks: ${state.errorMessage}'),
-                behavior: SnackBarBehavior.floating,
-              );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
+              showSnackbar(context, AppLocalizations.of(context)!.failedToLoadBlocks(state.errorMessage ?? 'UNKNOWN'));
             }
 
             if (state.status == UserSettingsStatus.success && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
-              SnackBar snackBar = SnackBar(
-                content: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Expanded(
-                      child: Text(
-                        'Successfully unblocked!',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    SizedBox(
-                      height: 20,
-                      child: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-
-                          if (state.personBeingBlocked != 0) {
-                            context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
-                          } else if (state.communityBeingBlocked != 0) {
-                            context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
-                          }
-                        },
-                        icon: Icon(
-                          Icons.undo_rounded,
-                          color: theme.colorScheme.inversePrimary,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                behavior: SnackBarBehavior.floating,
+              showSnackbar(
+                context,
+                AppLocalizations.of(context)!.successfullyUnblocked,
+                undoAction: () {
+                  if (state.personBeingBlocked != 0) {
+                    context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
+                  } else if (state.communityBeingBlocked != 0) {
+                    context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
+                  }
+                },
               );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
             }
 
             if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
-              SnackBar snackBar = const SnackBar(
-                content: Text('Successfully blocked!'),
-                behavior: SnackBarBehavior.floating,
-              );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
+              showSnackbar(context, AppLocalizations.of(context)!.successfullyBlocked);
             }
           },
           builder: (context, state) {

@@ -12,6 +12,7 @@ import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/widgets/create_comment_modal.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -247,24 +248,8 @@ class _PostPageState extends State<PostPage> {
                         },
                         builder: (context, state) {
                           if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                            SnackBar snackBar = SnackBar(
-                              content: Row(
-                                children: [
-                                  Icon(
-                                    Icons.warning_rounded,
-                                    color: theme.colorScheme.errorContainer,
-                                  ),
-                                  const SizedBox(width: 8.0),
-                                  Flexible(
-                                    child: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, maxLines: 4),
-                                  )
-                                ],
-                              ),
-                              backgroundColor: theme.colorScheme.onErrorContainer,
-                            );
+                            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, mode: SnackBarMode.warning);
                             WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
                               setState(() => resetFailureMessage = false);
                             });
                           }
