@@ -38,3 +38,24 @@ jobs:
 
       - name: Tests
         run: flutter test
+
+      # Read the version number
+      - name: Read pubspec.yaml version
+        id: output-pubspec-version
+        uses: NiklasLehnfeld/flutter-version-number-action@main
+        with:
+          file-path: pubspec.yaml
+      
+      # Read the globals.yaml file
+      - name: Read globals.dart version
+        id: output-globals-version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: lib/globals.dart
+      
+      # Assert that the version has been updated in globals
+      - name: Assert globals.dart has correct version
+        uses: nick-fields/assert-action@v1
+        with:
+          expected: const String currentVersion = '${{ steps.output-pubspec-version.outputs.version-number }}';
+          actual: ${{ steps.output-globals-version.outputs.content[0] }}
