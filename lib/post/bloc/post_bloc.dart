@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
@@ -68,6 +70,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<DeleteCommentEvent>(
       _deleteCommentEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<NavigateCommentEvent>(
+      _navigateCommentEvent,
     );
   }
 
@@ -525,6 +530,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
+    if (event.direction == NavigateCommentDirection.up) {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex), navigateCommentId: state.navigateCommentId + 1));
+    } else {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
     }
   }
 }
