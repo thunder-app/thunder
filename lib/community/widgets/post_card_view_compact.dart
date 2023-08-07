@@ -65,9 +65,8 @@ class PostCardViewCompact extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
-              ? const SizedBox(width: 8.0)
-              : ExcludeSemantics(
+          !showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+              ? ExcludeSemantics(
                   child: Stack(
                     alignment: AlignmentDirectional.bottomEnd,
                     children: [
@@ -93,7 +92,8 @@ class PostCardViewCompact extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                )
+              : const SizedBox(width: 8.0),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -165,9 +165,8 @@ class PostCardViewCompact extends StatelessWidget {
               ],
             ),
           ),
-          !showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
-              ? const SizedBox(width: 8.0)
-              : ExcludeSemantics(
+          showThumbnailPreviewOnRight && (postViewMedia.media.isNotEmpty || showTextPostIndicator)
+              ? ExcludeSemantics(
                   child: Stack(
                     alignment: AlignmentDirectional.bottomEnd,
                     children: [
@@ -193,7 +192,8 @@ class PostCardViewCompact extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                )
+              : const SizedBox(width: 8.0),
         ],
       ),
     );
