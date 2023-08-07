@@ -77,3 +77,12 @@ class DeleteCommentEvent extends PostEvent {
 
   const DeleteCommentEvent({required this.deleted, required this.commentId});
 }
+
+enum NavigateCommentDirection { up, down }
+
+class NavigateCommentEvent extends PostEvent {
+  final NavigateCommentDirection direction;
+  final int targetIndex;
+
+  const NavigateCommentEvent({required this.targetIndex, required this.direction});
+}

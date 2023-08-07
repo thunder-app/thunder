@@ -79,6 +79,11 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   expandable_text: ^2.3.0
+  scrollable_positioned_list:
+    git:
+      url: https://github.com/bitstackapp/flutter.widgets.git
+      ref: master
+      path: packages/scrollable_positioned_list/
   version: ^3.0.2
 
 dev_dependencies:

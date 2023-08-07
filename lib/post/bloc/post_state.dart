@@ -3,24 +3,27 @@ part of 'post_bloc.dart';
 enum PostStatus { initial, loading, refreshing, success, empty, failure }
 
 class PostState extends Equatable {
-  const PostState(
-      {this.status = PostStatus.initial,
-      this.postId,
-      this.postView,
-      this.comments = const [],
-      this.commentResponseMap = const <int, CommentView>{},
-      this.commentPage = 1,
-      this.commentCount = 0,
-      this.communityId,
-      this.moderators,
-      this.hasReachedCommentEnd = false,
-      this.errorMessage,
-      this.sortType,
-      this.sortTypeIcon,
-      this.selectedCommentId,
-      this.selectedCommentPath,
-      this.moddingCommentId = -1,
-      this.viewAllCommentsRefresh = false});
+  const PostState({
+    this.status = PostStatus.initial,
+    this.postId,
+    this.postView,
+    this.comments = const [],
+    this.commentResponseMap = const <int, CommentView>{},
+    this.commentPage = 1,
+    this.commentCount = 0,
+    this.communityId,
+    this.moderators,
+    this.hasReachedCommentEnd = false,
+    this.errorMessage,
+    this.sortType,
+    this.sortTypeIcon,
+    this.selectedCommentId,
+    this.selectedCommentPath,
+    this.moddingCommentId = -1,
+    this.viewAllCommentsRefresh = false,
+    this.navigateCommentIndex = 0,
+    this.navigateCommentId = 0,
+  });
 
   final PostStatus status;
 
@@ -48,6 +51,11 @@ class PostState extends Equatable {
 
   final String? errorMessage;
 
+  final int navigateCommentIndex;
+  // This exists purely for forcing the bloc to refire
+  // even if the comment index doesn't change
+  final int navigateCommentId;
+
   PostState copyWith({
     required PostStatus status,
     int? postId,
@@ -66,6 +74,8 @@ class PostState extends Equatable {
     String? selectedCommentPath,
     int? moddingCommentId,
     bool? viewAllCommentsRefresh = false,
+    int? navigateCommentIndex,
+    int? navigateCommentId,
   }) {
     return PostState(
       status: status,
@@ -85,6 +95,8 @@ class PostState extends Equatable {
       selectedCommentPath: selectedCommentPath,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
       viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
+      navigateCommentIndex: navigateCommentIndex ?? 0,
+      navigateCommentId: navigateCommentId ?? 0,
     );
   }
 
@@ -106,5 +118,7 @@ class PostState extends Equatable {
         selectedCommentPath,
         viewAllCommentsRefresh,
         moddingCommentId,
+        navigateCommentIndex,
+        navigateCommentId,
       ];
 }

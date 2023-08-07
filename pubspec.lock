@@ -889,6 +889,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.27.7"
+  scrollable_positioned_list:
+    dependency: "direct main"
+    description:
+      path: "packages/scrollable_positioned_list"
+      ref: master
+      resolved-ref: "7e0cd2f967727f0a027d53b2f3cd8f3331f3495d"
+      url: "https://github.com/bitstackapp/flutter.widgets.git"
+    source: git
+    version: "0.2.3"
   share_plus:
     dependency: "direct main"
     description:
