@@ -146,13 +146,31 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
-          child: Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              'Sort by Top',
-              style: theme.textTheme.titleLarge!.copyWith(),
+        GestureDetector(
+          onTap: () {
+            setState(() {
+              topSelected = false;
+            });
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 16.0, left: 12.0, right: 16.0),
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Row(
+                children: [
+                  const Icon(
+                    Icons.chevron_left,
+                    size: 30,
+                  ),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Text(
+                    'Sort by Top',
+                    style: theme.textTheme.titleLarge!.copyWith(),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

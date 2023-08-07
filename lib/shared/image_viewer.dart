@@ -20,12 +20,14 @@ class ImageViewer extends StatefulWidget {
   final String url;
   final String heroKey;
   final int? postId;
+  final void Function()? navigateToPost;
 
   const ImageViewer({
     super.key,
     required this.url,
     required this.heroKey,
     this.postId,
+    this.navigateToPost,
   });
 
   get postViewMedia => null;
@@ -50,6 +52,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   /// User Settings
   bool isUserLoggedIn = false;
+
+  bool isDownloadingMedia = false;
 
   void _maybeSlide() {
     setState(() {
@@ -127,6 +131,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                 shadows: fullscreen ? null : <Shadow>[const Shadow(color: Colors.black, blurRadius: 50.0)],
               ),
               backgroundColor: Colors.transparent,
+              toolbarHeight: 70.0,
             ),
             backgroundColor: Colors.black.withOpacity(slideTransparency),
             body: Column(
@@ -178,7 +183,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                         : null,
                     child: Listener(
                       // Start watching for double tap zoom
-                      onPointerDown: (details) {
+                      onPointerUp: (details) {
                         downCoord = details.position;
                         _maybeSlide();
                       },
@@ -228,7 +233,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             mode: ExtendedImageMode.gesture,
                             extendedImageGestureKey: gestureKey,
                             cache: true,
-                            clearMemoryCacheWhenDispose: true,
+                            clearMemoryCacheWhenDispose: false,
                             initGestureConfigHandler: (ExtendedImageState state) {
                               return GestureConfig(
                                 minScale: 0.8,
@@ -236,7 +241,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 maxScale: 4.0,
                                 animationMaxScale: 4.0,
                                 speed: 1.0,
-                                inertialSpeed: 100.0,
+                                inertialSpeed: 600.0,
                                 initialScale: 1.0,
                                 inPageView: false,
                                 initialAlignment: InitialAlignment.center,
@@ -284,49 +289,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // TODO make go to post work
-                        /*Container(
-                            child: widget.postId != null ? Row(
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(15.0),
-                                  child: IconButton(
-                                    onPressed: () async {
-                                      AccountBloc accountBloc = context.read<AccountBloc>();
-                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                                      CommunityBloc communityBloc = context.read<CommunityBloc>();
-
-                                      // Mark post as read when tapped
-                                      if (isUserLoggedIn && widget.postId != null) context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: widget.postId!, read: true));
-
-                                      await Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) {
-                                            return MultiBlocProvider(
-                                              providers: [
-                                                BlocProvider.value(value: accountBloc),
-                                                BlocProvider.value(value: authBloc),
-                                                BlocProvider.value(value: thunderBloc),
-                                                BlocProvider.value(value: communityBloc),
-                                                BlocProvider(create: (context) => post_bloc.PostBloc()),
-                                              ],
-                                              child: PostPage(
-                                                postView: widget.postViewMedia,
-                                                onPostUpdated: () {},
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      );
-                                      if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
-                                    },
-                                    icon: const Icon(Icons.chat_rounded, semanticLabel: "Comments", color: Colors.white),
-                                  ),
-                                ),
-                              ],
-                            ) : null,
-                          ),*/
                         Padding(
                           padding: const EdgeInsets.all(4.0),
                           child: IconButton(
@@ -339,23 +301,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       File? mediaFile = media?.file;
 
                                       if (media == null) {
-                                        // Tell user we're downloading the image
-                                        SnackBar snackBar = const SnackBar(
-                                          content: Text('Downloading media to share...'),
-                                          behavior: SnackBarBehavior.floating,
-                                        );
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                          _imageViewer.currentState?.showSnackBar(snackBar);
-                                        });
+                                        setState(() => isDownloadingMedia = true);
 
                                         // Download
                                         mediaFile = await DefaultCacheManager().getSingleFile(widget.url);
-
-                                        // Hide snackbar
-                                        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                          _imageViewer.currentState?.clearSnackBars();
-                                        });
                                       }
 
                                       // Share
@@ -370,14 +319,24 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         _imageViewer.currentState?.clearSnackBars();
                                         _imageViewer.currentState?.showSnackBar(snackBar);
                                       });
+                                    } finally {
+                                      setState(() => isDownloadingMedia = false);
                                     }
                                   },
-                            icon: Icon(
-                              Icons.share_rounded,
-                              semanticLabel: "Comments",
-                              color: Colors.white.withOpacity(0.90),
-                              shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
-                            ),
+                            icon: isDownloadingMedia
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white.withOpacity(0.90),
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.share_rounded,
+                                    semanticLabel: "Share",
+                                    color: Colors.white.withOpacity(0.90),
+                                    shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                                  ),
                           ),
                         ),
                         Padding(
@@ -396,7 +355,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
                                       if (Platform.isAndroid) {
                                         // Save image to [internal storage]/Pictures/Thunder
-                                        GallerySaver.saveImage(file.path, albumName: "Pictures/Thunder").then((value) {
+                                        GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
                                           setState(() => downloaded = value as bool);
                                         });
                                       } else if (Platform.isIOS) {
@@ -434,6 +393,22 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   ),
                           ),
                         ),
+                        if (widget.navigateToPost != null)
+                          Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: IconButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                widget.navigateToPost!();
+                              },
+                              icon: Icon(
+                                Icons.chat_rounded,
+                                semanticLabel: "Comments",
+                                color: Colors.white.withOpacity(0.90),
+                                shadows: const <Shadow>[Shadow(color: Colors.black, blurRadius: 50.0)],
+                              ),
+                            ),
+                          ),
                       ],
                     ),
                   ),

@@ -37,6 +37,7 @@ class PostCardActions extends StatelessWidget {
 
         return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
           children: [
             if (showVoteActions)
               IconButton(

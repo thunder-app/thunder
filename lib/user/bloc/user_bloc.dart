@@ -25,6 +25,10 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   UserBloc() : super(const UserState()) {
+    on<ResetUserEvent>(
+      _resetUserEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<GetUserEvent>(
       _getUserEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -59,6 +63,10 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     );
   }
 
+  Future<void> _resetUserEvent(ResetUserEvent event, emit) async {
+    return emit(state.copyWith(status: UserStatus.initial));
+  }
+
   Future<void> _getUserEvent(GetUserEvent event, emit) async {
     int attemptCount = 0;
     int limit = 30;
@@ -77,11 +85,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
             FullPersonView? fullPersonView;
 
-            if (event.userId != null) {
+            if (event.userId != null || event.username != null) {
               fullPersonView = await lemmy
                   .run(GetPersonDetails(
                 personId: event.isAccountUser ? null : event.userId,
-                username: event.isAccountUser ? account?.username : null,
+                username: event.username ?? (event.isAccountUser ? account?.username : null),
                 auth: account?.jwt,
                 sort: SortType.new_,
                 limit: limit,
@@ -150,7 +158,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             posts: postViewMedias,
             moderates: fullPersonView.moderates,
             page: state.page + 1,
-            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount,
+            // It's possible that sometimes the instance you belong to might not have all the posts for a
+            // user from a different instance. Lemmy's web view will simply just list what it has with no
+            // indication that it's not complete. This is despite having the correct post count stat.
+            // For this reason we are marking hasReachedPostEnd as true when what was fetched last is under the max limit.
+            hasReachedPostEnd: postViewMedias.length == fullPersonView.personView.counts.postCount || posts.length < limit,
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
         } catch (e) {

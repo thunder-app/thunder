@@ -13,6 +13,7 @@ class InboxState extends Equatable {
     this.inboxReplyPage = 1,
     this.inboxMentionPage = 1,
     this.inboxPrivateMessagePage = 1,
+    this.totalUnreadCount = 0,
     this.hasReachedInboxReplyEnd = false,
     this.hasReachedInboxMentionEnd = false,
     this.hasReachedInboxPrivateMessageEnd = false,
@@ -31,6 +32,8 @@ class InboxState extends Equatable {
   final int inboxMentionPage;
   final int inboxPrivateMessagePage;
 
+  final int totalUnreadCount;
+
   final bool hasReachedInboxReplyEnd;
   final bool hasReachedInboxMentionEnd;
   final bool hasReachedInboxPrivateMessageEnd;
@@ -45,6 +48,7 @@ class InboxState extends Equatable {
     int? inboxReplyPage,
     int? inboxMentionPage,
     int? inboxPrivateMessagePage,
+    int? totalUnreadCount,
     bool? hasReachedInboxReplyEnd,
     bool? hasReachedInboxMentionEnd,
     bool? hasReachedInboxPrivateMessageEnd,
@@ -59,6 +63,7 @@ class InboxState extends Equatable {
       inboxReplyPage: inboxReplyPage ?? this.inboxReplyPage,
       inboxMentionPage: inboxMentionPage ?? this.inboxMentionPage,
       inboxPrivateMessagePage: inboxPrivateMessagePage ?? this.inboxPrivateMessagePage,
+      totalUnreadCount: totalUnreadCount ?? this.totalUnreadCount,
       hasReachedInboxReplyEnd: hasReachedInboxReplyEnd ?? this.hasReachedInboxReplyEnd,
       hasReachedInboxMentionEnd: hasReachedInboxMentionEnd ?? this.hasReachedInboxMentionEnd,
       hasReachedInboxPrivateMessageEnd: hasReachedInboxPrivateMessageEnd ?? this.hasReachedInboxPrivateMessageEnd,
@@ -76,6 +81,7 @@ class InboxState extends Equatable {
         inboxReplyPage,
         inboxMentionPage,
         inboxPrivateMessagePage,
+        totalUnreadCount,
         hasReachedInboxReplyEnd,
         hasReachedInboxMentionEnd,
         hasReachedInboxPrivateMessageEnd,

@@ -40,7 +40,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool openInExternalBrowser = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
-  bool disableFeedFab = false;
   bool showInAppUpdateNotification = false;
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -49,6 +48,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showTitleFirst = false;
   bool showThumbnailPreviewOnRight = false;
   bool showTextPostIndicator = false;
+  bool tappableAuthorCommunity = false;
 
   // General Settings
   bool showVoteActions = true;
@@ -58,9 +58,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showEdgeToEdgeImages = false;
   bool showTextContent = false;
   bool showPostAuthor = false;
-
-  /// -------------------------- Post Page Related Settings --------------------------
-  bool disablePostFabs = false;
+  bool disableScoreCounters = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -120,13 +118,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
         setState(() => markPostReadOnMediaView = value);
         break;
-      case LocalSettings.disableFeedFab:
-        await prefs.setBool(LocalSettings.disableFeedFab.name, value);
-        setState(() => disableFeedFab = value);
-        break;
       case LocalSettings.showInAppUpdateNotification:
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
+        break;
+      case LocalSettings.disableScoreCounters:
+        await prefs.setBool(LocalSettings.disableScoreCounters.name, value);
+        setState(() => disableScoreCounters = value);
         break;
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -146,6 +144,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.showTextPostIndicator:
         await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
         setState(() => showTextPostIndicator = value);
+        break;
+      case LocalSettings.tappableAuthorCommunity:
+        await prefs.setBool(LocalSettings.tappableAuthorCommunity.name, value);
+        setState(() => tappableAuthorCommunity = value);
         break;
 
       // General Settings
@@ -176,12 +178,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.showPostAuthor:
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
         setState(() => showPostAuthor = value);
-        break;
-
-      /// -------------------------- Post Page Related Settings --------------------------
-      case LocalSettings.disablePostFab:
-        await prefs.setBool(LocalSettings.disablePostFab.name, value);
-        setState(() => disablePostFabs = value);
         break;
 
       // Comment Related Settings
@@ -222,7 +218,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      disableFeedFab = prefs.getBool(LocalSettings.disableFeedFab.name) ?? false;
+      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
@@ -237,13 +233,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+      tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
       showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
       showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
       showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
       showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
       showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      disablePostFabs = prefs.getBool(LocalSettings.disablePostFab.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
 
       // Comment Settings
@@ -305,13 +301,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4, bottom: 8.0),
                           child: Text(
                             'Feed',
                             style: theme.textTheme.titleLarge,
@@ -370,11 +366,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
                         ),
                         ToggleOption(
-                          description: LocalSettings.disableFeedFab.label,
-                          value: disableFeedFab,
-                          iconEnabled: Icons.visibility_off,
-                          iconDisabled: Icons.visibility,
-                          onToggle: (bool value) => setPreferences(LocalSettings.disableFeedFab, value),
+                          description: 'Disable All Score Counters',
+                          value: disableScoreCounters,
+                          iconEnabled: Icons.score_rounded,
+                          iconDisabled: Icons.score_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.disableScoreCounters, value),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
@@ -393,6 +389,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           options: allSortTypeItems,
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
+                          isBottomModalScrollControlled: true,
                           customListPicker: SortPicker(
                             title: LocalSettings.defaultFeedSortType.label,
                             onSelect: (value) {
@@ -404,13 +401,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Posts',
                             style: theme.textTheme.titleLarge,
@@ -427,13 +424,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         const SizedBox(
                           height: 8,
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.disablePostFab.label,
-                          value: disablePostFabs,
-                          iconEnabled: Icons.visibility_off,
-                          iconDisabled: Icons.visibility,
-                          onToggle: (bool value) => setPreferences(LocalSettings.disablePostFab, value),
                         ),
                         ToggleOption(
                           description: LocalSettings.useCompactView.label,
@@ -472,6 +462,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                         iconEnabled: Icons.article,
                                         iconDisabled: Icons.article_outlined,
                                         onToggle: (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.tappableAuthorCommunity.label,
+                                        value: tappableAuthorCommunity,
+                                        iconEnabled: Icons.touch_app_rounded,
+                                        iconDisabled: Icons.touch_app_outlined,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
                                       ),
                                     ],
                                   ),
@@ -545,13 +542,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Comments',
                             style: theme.textTheme.titleLarge,
@@ -608,13 +605,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Links',
                             style: theme.textTheme.titleLarge,
@@ -639,13 +636,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Notifications',
                             style: theme.textTheme.titleLarge,

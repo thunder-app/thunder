@@ -14,6 +14,8 @@ class ImagePreview extends StatefulWidget {
   final bool isExpandable;
   final bool showFullHeightImages;
   final int? postId;
+  final void Function()? navigateToPost;
+  final bool? isComment;
 
   const ImagePreview({
     super.key,
@@ -25,6 +27,8 @@ class ImagePreview extends StatefulWidget {
     this.isExpandable = true,
     this.showFullHeightImages = false,
     this.postId,
+    this.navigateToPost,
+    this.isComment,
   });
 
   @override
@@ -44,11 +48,10 @@ class _ImagePreviewState extends State<ImagePreview> {
 
   void onImageTap(BuildContext context) {
     Navigator.of(context).push(
-      // TODO This is probably where BlocProvider breaks
       PageRouteBuilder(
         opaque: false,
-        transitionDuration: const Duration(milliseconds: 200),
-        reverseTransitionDuration: const Duration(milliseconds: 200),
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 50),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           String heroKey = generateRandomHeroString();
 
@@ -56,6 +59,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             url: widget.url,
             heroKey: heroKey,
             postId: widget.postId,
+            navigateToPost: widget.navigateToPost,
           );
         },
         transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
@@ -95,12 +99,19 @@ class _ImagePreviewState extends State<ImagePreview> {
       child: Stack(
         children: [
           ExtendedImage.network(
+            constraints: widget.isComment == true
+                ? BoxConstraints(
+                    maxHeight: MediaQuery.of(context).size.width * 0.55,
+                    maxWidth: MediaQuery.of(context).size.width * 0.60,
+                  )
+                : null,
+            alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
             widget.url,
             height: widget.height,
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,
-            clearMemoryCacheWhenDispose: true,
+            clearMemoryCacheWhenDispose: false,
             cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
           ),
           TweenAnimationBuilder<double>(
