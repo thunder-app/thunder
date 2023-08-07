@@ -9,9 +9,11 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -44,6 +46,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
+  int? _previousUserId;
 
   @override
   void initState() {
@@ -103,11 +106,16 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       listeners: [
         BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
         BlocListener<SearchBloc, SearchState>(listener: (context, state) {}),
-        BlocListener<AccountBloc, AccountState>(listener: (context, state) {
+        BlocListener<AccountBloc, AccountState>(listener: (context, state) async {
+          final Account? activeProfile = await fetchActiveProfileAccount();
+
           // When account changes, that means our instance most likely changed, so reset search.
-          _controller.clear();
-          context.read<SearchBloc>().add(ResetSearch());
-          setState(() {});
+          if (state.status == AccountStatus.success && (activeProfile?.userId == null || state.personView?.person.id == activeProfile?.userId) && _previousUserId != state.personView?.person.id) {
+            _controller.clear();
+            context.read<SearchBloc>().add(ResetSearch());
+            setState(() {});
+            _previousUserId = activeProfile?.userId;
+          }
         }),
       ],
       child: BlocBuilder<SearchBloc, SearchState>(
