@@ -1,5 +1,6 @@
 ## Unreleased
 ### Added
+- Added long press on profile icon to bring up profile modal @zdzoz
 - Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
 - Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
 - Show instance taglines in the feed - contribution from @micahmo
