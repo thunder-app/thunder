@@ -76,7 +76,7 @@ class CommentCard extends StatelessWidget {
                   Text(
                     formatNumberToK(upvotes),
                     semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
-                    textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onBackground,
                     ),
@@ -92,7 +92,7 @@ class CommentCard extends StatelessWidget {
                     Text(
                       formatNumberToK(downvotes),
                       semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
-                      textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
                       ),

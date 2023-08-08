@@ -137,7 +137,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                   ],
                 ),
-                textScaleFactor: textScaleFactor,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
               ),
             ),
           if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
@@ -192,7 +192,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                   ],
                 ),
-                textScaleFactor: textScaleFactor,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
               ),
             ),
           Visibility(
@@ -203,7 +203,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                 ),

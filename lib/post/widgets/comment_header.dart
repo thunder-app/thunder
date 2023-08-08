@@ -96,7 +96,7 @@ class CommentHeader extends StatelessWidget {
                                         commentViewTree.commentView!.creator.displayName != null && useDisplayNames
                                             ? commentViewTree.commentView!.creator.displayName!
                                             : commentViewTree.commentView!.creator.name,
-                                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
                                       ),
                                       const SizedBox(width: 2.0),
@@ -153,7 +153,7 @@ class CommentHeader extends StatelessWidget {
                                     commentViewTree.commentView!.creator.displayName != null && useDisplayNames
                                         ? commentViewTree.commentView!.creator.displayName!
                                         : commentViewTree.commentView!.creator.name,
-                                    textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -174,7 +174,7 @@ class CommentHeader extends StatelessWidget {
                 Text(
                   formatNumberToK(upvotes),
                   semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
-                  textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                   ),
@@ -189,7 +189,7 @@ class CommentHeader extends StatelessWidget {
                 if (downvotes != 0)
                   Text(
                     formatNumberToK(downvotes),
-                    textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
@@ -213,7 +213,7 @@ class CommentHeader extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     child: Text(
                       '+${commentViewTree.commentView!.counts.childCount}',
-                      textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     ),
                   ),
                 ),
@@ -259,7 +259,7 @@ class CommentHeader extends StatelessWidget {
                       ] else
                         Text(
                           commentViewTree.datePostedOrEdited,
-                          textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onBackground,
                           ),

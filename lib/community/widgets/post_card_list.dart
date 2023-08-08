@@ -224,7 +224,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             'Hmmm. It seems like you\'ve reached the bottom.',
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,
-                            textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                           ),
                         ),
                         const SizedBox(
