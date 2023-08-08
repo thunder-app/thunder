@@ -257,7 +257,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               listingType: listingType,
               communityId: communityId,
               communityName: event.communityName,
-              hasReachedEnd: posts.isEmpty || posts.length < limit,
+              hasReachedEnd: batch.isEmpty || batch.length < limit,
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse,
