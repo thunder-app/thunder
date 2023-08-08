@@ -39,7 +39,7 @@ class TypeBadge extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(4),
                   ),
-                  color: theme.colorScheme.tertiary,
+                  color: theme.colorScheme.tertiaryContainer,
                   child: const Icon(size: 17, Icons.wysiwyg_rounded),
                 )
               : postViewMedia.media.firstOrNull?.mediaType == MediaType.link
@@ -50,7 +50,7 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.secondary,
+                      color: theme.colorScheme.secondaryContainer,
                       child: const Icon(size: 19, Icons.link_rounded),
                     )
                   : Material(
@@ -60,7 +60,7 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.primary,
+                      color: theme.colorScheme.primaryContainer,
                       child: const Icon(size: 17, Icons.image_outlined),
                     ),
         ),
