@@ -25,7 +25,12 @@ class TypeBadge extends StatelessWidget {
           bottomRight: Radius.circular(12),
           topRight: Radius.circular(4),
         ),
-        color: theme.colorScheme.background,
+        color: postViewMedia.postView.read
+            ? Color.alphaBlend(
+                theme.colorScheme.onBackground.withOpacity(0.02),
+                theme.colorScheme.background,
+              )
+            : theme.colorScheme.background,
         child: Padding(
           padding: const EdgeInsets.only(
             left: 2.5,
