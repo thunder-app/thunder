@@ -280,7 +280,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.dismissRead.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.dismissRead.getIcon(),
-                                            semanticLabel: FeedFabAction.dismissRead.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
@@ -292,7 +291,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.refresh.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.refresh.getIcon(),
-                                            semanticLabel: FeedFabAction.refresh.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
@@ -304,7 +302,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.changeSort.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
-                                            semanticLabel: FeedFabAction.changeSort.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
@@ -313,7 +310,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.subscriptions.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.subscriptions.getIcon(),
-                                            semanticLabel: FeedFabAction.subscriptions.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
@@ -324,7 +320,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.backToTop.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.backToTop.getIcon(),
-                                            semanticLabel: FeedFabAction.backToTop.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
@@ -335,7 +330,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.newPost.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.newPost.getIcon(),
-                                            semanticLabel: FeedFabAction.newPost.getTitle(context),
                                           ),
                                         ),
                                     ],
