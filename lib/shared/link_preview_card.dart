@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -172,6 +173,16 @@ class LinkPreviewCard extends StatelessWidget {
                               cacheDuration: Duration.zero,
                             ),
                     ),
+            if (!showLinkPreviews)
+              Container(
+                height: 75,
+                width: 75,
+                color: theme.cardColor.darken(5),
+                child: Icon(
+                  Icons.language,
+                  color: theme.colorScheme.onSecondaryContainer,
+                ),
+              ),
             if (hideNsfw)
               Container(
                 alignment: Alignment.center,
