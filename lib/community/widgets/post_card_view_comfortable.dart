@@ -68,10 +68,10 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final String textContent = postViewMedia.postView.post.body ?? "";
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     var mediaView = MediaView(
       showLinkPreview: state.showLinkPreviews,
@@ -87,7 +87,8 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
-    return Padding(
+    return Container(
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,8 +105,8 @@ class PostCardViewComfortable extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.post.featuredCommunity
-                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
-                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
+                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                       ),
                     ),
                     if (postViewMedia.postView.post.featuredCommunity)
@@ -205,7 +206,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 textScaleFactor: state.contentFontSizeScale.textScaleFactor,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.4) : theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
+                  color: readColor,
                 ),
               ),
             ),

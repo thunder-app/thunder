@@ -48,13 +48,14 @@ class PostCardViewCompact extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
-    return Padding(
+    return Container(
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
       padding: const EdgeInsets.only(
         bottom: 8.0,
         top: 6,
@@ -103,8 +104,8 @@ class PostCardViewCompact extends StatelessWidget {
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: postViewMedia.postView.post.featuredCommunity
-                              ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
-                              : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
+                              ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                              : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
                       ),
                       if (postViewMedia.postView.post.featuredCommunity)
