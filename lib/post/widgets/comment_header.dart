@@ -97,17 +97,17 @@ class CommentHeader extends StatelessWidget {
                                             ? commentViewTree.commentView!.creator.displayName!
                                             : commentViewTree.commentView!.creator.name,
                                         textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
+                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
                                       ),
                                       const SizedBox(width: 2.0),
                                       Container(
                                         child: isOwnComment
                                             ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
+                                                padding: EdgeInsets.only(left: 1),
                                                 child: Icon(
                                                   Icons.person,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ))
                                             : Container(),
                                       ),
@@ -118,7 +118,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.shield_crown,
                                                   size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -130,7 +130,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.shield,
                                                   size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -142,7 +142,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.microphone_variant,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -279,10 +279,10 @@ class CommentHeader extends StatelessWidget {
     CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
-    if (isOwnComment) return theme.colorScheme.primary;
-    if (isAdmin(commentView.creator)) return theme.colorScheme.tertiary;
-    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.primaryContainer;
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondary;
+    if (isOwnComment) return theme.colorScheme.primaryContainer;
+    if (isAdmin(commentView.creator)) return theme.colorScheme.errorContainer;
+    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.tertiaryContainer;
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
 
     return null;
   }

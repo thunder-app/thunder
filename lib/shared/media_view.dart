@@ -74,7 +74,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
-            color: theme.cardColor.darken(3),
+            color: theme.cardColor.darken(5),
             child: SizedBox(
               height: 75.0,
               width: 75.0,
@@ -82,9 +82,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 padding: const EdgeInsets.only(left: 2.0),
                 child: Text(
                   widget.postView!.postView.post.body ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 4.5,
-                    color: Colors.white70,
+                    color: theme.colorScheme.onBackground.withOpacity(0.7),
                   ),
                 ),
               ),
