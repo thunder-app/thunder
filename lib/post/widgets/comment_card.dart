@@ -450,7 +450,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                           widget.commentViewTree.commentView!.counts.childCount == 1
                                               ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
                                               : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
-                                          textScaleFactor: state.commentFontSizeScale.textScaleFactor,
+                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.commentFontSizeScale.textScaleFactor,
                                           style: theme.textTheme.bodyMedium?.copyWith(
                                             color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                                           ),

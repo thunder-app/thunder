@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -107,11 +108,11 @@ class LinkPreviewCard extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(20),
-                child: const Column(
+                child: Column(
                   children: [
                     Icon(Icons.warning_rounded, size: 55),
                     // This won't show but it does cause the icon above to center
-                    Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                    Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                   ],
                 ),
               ),
@@ -172,6 +173,16 @@ class LinkPreviewCard extends StatelessWidget {
                               cacheDuration: Duration.zero,
                             ),
                     ),
+            if (!showLinkPreviews)
+              Container(
+                height: 75,
+                width: 75,
+                color: theme.cardColor.darken(5),
+                child: Icon(
+                  Icons.language,
+                  color: theme.colorScheme.onSecondaryContainer,
+                ),
+              ),
             if (hideNsfw)
               Container(
                 alignment: Alignment.center,

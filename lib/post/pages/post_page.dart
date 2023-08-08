@@ -193,7 +193,6 @@ class _PostPageState extends State<PostPage> {
                                     title: PostFabAction.replyToPost.getTitle(context),
                                     icon: Icon(
                                       PostFabAction.replyToPost.getIcon(),
-                                      semanticLabel: PostFabAction.replyToPost.getTitle(context),
                                     ),
                                   ),
                                 if (enableChangeSort)
@@ -207,7 +206,6 @@ class _PostPageState extends State<PostPage> {
                                     title: PostFabAction.changeSort.getTitle(context),
                                     icon: Icon(
                                       PostFabAction.changeSort.getIcon(),
-                                      semanticLabel: PostFabAction.changeSort.getTitle(context),
                                     ),
                                   ),
                                 if (enableBackToTop)
@@ -225,7 +223,6 @@ class _PostPageState extends State<PostPage> {
                                     title: PostFabAction.backToTop.getTitle(context),
                                     icon: Icon(
                                       PostFabAction.backToTop.getIcon(),
-                                      semanticLabel: PostFabAction.backToTop.getTitle(context),
                                     ),
                                   ),
                               ],
