@@ -7,7 +7,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -72,11 +72,14 @@ class CommentCardActions extends StatelessWidget {
                     SwipeablePageRoute(
                       builder: (context) {
                         return MultiBlocProvider(
-                            providers: [
-                              BlocProvider<PostBloc>.value(value: postBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            ],
-                            child: CreateCommentPage(commentView: commentViewTree, isEdit: isEdit,),
+                          providers: [
+                            BlocProvider<PostBloc>.value(value: postBloc),
+                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                          ],
+                          child: CreateCommentPage(
+                            commentView: commentViewTree,
+                            isEdit: isEdit,
+                          ),
                         );
                       },
                     ),

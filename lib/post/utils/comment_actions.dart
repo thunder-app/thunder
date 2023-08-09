@@ -7,7 +7,7 @@ import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 void triggerCommentAction({

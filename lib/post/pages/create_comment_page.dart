@@ -16,7 +16,6 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/utils/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
-  //TODO rename file
   final PostView? postView;
   final CommentViewTree? commentView;
 
