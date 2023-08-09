@@ -30,7 +30,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
     super.initState();
   }
 
@@ -59,7 +59,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
-        clearMemoryCacheWhenDispose: false,
+        clearMemoryCacheWhenDispose: true,
         cacheWidth:
             widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
         loadStateChanged: (ExtendedImageState state) {

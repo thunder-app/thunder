@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
@@ -51,11 +53,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<VoteCommentEvent>(
       _voteCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SaveCommentEvent>(
       _saveCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<CreateCommentEvent>(
       _createCommentEvent,
@@ -68,6 +70,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<DeleteCommentEvent>(
       _deleteCommentEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<NavigateCommentEvent>(
+      _navigateCommentEvent,
     );
   }
 
@@ -98,12 +103,27 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           PostViewMedia? postView = event.postView;
+          List<CommunityModeratorView>? moderators;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
             List<PostViewMedia> posts = await parsePostViews([getPostResponse.postView]);
 
             postView = posts.first;
+
+            moderators = getPostResponse.moderators;
+          }
+
+          // If we can't get mods from the post response, fallback to getting the whole community.
+          if (moderators == null && postView != null) {
+            try {
+              moderators = (await lemmy.run(GetCommunity(id: postView.postView.community.id, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+                throw Exception();
+              }))
+                  .moderators;
+            } catch (e) {
+              // Not critical to get the community, so if we throw due to timeout, catch immediately and swallow.
+            }
           }
 
           emit(
@@ -112,6 +132,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 postId: postView?.postView.post.id,
                 postView: postView,
                 communityId: postView?.postView.post.communityId,
+                moderators: moderators,
                 selectedCommentPath: event.selectedCommentPath,
                 selectedCommentId: event.selectedCommentId),
           );
@@ -239,7 +260,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+            if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
+              emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
+            }
+            return;
+          }
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy
@@ -504,6 +530,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
+    if (event.direction == NavigateCommentDirection.up) {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex), navigateCommentId: state.navigateCommentId + 1));
+    } else {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
     }
   }
 }

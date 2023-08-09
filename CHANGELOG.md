@@ -1,5 +1,6 @@
 ## Unreleased
 ### Added
+- Added long press on profile icon to bring up profile modal @zdzoz
 - Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
 - Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
 - Show instance taglines in the feed - contribution from @micahmo
@@ -9,12 +10,36 @@
 - Added inbox unread indicators on the bottom navigation bar
 - Added more robust community navigation - contribution from @micahmo
 - Added support for navigating from image preview to comments - contribution from @micahmo
+- Added inkwell effect to comments - contribution from @CTalvio
+- Redesigned UI for creating posts - contribution from @coslu
+- Added moderator identifier to comments - contribution from @micahmo
+- Added ability to navigate to user's profile from comment body - contribution from @micahmo
+- Added support for exact community name search - contribution from @micahmo
+- Overhauled floating action button with expandable and customizable actions - contribution from @CTalvio
+- Added additional localization strings to Thunder, and added temporary language files for Swedish/Finnish
+- Added manual refreshing to the user account page - contribution from @micahmo 
+- Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
+- Added additional font scaling options for comments and metadata
+- Long-pressing on FAB shows extended actions - contribution from @micahmo
+- Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
+- Added thumbnail badges to posts for more clarity - contribution from @CTalvio
+- Added domain for posts linking to external websites - contribution from @CTalvio
+- Added comment navigation buttons - contribution from @micahmo
+- Added full screen swipe to go back on main pages
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
 - Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
 - Added caching to images to improve overall experience - contribution from @micahmo
 - Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
+- Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
+- Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
+- Minor sidebar shadow adjustment - contribution from @CTalvio
+- Snappier image load transition - contribution from @micahmo 
+- Align back button in image preview with the back button in the main pages - contribution from @micahmo 
+- Moved location of comment button within image preview - contribution from @micahmo 
+- Adjusted font scaling to be platform specific
+- Improve behavior of deferred comment indicator - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -23,6 +48,13 @@
 - Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
 - Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
 - Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
+- Removed sliver of border color that was present on root comments for both thick and thin style comments - contribution from @ajsosa
+- Fixed issue where saving an image on Android would save to Pictures/Pictures/Thunder instead of Pictures/Thunder
+- Fixed comment highlighting for comment context regression - contribution from @ajsosa 
+- Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
+- Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
+- Fixed missing community icons in feed - contribution from @sant0s12
+- Fixed issue where more posts would not load if initial posts fit the screen
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

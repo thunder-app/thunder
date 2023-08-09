@@ -1,26 +1,33 @@
 import 'dart:async';
 
-import 'package:back_button_interceptor/back_button_interceptor.dart';
+// Flutter
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+// External Packages
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:back_button_interceptor/back_button_interceptor.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
+// Internal
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
+
+import '../../shared/gesture_fab.dart';
 
 class CommunityPage extends StatefulWidget {
   final int? communityId;
@@ -41,6 +48,11 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   IconData? sortTypeIcon;
   String? sortTypeLabel;
   CommunityBloc? currentCommunityBloc;
+  bool _previousIsFabOpen = false;
+  bool isFabOpen = false;
+  bool _previousIsFabSummoned = true;
+  bool isFabSummoned = true;
+  bool enableFab = false;
 
   @override
   void initState() {
@@ -49,11 +61,36 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   @override
+  void dispose() {
+    BackButtonInterceptor.remove(_handleBack);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
+    final ThunderState state = context.watch<ThunderBloc>().state;
 
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    enableFab = state.enableFeedsFab;
+    bool enableBackToTop = state.enableBackToTop;
+    bool enableSubscriptions = state.enableSubscriptions;
+    bool enableChangeSort = state.enableChangeSort;
+    bool enableRefresh = state.enableRefresh;
+    bool enableDismissRead = state.enableDismissRead;
+    bool enableNewPost = state.enableNewPost;
+    FeedFabAction singlePressAction = state.feedFabSinglePressAction;
+    FeedFabAction longPressAction = state.feedFabLongPressAction;
+
+    if (state.isFabOpen != _previousIsFabOpen) {
+      isFabOpen = state.isFabOpen;
+      _previousIsFabOpen = isFabOpen;
+    }
+    if (state.isFabSummoned != _previousIsFabSummoned) {
+      isFabSummoned = state.isFabSummoned;
+      _previousIsFabSummoned = isFabSummoned;
+    }
 
     return MultiBlocProvider(
       providers: [
@@ -80,7 +117,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         listener: (context, state) {
           if (state.status == CommunityStatus.failure) {
             SnackBar snackBar = SnackBar(
-              content: Text(state.errorMessage ?? 'No error message available'),
+              content: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage),
               behavior: SnackBarBehavior.floating,
             );
             WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
@@ -152,13 +189,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                     SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                                     _ => Icons.add_circle_outline_rounded,
                                   },
-                                  semanticLabel:
-                                      (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null) ? 'Subscribe' : 'Unsubscribe',
+                                  semanticLabel: (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState) == SubscribedType.notSubscribed || state.subscribedType == null)
+                                      ? AppLocalizations.of(context)!.subscribe
+                                      : AppLocalizations.of(context)!.unsubscribe,
                                 ),
                                 tooltip: switch (_getSubscriptionStatus(state, isUserLoggedIn, subscriptionsState)) {
-                                  SubscribedType.notSubscribed => 'Subscribe',
-                                  SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                                  SubscribedType.subscribed => 'Unsubscribe',
+                                  SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
+                                  SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
+                                  SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
                                   _ => null,
                                 },
                                 onPressed: () {
@@ -167,7 +205,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 },
                               ),
                             IconButton(
-                                icon: const Icon(Icons.refresh_rounded, semanticLabel: 'Refresh'),
+                                icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
                                   context.read<AccountBloc>().add(GetAccountInformation());
@@ -180,7 +218,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
+                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
@@ -192,45 +230,149 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       ],
                     ),
                     drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
-                    floatingActionButton: ((state.communityId != null || widget.communityName != null) && isUserLoggedIn)
-                        ? FloatingActionButton(
-                            onPressed: () {
-                              CommunityBloc communityBloc = context.read<CommunityBloc>();
-                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) {
-                                    return MultiBlocProvider(
-                                      providers: [
-                                        BlocProvider<CommunityBloc>.value(value: communityBloc),
-                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                      ],
-                                      child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                                    );
-                                  },
-                                ),
+                    floatingActionButton: enableFab
+                        ? AnimatedSwitcher(
+                            duration: const Duration(milliseconds: 200),
+                            switchInCurve: Curves.ease,
+                            switchOutCurve: Curves.ease,
+                            transitionBuilder: (child, animation) {
+                              return SlideTransition(
+                                position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
+                                child: child,
                               );
                             },
-                            child: const Icon(
-                              Icons.add,
-                              semanticLabel: 'Create Post',
-                            ),
+                            child: isFabSummoned
+                                ? GestureFab(
+                                    distance: 60,
+                                    icon: Icon(
+                                      singlePressAction.isAllowed(state: state, widget: widget)
+                                          ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
+                                          : FeedFabAction.dismissRead.getIcon(),
+                                      semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
+                                      size: 35,
+                                    ),
+                                    onPressed: () {
+                                      HapticFeedback.lightImpact();
+                                      singlePressAction.isAllowed(state: state, widget: widget)
+                                          ? singlePressAction.execute(context, state,
+                                              bloc: context.read<CommunityBloc>(),
+                                              widget: widget,
+                                              override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              sortType: sortType)
+                                          : FeedFabAction.dismissRead.execute(context, state);
+                                    },
+                                    onLongPress: () {
+                                      longPressAction.isAllowed(state: state, widget: widget)
+                                          ? longPressAction.execute(context, state,
+                                              bloc: context.read<CommunityBloc>(),
+                                              widget: widget,
+                                              override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              sortType: sortType)
+                                          : FeedFabAction.openFab.execute(context, state);
+                                    },
+                                    children: [
+                                      if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.lightImpact();
+                                            FeedFabAction.dismissRead.execute(context, state);
+                                          },
+                                          title: FeedFabAction.dismissRead.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.dismissRead.getIcon(),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.lightImpact();
+                                            FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
+                                          },
+                                          title: FeedFabAction.refresh.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.refresh.getIcon(),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
+                                        ActionButton(
+                                          onPressed: () {
+                                            HapticFeedback.mediumImpact();
+                                            FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
+                                          },
+                                          title: FeedFabAction.changeSort.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
+                                        ActionButton(
+                                          onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
+                                          title: FeedFabAction.subscriptions.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.subscriptions.getIcon(),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
+                                        ActionButton(
+                                          onPressed: () {
+                                            FeedFabAction.backToTop.execute(context, state);
+                                          },
+                                          title: FeedFabAction.backToTop.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.backToTop.getIcon(),
+                                          ),
+                                        ),
+                                      if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
+                                        ActionButton(
+                                          onPressed: () {
+                                            FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
+                                          },
+                                          title: FeedFabAction.newPost.getTitle(context),
+                                          icon: Icon(
+                                            FeedFabAction.newPost.getIcon(),
+                                          ),
+                                        ),
+                                    ],
+                                  )
+                                : null,
                           )
                         : null,
-                    body: SafeArea(child: _getBody(context, state)),
+                    body: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        SafeArea(child: _getBody(context, state)),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 200),
+                          child: isFabOpen
+                              ? Listener(
+                                  onPointerUp: (details) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  },
+                                  child: Container(
+                                    color: theme.colorScheme.background.withOpacity(0.85),
+                                  ),
+                                )
+                              : null,
+                        ),
+                        SizedBox(
+                          height: 70,
+                          width: 70,
+                          child: GestureDetector(
+                            onVerticalDragUpdate: (details) {
+                              if (details.delta.dy < -5) {
+                                context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                              }
+                            },
+                          ),
+                        )
+                      ],
+                    ),
                   );
                 }),
           );
         },
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    BackButtonInterceptor.remove(_handleBack);
-    super.dispose();
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
@@ -253,6 +395,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           hasReachedEnd: state.hasReachedEnd,
           communityInfo: state.communityInfo,
           blockedCommunity: state.blockedCommunity,
+          sortType: state.sortType,
           onScrollEndReached: () => context.read<CommunityBloc>().add(GetCommunityPostsEvent(communityId: widget.communityId)),
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
@@ -260,7 +403,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           taglines: state.taglines,
         );
       case CommunityStatus.empty:
-        return const Center(child: Text('No posts found'));
+        return Center(child: Text(AppLocalizations.of(context)!.noPosts));
     }
   }
 
@@ -268,8 +411,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
+      isScrollControlled: true,
       builder: (builderContext) => SortPicker(
-        title: 'Sort Options',
+        title: AppLocalizations.of(context)!.sortOptions,
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
@@ -295,7 +439,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     if (state.communityId != null || state.communityName != null) {
-      // return state.postViews?.firstOrNull?.community.name ?? '';
       return '';
     }
 
@@ -303,6 +446,10 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (context.read<ThunderBloc>().state.isFabOpen) {
+      context.read<ThunderBloc>().add(const OnFabToggle(false));
+    }
+
     if (currentCommunityBloc != null) {
       // This restricts back button handling to when we're already at the top level of navigation
       final canPop = Navigator.of(context).canPop();
@@ -351,11 +498,11 @@ void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, Communit
   if (community == null) return;
 
   Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-  SnackBar snackBar = const SnackBar(content: Text("Subscribed"));
+  SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.subscribed));
 
   if (currentSubscriptions.contains(state.communityId)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {state.communityId!}));
-    snackBar = const SnackBar(content: Text("Unsubscribed"));
+    snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.unsubscribed));
   } else {
     context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {state.communityInfo!.communityView.community}));
   }

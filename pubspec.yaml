@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.1+13
+version: 0.2.1-alpha.2+14
 
 environment:
   sdk: "^3.0.0"
@@ -79,6 +79,12 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   expandable_text: ^2.3.0
+  swipeable_page_route: ^0.4.0
+  scrollable_positioned_list:
+    git:
+      url: https://github.com/bitstackapp/flutter.widgets.git
+      ref: master
+      path: packages/scrollable_positioned_list/
 
 dev_dependencies:
   flutter_test:

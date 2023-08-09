@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -18,15 +19,24 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
+  final List<CommunityModeratorView>? moderators;
 
-  const PostSubview({super.key, this.selectedCommentId, required this.useDisplayNames, required this.postViewMedia});
+  const PostSubview({
+    super.key,
+    this.selectedCommentId,
+    required this.useDisplayNames,
+    required this.postViewMedia,
+    required this.moderators,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +62,7 @@ class PostSubview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               post.name,
-              textScaleFactor: thunderState.titleFontSizeScale.textScaleFactor,
+              textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
               style: theme.textTheme.titleMedium,
             ),
           ),
@@ -84,7 +94,8 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -104,7 +115,7 @@ class PostSubview extends StatelessWidget {
                     preferBelow: false,
                     child: Text(
                       postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
@@ -113,7 +124,7 @@ class PostSubview extends StatelessWidget {
                 ),
                 Text(
                   ' to ',
-                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
@@ -126,7 +137,8 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -144,7 +156,7 @@ class PostSubview extends StatelessWidget {
                     preferBelow: false,
                     child: Text(
                       postView.community.name,
-                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
@@ -317,7 +329,8 @@ class PostSubview extends StatelessWidget {
     String descriptor = '';
 
     if (isOwnPost) descriptor += 'me';
-    if (postView.creator.admin == true) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+    if (isAdmin(postView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
+    if (isModerator(postView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 

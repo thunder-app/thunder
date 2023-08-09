@@ -48,6 +48,40 @@ Future<String?> getLemmyCommunity(String text) async {
   return null;
 }
 
+/// Matches instance.tld/u/username@otherinstance.tld
+/// Puts username in group 3 and otherinstance.tld in group 4
+final RegExp fullUsernameUrl = RegExp(r'^@?(https?:\/\/)?(.*)\/u\/(.*)@(.*)$');
+
+/// Matches instance.tld/u/username
+/// Puts username in group 3 and instance.tld in group 2
+final RegExp shortUsernameUrl = RegExp(r'^@?(https?:\/\/)?(.*)\/u\/([^@\n]*)$');
+
+/// Matches username@instance.tld
+/// Puts username in group 2 and instance.tld in group 3
+final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
+
+/// Checks if the given text references a user on a valid Lemmy server.
+/// If so, returns the username name in the format username@instance.tld.
+/// Otherwise, returns null.
+Future<String?> getLemmyUser(String text) async {
+  final RegExpMatch? fullUsernameUrlMatch = fullUsernameUrl.firstMatch(text);
+  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4 && await isLemmyInstance(fullUsernameUrlMatch.group(4))) {
+    return '${fullUsernameUrlMatch.group(3)}@${fullUsernameUrlMatch.group(4)}';
+  }
+
+  final RegExpMatch? shortUsernameUrlMatch = shortUsernameUrl.firstMatch(text);
+  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3 && await isLemmyInstance(shortUsernameUrlMatch.group(2))) {
+    return '${shortUsernameUrlMatch.group(3)}@${shortUsernameUrlMatch.group(2)}';
+  }
+
+  final RegExpMatch? usernameMatch = username.firstMatch(text);
+  if (usernameMatch != null && usernameMatch.groupCount >= 3 && await isLemmyInstance(usernameMatch.group(3))) {
+    return '${usernameMatch.group(2)}@${usernameMatch.group(3)}';
+  }
+
+  return null;
+}
+
 Future<String?> getInstanceIcon(String? url) async {
   if (url?.isEmpty ?? true) {
     return null;

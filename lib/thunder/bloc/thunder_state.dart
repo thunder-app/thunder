@@ -29,6 +29,7 @@ class ThunderState extends Equatable {
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = true,
+    this.disableScoreCounters = true,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -83,9 +84,36 @@ class ThunderState extends Equatable {
     // Font Scale
     this.titleFontSizeScale = FontScale.base,
     this.contentFontSizeScale = FontScale.base,
+    this.commentFontSizeScale = FontScale.base,
+    this.metadataFontSizeScale = FontScale.base,
 
-    // Scroll
+    /// -------------------------- FAB Related Settings --------------------------
+    this.enableFeedsFab = true,
+    this.enablePostsFab = true,
+    this.enableBackToTop = true,
+    this.enableSubscriptions = true,
+    this.enableRefresh = true,
+    this.enableDismissRead = true,
+    this.enableChangeSort = true,
+    this.enableNewPost = true,
+    this.postFabEnableBackToTop = true,
+    this.postFabEnableChangeSort = true,
+    this.postFabEnableReplyToPost = true,
+    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.feedFabLongPressAction = FeedFabAction.openFab,
+    this.postFabSinglePressAction = PostFabAction.replyToPost,
+    this.postFabLongPressAction = PostFabAction.openFab,
+    this.enableCommentNavigation = true,
+
+    /// --------------------------------- UI Events ---------------------------------
+    // Scroll to top event
     this.scrollToTopId = 0,
+    // Dismiss posts from loaded view event
+    this.dismissEvent = false,
+    // Expand/Close FAB event
+    this.isFabOpen = false,
+    // Summon/Unsummon FAB event
+    this.isFabSummoned = true,
   });
 
   final ThunderStatus status;
@@ -128,6 +156,7 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool showPostAuthor;
+  final bool disableScoreCounters;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -148,6 +177,8 @@ class ThunderState extends Equatable {
   // Font Scale
   final FontScale titleFontSizeScale;
   final FontScale contentFontSizeScale;
+  final FontScale commentFontSizeScale;
+  final FontScale metadataFontSizeScale;
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings
@@ -168,8 +199,37 @@ class ThunderState extends Equatable {
   final SwipeAction rightPrimaryCommentGesture;
   final SwipeAction rightSecondaryCommentGesture;
 
-  // Scroll
+  /// -------------------------- FAB Related Settings --------------------------
+  final bool enableFeedsFab;
+  final bool enablePostsFab;
+
+  final bool enableBackToTop;
+  final bool enableSubscriptions;
+  final bool enableRefresh;
+  final bool enableDismissRead;
+  final bool enableChangeSort;
+  final bool enableNewPost;
+
+  final bool postFabEnableBackToTop;
+  final bool postFabEnableChangeSort;
+  final bool postFabEnableReplyToPost;
+
+  final FeedFabAction feedFabSinglePressAction;
+  final FeedFabAction feedFabLongPressAction;
+  final PostFabAction postFabSinglePressAction;
+  final PostFabAction postFabLongPressAction;
+
+  final bool enableCommentNavigation;
+
+  /// --------------------------------- UI Events ---------------------------------
+  // Scroll to top event
   final int scrollToTopId;
+  // Dismiss posts from loaded view event
+  final bool dismissEvent;
+  // Expand/Close FAB event
+  final bool isFabOpen;
+  // Expand/Close FAB event
+  final bool isFabSummoned;
 
   ThunderState copyWith({
     ThunderStatus? status,
@@ -193,8 +253,8 @@ class ThunderState extends Equatable {
     bool? openInExternalBrowser,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
-    bool? disableFeedFab,
     bool? showInAppUpdateNotification,
+    bool? disableScoreCounters,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -214,8 +274,6 @@ class ThunderState extends Equatable {
     bool? showPostAuthor,
 
     /// -------------------------- Post Page Related Settings --------------------------
-    bool? disablePostFabs,
-
     // Comment Related Settings
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
@@ -232,6 +290,8 @@ class ThunderState extends Equatable {
     // Font Scale
     FontScale? titleFontSizeScale,
     FontScale? contentFontSizeScale,
+    FontScale? commentFontSizeScale,
+    FontScale? metadataFontSizeScale,
 
     /// -------------------------- Gesture Related Settings --------------------------
     // Sidebar Gesture Settings
@@ -252,8 +312,33 @@ class ThunderState extends Equatable {
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
 
-    // Scroll
+    /// -------------------------- FAB Related Settings --------------------------
+    bool? enableFeedsFab,
+    bool? enablePostsFab,
+    bool? enableBackToTop,
+    bool? enableSubscriptions,
+    bool? enableRefresh,
+    bool? enableDismissRead,
+    bool? enableChangeSort,
+    bool? enableNewPost,
+    bool? postFabEnableBackToTop,
+    bool? postFabEnableChangeSort,
+    bool? postFabEnableReplyToPost,
+    FeedFabAction? feedFabSinglePressAction,
+    FeedFabAction? feedFabLongPressAction,
+    PostFabAction? postFabSinglePressAction,
+    PostFabAction? postFabLongPressAction,
+    bool? enableCommentNavigation,
+
+    /// --------------------------------- UI Events ---------------------------------
+    // Scroll to top event
     int? scrollToTopId,
+    // Dismiss posts from loaded view event
+    bool? dismissEvent,
+    // Expand/Close FAB event
+    bool? isFabOpen,
+    // Summon/Unsummon FAB event
+    bool? isFabSummoned,
   }) {
     return ThunderState(
       status: status ?? this.status,
@@ -279,6 +364,7 @@ class ThunderState extends Equatable {
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
+      disableScoreCounters: disableScoreCounters ?? this.disableScoreCounters,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -316,6 +402,8 @@ class ThunderState extends Equatable {
       // Font Scale
       titleFontSizeScale: titleFontSizeScale ?? this.titleFontSizeScale,
       contentFontSizeScale: contentFontSizeScale ?? this.contentFontSizeScale,
+      commentFontSizeScale: commentFontSizeScale ?? this.commentFontSizeScale,
+      metadataFontSizeScale: metadataFontSizeScale ?? this.metadataFontSizeScale,
 
       /// -------------------------- Gesture Related Settings --------------------------
       // Sidebar Gesture Settings
@@ -336,8 +424,35 @@ class ThunderState extends Equatable {
       rightPrimaryCommentGesture: rightPrimaryCommentGesture ?? this.rightPrimaryCommentGesture,
       rightSecondaryCommentGesture: rightSecondaryCommentGesture ?? this.rightSecondaryCommentGesture,
 
-      // Scroll
+      /// -------------------------- FAB Related Settings --------------------------
+      enableFeedsFab: enableFeedsFab ?? this.enableFeedsFab,
+      enablePostsFab: enablePostsFab ?? this.enablePostsFab,
+
+      enableBackToTop: enableBackToTop ?? this.enableBackToTop,
+      enableSubscriptions: enableSubscriptions ?? this.enableSubscriptions,
+      enableRefresh: enableRefresh ?? this.enableRefresh,
+      enableDismissRead: enableDismissRead ?? this.enableDismissRead,
+      enableChangeSort: enableChangeSort ?? this.enableChangeSort,
+      enableNewPost: enableNewPost ?? this.enableNewPost,
+      postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
+      postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
+      postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
+      feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
+      feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
+      postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
+      postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
+
+      enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+
+      /// --------------------------------- UI Events ---------------------------------
+      // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
+      // Dismiss posts from loaded view event
+      dismissEvent: dismissEvent ?? this.dismissEvent,
+      // Expand/Close FAB event
+      isFabOpen: isFabOpen ?? this.isFabOpen,
+      // Summon/Unsummon FAB event
+      isFabSummoned: isFabSummoned ?? this.isFabSummoned,
     );
   }
 
@@ -403,6 +518,8 @@ class ThunderState extends Equatable {
         // Font Scale
         titleFontSizeScale,
         contentFontSizeScale,
+        commentFontSizeScale,
+        metadataFontSizeScale,
 
         /// -------------------------- Gesture Related Settings --------------------------
         // Sidebar Gesture Settings
@@ -423,7 +540,32 @@ class ThunderState extends Equatable {
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
 
-        // Scroll
+        /// -------------------------- FAB Related Settings --------------------------
+        enableFeedsFab,
+        enablePostsFab,
+
+        enableBackToTop,
+        enableSubscriptions,
+        enableRefresh,
+        enableDismissRead,
+        postFabEnableBackToTop,
+        postFabEnableChangeSort,
+        postFabEnableReplyToPost,
+        feedFabSinglePressAction,
+        feedFabLongPressAction,
+        postFabSinglePressAction,
+        postFabLongPressAction,
+
+        enableCommentNavigation,
+
+        /// --------------------------------- UI Events ---------------------------------
+        // Scroll to top event
         scrollToTopId,
+        // Dismiss posts from loaded view event
+        dismissEvent,
+        // Expand/Close FAB event
+        isFabOpen,
+        // Expand/Close FAB event
+        isFabSummoned,
       ];
 }
