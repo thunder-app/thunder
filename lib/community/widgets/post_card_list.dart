@@ -247,8 +247,8 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
                   return AnimatedSwitcher(
                     switchOutCurve: Curves.ease,
-                    duration: const Duration( milliseconds: 0 ),
-                    reverseDuration: const Duration( milliseconds: 400 ),
+                    duration: const Duration(milliseconds: 0),
+                    reverseDuration: const Duration(milliseconds: 400),
                     transitionBuilder: (child, animation) {
                       return FadeTransition(
                         opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -360,23 +360,23 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
   Future<void> dismissRead() async {
     if (widget.postViews != null) {
-      if( !(widget.postViews!.length > 15) ) {
+      if (!(widget.postViews!.length > 15)) {
         widget.onScrollEndReached();
       }
       for (var post in widget.postViews!) {
-        if(post.postView.read) {
+        if (post.postView.read) {
           setState(() {
-          toRemoveSet.add(post.postView.post.id);
+            toRemoveSet.add(post.postView.post.id);
           });
-          await Future.delayed(const Duration(milliseconds: 80));
+          await Future.delayed(const Duration(milliseconds: 60));
         }
       }
-      await Future.delayed(const Duration(milliseconds: 1200));
+      await Future.delayed(const Duration(milliseconds: 800));
       setState(() {
         widget.postViews!.removeWhere((e) => e.postView.read);
         toRemoveSet.clear();
       });
-      if( !(widget.postViews!.length > 10) ) {
+      if (!(widget.postViews!.length > 10)) {
         widget.onScrollEndReached();
       }
     }
