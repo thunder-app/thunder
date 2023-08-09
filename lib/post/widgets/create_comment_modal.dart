@@ -4,16 +4,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
-import 'package:markdown_editable_textinput/markdown_text_input.dart';
+import 'package:markdown_editable_textinput/markdown_buttons.dart';
+import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 
-const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
+// const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
-class CreateCommentModal extends StatefulWidget {
+class CreateCommentPage extends StatefulWidget {
+  //TODO rename file
   final PostView? postView;
   final CommentViewTree? commentView;
 
@@ -25,7 +28,7 @@ class CreateCommentModal extends StatefulWidget {
 
   final bool isEdit;
 
-  const CreateCommentModal({
+  const CreateCommentPage({
     super.key,
     this.postView,
     this.commentView,
@@ -37,10 +40,10 @@ class CreateCommentModal extends StatefulWidget {
   });
 
   @override
-  State<CreateCommentModal> createState() => _CreateCommentModalState();
+  State<CreateCommentPage> createState() => _CreateCommentPageState();
 }
 
-class _CreateCommentModalState extends State<CreateCommentModal> {
+class _CreateCommentPageState extends State<CreateCommentPage> {
   bool showPreview = false;
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
@@ -53,10 +56,8 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
 
   final ScrollController _scrollController = ScrollController();
 
-  // final List<bool> _selectedPostType = <bool>[true, false, false];
-
-  String description = '';
   final TextEditingController _bodyTextController = TextEditingController();
+  final FocusNode _bodyFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -64,8 +65,6 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
 
     if (widget.isEdit) {
       String content = widget.commentView?.commentView?.comment.content ?? '';
-
-      setState(() => description = content);
 
       _bodyTextController.value = TextEditingValue(
         text: content,
@@ -86,6 +85,7 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
   void dispose() {
     _bodyTextController.dispose();
     _scrollController.dispose();
+    _bodyFocusNode.dispose();
     super.dispose();
   }
 
@@ -150,163 +150,137 @@ class _CreateCommentModalState extends State<CreateCommentModal> {
         onTap: () {
           FocusManager.instance.primaryFocus?.unfocus();
         },
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text('${widget.isEdit ? 'Edit' : 'Create'} Comment', style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold)),
-                    IconButton(
-                      onPressed: (isSubmitButtonDisabled || isLoading)
-                          ? null
-                          : () {
-                              if (widget.isEdit) {
-                                return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
-                              }
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text('${widget.isEdit ? 'Edit' : 'Create'} Comment'), //TODO localize
+            toolbarHeight: 70.0,
+            actions: [
+              IconButton(
+                onPressed: (isSubmitButtonDisabled || isLoading)
+                    ? null
+                    : () {
+                        if (widget.isEdit) {
+                          return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
+                        }
 
-                              if (widget.comment != null) {
-                                context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
-                              } else {
-                                context.read<PostBloc>().add(CreateCommentEvent(
-                                    content: _bodyTextController.text,
-                                    parentCommentId: widget.commentView?.commentView!.comment.id,
-                                    selectedCommentId: widget.selectedCommentId,
-                                    selectedCommentPath: widget.selectedCommentPath));
-                              }
-                            },
-                      icon: isLoading
-                          ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator())
-                          : const Icon(
-                              Icons.send_rounded,
-                              semanticLabel: 'Reply',
-                            ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 12.0),
-                if (widget.commentView != null && widget.isEdit == false)
-                  Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-                if (widget.comment != null && widget.isEdit == false)
-                  Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-
-                if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
-                  Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-                    margin: const EdgeInsets.symmetric(vertical: 8.0),
-                    constraints: const BoxConstraints(maxHeight: 150.0),
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0), color: theme.cardColor),
-                    child: Scrollbar(
-                      controller: _scrollController,
-                      trackVisibility: true,
-                      radius: const Radius.circular(16.0),
-                      child: SingleChildScrollView(
-                        controller: _scrollController,
-                        child: CommonMarkdownBody(
-                          body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
-                          isSelectableText: true,
-                        ),
+                        if (widget.comment != null) {
+                          context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
+                        } else {
+                          context.read<PostBloc>().add(CreateCommentEvent(
+                              content: _bodyTextController.text,
+                              parentCommentId: widget.commentView?.commentView!.comment.id,
+                              selectedCommentId: widget.selectedCommentId,
+                              selectedCommentPath: widget.selectedCommentPath));
+                        }
+                      },
+                icon: isLoading
+                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator())
+                    : const Icon(
+                        Icons.send_rounded,
+                        semanticLabel: 'Reply', //TODO localize
                       ),
-                    ),
-                  ),
+              ),
+            ],
+          ),
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: <Widget>[
+                  Expanded(
+                      child: SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        const SizedBox(height: 12.0),
+                        if (widget.commentView != null && widget.isEdit == false)
+                          Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+                        if (widget.comment != null && widget.isEdit == false)
+                          Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
-                // Text(
-                //   fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId) ?? 'N/A',
-                //   style: theme.textTheme.titleMedium?.copyWith(
-                //     color: theme.textTheme.titleMedium?.color?.withOpacity(0.7),
-                //     fontWeight: FontWeight.w400,
-                //   ),
-                // ),
-
-                const SizedBox(height: 12.0),
-                // Center(
-                //   child: ToggleButtons(
-                //     direction: Axis.horizontal,
-                //     onPressed: (int index) {
-                //       setState(() {
-                //         // The button that is tapped is set to true, and the others to false.
-                //         for (int i = 0; i < _selectedPostType.length; i++) {
-                //           _selectedPostType[i] = i == index;
-                //         }
-                //       });
-                //     },
-                //     borderRadius: const BorderRadius.all(Radius.circular(8)),
-                //     constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / postTypes.length) - 12.0),
-                //     isSelected: _selectedPostType,
-                //     children: postTypes,
-                //   ),
-                // ),
-                ListView(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  children: <Widget>[
-                    Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 200,
-                          child: (showPreview)
-                              ? Container(
-                                  decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
-                                  padding: const EdgeInsets.all(12),
-                                  child: SingleChildScrollView(
-                                    child: CommonMarkdownBody(body: description),
-                                  ),
-                                )
-                              : MarkdownTextInput(
-                                  (String value) => setState(() => description = value),
-                                  description,
-                                  label: 'Comment',
-                                  maxLines: 5,
-                                  actions: const [
-                                    MarkdownType.link,
-                                    MarkdownType.bold,
-                                    MarkdownType.italic,
-                                    MarkdownType.blockquote,
-                                    MarkdownType.strikethrough,
-                                    MarkdownType.title,
-                                    MarkdownType.list,
-                                    MarkdownType.separator,
-                                    MarkdownType.code,
-                                  ],
-                                  controller: _bodyTextController,
-                                  textStyle: theme.textTheme.bodyLarge,
-                                  // textStyle: const TextStyle(fontSize: 16),
+                        if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            constraints: const BoxConstraints(maxHeight: 150.0),
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0), color: theme.cardColor),
+                            child: Scrollbar(
+                              controller: _scrollController,
+                              trackVisibility: true,
+                              radius: const Radius.circular(16.0),
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                child: CommonMarkdownBody(
+                                  body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
+                                  isSelectableText: true,
                                 ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            TextButton(
-                              onPressed: isClearButtonDisabled
-                                  ? null
-                                  : () {
-                                      _bodyTextController.clear();
-                                      setState(() => showPreview = false);
-                                    },
-                              child: const Text('Clear'),
+                              ),
                             ),
-                            TextButton(
-                              onPressed: () => setState(() => showPreview = !showPreview),
-                              child: Text(showPreview == true ? 'Show Markdown' : 'Show Preview'),
-                            ),
-                          ],
-                        ),
-                        if (isFailure) AutoSizeText(errorMessage ?? 'Error', maxLines: 3)
+                          ),
+
+                        const SizedBox(height: 12.0),
+                        (showPreview)
+                            ? Container(
+                                constraints: const BoxConstraints(minWidth: double.infinity),
+                                decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
+                                padding: const EdgeInsets.all(12),
+                                child: SingleChildScrollView(
+                                  child: CommonMarkdownBody(body: _bodyTextController.text),
+                                ),
+                              )
+                            : MarkdownTextInputField(
+                                controller: _bodyTextController,
+                                focusNode: _bodyFocusNode,
+                                label: 'Comment', //TODO localize
+                                textStyle: theme.textTheme.bodyLarge,
+                                initialValue: _bodyTextController.text,
+                                minLines: 8,
+                                maxLines: null,
+                              ),
+                        // const SizedBox(height: 8.0),
                       ],
                     ),
-                  ],
-                ),
-              ],
+                  )),
+                  const Divider(),
+                  Row(
+                    children: [
+                      Expanded(
+                          child: MarkdownButtons(
+                        controller: _bodyTextController,
+                        focusNode: _bodyFocusNode,
+                        actions: const [
+                          MarkdownType.image,
+                          MarkdownType.link,
+                          MarkdownType.bold,
+                          MarkdownType.italic,
+                          MarkdownType.blockquote,
+                          MarkdownType.strikethrough,
+                          MarkdownType.title,
+                          MarkdownType.list,
+                          MarkdownType.separator,
+                          MarkdownType.code,
+                        ],
+                        customImageButtonAction: null, //TODO add image uploading
+                      )),
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
+                        child: IconButton(
+                            onPressed: () => setState(() => showPreview = !showPreview),
+                            icon: Icon(
+                              showPreview ? Icons.visibility_outlined : Icons.visibility,
+                              color: theme.colorScheme.onSecondary,
+                              semanticLabel: AppLocalizations.of(context)!.postTogglePreview,
+                            ),
+                            visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
+                            style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary)),
+                      ),
+                    ],
+                  ),
+                  if (isFailure) AutoSizeText(errorMessage, maxLines: 3),
+                ],
+              ),
             ),
           ),
         ),

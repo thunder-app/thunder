@@ -7,9 +7,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -397,25 +397,19 @@ class _PostPageState extends State<PostPage> {
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-          child: FractionallySizedBox(
-            heightFactor: 0.8,
-            child: MultiBlocProvider(
+    Navigator.of(context).push(
+      SwipeablePageRoute(
+        builder: (context) {
+          return MultiBlocProvider(
               providers: [
                 BlocProvider<PostBloc>.value(value: postBloc),
                 BlocProvider<ThunderBloc>.value(value: thunderBloc),
               ],
-              child: CreateCommentModal(postView: widget.postView?.postView),
-            ),
-          ),
-        );
-      },
+              child: CreateCommentPage(
+                postView: widget.postView?.postView,
+              ));
+        },
+      ),
     );
   }
 }

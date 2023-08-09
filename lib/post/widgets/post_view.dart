@@ -277,25 +277,20 @@ class PostSubview extends StatelessWidget {
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            showDragHandle: true,
-                            builder: (context) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                                child: FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    ],
-                                    child: CreateCommentModal(postView: postView),
+                          Navigator.of(context).push(
+                            SwipeablePageRoute(
+                              builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<PostBloc>.value(value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  ],
+                                  child: CreateCommentPage(
+                                    postView: postView,
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           );
                         }
                       : null,
