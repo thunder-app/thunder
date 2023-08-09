@@ -107,7 +107,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.microphone_variant,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -115,7 +115,7 @@ class CommentHeader extends StatelessWidget {
                                       Container(
                                         child: isOwnComment
                                             ? Padding(
-                                                padding: EdgeInsets.only(left: 1),
+                                                padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
                                                   Icons.person,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
