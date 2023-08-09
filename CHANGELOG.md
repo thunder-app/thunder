@@ -40,6 +40,8 @@
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
+- Text scaling now respects system's font scaling. Text scaling is based off of the system font
+- Improved contrast on user chips and badges - contribution from @CTalvio 
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -55,6 +57,11 @@
 - Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
 - Fixed missing community icons in feed - contribution from @sant0s12
 - Fixed issue where more posts would not load if initial posts fit the screen
+- Fixed issue where compact feed would not load properly when "Enable Link Preview" setting was turned on
+- Fixed semantic issue where user comments would read the improper value for downvotes
+- Fixed issue where you could not vote/save comments in quick succession
+- Fix improper back button handling - contribution from @micahmo 
+- Fixed feed page reaching the end in some cases where NSFW content is turned on
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
