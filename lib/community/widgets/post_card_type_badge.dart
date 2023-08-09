@@ -55,8 +55,12 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.secondaryContainer,
-                      child: const Icon(size: 19, Icons.link_rounded),
+                      color: theme.colorScheme.primary,
+                      child: Icon(
+                        size: 19,
+                        Icons.link_rounded,
+                        color: theme.colorScheme.onPrimary,
+                      ),
                     )
                   : Material(
                       borderRadius: const BorderRadius.only(
@@ -66,7 +70,7 @@ class TypeBadge extends StatelessWidget {
                         topRight: Radius.circular(4),
                       ),
                       color: theme.colorScheme.primaryContainer,
-                      child: const Icon(size: 17, Icons.image_outlined),
+                      child: Icon(size: 17, Icons.image_outlined, color: theme.colorScheme.primary),
                     ),
         ),
       ),
