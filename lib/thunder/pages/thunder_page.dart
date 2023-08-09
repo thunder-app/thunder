@@ -212,7 +212,10 @@ class _ThunderState extends State<Thunder> {
                                       onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
-                                        CommunityPage(scaffoldKey: _feedScaffoldKey),
+                                        CommunityPage(
+                                          scaffoldKey: _feedScaffoldKey,
+                                          pageController: pageController,
+                                        ),
                                         MultiBlocProvider(
                                           providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
                                           child: const SearchPage(),
