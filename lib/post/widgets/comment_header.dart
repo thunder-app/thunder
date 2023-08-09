@@ -115,7 +115,7 @@ class CommentHeader extends StatelessWidget {
                                       Container(
                                         child: isOwnComment
                                             ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
+                                                padding: EdgeInsets.only(left: 1),
                                                 child: Icon(
                                                   Icons.person,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
@@ -279,10 +279,10 @@ class CommentHeader extends StatelessWidget {
     CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondary;
-    if (isOwnComment) return theme.colorScheme.primary;
-    if (isAdmin(commentView.creator)) return theme.colorScheme.tertiary;
-    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.primaryContainer;
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
+    if (isOwnComment) return theme.colorScheme.primaryContainer;
+    if (isAdmin(commentView.creator)) return theme.colorScheme.errorContainer;
+    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.tertiaryContainer;
 
     return null;
   }
