@@ -17,10 +17,6 @@ import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 
-import 'package:image_picker/image_picker.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/account/models/account.dart';
-
 const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
 
 class CreatePostPage extends StatefulWidget {
@@ -154,7 +150,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               hintText: AppLocalizations.of(context)!.postURL,
                               suffixIcon: IconButton(
                                   onPressed: () {
-                                    _uploadImage(postImage: true);
+                                    uploadImage(imageBloc, postImage: true);
                                   },
                                   icon: const Icon(Icons.image))),
                         ),
@@ -200,7 +196,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                                 padding: const EdgeInsets.all(12),
                                 child: SingleChildScrollView(
-                                  child: CommonMarkdownBody(body: _bodyTextController.text),
+                                  child: CommonMarkdownBody(
+                                    body: _bodyTextController.text,
+                                    isComment: true,
+                                  ),
                                 ),
                               )
                             : MarkdownTextInputField(
@@ -220,22 +219,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     children: [
                       Expanded(
                         child: MarkdownButtons(
-                          controller: _bodyTextController,
-                          focusNode: _markdownFocusNode,
-                          actions: const [
-                            MarkdownType.image,
-                            MarkdownType.link,
-                            MarkdownType.bold,
-                            MarkdownType.italic,
-                            MarkdownType.blockquote,
-                            MarkdownType.strikethrough,
-                            MarkdownType.title,
-                            MarkdownType.list,
-                            MarkdownType.separator,
-                            MarkdownType.code,
-                          ],
-                          customImageButtonAction: _uploadImage,
-                        ),
+                            controller: _bodyTextController,
+                            focusNode: _markdownFocusNode,
+                            actions: const [
+                              MarkdownType.image,
+                              MarkdownType.link,
+                              MarkdownType.bold,
+                              MarkdownType.italic,
+                              MarkdownType.blockquote,
+                              MarkdownType.strikethrough,
+                              MarkdownType.title,
+                              MarkdownType.list,
+                              MarkdownType.separator,
+                              MarkdownType.code,
+                            ],
+                            customImageButtonAction: () => uploadImage(imageBloc)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
@@ -258,18 +256,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ),
       ),
     );
-  }
-
-  void _uploadImage({bool postImage = false}) async {
-    final ImagePicker picker = ImagePicker();
-    XFile? file = await picker.pickImage(source: ImageSource.gallery);
-    try {
-      Account? account = await fetchActiveProfileAccount();
-      String path = file!.path;
-      imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
-    } catch (e) {
-      null;
-    }
   }
 
   void _updatePreview(String text) {

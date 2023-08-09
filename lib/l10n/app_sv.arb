@@ -38,5 +38,11 @@
   "loadMoreSingular": "Load {count} more reply...",
   "loadMorePlural": "Load {count} more replies...",
   "navigateUp": "Navigate to previous comment",
-  "navigateDown": "Navigate to next comment"
+  "navigateDown": "Navigate to next comment",
+  "createComment": "Create Comment",
+  "editComment": "Edit Comment",
+  "reply": "Reply",
+  "comment": "Comment",
+  "replyingTo": "Replying to {author}",
+  "unexpectedError": "Unexpected Error"
 }

@@ -7,13 +7,13 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/community/bloc/image_bloc.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
-
-// const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
+import 'package:thunder/utils/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
   //TODO rename file
@@ -55,9 +55,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   String errorMessage = '';
 
   final ScrollController _scrollController = ScrollController();
-
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
+  final ImageBloc imageBloc = ImageBloc();
 
   @override
   void initState() {
@@ -114,7 +114,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               setState(() {
                 isLoading = false;
                 isFailure = true;
-                errorMessage = state.errorMessage ?? 'Unexpected Error';
+                errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
               });
             }
           },
@@ -140,11 +140,23 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 setState(() {
                   isLoading = false;
                   isFailure = true;
-                  errorMessage = 'Unexpected Error';
+                  errorMessage = AppLocalizations.of(context)!.unexpectedError;
                 });
               }
             },
           ),
+        BlocListener<ImageBloc, ImageState>(
+          listenWhen: (previous, current) => (previous.status != current.status),
+          listener: (context, state) {
+            if (state.status == ImageStatus.success) {
+              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+            }
+            if (state.status == ImageStatus.failure) {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+            }
+          },
+          bloc: imageBloc,
+        )
       ],
       child: GestureDetector(
         onTap: () {
@@ -152,7 +164,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         },
         child: Scaffold(
           appBar: AppBar(
-            title: Text('${widget.isEdit ? 'Edit' : 'Create'} Comment'), //TODO localize
+            title: Text(widget.isEdit ? AppLocalizations.of(context)!.editComment : AppLocalizations.of(context)!.createComment),
             toolbarHeight: 70.0,
             actions: [
               IconButton(
@@ -173,12 +185,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               selectedCommentPath: widget.selectedCommentPath));
                         }
                       },
-                icon: isLoading
-                    ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator())
-                    : const Icon(
-                        Icons.send_rounded,
-                        semanticLabel: 'Reply', //TODO localize
-                      ),
+                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Icon(Icons.send_rounded, semanticLabel: AppLocalizations.of(context)!.reply),
               ),
             ],
           ),
@@ -195,9 +202,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                       children: [
                         const SizedBox(height: 12.0),
                         if (widget.commentView != null && widget.isEdit == false)
-                          Text('Replying to ${widget.commentView?.commentView!.creator.name ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+                          Text(AppLocalizations.of(context)!.replyingTo(widget.commentView?.commentView!.creator.name ?? ''),
+                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
                         if (widget.comment != null && widget.isEdit == false)
-                          Text('Replying to ${widget.parentCommentAuthor ?? 'N/A'}', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
+                          Text(AppLocalizations.of(context)!.replyingTo(widget.parentCommentAuthor ?? ''), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
 
                         if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
                           Container(
@@ -227,13 +235,16 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                                 padding: const EdgeInsets.all(12),
                                 child: SingleChildScrollView(
-                                  child: CommonMarkdownBody(body: _bodyTextController.text),
+                                  child: CommonMarkdownBody(
+                                    body: _bodyTextController.text,
+                                    isComment: true,
+                                  ),
                                 ),
                               )
                             : MarkdownTextInputField(
                                 controller: _bodyTextController,
                                 focusNode: _bodyFocusNode,
-                                label: 'Comment', //TODO localize
+                                label: AppLocalizations.of(context)!.comment,
                                 textStyle: theme.textTheme.bodyLarge,
                                 initialValue: _bodyTextController.text,
                                 minLines: 8,
@@ -248,22 +259,21 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                     children: [
                       Expanded(
                           child: MarkdownButtons(
-                        controller: _bodyTextController,
-                        focusNode: _bodyFocusNode,
-                        actions: const [
-                          MarkdownType.image,
-                          MarkdownType.link,
-                          MarkdownType.bold,
-                          MarkdownType.italic,
-                          MarkdownType.blockquote,
-                          MarkdownType.strikethrough,
-                          MarkdownType.title,
-                          MarkdownType.list,
-                          MarkdownType.separator,
-                          MarkdownType.code,
-                        ],
-                        customImageButtonAction: null, //TODO add image uploading
-                      )),
+                              controller: _bodyTextController,
+                              focusNode: _bodyFocusNode,
+                              actions: const [
+                                MarkdownType.image,
+                                MarkdownType.link,
+                                MarkdownType.bold,
+                                MarkdownType.italic,
+                                MarkdownType.blockquote,
+                                MarkdownType.strikethrough,
+                                MarkdownType.title,
+                                MarkdownType.list,
+                                MarkdownType.separator,
+                                MarkdownType.code,
+                              ],
+                              customImageButtonAction: () => uploadImage(imageBloc))),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(

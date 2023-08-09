@@ -5,6 +5,11 @@ import 'package:http/http.dart' as http;
 
 import 'dart:math';
 
+import 'package:image_picker/image_picker.dart';
+import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/account/models/account.dart';
+
 String generateRandomHeroString({int? len}) {
   Random r = Random();
   return String.fromCharCodes(List.generate(len ?? 32, (index) => r.nextInt(33) + 89));
@@ -120,4 +125,16 @@ Size getWEBPImageDimensions(Uint8List bytes) {
   int width = (bytes[27] << 8) | bytes[26];
   int height = (bytes[29] << 8) | bytes[28];
   return Size(width.toDouble(), height.toDouble());
+}
+
+void uploadImage(ImageBloc imageBloc, {bool postImage = false}) async {
+  final ImagePicker picker = ImagePicker();
+  XFile? file = await picker.pickImage(source: ImageSource.gallery);
+  try {
+    Account? account = await fetchActiveProfileAccount();
+    String path = file!.path;
+    imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
+  } catch (e) {
+    null;
+  }
 }
