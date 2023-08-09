@@ -38,5 +38,7 @@
   "loadMoreSingular": "Load {count} more reply...",
   "loadMorePlural": "Load {count} more replies...",
   "navigateUp": "Navigate to previous comment",
-  "navigateDown": "Navigate to next comment"
+  "navigateDown": "Navigate to next comment",
+  "showMore": "Show more",
+  "showLess": "Show less"
 }
