@@ -233,7 +233,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                             mode: ExtendedImageMode.gesture,
                             extendedImageGestureKey: gestureKey,
                             cache: true,
-                            clearMemoryCacheWhenDispose: false,
+                            clearMemoryCacheWhenDispose: true,
                             initGestureConfigHandler: (ExtendedImageState state) {
                               return GestureConfig(
                                 minScale: 0.8,
