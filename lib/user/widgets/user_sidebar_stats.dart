@@ -39,7 +39,7 @@ class UserSidebarStats extends StatelessWidget {
           style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
         ),
         Visibility(
-          visible: !scoreCounters,
+          visible: scoreCounters,
           child: Text(
             ' · $scoreMetric $scoreLabel',
             style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),

@@ -323,7 +323,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                   const SizedBox(height: 3.0),
                                   Visibility(
-                                      visible: !scoreCounters,
+                                      visible: scoreCounters,
                                       child: UserSidebarActivity(
                                         icon: Icons.celebration_rounded,
                                         scoreLabel: ' Total Score',
