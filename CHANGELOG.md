@@ -26,7 +26,7 @@
 - Added domain for posts linking to external websites - contribution from @CTalvio
 - Added comment navigation buttons - contribution from @micahmo
 - Added full screen swipe to go back on main pages
-- Added new option scrape missing external link previews which is off by default. It's purpose is to attempt to find an image when an external link thumbnail is not available - contribution @ajsosa
+- Added new option scrape missing external link previews which is off by default. Its purpose is to attempt to find an image when an external link thumbnail is not available - contribution @ajsosa
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
@@ -44,6 +44,7 @@
 - Text scaling now respects system's font scaling. Text scaling is based off of the system font
 - Improved contrast on user chips and badges - contribution from @CTalvio 
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
+- Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
