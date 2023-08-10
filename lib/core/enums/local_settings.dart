@@ -12,7 +12,7 @@ enum LocalSettings {
   useTabletMode(name: 'setting_post_tablet_mode', label: '2-column Tablet Mode'),
 
   // General Settings
-  showLinkPreviews(name: 'setting_general_show_link_previews', label: 'Show Link Previews'),
+  scrapeMissingPreviews(name: 'setting_general_scrape_missing_previews', label: 'Scrape Missing External Link Previews'),
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),

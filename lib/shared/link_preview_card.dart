@@ -27,7 +27,7 @@ class LinkPreviewCard extends StatelessWidget {
     this.mediaURL,
     this.mediaHeight,
     this.mediaWidth,
-    this.showLinkPreviews = true,
+    this.scrapeMissingPreviews = false,
     this.showFullHeightImages = false,
     this.edgeToEdgeImages = false,
     this.viewMode = ViewMode.comfortable,
@@ -45,7 +45,7 @@ class LinkPreviewCard extends StatelessWidget {
   final double? mediaHeight;
   final double? mediaWidth;
 
-  final bool showLinkPreviews;
+  final bool scrapeMissingPreviews;
   final bool showFullHeightImages;
 
   final bool edgeToEdgeImages;
@@ -71,46 +71,46 @@ class LinkPreviewCard extends StatelessWidget {
           alignment: Alignment.bottomRight,
           fit: StackFit.passthrough,
           children: [
-            if (showLinkPreviews)
-              mediaURL != null
-                  ? ImagePreview(
-                      url: mediaURL ?? originURL!,
-                      height: showFullHeightImages ? mediaHeight : 150,
-                      width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
-                      isExpandable: false,
-                    )
-                  : SizedBox(
-                      height: 150,
-                      child: hideNsfw
-                          ? ImageFiltered(
-                              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: LinkPreviewGenerator(
-                                link: originURL!,
-                                showBody: false,
-                                showTitle: false,
-                                placeholderWidget: Container(
-                                  margin: const EdgeInsets.all(15),
-                                  child: const CircularProgressIndicator(),
-                                ),
-                                cacheDuration: Duration.zero,
-                              ))
-                          : LinkPreviewGenerator(
-                              link: originURL!,
-                              showBody: false,
-                              showTitle: false,
-                              placeholderWidget: const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                              cacheDuration: Duration.zero,
-                            ),
-                    ),
+            if (mediaURL != null) ...[
+              ImagePreview(
+                url: mediaURL ?? originURL!,
+                height: showFullHeightImages ? mediaHeight : 150,
+                width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                isExpandable: false,
+              )
+            ] else if (scrapeMissingPreviews)
+              SizedBox(
+                height: 150,
+                child: hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: LinkPreviewGenerator(
+                          link: originURL!,
+                          showBody: false,
+                          showTitle: false,
+                          placeholderWidget: Container(
+                            margin: const EdgeInsets.all(15),
+                            child: const CircularProgressIndicator(),
+                          ),
+                          cacheDuration: Duration.zero,
+                        ))
+                    : LinkPreviewGenerator(
+                        link: originURL!,
+                        showBody: false,
+                        showTitle: false,
+                        placeholderWidget: const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        cacheDuration: Duration.zero,
+                      ),
+              ),
             if (hideNsfw)
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    Icon(Icons.warning_rounded, size: 55),
+                    const Icon(Icons.warning_rounded, size: 55),
                     // This won't show but it does cause the icon above to center
                     Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                   ],
@@ -138,21 +138,31 @@ class LinkPreviewCard extends StatelessWidget {
           alignment: Alignment.center,
           fit: StackFit.passthrough,
           children: [
-            if (showLinkPreviews)
-              mediaURL != null
-                  ? ImagePreview(
-                      url: mediaURL!,
-                      height: 75,
-                      width: 75,
-                      isExpandable: false,
-                    )
-                  : SizedBox(
-                      height: 75,
-                      width: 75,
-                      child: hideNsfw
-                          ? ImageFiltered(
-                              imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                              child: LinkPreviewGenerator(
+            mediaURL != null
+                ? ImagePreview(
+                    url: mediaURL!,
+                    height: 75,
+                    width: 75,
+                    isExpandable: false,
+                  )
+                : scrapeMissingPreviews
+                    ? SizedBox(
+                        height: 75,
+                        width: 75,
+                        child: hideNsfw
+                            ? ImageFiltered(
+                                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                child: LinkPreviewGenerator(
+                                  link: originURL!,
+                                  showBody: false,
+                                  showTitle: false,
+                                  placeholderWidget: Container(
+                                    margin: const EdgeInsets.all(15),
+                                    child: const CircularProgressIndicator(),
+                                  ),
+                                  cacheDuration: Duration.zero,
+                                ))
+                            : LinkPreviewGenerator(
                                 link: originURL!,
                                 showBody: false,
                                 showTitle: false,
@@ -161,28 +171,17 @@ class LinkPreviewCard extends StatelessWidget {
                                   child: const CircularProgressIndicator(),
                                 ),
                                 cacheDuration: Duration.zero,
-                              ))
-                          : LinkPreviewGenerator(
-                              link: originURL!,
-                              showBody: false,
-                              showTitle: false,
-                              placeholderWidget: Container(
-                                margin: const EdgeInsets.all(15),
-                                child: const CircularProgressIndicator(),
                               ),
-                              cacheDuration: Duration.zero,
-                            ),
-                    ),
-            if (!showLinkPreviews)
-              Container(
-                height: 75,
-                width: 75,
-                color: theme.cardColor.darken(5),
-                child: Icon(
-                  Icons.language,
-                  color: theme.colorScheme.onSecondaryContainer,
-                ),
-              ),
+                      )
+                    : Container(
+                        height: 75,
+                        width: 75,
+                        color: theme.cardColor.darken(5),
+                        child: Icon(
+                          Icons.language,
+                          color: theme.colorScheme.onSecondaryContainer,
+                        ),
+                      ),
             if (hideNsfw)
               Container(
                 alignment: Alignment.center,

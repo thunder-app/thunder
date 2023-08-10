@@ -165,7 +165,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           visible: url.isNotEmpty,
                           child: LinkPreviewCard(
                             hideNsfw: false,
-                            showLinkPreviews: true,
+                            scrapeMissingPreviews: false,
                             originURL: url,
                             mediaURL: isImageUrl(url) ? url : null,
                             mediaHeight: null,
