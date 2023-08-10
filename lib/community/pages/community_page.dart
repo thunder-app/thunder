@@ -224,10 +224,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Text(
-                                  "6h",
-                                  style: theme.textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.bold),
-                                ),
+                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();

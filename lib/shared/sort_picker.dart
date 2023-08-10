@@ -33,37 +33,37 @@ const List<ListPickerItem<SortType>> defaultSortTypeItems = [
 const List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
     payload: SortType.topHour,
-    iconText: '1h',
+    icon: Icons.check_box_outline_blank,
     label: 'Top in Past Hour',
   ),
   ListPickerItem(
     payload: SortType.topSixHour,
-    iconText: '6h',
+    icon: Icons.calendar_view_month,
     label: 'Top in Past 6 Hours',
   ),
   ListPickerItem(
     payload: SortType.topTwelveHour,
-    iconText: '12h',
+    icon: Icons.calendar_view_week,
     label: 'Top in Past 12 Hours',
   ),
   ListPickerItem(
     payload: SortType.topDay,
-    iconText: '24h',
+    icon: Icons.today,
     label: 'Top Today',
   ),
   ListPickerItem(
     payload: SortType.topWeek,
-    iconText: '7d',
+    icon: Icons.view_week_sharp,
     label: 'Top Week',
   ),
   ListPickerItem(
     payload: SortType.topMonth,
-    iconText: '30d',
+    icon: Icons.calendar_month,
     label: 'Top Month',
   ),
   ListPickerItem(
     payload: SortType.topYear,
-    iconText: '1y',
+    icon: Icons.calendar_today,
     label: 'Top Year',
   ),
   ListPickerItem(
@@ -122,12 +122,7 @@ class _SortPickerState extends State<SortPicker> {
           children: [
             ..._generateList(defaultSortTypeItems, theme),
             ListTile(
-              leading: Container(
-                width: 32,
-                height: 32,
-                alignment: Alignment.center,
-                child: const Icon(Icons.military_tech),
-              ),
+              leading: const Icon(Icons.military_tech),
               title: const Text('Top'),
               trailing: const Icon(Icons.chevron_right),
               onTap: () {
@@ -199,17 +194,7 @@ class _SortPickerState extends State<SortPicker> {
               item.label,
               style: theme.textTheme.bodyMedium,
             ),
-            leading: Container(
-              width: 32,
-              height: 32,
-              alignment: Alignment.center,
-              child: item.iconText != null
-                  ? Text(
-                      item.iconText!,
-                      style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
-                    )
-                  : Icon(item.icon),
-            ),
+            leading: Icon(item.icon),
             onTap: () {
               Navigator.of(context).pop();
               widget.onSelect(item);
