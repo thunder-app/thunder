@@ -360,7 +360,14 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
   Future<void> dismissRead() async {
     if (widget.postViews != null) {
-      if (!(widget.postViews!.length > 15)) {
+      int unreadCount = 0;
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          unreadCount++;
+        }
+      }
+      // Load in new posts if we are about dismiss all or nearly all
+      if (unreadCount < 10) {
         widget.onScrollEndReached();
       }
       for (var post in widget.postViews!) {
@@ -376,6 +383,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
         widget.postViews!.removeWhere((e) => e.postView.read);
         toRemoveSet.clear();
       });
+      // Load in more posts, if so many got dismissed that scrolling may not be possible
       if (!(widget.postViews!.length > 10)) {
         widget.onScrollEndReached();
       }
