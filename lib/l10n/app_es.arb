@@ -42,6 +42,7 @@
   "expandOptions": "Expand options",
   "currentSinglePress": "Currently set as single press",
   "currentLongPress": "Currently set as long press",
+  "uploadImage": "Upload image",
   "loginFailed": "Login failed, please try again ({errorMessage})",
   "loginSucceeded": "Login succeeded!",
   "successfullyBlockedCommunity": "Successfully blocked {communtyName}",
