@@ -121,7 +121,7 @@ class _PostSubview extends State<PostSubview> with AutomaticKeepAliveClientMixin
                     message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
                     preferBelow: false,
                     child: Text(
-                      postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                      postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                       textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
