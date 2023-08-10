@@ -19,6 +19,7 @@ import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/constants.dart';
 
 part 'thunder_event.dart';
+
 part 'thunder_state.dart';
 
 const throttleDuration = Duration(milliseconds: 300);
