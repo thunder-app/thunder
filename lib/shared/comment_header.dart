@@ -30,7 +30,7 @@ class CommentHeader extends StatelessWidget {
     required this.comment,
     required this.now,
     this.isOwnComment = false,
-    this.isHidden = false,
+    required this.isHidden,
     this.moddingCommentId = -1,
     required this.moderators,
   });
@@ -102,7 +102,7 @@ class CommentHeader extends StatelessWidget {
                                       Container(
                                         child: isOwnComment
                                             ? Padding(
-                                                padding: EdgeInsets.only(left: 1),
+                                                padding: const EdgeInsets.only(left: 1),
                                                 child: Icon(
                                                   Icons.person,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,

@@ -15,6 +15,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import '../../shared/comment_content.dart';
 import '../utils/comment_action_helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,12 +23,13 @@ class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onCollapseCommentChange;
+  final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
   final int? moddingCommentId;
-  final Function(int, bool) onDeleteAction;
 
   final DateTime now;
 
@@ -41,6 +43,7 @@ class CommentCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onCollapseCommentChange,
+    required this.onReplyEditAction,
     required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
@@ -334,64 +337,22 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             InkWell(
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
-                            showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
+                                showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
                                 setState(() => isHidden = !isHidden);
                               },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CommentHeader(
-                                    moddingCommentId: widget.moddingCommentId ?? -1,
+                              child: CommentContent(
                                 comment: widget.commentViewTree.commentView!,
+                                isUserLoggedIn: isUserLoggedIn,
                                 now: widget.now,
-                                    isOwnComment: isOwnComment,
-                                    isHidden: isHidden,
-                                    moderators: widget.moderators,
-                                  ),
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 130),
-                                    switchInCurve: Curves.easeInOut,
-                                    switchOutCurve: Curves.easeInOut,
-                                    transitionBuilder: (Widget child, Animation<double> animation) {
-                                      return SizeTransition(
-                                        sizeFactor: animation,
-                                        child: SlideTransition(
-                                          position: _offsetAnimation,
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                                    child: (isHidden && collapseParentCommentOnGesture)
-                                        ? Container()
-                                        : Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                                child: CommonMarkdownBody(
-                                                  body: widget.commentViewTree.commentView!.comment.content,
-                                                  isComment: true,
-                                                ),
-                                              ),
-                                              if (state.showCommentButtonActions && isUserLoggedIn)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                                                  child: CommentCardActions(
-                                                commentView: widget.commentViewTree.commentView!,
-                                                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                                                    isEdit: isOwnComment,
-                                                    onSaveAction: widget.onSaveAction,
-                                                    onDeleteAction: widget.onDeleteAction,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                  ),
-                                ],
+                                onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                                onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
+                                isOwnComment: isOwnComment,
+                                isHidden: isHidden,
                               ),
                             ),
                           ],
@@ -483,6 +444,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,
+                              onReplyEditAction: widget.onReplyEditAction,
                               moderators: widget.moderators,
                             ),
                             itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,

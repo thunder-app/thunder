@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -10,12 +11,11 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
+
+import '../../post/widgets/create_comment_modal.dart';
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentView> replies;
@@ -51,50 +51,71 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
           children: [
             Divider(
               height: 1.0,
-              thickness: 4.0,
+              thickness: 1.0,
               color: ElevationOverlay.applySurfaceTint(
                 Theme.of(context).colorScheme.surface,
                 Theme.of(context).colorScheme.surfaceTint,
                 10,
               ),
             ),
-            InkWell(
-              onTap: () async {
-                AccountBloc accountBloc = context.read<AccountBloc>();
-                AuthBloc authBloc = context.read<AuthBloc>();
+            CommentReference(
+              comment: widget.replies[index],
+              now: now,
+              onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+              onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+              onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+              onReplyEditAction: (CommentView commentView, bool isEdit) {
+                HapticFeedback.mediumImpact();
+                InboxBloc inboxBloc = context.read<InboxBloc>();
+                PostBloc postBloc = context.read<PostBloc>();
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                // To to specific post for now, in the future, will be best to scroll to the position of the comment
-                await Navigator.of(context).push(
-                SwipeablePageRoute(
-                  canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
-                    builder: (context) => MultiBlocProvider(
-                      providers: [
-                        BlocProvider.value(value: accountBloc),
-                        BlocProvider.value(value: authBloc),
-                        BlocProvider.value(value: thunderBloc),
-                        BlocProvider(create: (context) => PostBloc()),
-                      ],
-                    child: PostPage(
-                      selectedCommentId: widget.replies[index].comment.id,
-                      selectedCommentPath: widget.replies[index].comment.path,
-                      postId: widget.replies[index].post.id,
-                      onPostUpdated: () => {},
-                    ),
-                    ),
-                  ),
+                showModalBottomSheet(
+                  isScrollControlled: true,
+                  context: context,
+                  showDragHandle: true,
+                  builder: (context) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                      child: FractionallySizedBox(
+                        heightFactor: 0.8,
+                        child: MultiBlocProvider(
+                          providers: [
+                            BlocProvider<InboxBloc>.value(value: inboxBloc),
+                            BlocProvider<PostBloc>.value(value: postBloc),
+                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                          ],
+                          child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
+                        ),
+                      ),
+                    );
+                  },
                 );
               },
-              child: CommentReference(
-                comment: widget.replies[index],
-                now: now,
-                onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
-                onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
-                onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-                isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
+              isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  if (widget.replies[index].commentReply?.read == false)
+                    inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
+                        ? IconButton(
+                      onPressed: () {
+                        setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
+                        context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
+                      },
+                      icon: const Icon(
+                        Icons.check,
+                        semanticLabel: 'Mark as read',
+                      ),
+                      visualDensity: VisualDensity.compact,
+                    )
+                        : const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                    ),
+                ],
               ),
             ),
-                    ],
           ],
         );
       },

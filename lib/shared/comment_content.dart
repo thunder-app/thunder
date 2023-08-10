@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 
 import 'comment_card_actions.dart';
 import 'comment_header.dart';
@@ -12,11 +13,15 @@ class CommentContent extends StatefulWidget{
   final DateTime now;
   final bool isUserLoggedIn;
   final bool isOwnComment;
+  final bool isHidden;
+
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   final int? moddingCommentId;
+  final List<CommunityModeratorView>? moderators;
 
   const CommentContent({
     super.key,
@@ -26,8 +31,11 @@ class CommentContent extends StatefulWidget{
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onDeleteAction,
+    required this.onReplyEditAction,
     required this.isOwnComment,
+    required this.isHidden,
     this.moddingCommentId,
+    this.moderators,
   });
 
   @override
@@ -35,8 +43,6 @@ class CommentContent extends StatefulWidget{
 }
 
 class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
-
-  final bool isHidden = false;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
@@ -66,7 +72,8 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
           comment: widget.comment,
           now: widget.now,
           isOwnComment: widget.isOwnComment,
-          isHidden: isHidden,
+          isHidden: widget.isHidden,
+          moderators: widget.moderators ?? [],
         ),
         AnimatedSwitcher(
           duration: const Duration(milliseconds: 130),
@@ -81,7 +88,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
               ),
             );
           },
-          child: (isHidden && collapseParentCommentOnGesture)
+          child: (widget.isHidden && collapseParentCommentOnGesture)
               ? Container()
               : Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -99,6 +106,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     isEdit: widget.isOwnComment,
                     onSaveAction: widget.onSaveAction,
                     onDeleteAction: widget.onDeleteAction,
+                    onReplyEditAction: widget.onReplyEditAction,
                   ),
                 ),
             ],

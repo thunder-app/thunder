@@ -18,6 +18,7 @@ class CommentCardActions extends StatelessWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   const CommentCardActions({
     super.key,
@@ -26,6 +27,7 @@ class CommentCardActions extends StatelessWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onDeleteAction,
+    required this.onReplyEditAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -60,33 +62,11 @@ class CommentCardActions extends StatelessWidget {
               height: 28,
               width: 44,
               child: IconButton(
-                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: 'Reply', size: iconSize),
+                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: isEdit ? 'Edit' : 'Reply', size: iconSize),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  PostBloc postBloc = context.read<PostBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                  showModalBottomSheet(
-                    isScrollControlled: true,
-                    context: context,
-                    showDragHandle: true,
-                    builder: (context) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                        child: FractionallySizedBox(
-                          heightFactor: 0.8,
-                          child: MultiBlocProvider(
-                            providers: [
-                              BlocProvider<PostBloc>.value(value: postBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            ],
-                            child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
-                          ),
-                        ),
-                      );
-                    },
-                  );
+                  onReplyEditAction(commentView, isEdit);
                 },
               ),
             ),

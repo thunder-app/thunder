@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -8,6 +9,9 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
+
+import '../../thunder/bloc/thunder_bloc.dart';
+import '../widgets/create_comment_modal.dart';
 
 class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
@@ -80,6 +84,32 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+            onReplyEditAction: (CommentView commentView, bool isEdit) {
+              HapticFeedback.mediumImpact();
+              PostBloc postBloc = context.read<PostBloc>();
+              ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+              showModalBottomSheet(
+                isScrollControlled: true,
+                context: context,
+                showDragHandle: true,
+                builder: (context) {
+                  return Padding(
+                    padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                    child: FractionallySizedBox(
+                      heightFactor: 0.8,
+                      child: MultiBlocProvider(
+                        providers: [
+                          BlocProvider<PostBloc>.value(value: postBloc),
+                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                        ],
+                        child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
             moderators: widget.moderators,
           ),
         ),
