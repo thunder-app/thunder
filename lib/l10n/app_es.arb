@@ -42,5 +42,6 @@
   "expandOptions": "Expand options",
   "currentSinglePress": "Currently set as single press",
   "currentLongPress": "Currently set as long press",
+  "uploadImage": "Upload image",
   "customizeSwipeActions": "Customize swipe actions (tap to change)"
 }

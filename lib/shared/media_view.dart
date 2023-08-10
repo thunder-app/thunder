@@ -26,7 +26,7 @@ class MediaView extends StatefulWidget {
   final bool edgeToEdgeImages;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
-  final bool? showLinkPreview;
+  final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
 
@@ -40,7 +40,7 @@ class MediaView extends StatefulWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
-    this.showLinkPreview,
+    this.scrapeMissingPreviews,
     this.navigateToPost,
   });
 
@@ -102,7 +102,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         hideNsfw: hideNsfw,
-        showLinkPreviews: widget.showLinkPreview!,
+        scrapeMissingPreviews: widget.scrapeMissingPreviews!,
         originURL: widget.postView!.media.first.originalUrl,
         mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,

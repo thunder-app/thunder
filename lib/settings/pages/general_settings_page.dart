@@ -36,7 +36,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool tabletMode = false;
 
   // General Settings
-  bool showLinkPreviews = true;
+  bool scrapeMissingPreviews = false;
   bool openInExternalBrowser = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
@@ -103,9 +103,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         setState(() => tabletMode = value);
 
       // General Settings
-      case LocalSettings.showLinkPreviews:
-        await prefs.setBool(LocalSettings.showLinkPreviews.name, value);
-        setState(() => showLinkPreviews = value);
+      case LocalSettings.scrapeMissingPreviews:
+        await prefs.setBool(LocalSettings.scrapeMissingPreviews.name, value);
+        setState(() => scrapeMissingPreviews = value);
         break;
       case LocalSettings.openLinksInExternalBrowser:
         await prefs.setBool(LocalSettings.openLinksInExternalBrowser.name, value);
@@ -261,7 +261,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       // Links
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
-      showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
+      scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       // Notification Settings
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
@@ -632,12 +632,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                         ),
                         ToggleOption(
-                          description: LocalSettings.showLinkPreviews.label,
-                          subtitle: 'Disable for slightly better performance',
-                          value: showLinkPreviews,
+                          description: LocalSettings.scrapeMissingPreviews.label,
+                          subtitle: 'Enabling will have a performance hit',
+                          value: scrapeMissingPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showLinkPreviews, value),
+                          onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
                         ),
                         ToggleOption(
                           description: LocalSettings.openLinksInExternalBrowser.label,
