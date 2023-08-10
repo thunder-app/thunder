@@ -74,7 +74,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     var mediaView = MediaView(
-      showLinkPreview: state.showLinkPreviews,
+      scrapeMissingPreviews: state.scrapeMissingPreviews,
       postView: postViewMedia,
       showFullHeightImages: showFullHeightImages,
       hideNsfwPreviews: hideNsfwPreviews,
