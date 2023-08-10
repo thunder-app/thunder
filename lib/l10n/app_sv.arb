@@ -39,5 +39,8 @@
   "loadMorePlural": "Load {count} more replies...",
   "navigateUp": "Navigate to previous comment",
   "navigateDown": "Navigate to next comment",
+  "expandOptions": "Expand options",
+  "currentSinglePress": "Currently set as single press",
+  "currentLongPress": "Currently set as long press",
   "customizeSwipeActions": "Customize swipe actions (tap to change)"
 }
