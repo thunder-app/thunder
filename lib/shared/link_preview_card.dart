@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -15,6 +17,8 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
+import 'package:thunder/utils/navigate_community.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -104,11 +108,11 @@ class LinkPreviewCard extends StatelessWidget {
               Container(
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(20),
-                child: const Column(
+                child: Column(
                   children: [
                     Icon(Icons.warning_rounded, size: 55),
                     // This won't show but it does cause the icon above to center
-                    Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                    Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                   ],
                 ),
               ),
@@ -169,6 +173,16 @@ class LinkPreviewCard extends StatelessWidget {
                               cacheDuration: Duration.zero,
                             ),
                     ),
+            if (!showLinkPreviews)
+              Container(
+                height: 75,
+                width: 75,
+                color: theme.cardColor.darken(5),
+                child: Icon(
+                  Icons.language,
+                  color: theme.colorScheme.onSecondaryContainer,
+                ),
+              ),
             if (hideNsfw)
               Container(
                 alignment: Alignment.center,
@@ -231,27 +245,29 @@ class LinkPreviewCard extends StatelessWidget {
       }
     }
 
-    if (originURL != null && originURL!.contains('/c/')) {
-      // Push navigation
-      AccountBloc accountBloc = context.read<AccountBloc>();
-      AuthBloc authBloc = context.read<AuthBloc>();
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
+    if (originURL != null) {
       String? communityName = await getLemmyCommunity(originURL!);
 
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) => MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: accountBloc),
-              BlocProvider.value(value: authBloc),
-              BlocProvider.value(value: thunderBloc),
-            ],
-            child: CommunityPage(communityName: communityName),
-          ),
-        ),
-      );
-    } else if (originURL != null) {
+      if (communityName != null) {
+        try {
+          await navigateToCommunityByName(context, communityName);
+          return;
+        } catch (e) {
+          // Ignore exception, if it's not a valid community we'll perform the next fallback
+        }
+      }
+
+      String? username = await getLemmyUser(originURL!);
+
+      if (username != null) {
+        try {
+          await navigateToUserByName(context, username);
+          return;
+        } catch (e) {
+          // Ignore exception, if it's not a valid user, we'll perform the next fallback
+        }
+      }
+
       openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
     }
   }

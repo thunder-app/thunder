@@ -11,10 +11,10 @@ extension FontScaleExtension on FontScale {
   double get textScaleFactor {
     switch (this) {
       case FontScale.small:
-        if (Platform.isIOS) return 0.85;
+        if (Platform.isIOS) return 0.9;
         return 0.9;
       case FontScale.base:
-        if (Platform.isIOS) return 0.9;
+        if (Platform.isIOS) return 1;
         return 0.95;
       case FontScale.large:
         if (Platform.isIOS) return 1.15;

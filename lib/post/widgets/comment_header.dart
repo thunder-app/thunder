@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -11,6 +12,7 @@ import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../core/auth/bloc/auth_bloc.dart';
 
@@ -72,7 +74,8 @@ class CommentHeader extends StatelessWidget {
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                             Navigator.of(context).push(
-                              MaterialPageRoute(
+                              SwipeablePageRoute(
+                                canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                                 builder: (context) => MultiBlocProvider(
                                   providers: [
                                     BlocProvider.value(value: accountBloc),
@@ -93,18 +96,18 @@ class CommentHeader extends StatelessWidget {
                                         commentViewTree.commentView!.creator.displayName != null && useDisplayNames
                                             ? commentViewTree.commentView!.creator.displayName!
                                             : commentViewTree.commentView!.creator.name,
-                                        textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
-                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: Colors.white),
+                                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
                                       ),
                                       const SizedBox(width: 2.0),
                                       Container(
                                         child: isOwnComment
                                             ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
+                                                padding: EdgeInsets.only(left: 1),
                                                 child: Icon(
                                                   Icons.person,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ))
                                             : Container(),
                                       ),
@@ -115,7 +118,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.shield_crown,
                                                   size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -127,7 +130,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.shield,
                                                   size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -139,7 +142,7 @@ class CommentHeader extends StatelessWidget {
                                                 child: Icon(
                                                   Thunder.microphone_variant,
                                                   size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: Colors.white,
+                                                  color: theme.colorScheme.onBackground,
                                                 ),
                                               )
                                             : Container(),
@@ -150,7 +153,7 @@ class CommentHeader extends StatelessWidget {
                                     commentViewTree.commentView!.creator.displayName != null && useDisplayNames
                                         ? commentViewTree.commentView!.creator.displayName!
                                         : commentViewTree.commentView!.creator.name,
-                                    textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -171,7 +174,7 @@ class CommentHeader extends StatelessWidget {
                 Text(
                   formatNumberToK(upvotes),
                   semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
-                  textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
                   ),
@@ -186,7 +189,7 @@ class CommentHeader extends StatelessWidget {
                 if (downvotes != 0)
                   Text(
                     formatNumberToK(downvotes),
-                    textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
@@ -210,7 +213,7 @@ class CommentHeader extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     child: Text(
                       '+${commentViewTree.commentView!.counts.childCount}',
-                      textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     ),
                   ),
                 ),
@@ -256,7 +259,7 @@ class CommentHeader extends StatelessWidget {
                       ] else
                         Text(
                           commentViewTree.datePostedOrEdited,
-                          textScaleFactor: state.metadataFontSizeScale.textScaleFactor,
+                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                           style: theme.textTheme.bodyMedium?.copyWith(
                             color: theme.colorScheme.onBackground,
                           ),
@@ -276,10 +279,10 @@ class CommentHeader extends StatelessWidget {
     CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
-    if (isOwnComment) return theme.colorScheme.primary;
-    if (isAdmin(commentView.creator)) return theme.colorScheme.tertiary;
-    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.primaryContainer;
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondary;
+    if (isOwnComment) return theme.colorScheme.primaryContainer;
+    if (isAdmin(commentView.creator)) return theme.colorScheme.errorContainer;
+    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.tertiaryContainer;
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
 
     return null;
   }

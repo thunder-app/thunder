@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
@@ -90,7 +91,7 @@ class _UserPageState extends State<UserPage> {
               child: IconButton(
                 onPressed: () {
                   Navigator.of(context).push(
-                    MaterialPageRoute(
+                    SwipeablePageRoute(
                       builder: (context) => UserSettingsPage(widget.userId),
                     ),
                   );

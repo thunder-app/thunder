@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -12,8 +11,6 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
-import '../../core/enums/media_type.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -51,13 +48,14 @@ class PostCardViewCompact extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
-    return Padding(
+    return Container(
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
       padding: const EdgeInsets.only(
         bottom: 8.0,
         top: 6,
@@ -103,12 +101,11 @@ class PostCardViewCompact extends StatelessWidget {
                     children: [
                       TextSpan(
                         text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 14.2 * state.titleFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: postViewMedia.postView.post.featuredCommunity
-                              ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
-                              : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
+                              ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                              : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
                       ),
                       if (postViewMedia.postView.post.featuredCommunity)
@@ -140,6 +137,7 @@ class PostCardViewCompact extends StatelessWidget {
                         ),
                     ],
                   ),
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.titleFontSizeScale.textScaleFactor,
                 ),
                 const SizedBox(height: 6.0),
                 PostCommunityAndAuthor(
