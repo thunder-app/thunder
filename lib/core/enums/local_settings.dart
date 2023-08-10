@@ -12,7 +12,7 @@ enum LocalSettings {
   useTabletMode(name: 'setting_post_tablet_mode', label: '2-column Tablet Mode'),
 
   // General Settings
-  showLinkPreviews(name: 'setting_general_show_link_previews', label: 'Show Link Previews'),
+  scrapeMissingPreviews(name: 'setting_general_scrape_missing_previews', label: 'Scrape Missing External Link Previews'),
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
@@ -78,23 +78,19 @@ enum LocalSettings {
   /// -------------------------- FAB Related Settings --------------------------
   enableFeedsFab(name: 'setting_enable_feed_fab', label: 'Enable Floating Button on Feeds'),
   enablePostsFab(name: 'setting_enable_post_fab', label: 'Enable Floating Button on Posts'),
-
   enableBackToTop(name: 'setting_enable_back_to_top_fab', label: 'Back to Top'),
   enableSubscriptions(name: 'setting_enable_subscribed_fab', label: 'Subscriptions'),
   enableRefresh(name: 'setting_enable_refresh_fab', label: 'Refresh'),
   enableDismissRead(name: 'setting_enable_dismiss_read_fab', label: 'Dismiss Read'),
   enableChangeSort(name: 'setting_enable_change_sort_fab', label: 'Change Sort'),
   enableNewPost(name: 'setting_enable_new_post_fab', label: 'New Post'),
-
   postFabEnableBackToTop(name: 'setting_post_fab_enable_back_to_top', label: 'Back to Top'),
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
-
   feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
   feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),
   postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
-
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   ;
 

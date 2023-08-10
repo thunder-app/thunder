@@ -41,5 +41,6 @@
   "navigateDown": "Navigate to next comment",
   "expandOptions": "Expand options",
   "currentSinglePress": "Currently set as single press",
-  "currentLongPress": "Currently set as long press"
+  "currentLongPress": "Currently set as long press",
+  "uploadImage": "Upload image"
 }

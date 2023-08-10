@@ -74,7 +74,7 @@ class PostCardViewCompact extends StatelessWidget {
                           vertical: 4,
                         ),
                         child: MediaView(
-                          showLinkPreview: state.showLinkPreviews,
+                          scrapeMissingPreviews: state.scrapeMissingPreviews,
                           postView: postViewMedia,
                           showFullHeightImages: false,
                           hideNsfwPreviews: hideNsfwPreviews,
@@ -174,7 +174,7 @@ class PostCardViewCompact extends StatelessWidget {
                           vertical: 4,
                         ),
                         child: MediaView(
-                          showLinkPreview: state.showLinkPreviews,
+                          scrapeMissingPreviews: state.scrapeMissingPreviews,
                           postView: postViewMedia,
                           showFullHeightImages: false,
                           hideNsfwPreviews: hideNsfwPreviews,
