@@ -384,9 +384,13 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
         toRemoveSet.clear();
       });
       // Load in more posts, if so many got dismissed that scrolling may not be possible
-      if (!(widget.postViews!.length > 10)) {
-        widget.onScrollEndReached();
-      }
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+
+        if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+          widget.onScrollEndReached();
+        }
+      });
     }
   }
 
