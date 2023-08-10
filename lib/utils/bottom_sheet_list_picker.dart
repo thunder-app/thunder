@@ -71,12 +71,14 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
 
 class ListPickerItem<T> {
   final IconData? icon;
+  final String? iconText;
   final Color? color;
   final String label;
   final T payload;
 
   const ListPickerItem({
     this.icon,
+    this.iconText,
     this.color,
     required this.label,
     required this.payload,
