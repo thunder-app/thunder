@@ -15,6 +15,14 @@ class TypeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    Color getMaterialColor(Color blendColor) {
+      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor);
+    }
+
+    Color getIconColor(Color blendColor) {
+      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor);
+    }
+
     return SizedBox(
       height: 28,
       width: 28,
@@ -44,8 +52,12 @@ class TypeBadge extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(4),
                   ),
-                  color: theme.colorScheme.inverseSurface,
-                  child: Icon(size: 17, Icons.wysiwyg_rounded, color: theme.colorScheme.inversePrimary),
+                  color: getMaterialColor(Colors.green),
+                  child: Icon(
+                    size: 17,
+                    Icons.wysiwyg_rounded,
+                    color: getIconColor(Colors.green),
+                  ),
                 )
               : postViewMedia.media.firstOrNull?.mediaType == MediaType.link
                   ? Material(
@@ -55,11 +67,11 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.primary,
+                      color: getMaterialColor(Colors.blue),
                       child: Icon(
                         size: 19,
                         Icons.link_rounded,
-                        color: theme.colorScheme.onPrimary,
+                        color: getIconColor(Colors.blue),
                       ),
                     )
                   : Material(
@@ -69,8 +81,12 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.primaryContainer,
-                      child: Icon(size: 17, Icons.image_outlined, color: theme.colorScheme.onPrimaryContainer),
+                      color: getMaterialColor(Colors.red),
+                      child: Icon(
+                        size: 17,
+                        Icons.image_outlined,
+                        color: getIconColor(Colors.red),
+                      ),
                     ),
         ),
       ),
