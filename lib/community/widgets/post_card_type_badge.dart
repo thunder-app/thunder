@@ -15,6 +15,14 @@ class TypeBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    Color getMaterialColor(Color blendColor) {
+      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor);
+    }
+
+    Color getIconColor(Color blendColor) {
+      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor);
+    }
+
     return SizedBox(
       height: 28,
       width: 28,
@@ -39,8 +47,12 @@ class TypeBadge extends StatelessWidget {
                     topLeft: Radius.circular(12),
                     topRight: Radius.circular(4),
                   ),
-                  color: theme.colorScheme.tertiaryContainer,
-                  child: const Icon(size: 17, Icons.wysiwyg_rounded),
+                  color: getMaterialColor(Colors.green),
+                  child: Icon(
+                    size: 17,
+                    Icons.wysiwyg_rounded,
+                    color: getIconColor(Colors.green),
+                  ),
                 )
               : postViewMedia.media.firstOrNull?.mediaType == MediaType.link
                   ? Material(
@@ -50,8 +62,12 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.secondaryContainer,
-                      child: const Icon(size: 19, Icons.link_rounded),
+                      color: getMaterialColor(Colors.blue),
+                      child: Icon(
+                        size: 19,
+                        Icons.link_rounded,
+                        color: getIconColor(Colors.blue),
+                      ),
                     )
                   : Material(
                       borderRadius: const BorderRadius.only(
@@ -60,8 +76,12 @@ class TypeBadge extends StatelessWidget {
                         topLeft: Radius.circular(12),
                         topRight: Radius.circular(4),
                       ),
-                      color: theme.colorScheme.primaryContainer,
-                      child: const Icon(size: 17, Icons.image_outlined),
+                      color: getMaterialColor(Colors.red),
+                      child: Icon(
+                        size: 17,
+                        Icons.image_outlined,
+                        color: getIconColor(Colors.red),
+                      ),
                     ),
         ),
       ),
