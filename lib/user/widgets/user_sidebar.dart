@@ -74,7 +74,7 @@ class _UserSidebarState extends State<UserSidebar> {
     final num commentsPerMonth;
     final totalContributionsPerMonth = (totalContributions / accountAgeMonths);
     final ThunderState state = context.read<ThunderBloc>().state;
-    bool disableScoreCounters = state.disableScoreCounters;
+    bool scoreCounters = state.scoreCounters;
 
     if (widget.userInfo!.counts.postCount != 0) {
       postsPerMonth = (widget.userInfo!.counts.postCount / accountAgeMonths);
@@ -323,11 +323,11 @@ class _UserSidebarState extends State<UserSidebar> {
                                   ),
                                   const SizedBox(height: 3.0),
                                   Visibility(
-                                      visible: !disableScoreCounters,
+                                      visible: !scoreCounters,
                                       child: UserSidebarActivity(
                                         icon: Icons.celebration_rounded,
                                         scoreLabel: ' Total Score',
-                                        scoreMetric: NumberFormat("#,###,###,###").format(totalContributions),
+                                        scoreMetric: NumberFormat("#,###,###,###").format(totalScore),
                                       )),
                                 ],
                               ),
