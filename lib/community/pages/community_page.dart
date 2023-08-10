@@ -224,7 +224,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
+                                icon: sortTypeIcon != null
+                                    ? Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy)
+                                    : Text(sortTypeLabel ?? AppLocalizations.of(context)!.sortBy, style: const TextStyle(fontWeight: FontWeight.bold)),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();

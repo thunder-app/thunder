@@ -33,43 +33,35 @@ const List<ListPickerItem<SortType>> defaultSortTypeItems = [
 const List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
     payload: SortType.topHour,
-    icon: Icons.check_box_outline_blank,
-    label: 'Top in Past Hour',
+    label: 'Hour',
   ),
   ListPickerItem(
     payload: SortType.topSixHour,
-    icon: Icons.calendar_view_month,
-    label: 'Top in Past 6 Hours',
+    label: '6 Hours',
   ),
   ListPickerItem(
     payload: SortType.topTwelveHour,
-    icon: Icons.calendar_view_week,
-    label: 'Top in Past 12 Hours',
+    label: '12 Hours',
   ),
   ListPickerItem(
     payload: SortType.topDay,
-    icon: Icons.today,
-    label: 'Top Today',
+    label: 'Day',
   ),
   ListPickerItem(
     payload: SortType.topWeek,
-    icon: Icons.view_week_sharp,
-    label: 'Top Week',
+    label: 'Week',
   ),
   ListPickerItem(
     payload: SortType.topMonth,
-    icon: Icons.calendar_month,
-    label: 'Top Month',
+    label: 'Month',
   ),
   ListPickerItem(
     payload: SortType.topYear,
-    icon: Icons.calendar_today,
-    label: 'Top Year',
+    label: 'Year',
   ),
   ListPickerItem(
     payload: SortType.topAll,
-    icon: Icons.military_tech,
-    label: 'Top of all time',
+    label: 'All Time',
   ),
 ];
 
@@ -194,7 +186,7 @@ class _SortPickerState extends State<SortPicker> {
               item.label,
               style: theme.textTheme.bodyMedium,
             ),
-            leading: Icon(item.icon),
+            leading: item.icon != null ? Icon(item.icon) : null,
             onTap: () {
               Navigator.of(context).pop();
               widget.onSelect(item);
