@@ -42,6 +42,7 @@
 - Improve behavior of deferred comment indicator - contribution from @micahmo
 - Text scaling now respects system's font scaling. Text scaling is based off of the system font
 - Improved contrast on user chips and badges - contribution from @CTalvio 
+- Prioritize and label the default accent color - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
