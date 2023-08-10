@@ -40,6 +40,7 @@
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
+- Full comments available in profiles and replies - contribution from @CTalvio
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa

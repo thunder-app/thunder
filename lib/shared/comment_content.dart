@@ -8,7 +8,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'comment_card_actions.dart';
 import 'comment_header.dart';
 
-class CommentContent extends StatefulWidget{
+class CommentContent extends StatefulWidget {
   final CommentView comment;
   final DateTime now;
   final bool isUserLoggedIn;
@@ -43,7 +43,6 @@ class CommentContent extends StatefulWidget{
 }
 
 class _CommentContentState extends State<CommentContent> with SingleTickerProviderStateMixin {
-
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: 100),
     vsync: this,
@@ -91,26 +90,26 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
           child: (widget.isHidden && collapseParentCommentOnGesture)
               ? Container()
               : Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
-                child: CommonMarkdownBody(body: widget.comment.comment.content),
-              ),
-              if (state.showCommentButtonActions && widget.isUserLoggedIn)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                  child: CommentCardActions(
-                    commentView: widget.comment,
-                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                    isEdit: widget.isOwnComment,
-                    onSaveAction: widget.onSaveAction,
-                    onDeleteAction: widget.onDeleteAction,
-                    onReplyEditAction: widget.onReplyEditAction,
-                  ),
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
+                      child: CommonMarkdownBody(body: widget.comment.comment.content),
+                    ),
+                    if (state.showCommentButtonActions && widget.isUserLoggedIn)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
+                        child: CommentCardActions(
+                          commentView: widget.comment,
+                          onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                          isEdit: widget.isOwnComment,
+                          onSaveAction: widget.onSaveAction,
+                          onDeleteAction: widget.onDeleteAction,
+                          onReplyEditAction: widget.onReplyEditAction,
+                        ),
+                      ),
+                  ],
                 ),
-            ],
-          ),
         ),
       ],
     );

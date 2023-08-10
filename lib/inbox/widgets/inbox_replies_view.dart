@@ -99,20 +99,20 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                   if (widget.replies[index].commentReply?.read == false)
                     inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
                         ? IconButton(
-                      onPressed: () {
-                        setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
-                        context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
-                      },
-                      icon: const Icon(
-                        Icons.check,
-                        semanticLabel: 'Mark as read',
-                      ),
-                      visualDensity: VisualDensity.compact,
-                    )
+                            onPressed: () {
+                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
+                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true));
+                            },
+                            icon: const Icon(
+                              Icons.check,
+                              semanticLabel: 'Mark as read',
+                            ),
+                            visualDensity: VisualDensity.compact,
+                          )
                         : const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                    ),
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                          ),
                 ],
               ),
             ),

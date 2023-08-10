@@ -26,7 +26,8 @@ class CommentReference extends StatefulWidget {
   final Function(CommentView, bool) onReplyEditAction;
   final Widget? child;
 
-  const CommentReference({super.key,
+  const CommentReference({
+    super.key,
     required this.comment,
     required this.now,
     required this.onVoteAction,
@@ -261,24 +262,24 @@ class _CommentReferenceState extends State<CommentReference> {
                     },
                     background: dismissDirection == DismissDirection.startToEnd
                         ? AnimatedContainer(
-                      alignment: Alignment.centerLeft,
-                      color: swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
-                      duration: const Duration(milliseconds: 200),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
-                      ),
-                    )
+                            alignment: Alignment.centerLeft,
+                            color: swipeAction == null ? state.leftPrimaryCommentGesture.getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                            duration: const Duration(milliseconds: 200),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * dismissThreshold,
+                              child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                            ),
+                          )
                         : AnimatedContainer(
-                      alignment: Alignment.centerRight,
-                      color:
-                      swipeAction == null ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
-                      duration: const Duration(milliseconds: 200),
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * dismissThreshold,
-                        child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
-                      ),
-                    ),
+                            alignment: Alignment.centerRight,
+                            color:
+                                swipeAction == null ? (state.rightPrimaryCommentGesture).getColor().withOpacity(dismissThreshold / firstActionThreshold) : (swipeAction ?? SwipeAction.none).getColor(),
+                            duration: const Duration(milliseconds: 200),
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width * dismissThreshold,
+                              child: swipeAction == null ? Container() : Icon((swipeAction ?? SwipeAction.none).getIcon()),
+                            ),
+                          ),
                     child: CommentContent(
                       comment: widget.comment,
                       isUserLoggedIn: isUserLoggedIn,
@@ -294,8 +295,7 @@ class _CommentReferenceState extends State<CommentReference> {
                 ),
               ),
             ),
-            if(widget.child != null)
-              widget.child!,
+            if (widget.child != null) widget.child!,
           ],
         ),
       ),

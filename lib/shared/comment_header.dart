@@ -81,7 +81,7 @@ class CommentHeader extends StatelessWidget {
                                     BlocProvider.value(value: authBloc),
                                     BlocProvider.value(value: thunderBloc),
                                   ],
-                                child: UserPage(userId: comment.creator.id),
+                                  child: UserPage(userId: comment.creator.id),
                                 ),
                               ),
                             );
@@ -92,9 +92,7 @@ class CommentHeader extends StatelessWidget {
                                 ? Row(
                                     children: [
                                       Text(
-                                        comment.creator.displayName != null && state.useDisplayNames
-                                            ? comment.creator.displayName!
-                                            : comment.creator.name,
+                                        comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                         textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                                         style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
                                       ),
@@ -149,9 +147,7 @@ class CommentHeader extends StatelessWidget {
                                     ],
                                   )
                                 : Text(
-                                    comment.creator.displayName != null && state.useDisplayNames
-                                        ? comment.creator.displayName!
-                                        : comment.creator.name,
+                                    comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                     textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,

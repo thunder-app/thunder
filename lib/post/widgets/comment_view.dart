@@ -22,7 +22,6 @@ class CommentSubview extends StatefulWidget {
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
 
-
   final PostViewMedia? postViewMedia;
   final int? selectedCommentId;
   final String? selectedCommentPath;
