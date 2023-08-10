@@ -125,6 +125,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
         _ExpandingActionButton(
           maxDistance: distance,
           progress: _expandAnimation,
+          focus: isFabOpen && i == count - 1,
           child: widget.children[i],
         ),
       );
@@ -222,11 +223,13 @@ class _ExpandingActionButton extends StatelessWidget {
     required this.maxDistance,
     required this.progress,
     required this.child,
+    required this.focus,
   });
 
   final double maxDistance;
   final Animation<double> progress;
   final Widget child;
+  final bool focus;
 
   @override
   Widget build(BuildContext context) {
@@ -240,7 +243,10 @@ class _ExpandingActionButton extends StatelessWidget {
         return Positioned(
           right: 8.0 + offset.dx,
           bottom: 10.0 + offset.dy,
-          child: child!,
+          child: Semantics(
+            focused: focus,
+            child: child!,
+          ),
         );
       },
       child: FadeTransition(

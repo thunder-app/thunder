@@ -74,7 +74,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
-            color: theme.cardColor.darken(3),
+            color: theme.cardColor.darken(5),
             child: SizedBox(
               height: 75.0,
               width: 75.0,
@@ -82,9 +82,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 padding: const EdgeInsets.only(left: 2.0),
                 child: Text(
                   widget.postView!.postView.post.body ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 4.5,
-                    color: Colors.white70,
+                    color: theme.colorScheme.onBackground.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -131,7 +131,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               child: Column(
                 children: [
                   Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                  if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
+                  if (widget.viewMode != ViewMode.compact) Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                 ],
               ),
             ),
@@ -203,7 +203,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         width: width,
         fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
         cache: true,
-        clearMemoryCacheWhenDispose: false,
+        clearMemoryCacheWhenDispose: true,
         cacheWidth: widget.viewMode == ViewMode.compact
             ? (75 * View.of(context).devicePixelRatio.ceil())
             : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),

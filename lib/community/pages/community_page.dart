@@ -34,8 +34,9 @@ class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final PageController? pageController;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -54,10 +55,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool isActivePage = true;
 
   @override
   void initState() {
     super.initState();
+    widget.pageController?.addListener(() {
+      // This ensures that our back button handling only goes into effect when we're on the home page
+      isActivePage = widget.pageController!.page == 0;
+    });
     BackButtonInterceptor.add(_handleBack);
   }
 
@@ -254,7 +260,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.dismissRead.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.dismissRead.getIcon(),
-                                            semanticLabel: FeedFabAction.dismissRead.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
@@ -266,7 +271,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.refresh.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.refresh.getIcon(),
-                                            semanticLabel: FeedFabAction.refresh.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
@@ -278,7 +282,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.changeSort.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
-                                            semanticLabel: FeedFabAction.changeSort.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
@@ -287,7 +290,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.subscriptions.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.subscriptions.getIcon(),
-                                            semanticLabel: FeedFabAction.subscriptions.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
@@ -298,7 +300,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.backToTop.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.backToTop.getIcon(),
-                                            semanticLabel: FeedFabAction.backToTop.getTitle(context),
                                           ),
                                         ),
                                       if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
@@ -309,7 +310,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           title: FeedFabAction.newPost.getTitle(context),
                                           icon: Icon(
                                             FeedFabAction.newPost.getIcon(),
-                                            semanticLabel: FeedFabAction.newPost.getTitle(context),
                                           ),
                                         ),
                                     ],
@@ -439,7 +439,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 
-      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+      // If we are either (a) not on the desired listing or (b) not on the main feed (on a community instead)
+      // then go back to the main feed using the desired listing.
+      if (!canPop && isActivePage && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
         currentCommunityBloc!.add(
           GetCommunityPostsEvent(
             sortType: currentCommunityBloc!.state.sortType,

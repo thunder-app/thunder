@@ -111,7 +111,7 @@ class _ImagePreviewState extends State<ImagePreview> {
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,
-            clearMemoryCacheWhenDispose: false,
+            clearMemoryCacheWhenDispose: true,
             cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
           ),
           TweenAnimationBuilder<double>(
