@@ -42,6 +42,7 @@
   "expandOptions": "Expand options",
   "currentSinglePress": "Currently set as single press",
   "currentLongPress": "Currently set as long press",
+  "uploadImage": "Upload image",
   "showMore": "Show more",
   "showLess": "Show less"
 }
