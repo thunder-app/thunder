@@ -156,7 +156,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   onPressed: () {
                                     _uploadImage(postImage: true);
                                   },
-                                  icon: const Icon(Icons.image))),
+                                  icon: Icon(
+                                    Icons.image,
+                                    semanticLabel: AppLocalizations.of(context)!.uploadImage,
+                                  ))),
                         ),
                         const SizedBox(
                           height: 10,
@@ -165,7 +168,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           visible: url.isNotEmpty,
                           child: LinkPreviewCard(
                             hideNsfw: false,
-                            showLinkPreviews: true,
+                            scrapeMissingPreviews: false,
                             originURL: url,
                             mediaURL: isImageUrl(url) ? url : null,
                             mediaHeight: null,

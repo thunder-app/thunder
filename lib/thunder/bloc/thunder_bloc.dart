@@ -19,6 +19,7 @@ import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/constants.dart';
 
 part 'thunder_event.dart';
+
 part 'thunder_state.dart';
 
 const throttleDuration = Duration(milliseconds: 300);
@@ -96,7 +97,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
 
       // General Settings
-      bool showLinkPreviews = prefs.getBool(LocalSettings.showLinkPreviews.name) ?? true;
+      bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
@@ -199,7 +200,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         tabletMode: tabletMode,
 
         // General Settings
-        showLinkPreviews: showLinkPreviews,
+        scrapeMissingPreviews: scrapeMissingPreviews,
         openInExternalBrowser: openInExternalBrowser,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
