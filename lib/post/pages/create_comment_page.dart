@@ -8,15 +8,19 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
-  final PostView? postView;
+  final PostViewMedia? postView;
   final CommentViewTree? commentView;
 
   final int? selectedCommentId;
@@ -27,6 +31,12 @@ class CreateCommentPage extends StatefulWidget {
 
   final bool isEdit;
 
+  // final bool showLinkPreviews;
+  // final bool showFullHeightImages;
+  // final bool hideNsfwPreviews;
+  // final bool edgeToEdgeImages;
+  // final bool markPostReadOnMediaView;
+
   const CreateCommentPage({
     super.key,
     this.postView,
@@ -36,13 +46,18 @@ class CreateCommentPage extends StatefulWidget {
     this.isEdit = false,
     this.selectedCommentId,
     this.selectedCommentPath,
+    // this.showLinkPreviews = false,
+    // this.showFullHeightImages = false,
+    // this.hideNsfwPreviews = true,
+    // this.edgeToEdgeImages = false,
+    // this.markPostReadOnMediaView = false,
   });
 
   @override
   State<CreateCommentPage> createState() => _CreateCommentPageState();
 }
 
-class _CreateCommentPageState extends State<CreateCommentPage> {
+class _CreateCommentPageState extends State<CreateCommentPage> with TickerProviderStateMixin {
   bool showPreview = false;
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
@@ -53,6 +68,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   String errorMessage = '';
 
+  String? replyingToAuthor;
+  String? replyingToContent;
+
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
@@ -61,6 +79,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   @override
   void initState() {
     super.initState();
+
+    _bodyFocusNode.requestFocus();
 
     if (widget.isEdit) {
       String content = widget.commentView?.commentView?.comment.content ?? '';
@@ -71,6 +91,17 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
           TextPosition(offset: content.length),
         ),
       );
+    }
+
+    if (widget.postView != null) {
+      replyingToAuthor = widget.postView?.postView.creator.name;
+      replyingToContent = widget.postView?.postView.post.body;
+    } else if (widget.commentView != null) {
+      replyingToAuthor = widget.commentView?.commentView?.creator.name;
+      replyingToContent = widget.commentView?.commentView?.comment.content;
+    } else if (widget.comment != null) {
+      replyingToAuthor = widget.parentCommentAuthor;
+      replyingToContent = widget.comment?.content;
     }
 
     _bodyTextController.addListener(() {
@@ -91,6 +122,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
     return MultiBlocListener(
       listeners: [
         BlocListener<PostBloc, PostState>(
@@ -198,32 +230,55 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                   Expanded(
                       child: SingleChildScrollView(
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         const SizedBox(height: 12.0),
-                        if (widget.commentView != null && widget.isEdit == false)
-                          Text(AppLocalizations.of(context)!.replyingTo(widget.commentView?.commentView!.creator.name ?? ''),
-                              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-                        if (widget.comment != null && widget.isEdit == false)
-                          Text(AppLocalizations.of(context)!.replyingTo(widget.parentCommentAuthor ?? ''), style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w400)),
-
-                        if ((widget.commentView != null || widget.comment != null) && widget.isEdit == false)
+                        if (widget.isEdit == false) Text(AppLocalizations.of(context)!.replyingTo(replyingToAuthor ?? '')),
+                        const SizedBox(
+                          height: 8.0,
+                        ),
+                        if (!widget.isEdit)
                           Container(
                             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
                             margin: const EdgeInsets.symmetric(vertical: 8.0),
-                            constraints: const BoxConstraints(maxHeight: 150.0),
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(border: Border.all(color: theme.dividerColor), borderRadius: BorderRadius.circular(8.0), color: theme.cardColor),
-                            child: Scrollbar(
-                              controller: _scrollController,
-                              trackVisibility: true,
-                              radius: const Radius.circular(16.0),
-                              child: SingleChildScrollView(
-                                controller: _scrollController,
-                                child: CommonMarkdownBody(
-                                  body: widget.commentView != null ? (widget.commentView?.commentView?.comment.content ?? 'N/A') : (widget.comment?.content ?? 'N/A'),
-                                  isSelectableText: true,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Visibility(
+                                  visible: widget.postView != null,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                        child: Text(
+                                          widget.postView?.postView.post.name ?? '',
+                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
+                                          style: theme.textTheme.titleMedium,
+                                        ),
+                                      ),
+                                      MediaView(
+                                        showLinkPreview: thunderState.showLinkPreviews,
+                                        postView: widget.postView,
+                                        hideNsfwPreviews: thunderState.hideNsfwPreviews,
+                                        markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
+                                        isUserLoggedIn: true,
+                                        disableHero: true,
+                                      ),
+                                      const SizedBox(
+                                        height: 12,
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                                CommonMarkdownBody(
+                                  body: replyingToContent ?? '',
+                                  isSelectableText: true,
+                                  isComment: true,
+                                ),
+                              ],
                             ),
                           ),
 

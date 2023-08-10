@@ -286,7 +286,7 @@ class PostSubview extends StatelessWidget {
                                     BlocProvider<ThunderBloc>.value(value: thunderBloc),
                                   ],
                                   child: CreateCommentPage(
-                                    postView: postView,
+                                    postView: postViewMedia,
                                   ),
                                 );
                               },

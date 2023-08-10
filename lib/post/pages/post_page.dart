@@ -406,7 +406,7 @@ class _PostPageState extends State<PostPage> {
                 BlocProvider<ThunderBloc>.value(value: thunderBloc),
               ],
               child: CreateCommentPage(
-                postView: widget.postView?.postView,
+                postView: widget.postView
               ));
         },
       ),
