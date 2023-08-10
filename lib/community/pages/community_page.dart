@@ -33,8 +33,9 @@ class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final PageController? pageController;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -53,10 +54,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool isActivePage = true;
 
   @override
   void initState() {
     super.initState();
+    widget.pageController?.addListener(() {
+      // This ensures that our back button handling only goes into effect when we're on the home page
+      isActivePage = widget.pageController!.page == 0;
+    });
     BackButtonInterceptor.add(_handleBack);
   }
 
@@ -459,7 +465,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 
-      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+      // If we are either (a) not on the desired listing or (b) not on the main feed (on a community instead)
+      // then go back to the main feed using the desired listing.
+      if (!canPop && isActivePage && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
         currentCommunityBloc!.add(
           GetCommunityPostsEvent(
             sortType: currentCommunityBloc!.state.sortType,

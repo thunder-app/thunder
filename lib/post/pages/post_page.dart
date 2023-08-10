@@ -168,7 +168,7 @@ class _PostPageState extends State<PostPage> {
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
-                                  override: singlePressAction == PostFabAction.backToTop
+                                  override: longPressAction == PostFabAction.backToTop
                                       ? () => {
                                             _itemScrollController.scrollTo(
                                               index: 0,
@@ -176,9 +176,9 @@ class _PostPageState extends State<PostPage> {
                                               curve: Curves.easeInOut,
                                             )
                                           }
-                                      : singlePressAction == PostFabAction.changeSort
+                                      : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
-                                          : singlePressAction == PostFabAction.replyToPost
+                                          : longPressAction == PostFabAction.replyToPost
                                               ? replyToPost
                                               : null),
                               children: [
