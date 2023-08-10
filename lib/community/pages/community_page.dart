@@ -182,6 +182,25 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       title: Text(getCommunityName(state)),
                       centerTitle: false,
                       toolbarHeight: 70.0,
+                      flexibleSpace: GestureDetector(
+                        onTap: () {
+                          if (context.read<ThunderBloc>().state.isFabOpen) {
+                            context.read<ThunderBloc>().add(const OnFabToggle(false));
+                          }
+                        },
+                      ),
+                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
+                          ? IconButton(
+                              icon: const Icon(
+                                Icons.arrow_back_rounded,
+                              ),
+                              onPressed: () {
+                                if (context.read<ThunderBloc>().state.isFabOpen) {
+                                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                }
+                                Navigator.pop(context);
+                              })
+                          : null,
                       actions: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -206,6 +225,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   _ => null,
                                 },
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   _onSubscribeIconPressed(isUserLoggedIn, context, state);
                                 },
@@ -213,6 +235,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             IconButton(
                                 icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   context.read<AccountBloc>().add(GetAccountInformation());
                                   return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
@@ -227,6 +252,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   showSortBottomSheet(context, state);
                                 }),
