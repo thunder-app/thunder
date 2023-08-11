@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 import '../../core/enums/media_type.dart';
 import '../../core/models/post_view_media.dart';
@@ -23,6 +25,8 @@ class TypeBadge extends StatelessWidget {
       return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(postViewMedia.postView.read ? 0.55 : 1);
     }
 
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+
     return SizedBox(
       height: 28,
       width: 28,
@@ -34,10 +38,10 @@ class TypeBadge extends StatelessWidget {
           topRight: Radius.circular(4),
         ),
         // This is the thin sliver between the badge and the preview.
-        // It should be made to match the read background color in compact/comfortable files.
+        // It should be made to match the read background color in the compact file.
         color: postViewMedia.postView.read
             ? Color.alphaBlend(
-                theme.colorScheme.onBackground.withOpacity(0.02),
+                theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075),
                 theme.colorScheme.background,
               )
             : theme.colorScheme.background,
