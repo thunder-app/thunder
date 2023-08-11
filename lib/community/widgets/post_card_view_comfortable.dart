@@ -82,6 +82,7 @@ class PostCardViewComfortable extends StatelessWidget {
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
       navigateToPost: navigateToPost,
+      read: postViewMedia.postView.read,
     );
 
     final bool useSaveButton = state.showSaveAction;
