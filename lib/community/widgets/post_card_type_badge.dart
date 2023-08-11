@@ -16,11 +16,11 @@ class TypeBadge extends StatelessWidget {
     final theme = Theme.of(context);
 
     Color getMaterialColor(Color blendColor) {
-      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor);
+      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor).withOpacity(postViewMedia.postView.read ? 0.55 : 1);
     }
 
     Color getIconColor(Color blendColor) {
-      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor);
+      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(postViewMedia.postView.read ? 0.55 : 1);
     }
 
     return SizedBox(
@@ -33,6 +33,8 @@ class TypeBadge extends StatelessWidget {
           bottomRight: Radius.circular(12),
           topRight: Radius.circular(4),
         ),
+        // This is the thin sliver between the badge and the preview.
+        // It should be made to match the read background color in compact/comfortable files.
         color: postViewMedia.postView.read
             ? Color.alphaBlend(
                 theme.colorScheme.onBackground.withOpacity(0.02),

@@ -35,6 +35,7 @@ class LinkPreviewCard extends StatelessWidget {
     required this.hideNsfw,
     required this.isUserLoggedIn,
     required this.markPostReadOnMediaView,
+    this.read,
   });
 
   final int? postId;
@@ -57,6 +58,8 @@ class LinkPreviewCard extends StatelessWidget {
 
   final ViewMode viewMode;
 
+  final bool? read;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -73,6 +76,7 @@ class LinkPreviewCard extends StatelessWidget {
           children: [
             if (mediaURL != null) ...[
               ImagePreview(
+                read: read,
                 url: mediaURL ?? originURL!,
                 height: showFullHeightImages ? mediaHeight : 150,
                 width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
@@ -81,28 +85,34 @@ class LinkPreviewCard extends StatelessWidget {
             ] else if (scrapeMissingPreviews)
               SizedBox(
                 height: 150,
-                child: hideNsfw
-                    ? ImageFiltered(
-                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                        child: LinkPreviewGenerator(
+                // This is used for external links when Lemmy does not provide a preview thumbnail
+                // and when the user has enabled external scraping.
+                // This is only used in comfortable mode.
+                child: Opacity(
+                  opacity: read == true ? 0.55 : 1,
+                  child: hideNsfw
+                      ? ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: LinkPreviewGenerator(
+                            link: originURL!,
+                            showBody: false,
+                            showTitle: false,
+                            placeholderWidget: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: const CircularProgressIndicator(),
+                            ),
+                            cacheDuration: Duration.zero,
+                          ))
+                      : LinkPreviewGenerator(
                           link: originURL!,
                           showBody: false,
                           showTitle: false,
-                          placeholderWidget: Container(
-                            margin: const EdgeInsets.all(15),
-                            child: const CircularProgressIndicator(),
+                          placeholderWidget: const Center(
+                            child: CircularProgressIndicator(),
                           ),
                           cacheDuration: Duration.zero,
-                        ))
-                    : LinkPreviewGenerator(
-                        link: originURL!,
-                        showBody: false,
-                        showTitle: false,
-                        placeholderWidget: const Center(
-                          child: CircularProgressIndicator(),
                         ),
-                        cacheDuration: Duration.zero,
-                      ),
+                ),
               ),
             if (hideNsfw)
               Container(
@@ -140,6 +150,7 @@ class LinkPreviewCard extends StatelessWidget {
           children: [
             mediaURL != null
                 ? ImagePreview(
+                    read: read,
                     url: mediaURL!,
                     height: 75,
                     width: 75,
@@ -149,10 +160,25 @@ class LinkPreviewCard extends StatelessWidget {
                     ? SizedBox(
                         height: 75,
                         width: 75,
-                        child: hideNsfw
-                            ? ImageFiltered(
-                                imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                                child: LinkPreviewGenerator(
+                        // This is used for external links when Lemmy does not provide a preview thumbnail
+                        // and when the user has enabled external scraping.
+                        // This is only used in compact mode.
+                        child: Opacity(
+                          opacity: read == true ? 0.55 : 1,
+                          child: hideNsfw
+                              ? ImageFiltered(
+                                  imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                                  child: LinkPreviewGenerator(
+                                    link: originURL!,
+                                    showBody: false,
+                                    showTitle: false,
+                                    placeholderWidget: Container(
+                                      margin: const EdgeInsets.all(15),
+                                      child: const CircularProgressIndicator(),
+                                    ),
+                                    cacheDuration: Duration.zero,
+                                  ))
+                              : LinkPreviewGenerator(
                                   link: originURL!,
                                   showBody: false,
                                   showTitle: false,
@@ -161,25 +187,18 @@ class LinkPreviewCard extends StatelessWidget {
                                     child: const CircularProgressIndicator(),
                                   ),
                                   cacheDuration: Duration.zero,
-                                ))
-                            : LinkPreviewGenerator(
-                                link: originURL!,
-                                showBody: false,
-                                showTitle: false,
-                                placeholderWidget: Container(
-                                  margin: const EdgeInsets.all(15),
-                                  child: const CircularProgressIndicator(),
                                 ),
-                                cacheDuration: Duration.zero,
-                              ),
+                        ),
                       )
+                    // This is used for link previews when no thumbnail comes from Lemmy
+                    // and the user has disabled scraping. This is only in compact mode.
                     : Container(
                         height: 75,
                         width: 75,
                         color: theme.cardColor.darken(5),
                         child: Icon(
                           Icons.language,
-                          color: theme.colorScheme.onSecondaryContainer,
+                          color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
             if (hideNsfw)

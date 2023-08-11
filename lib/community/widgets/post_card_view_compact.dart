@@ -82,6 +82,7 @@ class PostCardViewCompact extends StatelessWidget {
                           viewMode: ViewMode.compact,
                           isUserLoggedIn: isUserLoggedIn,
                           navigateToPost: navigateToPost,
+                          read: postViewMedia.postView.read,
                         ),
                       ),
                       Padding(
@@ -182,6 +183,7 @@ class PostCardViewCompact extends StatelessWidget {
                           viewMode: ViewMode.compact,
                           isUserLoggedIn: isUserLoggedIn,
                           navigateToPost: navigateToPost,
+                          read: postViewMedia.postView.read,
                         ),
                       ),
                       Padding(
