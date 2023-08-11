@@ -92,7 +92,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.03 : .075) : null,
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
