@@ -9,6 +9,7 @@ import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -54,8 +55,10 @@ class PostCardViewCompact extends StatelessWidget {
     final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.03 : .075) : null,
       padding: const EdgeInsets.only(
         bottom: 8.0,
         top: 6,
