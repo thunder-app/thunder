@@ -78,6 +78,7 @@ class LinkPreviewCard extends StatelessWidget {
             children: [
               if (mediaURL != null) ...[
                 ImagePreview(
+                  read: read,
                   url: mediaURL ?? originURL!,
                   height: showFullHeightImages ? mediaHeight : 150,
                   width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
