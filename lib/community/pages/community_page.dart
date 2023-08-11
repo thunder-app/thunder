@@ -191,8 +191,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       ),
                       leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
                           ? IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.arrow_back_rounded,
+                                semanticLabel: AppLocalizations.of(context)!.back,
                               ),
                               onPressed: () {
                                 if (context.read<ThunderBloc>().state.isFabOpen) {

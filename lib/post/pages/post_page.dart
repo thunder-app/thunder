@@ -129,8 +129,9 @@ class _PostPageState extends State<PostPage> {
                 },
               ),
               leading: IconButton(
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back_rounded,
+                  semanticLabel: AppLocalizations.of(context)!.back,
                 ),
                 onPressed: () {
                   if (context.read<ThunderBloc>().state.isFabOpen) {
