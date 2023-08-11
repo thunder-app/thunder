@@ -87,28 +87,34 @@ class LinkPreviewCard extends StatelessWidget {
               ] else if (scrapeMissingPreviews)
                 SizedBox(
                   height: 150,
-                  child: hideNsfw
-                      ? ImageFiltered(
-                          imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                          child: LinkPreviewGenerator(
+                  // This is used for external links when Lemmy does not provide a preview thumbnail
+                  // and when the user has enabled external scraping.
+                  // This is only used in comfortable mode.
+                  child: Opacity(
+                    opacity: read == true ? 0.55 : 1,
+                    child: hideNsfw
+                        ? ImageFiltered(
+                            imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                            child: LinkPreviewGenerator(
+                              link: originURL!,
+                              showBody: false,
+                              showTitle: false,
+                              placeholderWidget: Container(
+                                margin: const EdgeInsets.all(15),
+                                child: const CircularProgressIndicator(),
+                              ),
+                              cacheDuration: Duration.zero,
+                            ))
+                        : LinkPreviewGenerator(
                             link: originURL!,
                             showBody: false,
                             showTitle: false,
-                            placeholderWidget: Container(
-                              margin: const EdgeInsets.all(15),
-                              child: const CircularProgressIndicator(),
+                            placeholderWidget: const Center(
+                              child: CircularProgressIndicator(),
                             ),
                             cacheDuration: Duration.zero,
-                          ))
-                      : LinkPreviewGenerator(
-                          link: originURL!,
-                          showBody: false,
-                          showTitle: false,
-                          placeholderWidget: const Center(
-                            child: CircularProgressIndicator(),
                           ),
-                          cacheDuration: Duration.zero,
-                        ),
+                  ),
                 ),
               if (hideNsfw)
                 Container(
