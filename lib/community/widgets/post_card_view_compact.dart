@@ -51,11 +51,11 @@ class PostCardViewCompact extends StatelessWidget {
       color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
-    final Color? readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.03) : null,
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
       padding: const EdgeInsets.only(
         bottom: 8.0,
         top: 6,
