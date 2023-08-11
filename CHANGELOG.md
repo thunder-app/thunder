@@ -66,6 +66,7 @@
 - Fix improper back button handling - contribution from @micahmo 
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
+- Handle issue where some deferred comments won't load - contribution from @micahmo
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
