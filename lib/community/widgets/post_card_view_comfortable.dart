@@ -68,10 +68,10 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final String textContent = postViewMedia.postView.post.body ?? "";
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
+      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
     );
 
-    final Color? readColor = theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     var mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
@@ -87,195 +87,195 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
-    return Opacity(
-      opacity: postViewMedia.postView.read ? 0.4 : 1,
-      child: Container(
-        color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.03) : null,
-        padding: const EdgeInsets.symmetric(vertical: 12.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (showTitleFirst)
-              Padding(
-                padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.post.featuredCommunity ? Colors.green : null,
+    return Container(
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
+      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (showTitleFirst)
+            Padding(
+              padding: const EdgeInsets.only(left: 12, right: 12, bottom: 4),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: postViewMedia.postView.post.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: postViewMedia.postView.post.featuredCommunity
+                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                      ),
+                    ),
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
                         ),
                       ),
-                      if (postViewMedia.postView.post.featuredCommunity)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.push_pin_rounded,
-                              size: 17.0 * textScaleFactor,
-                              color: Colors.green,
-                            ),
+                    if (!useSaveButton && postViewMedia.postView.saved)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
                           ),
-                        ),
-                      if (!useSaveButton && postViewMedia.postView.saved)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.star_rounded,
-                              color: Colors.purple,
-                              size: 16.0 * textScaleFactor,
-                              semanticLabel: 'Saved',
-                            ),
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            size: 16.0 * textScaleFactor,
+                            semanticLabel: 'Saved',
                           ),
-                        ),
-                    ],
-                  ),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
-                ),
-              ),
-            if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: mediaView,
-              ),
-            if (postViewMedia.media.isNotEmpty && !edgeToEdgeImages)
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                child: mediaView,
-              ),
-            if (!showTitleFirst)
-              Padding(
-                padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
-                child: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(
-                        text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                      if (postViewMedia.postView.post.featuredCommunity)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.push_pin_rounded,
-                              size: 17.0 * textScaleFactor,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
-                      if (!useSaveButton && postViewMedia.postView.saved)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.star_rounded,
-                              color: Colors.purple,
-                              size: 16.0 * textScaleFactor,
-                              semanticLabel: 'Saved',
-                            ),
-                          ),
-                        ),
-                    ],
-                  ),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                  ],
                 ),
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
               ),
-            Visibility(
-              visible: showTextContent && textContent.isNotEmpty,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
-                child: Text(
-                  textContent,
-                  maxLines: 4,
-                  overflow: TextOverflow.ellipsis,
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.contentFontSizeScale.textScaleFactor,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: readColor,
-                  ),
+            ),
+          if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: mediaView,
+            ),
+          if (postViewMedia.media.isNotEmpty && !edgeToEdgeImages)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              child: mediaView,
+            ),
+          if (!showTitleFirst)
+            Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+              child: Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text: postViewMedia.postView.post.name,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
+                      ),
+                    ),
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      ),
+                    if (!useSaveButton && postViewMedia.postView.saved)
+                      WidgetSpan(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            left: 8.0,
+                          ),
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            size: 16.0 * textScaleFactor,
+                            semanticLabel: 'Saved',
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+              ),
+            ),
+          Visibility(
+            visible: showTextContent && textContent.isNotEmpty,
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
+              child: Text(
+                textContent,
+                maxLines: 4,
+                overflow: TextOverflow.ellipsis,
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * state.contentFontSizeScale.textScaleFactor,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: readColor,
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        PostCommunityAndAuthor(
-                          showCommunityIcons: showCommunityIcons,
-                          showInstanceName: showInstanceName,
-                          postView: postViewMedia.postView,
-                          textStyleCommunity: textStyleCommunityAndAuthor,
-                          textStyleAuthor: textStyleCommunityAndAuthor,
-                          compactMode: false,
-                          showCommunitySubscription: showCommunitySubscription,
-                        ),
-                        const SizedBox(height: 8.0),
-                        PostCardMetaData(
-                          readColor: readColor,
-                          hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
-                          score: postViewMedia.postView.counts.score,
-                          voteType: postViewMedia.postView.myVote ?? VoteType.none,
-                          comments: postViewMedia.postView.counts.comments,
-                          unreadComments: postViewMedia.postView.unreadComments,
-                          hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
-                          published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
-                        )
-                      ],
-                    ),
-                  ),
-                  IconButton(
-                      icon: const Icon(
-                        Icons.more_horiz_rounded,
-                        semanticLabel: 'Actions',
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 4.0, left: 12.0, right: 12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      PostCommunityAndAuthor(
+                        showCommunityIcons: showCommunityIcons,
+                        showInstanceName: showInstanceName,
+                        postView: postViewMedia.postView,
+                        textStyleCommunity: textStyleCommunityAndAuthor,
+                        textStyleAuthor: textStyleCommunityAndAuthor,
+                        compactMode: false,
+                        showCommunitySubscription: showCommunitySubscription,
                       ),
-                      visualDensity: VisualDensity.compact,
-                      onPressed: () {
-                        showPostActionBottomModalSheet(
-                          context,
-                          postViewMedia,
-                          actionsToInclude: [
-                            PostCardAction.visitProfile,
-                            PostCardAction.visitCommunity,
-                            PostCardAction.blockCommunity,
-                            PostCardAction.sharePost,
-                            PostCardAction.shareMedia,
-                            PostCardAction.shareLink,
-                          ],
-                        );
-                        HapticFeedback.mediumImpact();
-                      }),
-                  if (isUserLoggedIn)
-                    PostCardActions(
-                      postId: postViewMedia.postView.post.id,
-                      voteType: postViewMedia.postView.myVote ?? VoteType.none,
-                      saved: postViewMedia.postView.saved,
-                      onVoteAction: onVoteAction,
-                      onSaveAction: onSaveAction,
+                      const SizedBox(height: 8.0),
+                      PostCardMetaData(
+                        readColor: readColor,
+                        hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
+                        score: postViewMedia.postView.counts.score,
+                        voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                        comments: postViewMedia.postView.counts.comments,
+                        unreadComments: postViewMedia.postView.unreadComments,
+                        hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                        published: postViewMedia.postView.post.updated != null ? postViewMedia.postView.post.updated! : postViewMedia.postView.post.published,
+                      )
+                    ],
+                  ),
+                ),
+                IconButton(
+                    icon: const Icon(
+                      Icons.more_horiz_rounded,
+                      semanticLabel: 'Actions',
                     ),
-                ],
-              ),
-            )
-          ],
-        ),
+                    visualDensity: VisualDensity.compact,
+                    onPressed: () {
+                      showPostActionBottomModalSheet(
+                        context,
+                        postViewMedia,
+                        actionsToInclude: [
+                          PostCardAction.visitProfile,
+                          PostCardAction.visitCommunity,
+                          PostCardAction.blockCommunity,
+                          PostCardAction.sharePost,
+                          PostCardAction.shareMedia,
+                          PostCardAction.shareLink,
+                        ],
+                      );
+                      HapticFeedback.mediumImpact();
+                    }),
+                if (isUserLoggedIn)
+                  PostCardActions(
+                    postId: postViewMedia.postView.post.id,
+                    voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                    saved: postViewMedia.postView.saved,
+                    onVoteAction: onVoteAction,
+                    onSaveAction: onSaveAction,
+                  ),
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
