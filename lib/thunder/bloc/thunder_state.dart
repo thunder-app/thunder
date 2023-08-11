@@ -29,7 +29,7 @@ class ThunderState extends Equatable {
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = true,
-    this.scoreCounters = true,
+    this.scoreCounters = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
