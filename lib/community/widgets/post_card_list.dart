@@ -63,7 +63,8 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
   bool disableFabs = false;
-  bool showRead = true;
+
+  Set toRemoveSet = {};
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -245,9 +246,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 } else {
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
                   return AnimatedSwitcher(
-                    switchInCurve: Curves.ease,
                     switchOutCurve: Curves.ease,
-                    duration: Duration(milliseconds: postViewMedia.postView.read ? 400 : 0),
+                    duration: const Duration(milliseconds: 0),
+                    reverseDuration: const Duration(milliseconds: 400),
                     transitionBuilder: (child, animation) {
                       return FadeTransition(
                         opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
@@ -270,7 +271,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         ),
                       );
                     },
-                    child: !postViewMedia.postView.read || showRead
+                    child: !toRemoveSet.contains(postViewMedia.postView.post.id)
                         ? PostCard(
                             postViewMedia: postViewMedia,
                             showInstanceName: widget.communityId == null,
@@ -359,15 +360,37 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
   Future<void> dismissRead() async {
     if (widget.postViews != null) {
-      setState(() {
-        showRead = false;
-      });
-      await Future.delayed(const Duration(milliseconds: 400));
+      int unreadCount = 0;
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          unreadCount++;
+        }
+      }
+      // Load in new posts if we are about dismiss all or nearly all
+      if (unreadCount < 10) {
+        widget.onScrollEndReached();
+      }
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          setState(() {
+            toRemoveSet.add(post.postView.post.id);
+          });
+          await Future.delayed(const Duration(milliseconds: 60));
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 800));
       setState(() {
         widget.postViews!.removeWhere((e) => e.postView.read);
-        showRead = true;
+        toRemoveSet.clear();
       });
-      widget.onScrollEndReached();
+      // Load in more posts, if so many got dismissed that scrolling may not be possible
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+
+        if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+          widget.onScrollEndReached();
+        }
+      });
     }
   }
 
