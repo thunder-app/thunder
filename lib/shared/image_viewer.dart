@@ -241,7 +241,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 maxScale: 4.0,
                                 animationMaxScale: 4.0,
                                 speed: 1.0,
-                                inertialSpeed: 600.0,
+                                inertialSpeed: 250.0,
                                 initialScale: 1.0,
                                 inPageView: false,
                                 initialAlignment: InitialAlignment.center,
