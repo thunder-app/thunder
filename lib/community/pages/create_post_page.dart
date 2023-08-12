@@ -33,12 +33,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool showPreview = false;
   bool isSubmitButtonDisabled = true;
   bool isNSFW = false;
+  bool imageUploading = false;
+  bool postImageUploading = false;
   String url = "";
 
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
-  final FocusNode _markdownFocusNode = FocusNode();
+  final FocusNode _bodyFocusNode = FocusNode();
   final imageBloc = ImageBloc();
 
   @override
@@ -101,12 +103,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
           listener: (context, state) {
             if (state.status == ImageStatus.success) {
               _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              setState(() => imageUploading = false);
             }
             if (state.status == ImageStatus.successPostImage) {
               _urlTextController.text = state.imageUrl;
+              setState(() => postImageUploading = false);
+            }
+            if (state.status == ImageStatus.uploading) {
+              setState(() => imageUploading = true);
+            }
+            if (state.status == ImageStatus.uploadingPostImage) {
+              setState(() => postImageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+              setState(() {
+                imageUploading = false;
+                postImageUploading = false;
+              });
             }
           },
           bloc: imageBloc,
@@ -150,9 +164,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               hintText: AppLocalizations.of(context)!.postURL,
                               suffixIcon: IconButton(
                                   onPressed: () {
-                                    uploadImage(imageBloc, postImage: true);
+                                    if (!postImageUploading) {
+                                      uploadImage(imageBloc, postImage: true);
+                                    }
                                   },
-                                  icon: const Icon(Icons.image))),
+                                  icon: postImageUploading ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: Center(
+                                          child: SizedBox(
+                                            width: 18,
+                                            height: 18,
+                                            child: CircularProgressIndicator(),
+                                          ))) : const Icon(Icons.image))),
                         ),
                         const SizedBox(
                           height: 10,
@@ -204,8 +228,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               )
                             : MarkdownTextInputField(
                                 controller: _bodyTextController,
-                                focusNode: _markdownFocusNode,
-                                initialValue: _bodyTextController.text,
+                                focusNode: _bodyFocusNode,
                                 label: AppLocalizations.of(context)!.postBody,
                                 minLines: 8,
                                 maxLines: null,
@@ -220,7 +243,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Expanded(
                         child: MarkdownButtons(
                             controller: _bodyTextController,
-                            focusNode: _markdownFocusNode,
+                            focusNode: _bodyFocusNode,
                             actions: const [
                               MarkdownType.image,
                               MarkdownType.link,
@@ -233,12 +256,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               MarkdownType.separator,
                               MarkdownType.code,
                             ],
+                            imageIsLoading: imageUploading,
                             customImageButtonAction: () => uploadImage(imageBloc)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(
-                            onPressed: () => setState(() => showPreview = !showPreview),
+                            onPressed: () {
+                              setState(() => showPreview = !showPreview);
+                              if (!showPreview) {
+                                _bodyFocusNode.requestFocus();
+                              }
+                            },
                             icon: Icon(
                               showPreview ? Icons.visibility_outlined : Icons.visibility,
                               color: theme.colorScheme.onSecondary,

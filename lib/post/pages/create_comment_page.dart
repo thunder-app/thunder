@@ -31,12 +31,6 @@ class CreateCommentPage extends StatefulWidget {
 
   final bool isEdit;
 
-  // final bool showLinkPreviews;
-  // final bool showFullHeightImages;
-  // final bool hideNsfwPreviews;
-  // final bool edgeToEdgeImages;
-  // final bool markPostReadOnMediaView;
-
   const CreateCommentPage({
     super.key,
     this.postView,
@@ -46,11 +40,6 @@ class CreateCommentPage extends StatefulWidget {
     this.isEdit = false,
     this.selectedCommentId,
     this.selectedCommentPath,
-    // this.showLinkPreviews = false,
-    // this.showFullHeightImages = false,
-    // this.hideNsfwPreviews = true,
-    // this.edgeToEdgeImages = false,
-    // this.markPostReadOnMediaView = false,
   });
 
   @override
@@ -65,6 +54,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
   bool isLoading = false;
   bool isFailure = false;
   bool hasExited = false;
+  bool imageUploading = false;
 
   String errorMessage = '';
 
@@ -181,9 +171,14 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
           listener: (context, state) {
             if (state.status == ImageStatus.success) {
               _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              setState(() => imageUploading = false);
+            }
+            if (state.status == ImageStatus.uploading) {
+              setState(() => imageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+              setState(() => imageUploading = false);
             }
           },
           bloc: imageBloc,
@@ -300,7 +295,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
                                 focusNode: _bodyFocusNode,
                                 label: AppLocalizations.of(context)!.comment,
                                 textStyle: theme.textTheme.bodyLarge,
-                                initialValue: _bodyTextController.text,
                                 minLines: 8,
                                 maxLines: null,
                               ),
@@ -327,11 +321,17 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
                                 MarkdownType.separator,
                                 MarkdownType.code,
                               ],
+                              imageIsLoading: imageUploading,
                               customImageButtonAction: () => uploadImage(imageBloc))),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(
-                            onPressed: () => setState(() => showPreview = !showPreview),
+                            onPressed: () {
+                              setState(() => showPreview = !showPreview);
+                              if (!showPreview) {
+                                _bodyFocusNode.requestFocus();
+                              }
+                            },
                             icon: Icon(
                               showPreview ? Icons.visibility_outlined : Icons.visibility,
                               color: theme.colorScheme.onSecondary,
