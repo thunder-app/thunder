@@ -32,8 +32,9 @@ dependencies:
       ref: 77f50e5a6cdd76ae177f188e574c2df11b75a14d
   link_preview_generator:
     git:
-      url: https://github.com/thunder-app/link_preview_generator.git
-      ref: 3bc5390f6c2757afa4879db893b8de0f8cb6baef
+      # TODO: Put this back to thunder-app once thunder-app/link_preview_generator#2 is merged.
+      url: https://github.com/micahmo/link_preview_generator.git
+      ref: 11bae0fd1dd6e6e033091eb5bf453d47040a7d65
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3

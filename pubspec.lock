@@ -635,9 +635,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
-      resolved-ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
-      url: "https://github.com/thunder-app/link_preview_generator.git"
+      ref: "11bae0fd1dd6e6e033091eb5bf453d47040a7d65"
+      resolved-ref: "11bae0fd1dd6e6e033091eb5bf453d47040a7d65"
+      url: "https://github.com/micahmo/link_preview_generator.git"
     source: git
     version: "1.2.0"
   lints:
