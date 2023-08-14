@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -22,12 +23,16 @@ class CommentSubview extends StatefulWidget {
   final PostViewMedia? postViewMedia;
   final int? selectedCommentId;
   final String? selectedCommentPath;
-  final ScrollController? scrollController;
+  final int? moddingCommentId;
+  final ItemScrollController itemScrollController;
+  final ItemPositionsListener itemPositionsListener;
 
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
   final DateTime now;
   final Function(int, bool) onDeleteAction;
+
+  final List<CommunityModeratorView>? moderators;
 
   const CommentSubview({
     super.key,
@@ -38,11 +43,14 @@ class CommentSubview extends StatefulWidget {
     this.postViewMedia,
     this.selectedCommentId,
     this.selectedCommentPath,
-    this.scrollController,
+    this.moddingCommentId,
+    required this.itemScrollController,
+    required this.itemPositionsListener,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.onDeleteAction,
+    required this.moderators,
   });
 
   @override
@@ -89,13 +97,29 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       _fullCommentsAnimation.reverse();
     }
 
-    return ListView.builder(
+    return BlocListener<PostBloc, PostState>(
+      listener: (context, state) {
+        if (state.navigateCommentId > 0) {
+          widget.itemScrollController.scrollTo(
+            index: state.navigateCommentIndex,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
+        }
+      },
+      child: ScrollablePositionedList.builder(
         addSemanticIndexes: false,
-        controller: widget.scrollController,
+        itemScrollController: widget.itemScrollController,
+        itemPositionsListener: widget.itemPositionsListener,
         itemCount: getCommentsListLength(),
         itemBuilder: (context, index) {
           if (widget.postViewMedia != null && index == 0) {
-            return PostSubview(selectedCommentId: widget.selectedCommentId, useDisplayNames: state.useDisplayNames, postViewMedia: widget.postViewMedia!);
+            return PostSubview(
+              selectedCommentId: widget.selectedCommentId,
+              useDisplayNames: state.useDisplayNames,
+              postViewMedia: widget.postViewMedia!,
+              moderators: widget.moderators,
+            );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
             return Column(
@@ -108,37 +132,45 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
             );
           } else {
             return SlideTransition(
-                position: _fullCommentsOffsetAnimation,
-                child: Column(children: [
+              position: _fullCommentsOffsetAnimation,
+              child: Column(
+                children: [
                   if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
                     Center(
-                        child: Column(children: [
-                      Row(children: [
-                        const Padding(padding: EdgeInsets.only(left: 15)),
-                        Expanded(
-                            child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(50),
-                            backgroundColor: theme.colorScheme.primaryContainer,
-                            textStyle: theme.textTheme.titleMedium?.copyWith(
-                              color: theme.colorScheme.primary,
-                            ),
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              const Padding(padding: EdgeInsets.only(left: 15)),
+                              Expanded(
+                                child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    minimumSize: const Size.fromHeight(50),
+                                    backgroundColor: theme.colorScheme.primaryContainer,
+                                    textStyle: theme.textTheme.titleMedium?.copyWith(
+                                      color: theme.colorScheme.primary,
+                                    ),
+                                  ),
+                                  onPressed: () {
+                                    _animatingOut = true;
+                                    _fullCommentsAnimation.forward();
+                                  },
+                                  child: const Text('View all comments'),
+                                ),
+                              ),
+                              const Padding(padding: EdgeInsets.only(right: 15))
+                            ],
                           ),
-                          onPressed: () {
-                            _animatingOut = true;
-                            _fullCommentsAnimation.forward();
-                          },
-                          child: const Text('View all comments'),
-                        )),
-                        const Padding(padding: EdgeInsets.only(right: 15))
-                      ]),
-                      const Padding(padding: EdgeInsets.only(top: 10)),
-                    ])),
+                          const Padding(padding: EdgeInsets.only(top: 10)),
+                        ],
+                      ),
+                    ),
                   if (index != widget.comments.length + 1)
                     CommentCard(
                       now: widget.now,
                       selectCommentId: widget.selectedCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
+                      moddingCommentId: widget.moddingCommentId,
                       commentViewTree: widget.comments[index - 1],
                       collapsedCommentSet: collapsedCommentSet,
                       collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
@@ -146,6 +178,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                      moderators: widget.moderators,
                     ),
                   if (index == widget.comments.length + 1) ...[
                     if (widget.hasReachedCommentEnd == true) ...[
@@ -156,12 +189,15 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
-                              'Hmmm. It seems like you\'ve reached the bottom.',
-                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
+                              textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
                             ),
                           ),
+                          const SizedBox(
+                            height: 160,
+                          )
                         ],
                       )
                     ] else ...[
@@ -175,9 +211,13 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       )
                     ]
                   ]
-                ]));
+                ],
+              ),
+            );
           }
-        });
+        },
+      ),
+    );
   }
 
   int getCommentsListLength() {

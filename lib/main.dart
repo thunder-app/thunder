@@ -21,7 +21,7 @@ void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-  //Setting SystmeUIMode
+  //Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   // Load up environment variables
@@ -70,6 +70,19 @@ class ThunderApp extends StatelessWidget {
                   darkIsTrueBlack: state.themeType == ThemeType.pureBlack,
                 );
               }
+
+              // Set the page transitions
+              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              });
+
+              theme = theme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
+              darkTheme = darkTheme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
 
               // Set navigation bar color on Android to be transparent
               SystemChrome.setSystemUIOverlayStyle(

@@ -1,5 +1,74 @@
 ## Unreleased
 ### Added
+- Added long press on profile icon to bring up profile modal @zdzoz
+- Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
+- Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
+- Show instance taglines in the feed - contribution from @micahmo
+- Added new visual swipe gesture picker within settings - contribution from @micahmo
+- Added option to toggle tappable authors and communities in the feed - contribution from @micahmo
+- Added spinner indicator when sharing media - contribution from @micahmo
+- Added inbox unread indicators on the bottom navigation bar
+- Added more robust community navigation - contribution from @micahmo
+- Added support for navigating from image preview to comments - contribution from @micahmo
+- Added inkwell effect to comments - contribution from @CTalvio
+- Redesigned UI for creating posts - contribution from @coslu
+- Added moderator identifier to comments - contribution from @micahmo
+- Added ability to navigate to user's profile from comment body - contribution from @micahmo
+- Added support for exact community name search - contribution from @micahmo
+- Overhauled floating action button with expandable and customizable actions - contribution from @CTalvio
+- Added additional localization strings to Thunder, and added temporary language files for Swedish/Finnish
+- Added manual refreshing to the user account page - contribution from @micahmo 
+- Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
+- Added additional font scaling options for comments and metadata
+- Long-pressing on FAB shows extended actions - contribution from @micahmo
+- Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
+- Added thumbnail badges to posts for more clarity - contribution from @CTalvio
+- Added domain for posts linking to external websites - contribution from @CTalvio
+- Added comment navigation buttons - contribution from @micahmo
+- Added full screen swipe to go back on main pages
+- Added new option scrape missing external link previews which is off by default. Its purpose is to attempt to find an image when an external link thumbnail is not available - contribution @ajsosa
+
+### Changed
+- Removed tap zones for author/community on compact post cards - contribution from @CTalvio
+- Creating, deleting, and restoring a comment will update locally without requiring a refetch - contribution from @ajsosa
+- Added caching to images to improve overall experience - contribution from @micahmo
+- Respect comment deleted in reply modal, and inbox - contribution from @ajsosa
+- Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
+- Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
+- Minor sidebar shadow adjustment - contribution from @CTalvio
+- Snappier image load transition - contribution from @micahmo 
+- Align back button in image preview with the back button in the main pages - contribution from @micahmo 
+- Moved location of comment button within image preview - contribution from @micahmo 
+- Adjusted font scaling to be platform specific
+- Improve behavior of deferred comment indicator - contribution from @micahmo
+- Text scaling now respects system's font scaling. Text scaling is based off of the system font
+- Improved contrast on user chips and badges - contribution from @CTalvio 
+- Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
+- Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
+
+### Fixed
+- Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
+- Fixed the gesture conflict that can occur between pinch to zoom and tap slide to zoom - contribution from @CTalvio
+- Fixed incorrect indentation to load more replies card within comments - contribution from @ajsosa
+- Fixed another edge case of the loading more comments infinite spinning circle - contribution from @ajsosa
+- Fixed infinite spinning circle when loading a user's posts in the user profile - contribution from @ajsosa
+- Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
+- Removed sliver of border color that was present on root comments for both thick and thin style comments - contribution from @ajsosa
+- Fixed issue where saving an image on Android would save to Pictures/Pictures/Thunder instead of Pictures/Thunder
+- Fixed comment highlighting for comment context regression - contribution from @ajsosa 
+- Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
+- Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
+- Fixed missing community icons in feed - contribution from @sant0s12
+- Fixed issue where more posts would not load if initial posts fit the screen
+- Fixed issue where compact feed would not load properly when "Enable Link Preview" setting was turned on
+- Fixed semantic issue where user comments would read the improper value for downvotes
+- Fixed issue where you could not vote/save comments in quick succession
+- Fix improper back button handling - contribution from @micahmo 
+- Fixed feed page reaching the end in some cases where NSFW content is turned on
+- Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
+
+## 0.2.1+13 - 2023-07-25
+### Added
 - Added swipe gesture to toggle read/unread status on posts - contribution from @micahmo
 - Added option to enable/disable text post indicator on compact view - contribution from @micahmo
 - Added improvements to link previews to be more stable, and to work more often - contribution from @micahmo
@@ -23,7 +92,7 @@
 - Added options to show post author, and community icons within the feed - contribution from @sant0s12
 - Added option to disable NSFW content - contribution from @ajsosa
 - Added long-press action on image viewer to show image-only mode - contribution from @CTalvio
-- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo 
+- Added subscription icon in post feed when you are subscribed to a given community - contribution from @micahmo
 
 ### Changed
 - Going back from a selected community in the sidebar will bring you back to the feed view - contribution from @micahmo

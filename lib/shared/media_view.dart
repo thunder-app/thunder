@@ -26,8 +26,10 @@ class MediaView extends StatefulWidget {
   final bool edgeToEdgeImages;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
-  final bool? showLinkPreview;
+  final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
+  final void Function()? navigateToPost;
+  final bool? read;
 
   const MediaView({
     super.key,
@@ -39,7 +41,9 @@ class MediaView extends StatefulWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
-    this.showLinkPreview,
+    this.scrapeMissingPreviews,
+    this.navigateToPost,
+    this.read,
   });
 
   @override
@@ -51,7 +55,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   @override
   void initState() {
-    _controller = AnimationController(vsync: this, duration: const Duration(seconds: 1), lowerBound: 0.0, upperBound: 1.0);
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 130), lowerBound: 0.0, upperBound: 1.0);
     super.initState();
   }
 
@@ -65,20 +69,27 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    // Text posts
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
+        // This is used for previewing text posts in compact mde by showing a small version of the text
         return Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
-            color: theme.cardColor.darken(3),
+            color: theme.cardColor.darken(5),
             child: SizedBox(
               height: 75.0,
               width: 75.0,
-              child: Icon(
-                Icons.article_rounded,
-                color: theme.colorScheme.onSecondaryContainer,
-                semanticLabel: 'Article Link',
+              child: Padding(
+                padding: const EdgeInsets.only(left: 2.0),
+                child: Text(
+                  widget.postView!.postView.post.body ?? '',
+                  style: TextStyle(
+                    fontSize: 4.5,
+                    color: widget.read ?? true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+                  ),
+                ),
               ),
             ),
           ),
@@ -90,10 +101,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     bool hideNsfw = widget.hideNsfwPreviews && (widget.postView?.postView.post.nsfw ?? true);
 
+    // Link posts
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         hideNsfw: hideNsfw,
-        showLinkPreviews: widget.showLinkPreview!,
+        scrapeMissingPreviews: widget.scrapeMissingPreviews!,
         originURL: widget.postView!.media.first.originalUrl,
         mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,
@@ -104,69 +116,76 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         postId: widget.postView!.postView.post.id,
         markPostReadOnMediaView: widget.markPostReadOnMediaView,
         isUserLoggedIn: widget.isUserLoggedIn,
+        read: widget.read,
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-      child: GestureDetector(
-        onTap: () {
-          if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
-            int postId = widget.postView!.postView.post.id;
-            try {
-              UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-              userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-            } catch (e) {
-              CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-              communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-            }
-          }
-          Navigator.of(context).push(
-            PageRouteBuilder(
-              opaque: false,
-              transitionDuration: const Duration(milliseconds: 200),
-              reverseTransitionDuration: const Duration(milliseconds: 200),
-              pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-                String heroKey = generateRandomHeroString();
-
-                return ImageViewer(
-                  url: widget.postView!.media.first.mediaUrl!,
-                  heroKey: heroKey,
-                  postId: widget.postView!.postView.post.id,
-                );
-              },
-              transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-                return Align(
-                  child: FadeTransition(
-                    opacity: animation,
-                    child: child,
-                  ),
-                );
-              },
+    // The rest (media)
+    return Material(
+      clipBehavior: Clip.hardEdge,
+      borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: previewImage(context)) : previewImage(context),
+          if (hideNsfw)
+            Container(
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
+                  if (widget.viewMode != ViewMode.compact) Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                ],
+              ),
             ),
-          );
-        },
-        child: Container(
-          clipBehavior: Clip.hardEdge,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12))),
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              hideNsfw ? ImageFiltered(imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30), child: previewImage(context)) : previewImage(context),
-              if (hideNsfw)
-                Container(
-                  alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
-                  child: Column(
-                    children: [
-                      Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                      if (widget.viewMode != ViewMode.compact) const Text("NSFW - Tap to reveal", textScaleFactor: 1.5),
-                    ],
-                  ),
-                ),
-            ],
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                borderRadius: BorderRadius.circular((widget.edgeToEdgeImages ? 0 : 12)),
+                onTap: () {
+                  if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
+                    int postId = widget.postView!.postView.post.id;
+                    try {
+                      UserBloc userBloc = BlocProvider.of<UserBloc>(context);
+                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
+                    } catch (e) {
+                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+                    }
+                  }
+                  Navigator.of(context).push(
+                    PageRouteBuilder(
+                      opaque: false,
+                      transitionDuration: const Duration(milliseconds: 100),
+                      reverseTransitionDuration: const Duration(milliseconds: 50),
+                      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+                        String heroKey = generateRandomHeroString();
+
+                        return ImageViewer(
+                          url: widget.postView!.media.first.mediaUrl!,
+                          heroKey: heroKey,
+                          postId: widget.postView!.postView.post.id,
+                          navigateToPost: widget.navigateToPost,
+                        );
+                      },
+                      transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+                        return Align(
+                          child: FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
@@ -182,7 +201,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
+      // This is used for image post previews in compact and comfortable mode
       child: ExtendedImage.network(
+        color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+        colorBlendMode: widget.read == true ? BlendMode.modulate : null,
         widget.postView!.media.first.mediaUrl!,
         height: height,
         width: width,
@@ -224,43 +246,43 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 color: theme.cardColor.darken(3),
                 child: Padding(
                   padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: InkWell(
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        fit: StackFit.passthrough,
-                        children: [
-                          Container(
-                            color: theme.colorScheme.secondary.withOpacity(0.4),
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Icon(
-                                    Icons.link,
-                                  ),
+                  child: Material(
+                    clipBehavior: Clip.hardEdge,
+                    borderRadius: BorderRadius.circular(12),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      fit: StackFit.passthrough,
+                      children: [
+                        Container(
+                          color: theme.colorScheme.secondary.withOpacity(0.4),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Icon(
+                                  Icons.link,
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    widget.post?.url ?? '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.post?.url ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodyMedium,
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            if (widget.post?.url != null) {
+                              openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                            }
+                          },
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      if (widget.post?.url != null) {
-                        openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
-                      }
-                    },
                   ),
                 ),
               );

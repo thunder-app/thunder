@@ -42,11 +42,10 @@ class SavePostEvent extends PostEvent {
 }
 
 class VoteCommentEvent extends PostEvent {
-  final int? selectedCommentId;
   final int commentId;
   final VoteType score;
 
-  const VoteCommentEvent({required this.commentId, required this.score, this.selectedCommentId});
+  const VoteCommentEvent({required this.commentId, required this.score});
 }
 
 class SaveCommentEvent extends PostEvent {
@@ -77,4 +76,13 @@ class DeleteCommentEvent extends PostEvent {
   final bool deleted;
 
   const DeleteCommentEvent({required this.deleted, required this.commentId});
+}
+
+enum NavigateCommentDirection { up, down }
+
+class NavigateCommentEvent extends PostEvent {
+  final NavigateCommentDirection direction;
+  final int targetIndex;
+
+  const NavigateCommentEvent({required this.targetIndex, required this.direction});
 }

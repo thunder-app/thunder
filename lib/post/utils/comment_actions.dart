@@ -62,51 +62,10 @@ void triggerCommentAction({
   }
 }
 
-// Note: This function applies both to posts and comments.
-// The read parameter applies only to posts and can be ignored otherwise.
-// It may be wise to refactor this at some point.
-IconData? getSwipeActionIcon(SwipeAction swipeAction, {bool read = false}) {
-  switch (swipeAction) {
-    case SwipeAction.upvote:
-      return Icons.north_rounded;
-    case SwipeAction.downvote:
-      return Icons.south_rounded;
-    case SwipeAction.reply:
-      return Icons.reply_rounded;
-    case SwipeAction.edit:
-      return Icons.edit;
-    case SwipeAction.save:
-      return Icons.star_rounded;
-    case SwipeAction.toggleRead:
-      return read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined;
-    default:
-      return null;
-  }
-}
-
-// Note: This function applies to both posts and comments.
-// It may be wise to refactor it at some point.
-Color getSwipeActionColor(SwipeAction swipeAction) {
-  switch (swipeAction) {
-    case SwipeAction.upvote:
-      return Colors.orange.shade700;
-    case SwipeAction.downvote:
-      return Colors.blue.shade700;
-    case SwipeAction.reply:
-      return Colors.green.shade700;
-    case SwipeAction.edit:
-      return Colors.green.shade700;
-    case SwipeAction.save:
-      return Colors.purple.shade700;
-    case SwipeAction.toggleRead:
-      return Colors.teal.shade300;
-    default:
-      return Colors.transparent;
-  }
-}
-
 DismissDirection determineCommentSwipeDirection(bool isUserLoggedIn, ThunderState state) {
   if (!isUserLoggedIn) return DismissDirection.none;
+
+  if (state.enableCommentGestures == false) return DismissDirection.none;
 
   // If all of the actions are none, then disable swiping
   if (state.leftPrimaryCommentGesture == SwipeAction.none &&
