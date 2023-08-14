@@ -26,6 +26,7 @@
 - Added domain for posts linking to external websites - contribution from @CTalvio
 - Added comment navigation buttons - contribution from @micahmo
 - Added full screen swipe to go back on main pages
+- Added new option scrape missing external link previews which is off by default. Its purpose is to attempt to find an image when an external link thumbnail is not available - contribution @ajsosa
 
 ### Changed
 - Removed tap zones for author/community on compact post cards - contribution from @CTalvio
@@ -40,6 +41,10 @@
 - Moved location of comment button within image preview - contribution from @micahmo 
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
+- Text scaling now respects system's font scaling. Text scaling is based off of the system font
+- Improved contrast on user chips and badges - contribution from @CTalvio 
+- Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
+- Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -55,6 +60,12 @@
 - Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
 - Fixed missing community icons in feed - contribution from @sant0s12
 - Fixed issue where more posts would not load if initial posts fit the screen
+- Fixed issue where compact feed would not load properly when "Enable Link Preview" setting was turned on
+- Fixed semantic issue where user comments would read the improper value for downvotes
+- Fixed issue where you could not vote/save comments in quick succession
+- Fix improper back button handling - contribution from @micahmo 
+- Fixed feed page reaching the end in some cases where NSFW content is turned on
+- Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

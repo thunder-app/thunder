@@ -94,21 +94,28 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
     return SizedBox(
       width: 56,
       height: 56,
-      child: Center(
-        child: Material(
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4,
-          child: InkWell(
-            onTap: () {
-              context.read<ThunderBloc>().add(const OnFabToggle(false));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.close,
-                color: Theme.of(context).primaryColor,
-                semanticLabel: AppLocalizations.of(context)!.close,
+      child: AnimatedBuilder(
+        animation: _expandAnimation,
+        builder: (context, child) => child!,
+        child: FadeTransition(
+          opacity: _expandAnimation,
+          child: Center(
+            child: Material(
+              shape: const CircleBorder(),
+              clipBehavior: Clip.antiAlias,
+              elevation: 4,
+              child: InkWell(
+                onTap: () {
+                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                },
+                child: Padding(
+                  padding: const EdgeInsets.all(8),
+                  child: Icon(
+                    Icons.close,
+                    color: Theme.of(context).primaryColor,
+                    semanticLabel: AppLocalizations.of(context)!.close,
+                  ),
+                ),
               ),
             ),
           ),

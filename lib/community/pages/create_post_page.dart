@@ -176,7 +176,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                             width: 18,
                                             height: 18,
                                             child: CircularProgressIndicator(),
-                                          ))) : const Icon(Icons.image))),
+                                          ))) : Icon(Icons.image, semanticLabel: AppLocalizations.of(context)!.uploadImage))),
                         ),
                         const SizedBox(
                           height: 10,
@@ -185,7 +185,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           visible: url.isNotEmpty,
                           child: LinkPreviewCard(
                             hideNsfw: false,
-                            showLinkPreviews: true,
+                            scrapeMissingPreviews: false,
                             originURL: url,
                             mediaURL: isImageUrl(url) ? url : null,
                             mediaHeight: null,

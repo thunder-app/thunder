@@ -26,10 +26,11 @@ class MediaView extends StatefulWidget {
   final bool edgeToEdgeImages;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
-  final bool? showLinkPreview;
+  final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
   final bool disableHero;
+  final bool? read;
 
   const MediaView({
     super.key,
@@ -41,9 +42,10 @@ class MediaView extends StatefulWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     this.viewMode = ViewMode.comfortable,
-    this.showLinkPreview,
+    this.scrapeMissingPreviews,
     this.navigateToPost,
     this.disableHero = false,
+    this.read,
   });
 
   @override
@@ -72,11 +74,12 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     // Text posts
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
+        // This is used for previewing text posts in compact mde by showing a small version of the text
         return Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
-            color: theme.cardColor.darken(3),
+            color: theme.cardColor.darken(5),
             child: SizedBox(
               height: 75.0,
               width: 75.0,
@@ -84,9 +87,9 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 padding: const EdgeInsets.only(left: 2.0),
                 child: Text(
                   widget.postView!.postView.post.body ?? '',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 4.5,
-                    color: Colors.white70,
+                    color: widget.read ?? true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -104,7 +107,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     if (widget.postView!.media.firstOrNull?.mediaType == MediaType.link) {
       return LinkPreviewCard(
         hideNsfw: hideNsfw,
-        showLinkPreviews: widget.showLinkPreview!,
+        scrapeMissingPreviews: widget.scrapeMissingPreviews!,
         originURL: widget.postView!.media.first.originalUrl,
         mediaURL: widget.postView!.media.first.mediaUrl ?? widget.postView!.postView.post.thumbnailUrl,
         mediaHeight: widget.postView!.media.first.height,
@@ -115,6 +118,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         postId: widget.postView!.postView.post.id,
         markPostReadOnMediaView: widget.markPostReadOnMediaView,
         isUserLoggedIn: widget.isUserLoggedIn,
+        read: widget.read,
       );
     }
 
@@ -198,12 +202,14 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
     Widget heroChild = ExtendedImage.network(
+      color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+      colorBlendMode: widget.read == true ? BlendMode.modulate : null,
       widget.postView!.media.first.mediaUrl!,
       height: height,
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: false,
+      clearMemoryCacheWhenDispose: true,
       cacheWidth: widget.viewMode == ViewMode.compact
           ? (75 * View.of(context).devicePixelRatio.ceil())
           : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
@@ -288,6 +294,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     } else {
       return Hero(
         tag: widget.postView!.media.first.mediaUrl!,
+        // This is used for image post previews in compact and comfortable mode
         child: heroChild,
       );
     }

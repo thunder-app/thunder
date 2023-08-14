@@ -71,6 +71,19 @@ class ThunderApp extends StatelessWidget {
                 );
               }
 
+              // Set the page transitions
+              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              });
+
+              theme = theme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
+              darkTheme = darkTheme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
+
               // Set navigation bar color on Android to be transparent
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle(

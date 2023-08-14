@@ -33,8 +33,9 @@ class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final PageController? pageController;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -53,10 +54,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool isActivePage = true;
 
   @override
   void initState() {
     super.initState();
+    widget.pageController?.addListener(() {
+      // This ensures that our back button handling only goes into effect when we're on the home page
+      isActivePage = widget.pageController!.page == 0;
+    });
     BackButtonInterceptor.add(_handleBack);
   }
 
@@ -176,6 +182,26 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       title: Text(getCommunityName(state)),
                       centerTitle: false,
                       toolbarHeight: 70.0,
+                      flexibleSpace: GestureDetector(
+                        onTap: () {
+                          if (context.read<ThunderBloc>().state.isFabOpen) {
+                            context.read<ThunderBloc>().add(const OnFabToggle(false));
+                          }
+                        },
+                      ),
+                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.arrow_back_rounded,
+                                semanticLabel: AppLocalizations.of(context)!.back,
+                              ),
+                              onPressed: () {
+                                if (context.read<ThunderBloc>().state.isFabOpen) {
+                                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                }
+                                Navigator.pop(context);
+                              })
+                          : null,
                       actions: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -200,6 +226,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   _ => null,
                                 },
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   _onSubscribeIconPressed(isUserLoggedIn, context, state);
                                 },
@@ -207,6 +236,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             IconButton(
                                 icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   context.read<AccountBloc>().add(GetAccountInformation());
                                   return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
@@ -221,6 +253,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
                                 tooltip: sortTypeLabel,
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   showSortBottomSheet(context, state);
                                 }),
@@ -459,7 +494,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 
-      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+      // If we are either (a) not on the desired listing or (b) not on the main feed (on a community instead)
+      // then go back to the main feed using the desired listing.
+      if (!canPop && isActivePage && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
         currentCommunityBloc!.add(
           GetCommunityPostsEvent(
             sortType: currentCommunityBloc!.state.sortType,

@@ -150,6 +150,8 @@ class _ThunderState extends State<Thunder> {
         providers: [
           BlocProvider(create: (context) => ThunderBloc()),
           BlocProvider(create: (context) => InboxBloc()),
+          BlocProvider(create: (context) => SearchBloc()),
+          BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: WillPopScope(
           onWillPop: () async {
@@ -160,7 +162,6 @@ class _ThunderState extends State<Thunder> {
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
-                  context.read<InboxBloc>().add(const GetInboxEvent(reset: true));
                   return const Center(child: CircularProgressIndicator());
                 case ThunderStatus.loading:
                   return const Center(child: CircularProgressIndicator());
@@ -189,7 +190,9 @@ class _ThunderState extends State<Thunder> {
                               buildWhen: (previous, current) => current.status != AuthStatus.failure && current.status != AuthStatus.loading,
                               listener: (context, state) {
                                 context.read<AccountBloc>().add(GetAccountInformation());
-                                context.read<InboxBloc>().add(const GetInboxEvent());
+
+                                // Add a bit of artificial delay to allow preferences to set the proper active profile
+                                Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
                               },
                               builder: (context, state) {
                                 switch (state.status) {
@@ -212,11 +215,11 @@ class _ThunderState extends State<Thunder> {
                                       onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
-                                        CommunityPage(scaffoldKey: _feedScaffoldKey),
-                                        MultiBlocProvider(
-                                          providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
-                                          child: const SearchPage(),
+                                        CommunityPage(
+                                          scaffoldKey: _feedScaffoldKey,
+                                          pageController: pageController,
                                         ),
+                                        const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),
                                         SettingsPage(),
@@ -299,6 +302,10 @@ class _ThunderState extends State<Thunder> {
 
             if (selectedPageIndex == 0 && index == 0) {
               context.read<ThunderBloc>().add(OnScrollToTopEvent());
+            }
+
+            if (selectedPageIndex == 1 && index == 1) {
+              context.read<SearchBloc>().add(FocusSearchEvent());
             }
 
             if (selectedPageIndex != index) {
