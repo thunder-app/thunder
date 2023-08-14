@@ -126,6 +126,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
     bool? isCommentNew = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes < 15;
@@ -180,9 +181,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
               const Divider(height: 1),
               Listener(
                 behavior: HitTestBehavior.opaque,
-                onPointerDown: (event) => {},
+                // onPointerDown: (event) => {},
                 onPointerUp: (event) {
-                  setState(() => isOverridingSwipeGestureAction = false);
+                  // setState(() {
+                  //   isOverridingSwipeGestureAction = false;
+                  // });
 
                   if (swipeAction != null && swipeAction != SwipeAction.none) {
                     triggerCommentAction(
@@ -198,23 +201,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     );
                   }
                 },
-                onPointerCancel: (event) => {},
-                onPointerMove: (PointerMoveEvent event) {
-                  // Get the horizontal drag distance
-                  double horizontalDragDistance = event.delta.dx;
-
-                  // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
-                  // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
-                  if (horizontalDragDistance > 0) {
-                    if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
-                      setState(() => isOverridingSwipeGestureAction = true);
-                    }
-                  } else {
-                    if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
-                      setState(() => isOverridingSwipeGestureAction = false);
-                    }
-                  }
-                },
+                // onPointerCancel: (event) => {},
+                // onPointerMove: (PointerMoveEvent event) {
+                //   // Get the horizontal drag distance
+                //   double horizontalDragDistance = event.delta.dx;
+                //
+                //   // We are checking to see if there is a left to right swipe here. If there is a left to right swipe, and LTR swipe actions are disabled, then we disable the DismissDirection temporarily
+                //   // to allow for the full screen swipe to go back. Otherwise, we retain the default behaviour
+                //   if (horizontalDragDistance > 0) {
+                //     if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == false && dismissThreshold == 0.0) {
+                //       setState(() => isOverridingSwipeGestureAction = true);
+                //     }
+                //   } else {
+                //     if (determineCommentSwipeDirection(isUserLoggedIn, state) == DismissDirection.endToStart && isOverridingSwipeGestureAction == true) {
+                //       setState(() => isOverridingSwipeGestureAction = false);
+                //     }
+                //   }
+                // },
                 child: Dismissible(
                   direction: isOverridingSwipeGestureAction == true ? DismissDirection.none : determineCommentSwipeDirection(isUserLoggedIn, state),
                   key: ObjectKey(widget.commentViewTree.commentView!.comment.id),

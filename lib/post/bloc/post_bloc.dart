@@ -154,7 +154,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             maxDepth: COMMENT_MAX_DEPTH,
             postId: postView?.postView.post.id,
             sort: sortType,
-            limit: commentLimit,
+            //limit: commentLimit,
             type: CommentListingType.all,
             parentId: parentId,
           ))
@@ -179,7 +179,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
                 commentCount: getCommentsResponse.length,
-                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                hasReachedCommentEnd: true,//getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
