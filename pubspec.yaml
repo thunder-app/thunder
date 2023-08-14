@@ -32,7 +32,6 @@ dependencies:
       ref: 77f50e5a6cdd76ae177f188e574c2df11b75a14d
   link_preview_generator:
     git:
-      # TODO: Put this back to thunder-app once thunder-app/link_preview_generator#2 is merged.
       url: https://github.com/thunder-app/link_preview_generator.git
       ref: 0b697ff173d67743ae3c490f49b26e74c46e841c
   cupertino_icons: ^1.0.2
