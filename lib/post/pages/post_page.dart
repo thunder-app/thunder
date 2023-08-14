@@ -8,7 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -396,20 +398,27 @@ class _PostPageState extends State<PostPage> {
   void replyToPost() {
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        builder: (context) {
-          return MultiBlocProvider(
-              providers: [
-                BlocProvider<PostBloc>.value(value: postBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              ],
-              child: CreateCommentPage(
-                postView: widget.postView
-              ));
-        },
-      ),
-    );
+    if (!authBloc.state.isLoggedIn) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Not logged in")));
+    } else {
+      Navigator.of(context).push(
+        SwipeablePageRoute(
+          builder: (context) {
+            return MultiBlocProvider(
+                providers: [
+                  BlocProvider<PostBloc>.value(value: postBloc),
+                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                  BlocProvider<AccountBloc>.value(value: accountBloc),
+                ],
+                child: CreateCommentPage(
+                    postView: widget.postView
+                ));
+          },
+        ),
+      );
+    }
   }
 }

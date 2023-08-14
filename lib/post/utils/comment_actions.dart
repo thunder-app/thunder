@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -32,6 +33,7 @@ void triggerCommentAction({
     case SwipeAction.edit:
       PostBloc postBloc = context.read<PostBloc>();
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
+      AccountBloc accountBloc = context.read<AccountBloc>();
 
       Navigator.of(context).push(
         SwipeablePageRoute(
@@ -40,6 +42,7 @@ void triggerCommentAction({
               providers: [
                 BlocProvider<PostBloc>.value(value: postBloc),
                 BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                BlocProvider<AccountBloc>.value(value: accountBloc),
               ],
               child: CreateCommentPage(
                 commentView: commentViewTree,

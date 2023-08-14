@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
@@ -67,6 +68,7 @@ class CommentCardActions extends StatelessWidget {
                   HapticFeedback.mediumImpact();
                   PostBloc postBloc = context.read<PostBloc>();
                   ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                  AccountBloc accountBloc = context.read<AccountBloc>();
 
                   Navigator.of(context).push(
                     SwipeablePageRoute(
@@ -75,6 +77,7 @@ class CommentCardActions extends StatelessWidget {
                           providers: [
                             BlocProvider<PostBloc>.value(value: postBloc),
                             BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                            BlocProvider<AccountBloc>.value(value: accountBloc),
                           ],
                           child: CreateCommentPage(
                             commentView: commentViewTree,

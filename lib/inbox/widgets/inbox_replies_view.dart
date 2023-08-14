@@ -130,6 +130,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          AccountBloc accountBloc = context.read<AccountBloc>();
 
                           Navigator.of(context).push(
                             SwipeablePageRoute(
@@ -138,6 +139,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                                   BlocProvider<InboxBloc>.value(value: inboxBloc),
                                   BlocProvider<PostBloc>.value(value: postBloc),
                                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  BlocProvider<AccountBloc>.value(value: accountBloc),
                                 ], child: CreateCommentPage(comment: widget.replies[index].comment, parentCommentAuthor: widget.replies[index].creator.name));
                               },
                             ),

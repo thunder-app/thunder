@@ -104,6 +104,7 @@ class InboxMentionsView extends StatelessWidget {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          AccountBloc accountBloc = context.read<AccountBloc>();
 
                           Navigator.of(context).push(
                             SwipeablePageRoute(
@@ -112,6 +113,7 @@ class InboxMentionsView extends StatelessWidget {
                                   BlocProvider<InboxBloc>.value(value: inboxBloc),
                                   BlocProvider<PostBloc>.value(value: postBloc),
                                   BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  BlocProvider<AccountBloc>.value(value: accountBloc),
                                 ], child: CreateCommentPage(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name));
                               },
                             ),

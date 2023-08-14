@@ -1,4 +1,4 @@
-import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,6 +7,7 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 
@@ -18,6 +19,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -46,20 +48,19 @@ class CreateCommentPage extends StatefulWidget {
   State<CreateCommentPage> createState() => _CreateCommentPageState();
 }
 
-class _CreateCommentPageState extends State<CreateCommentPage> with TickerProviderStateMixin {
+class _CreateCommentPageState extends State<CreateCommentPage> {
   bool showPreview = false;
   bool isClearButtonDisabled = false;
   bool isSubmitButtonDisabled = true;
 
   bool isLoading = false;
-  bool isFailure = false;
   bool hasExited = false;
   bool imageUploading = false;
-
-  String errorMessage = '';
+  bool accountError = false;
 
   String? replyingToAuthor;
   String? replyingToContent;
+  PersonSafe? person;
 
   final ScrollController _scrollController = ScrollController();
   final TextEditingController _bodyTextController = TextEditingController();
@@ -99,6 +100,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
         setState(() => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
       });
     });
+
+    context.read<AccountBloc>().add(GetAccountInformation());
   }
 
   @override
@@ -113,8 +116,20 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState thunderState = context.read<ThunderBloc>().state;
+    // final PersonSafe person = context.read<AccountBloc>().state.personView!.person;
+    // PersonSafe person = context.read<AccountBloc>().state.personView!.person;
     return MultiBlocListener(
       listeners: [
+        BlocListener<AccountBloc, AccountState>(
+          listenWhen: (previous, current) => previous.status != current.status,
+          listener: (listenerContext, state) {
+            if (state.status == AccountStatus.success) {
+              setState(() => person = state.personView?.person);
+            } else if (state.status != AccountStatus.loading) {
+              setState(() => accountError = true);
+            }
+          },
+        ),
         BlocListener<PostBloc, PostState>(
           listenWhen: (previous, current) {
             return previous.status != current.status;
@@ -127,16 +142,16 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
             if (state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
               setState(() {
                 isLoading = true;
-                isFailure = true;
-                errorMessage = '';
               });
             }
             if (state.status == PostStatus.failure) {
               setState(() {
                 isLoading = false;
-                isFailure = true;
-                errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
               });
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text(state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError),
+                duration: const Duration(days: 1),
+              ));
             }
           },
         ),
@@ -153,15 +168,15 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
               if (state.status == InboxStatus.loading || state.status == InboxStatus.refreshing) {
                 setState(() {
                   isLoading = true;
-                  isFailure = true;
-                  errorMessage = '';
                 });
               }
               if (state.status == InboxStatus.failure) {
                 setState(() {
                   isLoading = false;
-                  isFailure = true;
-                  errorMessage = AppLocalizations.of(context)!.unexpectedError;
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text(AppLocalizations.of(context)!.unexpectedError),
+                    duration: const Duration(days: 1),
+                  ));
                 });
               }
             },
@@ -278,6 +293,59 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
                           ),
 
                         const SizedBox(height: 12.0),
+                        accountError
+                            ? Row(
+                                children: [
+                                  const Icon(Icons.warning_rounded),
+                                  const SizedBox(width: 8.0,),
+                                  Text(AppLocalizations.of(context)!.fetchAccountError),
+                                  const SizedBox(width: 8.0,),
+                                  TextButton.icon(
+                                      onPressed: () {
+                                        context.read<AccountBloc>().add(GetAccountInformation());
+                                        setState(() => accountError = false);
+                                      },
+                                      icon: const Icon(Icons.refresh_rounded),
+                                      label: Text(AppLocalizations.of(context)!.retry))
+                                ],
+                              )
+                            : person != null
+                                ? Row(
+                                    children: [
+                                      CircleAvatar(
+                                        foregroundImage: person!.avatar != null ? CachedNetworkImageProvider(person!.avatar!) : null,
+                                        maxRadius: 20,
+                                      ),
+                                      const SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(person!.displayName ?? person!.name),
+                                          Text(
+                                            '${person!.name}@${fetchInstanceNameFromUrl(person!.actorId) ?? '-'}',
+                                            style: theme.textTheme.bodySmall,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  )
+                                : const SizedBox(
+                                    width: 40,
+                                    height: 40,
+                                    child: Center(
+                                      child: SizedBox(
+                                        width: 32,
+                                        height: 32,
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                    ),
+                                  ),
+                        const SizedBox(
+                          height: 12.0,
+                        ),
                         (showPreview)
                             ? Container(
                                 constraints: const BoxConstraints(minWidth: double.infinity),
@@ -342,7 +410,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> with TickerProvid
                       ),
                     ],
                   ),
-                  if (isFailure) AutoSizeText(errorMessage, maxLines: 3),
                 ],
               ),
             ),

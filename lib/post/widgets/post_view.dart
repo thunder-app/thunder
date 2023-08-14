@@ -276,6 +276,7 @@ class PostSubview extends StatelessWidget {
                       ? () {
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
 
                           Navigator.of(context).push(
                             SwipeablePageRoute(
@@ -284,6 +285,7 @@ class PostSubview extends StatelessWidget {
                                   providers: [
                                     BlocProvider<PostBloc>.value(value: postBloc),
                                     BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
                                   ],
                                   child: CreateCommentPage(
                                     postView: postViewMedia,
