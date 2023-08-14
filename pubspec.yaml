@@ -21,7 +21,7 @@ dependencies:
   markdown_editable_textinput:
     git:
       url: https://github.com/hjiangsu/markdown-editable-textinput.git
-      ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
+      ref: 3ded84267bb951a1d9312a308313d47ea714d210
   extended_image:
     git:
       url: https://github.com/hjiangsu/extended_image.git
