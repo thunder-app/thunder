@@ -13,6 +13,7 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/link_preview_card.dart';
+import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
@@ -129,17 +130,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Column(children: <Widget>[
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                         const SizedBox(height: 12.0),
                         Row(
                           children: [
                             CommunityIcon(community: widget.communityInfo?.communityView.community, radius: 16),
                             const SizedBox(
-                              width: 20,
+                              width: 12,
                             ),
                             Text(
                               '${widget.communityInfo?.communityView.community.name} '
@@ -148,6 +148,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 12.0),
+                        const UserIndicator(),
                         const SizedBox(height: 12.0),
                         TextFormField(
                           controller: _titleTextController,

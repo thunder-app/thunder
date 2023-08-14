@@ -110,6 +110,7 @@ enum FeedFabAction {
       case FeedFabAction.newPost:
         if (bloc != null) {
           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+          AccountBloc accountBloc = context.read<AccountBloc>();
           Navigator.of(context).push(
             SwipeablePageRoute(
               builder: (context) {
@@ -117,6 +118,7 @@ enum FeedFabAction {
                   providers: [
                     BlocProvider<CommunityBloc>.value(value: bloc),
                     BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                    BlocProvider<AccountBloc>.value(value: accountBloc),
                   ],
                   child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
                 );

@@ -49,6 +49,6 @@
   "comment": "Comment",
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Unexpected Error",
-  "fetchAccountError": "Could not determine active account",
+  "fetchAccountError": "Could not determine account",
   "retry": "Retry"
 }
