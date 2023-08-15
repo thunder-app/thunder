@@ -52,6 +52,7 @@
 - Improved contrast on user chips and badges - contribution from @CTalvio
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
 - Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
+- Prioritize and label the default accent color - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
