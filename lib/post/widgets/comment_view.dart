@@ -97,6 +97,119 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
       _fullCommentsAnimation.reverse();
     }
 
+    List<Widget> items = [];
+    for (var index = 0; index < getCommentsListLength(); index++) {
+      if (widget.postViewMedia != null && index == 0) {
+        items.add(PostSubview(
+          selectedCommentId: widget.selectedCommentId,
+          useDisplayNames: state.useDisplayNames,
+          postViewMedia: widget.postViewMedia!,
+          moderators: widget.moderators,
+        ));
+        continue;
+      }
+      if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
+        items.add(Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: const CircularProgressIndicator(),
+            ),
+          ],
+        ));
+        continue;
+      } else {
+        items.add(SlideTransition(
+          position: _fullCommentsOffsetAnimation,
+          child: Column(
+            children: [
+              if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
+                Center(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const Padding(padding: EdgeInsets.only(left: 15)),
+                          Expanded(
+                            child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(50),
+                                backgroundColor: theme.colorScheme.primaryContainer,
+                                textStyle: theme.textTheme.titleMedium?.copyWith(
+                                  color: theme.colorScheme.primary,
+                                ),
+                              ),
+                              onPressed: () {
+                                _animatingOut = true;
+                                _fullCommentsAnimation.forward();
+                              },
+                              child: const Text('View all comments'),
+                            ),
+                          ),
+                          const Padding(padding: EdgeInsets.only(right: 15))
+                        ],
+                      ),
+                      const Padding(padding: EdgeInsets.only(top: 10)),
+                    ],
+                  ),
+                ),
+              if (index != widget.comments.length + 1) ...[
+                  CommentCard(
+                    now: widget.now,
+                    selectCommentId: widget.selectedCommentId,
+                    selectedCommentPath: widget.selectedCommentPath,
+                    moddingCommentId: widget.moddingCommentId,
+                    commentViewTree: widget.comments[index - 1],
+                    collapsedCommentSet: collapsedCommentSet,
+                    collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
+                    onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                    onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                    onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
+                    onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                    moderators: widget.moderators,
+                  ),
+              ],
+              if (index == widget.comments.length + 1) ...[
+                if (widget.hasReachedCommentEnd == true) ...[
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        color: theme.dividerColor.withOpacity(0.1),
+                        padding: const EdgeInsets.symmetric(vertical: 32.0),
+                        child: Text(
+                          widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
+                          textScaleFactor: MediaQuery
+                              .of(context)
+                              .textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                          textAlign: TextAlign.center,
+                          style: theme.textTheme.titleSmall,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 160,
+                      )
+                    ],
+                  )
+                ] else
+                  ...[
+                    Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: const CircularProgressIndicator(),
+                        ),
+                      ],
+                    )
+                  ]
+              ]
+            ],
+          ),
+        ));
+      }
+      //}
+    }
+
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
         if (state.navigateCommentId > 0) {
@@ -107,116 +220,15 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
           );
         }
       },
-      child: ScrollablePositionedList.builder(
-        addSemanticIndexes: false,
-        itemScrollController: widget.itemScrollController,
-        itemPositionsListener: widget.itemPositionsListener,
-        itemCount: getCommentsListLength(),
-        itemBuilder: (context, index) {
-          if (widget.postViewMedia != null && index == 0) {
-            return PostSubview(
-              selectedCommentId: widget.selectedCommentId,
-              useDisplayNames: state.useDisplayNames,
-              postViewMedia: widget.postViewMedia!,
-              moderators: widget.moderators,
-            );
-          }
-          if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
-            return Column(
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: const CircularProgressIndicator(),
-                ),
-              ],
-            );
-          } else {
-            return SlideTransition(
-              position: _fullCommentsOffsetAnimation,
-              child: Column(
-                children: [
-                  if (widget.selectedCommentId != null && !_animatingIn && index != widget.comments.length + 1)
-                    Center(
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              const Padding(padding: EdgeInsets.only(left: 15)),
-                              Expanded(
-                                child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                    minimumSize: const Size.fromHeight(50),
-                                    backgroundColor: theme.colorScheme.primaryContainer,
-                                    textStyle: theme.textTheme.titleMedium?.copyWith(
-                                      color: theme.colorScheme.primary,
-                                    ),
-                                  ),
-                                  onPressed: () {
-                                    _animatingOut = true;
-                                    _fullCommentsAnimation.forward();
-                                  },
-                                  child: const Text('View all comments'),
-                                ),
-                              ),
-                              const Padding(padding: EdgeInsets.only(right: 15))
-                            ],
-                          ),
-                          const Padding(padding: EdgeInsets.only(top: 10)),
-                        ],
-                      ),
-                    ),
-                  if (index != widget.comments.length + 1)
-                    CommentCard(
-                      now: widget.now,
-                      selectCommentId: widget.selectedCommentId,
-                      selectedCommentPath: widget.selectedCommentPath,
-                      moddingCommentId: widget.moddingCommentId,
-                      commentViewTree: widget.comments[index - 1],
-                      collapsedCommentSet: collapsedCommentSet,
-                      collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
-                      onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                      onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
-                      onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
-                      onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                      moderators: widget.moderators,
-                    ),
-                  if (index == widget.comments.length + 1) ...[
-                    if (widget.hasReachedCommentEnd == true) ...[
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            color: theme.dividerColor.withOpacity(0.1),
-                            padding: const EdgeInsets.symmetric(vertical: 32.0),
-                            child: Text(
-                              widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
-                              textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                              textAlign: TextAlign.center,
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 160,
-                          )
-                        ],
-                      )
-                    ] else ...[
-                      Column(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            child: const CircularProgressIndicator(),
-                          ),
-                        ],
-                      )
-                    ]
-                  ]
-                ],
-              ),
-            );
-          }
-        },
-      ),
+      child: ListView(
+          //ScrollablePositionedList.builder(
+          addSemanticIndexes: false,
+          // itemScrollController: widget.itemScrollController,
+          // itemPositionsListener: widget.itemPositionsListener,
+          // itemCount: getCommentsListLength(),
+          // itemBuilder: (context, index) {
+          children: items //},
+          ),
     );
   }
 
