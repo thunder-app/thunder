@@ -2,6 +2,9 @@
 ### Added
 - Show OP identification first more self/mod/admin - contribution from @micahmo
 - Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
+- Redesign UI for creating comments - contribution from @coslu
+- Support uploading images to comments - contribution from @coslu
+- Show active user indicator when creating posts and comments - contribution from @coslu
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
