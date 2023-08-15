@@ -1,5 +1,18 @@
 ## Unreleased
 ### Added
+- Show OP identification first more self/mod/admin - contribution from @micahmo
+- Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
+
+### Changed
+- Prioritize and label the default accent color - contribution from @micahmo
+- Hide the gesture customize hint when the gestures are disabled - contribution from @micahmo
+- Improvements to text post indicator preview - contribution from @micahmo
+
+### Fixed
+- Handle issue where some deferred comments won't load - contribution from @micahmo
+
+## 0.2.2+15 - 2023-08-14
+### Added
 - Added long press on profile icon to bring up profile modal @zdzoz
 - Added spinning circle animation on comment card while waiting for comment to be deleted/restored - contribution from @ajsosa
 - Added vote count to comment card in comment list for the user profile - contribution from @ajsosa
@@ -17,8 +30,8 @@
 - Added support for exact community name search - contribution from @micahmo
 - Overhauled floating action button with expandable and customizable actions - contribution from @CTalvio
 - Added additional localization strings to Thunder, and added temporary language files for Swedish/Finnish
-- Added manual refreshing to the user account page - contribution from @micahmo 
-- Added inkwell effect when tapping on usernames in comments - contribution from @micahmo 
+- Added manual refreshing to the user account page - contribution from @micahmo
+- Added inkwell effect when tapping on usernames in comments - contribution from @micahmo
 - Added additional font scaling options for comments and metadata
 - Long-pressing on FAB shows extended actions - contribution from @micahmo
 - Added support for customziable short-press and long-press FAB actions - contribution from @micahmo
@@ -36,13 +49,13 @@
 - Improvements to sort picker to allow for navigating back when selecting top option - contribution from @micahmo
 - Minor UI improvements to comment images, community image banners, and image viewer - contribution from @CTalvio
 - Minor sidebar shadow adjustment - contribution from @CTalvio
-- Snappier image load transition - contribution from @micahmo 
-- Align back button in image preview with the back button in the main pages - contribution from @micahmo 
-- Moved location of comment button within image preview - contribution from @micahmo 
+- Snappier image load transition - contribution from @micahmo
+- Align back button in image preview with the back button in the main pages - contribution from @micahmo
+- Moved location of comment button within image preview - contribution from @micahmo
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
 - Text scaling now respects system's font scaling. Text scaling is based off of the system font
-- Improved contrast on user chips and badges - contribution from @CTalvio 
+- Improved contrast on user chips and badges - contribution from @CTalvio
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
 - Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
 
@@ -55,17 +68,18 @@
 - Fixed issue where toast notifications were not showing up in the post page - contribution from @ajsosa
 - Removed sliver of border color that was present on root comments for both thick and thin style comments - contribution from @ajsosa
 - Fixed issue where saving an image on Android would save to Pictures/Pictures/Thunder instead of Pictures/Thunder
-- Fixed comment highlighting for comment context regression - contribution from @ajsosa 
-- Fixed another instance of infinite spin for comment loading - contribution from @ajsosa 
+- Fixed comment highlighting for comment context regression - contribution from @ajsosa
+- Fixed another instance of infinite spin for comment loading - contribution from @ajsosa
 - Fixed mis-aligned previews in comfort cards for edge-to-edge links from @Fmstrat
 - Fixed missing community icons in feed - contribution from @sant0s12
 - Fixed issue where more posts would not load if initial posts fit the screen
 - Fixed issue where compact feed would not load properly when "Enable Link Preview" setting was turned on
 - Fixed semantic issue where user comments would read the improper value for downvotes
 - Fixed issue where you could not vote/save comments in quick succession
-- Fix improper back button handling - contribution from @micahmo 
+- Fix improper back button handling - contribution from @micahmo
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
+- Fixed community/user link handling from posts - contribution from @micahmo
 
 ## 0.2.1+13 - 2023-07-25
 ### Added

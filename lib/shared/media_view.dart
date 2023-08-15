@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -80,20 +81,33 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
             color: theme.cardColor.darken(5),
-            child: SizedBox(
-              height: 75.0,
-              width: 75.0,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(
-                  widget.postView!.postView.post.body ?? '',
-                  style: TextStyle(
-                    fontSize: 4.5,
-                    color: widget.read ?? true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+            child: widget.postView!.postView.post.body?.isNotEmpty == true
+                ? SizedBox(
+                    height: 75.0,
+                    width: 75.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.postView!.postView.post.body!,
+                          style: TextStyle(
+                            fontSize: min(20, max(4.5, (20 * (1 / log(widget.postView!.postView.post.body!.length))))),
+                            color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 75,
+                    width: 75,
+                    color: theme.cardColor.darken(5),
+                    child: Icon(
+                      Icons.text_fields_rounded,
+                      color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
       } else {
