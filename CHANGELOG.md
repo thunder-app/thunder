@@ -45,6 +45,7 @@
 - Improved contrast on user chips and badges - contribution from @CTalvio 
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
 - Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
+- Show OP identification first more self/mod/admin - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where the community post feed was missing the last post - contribution from @ajsosa
@@ -66,6 +67,7 @@
 - Fix improper back button handling - contribution from @micahmo 
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
+- Fixed community/user link handling from posts - contribution from @micahmo
 
 ## 0.2.1+13 - 2023-07-25
 ### Added
