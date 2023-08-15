@@ -29,3 +29,5 @@ class ContinueSearchEvent extends SearchEvent {
 
   const ContinueSearchEvent({required this.query, required this.sortType});
 }
+
+class FocusSearchEvent extends SearchEvent {}

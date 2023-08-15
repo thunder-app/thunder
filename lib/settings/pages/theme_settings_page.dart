@@ -33,9 +33,12 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   // For now, we will use the pre-made themes provided by FlexScheme
   // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
 
-  List<ListPickerItem> customThemeOptions = CustomThemeType.values.map((CustomThemeType scheme) {
-    return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
-  }).toList();
+  List<ListPickerItem> customThemeOptions = [
+    ListPickerItem(color: CustomThemeType.deepBlue.color, label: '${CustomThemeType.deepBlue.label} (Default)', payload: CustomThemeType.deepBlue),
+    ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
+      return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
+    }).toList()
+  ];
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;

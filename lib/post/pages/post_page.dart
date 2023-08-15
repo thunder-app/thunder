@@ -122,6 +122,25 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              flexibleSpace: GestureDetector(
+                onTap: () {
+                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  }
+                },
+              ),
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                  semanticLabel: AppLocalizations.of(context)!.back,
+                ),
+                onPressed: () {
+                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  }
+                  Navigator.pop(context);
+                },
+              ),
               actions: [
                 IconButton(
                   icon: Icon(
@@ -129,7 +148,12 @@ class _PostPageState extends State<PostPage> {
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
                   tooltip: sortTypeLabel,
-                  onPressed: () => showSortBottomSheet(context, state),
+                  onPressed: () {
+                    if (context.read<ThunderBloc>().state.isFabOpen) {
+                      context.read<ThunderBloc>().add(const OnFabToggle(false));
+                    }
+                    showSortBottomSheet(context, state);
+                  },
                 ),
               ],
               centerTitle: false,

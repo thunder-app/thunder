@@ -35,6 +35,7 @@ class LinkPreviewCard extends StatelessWidget {
     required this.hideNsfw,
     required this.isUserLoggedIn,
     required this.markPostReadOnMediaView,
+    this.read,
   });
 
   final int? postId;
@@ -57,77 +58,88 @@ class LinkPreviewCard extends StatelessWidget {
 
   final ViewMode viewMode;
 
+  final bool? read;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
-      return Container(
-        clipBehavior: Clip.hardEdge,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
-        ),
-        child: Stack(
-          alignment: Alignment.bottomRight,
-          fit: StackFit.passthrough,
-          children: [
-            if (mediaURL != null) ...[
-              ImagePreview(
-                url: mediaURL ?? originURL!,
-                height: showFullHeightImages ? mediaHeight : 150,
-                width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
-                isExpandable: false,
-              )
-            ] else if (scrapeMissingPreviews)
-              SizedBox(
-                height: 150,
-                child: hideNsfw
-                    ? ImageFiltered(
-                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
-                        child: LinkPreviewGenerator(
+      return Semantics(
+        label: originURL ?? mediaURL,
+        child: Container(
+          clipBehavior: Clip.hardEdge,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+          ),
+          child: Stack(
+            alignment: Alignment.bottomRight,
+            fit: StackFit.passthrough,
+            children: [
+              if (mediaURL != null) ...[
+                ImagePreview(
+                  read: read,
+                  url: mediaURL ?? originURL!,
+                  height: showFullHeightImages ? mediaHeight : 150,
+                  width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                  isExpandable: false,
+                )
+              ] else if (scrapeMissingPreviews)
+                SizedBox(
+                  height: 150,
+                  // This is used for external links when Lemmy does not provide a preview thumbnail
+                  // and when the user has enabled external scraping.
+                  // This is only used in comfortable mode.
+                  child: hideNsfw
+                      ? ImageFiltered(
+                          imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                          child: LinkPreviewGenerator(
+                            opacity: read == true ? 0.55 : 1,
+                            link: originURL!,
+                            showBody: false,
+                            showTitle: false,
+                            placeholderWidget: Container(
+                              margin: const EdgeInsets.all(15),
+                              child: const CircularProgressIndicator(),
+                            ),
+                            cacheDuration: Duration.zero,
+                          ))
+                      : LinkPreviewGenerator(
+                          opacity: read == true ? 0.55 : 1,
                           link: originURL!,
                           showBody: false,
                           showTitle: false,
-                          placeholderWidget: Container(
-                            margin: const EdgeInsets.all(15),
-                            child: const CircularProgressIndicator(),
+                          placeholderWidget: const Center(
+                            child: CircularProgressIndicator(),
                           ),
                           cacheDuration: Duration.zero,
-                        ))
-                    : LinkPreviewGenerator(
-                        link: originURL!,
-                        showBody: false,
-                        showTitle: false,
-                        placeholderWidget: const Center(
-                          child: CircularProgressIndicator(),
                         ),
-                        cacheDuration: Duration.zero,
-                      ),
-              ),
-            if (hideNsfw)
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-                    const Icon(Icons.warning_rounded, size: 55),
-                    // This won't show but it does cause the icon above to center
-                    Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
-                  ],
+                ),
+              if (hideNsfw)
+                Container(
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    children: [
+                      const Icon(Icons.warning_rounded, size: 55),
+                      // This won't show but it does cause the icon above to center
+                      Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                    ],
+                  ),
+                ),
+              linkInformation(context),
+              Positioned.fill(
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: theme.colorScheme.primary.withOpacity(0.4),
+                    onTap: () => triggerOnTap(context),
+                    borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
+                  ),
                 ),
               ),
-            linkInformation(context),
-            Positioned.fill(
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  splashColor: theme.colorScheme.primary.withOpacity(0.4),
-                  onTap: () => triggerOnTap(context),
-                  borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
-                ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
     } else if ((mediaURL != null || originURL != null) && viewMode == ViewMode.compact) {
@@ -140,6 +152,7 @@ class LinkPreviewCard extends StatelessWidget {
           children: [
             mediaURL != null
                 ? ImagePreview(
+                    read: read,
                     url: mediaURL!,
                     height: 75,
                     width: 75,
@@ -149,10 +162,14 @@ class LinkPreviewCard extends StatelessWidget {
                     ? SizedBox(
                         height: 75,
                         width: 75,
+                        // This is used for external links when Lemmy does not provide a preview thumbnail
+                        // and when the user has enabled external scraping.
+                        // This is only used in compact mode.
                         child: hideNsfw
                             ? ImageFiltered(
                                 imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
                                 child: LinkPreviewGenerator(
+                                  opacity: read == true ? 0.55 : 1,
                                   link: originURL!,
                                   showBody: false,
                                   showTitle: false,
@@ -163,6 +180,7 @@ class LinkPreviewCard extends StatelessWidget {
                                   cacheDuration: Duration.zero,
                                 ))
                             : LinkPreviewGenerator(
+                                opacity: read == true ? 0.55 : 1,
                                 link: originURL!,
                                 showBody: false,
                                 showTitle: false,
@@ -173,13 +191,15 @@ class LinkPreviewCard extends StatelessWidget {
                                 cacheDuration: Duration.zero,
                               ),
                       )
+                    // This is used for link previews when no thumbnail comes from Lemmy
+                    // and the user has disabled scraping. This is only in compact mode.
                     : Container(
                         height: 75,
                         width: 75,
                         color: theme.cardColor.darken(5),
                         child: Icon(
                           Icons.language,
-                          color: theme.colorScheme.onSecondaryContainer,
+                          color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
             if (hideNsfw)
@@ -273,31 +293,34 @@ class LinkPreviewCard extends StatelessWidget {
 
   Widget linkInformation(BuildContext context) {
     final theme = Theme.of(context);
-    return Container(
-      color: ElevationOverlay.applySurfaceTint(
-        Theme.of(context).colorScheme.surface.withOpacity(0.8),
-        Theme.of(context).colorScheme.surfaceTint,
-        10,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-      child: Row(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8.0),
-            child: Icon(
-              Icons.link,
-              color: theme.colorScheme.onSecondaryContainer,
-            ),
-          ),
-          if (viewMode != ViewMode.compact)
-            Expanded(
-              child: Text(
-                originURL!,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium,
+    return Semantics(
+      excludeSemantics: true,
+      child: Container(
+        color: ElevationOverlay.applySurfaceTint(
+          Theme.of(context).colorScheme.surface.withOpacity(0.8),
+          Theme.of(context).colorScheme.surfaceTint,
+          10,
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+        child: Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: Icon(
+                Icons.link,
+                color: theme.colorScheme.onSecondaryContainer,
               ),
             ),
-        ],
+            if (viewMode != ViewMode.compact)
+              Expanded(
+                child: Text(
+                  originURL!,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodyMedium,
+                ),
+              ),
+          ],
+        ),
       ),
     );
   }
