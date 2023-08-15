@@ -50,5 +50,7 @@
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Unexpected Error",
   "fetchAccountError": "Could not determine account",
-  "retry": "Retry"
+  "retry": "Retry",
+  "mustBeLoggedInPost": "You need to be logged in to create a post",
+  "mustBeLoggedInComment": "You need to be logged in to comment"
 }

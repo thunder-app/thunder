@@ -1,5 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -19,7 +18,6 @@ class _UserIndicatorState extends State<UserIndicator> {
   bool accountError = false;
   PersonSafe? person;
 
-
   @override
   void initState() {
     super.initState();
@@ -38,15 +36,21 @@ class _UserIndicatorState extends State<UserIndicator> {
           setState(() => accountError = true);
         }
       },
-      child: SizedBox(height: 40,
+      child: SizedBox(
+        height: 40,
         child: accountError
-            ? Row(crossAxisAlignment: CrossAxisAlignment.center,
+            ? Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   const Icon(Icons.warning_rounded),
                   const SizedBox(
                     width: 8.0,
                   ),
-                  Expanded(child: Text(AppLocalizations.of(context)!.fetchAccountError,overflow: TextOverflow.ellipsis,)),
+                  Expanded(
+                      child: Text(
+                    AppLocalizations.of(context)!.fetchAccountError,
+                    overflow: TextOverflow.ellipsis,
+                  )),
                   TextButton.icon(
                       onPressed: () {
                         context.read<AccountBloc>().add(GetAccountInformation());
@@ -60,10 +64,11 @@ class _UserIndicatorState extends State<UserIndicator> {
                 ? Row(
                     children: [
                       CircleAvatar(
-                        foregroundImage: person!.avatar != null ? CachedNetworkImageProvider(person!.avatar!, errorListener: () {
-                          setState (() => accountError = true);
-                          print("Error");
-                        }) : null,
+                        foregroundImage: person!.avatar != null
+                            ? CachedNetworkImageProvider(person!.avatar!, errorListener: () {
+                                setState(() => accountError = true);
+                              })
+                            : null,
                         maxRadius: 16,
                       ),
                       const SizedBox(

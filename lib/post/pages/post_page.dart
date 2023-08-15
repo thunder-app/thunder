@@ -426,20 +426,16 @@ class _PostPageState extends State<PostPage> {
     AccountBloc accountBloc = context.read<AccountBloc>();
 
     if (!authBloc.state.isLoggedIn) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Not logged in")));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.mustBeLoggedInComment)));
     } else {
       Navigator.of(context).push(
         SwipeablePageRoute(
           builder: (context) {
-            return MultiBlocProvider(
-                providers: [
-                  BlocProvider<PostBloc>.value(value: postBloc),
-                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  BlocProvider<AccountBloc>.value(value: accountBloc),
-                ],
-                child: CreateCommentPage(
-                    postView: widget.postView
-                ));
+            return MultiBlocProvider(providers: [
+              BlocProvider<PostBloc>.value(value: postBloc),
+              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              BlocProvider<AccountBloc>.value(value: accountBloc),
+            ], child: CreateCommentPage(postView: widget.postView));
           },
         ),
       );

@@ -170,15 +170,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                       uploadImage(imageBloc, postImage: true);
                                     }
                                   },
-                                  icon: postImageUploading ? const SizedBox(
-                                      width: 20,
-                                      height: 20,
-                                      child: Center(
-                                          child: SizedBox(
+                                  icon: postImageUploading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: Center(
+                                              child: SizedBox(
                                             width: 18,
                                             height: 18,
                                             child: CircularProgressIndicator(),
-                                          ))) : Icon(Icons.image, semanticLabel: AppLocalizations.of(context)!.uploadImage))),
+                                          )))
+                                      : Icon(Icons.image, semanticLabel: AppLocalizations.of(context)!.uploadImage))),
                         ),
                         const SizedBox(
                           height: 10,
