@@ -11,6 +11,7 @@ import 'package:thunder/community/widgets/post_card_actions.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -82,13 +83,16 @@ class PostCardViewComfortable extends StatelessWidget {
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
       navigateToPost: navigateToPost,
+      read: postViewMedia.postView.read,
     );
 
     final bool useSaveButton = state.showSaveAction;
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(0.02) : null,
+      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -118,7 +122,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           child: Icon(
                             Icons.push_pin_rounded,
                             size: 17.0 * textScaleFactor,
-                            color: Colors.green,
+                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
                       ),
@@ -130,7 +134,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.star_rounded,
-                            color: Colors.purple,
+                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
                             size: 16.0 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
@@ -173,7 +177,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           child: Icon(
                             Icons.push_pin_rounded,
                             size: 17.0 * textScaleFactor,
-                            color: Colors.green,
+                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
                       ),
@@ -185,7 +189,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.star_rounded,
-                            color: Colors.purple,
+                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
                             size: 16.0 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),

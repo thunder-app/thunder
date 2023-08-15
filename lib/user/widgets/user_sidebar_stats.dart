@@ -22,7 +22,7 @@ class UserSidebarStats extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
-    bool disableScoreCounters = state.disableScoreCounters;
+    bool scoreCounters = state.scoreCounters;
 
     return Row(
       children: [
@@ -39,9 +39,9 @@ class UserSidebarStats extends StatelessWidget {
           style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
         ),
         Visibility(
-          visible: !disableScoreCounters,
+          visible: scoreCounters,
           child: Text(
-            '· $scoreMetric $scoreLabel',
+            ' · $scoreMetric $scoreLabel',
             style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
           ),
         ),

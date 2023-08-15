@@ -16,6 +16,7 @@ class ImagePreview extends StatefulWidget {
   final int? postId;
   final void Function()? navigateToPost;
   final bool? isComment;
+  final bool? read;
 
   const ImagePreview({
     super.key,
@@ -29,6 +30,7 @@ class ImagePreview extends StatefulWidget {
     this.postId,
     this.navigateToPost,
     this.isComment,
+    this.read,
   });
 
   @override
@@ -98,7 +100,11 @@ class _ImagePreviewState extends State<ImagePreview> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Stack(
         children: [
+          // This is used for link posts where the preview comes from Lemmy
+          // in both compact and comfortable view
           ExtendedImage.network(
+            color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+            colorBlendMode: widget.read == true ? BlendMode.modulate : null,
             constraints: widget.isComment == true
                 ? BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.width * 0.55,

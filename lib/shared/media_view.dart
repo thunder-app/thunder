@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -29,6 +30,7 @@ class MediaView extends StatefulWidget {
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
+  final bool? read;
 
   const MediaView({
     super.key,
@@ -42,6 +44,7 @@ class MediaView extends StatefulWidget {
     this.viewMode = ViewMode.comfortable,
     this.scrapeMissingPreviews,
     this.navigateToPost,
+    this.read,
   });
 
   @override
@@ -70,25 +73,39 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     // Text posts
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
+        // This is used for previewing text posts in compact mde by showing a small version of the text
         return Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
             color: theme.cardColor.darken(5),
-            child: SizedBox(
-              height: 75.0,
-              width: 75.0,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(
-                  widget.postView!.postView.post.body ?? '',
-                  style: TextStyle(
-                    fontSize: 4.5,
-                    color: theme.colorScheme.onBackground.withOpacity(0.7),
+            child: widget.postView!.postView.post.body?.isNotEmpty == true
+                ? SizedBox(
+                    height: 75.0,
+                    width: 75.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.postView!.postView.post.body!,
+                          style: TextStyle(
+                            fontSize: min(20, max(4.5, (20 * (1 / log(widget.postView!.postView.post.body!.length))))),
+                            color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 75,
+                    width: 75,
+                    color: theme.cardColor.darken(5),
+                    child: Icon(
+                      Icons.text_fields_rounded,
+                      color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
       } else {
@@ -113,6 +130,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         postId: widget.postView!.postView.post.id,
         markPostReadOnMediaView: widget.markPostReadOnMediaView,
         isUserLoggedIn: widget.isUserLoggedIn,
+        read: widget.read,
       );
     }
 
@@ -197,7 +215,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
+      // This is used for image post previews in compact and comfortable mode
       child: ExtendedImage.network(
+        color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+        colorBlendMode: widget.read == true ? BlendMode.modulate : null,
         widget.postView!.media.first.mediaUrl!,
         height: height,
         width: width,

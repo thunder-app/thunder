@@ -627,8 +627,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
-      resolved-ref: "3bc5390f6c2757afa4879db893b8de0f8cb6baef"
+      ref: "0b697ff173d67743ae3c490f49b26e74c46e841c"
+      resolved-ref: "0b697ff173d67743ae3c490f49b26e74c46e841c"
       url: "https://github.com/thunder-app/link_preview_generator.git"
     source: git
     version: "1.2.0"
@@ -668,8 +668,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
-      resolved-ref: ba5f895c7b41a90e62f32da91b01b663c9d08f26
+      ref: "3ded84267bb951a1d9312a308313d47ea714d210"
+      resolved-ref: "3ded84267bb951a1d9312a308313d47ea714d210"
       url: "https://github.com/hjiangsu/markdown-editable-textinput.git"
     source: git
     version: "2.2.1"

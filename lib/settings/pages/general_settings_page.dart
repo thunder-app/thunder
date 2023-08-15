@@ -58,7 +58,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showEdgeToEdgeImages = false;
   bool showTextContent = false;
   bool showPostAuthor = false;
-  bool disableScoreCounters = true;
+  bool scoreCounters = false;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -123,9 +123,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
-      case LocalSettings.disableScoreCounters:
-        await prefs.setBool(LocalSettings.disableScoreCounters.name, value);
-        setState(() => disableScoreCounters = value);
+      case LocalSettings.scoreCounters:
+        await prefs.setBool(LocalSettings.scoreCounters.name, value);
+        setState(() => scoreCounters = value);
         break;
 
       /// -------------------------- Feed Post Related Settings --------------------------
@@ -223,7 +223,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
-      disableScoreCounters = prefs.getBool(LocalSettings.disableScoreCounters.name) ?? true;
+      scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
 
       try {
         defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
@@ -371,13 +371,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
-                        ),
-                        ToggleOption(
-                          description: 'Disable All Score Counters',
-                          value: disableScoreCounters,
-                          iconEnabled: Icons.score_rounded,
-                          iconDisabled: Icons.score_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.disableScoreCounters, value),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
@@ -645,6 +638,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.add_link_rounded,
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          child: Text(
+                            'User Profiles',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ToggleOption(
+                          description: 'Display User Scores (Karma)',
+                          value: scoreCounters,
+                          iconEnabled: Icons.score_rounded,
+                          iconDisabled: Icons.score_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.scoreCounters, value),
                         ),
                       ],
                     ),
