@@ -1,9 +1,12 @@
 ## Unreleased
 ### Added
 - Show OP identification first more self/mod/admin - contribution from @micahmo
+- Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
+- Hide the gesture customize hint when the gestures are disabled - contribution from @micahmo
+- Improvements to text post indicator preview - contribution from @micahmo
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
