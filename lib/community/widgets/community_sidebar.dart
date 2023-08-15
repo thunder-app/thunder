@@ -131,11 +131,16 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             HapticFeedback.mediumImpact();
                                             CommunityBloc communityBloc = context.read<CommunityBloc>();
                                             AccountBloc accountBloc = context.read<AccountBloc>();
+                                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
                                             Navigator.of(context).push(
                                               SwipeablePageRoute(
                                                 builder: (context) {
                                                   return MultiBlocProvider(
-                                                    providers: [BlocProvider<CommunityBloc>.value(value: communityBloc), BlocProvider<AccountBloc>.value(value: accountBloc)],
+                                                    providers: [
+                                                      BlocProvider<CommunityBloc>.value(value: communityBloc),
+                                                      BlocProvider<AccountBloc>.value(value: accountBloc),
+                                                      BlocProvider<ThunderBloc>.value(value: thunderBloc)
+                                                    ],
                                                     child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
                                                   );
                                                 },

@@ -60,7 +60,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   String? replyingToContent;
   PersonSafe? person;
 
-  final ScrollController _scrollController = ScrollController();
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
   final ImageBloc imageBloc = ImageBloc();
@@ -103,8 +102,10 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   @override
   void dispose() {
     _bodyTextController.dispose();
-    _scrollController.dispose();
     _bodyFocusNode.dispose();
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
     super.dispose();
   }
 

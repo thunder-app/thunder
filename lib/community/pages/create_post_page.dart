@@ -64,6 +64,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
+    _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
 
@@ -267,6 +268,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(
                             onPressed: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
                               setState(() => showPreview = !showPreview);
                               if (!showPreview) {
                                 _bodyFocusNode.requestFocus();
