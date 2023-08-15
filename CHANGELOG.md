@@ -1,5 +1,5 @@
 ## 0.2.3+16 - 2023-08-15
-### Added
+### Fixed
 - Fixed issue with reply FAB action - contribution from @micahmo
 
 ## 0.2.2+15 - 2023-08-14
