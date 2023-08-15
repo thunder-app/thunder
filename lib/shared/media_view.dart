@@ -29,6 +29,7 @@ class MediaView extends StatefulWidget {
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
+  final bool? read;
 
   const MediaView({
     super.key,
@@ -42,6 +43,7 @@ class MediaView extends StatefulWidget {
     this.viewMode = ViewMode.comfortable,
     this.scrapeMissingPreviews,
     this.navigateToPost,
+    this.read,
   });
 
   @override
@@ -70,6 +72,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     // Text posts
     if (widget.postView == null || widget.postView!.media.isEmpty) {
       if (widget.viewMode == ViewMode.compact) {
+        // This is used for previewing text posts in compact mde by showing a small version of the text
         return Container(
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -84,7 +87,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                   widget.postView!.postView.post.body ?? '',
                   style: TextStyle(
                     fontSize: 4.5,
-                    color: theme.colorScheme.onBackground.withOpacity(0.7),
+                    color: widget.read ?? true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
                   ),
                 ),
               ),
@@ -113,6 +116,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         postId: widget.postView!.postView.post.id,
         markPostReadOnMediaView: widget.markPostReadOnMediaView,
         isUserLoggedIn: widget.isUserLoggedIn,
+        read: widget.read,
       );
     }
 
@@ -197,7 +201,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
     return Hero(
       tag: widget.postView!.media.first.mediaUrl!,
+      // This is used for image post previews in compact and comfortable mode
       child: ExtendedImage.network(
+        color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+        colorBlendMode: widget.read == true ? BlendMode.modulate : null,
         widget.postView!.media.first.mediaUrl!,
         height: height,
         width: width,

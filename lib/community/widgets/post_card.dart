@@ -265,6 +265,7 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
+        backGestureDetectionStartOffset: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(
