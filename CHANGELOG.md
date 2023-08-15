@@ -2,6 +2,9 @@
 ### Added
 - Show OP identification first more self/mod/admin - contribution from @micahmo
 
+### Fixed
+- Handle issue where some deferred comments won't load - contribution from @micahmo
+
 ## 0.2.2+15 - 2023-08-14
 ### Added
 - Added long press on profile icon to bring up profile modal @zdzoz
