@@ -188,7 +188,7 @@ class _PostPageState extends State<PostPage> {
                                       : singlePressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : singlePressAction == PostFabAction.replyToPost
-                                              ? replyToPost
+                                              ? () => replyToPost(context)
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
@@ -203,7 +203,7 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? replyToPost
+                                              ? () => replyToPost(context)
                                               : null),
                               children: [
                                 if (enableReplyToPost)
@@ -211,7 +211,7 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: replyToPost,
+                                        override: () => replyToPost(context),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
@@ -417,7 +417,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost() {
+  void replyToPost(BuildContext context) {
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
