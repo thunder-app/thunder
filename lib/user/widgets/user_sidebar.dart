@@ -163,7 +163,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                      onPressed: null,
+                                        onPressed: null,
                                         style: TextButton.styleFrom(
                                           fixedSize: const Size.fromHeight(40),
                                           padding: EdgeInsets.zero,
