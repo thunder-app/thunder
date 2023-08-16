@@ -288,7 +288,13 @@ class _PostPageState extends State<PostPage> {
                     },
                     builder: (context, state) {
                       if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                        showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, mode: SnackBarMode.warning);
+                        showSnackbar(
+                          context,
+                          state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage,
+                          backgroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                          leadingIcon: Icons.warning_rounded,
+                          leadingIconColor: Theme.of(context).colorScheme.errorContainer,
+                        );
                         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
                           setState(() => resetFailureMessage = false);
                         });

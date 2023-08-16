@@ -51,7 +51,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               showSnackbar(
                 context,
                 AppLocalizations.of(context)!.successfullyUnblocked,
-                undoAction: () {
+                trailingIcon: Icons.undo_rounded,
+                trailingAction: () {
                   if (state.personBeingBlocked != 0) {
                     context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
                   } else if (state.communityBeingBlocked != 0) {
