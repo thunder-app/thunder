@@ -1,8 +1,10 @@
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class DebugSettingsPage extends StatelessWidget {
   const DebugSettingsPage({super.key});
@@ -45,14 +47,14 @@ class DebugSettingsPage extends StatelessWidget {
                 onPressed: () {
                   showDialog<void>(
                     context: context,
-                    builder: (context) => AlertDialog(
+                    builder: (dialogContext) => AlertDialog(
                       title: Text(
                         'This will clear all your user preferences.\n\nDo you want to continue?',
                         style: Theme.of(context).textTheme.bodyLarge,
                       ),
                       actions: [
                         TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
+                          onPressed: () => Navigator.of(dialogContext).pop(),
                           child: const Text('Cancel'),
                         ),
                         const SizedBox(width: 12),
@@ -60,6 +62,10 @@ class DebugSettingsPage extends StatelessWidget {
                             onPressed: () {
                               SharedPreferences.getInstance().then((prefs) async {
                                 await prefs.clear();
+
+                                if (context.mounted) {
+                                  context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                                }
 
                                 SnackBar snackBar = const SnackBar(
                                   content: Text('Cleared all user preferences'),
@@ -72,7 +78,7 @@ class DebugSettingsPage extends StatelessWidget {
                                 });
                               });
 
-                              Navigator.of(context).pop();
+                              Navigator.of(dialogContext).pop();
                             },
                             child: const Text('Clear Preferences')),
                       ],
