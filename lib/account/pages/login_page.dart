@@ -131,7 +131,7 @@ class _LoginPageState extends State<LoginPage> {
                 isLoading = false;
               });
 
-              showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? 'Unknown'));
+              showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success) {
               context.pop();
 

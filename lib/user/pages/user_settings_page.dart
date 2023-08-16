@@ -40,11 +40,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 showSnackbar(
                     context,
                     state.status == UserSettingsStatus.failure
-                        ? AppLocalizations.of(context)!.failedToUnblock(state.errorMessage ?? 'UNKNOWN')
-                        : AppLocalizations.of(context)!.failedToBlock(state.errorMessage ?? 'UNKNOWN'));
+                        ? AppLocalizations.of(context)!.failedToUnblock(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage)
+                        : AppLocalizations.of(context)!.failedToBlock(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
               }
             } else if (state.status == UserSettingsStatus.failure) {
-              showSnackbar(context, AppLocalizations.of(context)!.failedToLoadBlocks(state.errorMessage ?? 'UNKNOWN'));
+              showSnackbar(context, AppLocalizations.of(context)!.failedToLoadBlocks(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             }
 
             if (state.status == UserSettingsStatus.success && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {

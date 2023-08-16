@@ -128,11 +128,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
 
           if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
             if (state.blockedCommunity?.blocked == true) {
-              showSnackbar(context, AppLocalizations.of(context)!.successfullyBlockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'), undoAction: () {
+              showSnackbar(
+                  context, AppLocalizations.of(context)!.successfullyBlockedCommunity(state.blockedCommunity?.communityView.community.title ?? AppLocalizations.of(context)!.missingErrorMessage),
+                  undoAction: () {
                 context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
               });
             } else {
-              showSnackbar(context, AppLocalizations.of(context)!.successfullyUnblockedCommunity(state.blockedCommunity?.communityView.community.title ?? 'UNKNOWN'));
+              showSnackbar(
+                  context, AppLocalizations.of(context)!.successfullyUnblockedCommunity(state.blockedCommunity?.communityView.community.title ?? AppLocalizations.of(context)!.missingErrorMessage));
             }
           }
         },
