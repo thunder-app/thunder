@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
@@ -51,11 +53,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<VoteCommentEvent>(
       _voteCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SaveCommentEvent>(
       _saveCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<CreateCommentEvent>(
       _createCommentEvent,
@@ -68,6 +70,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<DeleteCommentEvent>(
       _deleteCommentEvent,
       transformer: throttleDroppable(throttleDuration),
+    );
+    on<NavigateCommentEvent>(
+      _navigateCommentEvent,
     );
   }
 
@@ -255,7 +260,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
 
           // Prevent duplicate requests if we're done fetching comments
-          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) return;
+          if (state.commentCount >= state.postView!.postView.counts.comments || (event.commentParentId == null && state.hasReachedCommentEnd)) {
+            if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
+              emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
+            }
+            return;
+          }
           emit(state.copyWith(status: PostStatus.refreshing));
 
           List<CommentView> getCommentsResponse = await lemmy
@@ -274,6 +284,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch more comments');
           });
+
+          // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
+          // so we should display an error
+          if (event.commentParentId != null) {
+            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            if (!anyDirectChildren) {
+              throw Exception('Unable to load direct children.');
+            }
+          }
 
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
@@ -520,6 +539,14 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _navigateCommentEvent(NavigateCommentEvent event, Emitter<PostState> emit) async {
+    if (event.direction == NavigateCommentDirection.up) {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: max(0, event.targetIndex), navigateCommentId: state.navigateCommentId + 1));
+    } else {
+      return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
     }
   }
 }

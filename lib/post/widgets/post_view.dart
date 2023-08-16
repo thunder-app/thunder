@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -21,6 +22,7 @@ import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
+import 'package:thunder/utils/swipe.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -46,7 +48,7 @@ class PostSubview extends StatelessWidget {
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
-    final bool showLinkPreview = thunderState.showLinkPreviews;
+    final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
@@ -60,12 +62,12 @@ class PostSubview extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
               post.name,
-              textScaleFactor: thunderState.titleFontSizeScale.textScaleFactor,
+              textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
               style: theme.textTheme.titleMedium,
             ),
           ),
           MediaView(
-            showLinkPreview: showLinkPreview,
+            scrapeMissingPreviews: scrapeMissingPreviews,
             post: post,
             postView: postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
@@ -92,7 +94,8 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -112,7 +115,7 @@ class PostSubview extends StatelessWidget {
                     preferBelow: false,
                     child: Text(
                       postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
@@ -121,7 +124,7 @@ class PostSubview extends StatelessWidget {
                 ),
                 Text(
                   ' to ',
-                  textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
@@ -134,7 +137,8 @@ class PostSubview extends StatelessWidget {
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
                     Navigator.of(context).push(
-                      MaterialPageRoute(
+                      SwipeablePageRoute(
+                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
                         builder: (context) => MultiBlocProvider(
                           providers: [
                             BlocProvider.value(value: accountBloc),
@@ -152,7 +156,7 @@ class PostSubview extends StatelessWidget {
                     preferBelow: false,
                     child: Text(
                       postView.community.name,
-                      textScaleFactor: thunderState.contentFontSizeScale.textScaleFactor,
+                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),

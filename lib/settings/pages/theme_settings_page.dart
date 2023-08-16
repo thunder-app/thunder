@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:thunder/core/enums/custom_theme_type.dart';
 
+import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/theme_type.dart';
@@ -33,13 +33,18 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   // For now, we will use the pre-made themes provided by FlexScheme
   // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
 
-  List<ListPickerItem> customThemeOptions = CustomThemeType.values.map((CustomThemeType scheme) {
-    return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
-  }).toList();
+  List<ListPickerItem> customThemeOptions = [
+    ListPickerItem(color: CustomThemeType.deepBlue.color, label: '${CustomThemeType.deepBlue.label} (Default)', payload: CustomThemeType.deepBlue),
+    ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
+      return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
+    }).toList()
+  ];
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
+  FontScale commentFontSizeScale = FontScale.base;
+  FontScale metadataFontSizeScale = FontScale.base;
 
   //Theme
   List<ListPickerItem> themeOptions = [
@@ -93,6 +98,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         setState(() => contentFontSizeScale = value);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
         break;
+      case LocalSettings.commentFontSizeScale:
+        await prefs.setString(LocalSettings.commentFontSizeScale.name, (value as FontScale).name);
+        setState(() => commentFontSizeScale = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
+      case LocalSettings.metadataFontSizeScale:
+        await prefs.setString(LocalSettings.metadataFontSizeScale.name, (value as FontScale).name);
+        setState(() => metadataFontSizeScale = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
     }
 
     if (context.mounted) {
@@ -113,6 +128,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       // Font Settings
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
+      commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
+      metadataFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.metadataFontSizeScale.name) ?? FontScale.base.name);
 
       isLoading = false;
     });
@@ -136,13 +153,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
               child: Column(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Theme',
                             style: theme.textTheme.titleLarge,
@@ -174,18 +191,17 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
                             'Fonts',
                             style: theme.textTheme.titleLarge,
                           ),
-                          // setting_theme_title_font_size_scale
                         ),
                         ListOption(
                           description: LocalSettings.titleFontSizeScale.label,
@@ -200,6 +216,20 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           options: fontScaleOptions,
                           icon: Icons.text_fields_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.contentFontSizeScale, value.payload),
+                        ),
+                        ListOption(
+                          description: LocalSettings.commentFontSizeScale.label,
+                          value: ListPickerItem(label: commentFontSizeScale.name.capitalize, icon: Icons.feed, payload: commentFontSizeScale),
+                          options: fontScaleOptions,
+                          icon: Icons.text_fields_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.commentFontSizeScale, value.payload),
+                        ),
+                        ListOption(
+                          description: LocalSettings.metadataFontSizeScale.label,
+                          value: ListPickerItem(label: metadataFontSizeScale.name.capitalize, icon: Icons.feed, payload: metadataFontSizeScale),
+                          options: fontScaleOptions,
+                          icon: Icons.text_fields_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.metadataFontSizeScale, value.payload),
                         ),
                       ],
                     ),

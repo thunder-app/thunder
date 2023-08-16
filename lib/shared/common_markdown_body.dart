@@ -93,7 +93,8 @@ class CommonMarkdownBody extends StatelessWidget {
         }
       },
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+        // If its a comment, use the commentFontSizeScale, otherwise fallback to the contentFontSizeScale (for posts and other widgets using CommonMarkdownBody)
+        textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
         p: theme.textTheme.bodyMedium,
         blockquoteDecoration: const BoxDecoration(
           color: Colors.transparent,

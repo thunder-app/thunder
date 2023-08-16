@@ -3,19 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-
 import 'community_sidebar.dart';
 
 class PostCardList extends StatefulWidget {
@@ -28,6 +26,7 @@ class PostCardList extends StatefulWidget {
   final FullCommunityView? communityInfo;
   final SubscribedType? subscribeType;
   final BlockedCommunity? blockedCommunity;
+  final SortType? sortType;
   final List<Tagline>? taglines;
 
   final VoidCallback onScrollEndReached;
@@ -49,6 +48,7 @@ class PostCardList extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
+    this.sortType,
     this.blockedCommunity,
     this.taglines,
   });
@@ -63,6 +63,8 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   bool _showReturnToTopButton = false;
   int _previousScrollId = 0;
   bool disableFabs = false;
+
+  Set toRemoveSet = {};
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -80,6 +82,16 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
+
+    // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+
+      if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+        widget.onScrollEndReached();
+      }
+    });
+
     super.initState();
   }
 
@@ -131,6 +143,10 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       scrollToTop();
       _previousScrollId = state.scrollToTopId;
     }
+    if (state.dismissEvent == true) {
+      dismissRead();
+      context.read<ThunderBloc>().add(const OnDismissEvent(false));
+    }
 
     return BlocListener<ThunderBloc, ThunderState>(
       listenWhen: (previous, current) => (previous.status == ThunderStatus.refreshing && current.status == ThunderStatus.success),
@@ -155,7 +171,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
               crossAxisSpacing: 40,
               mainAxisSpacing: 0,
-              cacheExtent: 500,
+              cacheExtent: 1000,
               controller: _scrollController,
               itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 2 : widget.postViews!.length + 1) : 1,
               itemBuilder: (context, index) {
@@ -166,13 +182,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         setState(() {
                           _displaySidebar = true;
                         });
-                      },
-                      onHorizontalDragUpdate: (details) {
-                        if (details.delta.dx < -3) {
-                          setState(() {
-                            _displaySidebar = true;
-                          });
-                        }
                       },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );
@@ -216,8 +225,12 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             'Hmmm. It seems like you\'ve reached the bottom.',
                             textAlign: TextAlign.center,
                             style: theme.textTheme.titleSmall,
+                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                           ),
                         ),
+                        const SizedBox(
+                          height: 160,
+                        )
                       ],
                     );
                   } else {
@@ -232,13 +245,42 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   }
                 } else {
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
-                  return PostCard(
-                    postViewMedia: postViewMedia,
-                    showInstanceName: widget.communityId == null,
-                    onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
-                    onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
-                    onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
-                    listingType: widget.listingType,
+                  return AnimatedSwitcher(
+                    switchOutCurve: Curves.ease,
+                    duration: const Duration(milliseconds: 0),
+                    reverseDuration: const Duration(milliseconds: 400),
+                    transitionBuilder: (child, animation) {
+                      return FadeTransition(
+                        opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                          CurvedAnimation(
+                            parent: animation,
+                            curve: const Interval(0.5, 1.0),
+                          ),
+                        ),
+                        child: SlideTransition(
+                          position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                          child: SizeTransition(
+                            sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                              CurvedAnimation(
+                                parent: animation,
+                                curve: const Interval(0.0, 0.25),
+                              ),
+                            ),
+                            child: child,
+                          ),
+                        ),
+                      );
+                    },
+                    child: !toRemoveSet.contains(postViewMedia.postView.post.id)
+                        ? PostCard(
+                            postViewMedia: postViewMedia,
+                            showInstanceName: widget.communityId == null,
+                            onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                            onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
+                            onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                            listingType: widget.listingType,
+                          )
+                        : null,
                   );
                 }
               },
@@ -310,21 +352,46 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                 ],
               ),
             ),
-            if (!state.disableFeedFab && _showReturnToTopButton)
-              Positioned(
-                bottom: 16,
-                left: 20,
-                child: FloatingActionButton(
-                  onPressed: () {
-                    scrollToTop();
-                  },
-                  child: const Icon(Icons.arrow_upward),
-                ),
-              ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> dismissRead() async {
+    if (widget.postViews != null) {
+      int unreadCount = 0;
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          unreadCount++;
+        }
+      }
+      // Load in new posts if we are about dismiss all or nearly all
+      if (unreadCount < 10) {
+        widget.onScrollEndReached();
+      }
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          setState(() {
+            toRemoveSet.add(post.postView.post.id);
+          });
+          await Future.delayed(const Duration(milliseconds: 60));
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 800));
+      setState(() {
+        widget.postViews!.removeWhere((e) => e.postView.read);
+        toRemoveSet.clear();
+      });
+      // Load in more posts, if so many got dismissed that scrolling may not be possible
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+
+        if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+          widget.onScrollEndReached();
+        }
+      });
+    }
   }
 
   void scrollToTop() {
