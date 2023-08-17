@@ -85,6 +85,8 @@ dependencies:
       url: https://github.com/bitstackapp/flutter.widgets.git
       ref: master
       path: packages/scrollable_positioned_list/
+  dart_ping: ^9.0.0
+  dart_ping_ios: ^4.0.0
 
 dev_dependencies:
   flutter_test:

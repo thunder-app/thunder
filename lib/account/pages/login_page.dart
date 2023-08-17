@@ -81,7 +81,7 @@ class _LoginPageState extends State<LoginPage> {
         await getInstanceIcon(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
-            setState(() => instanceIcon = value);
+            setState(() => instanceIcon = value.icon);
           }
         });
       });

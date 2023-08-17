@@ -1,3 +1,4 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -89,25 +90,71 @@ class _ProfileSelectState extends State<ProfileSelect> {
             );
           } else {
             return ListTile(
-              leading: AnimatedCrossFade(
-                crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 500),
-                firstChild: const SizedBox(
-                  width: 40,
-                  child: Icon(
-                    Icons.person,
+              leading: Stack(
+                children: [
+                  AnimatedCrossFade(
+                    crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                    duration: const Duration(milliseconds: 500),
+                    firstChild: const SizedBox(
+                      child: Padding(
+                        padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                        child: Icon(
+                          Icons.person,
+                        ),
+                      ),
+                    ),
+                    secondChild: CircleAvatar(
+                      backgroundColor: Colors.transparent,
+                      foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
+                      maxRadius: 20,
+                    ),
                   ),
-                ),
-                secondChild: CircleAvatar(
-                  backgroundColor: Colors.transparent,
-                  foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
-                ),
+                  Positioned(
+                    right: 0,
+                    bottom: 0,
+                    child: AnimatedOpacity(
+                      opacity: accounts![index].alive == null ? 0 : 1,
+                      duration: const Duration(milliseconds: 500),
+                      child: Icon(
+                        accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                        size: 10,
+                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               title: Text(
                 accounts![index].account.username ?? 'N/A',
                 style: theme.textTheme.titleMedium?.copyWith(),
               ),
-              subtitle: Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+              subtitle: Row(
+                children: [
+                  Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+                  AnimatedOpacity(
+                    opacity: accounts![index].latency == null ? 0 : 1,
+                    duration: const Duration(milliseconds: 500),
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 5),
+                        Text(
+                          '•',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                          ),
+                        ),
+                        const SizedBox(width: 5),
+                        Text(
+                          '${accounts![index].latency?.inMilliseconds}ms',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
               onTap: (currentAccountId == accounts![index].account.id)
                   ? null
                   : () {
@@ -145,19 +192,37 @@ class _ProfileSelectState extends State<ProfileSelect> {
       return AccountExtended(account: account, instance: account.instance, instanceIcon: null);
     })).timeout(const Duration(seconds: 5));
 
-    // Intentionally don't await this here
+    // Intentionally don't await these here
     fetchInstanceIcons(accountsExtended);
+    pingInstances(accountsExtended);
 
     setState(() => this.accounts = accountsExtended);
   }
 
   Future<void> fetchInstanceIcons(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
-      final instanceIcon = await getInstanceIcon(account.instance).timeout(
+      final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(account.instance).timeout(
         const Duration(seconds: 3),
-        onTimeout: () => null,
+        onTimeout: () => const GetInstanceIconResponse(success: false),
       );
-      setState(() => account.instanceIcon = instanceIcon);
+
+      setState(() {
+        account.instanceIcon = instanceIconResponse.icon;
+        account.alive = instanceIconResponse.success;
+      });
+    });
+  }
+
+  Future<void> pingInstances(List<AccountExtended> accountsExtended) async {
+    accountsExtended.forEach((account) async {
+      if (account.instance != null) {
+        PingData pingData = await Ping(
+          account.instance!,
+          count: 1,
+          timeout: 5,
+        ).stream.first;
+        setState(() => account.latency = pingData.response?.time);
+      }
     });
   }
 }
@@ -167,6 +232,8 @@ class AccountExtended {
   final Account account;
   String? instance;
   String? instanceIcon;
+  Duration? latency;
+  bool? alive;
 
   AccountExtended({required this.account, this.instance, this.instanceIcon});
 }
