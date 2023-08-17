@@ -125,6 +125,19 @@ class _UserPageState extends State<UserPage> {
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           userBloc = context.read<UserBloc>();
 
+          if (state.status == UserStatus.failedToBlock) {
+            // TODO: Refactor this snackbar
+            SnackBar snackBar = SnackBar(
+              content: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage),
+              behavior: SnackBarBehavior.floating,
+            );
+
+            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+            });
+          }
+
           switch (state.status) {
             case UserStatus.initial:
               context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
@@ -134,6 +147,7 @@ class _UserPageState extends State<UserPage> {
               return const Center(child: CircularProgressIndicator());
             case UserStatus.refreshing:
             case UserStatus.success:
+            case UserStatus.failedToBlock:
               return UserPageSuccess(
                 userId: widget.userId,
                 isAccountUser: widget.isAccountUser,
