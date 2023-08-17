@@ -9,6 +9,7 @@
 - Prioritize and label the default accent color - contribution from @micahmo
 - Hide the gesture customize hint when the gestures are disabled - contribution from @micahmo
 - Improvements to text post indicator preview - contribution from @micahmo
+- Errors blocking users are now shown as toasts - contribution from @micahmo
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
