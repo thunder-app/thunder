@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 const List<ListPickerItem<SortType>> defaultSortTypeItems = [
   ListPickerItem(
@@ -146,30 +147,36 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              topSelected = false;
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0, left: 12.0, right: 16.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.chevron_left,
-                    size: 30,
-                  ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    'Sort by Top',
-                    style: theme.textTheme.titleLarge!.copyWith(),
-                  ),
-                ],
+        Semantics(
+          label: '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                topSelected = false;
+              });
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 16.0, left: 12.0, right: 16.0),
+              child: Align(
+                alignment: Alignment.centerLeft,
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.chevron_left,
+                      size: 30,
+                    ),
+                    const SizedBox(
+                      width: 12,
+                    ),
+                    Semantics(
+                      excludeSemantics: true,
+                      child: Text(
+                        AppLocalizations.of(context)!.sortByTop,
+                        style: theme.textTheme.titleLarge!.copyWith(),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
