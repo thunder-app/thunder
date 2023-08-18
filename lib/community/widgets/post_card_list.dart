@@ -212,6 +212,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: !taglineIsLong
+                              // TODO: Eventually pass in textScalingFactor
                               ? CommonMarkdownBody(
                                   body: tagline,
                                 )
@@ -222,6 +223,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                         collapsed: Column(
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
+                                            // TODO: Eventually pass in textScalingFactor
                                             CommonMarkdownBody(
                                               body: '${tagline.substring(0, 150)}...',
                                             ),
