@@ -60,5 +60,7 @@
   "failedToUnblock": "Failed to unblock: {errorMessage}",
   "failedToLoadBlocks": "Failed to load blocks: {errorMessage}",
   "successfullyUnblocked": "Successfully unblocked!",
-  "successfullyBlocked": "Successfully blocked!"
+  "successfullyBlocked": "Successfully blocked!",
+  "showMore": "Show more",
+  "showLess": "Show less"
 }
