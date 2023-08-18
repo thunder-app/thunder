@@ -417,7 +417,7 @@ class _PostPageState extends State<PostPage> {
     AccountBloc accountBloc = context.read<AccountBloc>();
 
     if (!authBloc.state.isLoggedIn) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.mustBeLoggedInComment)));
+      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInComment);
     } else {
       Navigator.of(context).push(
         SwipeablePageRoute(

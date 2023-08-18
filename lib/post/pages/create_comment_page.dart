@@ -15,6 +15,7 @@ import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/image.dart';
@@ -134,10 +135,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               setState(() {
                 isLoading = false;
               });
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text(state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError),
-                duration: const Duration(days: 1),
-              ));
+              showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
             }
           },
         ),
@@ -159,10 +157,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               if (state.status == InboxStatus.failure) {
                 setState(() {
                   isLoading = false;
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text(AppLocalizations.of(context)!.unexpectedError),
-                    duration: const Duration(days: 1),
-                  ));
+                  showSnackbar(context, AppLocalizations.of(context)!.unexpectedError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
                 });
               }
             },
@@ -178,7 +173,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
               setState(() => imageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
               setState(() => imageUploading = false);
             }
           },
@@ -324,7 +319,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 MarkdownType.code,
                               ],
                               imageIsLoading: imageUploading,
-                              customImageButtonAction: () => uploadImage(imageBloc))),
+                              customImageButtonAction: () => uploadImage(context, imageBloc))),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(

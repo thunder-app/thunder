@@ -8,6 +8,7 @@ import 'package:thunder/community/pages/community_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum FeedFabAction {
@@ -111,7 +112,7 @@ enum FeedFabAction {
       case FeedFabAction.newPost:
         if (bloc != null) {
           if (!context.read<AuthBloc>().state.isLoggedIn) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.mustBeLoggedInPost)));
+            showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
           } else {
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
             AccountBloc accountBloc = context.read<AccountBloc>();

@@ -19,8 +19,6 @@ import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 
-const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
-
 class CreatePostPage extends StatefulWidget {
   final int communityId;
   final FullCommunityView? communityInfo;
@@ -119,7 +117,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               setState(() => postImageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError);
+              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
               setState(() {
                 imageUploading = false;
                 postImageUploading = false;
@@ -169,7 +167,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     if (!postImageUploading) {
-                                      uploadImage(imageBloc, postImage: true);
+                                      uploadImage(context, imageBloc, postImage: true);
                                     }
                                   },
                                   icon: postImageUploading
@@ -263,7 +261,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               MarkdownType.code,
                             ],
                             imageIsLoading: imageUploading,
-                            customImageButtonAction: () => uploadImage(imageBloc)),
+                            customImageButtonAction: () => uploadImage(context, imageBloc)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
