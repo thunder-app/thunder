@@ -33,6 +33,7 @@ class PostCardList extends StatefulWidget {
   final BlockedCommunity? blockedCommunity;
   final SortType? sortType;
   final List<Tagline>? taglines;
+  final bool indicateRead;
 
   final VoidCallback onScrollEndReached;
   final Function(int, VoteType) onVoteAction;
@@ -56,6 +57,7 @@ class PostCardList extends StatefulWidget {
     this.sortType,
     this.blockedCommunity,
     this.taglines,
+    this.indicateRead = true,
   });
 
   @override
@@ -334,6 +336,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                             onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                             listingType: widget.listingType,
+                            indicateRead: widget.indicateRead,
                           )
                         : null,
                   );
