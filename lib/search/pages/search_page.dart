@@ -19,6 +19,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -26,6 +27,7 @@ import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -286,15 +288,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         onPressed: () {
                           SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
                           _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-                          SnackBar snackBar = SnackBar(
-                            content: Text(
-                                '${subscriptionStatus == SubscribedType.notSubscribed ? 'Added' : 'Removed'} community ${subscriptionStatus == SubscribedType.notSubscribed ? 'to' : 'from'} subscriptions'),
-                            behavior: SnackBarBehavior.floating,
-                          );
-                          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                            ScaffoldMessenger.of(context).clearSnackBars();
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                          });
+                          showSnackbar(
+                              context,
+                              subscriptionStatus == SubscribedType.notSubscribed
+                                  ? AppLocalizations.of(context)!.addedCommunityToSubscriptions
+                                  : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
                           context.read<AccountBloc>().add(GetAccountInformation());
                         },
                         icon: Icon(
