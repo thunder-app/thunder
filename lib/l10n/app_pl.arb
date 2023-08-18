@@ -42,5 +42,6 @@
   "expandOptions": "Rozwiń opcje",
   "currentSinglePress": "Obecnie ustawione jako pojedyncze naciśnięcie",
   "currentLongPress": "Obecnie ustawione jako przytrzymanie",
-  "uploadImage": "Prześlij obraz"
+  "uploadImage": "Prześlij obraz",
+  "customizeSwipeActions": "Dostosuj działania przesuwania (dotknij, aby zmienić)"
 }
