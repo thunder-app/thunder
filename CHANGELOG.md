@@ -4,6 +4,7 @@
 - Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
 - Added identifier for bot accounts - contribution from @micahmo
 - Added access to saved comments from account page - contribution from @CTalvio
+- Added Polish translation - contribution from @pazdikan
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
