@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:thunder/shared/snackbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DebugSettingsPage extends StatelessWidget {
   const DebugSettingsPage({super.key});
@@ -60,16 +62,7 @@ class DebugSettingsPage extends StatelessWidget {
                             onPressed: () {
                               SharedPreferences.getInstance().then((prefs) async {
                                 await prefs.clear();
-
-                                SnackBar snackBar = const SnackBar(
-                                  content: Text('Cleared all user preferences'),
-                                  behavior: SnackBarBehavior.floating,
-                                );
-
-                                WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                  ScaffoldMessenger.of(context).clearSnackBars();
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                });
+                                showSnackbar(context, AppLocalizations.of(context)!.clearedUserPreferences);
                               });
 
                               Navigator.of(context).pop();
@@ -115,17 +108,7 @@ class DebugSettingsPage extends StatelessWidget {
                             onPressed: () async {
                               String path = join(await getDatabasesPath(), 'thunder.db');
                               await databaseFactory.deleteDatabase(path);
-
-                              SnackBar snackBar = const SnackBar(
-                                content: Text('Cleared local database. Restart Thunder for changes to take effect.'),
-                                behavior: SnackBarBehavior.floating,
-                              );
-
-                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              });
-
+                              showSnackbar(context, AppLocalizations.of(context)!.clearedDatabase);
                               if (context.mounted) Navigator.of(context).pop();
                             },
                             child: const Text('Clear Database')),

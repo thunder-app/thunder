@@ -1,10 +1,12 @@
 ## Unreleased
 ### Added
-- Show OP identification first more self/mod/admin - contribution from @micahmo
+- Show OP identification first before self/mod/admin - contribution from @micahmo
 - Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
 - Redesign UI for creating comments - contribution from @coslu
 - Support uploading images to comments - contribution from @coslu
 - Show active user indicator when creating posts and comments - contribution from @coslu
+- Added identifier for bot accounts - contribution from @micahmo
+- Added access to saved comments from account page - contribution from @CTalvio
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
@@ -13,6 +15,10 @@
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
+
+## 0.2.3+16 - 2023-08-15
+### Fixed
+- Fixed issue with reply FAB action - contribution from @micahmo
 
 ## 0.2.2+15 - 2023-08-14
 ### Added

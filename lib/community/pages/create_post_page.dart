@@ -14,6 +14,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
@@ -118,7 +119,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               setState(() => postImageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError);
               setState(() {
                 imageUploading = false;
                 postImageUploading = false;
