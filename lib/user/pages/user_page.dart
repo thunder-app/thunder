@@ -7,6 +7,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -126,16 +127,7 @@ class _UserPageState extends State<UserPage> {
           userBloc = context.read<UserBloc>();
 
           if (state.status == UserStatus.failedToBlock) {
-            // TODO: Refactor this snackbar
-            SnackBar snackBar = SnackBar(
-              content: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage),
-              behavior: SnackBarBehavior.floating,
-            );
-
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-              ScaffoldMessenger.of(context).clearSnackBars();
-              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-            });
+            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
           }
 
           switch (state.status) {
