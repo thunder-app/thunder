@@ -13,6 +13,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
 
@@ -242,7 +243,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                               onPressed: isUserLoggedIn
                                   ? () {
                                       HapticFeedback.heavyImpact();
-                                      ScaffoldMessenger.of(context).clearSnackBars();
+                                      hideSnackbar(context);
                                       context.read<CommunityBloc>().add(
                                             BlockCommunityEvent(
                                               communityId: widget.communityInfo!.communityView.community.id,

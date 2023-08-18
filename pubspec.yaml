@@ -78,13 +78,13 @@ dependencies:
   back_button_interceptor: ^6.0.2
   flutter_localizations:
     sdk: flutter
-  expandable_text: ^2.3.0
   swipeable_page_route: ^0.4.0
   scrollable_positioned_list:
     git:
       url: https://github.com/bitstackapp/flutter.widgets.git
       ref: master
       path: packages/scrollable_positioned_list/
+  expandable: ^5.0.1
   dart_ping: ^9.0.0
   dart_ping_ios: ^4.0.0
 

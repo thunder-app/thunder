@@ -35,6 +35,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final PostListingType? listingType;
   final void Function()? navigateToPost;
+  final bool indicateRead;
 
   const PostCardViewComfortable({
     super.key,
@@ -55,6 +56,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
+    required this.indicateRead,
     this.navigateToPost,
   });
 
@@ -69,10 +71,10 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final String textContent = postViewMedia.postView.post.body ?? "";
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
+      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     var mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
@@ -83,7 +85,7 @@ class PostCardViewComfortable extends StatelessWidget {
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
       navigateToPost: navigateToPost,
-      read: postViewMedia.postView.read,
+      read: indicateRead && postViewMedia.postView.read,
     );
 
     final bool useSaveButton = state.showSaveAction;
@@ -92,7 +94,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
+      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -109,8 +111,8 @@ class PostCardViewComfortable extends StatelessWidget {
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.post.featuredCommunity
-                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
-                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                            ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                            : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                       ),
                     ),
                     if (postViewMedia.postView.post.featuredCommunity)
@@ -122,7 +124,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           child: Icon(
                             Icons.push_pin_rounded,
                             size: 17.0 * textScaleFactor,
-                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
                       ),
@@ -134,7 +136,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.star_rounded,
-                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
                             size: 16.0 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
@@ -165,7 +167,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
+                        color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                       ),
                     ),
                     if (postViewMedia.postView.post.featuredCommunity)
@@ -177,7 +179,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           child: Icon(
                             Icons.push_pin_rounded,
                             size: 17.0 * textScaleFactor,
-                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
                       ),
@@ -189,7 +191,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           ),
                           child: Icon(
                             Icons.star_rounded,
-                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
                             size: 16.0 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
