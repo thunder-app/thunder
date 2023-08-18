@@ -8,8 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
@@ -129,27 +131,11 @@ class _LoginPageState extends State<LoginPage> {
                 isLoading = false;
               });
 
-              SnackBar snackBar = SnackBar(
-                content: Text('Login failed, please try again (${state.errorMessage ?? 'Unknown'})'),
-                behavior: SnackBarBehavior.floating,
-              );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
+              showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
             } else if (state.status == AuthStatus.success) {
               context.pop();
 
-              SnackBar snackBar = const SnackBar(
-                content: Text('Login succeeded!'),
-                behavior: SnackBarBehavior.floating,
-              );
-
-              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-              });
+              showSnackbar(context, AppLocalizations.of(context)!.loginSucceeded);
             }
           },
         ),

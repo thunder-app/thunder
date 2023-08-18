@@ -142,6 +142,7 @@ class _UserPageState extends State<UserPage> {
                 commentViewTrees: state.comments,
                 postViews: state.posts,
                 savedPostViews: state.savedPosts,
+                savedComments: state.savedComments,
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
                 blockedPerson: state.blockedPerson,
