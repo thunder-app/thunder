@@ -61,6 +61,8 @@
   "failedToLoadBlocks": "Failed to load blocks: {errorMessage}",
   "successfullyUnblocked": "Successfully unblocked!",
   "successfullyBlocked": "Successfully blocked!",
+  "showMore": "Show more",
+  "showLess": "Show less",
   "sortByTop": "Sort by Top",
   "backButton": "Back button"
 }
