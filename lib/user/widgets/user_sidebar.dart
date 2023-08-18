@@ -15,6 +15,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
@@ -192,7 +193,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                         onPressed: isLoggedIn
                                             ? () {
                                                 HapticFeedback.heavyImpact();
-                                                ScaffoldMessenger.of(context).clearSnackBars();
+                                                hideSnackbar(context);
                                                 context.read<UserBloc>().add(
                                                       BlockUserEvent(
                                                         personId: widget.userInfo!.person.id,
