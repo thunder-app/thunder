@@ -196,8 +196,8 @@ class PostSubview extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Spacer(),
                       Icon(
                         Icons.arrow_upward,
                         semanticLabel: postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
@@ -210,7 +210,6 @@ class PostSubview extends StatelessWidget {
                           color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
@@ -231,8 +230,8 @@ class PostSubview extends StatelessWidget {
                     padding: EdgeInsets.zero,
                   ),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Spacer(),
                       Icon(
                         Icons.arrow_downward,
                         semanticLabel: postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
@@ -245,7 +244,6 @@ class PostSubview extends StatelessWidget {
                           color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
-                      const Spacer(),
                     ],
                   ),
                 ),
