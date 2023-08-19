@@ -38,7 +38,7 @@ class UserPreferences {
 
     await FlutterFileDialog.saveFile(
       params: SaveFileDialogParams(
-        mimeTypesFilter: ['json'],
+        mimeTypesFilter: ['application/json'],
         sourceFilePath: filePath,
         fileName: 'thunder_prefs.json',
       ),
