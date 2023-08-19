@@ -109,9 +109,27 @@ class _ProfileSelectState extends State<ProfileSelect> {
                       maxRadius: 20,
                     ),
                   ),
+                  // This widget creates a slight border around the status indicator
                   Positioned(
                     right: 0,
                     bottom: 0,
+                    child: SizedBox(
+                      width: 12,
+                      height: 12,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(10),
+                        // These lines allow the color of the indicator background to match the modal
+                        color: theme.colorScheme.surface,
+                        surfaceTintColor: theme.colorScheme.surfaceTint,
+                        elevation: 1,
+                        shadowColor: Colors.transparent,
+                      ),
+                    ),
+                  ),
+                  // This is the status indicator
+                  Positioned(
+                    right: 1,
+                    bottom: 1,
                     child: AnimatedOpacity(
                       opacity: accounts![index].alive == null ? 0 : 1,
                       duration: const Duration(milliseconds: 500),
