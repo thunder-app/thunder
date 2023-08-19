@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 void triggerCommentAction({
@@ -31,26 +33,26 @@ void triggerCommentAction({
     case SwipeAction.edit:
       PostBloc postBloc = context.read<PostBloc>();
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
+      AccountBloc accountBloc = context.read<AccountBloc>();
 
-      showModalBottomSheet(
-        isScrollControlled: true,
-        context: context,
-        showDragHandle: true,
-        builder: (context) {
-          return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-            child: FractionallySizedBox(
-              heightFactor: 0.8,
-              child: MultiBlocProvider(
-                providers: [
-                  BlocProvider<PostBloc>.value(value: postBloc),
-                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                ],
-                child: CreateCommentModal(commentView: commentViewTree, isEdit: swipeAction == SwipeAction.edit, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath),
+      Navigator.of(context).push(
+        SwipeablePageRoute(
+          builder: (context) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<PostBloc>.value(value: postBloc),
+                BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                BlocProvider<AccountBloc>.value(value: accountBloc),
+              ],
+              child: CreateCommentPage(
+                commentView: commentViewTree,
+                isEdit: swipeAction == SwipeAction.edit,
+                selectedCommentId: selectedCommentId,
+                selectedCommentPath: selectedCommentPath,
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       );
 
       break;

@@ -2,6 +2,9 @@
 ### Added
 - Show OP identification first before self/mod/admin - contribution from @micahmo
 - Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
+- Redesign UI for creating comments - contribution from @coslu
+- Support uploading images to comments - contribution from @coslu
+- Show active user indicator when creating posts and comments - contribution from @coslu
 - Added identifier for bot accounts - contribution from @micahmo
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
