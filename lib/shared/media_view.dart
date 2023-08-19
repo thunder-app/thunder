@@ -30,6 +30,7 @@ class MediaView extends StatefulWidget {
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
+  final bool disableHero;
   final bool? read;
 
   const MediaView({
@@ -44,6 +45,7 @@ class MediaView extends StatefulWidget {
     this.viewMode = ViewMode.comfortable,
     this.scrapeMissingPreviews,
     this.navigateToPost,
+    this.disableHero = false,
     this.read,
   });
 
@@ -213,96 +215,102 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
-    return Hero(
-      tag: widget.postView!.media.first.mediaUrl!,
-      // This is used for image post previews in compact and comfortable mode
-      child: ExtendedImage.network(
-        color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
-        colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-        widget.postView!.media.first.mediaUrl!,
-        height: height,
-        width: width,
-        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-        cache: true,
-        clearMemoryCacheWhenDispose: true,
-        cacheWidth: widget.viewMode == ViewMode.compact
-            ? (75 * View.of(context).devicePixelRatio.ceil())
-            : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
-        loadStateChanged: (ExtendedImageState state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              _controller.reset();
+    Widget heroChild = ExtendedImage.network(
+      color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+      colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+      widget.postView!.media.first.mediaUrl!,
+      height: height,
+      width: width,
+      fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+      cache: true,
+      clearMemoryCacheWhenDispose: true,
+      cacheWidth: widget.viewMode == ViewMode.compact
+          ? (75 * View.of(context).devicePixelRatio.ceil())
+          : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            _controller.reset();
 
-              return Container(
-                color: theme.cardColor.darken(3),
-                child: SizedBox(
-                  height: height,
-                  width: width,
-                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-                ),
-              );
-            case LoadState.completed:
-              if (state.wasSynchronouslyLoaded) {
-                return state.completedWidget;
-              }
-              _controller.forward();
+            return Container(
+              color: theme.cardColor.darken(3),
+              child: SizedBox(
+                height: height,
+                width: width,
+                child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
+              ),
+            );
+          case LoadState.completed:
+            if (state.wasSynchronouslyLoaded) {
+              return state.completedWidget;
+            }
+            _controller.forward();
 
-              return FadeTransition(
-                opacity: _controller,
-                child: state.completedWidget,
-              );
-            case LoadState.failed:
-              _controller.reset();
+            return FadeTransition(
+              opacity: _controller,
+              child: state.completedWidget,
+            );
+          case LoadState.failed:
+            _controller.reset();
 
-              state.imageProvider.evict();
+            state.imageProvider.evict();
 
-              return Container(
-                color: theme.cardColor.darken(3),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: Material(
-                    clipBehavior: Clip.hardEdge,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
-                      fit: StackFit.passthrough,
-                      children: [
-                        Container(
-                          color: theme.colorScheme.secondary.withOpacity(0.4),
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(
-                                  Icons.link,
-                                ),
+            return Container(
+              color: theme.cardColor.darken(3),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                child: Material(
+                  clipBehavior: Clip.hardEdge,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    fit: StackFit.passthrough,
+                    children: [
+                      Container(
+                        color: theme.colorScheme.secondary.withOpacity(0.4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Icon(
+                                Icons.link,
                               ),
-                              Expanded(
-                                child: Text(
-                                  widget.post?.url ?? '',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.bodyMedium,
-                                ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                widget.post?.url ?? '',
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            if (widget.post?.url != null) {
-                              openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (widget.post?.url != null) {
+                            openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              );
-          }
-        },
-      ),
+              ),
+            );
+        }
+      },
     );
+
+    if (widget.disableHero) {
+      return heroChild;
+    } else {
+      return Hero(
+        tag: widget.postView!.media.first.mediaUrl!,
+        // This is used for image post previews in compact and comfortable mode
+        child: heroChild,
+      );
+    }
   }
 }

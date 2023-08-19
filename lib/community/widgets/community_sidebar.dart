@@ -136,11 +136,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                         ? () {
                                             HapticFeedback.mediumImpact();
                                             CommunityBloc communityBloc = context.read<CommunityBloc>();
+                                            AccountBloc accountBloc = context.read<AccountBloc>();
+                                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
                                             Navigator.of(context).push(
                                               SwipeablePageRoute(
                                                 builder: (context) {
-                                                  return BlocProvider<CommunityBloc>.value(
-                                                    value: communityBloc,
+                                                  return MultiBlocProvider(
+                                                    providers: [
+                                                      BlocProvider<CommunityBloc>.value(value: communityBloc),
+                                                      BlocProvider<AccountBloc>.value(value: accountBloc),
+                                                      BlocProvider<ThunderBloc>.value(value: thunderBloc)
+                                                    ],
                                                     child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
                                                   );
                                                 },
@@ -474,7 +480,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                     for (var mods in widget.communityInfo!.moderators)
                                       GestureDetector(
                                         onTap: () {
-                                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                                          AccountBloc accountBloc = context.read<AccountBloc>();
                                           AuthBloc authBloc = context.read<AuthBloc>();
                                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -500,7 +506,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                                 foregroundImage: mods.moderator?.avatar != null ? CachedNetworkImageProvider(mods.moderator!.avatar!) : null,
                                                 maxRadius: 20,
                                                 child: Text(
-                                                  mods.moderator!.name[0].toUpperCase() ?? '',
+                                                  mods.moderator!.name[0].toUpperCase(),
                                                   semanticsLabel: '',
                                                   style: const TextStyle(
                                                     fontWeight: FontWeight.bold,
@@ -515,7 +521,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                                   crossAxisAlignment: CrossAxisAlignment.start,
                                                   children: [
                                                     Text(
-                                                      mods.moderator!.displayName ?? mods.moderator!.name ?? '',
+                                                      mods.moderator!.displayName ?? mods.moderator!.name,
                                                       overflow: TextOverflow.ellipsis,
                                                       maxLines: 1,
                                                       style: const TextStyle(
@@ -524,7 +530,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                                       ),
                                                     ),
                                                     Text(
-                                                      '${mods.moderator!.name ?? ''} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
+                                                      '${mods.moderator!.name} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
                                                       overflow: TextOverflow.ellipsis,
                                                       style: TextStyle(
                                                         color: theme.colorScheme.onBackground.withOpacity(0.6),

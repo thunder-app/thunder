@@ -10,7 +10,7 @@ import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -274,26 +274,23 @@ class PostSubview extends StatelessWidget {
                       ? () {
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
 
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            showDragHandle: true,
-                            builder: (context) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                                child: FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<PostBloc>.value(value: postBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    ],
-                                    child: CreateCommentModal(postView: postView),
+                          Navigator.of(context).push(
+                            SwipeablePageRoute(
+                              builder: (context) {
+                                return MultiBlocProvider(
+                                  providers: [
+                                    BlocProvider<PostBloc>.value(value: postBloc),
+                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                    BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
+                                  ],
+                                  child: CreateCommentPage(
+                                    postView: postViewMedia,
                                   ),
-                                ),
-                              );
-                            },
+                                );
+                              },
+                            ),
                           );
                         }
                       : null,
