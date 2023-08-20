@@ -32,7 +32,7 @@ class PostCardList extends StatefulWidget {
   final SubscribedType? subscribeType;
   final BlockedCommunity? blockedCommunity;
   final SortType? sortType;
-  final List<Tagline>? taglines;
+  final String? tagline;
   final bool indicateRead;
 
   final VoidCallback onScrollEndReached;
@@ -56,7 +56,7 @@ class PostCardList extends StatefulWidget {
     required this.onToggleReadAction,
     this.sortType,
     this.blockedCommunity,
-    this.taglines,
+    this.tagline,
     this.indicateRead = true,
   });
 
@@ -194,13 +194,8 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                       },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );
-                  } else if (widget.taglines?.isNotEmpty == true) {
-                    // This trick is needed because build is called several times when the feed refreshes.
-                    // If we get a random number and pick a random tagline every time, it will jump all over the place.
-                    // So briefly cahe the index we want to use.
-                    final int taglineToShow = _taglineToShowCache.getOrSet(() => Random().nextInt(widget.taglines!.length), const Duration(seconds: 5));
-                    final String tagline = widget.taglines![taglineToShow].content;
-                    final bool taglineIsLong = tagline.length > 200;
+                  } else if (widget.tagline?.isNotEmpty == true) {
+                    final bool taglineIsLong = widget.tagline!.length > 200;
 
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -216,7 +211,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           child: !taglineIsLong
                               // TODO: Eventually pass in textScalingFactor
                               ? CommonMarkdownBody(
-                                  body: tagline,
+                                  body: widget.tagline!,
                                 )
                               : ExpandableNotifier(
                                   child: Column(
@@ -227,7 +222,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                           children: [
                                             // TODO: Eventually pass in textScalingFactor
                                             CommonMarkdownBody(
-                                              body: '${tagline.substring(0, 150)}...',
+                                              body: '${widget.tagline!.substring(0, 150)}...',
                                             ),
                                             ExpandableButton(
                                               theme: const ExpandableThemeData(
@@ -246,7 +241,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
                                             CommonMarkdownBody(
-                                              body: tagline,
+                                              body: widget.tagline!,
                                             ),
                                             ExpandableButton(
                                               theme: const ExpandableThemeData(
