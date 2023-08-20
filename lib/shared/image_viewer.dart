@@ -313,7 +313,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       await Share.shareXFiles([XFile(mediaFile!.path)]);
                                     } catch (e) {
                                       // Tell the user that the download failed
-                                      showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e));
+                                      showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e), customState: _imageViewer.currentState);
                                     } finally {
                                       setState(() => isDownloadingMedia = false);
                                     }

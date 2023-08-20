@@ -11,6 +11,8 @@ import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
+import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/post.dart';
 
 part 'user_event.dart';
@@ -432,7 +434,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       if (account?.jwt == null) {
         return emit(
           state.copyWith(
-            status: UserStatus.failure,
+            status: UserStatus.failedToBlock,
             errorMessage: 'You are not logged in. Cannot block user.',
             userId: state.userId,
           ),
@@ -453,8 +455,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     } catch (e, s) {
       return emit(
         state.copyWith(
-          status: UserStatus.failure,
-          errorMessage: e.toString(),
+          status: UserStatus.failedToBlock,
+          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString(),
           personView: state.personView,
         ),
       );

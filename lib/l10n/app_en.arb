@@ -72,5 +72,6 @@
   "successfullyUnblocked": "Successfully unblocked!",
   "successfullyBlocked": "Successfully blocked!",
   "showMore": "Show more",
-  "showLess": "Show less"
+  "showLess": "Show less",
+  "cantBlockAdmin": "You may not block an instance administrator."
 }
