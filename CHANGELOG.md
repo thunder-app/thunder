@@ -7,6 +7,7 @@
 - Show active user indicator when creating posts and comments - contribution from @coslu
 - Added identifier for bot accounts - contribution from @micahmo
 - Added access to saved comments from account page - contribution from @CTalvio
+- Added Polish translation - contribution from @pazdikan
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
