@@ -17,6 +17,7 @@
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
+- Fix issue with taglines reloading too often - contribution from @micahmo
 
 ## 0.2.3+16 - 2023-08-15
 ### Fixed
