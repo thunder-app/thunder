@@ -369,17 +369,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 )
                               : null,
                         ),
-                        SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: GestureDetector(
-                            onVerticalDragUpdate: (details) {
-                              if (details.delta.dy < -5) {
-                                context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                              }
-                            },
-                          ),
-                        )
+                        if (enableFab)
+                          SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: GestureDetector(
+                              onVerticalDragUpdate: (details) {
+                                if (details.delta.dy < -5) {
+                                  context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                                }
+                              },
+                            ),
+                          )
                       ],
                     ),
                   );
