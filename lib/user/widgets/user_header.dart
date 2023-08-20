@@ -5,6 +5,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
@@ -71,10 +72,9 @@ class UserHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
-                    backgroundColor: userInfo?.person.avatar != null ? Colors.transparent : theme.colorScheme.onBackground,
-                    foregroundImage: userInfo?.person.avatar != null ? CachedNetworkImageProvider(userInfo!.person.avatar!) : null,
-                    maxRadius: 45,
+                  UserAvatar(
+                    person: userInfo?.person,
+                    radius: 45.0,
                   ),
                   const SizedBox(width: 20.0),
                   Expanded(
