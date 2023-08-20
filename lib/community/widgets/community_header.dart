@@ -74,7 +74,10 @@ class CommunityHeader extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      CommunityIcon(community: communityInfo?.communityView.community, radius: 45.0,),
+                      CommunityIcon(
+                        community: communityInfo?.communityView.community,
+                        radius: 45.0,
+                      ),
                       const SizedBox(width: 20.0),
                       Expanded(
                         child: Column(

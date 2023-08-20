@@ -497,7 +497,10 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                           padding: const EdgeInsets.only(bottom: 8.0),
                                           child: Row(
                                             children: [
-                                              UserAvatar(person: mods.moderator, radius: 20.0,),
+                                              UserAvatar(
+                                                person: mods.moderator,
+                                                radius: 20.0,
+                                              ),
                                               const SizedBox(width: 16.0),
                                               Expanded(
                                                 child: Column(

@@ -22,8 +22,7 @@ class UserAvatar extends StatelessWidget {
             fontWeight: FontWeight.bold,
             fontSize: radius,
           ),
-        )
-    );
+        ));
 
     return CachedNetworkImage(
       imageUrl: person?.avatar ?? '',

@@ -64,7 +64,9 @@ class _UserIndicatorState extends State<UserIndicator> {
                 ? Row(
                     children: [
                       UserAvatar(person: person),
-                      const SizedBox(width: 12.0,),
+                      const SizedBox(
+                        width: 12.0,
+                      ),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
