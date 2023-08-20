@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -11,18 +10,15 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/swipe.dart';
 
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../../user/pages/user_page.dart';
 import '../../utils/date_time.dart';
 import '../pages/create_post_page.dart';
-import 'community_header.dart';
 
 class CommunitySidebar extends StatefulWidget {
   final FullCommunityView? communityInfo;
@@ -501,19 +497,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                           padding: const EdgeInsets.only(bottom: 8.0),
                                           child: Row(
                                             children: [
-                                              CircleAvatar(
-                                                backgroundColor: mods.moderator?.avatar != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                foregroundImage: mods.moderator?.avatar != null ? CachedNetworkImageProvider(mods.moderator!.avatar!) : null,
-                                                maxRadius: 20,
-                                                child: Text(
-                                                  mods.moderator!.name[0].toUpperCase(),
-                                                  semanticsLabel: '',
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 16,
-                                                  ),
-                                                ),
-                                              ),
+                                              UserAvatar(person: mods.moderator, radius: 20.0,),
                                               const SizedBox(width: 16.0),
                                               Expanded(
                                                 child: Column(

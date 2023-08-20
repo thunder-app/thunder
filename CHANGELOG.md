@@ -8,6 +8,7 @@
 - Added identifier for bot accounts - contribution from @micahmo
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added Polish translation - contribution from @pazdikan
+- Show default avatar for users without an avatar - contribution from @coslu
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
@@ -17,6 +18,7 @@
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
+- Fix default community icons not showing in community headers - contribution from @coslu
 
 ## 0.2.3+16 - 2023-08-15
 ### Fixed

@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
 
 class UserIndicator extends StatefulWidget {
@@ -63,17 +63,8 @@ class _UserIndicatorState extends State<UserIndicator> {
             : person != null
                 ? Row(
                     children: [
-                      CircleAvatar(
-                        foregroundImage: person!.avatar != null
-                            ? CachedNetworkImageProvider(person!.avatar!, errorListener: () {
-                                setState(() => accountError = true);
-                              })
-                            : null,
-                        maxRadius: 16,
-                      ),
-                      const SizedBox(
-                        width: 12.0,
-                      ),
+                      UserAvatar(person: person),
+                      const SizedBox(width: 12.0,),
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
