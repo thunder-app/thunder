@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 void showSnackbar(
   BuildContext context,
   String text, {
+  ScaffoldMessengerState? customState,
   bool clearSnackBars = true,
   Duration? duration,
   Color? backgroundColor,
@@ -36,7 +37,7 @@ void showSnackbar(
               visualDensity: VisualDensity.compact,
               onPressed: trailingAction != null
                   ? () {
-                      ScaffoldMessenger.of(context).clearSnackBars();
+                      (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
                       trailingAction();
                     }
                   : null,
@@ -52,14 +53,14 @@ void showSnackbar(
 
   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
     if (clearSnackBars) {
-      ScaffoldMessenger.of(context).clearSnackBars();
+      (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
     }
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    (customState ?? ScaffoldMessenger.of(context)).showSnackBar(snackBar);
   });
 }
 
-void hideSnackbar(BuildContext context) {
+void hideSnackbar(BuildContext context, {ScaffoldMessengerState? customState}) {
   WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-    ScaffoldMessenger.of(context).clearSnackBars();
+    (customState ?? ScaffoldMessenger.of(context)).clearSnackBars();
   });
 }
