@@ -22,6 +22,7 @@
 - Fix issue with taglines reloading too often - contribution from @micahmo
 - Fix issue with snackbars not appearing in some cases - contribution from @micahmo
 - Fix issue with scroll dead zone while FAB was disabled - contribution from @micahmo
+- Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
 - Fix default community icons not showing in community headers - contribution from @coslu
 
 ## 0.2.3+16 - 2023-08-15
