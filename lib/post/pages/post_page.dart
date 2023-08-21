@@ -7,13 +7,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
@@ -364,17 +366,18 @@ class _PostPageState extends State<PostPage> {
                         )
                       : null,
                 ),
-                SizedBox(
-                  height: 70,
-                  width: 70,
-                  child: GestureDetector(
-                    onVerticalDragUpdate: (details) {
-                      if (details.delta.dy < -5) {
-                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                      }
-                    },
+                if (enableFab)
+                  SizedBox(
+                    height: 70,
+                    width: 70,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        if (details.delta.dy < -5) {
+                          context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        }
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           );
@@ -411,26 +414,23 @@ class _PostPageState extends State<PostPage> {
   void replyToPost(BuildContext context) {
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-          child: FractionallySizedBox(
-            heightFactor: 0.8,
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<PostBloc>.value(value: postBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              ],
-              child: CreateCommentModal(postView: widget.postView?.postView),
-            ),
-          ),
-        );
-      },
-    );
+    if (!authBloc.state.isLoggedIn) {
+      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInComment);
+    } else {
+      Navigator.of(context).push(
+        SwipeablePageRoute(
+          builder: (context) {
+            return MultiBlocProvider(providers: [
+              BlocProvider<PostBloc>.value(value: postBloc),
+              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              BlocProvider<AccountBloc>.value(value: accountBloc),
+            ], child: CreateCommentPage(postView: widget.postView ?? postBloc.state.postView));
+          },
+        ),
+      );
+    }
   }
 }
