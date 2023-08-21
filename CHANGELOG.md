@@ -16,6 +16,8 @@
 - Improvements to text post indicator preview - contribution from @micahmo
 - Show taglines with markdown and cycle through all available taglines - contribution from @micahmo
 - Errors blocking users are now shown as toasts - contribution from @micahmo
+- Make comment indicators use colours blended from the current theme - contribution from @tom-james-watson
+
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
