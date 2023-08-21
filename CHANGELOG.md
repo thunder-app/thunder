@@ -9,6 +9,7 @@
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added Polish translation - contribution from @pazdikan
 - Show default avatar for users without an avatar - contribution from @coslu
+- Show special user identifiers in post - contribution from @micahmo
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
