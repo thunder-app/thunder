@@ -91,6 +91,8 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
+    bool postLocked = widget.postView!.postView.post.locked;
+
     PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
     PostFabAction longPressAction = thunderState.postFabLongPressAction;
 
@@ -174,7 +176,11 @@ class _PostPageState extends State<PostPage> {
                           ? GestureFab(
                               distance: 60,
                               icon: Icon(
-                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort
+                                    ? sortTypeIcon
+                                    : singlePressAction == PostFabAction.replyToPost && postLocked
+                                    ? Icons.lock
+                                    : null),
                                 semanticLabel: singlePressAction.getTitle(context),
                                 size: 35,
                               ),
@@ -191,7 +197,11 @@ class _PostPageState extends State<PostPage> {
                                       : singlePressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : singlePressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () {
+                                                  if (!postLocked) {
+                                                    replyToPost(context);
+                                                  }
+                                                }
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
@@ -206,20 +216,26 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () {
+                                                  if (!postLocked) {
+                                                    replyToPost(context);
+                                                  }
+                                                }
                                               : null),
                               children: [
                                 if (enableReplyToPost)
                                   ActionButton(
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
-                                      PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context),
-                                      );
+                                      if (!postLocked) {
+                                        PostFabAction.replyToPost.execute(
+                                          override: () => replyToPost(context),
+                                        );
+                                      }
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
                                     icon: Icon(
-                                      PostFabAction.replyToPost.getIcon(),
+                                      postLocked ? Icons.lock : PostFabAction.replyToPost.getIcon(),
                                     ),
                                   ),
                                 if (enableChangeSort)

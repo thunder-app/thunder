@@ -270,7 +270,7 @@ class PostSubview extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: IconButton(
-                  onPressed: isUserLoggedIn
+                  onPressed: isUserLoggedIn && !postView.post.locked
                       ? () {
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -294,7 +294,9 @@ class PostSubview extends StatelessWidget {
                           );
                         }
                       : null,
-                  icon: const Icon(Icons.reply_rounded, semanticLabel: 'Reply'),
+                  icon: postView.post.locked
+                      ? const Icon(Icons.lock, semanticLabel: 'Replies Locked', color: Colors.red)
+                      : const Icon(Icons.reply_rounded, semanticLabel: 'Reply'),
                 ),
               ),
               Expanded(

@@ -105,6 +105,18 @@ class PostCardViewCompact extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     children: [
+                      if (postViewMedia.postView.post.locked) ...[
+                        WidgetSpan(
+                            child: Icon(
+                              Icons.lock,
+                              color: Colors.red,
+                              size: 17.0 * textScaleFactor,
+                            )),
+                        const WidgetSpan(
+                            child: SizedBox(
+                              width: 5, // your of space
+                            )),
+                      ],
                       TextSpan(
                         text: postViewMedia.postView.post.name,
                         style: theme.textTheme.bodyMedium?.copyWith(

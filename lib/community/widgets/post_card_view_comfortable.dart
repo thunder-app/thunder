@@ -106,6 +106,18 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
+                    if (postViewMedia.postView.post.locked) ...[
+                      WidgetSpan(
+                          child: Icon(
+                        Icons.lock,
+                        color: Colors.red,
+                        size: 17.0 * textScaleFactor,
+                      )),
+                      const WidgetSpan(
+                          child: SizedBox(
+                        width: 5, // your of space
+                      )),
+                    ],
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -159,49 +171,62 @@ class PostCardViewComfortable extends StatelessWidget {
             ),
           if (!showTitleFirst)
             Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: postViewMedia.postView.post.name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
-                      ),
-                    ),
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                          ),
+                padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      if (postViewMedia.postView.post.locked) ...[
+                        WidgetSpan(
+                            child: Icon(
+                          Icons.lock,
+                          color: Colors.red,
+                          size: 17.0 * textScaleFactor,
+                        )),
+                        const WidgetSpan(
+                            child: SizedBox(
+                          width: 5, // your of space
+                        )),
+                      ],
+                      TextSpan(
+                        text: postViewMedia.postView.post.name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
                         ),
                       ),
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
-                            size: 16.0 * textScaleFactor,
-                            semanticLabel: 'Saved',
+                      if (postViewMedia.postView.post.featuredCommunity)
+                        WidgetSpan(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8.0,
+                            ),
+                            child: Icon(
+                              Icons.push_pin_rounded,
+                              size: 17.0 * textScaleFactor,
+                              color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                      if (!useSaveButton && postViewMedia.postView.saved)
+                        WidgetSpan(
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              left: 8.0,
+                            ),
+                            child: Icon(
+                              Icons.star_rounded,
+                              color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                              size: 16.0 * textScaleFactor,
+                              semanticLabel: 'Saved',
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                )
+                //]),
                 ),
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
-              ),
-            ),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
