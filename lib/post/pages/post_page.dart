@@ -277,7 +277,7 @@ class _PostPageState extends State<PostPage> {
                 SafeArea(
                   child: BlocConsumer<PostBloc, PostState>(
                     listenWhen: (previous, current) {
-                      if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                      if ((previous.status != PostStatus.failure && current.status == PostStatus.failure) || (previous.errorMessage != current.errorMessage)) {
                         setState(() => resetFailureMessage = true);
                       }
                       return true;
