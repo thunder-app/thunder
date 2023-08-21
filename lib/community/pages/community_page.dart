@@ -179,7 +179,11 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   return Scaffold(
                     key: widget.scaffoldKey,
                     appBar: AppBar(
-                      title: Text(getCommunityName(state)),
+                      title: ListTile(
+                        title: Text(getCommunityName(state), style: theme.textTheme.titleLarge),
+                        subtitle: Text(getSortName(state)),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                      ),
                       centerTitle: false,
                       toolbarHeight: 70.0,
                       actions: [
@@ -224,8 +228,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
-                                tooltip: sortTypeLabel,
+                                icon: Icon(Icons.sort, semanticLabel: AppLocalizations.of(context)!.sortBy),
+                                tooltip: AppLocalizations.of(context)!.sortBy,
                                 onPressed: () {
                                   HapticFeedback.mediumImpact();
                                   showSortBottomSheet(context, state);
@@ -449,6 +453,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+  }
+
+  String getSortName(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return '';
+    }
+
+    return sortTypeLabel ?? '';
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
