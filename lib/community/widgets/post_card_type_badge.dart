@@ -9,20 +9,22 @@ class TypeBadge extends StatelessWidget {
   const TypeBadge({
     super.key,
     required this.postViewMedia,
+    required this.read,
   });
 
   final PostViewMedia postViewMedia;
+  final bool read;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     Color getMaterialColor(Color blendColor) {
-      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor).withOpacity(postViewMedia.postView.read ? 0.55 : 1);
+      return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), blendColor).withOpacity(read ? 0.55 : 1);
     }
 
     Color getIconColor(Color blendColor) {
-      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(postViewMedia.postView.read ? 0.55 : 1);
+      return Color.alphaBlend(theme.colorScheme.onPrimaryContainer.withOpacity(0.9), blendColor).withOpacity(read ? 0.55 : 1);
     }
 
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
@@ -39,7 +41,7 @@ class TypeBadge extends StatelessWidget {
         ),
         // This is the thin sliver between the badge and the preview.
         // It should be made to match the read background color in the compact file.
-        color: postViewMedia.postView.read
+        color: read
             ? Color.alphaBlend(
                 theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075),
                 theme.colorScheme.background,

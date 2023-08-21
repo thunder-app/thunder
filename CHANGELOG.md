@@ -2,17 +2,29 @@
 ### Added
 - Show OP identification first before self/mod/admin - contribution from @micahmo
 - Show full text of a URL when activating tooltip on post in feed - contribution from @micahmo
+- Redesign UI for creating comments - contribution from @coslu
+- Support uploading images to comments - contribution from @coslu
+- Show active user indicator when creating posts and comments - contribution from @coslu
 - Added identifier for bot accounts - contribution from @micahmo
 - Added access to saved comments from account page - contribution from @CTalvio
+- Added Polish translation - contribution from @pazdikan
+- Show default avatar for users without an avatar - contribution from @coslu
 - Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
 - Hide the gesture customize hint when the gestures are disabled - contribution from @micahmo
 - Improvements to text post indicator preview - contribution from @micahmo
+- Show taglines with markdown and cycle through all available taglines - contribution from @micahmo
+- Errors blocking users are now shown as toasts - contribution from @micahmo
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
+- Fix issue with taglines reloading too often - contribution from @micahmo
+- Fix issue with snackbars not appearing in some cases - contribution from @micahmo
+- Fix issue with scroll dead zone while FAB was disabled - contribution from @micahmo
+- Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
+- Fix default community icons not showing in community headers - contribution from @coslu
 
 ## 0.2.3+16 - 2023-08-15
 ### Fixed

@@ -7,6 +7,8 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum FeedFabAction {
@@ -109,20 +111,26 @@ enum FeedFabAction {
         context.read<ThunderBloc>().add(const OnDismissEvent(true));
       case FeedFabAction.newPost:
         if (bloc != null) {
-          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-          Navigator.of(context).push(
-            SwipeablePageRoute(
-              builder: (context) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider<CommunityBloc>.value(value: bloc),
-                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  ],
-                  child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                );
-              },
-            ),
-          );
+          if (!context.read<AuthBloc>().state.isLoggedIn) {
+            showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
+          } else {
+            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+            AccountBloc accountBloc = context.read<AccountBloc>();
+            Navigator.of(context).push(
+              SwipeablePageRoute(
+                builder: (context) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<CommunityBloc>.value(value: bloc),
+                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                      BlocProvider<AccountBloc>.value(value: accountBloc),
+                    ],
+                    child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                  );
+                },
+              ),
+            );
+          }
         }
     }
   }
