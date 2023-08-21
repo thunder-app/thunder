@@ -19,6 +19,7 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -109,6 +110,7 @@ class ThunderApp extends StatelessWidget {
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
+                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
                 ),
               );
             },

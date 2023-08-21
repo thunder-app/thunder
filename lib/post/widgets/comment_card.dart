@@ -145,7 +145,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
-        if (state.status != PostStatus.refreshing) {
+        if (isFetchingMoreComments && state.status != PostStatus.refreshing) {
           isFetchingMoreComments = false;
         }
       },

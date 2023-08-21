@@ -290,7 +290,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           if (event.commentParentId != null) {
             final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
             if (!anyDirectChildren) {
-              throw Exception('Unable to load direct children.');
+              throw Exception('Unable to load more replies.');
             }
           }
 
