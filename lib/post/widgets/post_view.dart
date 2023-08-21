@@ -18,6 +18,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
@@ -52,6 +53,8 @@ class PostSubview extends StatelessWidget {
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
+    final bool isOwnComment = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
       child: Column(
@@ -82,55 +85,107 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 16.0),
+            padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
-                InkWell(
-                  borderRadius: BorderRadius.circular(6),
-                  onTap: () {
-                    account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                    AuthBloc authBloc = context.read<AuthBloc>();
-                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                Tooltip(
+                  excludeFromSemantics: true,
+                  message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, post, null, postView.creator, moderators)}',
+                  preferBelow: false,
+                  child: Material(
+                    color: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)
+                        ? fetchUsernameColor(context, isOwnComment, post, null, postView.creator, moderators) ?? theme.colorScheme.onBackground
+                        : Colors.transparent,
+                    borderRadius: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(5),
+                      onTap: () {
+                        account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
+                        AuthBloc authBloc = context.read<AuthBloc>();
+                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
-                    Navigator.of(context).push(
-                      SwipeablePageRoute(
-                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: accountBloc),
-                            BlocProvider.value(value: authBloc),
-                            BlocProvider.value(value: thunderBloc),
-                          ],
-                          child: UserPage(
-                            userId: postView.creator.id,
+                        Navigator.of(context).push(
+                          SwipeablePageRoute(
+                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
+                            builder: (context) => MultiBlocProvider(
+                              providers: [
+                                BlocProvider.value(value: accountBloc),
+                                BlocProvider.value(value: authBloc),
+                                BlocProvider.value(value: thunderBloc),
+                              ],
+                              child: UserPage(
+                                userId: postView.creator.id,
+                              ),
+                            ),
                           ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.only(left: 5, right: 5),
+                        child: Row(
+                          children: [
+                            Text(
+                              postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                              textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
+                                    ?.withOpacity(0.75),
+                              ),
+                            ),
+                            if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 2.0),
+                            if (isOwnComment)
+                              Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: Icon(
+                                  Icons.person,
+                                  size: 15.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                  color: theme.colorScheme.onBackground,
+                                ),
+                              ),
+                            if (isAdmin(postView.creator))
+                              Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: Icon(
+                                  Thunder.shield_crown,
+                                  size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                  color: theme.colorScheme.onBackground,
+                                ),
+                              ),
+                            if (isModerator(postView.creator, moderators))
+                              Padding(
+                                padding: const EdgeInsets.only(left: 1),
+                                child: Icon(
+                                  Thunder.shield,
+                                  size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                  color: theme.colorScheme.onBackground,
+                                ),
+                              ),
+                            if (isBot(postView.creator))
+                              Padding(
+                                padding: const EdgeInsets.only(left: 1, right: 2),
+                                child: Icon(
+                                  Thunder.robot,
+                                  size: 13.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                  color: theme.colorScheme.onBackground,
+                                ),
+                              ),
+                          ],
                         ),
-                      ),
-                    );
-                  },
-                  child: Tooltip(
-                    excludeFromSemantics: true,
-                    message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(context)}',
-                    preferBelow: false,
-                    child: Text(
-                      postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),
                     ),
                   ),
                 ),
+                if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 8.0),
                 Text(
-                  ' to ',
+                  'to',
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
                 ),
                 InkWell(
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(5),
                   onTap: () {
                     account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
                     AuthBloc authBloc = context.read<AuthBloc>();
@@ -154,11 +209,14 @@ class PostSubview extends StatelessWidget {
                     excludeFromSemantics: true,
                     message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
                     preferBelow: false,
-                    child: Text(
-                      postView.community.name,
-                      textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 5, right: 5),
+                      child: Text(
+                        postView.community.name,
+                        textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                        ),
                       ),
                     ),
                   ),
@@ -315,20 +373,5 @@ class PostSubview extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  String fetchUsernameDescriptor(BuildContext context) {
-    PostView postView = postViewMedia.postView;
-    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
-
-    String descriptor = '';
-
-    if (isOwnPost) descriptor += 'me';
-    if (isAdmin(postView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (isModerator(postView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
-
-    if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
-
-    return descriptor;
   }
 }
