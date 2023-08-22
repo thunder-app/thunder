@@ -142,7 +142,7 @@ enum PostFabAction {
   changeSort(),
   replyToPost();
 
-  IconData getIcon({IconData? override}) {
+  IconData getIcon({IconData? override, bool postLocked = false}) {
     if (override != null) {
       return override;
     }
@@ -155,11 +155,14 @@ enum PostFabAction {
       case PostFabAction.changeSort:
         return Icons.sort_rounded;
       case PostFabAction.replyToPost:
+        if (postLocked) {
+          return Icons.lock;
+        }
         return Icons.reply_rounded;
     }
   }
 
-  String getTitle(BuildContext context) {
+  String getTitle(BuildContext context, {bool postLocked = false}) {
     switch (this) {
       case PostFabAction.openFab:
         return AppLocalizations.of(context)!.open;
@@ -168,6 +171,9 @@ enum PostFabAction {
       case PostFabAction.changeSort:
         return AppLocalizations.of(context)!.changeSort;
       case PostFabAction.replyToPost:
+        if (postLocked) {
+          return AppLocalizations.of(context)!.postLocked;
+        }
         return AppLocalizations.of(context)!.replyToPost;
     }
   }
