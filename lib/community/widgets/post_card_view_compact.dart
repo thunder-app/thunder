@@ -108,14 +108,14 @@ class PostCardViewCompact extends StatelessWidget {
                       if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
                             child: Icon(
-                              Icons.lock,
-                              color: Colors.red,
-                              size: 17.0 * textScaleFactor,
-                            )),
+                          Icons.lock,
+                          color: Colors.red,
+                          size: 17.0 * textScaleFactor,
+                        )),
                         const WidgetSpan(
                             child: SizedBox(
-                              width: 5, // your of space
-                            )),
+                          width: 5, // your of space
+                        )),
                       ],
                       TextSpan(
                         text: postViewMedia.postView.post.name,
