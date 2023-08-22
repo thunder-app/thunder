@@ -101,6 +101,18 @@ class CommentHeader extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 2.0),
                                       Container(
+                                        child: commentAuthorIsPostAuthor(commentViewTree.commentView?.post, commentViewTree.commentView?.comment)
+                                            ? Padding(
+                                                padding: const EdgeInsets.only(left: 1),
+                                                child: Icon(
+                                                  Thunder.microphone_variant,
+                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                  color: theme.colorScheme.onBackground,
+                                                ),
+                                              )
+                                            : Container(),
+                                      ),
+                                      Container(
                                         child: isOwnComment
                                             ? Padding(
                                                 padding: EdgeInsets.only(left: 1),
@@ -136,12 +148,12 @@ class CommentHeader extends StatelessWidget {
                                             : Container(),
                                       ),
                                       Container(
-                                        child: commentAuthorIsPostAuthor(commentViewTree.commentView?.post, commentViewTree.commentView?.comment)
+                                        child: isBot(commentViewTree.commentView?.creator)
                                             ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
+                                                padding: const EdgeInsets.only(left: 1, right: 2),
                                                 child: Icon(
-                                                  Thunder.microphone_variant,
-                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                  Thunder.robot,
+                                                  size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
                                                   color: theme.colorScheme.onBackground,
                                                 ),
                                               )
@@ -279,10 +291,11 @@ class CommentHeader extends StatelessWidget {
     CommentView commentView = commentViewTree.commentView!;
     final theme = Theme.of(context);
 
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
     if (isOwnComment) return theme.colorScheme.primaryContainer;
     if (isAdmin(commentView.creator)) return theme.colorScheme.errorContainer;
     if (isModerator(commentView.creator, moderators)) return theme.colorScheme.tertiaryContainer;
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
+    if (isBot(commentView.creator)) return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.75), Colors.purple);
 
     return null;
   }
@@ -292,10 +305,11 @@ class CommentHeader extends StatelessWidget {
 
     String descriptor = '';
 
-    if (isOwnComment) descriptor += 'me';
+    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) descriptor += 'original poster';
+    if (isOwnComment) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}me';
     if (isAdmin(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
     if (isModerator(commentView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}original poster';
+    if (isBot(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}bot';
 
     if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
 
@@ -305,6 +319,10 @@ class CommentHeader extends StatelessWidget {
   bool isSpecialUser(BuildContext context, bool isOwnComment) {
     CommentView commentView = commentViewTree.commentView!;
 
-    return isOwnComment || isAdmin(commentView.creator) || isModerator(commentView.creator, moderators) || commentAuthorIsPostAuthor(commentView.post, commentView.comment);
+    return commentAuthorIsPostAuthor(commentView.post, commentView.comment) ||
+        isOwnComment ||
+        isAdmin(commentView.creator) ||
+        isModerator(commentView.creator, moderators) ||
+        isBot(commentView.creator);
   }
 }

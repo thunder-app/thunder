@@ -23,13 +23,13 @@ class ThunderState extends Equatable {
     this.tabletMode = false,
 
     // General Settings
-    this.showLinkPreviews = true,
+    this.scrapeMissingPreviews = false,
     this.openInExternalBrowser = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = true,
-    this.disableScoreCounters = true,
+    this.scoreCounters = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -133,7 +133,7 @@ class ThunderState extends Equatable {
   final bool tabletMode;
 
   // General Settings
-  final bool showLinkPreviews;
+  final bool scrapeMissingPreviews;
   final bool openInExternalBrowser;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
@@ -156,7 +156,7 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool showPostAuthor;
-  final bool disableScoreCounters;
+  final bool scoreCounters;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -224,10 +224,13 @@ class ThunderState extends Equatable {
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
+
   // Dismiss posts from loaded view event
   final bool dismissEvent;
+
   // Expand/Close FAB event
   final bool isFabOpen;
+
   // Expand/Close FAB event
   final bool isFabSummoned;
 
@@ -249,12 +252,12 @@ class ThunderState extends Equatable {
     bool? tabletMode,
 
     // General Settings
-    bool? showLinkPreviews,
+    bool? scrapeMissingPreviews,
     bool? openInExternalBrowser,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
-    bool? disableScoreCounters,
+    bool? scoreCounters,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -358,13 +361,13 @@ class ThunderState extends Equatable {
       tabletMode: tabletMode ?? this.tabletMode,
 
       // General Settings
-      showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
+      scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      disableScoreCounters: disableScoreCounters ?? this.disableScoreCounters,
+      scoreCounters: scoreCounters ?? this.scoreCounters,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -475,7 +478,7 @@ class ThunderState extends Equatable {
         tabletMode,
 
         // General Settings
-        showLinkPreviews,
+        scrapeMissingPreviews,
         openInExternalBrowser,
         useDisplayNames,
         markPostReadOnMediaView,

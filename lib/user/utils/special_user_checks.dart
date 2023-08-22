@@ -14,3 +14,8 @@ bool commentAuthorIsPostAuthor(Post? post, Comment? comment) {
 bool isModerator(PersonSafe? person, List<CommunityModeratorView>? moderators) {
   return person != null && moderators?.any((moderator) => moderator.moderator?.id == person.id) == true;
 }
+
+/// Checks whether the given [person] is a bot account
+bool isBot(PersonSafe? person) {
+  return person?.botAccount == true;
+}

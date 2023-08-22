@@ -7,6 +7,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -125,6 +126,10 @@ class _UserPageState extends State<UserPage> {
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           userBloc = context.read<UserBloc>();
 
+          if (state.status == UserStatus.failedToBlock) {
+            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+          }
+
           switch (state.status) {
             case UserStatus.initial:
               context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
@@ -134,6 +139,7 @@ class _UserPageState extends State<UserPage> {
               return const Center(child: CircularProgressIndicator());
             case UserStatus.refreshing:
             case UserStatus.success:
+            case UserStatus.failedToBlock:
               return UserPageSuccess(
                 userId: widget.userId,
                 isAccountUser: widget.isAccountUser,
@@ -142,6 +148,7 @@ class _UserPageState extends State<UserPage> {
                 commentViewTrees: state.comments,
                 postViews: state.posts,
                 savedPostViews: state.savedPosts,
+                savedComments: state.savedComments,
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
                 blockedPerson: state.blockedPerson,

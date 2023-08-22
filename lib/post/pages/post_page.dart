@@ -7,16 +7,19 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -121,6 +124,25 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              flexibleSpace: GestureDetector(
+                onTap: () {
+                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  }
+                },
+              ),
+              leading: IconButton(
+                icon: Icon(
+                  Icons.arrow_back_rounded,
+                  semanticLabel: AppLocalizations.of(context)!.back,
+                ),
+                onPressed: () {
+                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                  }
+                  Navigator.pop(context);
+                },
+              ),
               actions: [
                 IconButton(
                   icon: Icon(
@@ -128,7 +150,12 @@ class _PostPageState extends State<PostPage> {
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
                   tooltip: sortTypeLabel,
-                  onPressed: () => showSortBottomSheet(context, state),
+                  onPressed: () {
+                    if (context.read<ThunderBloc>().state.isFabOpen) {
+                      context.read<ThunderBloc>().add(const OnFabToggle(false));
+                    }
+                    showSortBottomSheet(context, state);
+                  },
                 ),
               ],
               centerTitle: false,
@@ -164,7 +191,7 @@ class _PostPageState extends State<PostPage> {
                                       : singlePressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : singlePressAction == PostFabAction.replyToPost
-                                              ? replyToPost
+                                              ? () => replyToPost(context)
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
@@ -179,7 +206,7 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? replyToPost
+                                              ? () => replyToPost(context)
                                               : null),
                               children: [
                                 if (enableReplyToPost)
@@ -187,7 +214,7 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: replyToPost,
+                                        override: () => replyToPost(context),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
@@ -263,24 +290,14 @@ class _PostPageState extends State<PostPage> {
                     },
                     builder: (context, state) {
                       if (state.status == PostStatus.failure && resetFailureMessage == true) {
-                        SnackBar snackBar = SnackBar(
-                          content: Row(
-                            children: [
-                              Icon(
-                                Icons.warning_rounded,
-                                color: theme.colorScheme.errorContainer,
-                              ),
-                              const SizedBox(width: 8.0),
-                              Flexible(
-                                child: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage, maxLines: 4),
-                              )
-                            ],
-                          ),
-                          backgroundColor: theme.colorScheme.onErrorContainer,
+                        showSnackbar(
+                          context,
+                          state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage,
+                          backgroundColor: Theme.of(context).colorScheme.onErrorContainer,
+                          leadingIcon: Icons.warning_rounded,
+                          leadingIconColor: Theme.of(context).colorScheme.errorContainer,
                         );
                         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
                           setState(() => resetFailureMessage = false);
                         });
                       }
@@ -349,17 +366,18 @@ class _PostPageState extends State<PostPage> {
                         )
                       : null,
                 ),
-                SizedBox(
-                  height: 70,
-                  width: 70,
-                  child: GestureDetector(
-                    onVerticalDragUpdate: (details) {
-                      if (details.delta.dy < -5) {
-                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                      }
-                    },
+                if (enableFab)
+                  SizedBox(
+                    height: 70,
+                    width: 70,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        if (details.delta.dy < -5) {
+                          context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        }
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           );
@@ -393,29 +411,26 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost() {
+  void replyToPost(BuildContext context) {
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-          child: FractionallySizedBox(
-            heightFactor: 0.8,
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<PostBloc>.value(value: postBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              ],
-              child: CreateCommentModal(postView: widget.postView?.postView),
-            ),
-          ),
-        );
-      },
-    );
+    if (!authBloc.state.isLoggedIn) {
+      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInComment);
+    } else {
+      Navigator.of(context).push(
+        SwipeablePageRoute(
+          builder: (context) {
+            return MultiBlocProvider(providers: [
+              BlocProvider<PostBloc>.value(value: postBloc),
+              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              BlocProvider<AccountBloc>.value(value: accountBloc),
+            ], child: CreateCommentPage(postView: widget.postView ?? postBloc.state.postView));
+          },
+        ),
+      );
+    }
   }
 }

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/shared/snackbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../core/auth/bloc/auth_bloc.dart';
 import '../../core/models/comment_view_tree.dart';
@@ -79,7 +81,7 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentViewTree com
                         break;
                       case CommentCardAction.copyText:
                         Clipboard.setData(ClipboardData(text: commentViewTree.commentView!.comment.content)).then((_) {
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Copied to clipboard"), behavior: SnackBarBehavior.floating));
+                          showSnackbar(context, AppLocalizations.of(context)!.copiedToClipboard);
                         });
                         break;
                       case CommentCardAction.shareLink:

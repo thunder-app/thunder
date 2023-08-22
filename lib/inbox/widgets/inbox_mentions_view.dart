@@ -9,7 +9,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
@@ -45,6 +45,7 @@ class InboxMentionsView extends StatelessWidget {
               // To to specific post for now, in the future, will be best to scroll to the position of the comment
               await Navigator.of(context).push(
                 SwipeablePageRoute(
+                  backGestureDetectionStartOffset: 45,
                   canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
                   builder: (context) => MultiBlocProvider(
                     providers: [
@@ -104,26 +105,19 @@ class InboxMentionsView extends StatelessWidget {
                           InboxBloc inboxBloc = context.read<InboxBloc>();
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          AccountBloc accountBloc = context.read<AccountBloc>();
 
-                          showModalBottomSheet(
-                            isScrollControlled: true,
-                            context: context,
-                            showDragHandle: true,
-                            builder: (context) {
-                              return Padding(
-                                padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                                child: FractionallySizedBox(
-                                  heightFactor: 0.8,
-                                  child: MultiBlocProvider(
-                                    providers: [
-                                      BlocProvider<InboxBloc>.value(value: inboxBloc),
-                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    ],
-                                    child: CreateCommentModal(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name),
-                                  ),
-                                ),
-                              );
-                            },
+                          Navigator.of(context).push(
+                            SwipeablePageRoute(
+                              builder: (context) {
+                                return MultiBlocProvider(providers: [
+                                  BlocProvider<InboxBloc>.value(value: inboxBloc),
+                                  BlocProvider<PostBloc>.value(value: postBloc),
+                                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                  BlocProvider<AccountBloc>.value(value: accountBloc),
+                                ], child: CreateCommentPage(comment: mentions[index].comment, parentCommentAuthor: mentions[index].creator.name));
+                              },
+                            ),
                           );
                         },
                         icon: const Icon(

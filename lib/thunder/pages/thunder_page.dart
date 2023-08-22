@@ -13,6 +13,7 @@ import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -105,18 +106,7 @@ class _ThunderState extends State<Thunder> {
   }
 
   void _showExitWarning() {
-    final theme = Theme.of(context);
-    const snackBarTextColor = TextStyle(color: Colors.white);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: theme.primaryColorDark,
-        width: 190,
-        duration: const Duration(milliseconds: 3500),
-        content: Center(child: Text(AppLocalizations.of(context)!.tapToExit, style: snackBarTextColor)),
-      ),
-    );
+    showSnackbar(context, AppLocalizations.of(context)!.tapToExit, duration: const Duration(milliseconds: 3500));
   }
 
   Future<bool> _handleBackButtonPress() async {
@@ -150,6 +140,8 @@ class _ThunderState extends State<Thunder> {
         providers: [
           BlocProvider(create: (context) => ThunderBloc()),
           BlocProvider(create: (context) => InboxBloc()),
+          BlocProvider(create: (context) => SearchBloc()),
+          BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         ],
         child: WillPopScope(
           onWillPop: () async {
@@ -217,10 +209,7 @@ class _ThunderState extends State<Thunder> {
                                           scaffoldKey: _feedScaffoldKey,
                                           pageController: pageController,
                                         ),
-                                        MultiBlocProvider(
-                                          providers: [BlocProvider(create: (context) => AnonymousSubscriptionsBloc()), BlocProvider(create: (context) => SearchBloc())],
-                                          child: const SearchPage(),
-                                        ),
+                                        const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),
                                         SettingsPage(),
@@ -303,6 +292,10 @@ class _ThunderState extends State<Thunder> {
 
             if (selectedPageIndex == 0 && index == 0) {
               context.read<ThunderBloc>().add(OnScrollToTopEvent());
+            }
+
+            if (selectedPageIndex == 1 && index == 1) {
+              context.read<SearchBloc>().add(FocusSearchEvent());
             }
 
             if (selectedPageIndex != index) {

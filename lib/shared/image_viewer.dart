@@ -15,6 +15,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 
 import 'package:thunder/shared/hero.dart';
+import 'package:thunder/shared/snackbar.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImageViewer extends StatefulWidget {
   final String url;
@@ -241,7 +243,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                 maxScale: 4.0,
                                 animationMaxScale: 4.0,
                                 speed: 1.0,
-                                inertialSpeed: 600.0,
+                                inertialSpeed: 250.0,
                                 initialScale: 1.0,
                                 inPageView: false,
                                 initialAlignment: InitialAlignment.center,
@@ -311,14 +313,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                       await Share.shareXFiles([XFile(mediaFile!.path)]);
                                     } catch (e) {
                                       // Tell the user that the download failed
-                                      SnackBar snackBar = SnackBar(
-                                        content: Text('There was an error downloading the media file to share: $e'),
-                                        behavior: SnackBarBehavior.floating,
-                                      );
-                                      WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                        _imageViewer.currentState?.clearSnackBars();
-                                        _imageViewer.currentState?.showSnackBar(snackBar);
-                                      });
+                                      showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e), customState: _imageViewer.currentState);
                                     } finally {
                                       setState(() => isDownloadingMedia = false);
                                     }
