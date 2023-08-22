@@ -91,7 +91,7 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
-    bool postLocked = widget.postView == null ? false : widget.postView!.postView.post.locked;
+    bool postLocked = widget.postView?.postView.post.locked == true;
 
     PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
     PostFabAction longPressAction = thunderState.postFabLongPressAction;

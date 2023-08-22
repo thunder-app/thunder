@@ -224,9 +224,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     ],
                   ),
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
-                )
-                //]),
-                ),
+                )),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
