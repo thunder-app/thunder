@@ -16,7 +16,6 @@ import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
-
 class InboxRepliesView extends StatefulWidget {
   final List<CommentView> replies;
 
