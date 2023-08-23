@@ -320,7 +320,52 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                   child: ListView.builder(
                     controller: _scrollController,
                     itemCount: widget.savedComments?.length,
-                    itemBuilder: (context, index) => CommentCard(comment: widget.savedComments![index].commentView!),
+                    itemBuilder: (context, index) => Column(
+                      children: [
+                        Divider(
+                          height: 1.0,
+                          thickness: 1.0,
+                          color: ElevationOverlay.applySurfaceTint(
+                            Theme.of(context).colorScheme.surface,
+                            Theme.of(context).colorScheme.surfaceTint,
+                            10,
+                          ),
+                        ),
+                        CommentReference(
+                          comment: widget.savedComments![index].commentView!,
+                          now: now,
+                          onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                          onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+                          onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                          onReplyEditAction: (CommentView commentView, bool isEdit) {
+                            UserBloc postBloc = context.read<UserBloc>();
+                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                            showModalBottomSheet(
+                              isScrollControlled: true,
+                              context: context,
+                              showDragHandle: true,
+                              builder: (context) {
+                                return Padding(
+                                  padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
+                                  child: FractionallySizedBox(
+                                    heightFactor: 0.8,
+                                    child: MultiBlocProvider(
+                                      providers: [
+                                        BlocProvider<UserBloc>.value(value: postBloc),
+                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                      ],
+                                      child: CreateCommentPage(commentView: commentView, isEdit: isEdit),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          isOwnComment: widget.isAccountUser,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
             ],
