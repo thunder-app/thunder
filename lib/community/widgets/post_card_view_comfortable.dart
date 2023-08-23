@@ -113,11 +113,20 @@ class PostCardViewComfortable extends StatelessWidget {
                         color: Colors.red,
                         size: 17.0 * textScaleFactor,
                       )),
-                      const WidgetSpan(
-                          child: SizedBox(
-                        width: 5, // your of space
-                      )),
+                      if (!postViewMedia.postView.post.featuredCommunity)
+                        const WidgetSpan(
+                            child: SizedBox(
+                          width: 3,
+                        )),
                     ],
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.push_pin_rounded,
+                          size: 17.0 * textScaleFactor,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                        ),
+                      ),
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -127,19 +136,6 @@ class PostCardViewComfortable extends StatelessWidget {
                             : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                       ),
                     ),
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
-                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                          ),
-                        ),
-                      ),
                     if (!useSaveButton && postViewMedia.postView.saved)
                       WidgetSpan(
                         child: Padding(
@@ -182,31 +178,29 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: Colors.red,
                           size: 17.0 * textScaleFactor,
                         )),
-                        const WidgetSpan(
-                            child: SizedBox(
-                          width: 5, // your of space
-                        )),
+                        if (!postViewMedia.postView.post.featuredCommunity)
+                          const WidgetSpan(
+                              child: SizedBox(
+                            width: 3,
+                          )),
                       ],
+                      if (postViewMedia.postView.post.featuredCommunity)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
                       TextSpan(
                         text: postViewMedia.postView.post.name,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
-                          color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
+                          color: postViewMedia.postView.post.featuredCommunity
+                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
                       ),
-                      if (postViewMedia.postView.post.featuredCommunity)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.push_pin_rounded,
-                              size: 17.0 * textScaleFactor,
-                              color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                            ),
-                          ),
-                        ),
                       if (!useSaveButton && postViewMedia.postView.saved)
                         WidgetSpan(
                           child: Padding(
