@@ -110,7 +110,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       WidgetSpan(
                           child: Icon(
                         Icons.lock,
-                        color: Colors.red,
+                        color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                         size: 17.0 * textScaleFactor,
                       )),
                       if (!postViewMedia.postView.post.featuredCommunity)
@@ -175,7 +175,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         WidgetSpan(
                             child: Icon(
                           Icons.lock,
-                          color: Colors.red,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           size: 17.0 * textScaleFactor,
                         )),
                         if (!postViewMedia.postView.post.featuredCommunity)
