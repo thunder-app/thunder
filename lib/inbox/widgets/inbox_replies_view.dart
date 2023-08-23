@@ -12,6 +12,9 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
+import 'package:thunder/post/pages/post_page.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
@@ -47,7 +50,65 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: widget.replies.length,
       itemBuilder: (context, index) {
-        return Column(
+        return Card(
+          clipBehavior: Clip.hardEdge,
+          child: InkWell(
+            onTap: () async {
+              AccountBloc accountBloc = context.read<AccountBloc>();
+              AuthBloc authBloc = context.read<AuthBloc>();
+              ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+              // To to specific post for now, in the future, will be best to scroll to the position of the comment
+              await Navigator.of(context).push(
+                SwipeablePageRoute(
+                  backGestureDetectionStartOffset: 45,
+                  canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: accountBloc),
+                      BlocProvider.value(value: authBloc),
+                      BlocProvider.value(value: thunderBloc),
+                      BlocProvider(create: (context) => PostBloc()),
+                    ],
+                    child: PostPage(
+                      selectedCommentId: widget.replies[index].comment.id,
+                      selectedCommentPath: widget.replies[index].comment.path,
+                      postId: widget.replies[index].post.id,
+                      onPostUpdated: () => {},
+                    ),
+                  ),
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        widget.replies[index].creator.name,
+                        style: theme.textTheme.titleSmall?.copyWith(color: Colors.greenAccent),
+                      ),
+                      Text(formatTimeToString(dateTime: widget.replies[index].comment.published.toIso8601String()))
+                    ],
+                  ),
+                  GestureDetector(
+                    child: Text(
+                      '${widget.replies[index].community.name}${' · ${fetchInstanceNameFromUrl(widget.replies[index].community.actorId)}'}',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                      ),
+                    ),
+                    onTap: () => onTapCommunityName(context, widget.replies[index].community.id),
+                  ),
+                  const SizedBox(height: 10),
+                  CommonMarkdownBody(body: widget.replies[index].comment.content),
+                  const Divider(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Divider(
               height: 1.0,
@@ -69,27 +130,19 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 InboxBloc inboxBloc = context.read<InboxBloc>();
                 PostBloc postBloc = context.read<PostBloc>();
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                          AccountBloc accountBloc = context.read<AccountBloc>();
 
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
+                          Navigator.of(context).push(
+                            SwipeablePageRoute(
                   builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: MultiBlocProvider(
-                          providers: [
+                                return MultiBlocProvider(providers: [
                             BlocProvider<InboxBloc>.value(value: inboxBloc),
                             BlocProvider<PostBloc>.value(value: postBloc),
                             BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                          ],
-                          child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
-                        ),
+                          BlocProvider<AccountBloc>.value(value: accountBloc),
+                          ], child: CreateCommentPage(commentView: commentView, isEdit: isEdit));
+                        },
                       ),
-                    );
-                  },
                 );
               },
               isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,

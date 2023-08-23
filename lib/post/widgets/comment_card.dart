@@ -127,6 +127,10 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     super.dispose();
   }
 
+  Color getColor(ThemeData theme, int level) {
+    return Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), colors[level]);
+  }
+
   @override
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
@@ -147,7 +151,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
-        if (state.status != PostStatus.refreshing) {
+        if (isFetchingMoreComments && state.status != PostStatus.refreshing) {
           isFetchingMoreComments = false;
         }
       },
@@ -162,7 +166,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     color: widget.level == 0 || widget.level == 1
                         ? theme.colorScheme.background
                         : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                            ? colors[((widget.level - 2) % 6).toInt()]
+                            ? getColor(theme, ((widget.level - 2) % 6).toInt())
                             : theme.hintColor.withOpacity(0.25),
                   ),
                 )
@@ -312,7 +316,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   color: widget.level == 0
                                       ? theme.colorScheme.background
                                       : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                          ? colors[((widget.level - 1) % 6).toInt()]
+                                          ? getColor(theme, ((widget.level - 1) % 6).toInt())
                                           : theme.hintColor.withOpacity(0.25),
                                 ),
                               )
@@ -323,7 +327,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   color: widget.level == 0
                                       ? theme.colorScheme.background
                                       : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                          ? colors[((widget.level - 1) % 6).toInt()]
+                                          ? getColor(theme, ((widget.level - 1) % 6).toInt())
                                           : theme.hintColor,
                                 ),
                               ),
@@ -400,7 +404,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                             left: BorderSide(
                                               width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
                                               // This is the color of the nested comment indicator for deferred load
-                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level) % 6).toInt()] : theme.hintColor,
+                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
                                             ),
                                           ),
                                         ),

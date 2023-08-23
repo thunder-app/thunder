@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
@@ -257,11 +259,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               listingType: listingType,
               communityId: communityId,
               communityName: event.communityName,
-              hasReachedEnd: posts.isEmpty || posts.length < limit,
+              hasReachedEnd: batch.isEmpty || batch.length < limit,
               subscribedType: subscribedType,
               sortType: sortType,
               communityInfo: getCommunityResponse,
-              taglines: fullSiteView.taglines,
+              tagline: fullSiteView.taglines.isEmpty ? '' : fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content,
             ),
           );
         } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches

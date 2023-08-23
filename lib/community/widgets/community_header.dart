@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -75,10 +74,9 @@ class CommunityHeader extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      CircleAvatar(
-                        backgroundColor: communityInfo?.communityView.community.icon != null ? Colors.transparent : theme.colorScheme.onBackground,
-                        foregroundImage: communityInfo?.communityView.community.icon != null ? CachedNetworkImageProvider(communityInfo!.communityView.community.icon!) : null,
-                        maxRadius: 45,
+                      CommunityIcon(
+                        community: communityInfo?.communityView.community,
+                        radius: 45.0,
                       ),
                       const SizedBox(width: 20.0),
                       Expanded(

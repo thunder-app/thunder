@@ -285,6 +285,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             throw Exception('Error: Timeout when attempting to fetch more comments');
           });
 
+          // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
+          // so we should display an error
+          if (event.commentParentId != null) {
+            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            if (!anyDirectChildren) {
+              throw Exception('Unable to load more replies.');
+            }
+          }
+
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
 

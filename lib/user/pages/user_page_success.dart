@@ -21,12 +21,6 @@ const List<Widget> userOptionTypes = <Widget>[
   Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
 ];
 
-const List<Widget> accountOptionTypes = <Widget>[
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Posts')),
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Saved')),
-];
-
 class UserPageSuccess extends StatefulWidget {
   final int? userId;
   final PersonViewSafe? personView;
@@ -35,6 +29,7 @@ class UserPageSuccess extends StatefulWidget {
   final List<CommentViewTree>? commentViewTrees;
   final List<PostViewMedia>? postViews;
   final List<PostViewMedia>? savedPostViews;
+  final List<CommentViewTree>? savedComments;
   final List<CommunityModeratorView>? moderates;
   final BlockedPerson? blockedPerson;
 
@@ -49,6 +44,7 @@ class UserPageSuccess extends StatefulWidget {
     this.commentViewTrees,
     this.postViews,
     this.savedPostViews,
+    this.savedComments,
     this.moderates,
     required this.hasReachedPostEnd,
     required this.hasReachedSavedPostEnd,
@@ -65,7 +61,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   bool hasScrolledToBottom = true;
 
   int selectedUserOption = 0;
-  List<bool> _selectedUserOption = <bool>[true, false, false];
+  List<bool> _selectedUserOption = <bool>[true, false];
+  bool savedToggle = false;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(seconds: 1),
@@ -83,11 +80,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-    if (!widget.isAccountUser) {
-      setState(() {
-        _selectedUserOption = <bool>[true, false];
-      });
-    }
+    setState(() {
+      _selectedUserOption = <bool>[true, false];
+    });
     super.initState();
   }
 
@@ -129,31 +124,118 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                 child: widget.personView != null ? UserHeader(userInfo: widget.personView) : const SizedBox(),
               ),
               Container(
-                margin: const EdgeInsets.symmetric(vertical: 16),
+                margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                 color: theme.colorScheme.background,
-                child: ToggleButtons(
-                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  direction: Axis.horizontal,
-                  onPressed: (int index) {
-                    setState(() {
-                      // The button that is tapped is set to true, and the others to false.
-                      for (int i = 0; i < _selectedUserOption.length; i++) {
-                        _selectedUserOption[i] = i == index;
-                      }
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    AnimatedSwitcher(
+                      switchOutCurve: Curves.easeInOut,
+                      switchInCurve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 250),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return SizeTransition(
+                          axis: Axis.horizontal,
+                          sizeFactor: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: !savedToggle
+                          ? ToggleButtons(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              direction: Axis.horizontal,
+                              onPressed: (int index) {
+                                setState(() {
+                                  // The button that is tapped is set to true, and the others to false.
+                                  for (int i = 0; i < _selectedUserOption.length; i++) {
+                                    _selectedUserOption[i] = i == index;
+                                  }
+                                  selectedUserOption = index;
+                                });
+                              },
+                              borderRadius: const BorderRadius.all(Radius.circular(8)),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
+                              isSelected: _selectedUserOption,
+                              children: userOptionTypes,
+                            )
+                          : null,
+                    ),
+                    if (widget.isAccountUser)
+                      Expanded(
+                        child: Padding(
+                          padding: savedToggle ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
+                          child: TextButton(
+                            onPressed: () {
+                              setState(() {
+                                savedToggle = !savedToggle;
+                              });
+                              if (savedToggle) {
+                                context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                              }
+                            },
+                            style: TextButton.styleFrom(
+                              fixedSize: const Size.fromHeight(35),
+                              padding: EdgeInsets.zero,
+                            ),
+                            child: !savedToggle
+                                ? const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: 8.0),
+                                      Text('Saved'),
+                                      Icon(Icons.chevron_right),
+                                    ],
+                                  )
+                                : const Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.chevron_left),
+                                      Text('History'),
+                                      SizedBox(width: 8.0),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ),
+                    AnimatedSwitcher(
+                      switchOutCurve: Curves.easeInOut,
+                      switchInCurve: Curves.easeInOut,
+                      duration: const Duration(milliseconds: 250),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return SizeTransition(
+                          axis: Axis.horizontal,
+                          sizeFactor: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: savedToggle
+                          ? ToggleButtons(
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              direction: Axis.horizontal,
+                              onPressed: (int index) {
+                                setState(() {
+                                  // The button that is tapped is set to true, and the others to false.
+                                  for (int i = 0; i < _selectedUserOption.length; i++) {
+                                    _selectedUserOption[i] = i == index;
+                                  }
 
-                      selectedUserOption = index;
-                    });
-                    if (index == 2) {
-                      context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
-                    }
-                  },
-                  borderRadius: const BorderRadius.all(Radius.circular(8)),
-                  constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (widget.isAccountUser ? accountOptionTypes.length : userOptionTypes.length)) - 12.0),
-                  isSelected: _selectedUserOption,
-                  children: widget.isAccountUser ? accountOptionTypes : userOptionTypes,
+                                  selectedUserOption = index;
+                                });
+                                if (index == 2) {
+                                  context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
+                                }
+                              },
+                              borderRadius: const BorderRadius.all(Radius.circular(8)),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
+                              isSelected: _selectedUserOption,
+                              children: userOptionTypes,
+                            )
+                          : null,
+                    ),
+                  ],
                 ),
               ),
-              if (selectedUserOption == 0)
+              if (!savedToggle && selectedUserOption == 0)
                 Expanded(
                   child: PostCardList(
                     postViews: widget.postViews,
@@ -163,9 +245,10 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                     onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                     onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
+                    indicateRead: widget.isAccountUser ? false : true,
                   ),
                 ),
-              if (selectedUserOption == 1)
+              if (!savedToggle && selectedUserOption == 1)
                 Expanded(
                   child: ListView.builder(
                     controller: _scrollController,
@@ -218,7 +301,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     ),
                   ),
                 ),
-              if (selectedUserOption == 2)
+              if (savedToggle && selectedUserOption == 0)
                 Expanded(
                   child: PostCardList(
                     postViews: widget.savedPostViews,
@@ -228,6 +311,15 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                     onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                     onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
+                    indicateRead: widget.isAccountUser ? false : true,
+                  ),
+                ),
+              if (savedToggle && selectedUserOption == 1)
+                Expanded(
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    itemCount: widget.savedComments?.length,
+                    itemBuilder: (context, index) => CommentCard(comment: widget.savedComments![index].commentView!),
                   ),
                 ),
             ],

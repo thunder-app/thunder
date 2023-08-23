@@ -101,15 +101,19 @@ class PostCardMetaData extends StatelessWidget {
                   if (hostURL != null)
                     Padding(
                       padding: const EdgeInsets.only(left: 2.0),
-                      child: IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        icon: Icon(
-                          Icons.public,
-                          size: 15.0,
-                          color: readColor,
+                      child: Tooltip(
+                        message: hostURL,
+                        preferBelow: false,
+                        child: IconText(
+                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                          icon: Icon(
+                            Icons.public,
+                            size: 15.0,
+                            color: readColor,
+                          ),
+                          text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
+                          textColor: readColor,
                         ),
-                        text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
-                        textColor: readColor,
                       ),
                     ),
                 ],

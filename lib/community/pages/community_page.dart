@@ -23,6 +23,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
@@ -33,8 +34,9 @@ class CommunityPage extends StatefulWidget {
   final int? communityId;
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
+  final PageController? pageController;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -53,10 +55,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool _previousIsFabSummoned = true;
   bool isFabSummoned = true;
   bool enableFab = false;
+  bool isActivePage = true;
 
   @override
   void initState() {
     super.initState();
+    widget.pageController?.addListener(() {
+      // This ensures that our back button handling only goes into effect when we're on the home page
+      isActivePage = widget.pageController!.page == 0;
+    });
     BackButtonInterceptor.add(_handleBack);
   }
 
@@ -116,44 +123,23 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         },
         listener: (context, state) {
           if (state.status == CommunityStatus.failure) {
-            SnackBar snackBar = SnackBar(
-              content: Text(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage),
-              behavior: SnackBarBehavior.floating,
-            );
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
           }
 
           if (state.status == CommunityStatus.success && state.blockedCommunity != null) {
-            SnackBar snackBar = SnackBar(
-              content: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      'Successfully ${state.blockedCommunity?.blocked == true ? 'blocked' : 'unblocked'} ${state.blockedCommunity?.communityView.community.title}',
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  if (state.blockedCommunity?.blocked == true)
-                    SizedBox(
-                      height: 20,
-                      child: IconButton(
-                        visualDensity: VisualDensity.compact,
-                        onPressed: () {
-                          ScaffoldMessenger.of(context).clearSnackBars();
-                          context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
-                        },
-                        icon: Icon(
-                          Icons.undo_rounded,
-                          color: theme.colorScheme.inversePrimary,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-              behavior: SnackBarBehavior.floating,
-            );
-            WidgetsBinding.instance.addPostFrameCallback((timeStamp) => ScaffoldMessenger.of(context).showSnackBar(snackBar));
+            if (state.blockedCommunity?.blocked == true) {
+              showSnackbar(
+                context,
+                AppLocalizations.of(context)!.successfullyBlockedCommunity(state.blockedCommunity?.communityView.community.title ?? AppLocalizations.of(context)!.missingErrorMessage),
+                trailingIcon: Icons.undo_rounded,
+                trailingAction: () {
+                  context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: state.blockedCommunity!.communityView.community.id, block: false));
+                },
+              );
+            } else {
+              showSnackbar(
+                  context, AppLocalizations.of(context)!.successfullyUnblockedCommunity(state.blockedCommunity?.communityView.community.title ?? AppLocalizations.of(context)!.missingErrorMessage));
+            }
           }
         },
         builder: (context, state) {
@@ -173,9 +159,33 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   return Scaffold(
                     key: widget.scaffoldKey,
                     appBar: AppBar(
-                      title: Text(getCommunityName(state)),
+                      title: ListTile(
+                        title: Text(getCommunityName(state), style: theme.textTheme.titleLarge),
+                        subtitle: Text(getSortName(state)),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                      ),
                       centerTitle: false,
                       toolbarHeight: 70.0,
+                      flexibleSpace: GestureDetector(
+                        onTap: () {
+                          if (context.read<ThunderBloc>().state.isFabOpen) {
+                            context.read<ThunderBloc>().add(const OnFabToggle(false));
+                          }
+                        },
+                      ),
+                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
+                          ? IconButton(
+                              icon: Icon(
+                                Icons.arrow_back_rounded,
+                                semanticLabel: AppLocalizations.of(context)!.back,
+                              ),
+                              onPressed: () {
+                                if (context.read<ThunderBloc>().state.isFabOpen) {
+                                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                }
+                                Navigator.pop(context);
+                              })
+                          : null,
                       actions: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -200,6 +210,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                   _ => null,
                                 },
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   _onSubscribeIconPressed(isUserLoggedIn, context, state);
                                 },
@@ -207,6 +220,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                             IconButton(
                                 icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   context.read<AccountBloc>().add(GetAccountInformation());
                                   return context.read<CommunityBloc>().add(GetCommunityPostsEvent(
@@ -218,9 +234,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
-                                tooltip: sortTypeLabel,
+                                icon: Icon(Icons.sort, semanticLabel: AppLocalizations.of(context)!.sortBy),
+                                tooltip: AppLocalizations.of(context)!.sortBy,
                                 onPressed: () {
+                                  if (context.read<ThunderBloc>().state.isFabOpen) {
+                                    context.read<ThunderBloc>().add(const OnFabToggle(false));
+                                  }
                                   HapticFeedback.mediumImpact();
                                   showSortBottomSheet(context, state);
                                 }),
@@ -354,17 +373,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 )
                               : null,
                         ),
-                        SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: GestureDetector(
-                            onVerticalDragUpdate: (details) {
-                              if (details.delta.dy < -5) {
-                                context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                              }
-                            },
-                          ),
-                        )
+                        if (enableFab)
+                          SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: GestureDetector(
+                              onVerticalDragUpdate: (details) {
+                                if (details.delta.dy < -5) {
+                                  context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                                }
+                              },
+                            ),
+                          )
                       ],
                     ),
                   );
@@ -400,7 +420,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
-          taglines: state.taglines,
+          tagline: state.tagline,
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));
@@ -445,6 +465,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
   }
 
+  String getSortName(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return '';
+    }
+
+    return sortTypeLabel ?? '';
+  }
+
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     if (context.read<ThunderBloc>().state.isFabOpen) {
       context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -459,7 +487,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       final currentPostListingType = currentCommunityBloc!.state.listingType;
       final currentCommunityId = currentCommunityBloc!.state.communityId;
 
-      if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+      // If we are either (a) not on the desired listing or (b) not on the main feed (on a community instead)
+      // then go back to the main feed using the desired listing.
+      if (!canPop && isActivePage && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
         currentCommunityBloc!.add(
           GetCommunityPostsEvent(
             sortType: currentCommunityBloc!.state.sortType,
@@ -498,15 +528,12 @@ void _onSubscribeIconPressed(bool isUserLoggedIn, BuildContext context, Communit
   if (community == null) return;
 
   Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-  SnackBar snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.subscribed));
 
   if (currentSubscriptions.contains(state.communityId)) {
     context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: {state.communityId!}));
-    snackBar = SnackBar(content: Text(AppLocalizations.of(context)!.unsubscribed));
+    showSnackbar(context, AppLocalizations.of(context)!.unsubscribed);
   } else {
     context.read<AnonymousSubscriptionsBloc>().add(AddSubscriptionsEvent(communities: {state.communityInfo!.communityView.community}));
+    showSnackbar(context, AppLocalizations.of(context)!.subscribed);
   }
-
-  ScaffoldMessenger.of(context).clearSnackBars();
-  ScaffoldMessenger.of(context).showSnackBar(snackBar);
 }
