@@ -11,7 +11,6 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
 
 import '../../thunder/bloc/thunder_bloc.dart';
-import '../widgets/create_comment_modal.dart';
 import 'create_comment_page.dart';
 
 class PostPageSuccess extends StatefulWidget {

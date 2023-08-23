@@ -9,11 +9,8 @@ import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/user/widgets/comment_card.dart';
 
 import '../../post/pages/create_comment_page.dart';
-import '../../post/widgets/create_comment_modal.dart';
-import '../../shared/comment_content.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../widgets/user_sidebar.dart';
 

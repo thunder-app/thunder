@@ -1230,7 +1230,7 @@ packages:
       sha256: "04a0782fb058b7c71f2048935583488f4d32e9147ca403abc4e58f1de9964629"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.3"
+    version: "4.2.2"
   webview_flutter_android:
     dependency: "direct main"
     description:

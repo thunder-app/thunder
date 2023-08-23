@@ -160,7 +160,6 @@ class _CommentReferenceState extends State<CommentReference> {
                 ],
               ),
             ),
-            /*const Divider(height: 1),*/
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 0.0),
               child: Card(
