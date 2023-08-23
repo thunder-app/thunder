@@ -117,40 +117,44 @@ class _CommentReferenceState extends State<CommentReference> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            widget.comment.post.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w600,
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                widget.comment.post.name,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text(
-                            'in ',
-                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              'in ',
+                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                              ),
                             ),
-                          ),
-                          Text(
-                            '${widget.comment.community.name}${' · ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}'}',
-                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                            Text(
+                              '${widget.comment.community.name}${' · ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}'}',
+                              textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                   if (widget.child != null) widget.child!,
                 ],
