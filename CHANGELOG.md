@@ -82,6 +82,7 @@
 - Moved location of comment button within image preview - contribution from @micahmo
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
+- Full comments available in profiles and replies - contribution from @CTalvio
 - Text scaling now respects system's font scaling. Text scaling is based off of the system font
 - Improved contrast on user chips and badges - contribution from @CTalvio
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
