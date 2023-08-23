@@ -114,40 +114,45 @@ class _CommentReferenceState extends State<CommentReference> {
           children: [
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0, horizontal: 10),
-              child: Column(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: Text(
-                          widget.comment.post.name,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          Text(
+                            widget.comment.post.name,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
-                        ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            'in ',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                            ),
+                          ),
+                          Text(
+                            '${widget.comment.community.name}${' · ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}'}',
+                            textScaleFactor: state.contentFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  Row(
-                    children: [
-                      Text(
-                        'in ',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                        ),
-                      ),
-                      Text(
-                        '${widget.comment.community.name}${' · ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}'}',
-                        textScaleFactor: state.contentFontSizeScale.textScaleFactor,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                        ),
-                      ),
-                    ],
-                  ),
+                  if (widget.child != null) widget.child!,
                 ],
               ),
             ),
@@ -295,7 +300,6 @@ class _CommentReferenceState extends State<CommentReference> {
                 ),
               ),
             ),
-            if (widget.child != null) widget.child!,
           ],
         ),
       ),

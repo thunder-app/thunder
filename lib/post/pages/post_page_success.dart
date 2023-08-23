@@ -12,6 +12,7 @@ import 'package:thunder/post/widgets/comment_view.dart';
 
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../widgets/create_comment_modal.dart';
+import 'create_comment_page.dart';
 
 class PostPageSuccess extends StatefulWidget {
   final PostViewMedia postView;
@@ -103,7 +104,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                           BlocProvider<PostBloc>.value(value: postBloc),
                           BlocProvider<ThunderBloc>.value(value: thunderBloc),
                         ],
-                        child: CreateCommentModal(commentView: commentView, isEdit: isEdit),
+                        child: CreateCommentPage(commentView: commentView, isEdit: isEdit),
                       ),
                     ),
                   );
