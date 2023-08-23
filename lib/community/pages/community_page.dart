@@ -35,8 +35,9 @@ class CommunityPage extends StatefulWidget {
   final String? communityName;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final PageController? pageController;
+  final void Function()? navigateToAccount;
 
-  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController});
+  const CommunityPage({super.key, this.communityId, this.communityName, this.scaffoldKey, this.pageController, this.navigateToAccount});
 
   @override
   State<CommunityPage> createState() => _CommunityPageState();
@@ -153,7 +154,17 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
               return false;
             },
             listener: (context, state) {},
-            child: BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
+            child: BlocListener<ThunderBloc, ThunderState>(
+              listenWhen: (previous, current) {
+                if (previous.currentAnonymousInstance != current.currentAnonymousInstance) {
+                  context.read<CommunityBloc>().add(GetCommunityPostsEvent(reset: true, sortType: sortType));
+                  return true;
+                }
+
+                return false;
+              },
+              listener: (context, state) {},
+              child: BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
                 listener: (c, s) {},
                 builder: (c, subscriptionsState) {
                   return Scaffold(
@@ -248,7 +259,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         )
                       ],
                     ),
-                    drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+                    drawer: (widget.communityId != null || widget.communityName != null) ? null : CommunityDrawer(navigateToAccount: widget.navigateToAccount),
                     floatingActionButton: enableFab
                         ? AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
@@ -388,7 +399,9 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                       ],
                     ),
                   );
-                }),
+                },
+              ),
+            ),
           );
         },
       ),

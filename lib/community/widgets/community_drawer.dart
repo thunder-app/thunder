@@ -6,11 +6,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
 class Destination {
@@ -72,7 +75,9 @@ class DrawerItem extends StatelessWidget {
 }
 
 class CommunityDrawer extends StatefulWidget {
-  const CommunityDrawer({super.key});
+  final void Function()? navigateToAccount;
+
+  const CommunityDrawer({super.key, this.navigateToAccount});
 
   @override
   State<CommunityDrawer> createState() => _CommunityDrawerState();
@@ -95,9 +100,10 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
+    String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
-    AccountStatus status = context.read<AccountBloc>().state.status;
+    AccountStatus status = context.watch<AccountBloc>().state.status;
     AnonymousSubscriptionsBloc subscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
     return BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
@@ -111,12 +117,62 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
-                    child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
+                    padding: const EdgeInsets.fromLTRB(13, 16, 16, 0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        alignment: Alignment.centerLeft,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      onPressed: () => widget.navigateToAccount?.call(),
+                      child: Row(
+                        children: [
+                          UserAvatar(
+                            person: isLoggedIn ? context.read<AccountBloc>().state.personView?.person : null,
+                            radius: 16.0,
+                          ),
+                          const SizedBox(width: 16.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  if (!isLoggedIn) ...[
+                                    const Icon(
+                                      Icons.person_off_rounded,
+                                      size: 15,
+                                    ),
+                                    const SizedBox(width: 5),
+                                  ],
+                                  Text(
+                                    isLoggedIn ? context.read<AccountBloc>().state.personView?.person.name ?? '' : AppLocalizations.of(context)!.anonymous,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                isLoggedIn ? context.read<AccountBloc>().state.personView?.instanceHost ?? '' : anonymousInstance,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.more_vert_outlined),
+                            onPressed: () => showProfileModalSheet(context),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-                    child: Text(LemmyClient.instance.lemmyApiV3.host, style: Theme.of(context).textTheme.bodyMedium),
+                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
+                    child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
                   ),
                   Column(
                     children: destinations.map((Destination destination) {
@@ -139,16 +195,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
                     child: Text(AppLocalizations.of(context)!.subscriptions, style: Theme.of(context).textTheme.titleSmall),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-                    child: context.read<AuthBloc>().state.account != null ? Text(context.read<AuthBloc>().state.account!.username ?? "-", style: Theme.of(context).textTheme.bodyMedium) : Container(),
-                  ),
                   (status != AccountStatus.success && status != AccountStatus.failure)
                       ? const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      : (context.read<AccountBloc>().state.subsciptions.isNotEmpty || subscriptionsBloc.state.subscriptions.isNotEmpty)
+                      : ((isLoggedIn && context.read<AccountBloc>().state.subsciptions.isNotEmpty) || subscriptionsBloc.state.subscriptions.isNotEmpty)
                           ? (Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 14.0),

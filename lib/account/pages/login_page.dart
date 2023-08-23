@@ -6,17 +6,22 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   final VoidCallback popRegister;
+  final bool anonymous;
 
-  const LoginPage({super.key, required this.popRegister});
+  const LoginPage({super.key, required this.popRegister, this.anonymous = false});
 
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -48,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
     _instanceTextEditingController = TextEditingController();
 
     _usernameTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -56,7 +61,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     _passwordTextEditingController.addListener(() {
-      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -69,7 +74,7 @@ class _LoginPageState extends State<LoginPage> {
         currentInstance = _instanceTextEditingController.text;
       }
 
-      if (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty) {
+      if (_instanceTextEditingController.text.isNotEmpty && (widget.anonymous || (_usernameTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty))) {
         setState(() => fieldsFilledIn = true);
       } else {
         setState(() => fieldsFilledIn = false);
@@ -132,7 +137,7 @@ class _LoginPageState extends State<LoginPage> {
               });
 
               showSnackbar(context, AppLocalizations.of(context)!.loginFailed(state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage));
-            } else if (state.status == AuthStatus.success) {
+            } else if (state.status == AuthStatus.success && context.read<AuthBloc>().state.isLoggedIn) {
               context.pop();
 
               showSnackbar(context, AppLocalizations.of(context)!.loginSucceeded);
@@ -181,73 +186,78 @@ class _LoginPageState extends State<LoginPage> {
                       errorMaxLines: 2,
                     ),
                     enableSuggestions: false,
+                    onSubmitted: (_instanceTextEditingController.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
                   ),
-                  const SizedBox(height: 35.0),
-                  AutofillGroup(
-                    child: Column(
-                      children: <Widget>[
-                        TextField(
-                          textInputAction: TextInputAction.next,
-                          autocorrect: false,
-                          controller: _usernameTextEditingController,
-                          autofillHints: const [AutofillHints.username],
-                          decoration: const InputDecoration(
-                            isDense: true,
-                            border: OutlineInputBorder(),
-                            labelText: 'Username',
+                  if (!widget.anonymous) ...[
+                    const SizedBox(height: 35.0),
+                    AutofillGroup(
+                      child: Column(
+                        children: <Widget>[
+                          TextField(
+                            textInputAction: TextInputAction.next,
+                            autocorrect: false,
+                            controller: _usernameTextEditingController,
+                            autofillHints: const [AutofillHints.username],
+                            decoration: const InputDecoration(
+                              isDense: true,
+                              border: OutlineInputBorder(),
+                              labelText: 'Username',
+                            ),
+                            enableSuggestions: false,
                           ),
-                          enableSuggestions: false,
-                        ),
-                        const SizedBox(height: 12.0),
-                        TextField(
-                          onSubmitted:
-                              (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
-                                  ? (_) => _handleLogin()
-                                  : null,
-                          autocorrect: false,
-                          controller: _passwordTextEditingController,
-                          obscureText: !showPassword,
-                          enableSuggestions: false,
-                          maxLength: 60, // This is what lemmy retricts password length to
-                          autofillHints: const [AutofillHints.password],
-                          decoration: InputDecoration(
-                            isDense: true,
-                            border: const OutlineInputBorder(),
-                            labelText: 'Password',
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: IconButton(
-                                icon: Icon(
-                                  showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                                  semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
+                          const SizedBox(height: 12.0),
+                          TextField(
+                            onSubmitted:
+                                (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
+                                    ? (_) => _handleLogin()
+                                    : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                                        ? (_) => _addAnonymousInstance()
+                                        : null,
+                            autocorrect: false,
+                            controller: _passwordTextEditingController,
+                            obscureText: !showPassword,
+                            enableSuggestions: false,
+                            maxLength: 60, // This is what lemmy retricts password length to
+                            autofillHints: const [AutofillHints.password],
+                            decoration: InputDecoration(
+                              isDense: true,
+                              border: const OutlineInputBorder(),
+                              labelText: 'Password',
+                              suffixIcon: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: IconButton(
+                                  icon: Icon(
+                                    showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
+                                    semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
+                                  ),
+                                  onPressed: () {
+                                    setState(() {
+                                      showPassword = !showPassword;
+                                    });
+                                  },
                                 ),
-                                onPressed: () {
-                                  setState(() {
-                                    showPassword = !showPassword;
-                                  });
-                                },
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 12.0),
-                  TextField(
-                    autocorrect: false,
-                    controller: _totpTextEditingController,
-                    maxLength: 6,
-                    keyboardType: TextInputType.number,
-                    inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                    decoration: const InputDecoration(
-                      isDense: true,
-                      border: OutlineInputBorder(),
-                      labelText: 'TOTP (optional)',
-                      hintText: '000000',
+                    const SizedBox(height: 12.0),
+                    TextField(
+                      autocorrect: false,
+                      controller: _totpTextEditingController,
+                      maxLength: 6,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        border: OutlineInputBorder(),
+                        labelText: 'TOTP (optional)',
+                        hintText: '000000',
+                      ),
+                      enableSuggestions: false,
                     ),
-                    enableSuggestions: false,
-                  ),
+                  ],
                   const SizedBox(height: 12.0),
                   const SizedBox(height: 32.0),
                   ElevatedButton(
@@ -260,8 +270,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     onPressed: (!isLoading && _passwordTextEditingController.text.isNotEmpty && _passwordTextEditingController.text.isNotEmpty && _instanceTextEditingController.text.isNotEmpty)
                         ? _handleLogin
-                        : null,
-                    child: Text('Login', style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
+                        : (_instanceTextEditingController.text.isNotEmpty && widget.anonymous)
+                            ? () => _addAnonymousInstance()
+                            : null,
+                    child: Text(widget.anonymous ? AppLocalizations.of(context)!.add : AppLocalizations.of(context)!.login,
+                        style: theme.textTheme.titleMedium?.copyWith(color: !isLoading && fieldsFilledIn ? theme.colorScheme.onPrimary : theme.colorScheme.primary)),
                   ),
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
@@ -289,5 +302,23 @@ class _LoginPageState extends State<LoginPage> {
             totp: _totpTextEditingController.text,
           ),
         );
+  }
+
+  void _addAnonymousInstance() async {
+    if (await isLemmyInstance(_instanceTextEditingController.text)) {
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ?? ['lemmy.ml'];
+      if (anonymousInstances.contains(_instanceTextEditingController.text)) {
+        setState(() {
+          instanceValidated = false;
+          instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
+        });
+      } else {
+        context.read<AuthBloc>().add(LogOutOfAllAccounts());
+        context.read<ThunderBloc>().add(OnAddAnonymousInstance(_instanceTextEditingController.text));
+        context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
+        widget.popRegister();
+      }
+    }
   }
 }

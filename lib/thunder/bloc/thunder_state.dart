@@ -104,6 +104,8 @@ class ThunderState extends Equatable {
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
+    this.anonymousInstances = const ['lemmy.ml'],
+    this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -221,6 +223,9 @@ class ThunderState extends Equatable {
 
   final bool enableCommentNavigation;
 
+  final List<String> anonymousInstances;
+  final String currentAnonymousInstance;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -332,6 +337,8 @@ class ThunderState extends Equatable {
     PostFabAction? postFabSinglePressAction,
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
+    List<String>? anonymousInstances,
+    String? currentAnonymousInstance,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -447,6 +454,9 @@ class ThunderState extends Equatable {
 
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
 
+      anonymousInstances: anonymousInstances ?? this.anonymousInstances,
+      currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -560,6 +570,9 @@ class ThunderState extends Equatable {
         postFabLongPressAction,
 
         enableCommentNavigation,
+
+        anonymousInstances,
+        currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

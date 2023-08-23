@@ -121,6 +121,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             _previousUserId = activeProfile?.userId;
           }
         }),
+        BlocListener<ThunderBloc, ThunderState>(
+          listener: (context, state) {
+            _controller.clear();
+            context.read<SearchBloc>().add(ResetSearch());
+            setState(() {});
+            _previousUserId = null;
+          },
+        ),
       ],
       child: BlocBuilder<SearchBloc, SearchState>(
         builder: (context, state) {
@@ -209,6 +217,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   Widget _getSearchBody(BuildContext context, SearchState state) {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
+    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     switch (state.status) {
       case SearchStatus.initial:
@@ -223,7 +233,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 32.0),
               child: Text(
-                'Search for communities federated with ${lemmyClient.lemmyApiV3.host}',
+                AppLocalizations.of(context)!.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                 textAlign: TextAlign.center,
                 style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
               ),

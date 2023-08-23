@@ -92,6 +92,9 @@ enum LocalSettings {
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),
   postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
+
+  anonymousInstances(name: 'setting_anonymous_instances', label: ''),
+  currentAnonymousInstance(name: 'setting_current_anonymous_instance', label: ''),
   ;
 
   const LocalSettings({

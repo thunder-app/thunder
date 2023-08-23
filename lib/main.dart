@@ -9,6 +9,9 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -30,6 +33,9 @@ void main() async {
 
   // Load up sqlite database
   await DB.instance.database;
+
+  final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+  LemmyClient.instance.changeBaseUrl(initialInstance);
 
   runApp(const ThunderApp());
 }
