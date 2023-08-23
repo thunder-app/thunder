@@ -11,6 +11,7 @@
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added Polish translation - contribution from @pazdikan
 - Show default avatar for users without an avatar - contribution from @coslu
+- Improved account switching and added anonymous browsing mode for any intance - contribution from @micahmo
 
 ### Changed
 
