@@ -91,6 +91,7 @@
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
 - Make it easier to distinguish different post types in the Compact List View - contribution from @tom-james-watson
 - Show the currently-selected sort as a subtitle on the community page - contribution from @tom-james-watson
+- Show the currently-selected sort as a subtitle on the post page - contribution from @micahmo
 
 ### Fixed
 
