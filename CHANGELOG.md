@@ -12,6 +12,7 @@
 - Added Polish translation - contribution from @pazdikan
 - Show default avatar for users without an avatar - contribution from @coslu
 - Added lock icon indicating a post is locked. Visible in feed and post view. Also blocks commenting functionality and instead shows a toast indicating the post is blocked - contribution from @ajsosa
+- Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
 
 ### Changed
 
@@ -30,6 +31,7 @@
 - Fix issue with scroll dead zone while FAB was disabled - contribution from @micahmo
 - Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
 - Fix default community icons not showing in community headers - contribution from @coslu
+- Fixed null pointer exception that broke commenting on posts - contribution from @ajsosa
 
 ## 0.2.3+16 - 2023-08-15
 

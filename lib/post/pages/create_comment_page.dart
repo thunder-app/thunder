@@ -202,7 +202,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                         } else {
                           context.read<PostBloc>().add(CreateCommentEvent(
                               content: _bodyTextController.text,
-                              parentCommentId: widget.commentView!.comment.id,
+                              parentCommentId: widget.commentView?.comment.id,
                               selectedCommentId: widget.selectedCommentId,
                               selectedCommentPath: widget.selectedCommentPath));
                         }
