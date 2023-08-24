@@ -128,6 +128,16 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              title: ListTile(
+                title: Text(
+                  '${widget.postView?.postView.community.name}: ${widget.postView?.postView.post.name}',
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(getSortName(state)),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              ),
               flexibleSpace: GestureDetector(
                 onTap: () {
                   if (context.read<ThunderBloc>().state.isFabOpen) {
@@ -150,10 +160,10 @@ class _PostPageState extends State<PostPage> {
               actions: [
                 IconButton(
                   icon: Icon(
-                    sortTypeIcon,
+                    Icons.sort,
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
-                  tooltip: sortTypeLabel,
+                  tooltip: AppLocalizations.of(context)!.sortBy,
                   onPressed: () {
                     if (context.read<ThunderBloc>().state.isFabOpen) {
                       context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -447,5 +457,13 @@ class _PostPageState extends State<PostPage> {
         ),
       );
     }
+  }
+
+  String getSortName(PostState state) {
+    if (state.status == PostStatus.initial || state.status == PostStatus.loading) {
+      return '';
+    }
+
+    return sortTypeLabel ?? '';
   }
 }

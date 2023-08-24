@@ -160,7 +160,12 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                     key: widget.scaffoldKey,
                     appBar: AppBar(
                       title: ListTile(
-                        title: Text(getCommunityName(state), style: theme.textTheme.titleLarge),
+                        title: Text(
+                          getCommunityName(state),
+                          style: theme.textTheme.titleLarge,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                         subtitle: Text(getSortName(state)),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       ),
@@ -173,7 +178,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           }
                         },
                       ),
-                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
+                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true
                           ? IconButton(
                               icon: Icon(
                                 Icons.arrow_back_rounded,
@@ -320,7 +325,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           },
                                           title: FeedFabAction.changeSort.getTitle(context),
                                           icon: Icon(
-                                            FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                            FeedFabAction.changeSort.getIcon(),
                                           ),
                                         ),
                                       if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
@@ -459,7 +464,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     if (state.communityId != null || state.communityName != null) {
-      return '';
+      return state.communityInfo?.communityView.community.title ?? '';
     }
 
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
