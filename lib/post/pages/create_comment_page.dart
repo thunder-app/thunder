@@ -22,7 +22,7 @@ import 'package:thunder/utils/image.dart';
 
 class CreateCommentPage extends StatefulWidget {
   final PostViewMedia? postView;
-  final CommentViewTree? commentView;
+  final CommentView? commentView;
 
   final int? selectedCommentId;
   final String? selectedCommentPath;
@@ -72,7 +72,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     _bodyFocusNode.requestFocus();
 
     if (widget.isEdit) {
-      String content = widget.commentView?.commentView?.comment.content ?? '';
+      String content = widget.commentView?.comment.content ?? '';
 
       _bodyTextController.value = TextEditingValue(
         text: content,
@@ -86,8 +86,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       replyingToAuthor = widget.postView?.postView.creator.name;
       replyingToContent = widget.postView?.postView.post.body;
     } else if (widget.commentView != null) {
-      replyingToAuthor = widget.commentView?.commentView?.creator.name;
-      replyingToContent = widget.commentView?.commentView?.comment.content;
+      replyingToAuthor = widget.commentView?.creator.name;
+      replyingToContent = widget.commentView?.comment.content;
     } else if (widget.comment != null) {
       replyingToAuthor = widget.parentCommentAuthor;
       replyingToContent = widget.comment?.content;
@@ -194,7 +194,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                     ? null
                     : () {
                         if (widget.isEdit) {
-                          return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.commentView!.comment.id));
+                          return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                         }
 
                         if (widget.comment != null) {
@@ -202,7 +202,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                         } else {
                           context.read<PostBloc>().add(CreateCommentEvent(
                               content: _bodyTextController.text,
-                              parentCommentId: widget.commentView?.commentView!.comment.id,
+                              parentCommentId: widget.commentView?.comment.id,
                               selectedCommentId: widget.selectedCommentId,
                               selectedCommentPath: widget.selectedCommentPath));
                         }
