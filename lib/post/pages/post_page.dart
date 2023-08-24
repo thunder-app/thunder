@@ -130,12 +130,12 @@ class _PostPageState extends State<PostPage> {
             appBar: AppBar(
               title: ListTile(
                 title: Text(
-                  getTitle(state),
+                  sortTypeLabel?.isNotEmpty == true ? AppLocalizations.of(context)!.comments : '',
                   style: theme.textTheme.titleLarge,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(getSortName(state)),
+                subtitle: Text(sortTypeLabel ?? ''),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 0),
               ),
               flexibleSpace: GestureDetector(
@@ -457,21 +457,5 @@ class _PostPageState extends State<PostPage> {
         ),
       );
     }
-  }
-
-  String getTitle(PostState state) {
-    if (state.status == PostStatus.initial || state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
-      return '';
-    }
-
-    return '${widget.postView?.postView.community.name}: ${widget.postView?.postView.post.name}';
-  }
-
-  String getSortName(PostState state) {
-    if (state.status == PostStatus.initial || state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
-      return '';
-    }
-
-    return sortTypeLabel ?? '';
   }
 }
