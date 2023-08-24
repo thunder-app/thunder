@@ -67,6 +67,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
   NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
   bool enableCommentNavigation = true;
+  bool combineNavAndFab = true;
 
   // Page State
   bool isLoading = true;
@@ -206,6 +207,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.enableCommentNavigation.name, value);
         setState(() => enableCommentNavigation = value);
         break;
+      case LocalSettings.combineNavAndFab:
+        await prefs.setBool(LocalSettings.combineNavAndFab.name, value);
+        setState(() => combineNavAndFab = value);
+        break;
     }
 
     if (context.mounted) {
@@ -258,6 +263,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
 
       enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
+      combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
       // Links
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
@@ -607,6 +613,31 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.unfold_more_rounded,
                           iconDisabled: Icons.unfold_less_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.enableCommentNavigation, value),
+                        ),
+                        AnimatedSwitcher(
+                          duration: const Duration(milliseconds: 250),
+                          switchInCurve: Curves.easeInOut,
+                          switchOutCurve: Curves.easeInOut,
+                          transitionBuilder: (Widget child, Animation<double> animation) {
+                            return SizeTransition(
+                              sizeFactor: animation,
+                              child: SlideTransition(position: _offsetAnimation, child: child),
+                            );
+                          },
+                          child: enableCommentNavigation
+                              ? Padding(
+                                  padding: const EdgeInsets.only(left: 16.0),
+                                  key: ValueKey(enableCommentNavigation),
+                                  child: ToggleOption(
+                                    description: LocalSettings.combineNavAndFab.label,
+                                    subtitle: 'Floating Action Button will be shown between navigation buttons',
+                                    value: combineNavAndFab,
+                                    iconEnabled: Icons.join_full_rounded,
+                                    iconDisabled: Icons.join_inner_rounded,
+                                    onToggle: (bool value) => setPreferences(LocalSettings.combineNavAndFab, value),
+                                  ),
+                                )
+                              : Container(),
                         ),
                       ],
                     ),

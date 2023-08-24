@@ -13,21 +13,23 @@ import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class CommentCardActions extends StatelessWidget {
-  final CommentViewTree commentViewTree;
+  final CommentView commentView;
   final bool isEdit;
   final double iconSize = 22;
 
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   const CommentCardActions({
     super.key,
-    required this.commentViewTree,
+    required this.commentView,
     this.isEdit = false,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onDeleteAction,
+    required this.onReplyEditAction,
   });
 
   final MaterialColor upVoteColor = Colors.orange;
@@ -35,7 +37,7 @@ class CommentCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final VoteType voteType = commentViewTree.commentView!.myVote ?? VoteType.none;
+    final VoteType voteType = commentView.myVote ?? VoteType.none;
 
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
@@ -54,7 +56,7 @@ class CommentCardActions extends StatelessWidget {
                   ),
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    showCommentActionBottomModalSheet(context, commentViewTree, onSaveAction, onDeleteAction);
+                    showCommentActionBottomModalSheet(context, commentView, onSaveAction, onDeleteAction);
                     HapticFeedback.mediumImpact();
                   }),
             ),
@@ -62,31 +64,11 @@ class CommentCardActions extends StatelessWidget {
               height: 28,
               width: 44,
               child: IconButton(
-                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: 'Reply', size: iconSize),
+                icon: Icon(isEdit ? Icons.edit_rounded : Icons.reply_rounded, semanticLabel: isEdit ? 'Edit' : 'Reply', size: iconSize),
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  PostBloc postBloc = context.read<PostBloc>();
-                  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  AccountBloc accountBloc = context.read<AccountBloc>();
-
-                  Navigator.of(context).push(
-                    SwipeablePageRoute(
-                      builder: (context) {
-                        return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<PostBloc>.value(value: postBloc),
-                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                            BlocProvider<AccountBloc>.value(value: accountBloc),
-                          ],
-                          child: CreateCommentPage(
-                            commentView: commentViewTree,
-                            isEdit: isEdit,
-                          ),
-                        );
-                      },
-                    ),
-                  );
+                  onReplyEditAction(commentView, isEdit);
                 },
               ),
             ),
@@ -103,7 +85,7 @@ class CommentCardActions extends StatelessWidget {
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+                    onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
                   }),
             ),
             SizedBox(
@@ -119,7 +101,7 @@ class CommentCardActions extends StatelessWidget {
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(commentViewTree.commentView!.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+                  onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
                 },
               ),
             ),

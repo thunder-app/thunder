@@ -104,6 +104,7 @@ class ThunderState extends Equatable {
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
+    this.combineNavAndFab = true,
     this.anonymousInstances = const ['lemmy.ml'],
     this.currentAnonymousInstance = 'lemmy.ml',
 
@@ -222,6 +223,7 @@ class ThunderState extends Equatable {
   final PostFabAction postFabLongPressAction;
 
   final bool enableCommentNavigation;
+  final bool combineNavAndFab;
 
   final List<String> anonymousInstances;
   final String currentAnonymousInstance;
@@ -337,6 +339,7 @@ class ThunderState extends Equatable {
     PostFabAction? postFabSinglePressAction,
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
+    bool? combineNavAndFab,
     List<String>? anonymousInstances,
     String? currentAnonymousInstance,
 
@@ -453,6 +456,7 @@ class ThunderState extends Equatable {
       postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
 
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+      combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
 
       anonymousInstances: anonymousInstances ?? this.anonymousInstances,
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
@@ -570,6 +574,7 @@ class ThunderState extends Equatable {
         postFabLongPressAction,
 
         enableCommentNavigation,
+        combineNavAndFab,
 
         anonymousInstances,
         currentAnonymousInstance,

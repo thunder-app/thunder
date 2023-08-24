@@ -11,6 +11,7 @@
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added Polish translation - contribution from @pazdikan
 - Show default avatar for users without an avatar - contribution from @coslu
+- Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
 - Improved account switching and added anonymous browsing mode for any intance - contribution from @micahmo
 
 ### Changed
@@ -30,6 +31,7 @@
 - Fix issue with scroll dead zone while FAB was disabled - contribution from @micahmo
 - Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
 - Fix default community icons not showing in community headers - contribution from @coslu
+- Fixed null pointer exception that broke commenting on posts - contribution from @ajsosa
 
 ## 0.2.3+16 - 2023-08-15
 
@@ -83,6 +85,7 @@
 - Moved location of comment button within image preview - contribution from @micahmo
 - Adjusted font scaling to be platform specific
 - Improve behavior of deferred comment indicator - contribution from @micahmo
+- Full comments available in profiles and replies - contribution from @CTalvio
 - Text scaling now respects system's font scaling. Text scaling is based off of the system font
 - Improved contrast on user chips and badges - contribution from @CTalvio
 - Show external link previews option is now scrape missing external link previews and off by default for performance reasons - contribution from @ajsosa
