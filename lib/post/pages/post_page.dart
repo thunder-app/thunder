@@ -130,7 +130,7 @@ class _PostPageState extends State<PostPage> {
             appBar: AppBar(
               title: ListTile(
                 title: Text(
-                  '${widget.postView?.postView.community.name}: ${widget.postView?.postView.post.name}',
+                  getTitle(state),
                   style: theme.textTheme.titleLarge,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -459,8 +459,16 @@ class _PostPageState extends State<PostPage> {
     }
   }
 
+  String getTitle(PostState state) {
+    if (state.status == PostStatus.initial || state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
+      return '';
+    }
+
+    return '${widget.postView?.postView.community.name}: ${widget.postView?.postView.post.name}';
+  }
+
   String getSortName(PostState state) {
-    if (state.status == PostStatus.initial || state.status == PostStatus.loading) {
+    if (state.status == PostStatus.initial || state.status == PostStatus.loading || state.status == PostStatus.refreshing) {
       return '';
     }
 
