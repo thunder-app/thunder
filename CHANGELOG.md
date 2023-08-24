@@ -11,6 +11,7 @@
 - Added access to saved comments from account page - contribution from @CTalvio
 - Added Polish translation - contribution from @pazdikan
 - Show default avatar for users without an avatar - contribution from @coslu
+- Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
 
 ### Changed
 

@@ -57,6 +57,7 @@ class _PostPageState extends State<PostPage> {
   bool isFabSummoned = true;
   bool enableFab = false;
   bool enableCommentNavigation = true;
+  bool combineNavAndFab = true;
 
   CommentSortType? sortType;
   IconData? sortTypeIcon;
@@ -95,6 +96,7 @@ class _PostPageState extends State<PostPage> {
     PostFabAction longPressAction = thunderState.postFabLongPressAction;
 
     enableCommentNavigation = thunderState.enableCommentNavigation;
+    combineNavAndFab = enableCommentNavigation && thunderState.combineNavAndFab;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
@@ -165,13 +167,29 @@ class _PostPageState extends State<PostPage> {
             floatingActionButton: Stack(
               alignment: Alignment.center,
               children: [
+                if (enableCommentNavigation)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CommentNavigatorFab(
+                          itemPositionsListener: _itemPositionsListener,
+                        ),
+                      ),
+                    ),
+                  ),
                 if (enableFab)
                   Padding(
-                    padding: const EdgeInsets.only(right: 16),
+                    padding: EdgeInsets.only(
+                      right: combineNavAndFab ? 0 : 16,
+                      bottom: combineNavAndFab ? 5 : 0,
+                    ),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
                       child: isFabSummoned
                           ? GestureFab(
+                              centered: combineNavAndFab,
                               distance: 60,
                               icon: Icon(
                                 singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
@@ -211,6 +229,7 @@ class _PostPageState extends State<PostPage> {
                               children: [
                                 if (enableReplyToPost)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
@@ -224,6 +243,7 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                 if (enableChangeSort)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.changeSort.execute(
@@ -237,6 +257,7 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                 if (enableBackToTop)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       PostFabAction.backToTop.execute(
                                           override: () => {
@@ -255,18 +276,6 @@ class _PostPageState extends State<PostPage> {
                               ],
                             )
                           : null,
-                    ),
-                  ),
-                if (enableCommentNavigation)
-                  Positioned.fill(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: CommentNavigatorFab(
-                          itemPositionsListener: _itemPositionsListener,
-                        ),
-                      ),
                     ),
                   ),
               ],
