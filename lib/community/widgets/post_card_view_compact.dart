@@ -105,6 +105,27 @@ class PostCardViewCompact extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     children: [
+                      if (postViewMedia.postView.post.locked) ...[
+                        WidgetSpan(
+                            child: Icon(
+                          Icons.lock,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          size: 17.0 * textScaleFactor,
+                        )),
+                        if (!postViewMedia.postView.post.featuredCommunity)
+                          const WidgetSpan(
+                              child: SizedBox(
+                            width: 3,
+                          )),
+                      ],
+                      if (postViewMedia.postView.post.featuredCommunity)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 17.0 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
                       TextSpan(
                         text: postViewMedia.postView.post.name,
                         style: theme.textTheme.bodyMedium?.copyWith(
@@ -114,19 +135,6 @@ class PostCardViewCompact extends StatelessWidget {
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
                       ),
-                      if (postViewMedia.postView.post.featuredCommunity)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.push_pin_rounded,
-                              size: 17.0 * textScaleFactor,
-                              color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                            ),
-                          ),
-                        ),
                       if (postViewMedia.postView.saved)
                         WidgetSpan(
                           child: Padding(

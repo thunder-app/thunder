@@ -92,6 +92,8 @@ class _PostPageState extends State<PostPage> {
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
 
+    bool postLocked = widget.postView?.postView.post.locked == true;
+
     PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
     PostFabAction longPressAction = thunderState.postFabLongPressAction;
 
@@ -192,8 +194,8 @@ class _PostPageState extends State<PostPage> {
                               centered: combineNavAndFab,
                               distance: 60,
                               icon: Icon(
-                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
-                                semanticLabel: singlePressAction.getTitle(context),
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null, postLocked: postLocked),
+                                semanticLabel: singlePressAction.getTitle(context, postLocked: postLocked),
                                 size: 35,
                               ),
                               onPressed: () => singlePressAction.execute(
@@ -209,7 +211,7 @@ class _PostPageState extends State<PostPage> {
                                       : singlePressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : singlePressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () => replyToPost(context, postLocked: postLocked)
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
@@ -224,7 +226,7 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () => replyToPost(context, postLocked: postLocked)
                                               : null),
                               children: [
                                 if (enableReplyToPost)
@@ -233,12 +235,12 @@ class _PostPageState extends State<PostPage> {
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context),
+                                        override: () => replyToPost(context, postLocked: postLocked),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
                                     icon: Icon(
-                                      PostFabAction.replyToPost.getIcon(),
+                                      postLocked ? Icons.lock : PostFabAction.replyToPost.getIcon(),
                                     ),
                                   ),
                                 if (enableChangeSort)
@@ -420,7 +422,11 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context) {
+  void replyToPost(BuildContext context, {bool postLocked = false}) {
+    if (postLocked) {
+      showSnackbar(context, AppLocalizations.of(context)!.postLocked);
+      return;
+    }
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     AuthBloc authBloc = context.read<AuthBloc>();

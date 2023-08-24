@@ -48,6 +48,7 @@
   "editComment": "Edit Comment",
   "reply": "Reply",
   "comment": "Comment",
+  "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Unexpected Error",
   "fetchAccountError": "Could not determine account",

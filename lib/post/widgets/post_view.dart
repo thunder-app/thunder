@@ -23,6 +23,8 @@ import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/snackbar.dart';
 
 class PostSubview extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -272,6 +274,11 @@ class PostSubview extends StatelessWidget {
                 child: IconButton(
                   onPressed: isUserLoggedIn
                       ? () {
+                          if (postView.post.locked) {
+                            showSnackbar(context, AppLocalizations.of(context)!.postLocked);
+                            return;
+                          }
+
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
                           account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
@@ -294,7 +301,9 @@ class PostSubview extends StatelessWidget {
                           );
                         }
                       : null,
-                  icon: const Icon(Icons.reply_rounded, semanticLabel: 'Reply'),
+                  icon: postView.post.locked
+                      ? Icon(Icons.lock, semanticLabel: AppLocalizations.of(context)!.postLocked, color: Colors.red)
+                      : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply),
                 ),
               ),
               Expanded(

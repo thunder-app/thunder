@@ -48,6 +48,7 @@
   "editComment": "Editar comentario",
   "reply": "Responder",
   "comment": "Comentario",
+  "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Responder a {author}",
   "unexpectedError": "Error inesperado",
   "fetchAccountError": "No se pudo determinar la cuenta",
