@@ -33,6 +33,7 @@
 - Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
 - Fix default community icons not showing in community headers - contribution from @coslu
 - Fixed null pointer exception that broke commenting on posts - contribution from @ajsosa
+- Fix issues entering URLs with some keyboards when logging in - contribution from @micahmo
 
 ## 0.2.3+16 - 2023-08-15
 
