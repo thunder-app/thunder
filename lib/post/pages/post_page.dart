@@ -128,6 +128,16 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              title: ListTile(
+                title: Text(
+                  sortTypeLabel?.isNotEmpty == true ? AppLocalizations.of(context)!.comments : '',
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(sortTypeLabel ?? ''),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              ),
               flexibleSpace: GestureDetector(
                 onTap: () {
                   if (context.read<ThunderBloc>().state.isFabOpen) {
@@ -150,10 +160,10 @@ class _PostPageState extends State<PostPage> {
               actions: [
                 IconButton(
                   icon: Icon(
-                    sortTypeIcon,
+                    Icons.sort,
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
-                  tooltip: sortTypeLabel,
+                  tooltip: AppLocalizations.of(context)!.sortBy,
                   onPressed: () {
                     if (context.read<ThunderBloc>().state.isFabOpen) {
                       context.read<ThunderBloc>().add(const OnFabToggle(false));
