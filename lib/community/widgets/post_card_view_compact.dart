@@ -110,19 +110,28 @@ class PostCardViewCompact extends StatelessWidget {
                             child: Icon(
                           Icons.lock,
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
-                          size: 17.0 * textScaleFactor,
+                          size: 15 * textScaleFactor,
                         )),
-                        if (!postViewMedia.postView.post.featuredCommunity)
+                        if (!postViewMedia.postView.post.featuredCommunity && !postViewMedia.postView.saved)
                           const WidgetSpan(
                               child: SizedBox(
                             width: 3,
                           )),
                       ],
+                      if (postViewMedia.postView.saved)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            size: 17 * textScaleFactor,
+                            semanticLabel: 'Saved',
+                          ),
+                        ),
                       if (postViewMedia.postView.post.featuredCommunity)
                         WidgetSpan(
                           child: Icon(
                             Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
+                            size: 15 * textScaleFactor,
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
@@ -135,20 +144,6 @@ class PostCardViewCompact extends StatelessWidget {
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
                       ),
-                      if (postViewMedia.postView.saved)
-                        WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.star_rounded,
-                              color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
-                              size: 16.0 * textScaleFactor,
-                              semanticLabel: 'Saved',
-                            ),
-                          ),
-                        ),
                     ],
                   ),
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * state.titleFontSizeScale.textScaleFactor,
