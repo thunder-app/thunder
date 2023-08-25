@@ -1,82 +1,85 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/global_context.dart';
 
-const List<ListPickerItem<SortType>> defaultSortTypeItems = [
+List<ListPickerItem<SortType>> defaultSortTypeItems = [
   ListPickerItem(
     payload: SortType.hot,
     icon: Icons.local_fire_department_rounded,
-    label: 'Hot',
+    label: AppLocalizations.of(GlobalContext.context)!.hot,
   ),
   ListPickerItem(
     payload: SortType.active,
     icon: Icons.rocket_launch_rounded,
-    label: 'Active',
+    label: AppLocalizations.of(GlobalContext.context)!.active,
   ),
   ListPickerItem(
     payload: SortType.new_,
     icon: Icons.auto_awesome_rounded,
-    label: 'New',
+    label: AppLocalizations.of(GlobalContext.context)!.new_,
   ),
   ListPickerItem(
     payload: SortType.mostComments,
     icon: Icons.comment_bank_rounded,
-    label: 'Most Comments',
+    label: AppLocalizations.of(GlobalContext.context)!.mostComments,
   ),
   ListPickerItem(
     payload: SortType.newComments,
     icon: Icons.add_comment_rounded,
-    label: 'New Comments',
+    label: AppLocalizations.of(GlobalContext.context)!.newComments,
   ),
 ];
 
-const List<ListPickerItem<SortType>> topSortTypeItems = [
+List<ListPickerItem<SortType>> topSortTypeItems = [
   ListPickerItem(
     payload: SortType.topHour,
     icon: Icons.check_box_outline_blank,
-    label: 'Top in Past Hour',
+    label: AppLocalizations.of(GlobalContext.context)!.topHour,
   ),
   ListPickerItem(
     payload: SortType.topSixHour,
     icon: Icons.calendar_view_month,
-    label: 'Top in Past 6 Hours',
+    label: AppLocalizations.of(GlobalContext.context)!.topSixHour,
   ),
   ListPickerItem(
     payload: SortType.topTwelveHour,
     icon: Icons.calendar_view_week,
-    label: 'Top in Past 12 Hours',
+    label: AppLocalizations.of(GlobalContext.context)!.topTwelveHour,
   ),
   ListPickerItem(
     payload: SortType.topDay,
     icon: Icons.today,
-    label: 'Top Today',
+    label: AppLocalizations.of(GlobalContext.context)!.topDay,
   ),
   ListPickerItem(
     payload: SortType.topWeek,
     icon: Icons.view_week_sharp,
-    label: 'Top Week',
+    label: AppLocalizations.of(GlobalContext.context)!.topWeek,
   ),
   ListPickerItem(
     payload: SortType.topMonth,
     icon: Icons.calendar_month,
-    label: 'Top Month',
+    label: AppLocalizations.of(GlobalContext.context)!.topMonth,
   ),
   ListPickerItem(
     payload: SortType.topYear,
     icon: Icons.calendar_today,
-    label: 'Top Year',
+    label: AppLocalizations.of(GlobalContext.context)!.topYear,
   ),
   ListPickerItem(
     payload: SortType.topAll,
     icon: Icons.military_tech,
-    label: 'Top of all time',
+    label: AppLocalizations.of(GlobalContext.context)!.topAll,
   ),
 ];
 
-const List<ListPickerItem<SortType>> allSortTypeItems = [...defaultSortTypeItems, ...topSortTypeItems];
+List<ListPickerItem<SortType>> allSortTypeItems = [...defaultSortTypeItems, ...topSortTypeItems];
 
 class SortPicker extends BottomSheetListPicker<SortType> {
-  const SortPicker({super.key, required super.onSelect, required super.title, super.items = defaultSortTypeItems});
+  SortPicker({super.key, required super.onSelect, required super.title, List<ListPickerItem<SortType>>? items, super.previouslySelected}) : super(items: items ?? defaultSortTypeItems);
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -107,7 +110,7 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -121,16 +124,17 @@ class _SortPickerState extends State<SortPicker> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             ..._generateList(defaultSortTypeItems, theme),
-            ListTile(
-              leading: const Icon(Icons.military_tech),
-              title: const Text('Top'),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
+            PickerItem(
+              label: AppLocalizations.of(GlobalContext.context)!.top,
+              icon: Icons.military_tech,
+              onSelected: () {
                 setState(() {
                   topSelected = true;
                 });
               },
-            ),
+              isSelected: topSortTypeItems.map((item) => item.payload).contains(widget.previouslySelected),
+              trailingIcon: Icons.chevron_right,
+            )
           ],
         ),
         const SizedBox(height: 16.0),
@@ -146,30 +150,38 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        GestureDetector(
-          onTap: () {
-            setState(() {
-              topSelected = false;
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 16.0, left: 12.0, right: 16.0),
-            child: Align(
-              alignment: Alignment.centerLeft,
-              child: Row(
-                children: [
-                  const Icon(
-                    Icons.chevron_left,
-                    size: 30,
+        Padding(
+          padding: const EdgeInsets.only(left: 10, right: 10),
+          child: Material(
+            borderRadius: BorderRadius.circular(50),
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(50),
+              onTap: () {
+                setState(() {
+                  topSelected = false;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.chevron_left,
+                        size: 30,
+                      ),
+                      const SizedBox(
+                        width: 12,
+                      ),
+                      Text(
+                        AppLocalizations.of(context)!.sortByTop,
+                        style: theme.textTheme.titleLarge!.copyWith(),
+                      ),
+                    ],
                   ),
-                  const SizedBox(
-                    width: 12,
-                  ),
-                  Text(
-                    'Sort by Top',
-                    style: theme.textTheme.titleLarge!.copyWith(),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
@@ -186,21 +198,16 @@ class _SortPickerState extends State<SortPicker> {
     );
   }
 
-  List<ListTile> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
+  List<Widget> _generateList(List<ListPickerItem<SortType>> items, ThemeData theme) {
     return items
-        .map(
-          (item) => ListTile(
-            title: Text(
-              item.label,
-              style: theme.textTheme.bodyMedium,
-            ),
-            leading: Icon(item.icon),
-            onTap: () {
+        .map((item) => PickerItem(
+            label: item.label,
+            icon: item.icon,
+            onSelected: () {
               Navigator.of(context).pop();
               widget.onSelect(item);
             },
-          ),
-        )
+            isSelected: widget.previouslySelected == item.payload))
         .toList();
   }
 }
