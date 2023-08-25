@@ -22,6 +22,7 @@
 - Show taglines with markdown and cycle through all available taglines - contribution from @micahmo
 - Errors blocking users are now shown as toasts - contribution from @micahmo
 - Make comment indicators use colours blended from the current theme - contribution from @tom-james-watson
+- Improved ability to refresh posts - contribution from @micahmo
 
 ### Fixed
 
