@@ -110,7 +110,7 @@ class PostCardViewCompact extends StatelessWidget {
                             child: Icon(
                           Icons.lock,
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
-                          size: 17.0 * textScaleFactor,
+                          size: 15 * textScaleFactor,
                         )),
                         if (!postViewMedia.postView.post.featuredCommunity && !postViewMedia.postView.saved)
                           const WidgetSpan(
@@ -123,7 +123,7 @@ class PostCardViewCompact extends StatelessWidget {
                           child: Icon(
                             Icons.star_rounded,
                             color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
-                            size: 16.0 * textScaleFactor,
+                            size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
                         ),
@@ -131,7 +131,7 @@ class PostCardViewCompact extends StatelessWidget {
                         WidgetSpan(
                           child: Icon(
                             Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
+                            size: 15 * textScaleFactor,
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
