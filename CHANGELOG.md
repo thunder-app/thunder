@@ -23,6 +23,7 @@
 - Errors blocking users are now shown as toasts - contribution from @micahmo
 - Make comment indicators use colours blended from the current theme - contribution from @tom-james-watson
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
+- Improve the option selector dialog to show the currently selected item - contribution from @micahmo
 
 ### Fixed
 
