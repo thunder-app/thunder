@@ -431,11 +431,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
           await Future.delayed(const Duration(milliseconds: 60));
         }
       }
-      await Future.delayed(const Duration(milliseconds: 800));
-      setState(() {
-        widget.postViews!.removeWhere((e) => e.postView.read);
-        toRemoveSet.clear();
-      });
       // Load in more posts, if so many got dismissed that scrolling may not be possible
       WidgetsBinding.instance.addPostFrameCallback((_) {
         bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
