@@ -319,13 +319,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                     }
                                   },
                             icon: isDownloadingMedia
-                                ? SizedBox(
-                                    height: 20,
-                                    width: 20,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white.withOpacity(0.90),
-                                    ),
-                                  )
+                                ? Container()
                                 : Icon(
                                     Icons.share_rounded,
                                     semanticLabel: "Share",

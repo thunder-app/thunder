@@ -232,14 +232,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           case LoadState.loading:
             _controller.reset();
 
-            return Container(
-              color: theme.cardColor.darken(3),
-              child: SizedBox(
-                height: height,
-                width: width,
-                child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-              ),
-            );
+            return Container();
           case LoadState.completed:
             if (state.wasSynchronouslyLoaded) {
               return state.completedWidget;

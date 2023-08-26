@@ -66,14 +66,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
           switch (state.extendedImageLoadState) {
             case LoadState.loading:
               _controller.reset();
-              return Container(
-                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-                child: SizedBox(
-                  height: height,
-                  width: width,
-                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-                ),
-              );
+              return Container();
             case LoadState.completed:
               if (state.wasSynchronouslyLoaded) {
                 return state.completedWidget;
