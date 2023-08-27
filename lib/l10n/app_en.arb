@@ -75,5 +75,7 @@
   "successfullyBlocked": "Successfully blocked!",
   "showMore": "Show more",
   "showLess": "Show less",
-  "cantBlockAdmin": "You may not block an instance administrator."
+  "cantBlockAdmin": "You may not block an instance administrator.",
+  "sortByTop": "Sort by Top",
+  "backButton": "Back button"
 }
