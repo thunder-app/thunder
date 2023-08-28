@@ -174,6 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                   const SizedBox(height: 12.0),
                   TextField(
                     textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.url,
                     autocorrect: false,
                     controller: _instanceTextEditingController,
                     inputFormatters: [LowerCaseTextFormatter()],
@@ -195,6 +196,7 @@ class _LoginPageState extends State<LoginPage> {
                         children: <Widget>[
                           TextField(
                             textInputAction: TextInputAction.next,
+                            keyboardType: TextInputType.url,
                             autocorrect: false,
                             controller: _usernameTextEditingController,
                             autofillHints: const [AutofillHints.username],

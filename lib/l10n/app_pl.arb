@@ -62,6 +62,8 @@
   "editComment": "Edytuj komentarz",
   "reply": "Odpowiedz",
   "comment": "Comment",
+  "comments": "Comments",
+  "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Wystąpił niespodziewany błąd",
   "fetchAccountError": "Nie można określić konta",

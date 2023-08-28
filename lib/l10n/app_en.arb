@@ -62,6 +62,8 @@
   "editComment": "Edit Comment",
   "reply": "Reply",
   "comment": "Comment",
+  "comments": "Comments",
+  "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Unexpected Error",
   "fetchAccountError": "Could not determine account",
@@ -87,5 +89,7 @@
   "successfullyBlocked": "Successfully blocked!",
   "showMore": "Show more",
   "showLess": "Show less",
-  "cantBlockAdmin": "You may not block an instance administrator."
+  "cantBlockAdmin": "You may not block an instance administrator.",
+  "sortByTop": "Sort by Top",
+  "backButton": "Back button"
 }
