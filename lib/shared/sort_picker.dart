@@ -150,10 +150,10 @@ class _SortPickerState extends State<SortPicker> {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Semantics(
-            label: '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
+        Semantics(
+          label: '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
+          child: Padding(
+            padding: const EdgeInsets.only(left: 10, right: 10),
             child: Material(
               borderRadius: BorderRadius.circular(50),
               color: Colors.transparent,
