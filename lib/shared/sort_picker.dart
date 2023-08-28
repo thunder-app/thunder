@@ -152,34 +152,40 @@ class _SortPickerState extends State<SortPicker> {
       children: [
         Padding(
           padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Material(
-            borderRadius: BorderRadius.circular(50),
-            color: Colors.transparent,
-            child: InkWell(
+          child: Semantics(
+            label: '${AppLocalizations.of(context)!.sortByTop},${AppLocalizations.of(context)!.backButton}',
+            child: Material(
               borderRadius: BorderRadius.circular(50),
-              onTap: () {
-                setState(() {
-                  topSelected = false;
-                });
-              },
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
-                child: Align(
-                  alignment: Alignment.centerLeft,
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.chevron_left,
-                        size: 30,
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      Text(
-                        AppLocalizations.of(context)!.sortByTop,
-                        style: theme.textTheme.titleLarge!.copyWith(),
-                      ),
-                    ],
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  setState(() {
+                    topSelected = false;
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(12.0, 10, 16.0, 10.0),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.chevron_left,
+                          size: 30,
+                        ),
+                        const SizedBox(
+                          width: 12,
+                        ),
+                        Semantics(
+                          excludeSemantics: true,
+                          child: Text(
+                            AppLocalizations.of(context)!.sortByTop,
+                            style: theme.textTheme.titleLarge!.copyWith(),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
