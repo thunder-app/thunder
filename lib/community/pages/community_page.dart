@@ -409,6 +409,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.refreshing:
       case CommunityStatus.success:
       case CommunityStatus.failure:
+      case CommunityStatus.failureLoadingPosts:
+        if (state.status == CommunityStatus.failureLoadingPosts && state.postViews?.isNotEmpty != true) {
+          return ErrorMessage(
+            title: AppLocalizations.of(context)!.unableToLoadPostsFrominstance(LemmyClient.instance.lemmyApiV3.host),
+            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+            actionText: AppLocalizations.of(context)!.accountSettings,
+            action: () => showProfileModalSheet(context),
+          );
+        }
         return PostCardList(
           subscribeType: state.subscribedType,
           postViews: state.postViews,
@@ -427,13 +436,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));
-      case CommunityStatus.failureLoadingPosts:
-        return ErrorMessage(
-          title: AppLocalizations.of(context)!.unableToLoadPostsFrominstance(LemmyClient.instance.lemmyApiV3.host),
-          message: AppLocalizations.of(context)!.internetOrInstanceIssues,
-          actionText: AppLocalizations.of(context)!.accountSettings,
-          action: () => showProfileModalSheet(context),
-        );
     }
   }
 
