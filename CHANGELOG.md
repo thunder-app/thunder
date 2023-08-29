@@ -13,6 +13,7 @@
 - Show default avatar for users without an avatar - contribution from @coslu
 - Added lock icon indicating a post is locked. Visible in feed and post view. Also blocks commenting functionality and instead shows a toast indicating the post is blocked - contribution from @ajsosa
 - Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
+- Show special user identifiers in post - contribution from @micahmo
 
 ### Changed
 
