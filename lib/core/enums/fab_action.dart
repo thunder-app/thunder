@@ -8,6 +8,8 @@ import 'package:thunder/community/pages/community_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -140,7 +142,8 @@ enum PostFabAction {
   openFab(),
   backToTop(),
   changeSort(),
-  replyToPost();
+  replyToPost(),
+  refresh();
 
   IconData getIcon({IconData? override, bool postLocked = false}) {
     if (override != null) {
@@ -159,6 +162,8 @@ enum PostFabAction {
           return Icons.lock;
         }
         return Icons.reply_rounded;
+      case PostFabAction.refresh:
+        return Icons.refresh_rounded;
     }
   }
 
@@ -175,10 +180,12 @@ enum PostFabAction {
           return AppLocalizations.of(context)!.postLocked;
         }
         return AppLocalizations.of(context)!.replyToPost;
+      case PostFabAction.refresh:
+        return AppLocalizations.of(context)!.refresh;
     }
   }
 
-  void execute({BuildContext? context, void Function()? override}) {
+  void execute({BuildContext? context, void Function()? override, PostViewMedia? postView, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
     if (override != null) {
       override();
     }
@@ -195,6 +202,8 @@ enum PostFabAction {
       case PostFabAction.replyToPost:
         // Invoked via override
         break;
+      case PostFabAction.refresh:
+        context?.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
     }
   }
 }
