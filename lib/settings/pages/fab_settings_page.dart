@@ -584,9 +584,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
         title: 'Set Press Action',
-        items: const [
-          ListPickerItem(label: 'Set as short-press action', payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: 'Set as long-press action', payload: 'long', icon: Icons.touch_app_rounded)
+        items: [
+          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
@@ -606,9 +606,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
         title: 'Set Press Action',
-        items: const [
-          ListPickerItem(label: 'Set as short-press action', payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: 'Set as long-press action', payload: 'long', icon: Icons.touch_app_rounded)
+        items: [
+          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
