@@ -50,7 +50,7 @@ class CommentHeader extends StatelessWidget {
     bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
 
     return Padding(
-      padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
+      padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
       child: Row(
         children: [
           Expanded(
@@ -58,13 +58,16 @@ class CommentHeader extends StatelessWidget {
               children: [
                 Tooltip(
                   excludeFromSemantics: true,
-                  message: '${comment.creator.name}@${fetchInstanceNameFromUrl(comment.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment)}',
+                  message:
+                      '${comment.creator.name}@${fetchInstanceNameFromUrl(comment.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, comment.post, comment.comment, comment.creator, moderators)}',
                   preferBelow: false,
                   child: Row(
                     children: [
                       Material(
-                        color: isSpecialUser(context, isOwnComment) ? fetchUsernameColor(context, isOwnComment) ?? theme.colorScheme.onBackground : Colors.transparent,
-                        borderRadius: isSpecialUser(context, isOwnComment) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                        color: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
+                            ? fetchUsernameColor(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ?? theme.colorScheme.onBackground
+                            : Colors.transparent,
+                        borderRadius: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                           onTap: () {
@@ -88,7 +91,7 @@ class CommentHeader extends StatelessWidget {
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),
-                            child: isSpecialUser(context, isOwnComment)
+                            child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
                                 ? Row(
                                     children: [
                                       Text(
@@ -280,44 +283,5 @@ class CommentHeader extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Color? fetchUsernameColor(BuildContext context, bool isOwnComment) {
-    CommentView commentView = comment;
-    final theme = Theme.of(context);
-
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) return theme.colorScheme.secondaryContainer;
-    if (isOwnComment) return theme.colorScheme.primaryContainer;
-    if (isAdmin(commentView.creator)) return theme.colorScheme.errorContainer;
-    if (isModerator(commentView.creator, moderators)) return theme.colorScheme.tertiaryContainer;
-    if (isBot(commentView.creator)) return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.75), Colors.purple);
-
-    return null;
-  }
-
-  String fetchUsernameDescriptor(bool isOwnComment) {
-    CommentView commentView = comment;
-
-    String descriptor = '';
-
-    if (commentAuthorIsPostAuthor(commentView.post, commentView.comment)) descriptor += 'original poster';
-    if (isOwnComment) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}me';
-    if (isAdmin(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}admin';
-    if (isModerator(commentView.creator, moderators)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}mod';
-    if (isBot(commentView.creator)) descriptor += '${descriptor.isNotEmpty ? ', ' : ''}bot';
-
-    if (descriptor.isNotEmpty) descriptor = ' ($descriptor)';
-
-    return descriptor;
-  }
-
-  bool isSpecialUser(BuildContext context, bool isOwnComment) {
-    CommentView commentView = comment;
-
-    return commentAuthorIsPostAuthor(commentView.post, commentView.comment) ||
-        isOwnComment ||
-        isAdmin(commentView.creator) ||
-        isModerator(commentView.creator, moderators) ||
-        isBot(commentView.creator);
   }
 }
