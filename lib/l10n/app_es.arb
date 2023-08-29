@@ -51,6 +51,8 @@
   "editComment": "Editar comentario",
   "reply": "Responder",
   "comment": "Comentario",
+  "comments": "Comments",
+  "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Responder a {author}",
   "unexpectedError": "Error inesperado",
   "fetchAccountError": "No se pudo determinar la cuenta",
@@ -76,5 +78,7 @@
   "successfullyBlocked": "Bloqueado con éxito",
   "showMore": "Mostrar más",
   "showLess": "Mostrar menos",
-  "cantBlockAdmin": "No se puede bloquear un administrador de instancia."
+  "cantBlockAdmin": "No se puede bloquear un administrador de instancia.",
+  "sortByTop": "Sort by Top",
+  "backButton": "Back button"
 }

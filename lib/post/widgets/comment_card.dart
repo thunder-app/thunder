@@ -357,6 +357,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
+                                moderators: widget.moderators,
                               ),
                             ),
                           ],

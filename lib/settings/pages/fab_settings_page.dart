@@ -36,6 +36,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool postFabEnableBackToTop = true;
   bool postFabEnableChangeSort = true;
   bool postFabEnableReplyToPost = true;
+  bool postFabEnableRefresh = true;
 
   FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
   FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
@@ -104,6 +105,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.postFabEnableReplyToPost.name, value);
         setState(() => postFabEnableReplyToPost = value);
         break;
+      case LocalSettings.postFabEnableRefresh:
+        await prefs.setBool(LocalSettings.postFabEnableRefresh.name, value);
+        setState(() => postFabEnableRefresh = value);
+        break;
       case LocalSettings.feedFabSinglePressAction:
         await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
@@ -144,6 +149,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
       postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
+      postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
 
       feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
       feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
@@ -560,6 +566,27 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                             ),
                                         ],
                                         onLongPress: () => showPostFabActionPicker(PostFabAction.replyToPost),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableRefresh.label,
+                                        value: postFabEnableRefresh,
+                                        semanticLabel: """${LocalSettings.postFabEnableRefresh.label}
+                                            ${postFabSinglePressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
+                                        iconEnabled: Icons.refresh_rounded,
+                                        iconDisabled: Icons.refresh_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableRefresh, value),
+                                        additionalWidgets: [
+                                          if (postFabSinglePressAction == PostFabAction.refresh)
+                                            const Icon(
+                                              Icons.touch_app_outlined,
+                                            ),
+                                          if (postFabLongPressAction == PostFabAction.refresh)
+                                            const Icon(
+                                              Icons.touch_app_rounded,
+                                            ),
+                                        ],
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
                                       ),
                                     ],
                                   ),

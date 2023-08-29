@@ -88,7 +88,7 @@ class PostCardMetaData extends StatelessWidget {
                       IconText(
                         textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                         icon: Icon(
-                          hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                          hasBeenEdited ? Icons.edit : Icons.history_rounded,
                           size: 15.0,
                           color: readColor,
                         ),
