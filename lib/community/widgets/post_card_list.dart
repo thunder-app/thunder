@@ -140,6 +140,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     disableFabs = state.disableFeedFab;
 
     bool tabletMode = state.tabletMode;
+    bool compactMode = state.useCompactView;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -153,7 +154,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       _previousScrollId = state.scrollToTopId;
     }
     if (state.dismissEvent == true) {
-      dismissRead();
+      dismissRead(compactMode);
       context.read<ThunderBloc>().add(const OnDismissEvent(false));
     }
 
@@ -411,7 +412,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     );
   }
 
-  Future<void> dismissRead() async {
+  Future<void> dismissRead(bool compactMode) async {
     if (widget.postViews != null) {
       int unreadCount = 0;
       for (var post in widget.postViews!) {
@@ -428,12 +429,12 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
           setState(() {
             toRemoveSet.add(post.postView.post.id);
           });
-          await Future.delayed(const Duration(milliseconds: 60));
+          await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
         }
       }
-      await Future.delayed(const Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
-        widget.postViews!.removeWhere((e) => e.postView.read);
+        widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
         toRemoveSet.clear();
       });
       // Load in more posts, if so many got dismissed that scrolling may not be possible
