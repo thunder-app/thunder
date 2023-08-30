@@ -35,6 +35,7 @@ enum LocalSettings {
   showPostEdgeToEdgeImages(name: 'setting_general_show_edge_to_edge_images', label: 'Edge-to-Edge Images'),
   showPostTextContentPreview(name: 'setting_general_show_text_content', label: 'Show Text Content'),
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
+  dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings

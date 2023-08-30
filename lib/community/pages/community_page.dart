@@ -401,6 +401,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
+    ThunderState thunderState = context.read<ThunderBloc>().state;
     switch (state.status) {
       case CommunityStatus.initial:
         // communityId and communityName are mutually exclusive - only one of the two should be passed in
@@ -426,6 +427,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
           tagline: state.tagline,
+          indicateRead: thunderState.dimReadPosts,
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));

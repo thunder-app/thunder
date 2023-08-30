@@ -59,6 +59,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showTextContent = false;
   bool showPostAuthor = false;
   bool scoreCounters = false;
+  bool dimReadPosts = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -181,6 +182,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
         setState(() => showPostAuthor = value);
         break;
+      case LocalSettings.dimReadPosts:
+        await prefs.setBool(LocalSettings.dimReadPosts.name, value);
+        setState(() => dimReadPosts = value);
+        break;
 
       // Comment Related Settings
       case LocalSettings.defaultCommentSortType:
@@ -251,6 +256,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -543,6 +549,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.person_rounded,
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
+                        ),
+                        ToggleOption(
+                          description: LocalSettings.dimReadPosts.label,
+                          subtitle: 'Read posts will be grayed out',
+                          value: dimReadPosts,
+                          iconEnabled: Icons.chrome_reader_mode,
+                          iconDisabled: Icons.chrome_reader_mode_outlined,
+                          onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
                         ),
                       ],
                     ),
