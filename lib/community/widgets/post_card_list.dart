@@ -195,7 +195,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                       },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );
-                  } else if (widget.tagline.isNotEmpty == true) {
+                  } else if (widget.tagline.isNotEmpty) {
                     final bool taglineIsLong = widget.tagline.length > 200;
 
                     return Padding(
@@ -266,7 +266,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     );
                   }
                 }
-                if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty == true) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
+                if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
                   if (widget.hasReachedEnd == true) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -297,7 +297,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     );
                   }
                 } else {
-                  PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty == true) ? index - 1 : index];
+                  PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? index - 1 : index];
                   return AnimatedSwitcher(
                     switchOutCurve: Curves.ease,
                     duration: const Duration(milliseconds: 0),
