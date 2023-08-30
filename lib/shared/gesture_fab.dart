@@ -139,6 +139,8 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           focus: isFabOpen && i == count - 1,
           centered: widget.centered,
           child: widget.children[i],
+          first: i == count - 1,
+          last: i == 0,
         ),
       );
     }
@@ -207,7 +209,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
 @immutable
 class ActionButton extends StatelessWidget {
-  const ActionButton({
+  ActionButton({
     super.key,
     this.onPressed,
     this.title,
@@ -220,55 +222,87 @@ class ActionButton extends StatelessWidget {
   final String? title;
   final bool centered;
 
+  bool? first;
+  bool? last;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return centered
-        ? Material(
-            color: Colors.transparent,
-            elevation: 3,
-            borderRadius: BorderRadius.circular(50),
-            child: Stack(
-              children: [
-                Positioned.fill(
-                  child: Align(
-                    child: SizedBox(
-                      height: 35,
-                      child: Material(
-                        borderRadius: BorderRadius.circular(50),
-                        child: InkWell(
-                          borderRadius: BorderRadius.circular(50),
-                          onTap: () {
-                            context.read<ThunderBloc>().add(const OnFabToggle(true));
-                            onPressed?.call();
-                          },
+        ? SizedBox(
+            width: 150,
+            child: Material(
+              color: Colors.transparent,
+              elevation: 1.5,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(first == true ? 20 : 0),
+                topRight: Radius.circular(first == true ? 20 : 0),
+                bottomLeft: Radius.circular(last == true ? 20 : 0),
+                bottomRight: Radius.circular(last == true ? 20 : 0),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Align(
+                      child: SizedBox(
+                        height: 35,
+                        child: Material(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(first == true ? 20 : 0),
+                            topRight: Radius.circular(first == true ? 20 : 0),
+                            bottomLeft: Radius.circular(last == true ? 20 : 0),
+                            bottomRight: Radius.circular(last == true ? 20 : 0),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(first == true ? 20 : 0),
+                              topRight: Radius.circular(first == true ? 20 : 0),
+                              bottomLeft: Radius.circular(last == true ? 20 : 0),
+                              bottomRight: Radius.circular(last == true ? 20 : 0),
+                            ),
+                            onTap: () {
+                              context.read<ThunderBloc>().add(const OnFabToggle(true));
+                              onPressed?.call();
+                            },
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                IgnorePointer(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10, right: 5),
-                        child: title != null ? Text(title!) : Container(),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: IgnorePointer(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10, right: 5),
+                              child: title != null
+                                  ? Text(
+                                      title!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    )
+                                  : Container(),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 35,
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 5, right: 10),
+                            child: Icon(
+                              icon.icon,
+                              size: 20,
+                            ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(
-                        height: 35,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 10),
-                        child: Icon(
-                          icon.icon,
-                          size: 20,
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           )
         : Row(
@@ -305,6 +339,8 @@ class _ExpandingActionButton extends StatefulWidget {
     required this.child,
     required this.focus,
     this.centered = false,
+    required this.first,
+    required this.last,
   });
 
   final double maxDistance;
@@ -312,6 +348,9 @@ class _ExpandingActionButton extends StatefulWidget {
   final Widget child;
   final bool focus;
   final bool centered;
+
+  final bool first;
+  final bool last;
 
   @override
   State<_ExpandingActionButton> createState() => _ExpandingActionButtonState();
@@ -329,19 +368,21 @@ class _ExpandingActionButtonState extends State<_ExpandingActionButton> {
           90 * (math.pi / 180.0),
           widget.progress.value * widget.maxDistance,
         );
-        if (widget.progress.value == 1) {
-          _visible = true;
-        } else if (widget.progress.value == 0) {
-          _visible = false;
-        }
+        _visible = !widget.progress.isDismissed;
         return Visibility(
           visible: _visible,
           child: Positioned(
             right: widget.centered ? null : 8.0 + offset.dx,
-            bottom: 10.0 + offset.dy,
+            bottom: (widget.centered ? 15.0 : 10.0) + offset.dy,
             child: Semantics(
               focused: widget.focus,
-              child: child!,
+              child: child is FadeTransition && child.child is ActionButton
+                  ? () {
+                      (child.child as ActionButton).first = widget.first;
+                      (child.child as ActionButton).last = widget.last;
+                      return child;
+                    }()
+                  : child!,
             ),
           ),
         );
