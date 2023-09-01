@@ -94,6 +94,8 @@ enum LocalSettings {
   postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
+
+  draftsCache(name: 'drafts_cache', label: ''),
   ;
 
   const LocalSettings({

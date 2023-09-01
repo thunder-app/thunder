@@ -1,4 +1,8 @@
 {
+  "postSavedAsDraft": "Post saved as draft",
+  "commentSavedAsDraft": "Comment saved as draft",
+  "restoredPostFromDraft": "Restored post from draft",
+  "restoredCommentFromDraft": "Restored comment from draft",
   "feed": "Feed",
   "search": "Search",
   "account": "Account",

@@ -22,8 +22,16 @@ import 'package:thunder/utils/instance.dart';
 class CreatePostPage extends StatefulWidget {
   final int communityId;
   final FullCommunityView? communityInfo;
+  final void Function(DraftPost? draftPost)? updateDraft;
+  final DraftPost? previousDraftPost;
 
-  const CreatePostPage({super.key, required this.communityId, this.communityInfo});
+  const CreatePostPage({
+    super.key,
+    required this.communityId,
+    this.communityInfo,
+    this.previousDraftPost,
+    this.updateDraft,
+  });
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -36,6 +44,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool imageUploading = false;
   bool postImageUploading = false;
   String url = "";
+  DraftPost newDraftPost = DraftPost();
 
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
@@ -50,12 +59,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _titleTextController.addListener(() {
       if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
       if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+
+      widget.updateDraft?.call(newDraftPost..title = _titleTextController.text);
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
+
+      widget.updateDraft?.call(newDraftPost..url = _urlTextController.text);
     });
+
+    _bodyTextController.addListener(() {
+      widget.updateDraft?.call(newDraftPost..text = _bodyTextController.text);
+    });
+
+    if (widget.previousDraftPost != null) {
+      _titleTextController.text = widget.previousDraftPost!.title ?? '';
+      _urlTextController.text = widget.previousDraftPost!.url ?? '';
+      _bodyTextController.text = widget.previousDraftPost!.text ?? '';
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
+      });
+    }
   }
 
   @override
@@ -87,6 +115,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: isSubmitButtonDisabled
                   ? null
                   : () {
+                      newDraftPost.saveAsDraft = false;
                       url != ''
                           ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
                           : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
@@ -297,4 +326,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
       setState(() {});
     }
   }
+}
+
+class DraftPost {
+  String? title;
+  String? url;
+  String? text;
+  bool saveAsDraft = true;
+
+  DraftPost({this.title, this.url, this.text});
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'url': url,
+        'text': text,
+      };
+
+  static fromJson(Map<String, dynamic> json) => DraftPost(
+        title: json['title'],
+        url: json['url'],
+        text: json['text'],
+      );
+
+  bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
 }
