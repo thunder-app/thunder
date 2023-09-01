@@ -32,7 +32,7 @@ class PostCardList extends StatefulWidget {
   final SubscribedType? subscribeType;
   final BlockedCommunity? blockedCommunity;
   final SortType? sortType;
-  final String? tagline;
+  final String tagline;
   final bool indicateRead;
 
   final VoidCallback onScrollEndReached;
@@ -56,7 +56,7 @@ class PostCardList extends StatefulWidget {
     required this.onToggleReadAction,
     this.sortType,
     this.blockedCommunity,
-    this.tagline,
+    this.tagline = '',
     this.indicateRead = true,
   });
 
@@ -140,6 +140,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     disableFabs = state.disableFeedFab;
 
     bool tabletMode = state.tabletMode;
+    bool compactMode = state.useCompactView;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -153,7 +154,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       _previousScrollId = state.scrollToTopId;
     }
     if (state.dismissEvent == true) {
-      dismissRead();
+      dismissRead(compactMode);
       context.read<ThunderBloc>().add(const OnDismissEvent(false));
     }
 
@@ -194,8 +195,8 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                       },
                       child: CommunityHeader(communityInfo: widget.communityInfo),
                     );
-                  } else if (widget.tagline?.isNotEmpty == true) {
-                    final bool taglineIsLong = widget.tagline!.length > 200;
+                  } else if (widget.tagline.isNotEmpty == true) {
+                    final bool taglineIsLong = widget.tagline.length > 200;
 
                     return Padding(
                       padding: const EdgeInsets.fromLTRB(10, 0, 10, 10),
@@ -211,7 +212,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                           child: !taglineIsLong
                               // TODO: Eventually pass in textScalingFactor
                               ? CommonMarkdownBody(
-                                  body: widget.tagline!,
+                                  body: widget.tagline,
                                 )
                               : ExpandableNotifier(
                                   child: Column(
@@ -222,7 +223,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                           children: [
                                             // TODO: Eventually pass in textScalingFactor
                                             CommonMarkdownBody(
-                                              body: '${widget.tagline!.substring(0, 150)}...',
+                                              body: '${widget.tagline.substring(0, 150)}...',
                                             ),
                                             ExpandableButton(
                                               theme: const ExpandableThemeData(
@@ -241,7 +242,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                           crossAxisAlignment: CrossAxisAlignment.stretch,
                                           children: [
                                             CommonMarkdownBody(
-                                              body: widget.tagline!,
+                                              body: widget.tagline,
                                             ),
                                             ExpandableButton(
                                               theme: const ExpandableThemeData(
@@ -265,7 +266,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     );
                   }
                 }
-                if (index == ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
+                if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty == true) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
                   if (widget.hasReachedEnd == true) {
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -296,7 +297,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     );
                   }
                 } else {
-                  PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null) ? index - 1 : index];
+                  PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty == true) ? index - 1 : index];
                   return AnimatedSwitcher(
                     switchOutCurve: Curves.ease,
                     duration: const Duration(milliseconds: 0),
@@ -411,7 +412,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
     );
   }
 
-  Future<void> dismissRead() async {
+  Future<void> dismissRead(bool compactMode) async {
     if (widget.postViews != null) {
       int unreadCount = 0;
       for (var post in widget.postViews!) {
@@ -428,12 +429,12 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
           setState(() {
             toRemoveSet.add(post.postView.post.id);
           });
-          await Future.delayed(const Duration(milliseconds: 60));
+          await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
         }
       }
-      await Future.delayed(const Duration(milliseconds: 800));
+      await Future.delayed(const Duration(milliseconds: 500));
       setState(() {
-        widget.postViews!.removeWhere((e) => e.postView.read);
+        widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
         toRemoveSet.clear();
       });
       // Load in more posts, if so many got dismissed that scrolling may not be possible
