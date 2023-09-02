@@ -264,6 +264,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
+            if (event.commentParentId != null) {
+              // If we come here, we've determined that we've already loaded all of the comments.
+              // But we're currently being asked to load some children.
+              // Therefore we will treat this as an error.
+              throw Exception('Unable to load more replies.');
+            }
             return;
           }
           emit(state.copyWith(status: PostStatus.refreshing));
@@ -290,7 +296,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           if (event.commentParentId != null) {
             final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
             if (!anyDirectChildren) {
-              throw Exception('Unable to load direct children.');
+              throw Exception('Unable to load more replies.');
             }
           }
 
@@ -324,6 +330,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
+        // In case there are two errors in a row without the status changing,
+        // emit a blank error then the real error so that the widget detects a change and rebuilds.
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: ''));
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
     } catch (e) {

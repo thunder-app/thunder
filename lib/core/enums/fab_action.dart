@@ -7,6 +7,10 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 enum FeedFabAction {
@@ -109,20 +113,26 @@ enum FeedFabAction {
         context.read<ThunderBloc>().add(const OnDismissEvent(true));
       case FeedFabAction.newPost:
         if (bloc != null) {
-          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-          Navigator.of(context).push(
-            SwipeablePageRoute(
-              builder: (context) {
-                return MultiBlocProvider(
-                  providers: [
-                    BlocProvider<CommunityBloc>.value(value: bloc),
-                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                  ],
-                  child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
-                );
-              },
-            ),
-          );
+          if (!context.read<AuthBloc>().state.isLoggedIn) {
+            showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
+          } else {
+            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+            AccountBloc accountBloc = context.read<AccountBloc>();
+            Navigator.of(context).push(
+              SwipeablePageRoute(
+                builder: (context) {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<CommunityBloc>.value(value: bloc),
+                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                      BlocProvider<AccountBloc>.value(value: accountBloc),
+                    ],
+                    child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                  );
+                },
+              ),
+            );
+          }
         }
     }
   }
@@ -132,9 +142,10 @@ enum PostFabAction {
   openFab(),
   backToTop(),
   changeSort(),
-  replyToPost();
+  replyToPost(),
+  refresh();
 
-  IconData getIcon({IconData? override}) {
+  IconData getIcon({IconData? override, bool postLocked = false}) {
     if (override != null) {
       return override;
     }
@@ -147,11 +158,16 @@ enum PostFabAction {
       case PostFabAction.changeSort:
         return Icons.sort_rounded;
       case PostFabAction.replyToPost:
+        if (postLocked) {
+          return Icons.lock;
+        }
         return Icons.reply_rounded;
+      case PostFabAction.refresh:
+        return Icons.refresh_rounded;
     }
   }
 
-  String getTitle(BuildContext context) {
+  String getTitle(BuildContext context, {bool postLocked = false}) {
     switch (this) {
       case PostFabAction.openFab:
         return AppLocalizations.of(context)!.open;
@@ -160,11 +176,16 @@ enum PostFabAction {
       case PostFabAction.changeSort:
         return AppLocalizations.of(context)!.changeSort;
       case PostFabAction.replyToPost:
+        if (postLocked) {
+          return AppLocalizations.of(context)!.postLocked;
+        }
         return AppLocalizations.of(context)!.replyToPost;
+      case PostFabAction.refresh:
+        return AppLocalizations.of(context)!.refresh;
     }
   }
 
-  void execute({BuildContext? context, void Function()? override}) {
+  void execute({BuildContext? context, void Function()? override, PostViewMedia? postView, int? postId, int? selectedCommentId, String? selectedCommentPath}) {
     if (override != null) {
       override();
     }
@@ -181,6 +202,8 @@ enum PostFabAction {
       case PostFabAction.replyToPost:
         // Invoked via override
         break;
+      case PostFabAction.refresh:
+        context?.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
     }
   }
 }

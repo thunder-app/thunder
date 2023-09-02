@@ -9,12 +9,13 @@ import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
-import 'package:thunder/post/widgets/comment_card_actions.dart';
-import 'package:thunder/post/widgets/comment_header.dart';
+import 'package:thunder/shared/comment_card_actions.dart';
+import 'package:thunder/shared/comment_header.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import '../../shared/comment_content.dart';
 import '../utils/comment_action_helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -22,12 +23,13 @@ class CommentCard extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onCollapseCommentChange;
+  final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
   final int? moddingCommentId;
-  final Function(int, bool) onDeleteAction;
 
   final DateTime now;
 
@@ -41,6 +43,7 @@ class CommentCard extends StatefulWidget {
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onCollapseCommentChange,
+    required this.onReplyEditAction,
     required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
@@ -124,11 +127,14 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
     super.dispose();
   }
 
+  Color getColor(ThemeData theme, int level) {
+    return Color.alphaBlend(theme.colorScheme.primary.withOpacity(0.4), colors[level]);
+  }
+
   @override
   Widget build(BuildContext context) {
     VoteType? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
-    bool? isCommentNew = widget.now.difference(widget.commentViewTree.commentView!.comment.published).inMinutes < 15;
 
     final theme = Theme.of(context);
 
@@ -145,7 +151,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     return BlocListener<PostBloc, PostState>(
       listener: (context, state) {
-        if (state.status != PostStatus.refreshing) {
+        if (isFetchingMoreComments && state.status != PostStatus.refreshing) {
           isFetchingMoreComments = false;
         }
       },
@@ -160,7 +166,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                     color: widget.level == 0 || widget.level == 1
                         ? theme.colorScheme.background
                         : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                            ? colors[((widget.level - 2) % 6).toInt()]
+                            ? getColor(theme, ((widget.level - 2) % 6).toInt())
                             : theme.hintColor.withOpacity(0.25),
                   ),
                 )
@@ -182,7 +188,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 behavior: HitTestBehavior.opaque,
                 onPointerDown: (event) => {},
                 onPointerUp: (event) {
-                  setState(() => isOverridingSwipeGestureAction = false);
+                  if (isOverridingSwipeGestureAction) {
+                    setState(() => isOverridingSwipeGestureAction = false);
+                  }
 
                   if (swipeAction != null && swipeAction != SwipeAction.none) {
                     triggerCommentAction(
@@ -192,7 +200,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                       voteType: myVote ?? VoteType.none,
                       saved: saved,
-                      commentViewTree: widget.commentViewTree,
+                      commentView: widget.commentViewTree.commentView!,
                       selectedCommentId: widget.selectCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
                     );
@@ -310,7 +318,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   color: widget.level == 0
                                       ? theme.colorScheme.background
                                       : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                          ? colors[((widget.level - 1) % 6).toInt()]
+                                          ? getColor(theme, ((widget.level - 1) % 6).toInt())
                                           : theme.hintColor.withOpacity(0.25),
                                 ),
                               )
@@ -321,7 +329,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                   color: widget.level == 0
                                       ? theme.colorScheme.background
                                       : nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful
-                                          ? colors[((widget.level - 1) % 6).toInt()]
+                                          ? getColor(theme, ((widget.level - 1) % 6).toInt())
                                           : theme.hintColor,
                                 ),
                               ),
@@ -335,65 +343,23 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             InkWell(
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
-                                showCommentActionBottomModalSheet(context, widget.commentViewTree, widget.onSaveAction, widget.onDeleteAction);
+                                showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
                                 setState(() => isHidden = !isHidden);
                               },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  CommentHeader(
-                                    moddingCommentId: widget.moddingCommentId ?? -1,
-                                    commentViewTree: widget.commentViewTree,
-                                    useDisplayNames: state.useDisplayNames,
-                                    isCommentNew: isCommentNew,
-                                    isOwnComment: isOwnComment,
-                                    isHidden: isHidden,
-                                    moderators: widget.moderators,
-                                  ),
-                                  AnimatedSwitcher(
-                                    duration: const Duration(milliseconds: 130),
-                                    switchInCurve: Curves.easeInOut,
-                                    switchOutCurve: Curves.easeInOut,
-                                    transitionBuilder: (Widget child, Animation<double> animation) {
-                                      return SizeTransition(
-                                        sizeFactor: animation,
-                                        child: SlideTransition(
-                                          position: _offsetAnimation,
-                                          child: child,
-                                        ),
-                                      );
-                                    },
-                                    child: (isHidden && collapseParentCommentOnGesture)
-                                        ? Container()
-                                        : Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && isUserLoggedIn) ? 0.0 : 8.0),
-                                                child: CommonMarkdownBody(
-                                                  body: widget.commentViewTree.commentView!.comment.content,
-                                                  isComment: true,
-                                                ),
-                                              ),
-                                              if (state.showCommentButtonActions && isUserLoggedIn)
-                                                Padding(
-                                                  padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
-                                                  child: CommentCardActions(
-                                                    commentViewTree: widget.commentViewTree,
-                                                    onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                                                    isEdit: isOwnComment,
-                                                    onSaveAction: widget.onSaveAction,
-                                                    onDeleteAction: widget.onDeleteAction,
-                                                  ),
-                                                ),
-                                            ],
-                                          ),
-                                  ),
-                                ],
+                              child: CommentContent(
+                                comment: widget.commentViewTree.commentView!,
+                                isUserLoggedIn: isUserLoggedIn,
+                                now: widget.now,
+                                onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
+                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                                onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
+                                isOwnComment: isOwnComment,
+                                isHidden: isHidden,
+                                moderators: widget.moderators,
                               ),
                             ),
                           ],
@@ -441,7 +407,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                             left: BorderSide(
                                               width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
                                               // This is the color of the nested comment indicator for deferred load
-                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? colors[((widget.level) % 6).toInt()] : theme.hintColor,
+                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
                                             ),
                                           ),
                                         ),
@@ -485,6 +451,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,
+                              onReplyEditAction: widget.onReplyEditAction,
                               moderators: widget.moderators,
                             ),
                             itemCount: isHidden ? 0 : widget.commentViewTree.replies.length,

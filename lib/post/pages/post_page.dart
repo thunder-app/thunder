@@ -7,13 +7,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
-import 'package:thunder/post/widgets/create_comment_modal.dart';
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/error_message.dart';
@@ -55,6 +57,7 @@ class _PostPageState extends State<PostPage> {
   bool isFabSummoned = true;
   bool enableFab = false;
   bool enableCommentNavigation = true;
+  bool combineNavAndFab = true;
 
   CommentSortType? sortType;
   IconData? sortTypeIcon;
@@ -88,11 +91,15 @@ class _PostPageState extends State<PostPage> {
     bool enableBackToTop = thunderState.postFabEnableBackToTop;
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
+    bool enableRefresh = thunderState.postFabEnableRefresh;
+
+    bool postLocked = widget.postView?.postView.post.locked == true;
 
     PostFabAction singlePressAction = thunderState.postFabSinglePressAction;
     PostFabAction longPressAction = thunderState.postFabLongPressAction;
 
     enableCommentNavigation = thunderState.enableCommentNavigation;
+    combineNavAndFab = enableCommentNavigation && thunderState.combineNavAndFab;
 
     if (thunderState.isFabOpen != _previousIsFabOpen) {
       isFabOpen = thunderState.isFabOpen;
@@ -122,6 +129,16 @@ class _PostPageState extends State<PostPage> {
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
+              title: ListTile(
+                title: Text(
+                  sortTypeLabel?.isNotEmpty == true ? AppLocalizations.of(context)!.comments : '',
+                  style: theme.textTheme.titleLarge,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(sortTypeLabel ?? ''),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+              ),
               flexibleSpace: GestureDetector(
                 onTap: () {
                   if (context.read<ThunderBloc>().state.isFabOpen) {
@@ -143,11 +160,22 @@ class _PostPageState extends State<PostPage> {
               ),
               actions: [
                 IconButton(
+                    icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
+                    onPressed: () {
+                      if (context.read<ThunderBloc>().state.isFabOpen) {
+                        context.read<ThunderBloc>().add(const OnFabToggle(false));
+                      }
+                      HapticFeedback.mediumImpact();
+                      return context
+                          .read<PostBloc>()
+                          .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                    }),
+                IconButton(
                   icon: Icon(
-                    sortTypeIcon,
+                    Icons.sort,
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
                   ),
-                  tooltip: sortTypeLabel,
+                  tooltip: AppLocalizations.of(context)!.sortBy,
                   onPressed: () {
                     if (context.read<ThunderBloc>().state.isFabOpen) {
                       context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -163,21 +191,41 @@ class _PostPageState extends State<PostPage> {
             floatingActionButton: Stack(
               alignment: Alignment.center,
               children: [
+                if (enableCommentNavigation)
+                  Positioned.fill(
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 5),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CommentNavigatorFab(
+                          itemPositionsListener: _itemPositionsListener,
+                        ),
+                      ),
+                    ),
+                  ),
                 if (enableFab)
                   Padding(
-                    padding: const EdgeInsets.only(right: 16),
+                    padding: EdgeInsets.only(
+                      right: combineNavAndFab ? 0 : 16,
+                      bottom: combineNavAndFab ? 5 : 0,
+                    ),
                     child: AnimatedSwitcher(
                       duration: const Duration(milliseconds: 250),
                       child: isFabSummoned
                           ? GestureFab(
+                              centered: combineNavAndFab,
                               distance: 60,
                               icon: Icon(
-                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null),
-                                semanticLabel: singlePressAction.getTitle(context),
+                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null, postLocked: postLocked),
+                                semanticLabel: singlePressAction.getTitle(context, postLocked: postLocked),
                                 size: 35,
                               ),
                               onPressed: () => singlePressAction.execute(
                                   context: context,
+                                  postView: state.postView,
+                                  postId: state.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
                                   override: singlePressAction == PostFabAction.backToTop
                                       ? () => {
                                             _itemScrollController.scrollTo(
@@ -189,10 +237,14 @@ class _PostPageState extends State<PostPage> {
                                       : singlePressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : singlePressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () => replyToPost(context, postLocked: postLocked)
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
+                                  postView: state.postView,
+                                  postId: state.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
                                   override: longPressAction == PostFabAction.backToTop
                                       ? () => {
                                             _itemScrollController.scrollTo(
@@ -204,24 +256,44 @@ class _PostPageState extends State<PostPage> {
                                       : longPressAction == PostFabAction.changeSort
                                           ? () => showSortBottomSheet(context, state)
                                           : longPressAction == PostFabAction.replyToPost
-                                              ? () => replyToPost(context)
+                                              ? () => replyToPost(context, postLocked: postLocked)
                                               : null),
                               children: [
+                                if (enableRefresh)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.refresh.execute(
+                                        context: context,
+                                        postView: state.postView,
+                                        postId: state.postId,
+                                        selectedCommentId: state.selectedCommentId,
+                                        selectedCommentPath: state.selectedCommentPath,
+                                      );
+                                    },
+                                    title: PostFabAction.refresh.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.refresh.getIcon(),
+                                    ),
+                                  ),
                                 if (enableReplyToPost)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.replyToPost.execute(
-                                        override: () => replyToPost(context),
+                                        override: () => replyToPost(context, postLocked: postLocked),
                                       );
                                     },
                                     title: PostFabAction.replyToPost.getTitle(context),
                                     icon: Icon(
-                                      PostFabAction.replyToPost.getIcon(),
+                                      postLocked ? Icons.lock : PostFabAction.replyToPost.getIcon(),
                                     ),
                                   ),
                                 if (enableChangeSort)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       HapticFeedback.mediumImpact();
                                       PostFabAction.changeSort.execute(
@@ -235,6 +307,7 @@ class _PostPageState extends State<PostPage> {
                                   ),
                                 if (enableBackToTop)
                                   ActionButton(
+                                    centered: combineNavAndFab,
                                     onPressed: () {
                                       PostFabAction.backToTop.execute(
                                           override: () => {
@@ -255,18 +328,6 @@ class _PostPageState extends State<PostPage> {
                           : null,
                     ),
                   ),
-                if (enableCommentNavigation)
-                  Positioned.fill(
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 5),
-                      child: Align(
-                        alignment: Alignment.bottomCenter,
-                        child: CommentNavigatorFab(
-                          itemPositionsListener: _itemPositionsListener,
-                        ),
-                      ),
-                    ),
-                  ),
               ],
             ),
             body: Stack(
@@ -275,7 +336,7 @@ class _PostPageState extends State<PostPage> {
                 SafeArea(
                   child: BlocConsumer<PostBloc, PostState>(
                     listenWhen: (previous, current) {
-                      if (previous.status != PostStatus.failure && current.status == PostStatus.failure) {
+                      if ((previous.status != PostStatus.failure && current.status == PostStatus.failure) || (previous.errorMessage != current.errorMessage)) {
                         setState(() => resetFailureMessage = true);
                       }
                       return true;
@@ -364,17 +425,18 @@ class _PostPageState extends State<PostPage> {
                         )
                       : null,
                 ),
-                SizedBox(
-                  height: 70,
-                  width: 70,
-                  child: GestureDetector(
-                    onVerticalDragUpdate: (details) {
-                      if (details.delta.dy < -5) {
-                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                      }
-                    },
+                if (enableFab)
+                  SizedBox(
+                    height: 70,
+                    width: 70,
+                    child: GestureDetector(
+                      onVerticalDragUpdate: (details) {
+                        if (details.delta.dy < -5) {
+                          context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                        }
+                      },
+                    ),
                   ),
-                ),
               ],
             ),
           );
@@ -408,29 +470,30 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context) {
+  void replyToPost(BuildContext context, {bool postLocked = false}) {
+    if (postLocked) {
+      showSnackbar(context, AppLocalizations.of(context)!.postLocked);
+      return;
+    }
     PostBloc postBloc = context.read<PostBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    AuthBloc authBloc = context.read<AuthBloc>();
+    AccountBloc accountBloc = context.read<AccountBloc>();
 
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      showDragHandle: true,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-          child: FractionallySizedBox(
-            heightFactor: 0.8,
-            child: MultiBlocProvider(
-              providers: [
-                BlocProvider<PostBloc>.value(value: postBloc),
-                BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              ],
-              child: CreateCommentModal(postView: widget.postView?.postView),
-            ),
-          ),
-        );
-      },
-    );
+    if (!authBloc.state.isLoggedIn) {
+      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInComment);
+    } else {
+      Navigator.of(context).push(
+        SwipeablePageRoute(
+          builder: (context) {
+            return MultiBlocProvider(providers: [
+              BlocProvider<PostBloc>.value(value: postBloc),
+              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              BlocProvider<AccountBloc>.value(value: accountBloc),
+            ], child: CreateCommentPage(postView: widget.postView ?? postBloc.state.postView));
+          },
+        ),
+      );
+    }
   }
 }

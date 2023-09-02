@@ -159,7 +159,16 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   return Scaffold(
                     key: widget.scaffoldKey,
                     appBar: AppBar(
-                      title: Text(getCommunityName(state)),
+                      title: ListTile(
+                        title: Text(
+                          getCommunityName(state),
+                          style: theme.textTheme.titleLarge,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                        subtitle: Text(getSortName(state)),
+                        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                      ),
                       centerTitle: false,
                       toolbarHeight: 70.0,
                       flexibleSpace: GestureDetector(
@@ -169,7 +178,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           }
                         },
                       ),
-                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null
+                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true
                           ? IconButton(
                               icon: Icon(
                                 Icons.arrow_back_rounded,
@@ -230,8 +239,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                       ));
                                 }),
                             IconButton(
-                                icon: Icon(sortTypeIcon, semanticLabel: AppLocalizations.of(context)!.sortBy),
-                                tooltip: sortTypeLabel,
+                                icon: Icon(Icons.sort, semanticLabel: AppLocalizations.of(context)!.sortBy),
+                                tooltip: AppLocalizations.of(context)!.sortBy,
                                 onPressed: () {
                                   if (context.read<ThunderBloc>().state.isFabOpen) {
                                     context.read<ThunderBloc>().add(const OnFabToggle(false));
@@ -316,7 +325,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           },
                                           title: FeedFabAction.changeSort.getTitle(context),
                                           icon: Icon(
-                                            FeedFabAction.changeSort.getIcon(override: sortTypeIcon),
+                                            FeedFabAction.changeSort.getIcon(),
                                           ),
                                         ),
                                       if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
@@ -369,17 +378,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 )
                               : null,
                         ),
-                        SizedBox(
-                          height: 70,
-                          width: 70,
-                          child: GestureDetector(
-                            onVerticalDragUpdate: (details) {
-                              if (details.delta.dy < -5) {
-                                context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
-                              }
-                            },
-                          ),
-                        )
+                        if (enableFab)
+                          SizedBox(
+                            height: 70,
+                            width: 70,
+                            child: GestureDetector(
+                              onVerticalDragUpdate: (details) {
+                                if (details.delta.dy < -5) {
+                                  context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                                }
+                              },
+                            ),
+                          )
                       ],
                     ),
                   );
@@ -415,7 +425,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
-          taglines: state.taglines,
+          tagline: state.tagline!,
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));
@@ -454,10 +464,18 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     if (state.communityId != null || state.communityName != null) {
-      return '';
+      return state.communityInfo?.communityView.community.title ?? '';
     }
 
     return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+  }
+
+  String getSortName(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return '';
+    }
+
+    return sortTypeLabel ?? '';
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
