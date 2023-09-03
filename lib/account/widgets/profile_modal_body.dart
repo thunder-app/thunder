@@ -174,7 +174,6 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                                 duration: const Duration(milliseconds: 500),
                                 firstChild: const SizedBox(
-                                  width: 40,
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
                                     child: Icon(
@@ -310,7 +309,6 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                                 duration: const Duration(milliseconds: 500),
                                 firstChild: const SizedBox(
-                                  width: 40,
                                   child: Padding(
                                     padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
                                     child: Icon(
