@@ -1,4 +1,7 @@
 {
+  "somethingWentWrong": "Oops, something went wrong!",
+  "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
+  "internetOrInstanceIssues": "You may not be connected to the internet, or your instance may be currently unavailable.",
   "postSavedAsDraft": "Post saved as draft",
   "commentSavedAsDraft": "Comment saved as draft",
   "restoredPostFromDraft": "Restored post from draft",
