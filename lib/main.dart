@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,6 +36,11 @@ void main() async {
 
   // Load up sqlite database
   await DB.instance.database;
+
+  // Register dart_ping on iOS
+  if (Platform.isIOS) {
+    DartPingIOS.register();
+  }
 
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);

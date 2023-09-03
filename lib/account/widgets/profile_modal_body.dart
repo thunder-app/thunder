@@ -1,3 +1,4 @@
+import 'package:dart_ping/dart_ping.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -86,219 +87,56 @@ class _ProfileSelectState extends State<ProfileSelect> {
       fetchAccounts();
     }
 
-    if (anonymousInstances == null) {
-      fetchAnonymousInstances();
-    }
-
-    return BlocListener<ThunderBloc, ThunderState>(
-      listener: (context, state) {},
-      listenWhen: (previous, current) {
-        if ((previous.anonymousInstances.length != current.anonymousInstances.length) || (previous.currentAnonymousInstance != current.currentAnonymousInstance)) {
-          anonymousInstances = null;
-        }
-        return true;
-      },
-      child: ScaffoldMessenger(
-        key: _scaffoldMessengerKey,
-        child: Scaffold(
-          body: ListView.builder(
-            itemBuilder: (context, index) {
-              if (index == (accounts?.length ?? 0) + (anonymousInstances?.length ?? 0)) {
-                return Column(
-                  children: [
-                    const Divider(indent: 16.0, endIndent: 16.0, thickness: 2.0),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(45),
-                          backgroundColor: theme.colorScheme.primaryContainer.withOpacity(0.5),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: 8.0),
-                            Text(
-                              AppLocalizations.of(context)!.addAccount,
-                              style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                            ),
-                          ],
-                        ),
-                        onPressed: () => widget.pushRegister(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(45),
-                          backgroundColor: theme.colorScheme.secondaryContainer.withOpacity(0.5),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: 8.0),
-                            Text(
-                              AppLocalizations.of(context)!.addAnonymousInstance,
-                              style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                            ),
-                          ],
-                        ),
-                        onPressed: () => widget.pushRegister(anonymous: true),
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                if (index < (accounts?.length ?? 0)) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    child: Material(
-                      color: currentAccountId == accounts![index].account.id ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
-                      borderRadius: BorderRadius.circular(50),
-                      child: InkWell(
-                        onTap: (currentAccountId == accounts![index].account.id)
-                            ? null
-                            : () {
-                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
-                                context.pop();
-                              },
-                        borderRadius: BorderRadius.circular(50),
-                        child: ListTile(
-                          leading: AnimatedCrossFade(
-                            crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                            duration: const Duration(milliseconds: 500),
-                            firstChild: const SizedBox(
-                              width: 40,
-                              child: Icon(
-                                Icons.person,
-                              ),
-                            ),
-                            secondChild: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
-                            ),
-                          ),
-                          title: Text(
-                            accounts![index].account.username ?? 'N/A',
-                            style: theme.textTheme.titleMedium?.copyWith(),
-                          ),
-                          subtitle: Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
-                          trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
-                              ? (currentAccountId == accounts![index].account.id)
-                                  ? IconButton(
-                                      icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
-                                      onPressed: () async {
-                                        if (await showLogOutDialog(context)) {
-                                          await Future.delayed(const Duration(milliseconds: 1500), () {
-                                            if ((anonymousInstances?.length ?? 0) > 0) {
-                                              context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                            } else {
-                                              context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
-                                            }
-                                            setState(() => accounts = null);
-                                          });
-                                        }
-                                      },
-                                    )
-                                  : IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        semanticLabel: AppLocalizations.of(context)!.removeAccount,
-                                      ),
-                                      onPressed: () {
-                                        context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
-
-                                        if ((anonymousInstances?.length ?? 0) > 0) {
-                                          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                        } else {
-                                          context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
-                                        }
-                                        setState(() => accounts = null);
-                                      })
-                              : null,
-                        ),
-                      ),
-                    ),
-                  );
-                } else {
-                  int realIndex = index - (accounts?.length ?? 0);
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    child: Material(
-                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
-                      borderRadius: BorderRadius.circular(50),
-                      child: InkWell(
-                        onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
-                            ? null
-                            : () async {
-                                context.read<AuthBloc>().add(LogOutOfAllAccounts());
-                                context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
-                                context.pop();
-                              },
-                        borderRadius: BorderRadius.circular(50),
-                        child: ListTile(
-                          leading: AnimatedCrossFade(
-                            crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                            duration: const Duration(milliseconds: 500),
-                            firstChild: const SizedBox(
-                              width: 40,
-                              child: Icon(
-                                Icons.language,
-                              ),
-                            ),
-                            secondChild: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              foregroundImage: anonymousInstances![realIndex].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![realIndex].instanceIcon!),
-                            ),
-                          ),
-                          title: Row(
-                            children: [
-                              const Icon(
-                                Icons.person_off_rounded,
-                                size: 15,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                AppLocalizations.of(context)!.anonymous,
-                                style: theme.textTheme.titleMedium?.copyWith(),
-                              ),
-                            ],
-                          ),
-                          subtitle: Text(anonymousInstances![realIndex].instance),
-                          trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                              ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
-                                  ? IconButton(
-                                      icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
-                                      onPressed: () async {
-                                        context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
-
-                                        if (anonymousInstances!.length > 1) {
-                                          context
-                                              .read<ThunderBloc>()
-                                              .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
-                                        } else {
-                                          context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
-                                        }
-
-                                        setState(() => anonymousInstances = null);
-                                      },
-                                    )
-                                  : IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        semanticLabel: AppLocalizations.of(context)!.removeInstance,
-                                      ),
-                                      onPressed: () async {
-                                        context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
-                                        setState(() {
-                                          anonymousInstances = null;
-                                        });
-                                      })
-                              : null,
-                        ),
+    if (accounts != null) {
+      return ListView.builder(
+        itemBuilder: (context, index) {
+          if (index == accounts?.length) {
+            return Column(
+              children: [
+                if (accounts != null && accounts!.isNotEmpty) const Divider(indent: 16.0, endIndent: 16.0, thickness: 2.0),
+                ListTile(
+                  leading: const Icon(Icons.add),
+                  title: const Text('Add Account'),
+                  onTap: () => widget.pushRegister(),
+                ),
+              ],
+            );
+          } else {
+            return ListTile(
+              leading: AnimatedCrossFade(
+                crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                duration: const Duration(milliseconds: 500),
+                firstChild: const SizedBox(
+                  width: 40,
+                  child: Icon(
+                    Icons.person,
+                  ),
+                ),
+                secondChild: CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
+                ),
+              ),
+              title: Text(
+                accounts![index].account.username ?? 'N/A',
+                style: theme.textTheme.titleMedium?.copyWith(),
+              ),
+              subtitle: Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+              onTap: (currentAccountId == accounts![index].account.id)
+                  ? null
+                  : () {
+                      context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
+                      context.pop();
+                    },
+              trailing: (currentAccountId == accounts![index].account.id)
+                  ? const InputChip(
+                      label: Text('Active'),
+                      visualDensity: VisualDensity.compact,
+                    )
+                  : IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        semanticLabel: 'Remove Account',
                       ),
                     ),
                   );
@@ -319,19 +157,37 @@ class _ProfileSelectState extends State<ProfileSelect> {
       return AccountExtended(account: account, instance: account.instance, instanceIcon: null);
     })).timeout(const Duration(seconds: 5));
 
-    // Intentionally don't await this here
+    // Intentionally don't await these here
     fetchInstanceIcons(accountsExtended);
+    pingInstances(accountsExtended);
 
     setState(() => this.accounts = accountsExtended);
   }
 
   Future<void> fetchInstanceIcons(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
-      final instanceIcon = await getInstanceIcon(account.instance).timeout(
+      final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(account.instance).timeout(
         const Duration(seconds: 3),
-        onTimeout: () => null,
+        onTimeout: () => const GetInstanceIconResponse(success: false),
       );
-      setState(() => account.instanceIcon = instanceIcon);
+
+      setState(() {
+        account.instanceIcon = instanceIconResponse.icon;
+        account.alive = instanceIconResponse.success;
+      });
+    });
+  }
+
+  Future<void> pingInstances(List<AccountExtended> accountsExtended) async {
+    accountsExtended.forEach((account) async {
+      if (account.instance != null) {
+        PingData pingData = await Ping(
+          account.instance!,
+          count: 1,
+          timeout: 5,
+        ).stream.first;
+        setState(() => account.latency = pingData.response?.time);
+      }
     });
   }
 
@@ -361,6 +217,8 @@ class AccountExtended {
   final Account account;
   String? instance;
   String? instanceIcon;
+  Duration? latency;
+  bool? alive;
 
   AccountExtended({required this.account, this.instance, this.instanceIcon});
 }
