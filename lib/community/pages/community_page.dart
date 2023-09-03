@@ -14,6 +14,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 // Internal
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
@@ -22,7 +23,9 @@ import 'package:thunder/community/widgets/post_card_list.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -122,7 +125,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           return true;
         },
         listener: (context, state) {
-          if (state.status == CommunityStatus.failure) {
+          if (state.status == CommunityStatus.failure || state.status == CommunityStatus.failureLoadingPosts) {
             showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
           }
 
@@ -411,6 +414,15 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       case CommunityStatus.refreshing:
       case CommunityStatus.success:
       case CommunityStatus.failure:
+      case CommunityStatus.failureLoadingPosts:
+        if (state.status == CommunityStatus.failureLoadingPosts && state.postViews?.isNotEmpty != true) {
+          return ErrorMessage(
+            title: AppLocalizations.of(context)!.unableToLoadPostsFrominstance(LemmyClient.instance.lemmyApiV3.host),
+            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+            actionText: AppLocalizations.of(context)!.accountSettings,
+            action: () => showProfileModalSheet(context),
+          );
+        }
         return PostCardList(
           subscribeType: state.subscribedType,
           postViews: state.postViews,
@@ -425,7 +437,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
-          tagline: state.tagline,
+          tagline: state.tagline!,
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));
