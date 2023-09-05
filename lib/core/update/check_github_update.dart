@@ -5,10 +5,30 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 import 'package:thunder/core/models/version.dart';
 
-Future<String?> getCurrentVersion() async {
+Future<String?> getCurrentVersion({bool dropBuildNumber = false}) async {
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   String version = packageInfo.version;
   String build = packageInfo.buildNumber;
+
+  // Adjusts the build value to only contain the numerical values for the alpha releases
+  //
+  // The build value is formatted as follows: internal build number + pre-release version string
+  // For iOS, this looks like (e.g., 17.1, 189.3, etc.)
+  // For Android, this looks like (e.g., 17-alpha.1, 189-alpha.3, etc.)
+  if (dropBuildNumber) {
+    if (build.contains('.')) {
+      RegExp regex = RegExp(r'^[^.]*\.');
+      build = build.replaceAll(regex, '');
+    } else {
+      build = '';
+    }
+
+    if (build.isNotEmpty) {
+      return 'v$version-alpha.$build';
+    }
+
+    return 'v$version';
+  }
 
   return 'v$version+$build';
 }
