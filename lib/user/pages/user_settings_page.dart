@@ -97,7 +97,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       trailing: IconButton(
-                        icon: const Icon(Icons.add_rounded),
+                        icon: Icon(
+                          Icons.add_rounded,
+                          semanticLabel: AppLocalizations.of(context)!.add,
+                        ),
                         onPressed: () => showUserBlockDialog(context),
                       ),
                     ),
@@ -140,7 +143,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                   state.personBlocks[index].displayName ?? state.personBlocks[index].name,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
-                                                subtitle: Text('${state.personBlocks[index].name}@${fetchInstanceNameFromUrl(state.personBlocks[index].actorId) ?? '-'}'),
+                                                subtitle: Text(
+                                                  '${state.personBlocks[index].name}@${fetchInstanceNameFromUrl(state.personBlocks[index].actorId) ?? '-'}',
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == state.personBlocks[index].id
                                                     ? const Padding(
                                                         padding: EdgeInsets.only(right: 12),
@@ -151,7 +158,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                         ),
                                                       )
                                                     : IconButton(
-                                                        icon: const Icon(Icons.clear),
+                                                        icon: Icon(
+                                                          Icons.clear,
+                                                          semanticLabel: AppLocalizations.of(context)!.remove,
+                                                        ),
                                                         onPressed: () {
                                                           context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBlocks[index].id));
                                                         },
@@ -186,7 +196,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       trailing: IconButton(
-                        icon: const Icon(Icons.add_rounded),
+                        icon: Icon(
+                          Icons.add_rounded,
+                          semanticLabel: AppLocalizations.of(context)!.add,
+                        ),
                         onPressed: () => showCommunityBlockDialog(context),
                       ),
                     ),
@@ -229,7 +242,11 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                   state.communityBlocks[index].title,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
-                                                subtitle: Text('${state.communityBlocks[index].name}@${fetchInstanceNameFromUrl(state.communityBlocks[index].actorId) ?? '-'}'),
+                                                subtitle: Text(
+                                                  '${state.communityBlocks[index].name}@${fetchInstanceNameFromUrl(state.communityBlocks[index].actorId) ?? '-'}',
+                                                  maxLines: 1,
+                                                  overflow: TextOverflow.ellipsis,
+                                                ),
                                                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == state.communityBlocks[index].id
                                                     ? const Padding(
                                                         padding: EdgeInsets.only(right: 12),
@@ -240,7 +257,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                         ),
                                                       )
                                                     : IconButton(
-                                                        icon: const Icon(Icons.clear),
+                                                        icon: Icon(
+                                                          Icons.clear,
+                                                          semanticLabel: AppLocalizations.of(context)!.remove,
+                                                        ),
                                                         onPressed: () {
                                                           context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBlocks[index].id));
                                                         },
