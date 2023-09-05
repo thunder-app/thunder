@@ -376,7 +376,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                     context.read<ThunderBloc>().add(const OnFabToggle(false));
                                   },
                                   child: Container(
-                                    color: theme.colorScheme.background.withOpacity(0.85),
+                                    color: theme.colorScheme.background.withOpacity(0.95),
                                   ),
                                 )
                               : null,
