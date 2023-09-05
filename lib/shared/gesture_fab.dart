@@ -19,6 +19,7 @@ class GestureFab extends StatefulWidget {
     this.onSlideDown,
     this.onPressed,
     this.onLongPress,
+    this.centered = false,
   });
 
   final bool? initialOpen;
@@ -30,6 +31,7 @@ class GestureFab extends StatefulWidget {
   final Function? onSlideDown;
   final Function? onPressed;
   final Function? onLongPress;
+  final bool centered;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -79,7 +81,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
     return SizedBox.expand(
       child: Stack(
-        alignment: Alignment.bottomRight,
+        alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
         clipBehavior: Clip.none,
         children: [
           _buildTapToCloseFab(),
@@ -92,23 +94,32 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   Widget _buildTapToCloseFab() {
     return SizedBox(
-      width: 56,
-      height: 56,
-      child: Center(
-        child: Material(
-          shape: const CircleBorder(),
-          clipBehavior: Clip.antiAlias,
-          elevation: 4,
-          child: InkWell(
-            onTap: () {
-              context.read<ThunderBloc>().add(const OnFabToggle(false));
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(
-                Icons.close,
-                color: Theme.of(context).primaryColor,
-                semanticLabel: AppLocalizations.of(context)!.close,
+      width: widget.centered ? 45 : 56,
+      height: widget.centered ? 45 : 56,
+      child: AnimatedBuilder(
+        animation: _expandAnimation,
+        builder: (context, child) => child!,
+        child: FadeTransition(
+          opacity: _expandAnimation,
+          child: Center(
+            child: Material(
+              shape: widget.centered ? null : const CircleBorder(),
+              clipBehavior: widget.centered ? Clip.none : Clip.antiAlias,
+              elevation: widget.centered ? 0 : 4,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(50),
+                onTap: () {
+                  context.read<ThunderBloc>().add(const OnFabToggle(false));
+                },
+                child: Padding(
+                  padding: EdgeInsets.all(widget.centered ? 12 : 8),
+                  child: Icon(
+                    Icons.close,
+                    size: widget.centered ? 20 : 25,
+                    color: Theme.of(context).primaryColor,
+                    semanticLabel: AppLocalizations.of(context)!.close,
+                  ),
+                ),
               ),
             ),
           ),
@@ -125,7 +136,11 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
         _ExpandingActionButton(
           maxDistance: distance,
           progress: _expandAnimation,
+          focus: isFabOpen && i == count - 1,
+          centered: widget.centered,
           child: widget.children[i],
+          first: i == count - 1,
+          last: i == 0,
         ),
       );
     }
@@ -161,12 +176,30 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
             onLongPress: () {
               widget.onLongPress?.call();
             },
-            child: FloatingActionButton(
-              onPressed: () {
-                widget.onPressed?.call();
-              },
-              child: widget.icon,
-            ),
+            child: widget.centered
+                ? SizedBox(
+                    width: 45,
+                    height: 45,
+                    child: Material(
+                      shape: const CircleBorder(),
+                      clipBehavior: Clip.antiAlias,
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(50),
+                        onTap: () => widget.onPressed?.call(),
+                        child: Icon(
+                          widget.icon.icon,
+                          size: 20,
+                        ),
+                      ),
+                    ),
+                  )
+                : FloatingActionButton(
+                    onPressed: () {
+                      widget.onPressed?.call();
+                    },
+                    child: widget.icon,
+                  ),
           ),
         ),
       ),
@@ -176,76 +209,186 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
 @immutable
 class ActionButton extends StatelessWidget {
-  const ActionButton({
+  ActionButton({
     super.key,
     this.onPressed,
     this.title,
     required this.icon,
+    this.centered = false,
   });
 
   final VoidCallback? onPressed;
-  final Widget icon;
+  final Icon icon;
   final String? title;
+  final bool centered;
+
+  bool? first;
+  bool? last;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Row(
-      children: [
-        title != null ? Text(title!) : Container(),
-        const SizedBox(width: 16),
-        SizedBox(
-          height: 40,
-          width: 40,
-          child: Material(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            clipBehavior: Clip.antiAlias,
-            color: theme.colorScheme.primaryContainer,
-            elevation: 4,
-            child: InkWell(
-              onTap: () {
-                context.read<ThunderBloc>().add(const OnFabToggle(true));
-                onPressed?.call();
-              },
-              child: icon,
+    return centered
+        ? SizedBox(
+            width: 160,
+            child: Material(
+              color: Colors.transparent,
+              elevation: 3,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(first == true ? 20 : 0),
+                topRight: Radius.circular(first == true ? 20 : 0),
+                bottomLeft: Radius.circular(last == true ? 20 : 0),
+                bottomRight: Radius.circular(last == true ? 20 : 0),
+              ),
+              child: Stack(
+                children: [
+                  Positioned.fill(
+                    child: Align(
+                      child: SizedBox(
+                        height: 40,
+                        child: Material(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(first == true ? 20 : 0),
+                            topRight: Radius.circular(first == true ? 20 : 0),
+                            bottomLeft: Radius.circular(last == true ? 20 : 0),
+                            bottomRight: Radius.circular(last == true ? 20 : 0),
+                          ),
+                          child: InkWell(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(first == true ? 20 : 0),
+                              topRight: Radius.circular(first == true ? 20 : 0),
+                              bottomLeft: Radius.circular(last == true ? 20 : 0),
+                              bottomRight: Radius.circular(last == true ? 20 : 0),
+                            ),
+                            onTap: () {
+                              context.read<ThunderBloc>().add(const OnFabToggle(true));
+                              onPressed?.call();
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5, right: 5),
+                    child: IgnorePointer(
+                      child: Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 5),
+                            child: Icon(
+                              icon.icon,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
+                          Flexible(
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 10, right: 5),
+                              child: title != null
+                                  ? Text(
+                                      title!,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 1,
+                                    )
+                                  : Container(),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-        ),
-      ],
-    );
+          )
+        : Row(
+            children: [
+              title != null ? Text(title!) : Container(),
+              const SizedBox(width: 16),
+              SizedBox(
+                height: 40,
+                width: 40,
+                child: Material(
+                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                  clipBehavior: Clip.antiAlias,
+                  color: theme.colorScheme.primaryContainer,
+                  elevation: 4,
+                  child: InkWell(
+                    onTap: () {
+                      context.read<ThunderBloc>().add(const OnFabToggle(true));
+                      onPressed?.call();
+                    },
+                    child: icon,
+                  ),
+                ),
+              ),
+            ],
+          );
   }
 }
 
 @immutable
-class _ExpandingActionButton extends StatelessWidget {
+class _ExpandingActionButton extends StatefulWidget {
   const _ExpandingActionButton({
     required this.maxDistance,
     required this.progress,
     required this.child,
+    required this.focus,
+    this.centered = false,
+    required this.first,
+    required this.last,
   });
 
   final double maxDistance;
   final Animation<double> progress;
   final Widget child;
+  final bool focus;
+  final bool centered;
+
+  final bool first;
+  final bool last;
+
+  @override
+  State<_ExpandingActionButton> createState() => _ExpandingActionButtonState();
+}
+
+class _ExpandingActionButtonState extends State<_ExpandingActionButton> {
+  bool _visible = false;
 
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-      animation: progress,
+      animation: widget.progress,
       builder: (context, child) {
         final offset = Offset.fromDirection(
           90 * (math.pi / 180.0),
-          progress.value * maxDistance,
+          widget.progress.value * widget.maxDistance,
         );
-        return Positioned(
-          right: 8.0 + offset.dx,
-          bottom: 10.0 + offset.dy,
-          child: child!,
+        _visible = !widget.progress.isDismissed;
+        return Visibility(
+          visible: _visible,
+          child: Positioned(
+            right: widget.centered ? null : 8.0 + offset.dx,
+            bottom: (widget.centered ? 15.0 : 10.0) + offset.dy,
+            child: Semantics(
+              focused: widget.focus,
+              child: child is FadeTransition && child.child is ActionButton
+                  ? () {
+                      (child.child as ActionButton).first = widget.first;
+                      (child.child as ActionButton).last = widget.last;
+                      return child;
+                    }()
+                  : child!,
+            ),
+          ),
         );
       },
       child: FadeTransition(
-        opacity: progress,
-        child: child,
+        opacity: widget.progress,
+        child: widget.child,
       ),
     );
   }

@@ -53,11 +53,11 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     );
     on<VoteCommentEvent>(
       _voteCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
     );
     on<SaveCommentEvent>(
       _saveCommentEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
     );
     on<CreateCommentEvent>(
       _createCommentEvent,
@@ -264,6 +264,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
+            if (event.commentParentId != null) {
+              // If we come here, we've determined that we've already loaded all of the comments.
+              // But we're currently being asked to load some children.
+              // Therefore we will treat this as an error.
+              throw Exception('Unable to load more replies.');
+            }
             return;
           }
           emit(state.copyWith(status: PostStatus.refreshing));
@@ -284,6 +290,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch more comments');
           });
+
+          // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
+          // so we should display an error
+          if (event.commentParentId != null) {
+            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            if (!anyDirectChildren) {
+              throw Exception('Unable to load more replies.');
+            }
+          }
 
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
@@ -315,6 +330,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
+        // In case there are two errors in a row without the status changing,
+        // emit a blank error then the real error so that the widget detects a change and rebuilds.
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: ''));
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
     } catch (e) {

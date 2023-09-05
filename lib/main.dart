@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:dart_ping_ios/dart_ping_ios.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -16,6 +19,7 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/utils/global_context.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -29,6 +33,11 @@ void main() async {
 
   // Load up sqlite database
   await DB.instance.database;
+
+  // Register dart_ping on iOS
+  if (Platform.isIOS) {
+    DartPingIOS.register();
+  }
 
   runApp(const ThunderApp());
 }
@@ -71,6 +80,19 @@ class ThunderApp extends StatelessWidget {
                 );
               }
 
+              // Set the page transitions
+              const PageTransitionsTheme pageTransitionsTheme = PageTransitionsTheme(builders: {
+                TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+                TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              });
+
+              theme = theme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
+              darkTheme = darkTheme.copyWith(
+                pageTransitionsTheme: pageTransitionsTheme,
+              );
+
               // Set navigation bar color on Android to be transparent
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle(
@@ -88,6 +110,7 @@ class ThunderApp extends StatelessWidget {
                   theme: theme,
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
+                  scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
                 ),
               );
             },

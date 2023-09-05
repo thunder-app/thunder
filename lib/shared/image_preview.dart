@@ -16,6 +16,7 @@ class ImagePreview extends StatefulWidget {
   final int? postId;
   final void Function()? navigateToPost;
   final bool? isComment;
+  final bool? read;
 
   const ImagePreview({
     super.key,
@@ -29,6 +30,7 @@ class ImagePreview extends StatefulWidget {
     this.postId,
     this.navigateToPost,
     this.isComment,
+    this.read,
   });
 
   @override
@@ -53,11 +55,8 @@ class _ImagePreviewState extends State<ImagePreview> {
         transitionDuration: const Duration(milliseconds: 100),
         reverseTransitionDuration: const Duration(milliseconds: 50),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          String heroKey = generateRandomHeroString();
-
           return ImageViewer(
             url: widget.url,
-            heroKey: heroKey,
             postId: widget.postId,
             navigateToPost: widget.navigateToPost,
           );
@@ -98,7 +97,11 @@ class _ImagePreviewState extends State<ImagePreview> {
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Stack(
         children: [
+          // This is used for link posts where the preview comes from Lemmy
+          // in both compact and comfortable view
           ExtendedImage.network(
+            color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+            colorBlendMode: widget.read == true ? BlendMode.modulate : null,
             constraints: widget.isComment == true
                 ? BoxConstraints(
                     maxHeight: MediaQuery.of(context).size.width * 0.55,
@@ -111,8 +114,13 @@ class _ImagePreviewState extends State<ImagePreview> {
             width: widget.width ?? MediaQuery.of(context).size.width - 24,
             fit: BoxFit.cover,
             cache: true,
-            clearMemoryCacheWhenDispose: false,
+            clearMemoryCacheWhenDispose: true,
             cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+            loadStateChanged: (state) {
+              if (state.extendedImageLoadState == LoadState.loading) {
+                return Container();
+              }
+            },
           ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),

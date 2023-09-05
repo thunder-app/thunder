@@ -23,13 +23,13 @@ class ThunderState extends Equatable {
     this.tabletMode = false,
 
     // General Settings
-    this.showLinkPreviews = true,
+    this.scrapeMissingPreviews = false,
     this.openInExternalBrowser = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
-    this.disableScoreCounters = true,
+    this.scoreCounters = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -47,6 +47,7 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,
+    this.dimReadPosts = true,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -99,11 +100,13 @@ class ThunderState extends Equatable {
     this.postFabEnableBackToTop = true,
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
+    this.postFabEnableRefresh = true,
     this.feedFabSinglePressAction = FeedFabAction.dismissRead,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
+    this.combineNavAndFab = true,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -133,7 +136,7 @@ class ThunderState extends Equatable {
   final bool tabletMode;
 
   // General Settings
-  final bool showLinkPreviews;
+  final bool scrapeMissingPreviews;
   final bool openInExternalBrowser;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
@@ -156,7 +159,8 @@ class ThunderState extends Equatable {
   final bool showEdgeToEdgeImages;
   final bool showTextContent;
   final bool showPostAuthor;
-  final bool disableScoreCounters;
+  final bool scoreCounters;
+  final bool dimReadPosts;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -213,6 +217,7 @@ class ThunderState extends Equatable {
   final bool postFabEnableBackToTop;
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
+  final bool postFabEnableRefresh;
 
   final FeedFabAction feedFabSinglePressAction;
   final FeedFabAction feedFabLongPressAction;
@@ -220,14 +225,18 @@ class ThunderState extends Equatable {
   final PostFabAction postFabLongPressAction;
 
   final bool enableCommentNavigation;
+  final bool combineNavAndFab;
 
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
+
   // Dismiss posts from loaded view event
   final bool dismissEvent;
+
   // Expand/Close FAB event
   final bool isFabOpen;
+
   // Expand/Close FAB event
   final bool isFabSummoned;
 
@@ -249,12 +258,12 @@ class ThunderState extends Equatable {
     bool? tabletMode,
 
     // General Settings
-    bool? showLinkPreviews,
+    bool? scrapeMissingPreviews,
     bool? openInExternalBrowser,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
-    bool? disableScoreCounters,
+    bool? scoreCounters,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -272,6 +281,7 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? showPostAuthor,
+    bool? dimReadPosts,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -324,11 +334,13 @@ class ThunderState extends Equatable {
     bool? postFabEnableBackToTop,
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
+    bool? postFabEnableRefresh,
     FeedFabAction? feedFabSinglePressAction,
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
+    bool? combineNavAndFab,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -358,13 +370,13 @@ class ThunderState extends Equatable {
       tabletMode: tabletMode ?? this.tabletMode,
 
       // General Settings
-      showLinkPreviews: showLinkPreviews ?? this.showLinkPreviews,
+      scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
-      disableScoreCounters: disableScoreCounters ?? this.disableScoreCounters,
+      scoreCounters: scoreCounters ?? this.scoreCounters,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -382,6 +394,7 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+      dimReadPosts: dimReadPosts ?? this.dimReadPosts,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -437,12 +450,14 @@ class ThunderState extends Equatable {
       postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
+      postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
       feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
       feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
       postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
 
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+      combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
 
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
@@ -475,7 +490,7 @@ class ThunderState extends Equatable {
         tabletMode,
 
         // General Settings
-        showLinkPreviews,
+        scrapeMissingPreviews,
         openInExternalBrowser,
         useDisplayNames,
         markPostReadOnMediaView,
@@ -498,6 +513,7 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         showPostAuthor,
+        dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -551,12 +567,14 @@ class ThunderState extends Equatable {
         postFabEnableBackToTop,
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
+        postFabEnableRefresh,
         feedFabSinglePressAction,
         feedFabLongPressAction,
         postFabSinglePressAction,
         postFabLongPressAction,
 
         enableCommentNavigation,
+        combineNavAndFab,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

@@ -1,27 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/global_context.dart';
 
-const List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
+List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
   ListPickerItem(
     payload: CommentSortType.top,
     icon: Icons.military_tech,
-    label: 'Top',
+    label: AppLocalizations.of(GlobalContext.context)!.top,
   ),
   ListPickerItem(
     payload: CommentSortType.old,
     icon: Icons.access_time_outlined,
-    label: 'Old',
+    label: AppLocalizations.of(GlobalContext.context)!.old,
   ),
   ListPickerItem(
     payload: CommentSortType.new_,
     icon: Icons.auto_awesome_rounded,
-    label: 'New',
+    label: AppLocalizations.of(GlobalContext.context)!.new_,
   ),
   ListPickerItem(
     payload: CommentSortType.hot,
     icon: Icons.local_fire_department,
-    label: 'Hot',
+    label: AppLocalizations.of(GlobalContext.context)!.hot,
   ),
   //
   // ListPickerItem(
@@ -32,7 +35,7 @@ const List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
 ];
 
 class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
-  const CommentSortPicker({super.key, required super.onSelect, required super.title, super.items = commentSortTypeItems});
+  CommentSortPicker({super.key, required super.onSelect, required super.title, List<ListPickerItem<CommentSortType>>? items, super.previouslySelected}) : super(items: items ?? commentSortTypeItems);
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -63,7 +66,7 @@ class _SortPickerState extends State<CommentSortPicker> {
       mainAxisSize: MainAxisSize.max,
       children: [
         Padding(
-          padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+          padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -84,19 +87,17 @@ class _SortPickerState extends State<CommentSortPicker> {
     );
   }
 
-  List<ListTile> _generateList(List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
+  List<Widget> _generateList(List<ListPickerItem<CommentSortType>> items, ThemeData theme) {
     return items
         .map(
-          (item) => ListTile(
-            title: Text(
-              item.label,
-              style: theme.textTheme.bodyMedium,
-            ),
-            leading: Icon(item.icon),
-            onTap: () {
+          (item) => PickerItem(
+            label: item.label,
+            icon: item.icon,
+            onSelected: () {
               Navigator.of(context).pop();
               widget.onSelect(item);
             },
+            isSelected: widget.previouslySelected == item.payload,
           ),
         )
         .toList();

@@ -6,7 +6,15 @@ import 'package:http/http.dart' as http;
 import 'package:thunder/core/models/version.dart';
 import 'package:version/version.dart' as version_parser;
 
-Future<String> getCurrentVersion() async {
+Future<String> getCurrentVersion({bool removeInternalBuildNumber = false}) async {
+  RegExp regex = RegExp(r'(.+)\+.*');
+  Match? match = regex.firstMatch(globals.currentVersion);
+
+  // When removeInternalBuildNumber is specified, we remove the internal build number (e.g., +17, +18, etc.)
+  if (removeInternalBuildNumber == true && match != null) {
+    return 'v${match.group(1)}';
+  }
+
   return 'v${globals.currentVersion}';
 }
 

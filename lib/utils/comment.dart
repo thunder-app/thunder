@@ -158,7 +158,8 @@ CommentView cleanDeletedCommentView(CommentView commentView) {
       creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
       saved: commentView.saved,
       creatorBlocked: commentView.creatorBlocked,
-      instanceHost: commentView.instanceHost);
+      instanceHost: commentView.instanceHost,
+      commentReply: commentView.commentReply);
 }
 
 Comment convertToDeletedComment(Comment comment) {
