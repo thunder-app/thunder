@@ -230,10 +230,10 @@ class ActionButton extends StatelessWidget {
     final theme = Theme.of(context);
     return centered
         ? SizedBox(
-            width: 150,
+            width: 160,
             child: Material(
               color: Colors.transparent,
-              elevation: 1.5,
+              elevation: 3,
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(first == true ? 20 : 0),
                 topRight: Radius.circular(first == true ? 20 : 0),
@@ -245,7 +245,7 @@ class ActionButton extends StatelessWidget {
                   Positioned.fill(
                     child: Align(
                       child: SizedBox(
-                        height: 37,
+                        height: 40,
                         child: Material(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(first == true ? 20 : 0),
@@ -273,8 +273,17 @@ class ActionButton extends StatelessWidget {
                     padding: const EdgeInsets.only(left: 5, right: 5),
                     child: IgnorePointer(
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.only(left: 10, right: 5),
+                            child: Icon(
+                              icon.icon,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 40,
+                          ),
                           Flexible(
                             child: Padding(
                               padding: const EdgeInsets.only(left: 10, right: 5),
@@ -285,16 +294,6 @@ class ActionButton extends StatelessWidget {
                                       maxLines: 1,
                                     )
                                   : Container(),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 37,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 10),
-                            child: Icon(
-                              icon.icon,
-                              size: 20,
                             ),
                           ),
                         ],
