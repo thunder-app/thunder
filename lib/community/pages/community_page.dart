@@ -466,6 +466,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 ),
               );
         },
+        previouslySelected: sortType,
       ),
     );
   }

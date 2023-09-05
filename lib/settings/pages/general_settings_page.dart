@@ -402,6 +402,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                             },
+                            previouslySelected: defaultSortType,
                           ),
                         ),
                       ],
@@ -586,6 +587,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                             },
+                            previouslySelected: defaultCommentSortType,
                           ),
                         ),
                         ListOption(
