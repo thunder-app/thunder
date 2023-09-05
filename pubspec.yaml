@@ -85,6 +85,7 @@ dependencies:
       ref: master
       path: packages/scrollable_positioned_list/
   expandable: ^5.0.1
+  flutter_file_dialog: ^3.0.2
   dart_ping: ^9.0.0
   dart_ping_ios: ^4.0.0
 
