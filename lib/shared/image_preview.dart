@@ -55,11 +55,8 @@ class _ImagePreviewState extends State<ImagePreview> {
         transitionDuration: const Duration(milliseconds: 100),
         reverseTransitionDuration: const Duration(milliseconds: 50),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          String heroKey = generateRandomHeroString();
-
           return ImageViewer(
             url: widget.url,
-            heroKey: heroKey,
             postId: widget.postId,
             navigateToPost: widget.navigateToPost,
           );

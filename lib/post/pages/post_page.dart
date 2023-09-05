@@ -466,6 +466,7 @@ class _PostPageState extends State<PostPage> {
               ));
           //Navigator.of(context).pop();
         },
+        previouslySelected: sortType,
       ),
     );
   }

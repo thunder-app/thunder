@@ -30,7 +30,6 @@ class MediaView extends StatefulWidget {
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
   final void Function()? navigateToPost;
-  final bool disableHero;
   final bool? read;
 
   const MediaView({
@@ -45,7 +44,6 @@ class MediaView extends StatefulWidget {
     this.viewMode = ViewMode.comfortable,
     this.scrapeMissingPreviews,
     this.navigateToPost,
-    this.disableHero = false,
     this.read,
   });
 
@@ -178,11 +176,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       transitionDuration: const Duration(milliseconds: 100),
                       reverseTransitionDuration: const Duration(milliseconds: 50),
                       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-                        String heroKey = generateRandomHeroString();
-
                         return ImageViewer(
                           url: widget.postView!.media.first.mediaUrl!,
-                          heroKey: heroKey,
                           postId: widget.postView!.postView.post.id,
                           navigateToPost: widget.navigateToPost,
                         );
@@ -215,7 +210,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
-    Widget heroChild = ExtendedImage.network(
+    return ExtendedImage.network(
       color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
       colorBlendMode: widget.read == true ? BlendMode.modulate : null,
       widget.postView!.media.first.mediaUrl!,
@@ -302,15 +297,5 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
         }
       },
     );
-
-    if (widget.disableHero) {
-      return heroChild;
-    } else {
-      return Hero(
-        tag: widget.postView!.media.first.mediaUrl!,
-        // This is used for image post previews in compact and comfortable mode
-        child: heroChild,
-      );
-    }
   }
 }
