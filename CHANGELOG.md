@@ -16,6 +16,7 @@
 - Show special user identifiers in post - contribution from @micahmo
 - Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
+- Add option to disabling graying out read posts - contribution from @micahmo
 
 ### Changed
 

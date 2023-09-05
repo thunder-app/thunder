@@ -120,6 +120,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
+      bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -225,6 +226,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
+        dimReadPosts: dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
