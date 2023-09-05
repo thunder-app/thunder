@@ -332,7 +332,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         return;
       }
     } catch (e) {
-      emit(state.copyWith(status: CommunityStatus.failure, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
+      emit(state.copyWith(status: CommunityStatus.failureLoadingPosts, errorMessage: e.toString(), listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
     }
   }
 

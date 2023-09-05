@@ -1,6 +1,6 @@
 part of 'community_bloc.dart';
 
-enum CommunityStatus { initial, loading, refreshing, success, empty, failure }
+enum CommunityStatus { initial, loading, refreshing, success, empty, failure, failureLoadingPosts }
 
 class CommunityState extends Equatable {
   const CommunityState({
