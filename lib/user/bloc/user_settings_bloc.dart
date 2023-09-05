@@ -6,6 +6,8 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 
 part 'user_settings_event.dart';
 part 'user_settings_state.dart';
@@ -53,7 +55,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         ));
       }
     } catch (e) {
-      return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: e.toString()));
+      return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
     }
   }
 
@@ -84,7 +86,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         personBeingBlocked: 0,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
     }
   }
 
@@ -115,7 +119,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         communityBeingBlocked: 0,
       ));
     } catch (e) {
-      return emit(state.copyWith(status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert, errorMessage: e.toString()));
+      return emit(state.copyWith(
+          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
     }
   }
 }

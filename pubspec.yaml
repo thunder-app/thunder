@@ -87,6 +87,8 @@ dependencies:
   expandable: ^5.0.1
   dart_ping: ^9.0.0
   dart_ping_ios: ^4.0.0
+  flutter_typeahead: ^4.6.2
+  text_scroll: ^0.2.0
 
 dev_dependencies:
   flutter_test:

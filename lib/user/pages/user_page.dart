@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -91,9 +93,17 @@ class _UserPageState extends State<UserPage> {
               padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
               child: IconButton(
                 onPressed: () {
+                  final AccountBloc accountBloc = context.read<AccountBloc>();
+                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
                   Navigator.of(context).push(
                     SwipeablePageRoute(
-                      builder: (context) => UserSettingsPage(widget.userId),
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserSettingsPage(widget.userId),
+                      ),
                     ),
                   );
                 },
