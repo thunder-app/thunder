@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -401,6 +402,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                             },
+                            previouslySelected: defaultSortType,
                           ),
                         ),
                       ],
@@ -585,6 +587,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                             },
+                            previouslySelected: defaultCommentSortType,
                           ),
                         ),
                         ListOption(
@@ -715,6 +718,69 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          child: Text(
+                            'Import/Export Settings',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        TextButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(60),
+                            backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.settings_rounded),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                'Save Settings',
+                                style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            await UserPreferences.exportToJson();
+                          },
+                        ),
+                        const SizedBox(height: 8.0),
+                        TextButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(60),
+                            backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.primary),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.import_export_rounded),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                'Import Settings',
+                                style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            await UserPreferences.importFromJson();
+
+                            _initPreferences();
+
+                            if (context.mounted) {
+                              context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                            }
+                          },
                         ),
                       ],
                     ),

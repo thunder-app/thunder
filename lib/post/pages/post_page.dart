@@ -91,6 +91,7 @@ class _PostPageState extends State<PostPage> {
     bool enableBackToTop = thunderState.postFabEnableBackToTop;
     bool enableChangeSort = thunderState.postFabEnableChangeSort;
     bool enableReplyToPost = thunderState.postFabEnableReplyToPost;
+    bool enableRefresh = thunderState.postFabEnableRefresh;
 
     bool postLocked = widget.postView?.postView.post.locked == true;
 
@@ -159,6 +160,17 @@ class _PostPageState extends State<PostPage> {
               ),
               actions: [
                 IconButton(
+                    icon: Icon(Icons.refresh_rounded, semanticLabel: AppLocalizations.of(context)!.refresh),
+                    onPressed: () {
+                      if (context.read<ThunderBloc>().state.isFabOpen) {
+                        context.read<ThunderBloc>().add(const OnFabToggle(false));
+                      }
+                      HapticFeedback.mediumImpact();
+                      return context
+                          .read<PostBloc>()
+                          .add(GetPostEvent(postView: widget.postView, postId: widget.postId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+                    }),
+                IconButton(
                   icon: Icon(
                     Icons.sort,
                     semanticLabel: AppLocalizations.of(context)!.sortBy,
@@ -210,6 +222,10 @@ class _PostPageState extends State<PostPage> {
                               ),
                               onPressed: () => singlePressAction.execute(
                                   context: context,
+                                  postView: state.postView,
+                                  postId: state.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
                                   override: singlePressAction == PostFabAction.backToTop
                                       ? () => {
                                             _itemScrollController.scrollTo(
@@ -225,6 +241,10 @@ class _PostPageState extends State<PostPage> {
                                               : null),
                               onLongPress: () => longPressAction.execute(
                                   context: context,
+                                  postView: state.postView,
+                                  postId: state.postId,
+                                  selectedCommentId: state.selectedCommentId,
+                                  selectedCommentPath: state.selectedCommentPath,
                                   override: longPressAction == PostFabAction.backToTop
                                       ? () => {
                                             _itemScrollController.scrollTo(
@@ -239,6 +259,24 @@ class _PostPageState extends State<PostPage> {
                                               ? () => replyToPost(context, postLocked: postLocked)
                                               : null),
                               children: [
+                                if (enableRefresh)
+                                  ActionButton(
+                                    centered: combineNavAndFab,
+                                    onPressed: () {
+                                      HapticFeedback.mediumImpact();
+                                      PostFabAction.refresh.execute(
+                                        context: context,
+                                        postView: state.postView,
+                                        postId: state.postId,
+                                        selectedCommentId: state.selectedCommentId,
+                                        selectedCommentPath: state.selectedCommentPath,
+                                      );
+                                    },
+                                    title: PostFabAction.refresh.getTitle(context),
+                                    icon: Icon(
+                                      PostFabAction.refresh.getIcon(),
+                                    ),
+                                  ),
                                 if (enableReplyToPost)
                                   ActionButton(
                                     centered: combineNavAndFab,
@@ -428,6 +466,7 @@ class _PostPageState extends State<PostPage> {
               ));
           //Navigator.of(context).pop();
         },
+        previouslySelected: sortType,
       ),
     );
   }

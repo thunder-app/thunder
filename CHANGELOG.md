@@ -13,6 +13,9 @@
 - Show default avatar for users without an avatar - contribution from @coslu
 - Added lock icon indicating a post is locked. Visible in feed and post view. Also blocks commenting functionality and instead shows a toast indicating the post is blocked - contribution from @ajsosa
 - Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
+- Show special user identifiers in post - contribution from @micahmo
+- Added setting to import and export settings
+- Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 
 ### Changed
 
@@ -23,6 +26,8 @@
 - Errors blocking users are now shown as toasts - contribution from @micahmo
 - Make comment indicators use colours blended from the current theme - contribution from @tom-james-watson
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
+- Improved ability to refresh posts - contribution from @micahmo
+- Improve the option selector dialog to show the currently selected item - contribution from @micahmo
 
 ### Fixed
 
@@ -33,6 +38,9 @@
 - Fixed indefinite state change of `isFetchingMoreComments` when loading more replies. This was also suppressing the snackbar error toast when loading more replies failed - contribution from @ajsosa
 - Fix default community icons not showing in community headers - contribution from @coslu
 - Fixed null pointer exception that broke commenting on posts - contribution from @ajsosa
+- Fix issues entering URLs with some keyboards when logging in - contribution from @micahmo
+- Fix issue with accessibility in sort picker - contribution from @micahmo
+- Fix issue where deleted replies could not be marked read - contribution from @micahmo
 
 ## 0.2.3+16 - 2023-08-15
 

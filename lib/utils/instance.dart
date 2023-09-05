@@ -82,17 +82,24 @@ Future<String?> getLemmyUser(String text) async {
   return null;
 }
 
-Future<String?> getInstanceIcon(String? url) async {
+class GetInstanceIconResponse {
+  final String? icon;
+  final bool success;
+
+  const GetInstanceIconResponse({required this.success, this.icon});
+}
+
+Future<GetInstanceIconResponse> getInstanceIcon(String? url) async {
   if (url?.isEmpty ?? true) {
-    return null;
+    return const GetInstanceIconResponse(success: false);
   }
 
   try {
     final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
-    return site.siteView?.site.icon;
+    return GetInstanceIconResponse(success: true, icon: site.siteView?.site.icon);
   } catch (e) {
     // Bad instances will throw an exception, so no icon
-    return null;
+    return const GetInstanceIconResponse(success: false);
   }
 }
 

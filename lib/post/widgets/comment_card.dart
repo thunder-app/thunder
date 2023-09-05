@@ -188,7 +188,9 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 behavior: HitTestBehavior.opaque,
                 onPointerDown: (event) => {},
                 onPointerUp: (event) {
-                  setState(() => isOverridingSwipeGestureAction = false);
+                  if (isOverridingSwipeGestureAction) {
+                    setState(() => isOverridingSwipeGestureAction = false);
+                  }
 
                   if (swipeAction != null && swipeAction != SwipeAction.none) {
                     triggerCommentAction(
@@ -357,6 +359,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
+                                moderators: widget.moderators,
                               ),
                             ),
                           ],

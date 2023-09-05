@@ -1,6 +1,6 @@
 part of 'community_bloc.dart';
 
-enum CommunityStatus { initial, loading, refreshing, success, empty, failure }
+enum CommunityStatus { initial, loading, refreshing, success, empty, failure, failureLoadingPosts }
 
 class CommunityState extends Equatable {
   const CommunityState({
@@ -17,7 +17,7 @@ class CommunityState extends Equatable {
     this.communityName,
     this.communityInfo,
     this.blockedCommunity,
-    this.tagline,
+    this.tagline = '',
   });
 
   final CommunityStatus status;
@@ -40,7 +40,7 @@ class CommunityState extends Equatable {
 
   final BlockedCommunity? blockedCommunity;
 
-  final String? tagline;
+  final String tagline;
 
   CommunityState copyWith({
     CommunityStatus? status,
