@@ -214,7 +214,7 @@ class _PostPageState extends State<PostPage> {
                       child: isFabSummoned
                           ? GestureFab(
                               centered: combineNavAndFab,
-                              distance: combineNavAndFab ? 35 : 60,
+                              distance: combineNavAndFab ? 40 : 60,
                               icon: Icon(
                                 singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null, postLocked: postLocked),
                                 semanticLabel: singlePressAction.getTitle(context, postLocked: postLocked),

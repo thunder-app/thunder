@@ -245,7 +245,7 @@ class ActionButton extends StatelessWidget {
                   Positioned.fill(
                     child: Align(
                       child: SizedBox(
-                        height: 35,
+                        height: 37,
                         child: Material(
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(first == true ? 20 : 0),
@@ -288,7 +288,7 @@ class ActionButton extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(
-                            height: 35,
+                            height: 37,
                           ),
                           Padding(
                             padding: const EdgeInsets.only(left: 5, right: 10),
