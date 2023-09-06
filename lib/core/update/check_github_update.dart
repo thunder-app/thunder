@@ -11,7 +11,7 @@ Future<String> getCurrentVersion({bool removeInternalBuildNumber = false}) async
   Match? match = regex.firstMatch(globals.currentVersion);
 
   // When removeInternalBuildNumber is specified, we remove the internal build number (e.g., +17, +18, etc.)
-  if (removeInternalBuildNumber == true && match != null) {
+  if (removeInternalBuildNumber && match != null) {
     return 'v${match.group(1)}';
   }
 
@@ -33,14 +33,14 @@ Future<Version> fetchVersion() async {
 
       version_parser.Version latestVersionParsed = version_parser.Version.parse(_trimV(latestVersion));
 
-      if (_compareVersions(currentVersionParsed, latestVersionParsed)) {
+      if (latestVersionParsed > currentVersionParsed) {
         return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
       } else {
         return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
       }
     }
 
-    return Version(version: currentVersion ?? 'N/A', latestVersion: 'N/A', hasUpdate: false);
+    return Version(version: currentVersion, latestVersion: 'N/A', hasUpdate: false);
   } catch (e) {
     return Version(version: 'N/A', latestVersion: 'N/A', hasUpdate: false);
   }
@@ -49,16 +49,4 @@ Future<Version> fetchVersion() async {
 String _trimV(String version) {
   if (version.startsWith('v')) return version.substring(1);
   return version;
-}
-
-/// Returns true if [second] is greater than [first]
-bool _compareVersions(version_parser.Version first, version_parser.Version second) {
-  // Handle different builds (which are not normally part of semver sorting)
-  int? firstBuild = int.tryParse(first.build);
-  int? secondBuild = int.tryParse(second.build);
-  if (firstBuild != null && secondBuild != null && firstBuild != secondBuild) {
-    return secondBuild > firstBuild;
-  }
-
-  return second > first;
 }
