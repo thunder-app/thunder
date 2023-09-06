@@ -49,6 +49,7 @@ class PostSubview extends StatelessWidget {
     final Post post = postView.post;
 
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
@@ -277,7 +278,7 @@ class PostSubview extends StatelessWidget {
               Expanded(
                 flex: 1,
                 child: TextButton(
-                  onPressed: isUserLoggedIn
+                  onPressed: isUserLoggedIn && downvotesEnabled
                       ? () {
                           HapticFeedback.mediumImpact();
 
@@ -295,13 +296,13 @@ class PostSubview extends StatelessWidget {
                       Icon(
                         Icons.arrow_downward,
                         semanticLabel: postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
-                        color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                        color: (isUserLoggedIn && downvotesEnabled) ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.downvotes),
                         style: TextStyle(
-                          color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                          color: (isUserLoggedIn && downvotesEnabled) ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
                     ],

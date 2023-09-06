@@ -73,7 +73,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (activeAccount.username != null && activeAccount.jwt != null && activeAccount.instance != null) {
         // Set lemmy client to use the instance
         LemmyClient.instance.changeBaseUrl(activeAccount.instance!.replaceAll('https://', ''));
-        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true));
+
+        // Check to see the instance settings (for checking if downvotes are enabled)
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+        FullSiteView fullSiteView = await lemmy.run(
+          GetSite(
+            auth: activeAccount.jwt,
+          ),
+        );
+
+        // bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+        bool downvotesEnabled = false;
+
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       }
     });
 
