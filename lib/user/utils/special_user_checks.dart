@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 // These checks are for whether a given user falls into a given category
 
@@ -31,14 +33,37 @@ bool isSpecialUser(BuildContext context, bool isOwnComment, Post? post, Comment?
 
 Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, Comment? comment, PersonSafe creator, List<CommunityModeratorView>? moderators) {
   final theme = Theme.of(context);
+  final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-  if (commentAuthorIsPostAuthor(post, comment)) return theme.colorScheme.secondaryContainer;
-  if (isOwnComment) return theme.colorScheme.primaryContainer;
-  if (isAdmin(creator)) return theme.colorScheme.errorContainer;
-  if (isModerator(creator, moderators)) return theme.colorScheme.tertiaryContainer;
-  if (isBot(creator)) return Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.75), Colors.purple);
+  Color? color;
 
-  return null;
+  if (isBot(creator)) {
+    color = Colors.purple;
+  }
+  if (isModerator(creator, moderators)) {
+    color = Colors.orange;
+  }
+  if (isAdmin(creator)) {
+    color = Colors.red;
+  }
+  if (isOwnComment) {
+    color = Colors.green;
+  }
+  if (commentAuthorIsPostAuthor(post, comment)) {
+    color = Colors.blue;
+  }
+
+  if (color != null) {
+    // Blend with theme
+    color = Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.35), color);
+
+    // Lighten for light mode
+    if (!darkTheme) {
+      color = HSLColor.fromColor(color).withLightness(0.85).toColor();
+    }
+  }
+
+  return color;
 }
 
 String fetchUsernameDescriptor(bool isOwnComment, Post? post, Comment? comment, PersonSafe creator, List<CommunityModeratorView>? moderators) {
