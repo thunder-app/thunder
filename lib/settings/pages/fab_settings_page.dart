@@ -11,6 +11,7 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FabSettingsPage extends StatefulWidget {
   const FabSettingsPage({super.key});
@@ -35,6 +36,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool postFabEnableBackToTop = true;
   bool postFabEnableChangeSort = true;
   bool postFabEnableReplyToPost = true;
+  bool postFabEnableRefresh = true;
 
   FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
   FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
@@ -103,6 +105,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.postFabEnableReplyToPost.name, value);
         setState(() => postFabEnableReplyToPost = value);
         break;
+      case LocalSettings.postFabEnableRefresh:
+        await prefs.setBool(LocalSettings.postFabEnableRefresh.name, value);
+        setState(() => postFabEnableRefresh = value);
+        break;
       case LocalSettings.feedFabSinglePressAction:
         await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
@@ -143,6 +149,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
       postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
+      postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
 
       feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
       feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
@@ -287,8 +294,11 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                   child: Column(
                                     children: [
                                       ToggleOption(
-                                        description: 'Expand options',
+                                        description: AppLocalizations.of(context)!.expandOptions,
                                         value: null,
+                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
+                                            ${feedFabSinglePressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.more_horiz_rounded,
                                         iconDisabled: Icons.more_horiz_rounded,
                                         onToggle: (_) {},
@@ -308,6 +318,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableBackToTop.label,
                                         value: enableBackToTop,
+                                        semanticLabel: """${LocalSettings.enableBackToTop.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.arrow_upward,
                                         iconDisabled: Icons.arrow_upward,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableBackToTop, value),
@@ -326,6 +339,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableSubscriptions.label,
                                         value: enableSubscriptions,
+                                        semanticLabel: """${LocalSettings.enableSubscriptions.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.people_rounded,
                                         iconDisabled: Icons.people_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableSubscriptions, value),
@@ -344,6 +360,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableChangeSort.label,
                                         value: enableChangeSort,
+                                        semanticLabel: """${LocalSettings.enableChangeSort.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.sort_rounded,
                                         iconDisabled: Icons.sort_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableChangeSort, value),
@@ -362,6 +381,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableRefresh.label,
                                         value: enableRefresh,
+                                        semanticLabel: """${LocalSettings.enableRefresh.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.refresh_rounded,
                                         iconDisabled: Icons.refresh_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableRefresh, value),
@@ -380,6 +402,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableDismissRead.label,
                                         value: enableDismissRead,
+                                        semanticLabel: """${LocalSettings.enableDismissRead.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.clear_all_rounded,
                                         iconDisabled: Icons.clear_all_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableDismissRead, value),
@@ -398,6 +423,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableNewPost.label,
                                         value: enableNewPost,
+                                        semanticLabel: """${LocalSettings.enableNewPost.label}
+                                            ${feedFabSinglePressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${feedFabLongPressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.add_rounded,
                                         iconDisabled: Icons.add_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.enableNewPost, value),
@@ -455,8 +483,11 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                   child: Column(
                                     children: [
                                       ToggleOption(
-                                        description: 'Expand options',
+                                        description: AppLocalizations.of(context)!.expandOptions,
                                         value: null,
+                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
+                                            ${postFabSinglePressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.more_horiz_rounded,
                                         iconDisabled: Icons.more_horiz_rounded,
                                         onToggle: (_) {},
@@ -476,6 +507,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableBackToTop.label,
                                         value: postFabEnableBackToTop,
+                                        semanticLabel: """${LocalSettings.postFabEnableBackToTop.label}
+                                            ${postFabSinglePressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.arrow_upward,
                                         iconDisabled: Icons.arrow_upward,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableBackToTop, value),
@@ -494,6 +528,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableChangeSort.label,
                                         value: postFabEnableChangeSort,
+                                        semanticLabel: """${LocalSettings.postFabEnableChangeSort.label}
+                                            ${postFabSinglePressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.sort_rounded,
                                         iconDisabled: Icons.sort_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableChangeSort, value),
@@ -512,6 +549,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableReplyToPost.label,
                                         value: postFabEnableReplyToPost,
+                                        semanticLabel: """${LocalSettings.postFabEnableReplyToPost.label}
+                                            ${postFabSinglePressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.reply_rounded,
                                         iconDisabled: Icons.reply_rounded,
                                         onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableReplyToPost, value),
@@ -526,6 +566,27 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                             ),
                                         ],
                                         onLongPress: () => showPostFabActionPicker(PostFabAction.replyToPost),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableRefresh.label,
+                                        value: postFabEnableRefresh,
+                                        semanticLabel: """${LocalSettings.postFabEnableRefresh.label}
+                                            ${postFabSinglePressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
+                                        iconEnabled: Icons.refresh_rounded,
+                                        iconDisabled: Icons.refresh_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableRefresh, value),
+                                        additionalWidgets: [
+                                          if (postFabSinglePressAction == PostFabAction.refresh)
+                                            const Icon(
+                                              Icons.touch_app_outlined,
+                                            ),
+                                          if (postFabLongPressAction == PostFabAction.refresh)
+                                            const Icon(
+                                              Icons.touch_app_rounded,
+                                            ),
+                                        ],
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
                                       ),
                                     ],
                                   ),
@@ -550,9 +611,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
         title: 'Set Press Action',
-        items: const [
-          ListPickerItem(label: 'Set as short-press action', payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: 'Set as long-press action', payload: 'long', icon: Icons.touch_app_rounded)
+        items: [
+          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
@@ -572,9 +633,9 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
         title: 'Set Press Action',
-        items: const [
-          ListPickerItem(label: 'Set as short-press action', payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: 'Set as long-press action', payload: 'long', icon: Icons.touch_app_rounded)
+        items: [
+          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
         ],
         onSelect: (value) {
           if (value.payload == 'short') {

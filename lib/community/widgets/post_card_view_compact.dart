@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/community/widgets/post_card_type_badge.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-
-import '../../core/enums/media_type.dart';
 
 class PostCardViewCompact extends StatelessWidget {
   final PostViewMedia postViewMedia;
@@ -26,6 +24,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool isUserLoggedIn;
   final PostListingType? listingType;
   final void Function()? navigateToPost;
+  final bool indicateRead;
 
   const PostCardViewCompact({
     super.key,
@@ -38,6 +37,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     required this.listingType,
+    required this.indicateRead,
     this.navigateToPost,
   });
 
@@ -51,13 +51,16 @@ class PostCardViewCompact extends StatelessWidget {
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
     final double textScaleFactor = state.titleFontSizeScale.textScaleFactor;
 
-    return Padding(
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+
+    return Container(
+      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.only(
         bottom: 8.0,
         top: 6,
@@ -76,7 +79,7 @@ class PostCardViewCompact extends StatelessWidget {
                           vertical: 4,
                         ),
                         child: MediaView(
-                          showLinkPreview: state.showLinkPreviews,
+                          scrapeMissingPreviews: state.scrapeMissingPreviews,
                           postView: postViewMedia,
                           showFullHeightImages: false,
                           hideNsfwPreviews: hideNsfwPreviews,
@@ -84,11 +87,12 @@ class PostCardViewCompact extends StatelessWidget {
                           viewMode: ViewMode.compact,
                           isUserLoggedIn: isUserLoggedIn,
                           navigateToPost: navigateToPost,
+                          read: indicateRead && postViewMedia.postView.read,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 6, bottom: 0),
-                        child: TypeBadge(postViewMedia: postViewMedia),
+                        child: TypeBadge(postViewMedia: postViewMedia, read: indicateRead && postViewMedia.postView.read),
                       ),
                     ],
                   ),
@@ -101,45 +105,48 @@ class PostCardViewCompact extends StatelessWidget {
                 Text.rich(
                   TextSpan(
                     children: [
-                      TextSpan(
-                        text: postViewMedia.postView.post.name,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontSize: 14.2 * state.titleFontSizeScale.textScaleFactor,
-                          fontWeight: FontWeight.w600,
-                          color: postViewMedia.postView.post.featuredCommunity
-                              ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.65) : Colors.green)
-                              : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null),
-                        ),
-                      ),
-                      if (postViewMedia.postView.post.featuredCommunity)
+                      if (postViewMedia.postView.post.locked) ...[
                         WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
                             child: Icon(
-                              Icons.push_pin_rounded,
-                              size: 17.0 * textScaleFactor,
-                              color: Colors.green,
-                            ),
-                          ),
-                        ),
+                          Icons.lock,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          size: 15 * textScaleFactor,
+                        )),
+                        if (!postViewMedia.postView.post.featuredCommunity && !postViewMedia.postView.saved)
+                          const WidgetSpan(
+                              child: SizedBox(
+                            width: 3,
+                          )),
+                      ],
                       if (postViewMedia.postView.saved)
                         WidgetSpan(
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              left: 8.0,
-                            ),
-                            child: Icon(
-                              Icons.star_rounded,
-                              color: Colors.purple,
-                              size: 16.0 * textScaleFactor,
-                              semanticLabel: 'Saved',
-                            ),
+                          child: Icon(
+                            Icons.star_rounded,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            size: 17 * textScaleFactor,
+                            semanticLabel: 'Saved',
                           ),
                         ),
+                      if (postViewMedia.postView.post.featuredCommunity)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 15 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      TextSpan(
+                        text: postViewMedia.postView.post.name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: postViewMedia.postView.post.featuredCommunity
+                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                        ),
+                      ),
                     ],
                   ),
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.titleFontSizeScale.textScaleFactor,
                 ),
                 const SizedBox(height: 6.0),
                 PostCommunityAndAuthor(
@@ -176,7 +183,7 @@ class PostCardViewCompact extends StatelessWidget {
                           vertical: 4,
                         ),
                         child: MediaView(
-                          showLinkPreview: state.showLinkPreviews,
+                          scrapeMissingPreviews: state.scrapeMissingPreviews,
                           postView: postViewMedia,
                           showFullHeightImages: false,
                           hideNsfwPreviews: hideNsfwPreviews,
@@ -184,11 +191,15 @@ class PostCardViewCompact extends StatelessWidget {
                           viewMode: ViewMode.compact,
                           isUserLoggedIn: isUserLoggedIn,
                           navigateToPost: navigateToPost,
+                          read: indicateRead && postViewMedia.postView.read,
                         ),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(right: 6, bottom: 0),
-                        child: TypeBadge(postViewMedia: postViewMedia),
+                        child: TypeBadge(
+                          postViewMedia: postViewMedia,
+                          read: indicateRead && postViewMedia.postView.read,
+                        ),
                       ),
                     ],
                   ),

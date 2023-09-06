@@ -1,16 +1,19 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+import 'package:thunder/shared/picker_item.dart';
 
 class BottomSheetListPicker<T> extends StatefulWidget {
   final String title;
   final List<ListPickerItem<T>> items;
   final void Function(ListPickerItem<T>) onSelect;
+  final T? previouslySelected;
 
   const BottomSheetListPicker({
     super.key,
     required this.title,
     required this.items,
     required this.onSelect,
+    this.previouslySelected,
   });
 
   @override
@@ -28,7 +31,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
         mainAxisSize: MainAxisSize.max,
         children: [
           Padding(
-            padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+            padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
             child: Align(
               alignment: Alignment.centerLeft,
               child: Text(
@@ -42,22 +45,15 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
             physics: const NeverScrollableScrollPhysics(),
             children: widget.items
                 .map(
-                  (item) => ListTile(
-                    title: Text(
-                      item.label.capitalize,
-                      style: theme.textTheme.bodyMedium,
-                    ),
-                    leading: item.icon != null
-                        ? Icon(item.icon)
-                        : Container(
-                            height: 32,
-                            width: 32,
-                            decoration: BoxDecoration(color: item.color, borderRadius: BorderRadius.circular(100)),
-                          ),
-                    onTap: () {
+                  (item) => PickerItem(
+                    label: item.label.capitalize,
+                    icon: item.icon,
+                    onSelected: () {
                       Navigator.of(context).pop();
                       widget.onSelect(item);
                     },
+                    isSelected: widget.previouslySelected == item.payload,
+                    color: item.color,
                   ),
                 )
                 .toList(),

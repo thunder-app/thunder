@@ -24,6 +24,7 @@ import '../../user/bloc/user_bloc.dart';
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool showInstanceName;
+  final bool indicateRead;
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
@@ -39,6 +40,7 @@ class PostCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onToggleReadAction,
     required this.listingType,
+    required this.indicateRead,
   });
 
   @override
@@ -204,6 +206,7 @@ class _PostCardState extends State<PostCard> {
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
+                      indicateRead: widget.indicateRead!,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
@@ -224,6 +227,7 @@ class _PostCardState extends State<PostCard> {
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
+                      indicateRead: widget.indicateRead!,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
@@ -265,6 +269,7 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
+        backGestureDetectionStartOffset: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(

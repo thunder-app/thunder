@@ -38,6 +38,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _continueSearchEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<FocusSearchEvent>(
+      _focusSearchEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
@@ -124,6 +128,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
+  }
+
+  Future<void> _focusSearchEvent(FocusSearchEvent event, Emitter<SearchState> emit) async {
+    emit(state.copyWith(focusSearchId: state.focusSearchId + 1));
   }
 
   Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<SearchState> emit) async {
