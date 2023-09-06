@@ -29,6 +29,7 @@
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
 - Improved ability to refresh posts - contribution from @micahmo
 - Improve the option selector dialog to show the currently selected item - contribution from @micahmo
+- Improve contrast and distinction of special user identifiers - contribution from @micahmo
 
 ### Fixed
 
