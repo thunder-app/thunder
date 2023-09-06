@@ -84,6 +84,7 @@ dependencies:
       url: https://github.com/bitstackapp/flutter.widgets.git
       ref: master
       path: packages/scrollable_positioned_list/
+  version: ^3.0.2
   expandable: ^5.0.1
   flutter_file_dialog: ^3.0.2
   dart_ping: ^9.0.0
