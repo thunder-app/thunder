@@ -41,7 +41,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool openInExternalBrowser = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
-  bool showInAppUpdateNotification = true;
+  bool showInAppUpdateNotification = false;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -277,7 +277,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       // Notification Settings
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
 
       isLoading = false;
     });
