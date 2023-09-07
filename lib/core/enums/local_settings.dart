@@ -109,4 +109,7 @@ enum LocalSettings {
 
   /// The label of the setting as seen in the Settings page
   final String label;
+
+  /// Defines the settings that are excluded from import/export
+  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
 }
