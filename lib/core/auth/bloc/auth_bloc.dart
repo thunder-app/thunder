@@ -83,8 +83,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ),
         );
 
-        // bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
-        bool downvotesEnabled = false;
+        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
         return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       }
