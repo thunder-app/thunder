@@ -39,9 +39,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       FullSiteView fullSiteView = await lemmy.run(
-        GetSite(
-          auth: account.jwt,
-        ),
+        GetSite(auth: account.jwt),
       );
 
       bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
@@ -150,7 +148,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', accountId);
 
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
+        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {
