@@ -137,7 +137,9 @@ class PostCardViewCompact extends StatelessWidget {
                         ),
                       if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
                         const WidgetSpan(
-                          child: SizedBox(width: 3.5,)
+                          child: SizedBox(
+                            width: 3.5,
+                          ),
                         ),
                       TextSpan(
                         text: postViewMedia.postView.post.name,

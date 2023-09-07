@@ -136,6 +136,12 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                         ),
                       ),
+                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      const WidgetSpan(
+                        child: SizedBox(
+                          width: 3.5,
+                        ),
+                      ),
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.bodyMedium?.copyWith(
@@ -194,6 +200,12 @@ class PostCardViewComfortable extends StatelessWidget {
                             Icons.push_pin_rounded,
                             size: 15 * textScaleFactor,
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                        const WidgetSpan(
+                          child: SizedBox(
+                            width: 3.5,
                           ),
                         ),
                       TextSpan(
