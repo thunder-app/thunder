@@ -216,7 +216,7 @@ class _PostPageState extends State<PostPage> {
                               centered: combineNavAndFab,
                               distance: combineNavAndFab ? 45 : 60,
                               icon: Icon(
-                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null, postLocked: postLocked),
+                                singlePressAction.getIcon(postLocked: postLocked),
                                 semanticLabel: singlePressAction.getTitle(context, postLocked: postLocked),
                                 size: 35,
                               ),
