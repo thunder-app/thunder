@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,12 +86,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
     setState(() {
       _selectedUserOption = <bool>[true, false];
     });
+    BackButtonInterceptor.add(_handleBack);
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    BackButtonInterceptor.remove(_handleBack);
     super.dispose();
   }
 
@@ -443,5 +448,16 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
         ],
       ),
     );
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (savedToggle) {
+      setState(() {
+        savedToggle = false;
+      });
+      return true;
+    }
+
+    return false;
   }
 }
