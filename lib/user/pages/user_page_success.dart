@@ -191,8 +191,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                     children: [
                                       const Icon(Icons.chevron_left),
                                       Text(
-                                        AppLocalizations.of(context)!.history,
-                                        semanticsLabel: '${AppLocalizations.of(context)!.history}, ${AppLocalizations.of(context)!.back}',
+                                        AppLocalizations.of(context)!.overview,
+                                        semanticsLabel: '${AppLocalizations.of(context)!.overview}, ${AppLocalizations.of(context)!.back}',
                                       ),
                                       const SizedBox(width: 8.0),
                                     ],
