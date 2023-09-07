@@ -373,7 +373,7 @@ class PostSubview extends StatelessWidget {
                                   child: CreateCommentPage(
                                     postView: postViewMedia,
                                     previousDraftComment: previousDraftComment,
-                                    updateDraft: (c) => newDraftComment = c,
+                                    onUpdateDraft: (c) => newDraftComment = c,
                                   ),
                                 );
                               },

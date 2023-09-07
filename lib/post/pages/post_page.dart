@@ -514,7 +514,7 @@ class _PostPageState extends State<PostPage> {
                 child: CreateCommentPage(
                   postView: widget.postView ?? postBloc.state.postView,
                   previousDraftComment: previousDraftComment,
-                  updateDraft: (c) => newDraftComment = c,
+                  onUpdateDraft: (c) => newDraftComment = c,
                 ));
           },
         ),

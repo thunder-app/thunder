@@ -169,7 +169,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                                       communityId: widget.communityInfo!.communityView.community.id,
                                                       communityInfo: widget.communityInfo,
                                                       previousDraftPost: previousDraftPost,
-                                                      updateDraft: (p) => newDraftPost = p,
+                                                      onUpdateDraft: (p) => newDraftPost = p,
                                                     ),
                                                   );
                                                 },

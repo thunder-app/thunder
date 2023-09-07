@@ -107,7 +107,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                             commentView: commentView,
                             isEdit: isEdit,
                             previousDraftComment: previousDraftComment,
-                            updateDraft: (c) => newDraftComment = c,
+                            onUpdateDraft: (c) => newDraftComment = c,
                           ));
                     },
                   ),

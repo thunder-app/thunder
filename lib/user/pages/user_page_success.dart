@@ -315,7 +315,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                         isEdit: isEdit,
                                         parentCommentAuthor: commentView.creator.name,
                                         previousDraftComment: previousDraftComment,
-                                        updateDraft: (c) => newDraftComment = c,
+                                        onUpdateDraft: (c) => newDraftComment = c,
                                       ));
                                 },
                               ),
@@ -404,7 +404,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                         comment: commentView.comment,
                                         parentCommentAuthor: commentView.creator.name,
                                         previousDraftComment: previousDraftComment,
-                                        updateDraft: (c) => newDraftComment = c,
+                                        onUpdateDraft: (c) => newDraftComment = c,
                                       ));
                                 },
                               ),

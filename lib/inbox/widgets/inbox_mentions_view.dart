@@ -143,7 +143,7 @@ class InboxMentionsView extends StatelessWidget {
                                       comment: mentions[index].comment,
                                       parentCommentAuthor: mentions[index].creator.name,
                                       previousDraftComment: previousDraftComment,
-                                      updateDraft: (c) => newDraftComment = c,
+                                      onUpdateDraft: (c) => newDraftComment = c,
                                     ));
                               },
                             ),

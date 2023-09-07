@@ -32,7 +32,7 @@ class CreateCommentPage extends StatefulWidget {
 
   final bool isEdit;
 
-  final void Function(DraftComment? draftComment)? updateDraft;
+  final void Function(DraftComment? draftComment)? onUpdateDraft;
   final DraftComment? previousDraftComment;
 
   const CreateCommentPage({
@@ -45,7 +45,7 @@ class CreateCommentPage extends StatefulWidget {
     this.selectedCommentId,
     this.selectedCommentPath,
     this.previousDraftComment,
-    this.updateDraft,
+    this.onUpdateDraft,
   });
 
   @override
@@ -105,7 +105,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
         setState(() => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
       });
 
-      widget.updateDraft?.call(newDraftComment..text = _bodyTextController.text);
+      widget.onUpdateDraft?.call(newDraftComment..text = _bodyTextController.text);
     });
 
     if (widget.previousDraftComment != null) {

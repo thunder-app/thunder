@@ -126,7 +126,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
                           commentView: commentView,
                           isEdit: isEdit,
                           previousDraftComment: previousDraftComment,
-                          updateDraft: (c) => newDraftComment = c,
+                          onUpdateDraft: (c) => newDraftComment = c,
                         ));
                   },
                 ),

@@ -72,7 +72,7 @@ void triggerCommentAction({
                 selectedCommentId: selectedCommentId,
                 selectedCommentPath: selectedCommentPath,
                 previousDraftComment: previousDraftComment,
-                updateDraft: (c) => newDraftComment = c,
+                onUpdateDraft: (c) => newDraftComment = c,
               ),
             );
           },

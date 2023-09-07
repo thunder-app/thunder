@@ -152,7 +152,7 @@ enum FeedFabAction {
                       communityId: state.communityId!,
                       communityInfo: state.communityInfo,
                       previousDraftPost: previousDraftPost,
-                      updateDraft: (p) => newDraftPost = p,
+                      onUpdateDraft: (p) => newDraftPost = p,
                     ),
                   );
                 },

@@ -22,7 +22,7 @@ import 'package:thunder/utils/instance.dart';
 class CreatePostPage extends StatefulWidget {
   final int communityId;
   final FullCommunityView? communityInfo;
-  final void Function(DraftPost? draftPost)? updateDraft;
+  final void Function(DraftPost? draftPost)? onUpdateDraft;
   final DraftPost? previousDraftPost;
 
   const CreatePostPage({
@@ -30,7 +30,7 @@ class CreatePostPage extends StatefulWidget {
     required this.communityId,
     this.communityInfo,
     this.previousDraftPost,
-    this.updateDraft,
+    this.onUpdateDraft,
   });
 
   @override
@@ -60,18 +60,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
       if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
       if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
 
-      widget.updateDraft?.call(newDraftPost..title = _titleTextController.text);
+      widget.onUpdateDraft?.call(newDraftPost..title = _titleTextController.text);
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
 
-      widget.updateDraft?.call(newDraftPost..url = _urlTextController.text);
+      widget.onUpdateDraft?.call(newDraftPost..url = _urlTextController.text);
     });
 
     _bodyTextController.addListener(() {
-      widget.updateDraft?.call(newDraftPost..text = _bodyTextController.text);
+      widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
     });
 
     if (widget.previousDraftPost != null) {
