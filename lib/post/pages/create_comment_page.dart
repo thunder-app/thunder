@@ -275,7 +275,6 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                         hideNsfwPreviews: thunderState.hideNsfwPreviews,
                                         markPostReadOnMediaView: thunderState.markPostReadOnMediaView,
                                         isUserLoggedIn: true,
-                                        disableHero: true,
                                       ),
                                       const SizedBox(
                                         height: 12,

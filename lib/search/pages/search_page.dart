@@ -348,7 +348,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       showDragHandle: true,
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
-        title: 'Sort Options',
+        title: AppLocalizations.of(context)!.sortOptions,
         onSelect: (selected) {
           sortType = selected.payload;
           sortTypeIcon = selected.icon;
@@ -360,6 +360,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 StartSearchEvent(query: _controller.text, sortType: sortType),
               );
         },
+        previouslySelected: sortType,
       ),
     );
   }

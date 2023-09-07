@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -51,11 +52,11 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentView comment
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Actions',
+                  AppLocalizations.of(context)!.actions,
                   style: theme.textTheme.titleLarge!.copyWith(),
                 ),
               ),
@@ -65,13 +66,10 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentView comment
               physics: const NeverScrollableScrollPhysics(),
               itemCount: commentCardActionItems.length,
               itemBuilder: (BuildContext itemBuilderContext, int index) {
-                return ListTile(
-                  title: Text(
-                    commentCardActionItems[index].label,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  leading: Icon(commentCardActionItems[index].icon),
-                  onTap: () async {
+                return PickerItem(
+                  label: commentCardActionItems[index].label,
+                  icon: commentCardActionItems[index].icon,
+                  onSelected: () async {
                     Navigator.of(context).pop();
 
                     CommentCardAction commentCardAction = commentCardActionItems[index].commentCardAction;

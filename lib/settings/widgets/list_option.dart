@@ -52,6 +52,7 @@ class ListOption<T> extends StatelessWidget {
                       onSelect: (value) {
                         onChanged(value);
                       },
+                      previouslySelected: value.payload,
                     ),
               );
             },
