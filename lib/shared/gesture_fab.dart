@@ -190,6 +190,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                         child: Icon(
                           widget.icon.icon,
                           size: 20,
+                          semanticLabel: widget.icon.semanticLabel,
                         ),
                       ),
                     ),
