@@ -258,7 +258,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                     onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                     onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
-                    indicateRead: widget.isAccountUser ? false : true,
+                    indicateRead: !widget.isAccountUser,
                   ),
                 ),
               if (!savedToggle && selectedUserOption == 1)
