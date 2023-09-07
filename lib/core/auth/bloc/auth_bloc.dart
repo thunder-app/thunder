@@ -34,7 +34,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
+      // Check to see the instance settings (for checking if downvotes are enabled)
+      LemmyClient.instance.changeBaseUrl(account.instance!.replaceAll('https://', ''));
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      FullSiteView fullSiteView = await lemmy.run(
+        GetSite(
+          auth: account.jwt,
+        ),
+      );
+
+      bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
