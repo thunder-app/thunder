@@ -272,9 +272,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 ? GestureFab(
                                     distance: 60,
                                     icon: Icon(
-                                      singlePressAction.isAllowed(state: state, widget: widget)
-                                          ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
-                                          : FeedFabAction.dismissRead.getIcon(),
+                                      singlePressAction.isAllowed(state: state, widget: widget) ? singlePressAction.getIcon() : FeedFabAction.dismissRead.getIcon(),
                                       semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
                                       size: 35,
                                     ),
