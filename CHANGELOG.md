@@ -127,6 +127,8 @@
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
 - Fixed community/user link handling from posts - contribution from @micahmo
+- Fixed double tap zoom sometimes triggering again if attempting to pan immediately after - contribution from @CTalvio
+
 
 ## 0.2.1+13 - 2023-07-25
 
