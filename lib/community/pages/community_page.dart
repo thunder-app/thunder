@@ -169,7 +169,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        subtitle: Text(getSortName(state)),
+                        subtitle: Row(
+                          children: [
+                            Icon(getSortIcon(state), size: 13),
+                            const SizedBox(width: 4),
+                            Text(getSortName(state)),
+                          ],
+                        ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       ),
                       centerTitle: false,
@@ -489,6 +495,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return sortTypeLabel ?? '';
+  }
+
+  IconData? getSortIcon(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return null;
+    }
+
+    return sortTypeIcon;
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {

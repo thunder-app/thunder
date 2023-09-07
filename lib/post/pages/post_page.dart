@@ -136,7 +136,13 @@ class _PostPageState extends State<PostPage> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(sortTypeLabel ?? ''),
+                subtitle: Row(
+                  children: [
+                    Icon(sortTypeIcon, size: 13),
+                    const SizedBox(width: 4),
+                    Text(sortTypeLabel ?? ''),
+                  ],
+                ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 0),
               ),
               flexibleSpace: GestureDetector(
@@ -455,6 +461,7 @@ class _PostPageState extends State<PostPage> {
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
+            sortTypeLabel = selected.label;
             sortTypeIcon = selected.icon;
           });
           context.read<PostBloc>().add(
