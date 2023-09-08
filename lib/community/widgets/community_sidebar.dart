@@ -13,6 +13,8 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/utils/swipe.dart';
 
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
@@ -136,6 +138,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
                                             Navigator.of(context).push(
                                               SwipeablePageRoute(
+                                                backGestureDetectionWidth: 45,
                                                 builder: (context) {
                                                   return MultiBlocProvider(
                                                     providers: [
@@ -476,22 +479,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                     for (var mods in widget.communityInfo!.moderators)
                                       GestureDetector(
                                         onTap: () {
-                                          AccountBloc accountBloc = context.read<AccountBloc>();
-                                          AuthBloc authBloc = context.read<AuthBloc>();
-                                          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                          Navigator.of(context).push(
-                                            SwipeablePageRoute(
-                                              builder: (context) => MultiBlocProvider(
-                                                providers: [
-                                                  BlocProvider.value(value: accountBloc),
-                                                  BlocProvider.value(value: authBloc),
-                                                  BlocProvider.value(value: thunderBloc),
-                                                ],
-                                                child: UserPage(userId: mods.moderator!.id),
-                                              ),
-                                            ),
-                                          );
+                                          navigateToUserPage(context, userId: mods.moderator!.id);
                                         },
                                         child: Padding(
                                           padding: const EdgeInsets.only(bottom: 8.0),

@@ -486,6 +486,7 @@ class _PostPageState extends State<PostPage> {
     } else {
       Navigator.of(context).push(
         SwipeablePageRoute(
+          backGestureDetectionWidth: 45,
           builder: (context) {
             return MultiBlocProvider(providers: [
               BlocProvider<PostBloc>.value(value: postBloc),

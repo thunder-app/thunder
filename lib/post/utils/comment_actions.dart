@@ -37,6 +37,7 @@ void triggerCommentAction({
 
       Navigator.of(context).push(
         SwipeablePageRoute(
+          backGestureDetectionWidth: 45,
           builder: (context) {
             return MultiBlocProvider(
               providers: [

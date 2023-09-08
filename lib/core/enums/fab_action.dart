@@ -120,6 +120,7 @@ enum FeedFabAction {
             AccountBloc accountBloc = context.read<AccountBloc>();
             Navigator.of(context).push(
               SwipeablePageRoute(
+                backGestureDetectionWidth: 45,
                 builder: (context) {
                   return MultiBlocProvider(
                     providers: [

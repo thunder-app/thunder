@@ -60,7 +60,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    navigateToCommunityByName(context, 'thunder_app@lemmy.world');
+                    navigateToCommunityPage(context, communityName: 'thunder_app@lemmy.world');
                   },
                 ),
                 ListTile(
