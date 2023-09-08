@@ -184,7 +184,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       // Start watching for double tap zoom
                       onPointerUp: (details) {
                         downCoord = details.position;
-                        _maybeSlide();
+                        if (!slideZooming) {
+                          _maybeSlide();
+                        }
                       },
                       child: ExtendedImageSlidePage(
                         key: slidePagekey,

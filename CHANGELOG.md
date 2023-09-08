@@ -17,6 +17,7 @@
 - Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 - Add option to disabling graying out read posts - contribution from @micahmo
+- Downvote actions will be disabled when instances have downvotes disabled
 - Automatically save drafts for posts and comments - contribution from @micahmo
 
 ### Changed
@@ -128,6 +129,8 @@
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
 - Fixed community/user link handling from posts - contribution from @micahmo
+- Fixed double tap zoom sometimes triggering again if attempting to pan immediately after - contribution from @CTalvio
+
 
 ## 0.2.1+13 - 2023-07-25
 
