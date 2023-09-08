@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -5,14 +8,18 @@ import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
@@ -129,11 +136,26 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                 Expanded(
                                   child: ElevatedButton(
                                     onPressed: isUserLoggedIn
-                                        ? () {
+                                        ? () async {
                                             HapticFeedback.mediumImpact();
                                             CommunityBloc communityBloc = context.read<CommunityBloc>();
                                             AccountBloc accountBloc = context.read<AccountBloc>();
                                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+                                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                                            DraftPost? newDraftPost;
+                                            DraftPost? previousDraftPost;
+                                            String draftId = '${LocalSettings.draftsCache.name}-${widget.communityInfo!.communityView.community.id}';
+                                            String? draftPostJson = prefs.getString(draftId);
+                                            if (draftPostJson != null) {
+                                              previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
+                                            }
+                                            Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+                                              if (newDraftPost?.isNotEmpty == true) {
+                                                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+                                              }
+                                            });
+
                                             Navigator.of(context).push(
                                               SwipeablePageRoute(
                                                 builder: (context) {
@@ -143,11 +165,26 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                                       BlocProvider<AccountBloc>.value(value: accountBloc),
                                                       BlocProvider<ThunderBloc>.value(value: thunderBloc)
                                                     ],
-                                                    child: CreatePostPage(communityId: widget.communityInfo!.communityView.community.id, communityInfo: widget.communityInfo),
+                                                    child: CreatePostPage(
+                                                      communityId: widget.communityInfo!.communityView.community.id,
+                                                      communityInfo: widget.communityInfo,
+                                                      previousDraftPost: previousDraftPost,
+                                                      onUpdateDraft: (p) => newDraftPost = p,
+                                                    ),
                                                   );
                                                 },
                                               ),
-                                            );
+                                            ).whenComplete(() async {
+                                              timer.cancel();
+
+                                              if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
+                                                await Future.delayed(const Duration(milliseconds: 300));
+                                                showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+                                                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+                                              } else {
+                                                prefs.remove(draftId);
+                                              }
+                                            });
                                           }
                                         : null,
                                     style: TextButton.styleFrom(

@@ -59,6 +59,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool isFabSummoned = true;
   bool enableFab = false;
   bool isActivePage = true;
+  bool showBackButton = false;
 
   @override
   void initState() {
@@ -68,6 +69,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       isActivePage = widget.pageController!.page == 0;
     });
     BackButtonInterceptor.add(_handleBack);
+
+    showBackButton = Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true;
   }
 
   @override
@@ -181,7 +184,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           }
                         },
                       ),
-                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true
+                      leading: showBackButton
                           ? IconButton(
                               icon: Icon(
                                 Icons.arrow_back_rounded,

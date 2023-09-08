@@ -1,6 +1,10 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -8,7 +12,9 @@ import 'package:thunder/community/pages/community_page.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -83,7 +89,7 @@ enum FeedFabAction {
     }
   }
 
-  void execute(BuildContext context, CommunityState state, {CommunityBloc? bloc, CommunityPage? widget, void Function()? override, SortType? sortType}) {
+  void execute(BuildContext context, CommunityState state, {CommunityBloc? bloc, CommunityPage? widget, void Function()? override, SortType? sortType}) async {
     if (override != null) {
       override();
     }
@@ -118,6 +124,21 @@ enum FeedFabAction {
           } else {
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
             AccountBloc accountBloc = context.read<AccountBloc>();
+
+            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+            DraftPost? newDraftPost;
+            DraftPost? previousDraftPost;
+            String draftId = '${LocalSettings.draftsCache.name}-${state.communityId!}';
+            String? draftPostJson = prefs.getString(draftId);
+            if (draftPostJson != null) {
+              previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
+            }
+            Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+              if (newDraftPost?.isNotEmpty == true) {
+                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+              }
+            });
+
             Navigator.of(context).push(
               SwipeablePageRoute(
                 builder: (context) {
@@ -127,11 +148,26 @@ enum FeedFabAction {
                       BlocProvider<ThunderBloc>.value(value: thunderBloc),
                       BlocProvider<AccountBloc>.value(value: accountBloc),
                     ],
-                    child: CreatePostPage(communityId: state.communityId!, communityInfo: state.communityInfo),
+                    child: CreatePostPage(
+                      communityId: state.communityId!,
+                      communityInfo: state.communityInfo,
+                      previousDraftPost: previousDraftPost,
+                      onUpdateDraft: (p) => newDraftPost = p,
+                    ),
                   );
                 },
               ),
-            );
+            ).whenComplete(() async {
+              timer.cancel();
+
+              if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
+                await Future.delayed(const Duration(milliseconds: 300));
+                showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+              } else {
+                prefs.remove(draftId);
+              }
+            });
           }
         }
     }

@@ -1,12 +1,18 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -23,7 +29,7 @@ void triggerCommentAction({
   required CommentView commentView,
   int? selectedCommentId,
   String? selectedCommentPath,
-}) {
+}) async {
   switch (swipeAction) {
     case SwipeAction.upvote:
       onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
@@ -43,6 +49,20 @@ void triggerCommentAction({
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
       AccountBloc accountBloc = context.read<AccountBloc>();
 
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      DraftComment? newDraftComment;
+      DraftComment? previousDraftComment;
+      String draftId = '${LocalSettings.draftsCache.name}-$selectedCommentId';
+      String? draftCommentJson = prefs.getString(draftId);
+      if (draftCommentJson != null) {
+        previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+      }
+      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+        if (newDraftComment?.isNotEmpty == true) {
+          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+        }
+      });
+
       Navigator.of(context).push(
         SwipeablePageRoute(
           builder: (context) {
@@ -57,11 +77,23 @@ void triggerCommentAction({
                 isEdit: swipeAction == SwipeAction.edit,
                 selectedCommentId: selectedCommentId,
                 selectedCommentPath: selectedCommentPath,
+                previousDraftComment: previousDraftComment,
+                onUpdateDraft: (c) => newDraftComment = c,
               ),
             );
           },
         ),
-      );
+      ).whenComplete(() async {
+        timer.cancel();
+
+        if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (swipeAction != SwipeAction.edit || commentView.comment.content != newDraftComment?.text)) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+        } else {
+          prefs.remove(draftId);
+        }
+      });
 
       break;
     case SwipeAction.save:

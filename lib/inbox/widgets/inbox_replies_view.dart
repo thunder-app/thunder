@@ -1,20 +1,28 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InboxRepliesView extends StatefulWidget {
   final List<CommentView> replies;
@@ -64,33 +72,56 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
               onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-              onReplyEditAction: (CommentView commentView, bool isEdit) {
+              onReplyEditAction: (CommentView commentView, bool isEdit) async {
                 HapticFeedback.mediumImpact();
                 InboxBloc inboxBloc = context.read<InboxBloc>();
                 PostBloc postBloc = context.read<PostBloc>();
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                AccountBloc accountBloc = context.read<AccountBloc>();
 
-                showModalBottomSheet(
-                  isScrollControlled: true,
-                  context: context,
-                  showDragHandle: true,
-                  builder: (context) {
-                    return Padding(
-                      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                      child: FractionallySizedBox(
-                        heightFactor: 0.8,
-                        child: MultiBlocProvider(
+                SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                DraftComment? newDraftComment;
+                DraftComment? previousDraftComment;
+                String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
+                String? draftCommentJson = prefs.getString(draftId);
+                if (draftCommentJson != null) {
+                  previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+                }
+                Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+                  if (newDraftComment?.isNotEmpty == true) {
+                    prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                  }
+                });
+
+                Navigator.of(context).push(
+                  SwipeablePageRoute(
+                    builder: (context) {
+                      return MultiBlocProvider(
                           providers: [
                             BlocProvider<InboxBloc>.value(value: inboxBloc),
                             BlocProvider<PostBloc>.value(value: postBloc),
                             BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                            BlocProvider<AccountBloc>.value(value: accountBloc),
                           ],
-                          child: CreateCommentPage(commentView: commentView, isEdit: isEdit),
-                        ),
-                      ),
-                    );
-                  },
-                );
+                          child: CreateCommentPage(
+                            commentView: commentView,
+                            isEdit: isEdit,
+                            previousDraftComment: previousDraftComment,
+                            onUpdateDraft: (c) => newDraftComment = c,
+                          ));
+                    },
+                  ),
+                ).whenComplete(() async {
+                  timer.cancel();
+
+                  if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
+                    await Future.delayed(const Duration(milliseconds: 300));
+                    showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                    prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                  } else {
+                    prefs.remove(draftId);
+                  }
+                });
               },
               isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
               child: widget.replies[index].commentReply?.read == false

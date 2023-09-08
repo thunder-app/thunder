@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_file_dialog/flutter_file_dialog.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 
 class UserPreferences {
   late SharedPreferences sharedPreferences;
@@ -25,7 +26,7 @@ class UserPreferences {
   // Export SharedPreferences data to selected JSON file
   static Future<void> exportToJson() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    Map<String, dynamic> data = prefs.getKeys().fold({}, (prev, key) {
+    Map<String, dynamic> data = prefs.getKeys().where((key) => !LocalSettings.importExportExcludedSettings.any((excluded) => key.startsWith(excluded.name))).fold({}, (prev, key) {
       prev[key] = prefs.get(key);
       return prev;
     });
