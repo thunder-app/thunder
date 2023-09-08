@@ -67,7 +67,7 @@ class SettingsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder(
-              future: getCurrentVersion(),
+              future: getCurrentVersion(removeInternalBuildNumber: true),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Center(child: Text('Thunder ${snapshot.data ?? 'N/A'}'));

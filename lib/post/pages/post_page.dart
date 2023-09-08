@@ -214,9 +214,9 @@ class _PostPageState extends State<PostPage> {
                       child: isFabSummoned
                           ? GestureFab(
                               centered: combineNavAndFab,
-                              distance: 60,
+                              distance: combineNavAndFab ? 45 : 60,
                               icon: Icon(
-                                singlePressAction.getIcon(override: singlePressAction == PostFabAction.changeSort ? sortTypeIcon : null, postLocked: postLocked),
+                                singlePressAction.getIcon(postLocked: postLocked),
                                 semanticLabel: singlePressAction.getTitle(context, postLocked: postLocked),
                                 size: 35,
                               ),
@@ -420,7 +420,7 @@ class _PostPageState extends State<PostPage> {
                             context.read<ThunderBloc>().add(const OnFabToggle(false));
                           },
                           child: Container(
-                            color: theme.colorScheme.background.withOpacity(0.85),
+                            color: theme.colorScheme.background.withOpacity(0.95),
                           ),
                         )
                       : null,
@@ -466,6 +466,7 @@ class _PostPageState extends State<PostPage> {
               ));
           //Navigator.of(context).pop();
         },
+        previouslySelected: sortType,
       ),
     );
   }

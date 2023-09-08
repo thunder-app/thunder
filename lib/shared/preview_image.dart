@@ -51,92 +51,81 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
-    return Hero(
-      tag: widget.mediaUrl,
-      child: ExtendedImage.network(
-        widget.mediaUrl,
-        height: height,
-        width: width,
-        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-        cache: true,
-        clearMemoryCacheWhenDispose: true,
-        cacheWidth:
-            widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
-        loadStateChanged: (ExtendedImageState state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              _controller.reset();
-              return Container(
-                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-                child: SizedBox(
-                  height: height,
-                  width: width,
-                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-                ),
-              );
-            case LoadState.completed:
-              if (state.wasSynchronouslyLoaded) {
-                return state.completedWidget;
-              }
-              _controller.forward();
+    return ExtendedImage.network(
+      widget.mediaUrl,
+      height: height,
+      width: width,
+      fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+      cache: true,
+      clearMemoryCacheWhenDispose: true,
+      cacheWidth: widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            _controller.reset();
+            return Container();
+          case LoadState.completed:
+            if (state.wasSynchronouslyLoaded) {
+              return state.completedWidget;
+            }
+            _controller.forward();
 
-              return FadeTransition(
-                opacity: _controller,
-                child: state.completedWidget,
-              );
-            case LoadState.failed:
-              _controller.reset();
+            return FadeTransition(
+              opacity: _controller,
+              child: state.completedWidget,
+            );
+          case LoadState.failed:
+            _controller.reset();
 
-              state.imageProvider.evict();
+            state.imageProvider.evict();
 
-              return Container(
-                color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: InkWell(
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-                      child: Stack(
-                        alignment: Alignment.bottomRight,
-                        fit: StackFit.passthrough,
-                        children: [
-                          Container(
-                            color: Colors.grey.shade900,
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                            child: Row(
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Icon(
-                                    Icons.link,
+            return Container(
+              color: useDarkTheme ? Colors.grey.shade900 : Colors.grey.shade300,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                child: InkWell(
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      fit: StackFit.passthrough,
+                      children: [
+                        Container(
+                          color: Colors.grey.shade900,
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                          child: Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Icon(
+                                  Icons.link,
+                                  color: Colors.white60,
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  widget.mediaUrl ?? '',
+                                  overflow: TextOverflow.ellipsis,
+                                  style: theme.textTheme.bodyMedium!.copyWith(
                                     color: Colors.white60,
                                   ),
                                 ),
-                                Expanded(
-                                  child: Text(
-                                    widget.mediaUrl ?? '',
-                                    overflow: TextOverflow.ellipsis,
-                                    style: theme.textTheme.bodyMedium!.copyWith(
-                                      color: Colors.white60,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                    onTap: () {
-                      openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
-                    },
                   ),
+                  onTap: () {
+                    openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
+                  },
                 ),
-              );
-          }
-        },
-      ),
+              ),
+            );
+        }
+      },
     );
   }
 }

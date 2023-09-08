@@ -4,12 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void triggerCommentAction({
   required BuildContext context,
@@ -27,6 +29,12 @@ void triggerCommentAction({
       onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
+      bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+
+      if (downvotesEnabled == false) {
+        showSnackbar(context, AppLocalizations.of(context)!.downvotesDisabled);
+        return;
+      }
       onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:

@@ -15,6 +15,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
@@ -79,11 +80,11 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Actions',
+                  AppLocalizations.of(context)!.actions,
                   style: theme.textTheme.titleLarge!.copyWith(),
                 ),
               ),
@@ -102,13 +103,10 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                   return Container();
                 }
 
-                return ListTile(
-                  title: Text(
-                    postCardActionItemsToUse[index].label,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  leading: Icon(postCardActionItemsToUse[index].icon),
-                  onTap: () async {
+                return PickerItem(
+                  label: postCardActionItemsToUse[index].label,
+                  icon: postCardActionItemsToUse[index].icon,
+                  onSelected: () async {
                     Navigator.of(context).pop();
 
                     PostCardAction postCardAction = postCardActionItemsToUse[index].postCardAction;

@@ -1,3 +1,4 @@
+import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,7 +41,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool openInExternalBrowser = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
-  bool showInAppUpdateNotification = true;
+  bool showInAppUpdateNotification = false;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -59,6 +60,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showTextContent = false;
   bool showPostAuthor = false;
   bool scoreCounters = false;
+  bool dimReadPosts = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -181,6 +183,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showPostAuthor.name, value);
         setState(() => showPostAuthor = value);
         break;
+      case LocalSettings.dimReadPosts:
+        await prefs.setBool(LocalSettings.dimReadPosts.name, value);
+        setState(() => dimReadPosts = value);
+        break;
 
       // Comment Related Settings
       case LocalSettings.defaultCommentSortType:
@@ -251,6 +257,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
+      dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -270,7 +277,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       // Notification Settings
-      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
 
       isLoading = false;
     });
@@ -401,6 +408,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
                             },
+                            previouslySelected: defaultSortType,
                           ),
                         ),
                       ],
@@ -544,6 +552,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.person_off_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
                         ),
+                        ToggleOption(
+                          description: LocalSettings.dimReadPosts.label,
+                          subtitle: 'Read posts will be grayed out',
+                          value: dimReadPosts,
+                          iconEnabled: Icons.chrome_reader_mode,
+                          iconDisabled: Icons.chrome_reader_mode_outlined,
+                          onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
+                        ),
                       ],
                     ),
                   ),
@@ -585,6 +601,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                             },
+                            previouslySelected: defaultCommentSortType,
                           ),
                         ),
                         ListOption(
@@ -715,6 +732,69 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.update_rounded,
                           iconDisabled: Icons.update_disabled_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.showInAppUpdateNotification, value),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                          child: Text(
+                            'Import/Export Settings',
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        TextButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(60),
+                            backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.settings_rounded),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                'Save Settings',
+                                style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            await UserPreferences.exportToJson();
+                          },
+                        ),
+                        const SizedBox(height: 8.0),
+                        TextButton(
+                          style: ElevatedButton.styleFrom(
+                            minimumSize: const Size.fromHeight(60),
+                            backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.primary),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Icon(Icons.import_export_rounded),
+                              const SizedBox(width: 8.0),
+                              Text(
+                                'Import Settings',
+                                style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
+                              ),
+                            ],
+                          ),
+                          onPressed: () async {
+                            await UserPreferences.importFromJson();
+
+                            _initPreferences();
+
+                            if (context.mounted) {
+                              context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                            }
+                          },
                         ),
                       ],
                     ),

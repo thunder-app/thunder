@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,14 +12,16 @@ import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/global_context.dart';
 
 import '../../post/pages/create_comment_page.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../widgets/user_sidebar.dart';
 
-const List<Widget> userOptionTypes = <Widget>[
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Posts')),
-  Padding(padding: EdgeInsets.all(8.0), child: Text('Comments')),
+List<Widget> userOptionTypes = <Widget>[
+  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
+  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comment)),
 ];
 
 class UserPageSuccess extends StatefulWidget {
@@ -81,12 +86,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
     setState(() {
       _selectedUserOption = <bool>[true, false];
     });
+    BackButtonInterceptor.add(_handleBack);
     super.initState();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    BackButtonInterceptor.remove(_handleBack);
     super.dispose();
   }
 
@@ -176,20 +183,23 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               padding: EdgeInsets.zero,
                             ),
                             child: !savedToggle
-                                ? const Row(
+                                ? Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      SizedBox(width: 8.0),
-                                      Text('Saved'),
-                                      Icon(Icons.chevron_right),
+                                      const SizedBox(width: 8.0),
+                                      Text(AppLocalizations.of(context)!.saved),
+                                      const Icon(Icons.chevron_right),
                                     ],
                                   )
-                                : const Row(
+                                : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
-                                      Icon(Icons.chevron_left),
-                                      Text('History'),
-                                      SizedBox(width: 8.0),
+                                      const Icon(Icons.chevron_left),
+                                      Text(
+                                        AppLocalizations.of(context)!.overview,
+                                        semanticsLabel: '${AppLocalizations.of(context)!.overview}, ${AppLocalizations.of(context)!.back}',
+                                      ),
+                                      const SizedBox(width: 8.0),
                                     ],
                                   ),
                           ),
@@ -243,7 +253,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                     onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                     onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
-                    indicateRead: widget.isAccountUser ? false : true,
+                    indicateRead: !widget.isAccountUser,
                   ),
                 ),
               if (!savedToggle && selectedUserOption == 1)
@@ -309,7 +319,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
                     onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                     onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
-                    indicateRead: widget.isAccountUser ? false : true,
+                    indicateRead: !widget.isAccountUser,
                   ),
                 ),
               if (savedToggle && selectedUserOption == 1)
@@ -438,5 +448,16 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
         ],
       ),
     );
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    if (savedToggle) {
+      setState(() {
+        savedToggle = false;
+      });
+      return true;
+    }
+
+    return false;
   }
 }

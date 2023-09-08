@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -35,6 +36,8 @@ class PostCardActions extends StatelessWidget {
         final bool showVoteActions = state.showVoteActions;
         final bool showSaveAction = state.showSaveAction;
 
+        final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+
         return Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           mainAxisSize: MainAxisSize.min,
@@ -51,7 +54,7 @@ class PostCardActions extends StatelessWidget {
                     HapticFeedback.mediumImpact();
                     onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
                   }),
-            if (showVoteActions)
+            if (showVoteActions && downvotesEnabled)
               IconButton(
                 icon: Icon(
                   Icons.arrow_downward,

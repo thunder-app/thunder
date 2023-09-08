@@ -14,7 +14,10 @@
 - Added lock icon indicating a post is locked. Visible in feed and post view. Also blocks commenting functionality and instead shows a toast indicating the post is blocked - contribution from @ajsosa
 - Added the ability to combine the post FAB with the comment navigation buttons - contribution from @micahmo
 - Show special user identifiers in post - contribution from @micahmo
+- Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
+- Add option to disabling graying out read posts - contribution from @micahmo
+- Downvote actions will be disabled when instances have downvotes disabled
 
 ### Changed
 
@@ -26,6 +29,9 @@
 - Make comment indicators use colours blended from the current theme - contribution from @tom-james-watson
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
 - Improved ability to refresh posts - contribution from @micahmo
+- Improve the option selector dialog to show the currently selected item - contribution from @micahmo
+- Show swatches and live previews for accent color selection - contribution from @micahmo
+- Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
 
 ### Fixed
 
@@ -122,6 +128,8 @@
 - Fixed feed page reaching the end in some cases where NSFW content is turned on
 - Fixed issue where external link thumbnails weren't being displayed due to show external link previews option being off which was only intended to prevent html scraping - contribution from @ajsosa
 - Fixed community/user link handling from posts - contribution from @micahmo
+- Fixed double tap zoom sometimes triggering again if attempting to pan immediately after - contribution from @CTalvio
+
 
 ## 0.2.1+13 - 2023-07-25
 

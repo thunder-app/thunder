@@ -272,9 +272,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                 ? GestureFab(
                                     distance: 60,
                                     icon: Icon(
-                                      singlePressAction.isAllowed(state: state, widget: widget)
-                                          ? singlePressAction.getIcon(override: singlePressAction == FeedFabAction.changeSort ? sortTypeIcon : null)
-                                          : FeedFabAction.dismissRead.getIcon(),
+                                      singlePressAction.isAllowed(state: state, widget: widget) ? singlePressAction.getIcon() : FeedFabAction.dismissRead.getIcon(),
                                       semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
                                       size: 35,
                                     ),
@@ -376,7 +374,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                     context.read<ThunderBloc>().add(const OnFabToggle(false));
                                   },
                                   child: Container(
-                                    color: theme.colorScheme.background.withOpacity(0.85),
+                                    color: theme.colorScheme.background.withOpacity(0.95),
                                   ),
                                 )
                               : null,
@@ -404,6 +402,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   }
 
   Widget _getBody(BuildContext context, CommunityState state) {
+    ThunderState thunderState = context.read<ThunderBloc>().state;
     switch (state.status) {
       case CommunityStatus.initial:
         // communityId and communityName are mutually exclusive - only one of the two should be passed in
@@ -437,7 +436,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
           onSaveAction: (int postId, bool save) => context.read<CommunityBloc>().add(SavePostEvent(postId: postId, save: save)),
           onVoteAction: (int postId, VoteType voteType) => context.read<CommunityBloc>().add(VotePostEvent(postId: postId, score: voteType)),
           onToggleReadAction: (int postId, bool read) => context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postId, read: read)),
-          tagline: state.tagline!,
+          tagline: state.tagline,
+          indicateRead: thunderState.dimReadPosts,
         );
       case CommunityStatus.empty:
         return Center(child: Text(AppLocalizations.of(context)!.noPosts));
@@ -466,6 +466,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                 ),
               );
         },
+        previouslySelected: sortType,
       ),
     );
   }
