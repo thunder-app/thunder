@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:flutter/material.dart';
@@ -7,12 +8,15 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
@@ -471,7 +475,7 @@ class _PostPageState extends State<PostPage> {
     );
   }
 
-  void replyToPost(BuildContext context, {bool postLocked = false}) {
+  void replyToPost(BuildContext context, {bool postLocked = false}) async {
     if (postLocked) {
       showSnackbar(context, AppLocalizations.of(context)!.postLocked);
       return;
@@ -484,18 +488,51 @@ class _PostPageState extends State<PostPage> {
     if (!authBloc.state.isLoggedIn) {
       showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInComment);
     } else {
-      Navigator.of(context).push(
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      DraftComment? newDraftComment;
+      DraftComment? previousDraftComment;
+      String draftId = '${LocalSettings.draftsCache.name}-${(widget.postView ?? postBloc.state.postView)!.postView.post.id}';
+      String? draftCommentJson = prefs.getString(draftId);
+      if (draftCommentJson != null) {
+        previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+      }
+      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+        if (newDraftComment?.isNotEmpty == true) {
+          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+        }
+      });
+
+      Navigator.of(context)
+          .push(
         SwipeablePageRoute(
+          canOnlySwipeFromEdge: true,
           backGestureDetectionWidth: 45,
           builder: (context) {
-            return MultiBlocProvider(providers: [
-              BlocProvider<PostBloc>.value(value: postBloc),
-              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              BlocProvider<AccountBloc>.value(value: accountBloc),
-            ], child: CreateCommentPage(postView: widget.postView ?? postBloc.state.postView));
+            return MultiBlocProvider(
+                providers: [
+                  BlocProvider<PostBloc>.value(value: postBloc),
+                  BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                  BlocProvider<AccountBloc>.value(value: accountBloc),
+                ],
+                child: CreateCommentPage(
+                  postView: widget.postView ?? postBloc.state.postView,
+                  previousDraftComment: previousDraftComment,
+                  onUpdateDraft: (c) => newDraftComment = c,
+                ));
           },
         ),
-      );
+      )
+          .whenComplete(() async {
+        timer.cancel();
+
+        if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+          prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+        } else {
+          prefs.remove(draftId);
+        }
+      });
     }
   }
 }

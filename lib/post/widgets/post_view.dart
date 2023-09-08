@@ -1,15 +1,21 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -300,7 +306,7 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   onPressed: isUserLoggedIn
-                      ? () {
+                      ? () async {
                           if (postView.post.locked) {
                             showSnackbar(context, AppLocalizations.of(context)!.postLocked);
                             return;
@@ -310,8 +316,24 @@ class PostSubview extends StatelessWidget {
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
                           account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
 
-                          Navigator.of(context).push(
+                          SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                          DraftComment? newDraftComment;
+                          DraftComment? previousDraftComment;
+                          String draftId = '${LocalSettings.draftsCache.name}-${postViewMedia.postView.post.id}';
+                          String? draftCommentJson = prefs.getString(draftId);
+                          if (draftCommentJson != null) {
+                            previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+                          }
+                          Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+                            if (newDraftComment?.isNotEmpty == true) {
+                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                            }
+                          });
+
+                          Navigator.of(context)
+                              .push(
                             SwipeablePageRoute(
+                              canOnlySwipeFromEdge: true,
                               backGestureDetectionWidth: 45,
                               builder: (context) {
                                 return MultiBlocProvider(
@@ -322,11 +344,24 @@ class PostSubview extends StatelessWidget {
                                   ],
                                   child: CreateCommentPage(
                                     postView: postViewMedia,
+                                    previousDraftComment: previousDraftComment,
+                                    onUpdateDraft: (c) => newDraftComment = c,
                                   ),
                                 );
                               },
                             ),
-                          );
+                          )
+                              .whenComplete(() async {
+                            timer.cancel();
+
+                            if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
+                              await Future.delayed(const Duration(milliseconds: 300));
+                              showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                            } else {
+                              prefs.remove(draftId);
+                            }
+                          });
                         }
                       : null,
                   icon: postView.post.locked

@@ -188,7 +188,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 behavior: HitTestBehavior.opaque,
                 onPointerDown: (event) => {},
                 onPointerUp: (event) {
-                  if (isOverridingSwipeGestureAction == true) {
+                  if (isOverridingSwipeGestureAction) {
                     setState(() => isOverridingSwipeGestureAction = false);
                   }
 
