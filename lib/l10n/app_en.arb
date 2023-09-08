@@ -1,4 +1,5 @@
 {
+  "save": "Save",
   "posts": "Posts",
   "saved": "Saved",
   "overview": "Overview",
@@ -101,5 +102,6 @@
   "showLess": "Show less",
   "cantBlockAdmin": "You may not block an instance administrator.",
   "sortByTop": "Sort by Top",
+  "downvotesDisabled": "Downvotes are disabled on this instance.",
   "backButton": "Back button"
 }

@@ -1,4 +1,5 @@
 {
+  "save": "Save",
   "posts": "Posts",
   "saved": "Saved",
   "overview": "Overview",
@@ -98,5 +99,6 @@
   "successfullyUnblocked": "Pomyślnie odblokowano!",
   "successfullyBlocked": "Pomyślnie zablokowano!",
   "showMore": "Pokaż więcej",
+  "downvotesDisabled": "Downvotes are disabled on this instance.",
   "showLess": "Pokaż mniej"
 }

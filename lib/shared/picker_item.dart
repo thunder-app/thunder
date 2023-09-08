@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class PickerItem<T> extends StatelessWidget {
   final String label;
   final IconData? icon;
-  final Color? color;
+  final Widget? leading;
   final IconData? trailingIcon;
   final void Function() onSelected;
   final bool? isSelected;
@@ -15,7 +15,7 @@ class PickerItem<T> extends StatelessWidget {
     required this.onSelected,
     this.isSelected,
     this.trailingIcon,
-    this.color,
+    this.leading,
   });
 
   @override
@@ -34,16 +34,7 @@ class PickerItem<T> extends StatelessWidget {
               label,
               style: theme.textTheme.bodyMedium,
             ),
-            leading: icon != null
-                ? Icon(icon)
-                : Container(
-                    height: 32,
-                    width: 32,
-                    decoration: BoxDecoration(
-                      color: color,
-                      borderRadius: BorderRadius.circular(100),
-                    ),
-                  ),
+            leading: icon != null ? Icon(icon) : this.leading,
             trailing: Icon(trailingIcon),
           ),
         ),
