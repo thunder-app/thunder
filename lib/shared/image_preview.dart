@@ -55,11 +55,8 @@ class _ImagePreviewState extends State<ImagePreview> {
         transitionDuration: const Duration(milliseconds: 100),
         reverseTransitionDuration: const Duration(milliseconds: 50),
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          String heroKey = generateRandomHeroString();
-
           return ImageViewer(
             url: widget.url,
-            heroKey: heroKey,
             postId: widget.postId,
             navigateToPost: widget.navigateToPost,
           );
@@ -119,6 +116,11 @@ class _ImagePreviewState extends State<ImagePreview> {
             cache: true,
             clearMemoryCacheWhenDispose: true,
             cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+            loadStateChanged: (state) {
+              if (state.extendedImageLoadState == LoadState.loading) {
+                return Container();
+              }
+            },
           ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),

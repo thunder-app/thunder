@@ -28,7 +28,7 @@ class ThunderState extends Equatable {
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
-    this.showInAppUpdateNotification = true,
+    this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -47,6 +47,7 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,
+    this.dimReadPosts = true,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -161,6 +162,7 @@ class ThunderState extends Equatable {
   final bool showTextContent;
   final bool showPostAuthor;
   final bool scoreCounters;
+  final bool dimReadPosts;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -284,6 +286,7 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? showPostAuthor,
+    bool? dimReadPosts,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -398,6 +401,7 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+      dimReadPosts: dimReadPosts ?? this.dimReadPosts,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -519,6 +523,7 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         showPostAuthor,
+        dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,

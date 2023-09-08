@@ -115,7 +115,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -134,6 +134,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
+      bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -244,6 +245,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
+        dimReadPosts: dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings

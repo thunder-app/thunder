@@ -34,7 +34,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', event.accountId);
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
+      // Check to see the instance settings (for checking if downvotes are enabled)
+      LemmyClient.instance.changeBaseUrl(account.instance!.replaceAll('https://', ''));
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      FullSiteView fullSiteView = await lemmy.run(
+        GetSite(auth: account.jwt),
+      );
+
+      bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -73,7 +83,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       if (activeAccount.username != null && activeAccount.jwt != null && activeAccount.instance != null) {
         // Set lemmy client to use the instance
         LemmyClient.instance.changeBaseUrl(activeAccount.instance!.replaceAll('https://', ''));
-        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true));
+
+        // Check to see the instance settings (for checking if downvotes are enabled)
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+        FullSiteView fullSiteView = await lemmy.run(
+          GetSite(
+            auth: activeAccount.jwt,
+          ),
+        );
+
+        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       }
     });
 
@@ -126,7 +148,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', accountId);
 
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true));
+        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {

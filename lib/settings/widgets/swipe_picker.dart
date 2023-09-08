@@ -63,6 +63,7 @@ class SwipePicker<T> extends StatelessWidget {
                             onSelect: (value) {
                               items[0].onChanged(value);
                             },
+                            previouslySelected: items[0].value,
                           ),
                         );
                       },
@@ -90,6 +91,7 @@ class SwipePicker<T> extends StatelessWidget {
                             onSelect: (value) {
                               items[1].onChanged(value);
                             },
+                            previouslySelected: items[1].value,
                           ),
                         );
                       },
@@ -124,6 +126,7 @@ class SwipePicker<T> extends StatelessWidget {
                             onSelect: (value) {
                               items[1].onChanged(value);
                             },
+                            previouslySelected: items[1].value,
                           ),
                         );
                       },
@@ -159,6 +162,7 @@ class SwipePicker<T> extends StatelessWidget {
                             onSelect: (value) {
                               items[0].onChanged(value);
                             },
+                            previouslySelected: items[0].value,
                           ),
                         );
                       },

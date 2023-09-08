@@ -98,10 +98,6 @@ class LinkPreviewCard extends StatelessWidget {
                             link: originURL!,
                             showBody: false,
                             showTitle: false,
-                            placeholderWidget: Container(
-                              margin: const EdgeInsets.all(15),
-                              child: const CircularProgressIndicator(),
-                            ),
                             cacheDuration: Duration.zero,
                           ))
                       : LinkPreviewGenerator(
@@ -109,9 +105,6 @@ class LinkPreviewCard extends StatelessWidget {
                           link: originURL!,
                           showBody: false,
                           showTitle: false,
-                          placeholderWidget: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
                           cacheDuration: Duration.zero,
                         ),
                 ),
@@ -173,10 +166,6 @@ class LinkPreviewCard extends StatelessWidget {
                                   link: originURL!,
                                   showBody: false,
                                   showTitle: false,
-                                  placeholderWidget: Container(
-                                    margin: const EdgeInsets.all(15),
-                                    child: const CircularProgressIndicator(),
-                                  ),
                                   cacheDuration: Duration.zero,
                                 ))
                             : LinkPreviewGenerator(
@@ -184,10 +173,6 @@ class LinkPreviewCard extends StatelessWidget {
                                 link: originURL!,
                                 showBody: false,
                                 showTitle: false,
-                                placeholderWidget: Container(
-                                  margin: const EdgeInsets.all(15),
-                                  child: const CircularProgressIndicator(),
-                                ),
                                 cacheDuration: Duration.zero,
                               ),
                       )

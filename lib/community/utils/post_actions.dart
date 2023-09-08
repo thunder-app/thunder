@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -24,6 +26,13 @@ void triggerPostAction({
       onVoteAction(postViewMedia.postView.post.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
       return;
     case SwipeAction.downvote:
+      bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
+
+      if (downvotesEnabled == false) {
+        showSnackbar(context, AppLocalizations.of(context)!.downvotesDisabled);
+        return;
+      }
+
       onVoteAction(postViewMedia.postView.post.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
       return;
     case SwipeAction.reply:
