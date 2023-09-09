@@ -97,6 +97,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         AppLocalizations.of(context)!.blockedUsers,
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
+                      contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                       trailing: IconButton(
                         icon: Icon(
                           Icons.add_rounded,
@@ -155,6 +156,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
+                                                contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                                                 trailing: state.status == UserSettingsStatus.blocking && state.personBeingBlocked == state.personBlocks[index].id
                                                     ? const Padding(
                                                         padding: EdgeInsets.only(right: 12),
@@ -202,6 +204,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         AppLocalizations.of(context)!.blockedCommunities,
                         style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
+                      contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                       trailing: IconButton(
                         icon: Icon(
                           Icons.add_rounded,
@@ -260,6 +263,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                                   maxLines: 1,
                                                   overflow: TextOverflow.ellipsis,
                                                 ),
+                                                contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
                                                 trailing: state.status == UserSettingsStatus.blocking && state.communityBeingBlocked == state.communityBlocks[index].id
                                                     ? const Padding(
                                                         padding: EdgeInsets.only(right: 12),
