@@ -212,7 +212,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
     super.key,
     required this.postView,
     required this.showCommunityIcons,
-    required this.showInstanceName,
+    required this.communityMode,
     this.textStyleAuthor,
     this.textStyleCommunity,
     required this.compactMode,
@@ -220,7 +220,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
   });
 
   final bool showCommunityIcons;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool compactMode;
   final PostView postView;
   final TextStyle? textStyleAuthor;
@@ -252,7 +252,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 alignment: WrapAlignment.start,
                 crossAxisAlignment: WrapCrossAlignment.end,
                 children: [
-                  if (state.showPostAuthor)
+                  if (state.showPostAuthor || communityMode)
                     Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -260,13 +260,14 @@ class PostCommunityAndAuthor extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6),
                             onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapUserName(context, postView.creator.id),
                             child: Text('$creatorName', textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor, style: textStyleAuthor)),
-                        Text(
-                          ' to ',
-                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                        if (!communityMode)
+                          Text(
+                            ' to ',
+                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                            ),
                           ),
-                        ),
                       ],
                     ),
                   InkWell(
@@ -275,11 +276,12 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          '${postView.community.name}${showInstanceName ? ' · ${fetchInstanceNameFromUrl(postView.community.actorId)}' : ''}',
-                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                          style: textStyleCommunity,
-                        ),
+                        if (!communityMode)
+                          Text(
+                            '${postView.community.name} · ${fetchInstanceNameFromUrl(postView.community.actorId)}',
+                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            style: textStyleCommunity,
+                          ),
                         if (showCommunitySubscription)
                           Padding(
                             padding: const EdgeInsets.only(
