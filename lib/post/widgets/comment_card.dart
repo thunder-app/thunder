@@ -9,9 +9,6 @@ import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
-import 'package:thunder/shared/comment_card_actions.dart';
-import 'package:thunder/shared/comment_header.dart';
-import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -29,6 +26,7 @@ class CommentCard extends StatefulWidget {
   final Set collapsedCommentSet;
   final int? selectCommentId;
   final String? selectedCommentPath;
+  final int? newlyCreatedCommentId;
   final int? moddingCommentId;
 
   final DateTime now;
@@ -48,6 +46,7 @@ class CommentCard extends StatefulWidget {
     this.collapsedCommentSet = const {},
     this.selectCommentId,
     this.selectedCommentPath,
+    this.newlyCreatedCommentId,
     this.moddingCommentId,
     required this.onDeleteAction,
     required this.moderators,
@@ -140,12 +139,15 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
     // Checks for the same creator id to user id
     final bool isOwnComment = widget.commentViewTree.commentView?.creator.id == context.read<AuthBloc>().state.account?.userId;
-
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+    final int? commentId = widget.commentViewTree.commentView?.comment.id;
+    bool highlightComment = false;
+    if (widget.selectCommentId == commentId && widget.newlyCreatedCommentId == null || widget.newlyCreatedCommentId == commentId) {
+      highlightComment = true;
+    }
+
     NestedCommentIndicatorStyle nestedCommentIndicatorStyle = state.nestedCommentIndicatorStyle;
     NestedCommentIndicatorColor nestedCommentIndicatorColor = state.nestedCommentIndicatorColor;
 
@@ -335,7 +337,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               ),
                       ),
                       child: Material(
-                        color: widget.selectCommentId == widget.commentViewTree.commentView!.comment.id ? theme.highlightColor : theme.colorScheme.background,
+                        color: highlightComment ? theme.highlightColor : theme.colorScheme.background,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
@@ -442,6 +444,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               moddingCommentId: widget.moddingCommentId,
                               selectedCommentPath: widget.selectedCommentPath,
                               selectCommentId: widget.selectCommentId,
+                              newlyCreatedCommentId: widget.newlyCreatedCommentId,
                               now: widget.now,
                               commentViewTree: widget.commentViewTree.replies[index],
                               collapsedCommentSet: widget.collapsedCommentSet,

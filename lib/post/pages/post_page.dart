@@ -388,6 +388,7 @@ class _PostPageState extends State<PostPage> {
                                 comments: state.comments,
                                 selectedCommentId: state.selectedCommentId,
                                 selectedCommentPath: state.selectedCommentPath,
+                                newlyCreatedCommentId: state.newlyCreatedCommentId,
                                 moddingCommentId: state.moddingCommentId,
                                 viewFullCommentsRefreshing: state.viewAllCommentsRefresh,
                                 itemScrollController: _itemScrollController,
