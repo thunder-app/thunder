@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:async';
 import 'dart:convert';
 
@@ -21,6 +22,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -53,7 +55,8 @@ class InboxMentionsView extends StatelessWidget {
               // To to specific post for now, in the future, will be best to scroll to the position of the comment
               await Navigator.of(context).push(
                 SwipeablePageRoute(
-                  backGestureDetectionStartOffset: 45,
+                  backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+                  backGestureDetectionWidth: 45,
                   canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
                   builder: (context) => MultiBlocProvider(
                     providers: [
@@ -129,8 +132,11 @@ class InboxMentionsView extends StatelessWidget {
                             }
                           });
 
-                          Navigator.of(context).push(
+                          Navigator.of(context)
+                              .push(
                             SwipeablePageRoute(
+                              canOnlySwipeFromEdge: true,
+                              backGestureDetectionWidth: 45,
                               builder: (context) {
                                 return MultiBlocProvider(
                                     providers: [
@@ -147,7 +153,8 @@ class InboxMentionsView extends StatelessWidget {
                                     ));
                               },
                             ),
-                          ).whenComplete(() async {
+                          )
+                              .whenComplete(() async {
                             timer.cancel();
 
                             if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
@@ -177,22 +184,6 @@ class InboxMentionsView extends StatelessWidget {
   }
 
   void onTapCommunityName(BuildContext context, int communityId) {
-    AccountBloc accountBloc = context.read<AccountBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-    Navigator.of(context).push(
-      SwipeablePageRoute(
-        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-        builder: (context) => MultiBlocProvider(
-          providers: [
-            BlocProvider.value(value: accountBloc),
-            BlocProvider.value(value: authBloc),
-            BlocProvider.value(value: thunderBloc),
-          ],
-          child: CommunityPage(communityId: communityId),
-        ),
-      ),
-    );
+    navigateToCommunityPage(context, communityId: communityId);
   }
 }

@@ -304,8 +304,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               }
                             });
 
-                            Navigator.of(context).push(
+                            Navigator.of(context)
+                                .push(
                               SwipeablePageRoute(
+                                canOnlySwipeFromEdge: true,
+                                backGestureDetectionWidth: 45,
                                 builder: (context) {
                                   return MultiBlocProvider(
                                       providers: [
@@ -322,7 +325,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                       ));
                                 },
                               ),
-                            ).whenComplete(
+                            )
+                                .whenComplete(
                               () async {
                                 timer.cancel();
 
@@ -395,8 +399,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               }
                             });
 
-                            Navigator.of(context).push(
+                            Navigator.of(context)
+                                .push(
                               SwipeablePageRoute(
+                                canOnlySwipeFromEdge: true,
+                                backGestureDetectionWidth: 45,
                                 builder: (context) {
                                   return MultiBlocProvider(
                                       providers: [
@@ -411,7 +418,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                       ));
                                 },
                               ),
-                            ).whenComplete(
+                            )
+                                .whenComplete(
                               () async {
                                 timer.cancel();
 

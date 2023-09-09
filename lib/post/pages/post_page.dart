@@ -502,8 +502,11 @@ class _PostPageState extends State<PostPage> {
         }
       });
 
-      Navigator.of(context).push(
+      Navigator.of(context)
+          .push(
         SwipeablePageRoute(
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 45,
           builder: (context) {
             return MultiBlocProvider(
                 providers: [
@@ -518,7 +521,8 @@ class _PostPageState extends State<PostPage> {
                 ));
           },
         ),
-      ).whenComplete(() async {
+      )
+          .whenComplete(() async {
         timer.cancel();
 
         if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
