@@ -34,6 +34,7 @@
 - Improve contrast and distinction of special user identifiers - contribution from @micahmo
 - Show swatches and live previews for accent color selection - contribution from @micahmo
 - Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
+- Hide community name and show usernames when viewing a community - contribution from @micahmo
 
 ### Fixed
 
