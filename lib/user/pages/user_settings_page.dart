@@ -8,6 +8,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
@@ -101,7 +102,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                           Icons.add_rounded,
                           semanticLabel: AppLocalizations.of(context)!.add,
                         ),
-                        onPressed: () => showUserBlockDialog(context),
+                        onPressed: () => showUserInputDialog(
+                          context,
+                          title: AppLocalizations.of(context)!.blockUser,
+                          onUserSelected: (personViewSafe) {
+                            context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -200,7 +207,13 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                           Icons.add_rounded,
                           semanticLabel: AppLocalizations.of(context)!.add,
                         ),
-                        onPressed: () => showCommunityBlockDialog(context),
+                        onPressed: () => showCommunityInputDialog(
+                          context,
+                          title: AppLocalizations.of(context)!.blockCommunity,
+                          onCommunitySelected: (communityView) {
+                            context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                          },
+                        ),
                       ),
                     ),
                   ),
@@ -287,227 +300,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
           },
         ),
       ),
-    );
-  }
-
-  void showUserBlockDialog(BuildContext context) async {
-    Future<String?> onSubmitted({PersonViewSafe? payload, String? value}) async {
-      if (payload != null) {
-        context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: payload.person.id, unblock: false));
-        Navigator.of(context).pop();
-      } else if (value != null) {
-        // Normalize the username
-        final String? normalizedUsernameToBlock = await getLemmyUser(value);
-        if (normalizedUsernameToBlock != null) {
-          try {
-            Account? account = await fetchActiveProfileAccount();
-            final FullPersonView fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
-              auth: account?.jwt,
-              username: normalizedUsernameToBlock,
-            ));
-
-            context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: fullPersonView.personView.person.id, unblock: false));
-
-            Navigator.of(context).pop();
-          } catch (e) {
-            return AppLocalizations.of(context)!.unableToFindUser;
-          }
-        } else {
-          return AppLocalizations.of(context)!.unableToFindUser;
-        }
-      }
-      return null;
-    }
-
-    showPickerDialog<PersonViewSafe>(
-      title: AppLocalizations.of(context)!.blockUser,
-      inputLabel: AppLocalizations.of(context)!.username,
-      onSubmitted: onSubmitted,
-      getSuggestions: (query) async {
-        if (query.isNotEmpty != true) {
-          return const Iterable.empty();
-        }
-        Account? account = await fetchActiveProfileAccount();
-        final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
-          q: query,
-          auth: account?.jwt,
-          type: SearchType.users,
-          limit: 10,
-        ));
-        return searchReults.users;
-      },
-      suggestionBuilder: (payload) {
-        return Tooltip(
-          message: '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
-          preferBelow: false,
-          child: ListTile(
-            leading: UserAvatar(person: payload.person),
-            title: Text(
-              payload.person.displayName ?? payload.person.name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: TextScroll(
-              '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
-              delayBefore: const Duration(seconds: 2),
-              pauseBetween: const Duration(seconds: 3),
-              velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  void showCommunityBlockDialog(BuildContext context) async {
-    Future<String?> onSubmitted({CommunityView? payload, String? value}) async {
-      if (payload != null) {
-        context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: payload.community.id, unblock: false));
-        Navigator.of(context).pop();
-      } else if (value != null) {
-        // Normalize the community name
-        final String? normalizedCommunityToBlock = await getLemmyCommunity(value);
-        if (normalizedCommunityToBlock != null) {
-          try {
-            Account? account = await fetchActiveProfileAccount();
-            final FullCommunityView fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
-              auth: account?.jwt,
-              name: normalizedCommunityToBlock,
-            ));
-
-            context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: fullPersonView.communityView.community.id, unblock: false));
-
-            Navigator.of(context).pop();
-          } catch (e) {
-            return AppLocalizations.of(context)!.unableToFindCommunity;
-          }
-        } else {
-          return AppLocalizations.of(context)!.unableToFindCommunity;
-        }
-      }
-      return null;
-    }
-
-    showPickerDialog<CommunityView>(
-      title: AppLocalizations.of(context)!.blockCommunity,
-      inputLabel: AppLocalizations.of(context)!.community,
-      onSubmitted: onSubmitted,
-      getSuggestions: (query) async {
-        if (query.isNotEmpty != true) {
-          return const Iterable.empty();
-        }
-        Account? account = await fetchActiveProfileAccount();
-        final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
-          q: query,
-          auth: account?.jwt,
-          type: SearchType.communities,
-          limit: 10,
-        ));
-        return searchReults.communities;
-      },
-      suggestionBuilder: (payload) {
-        return Tooltip(
-          message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-          preferBelow: false,
-          child: ListTile(
-            leading: CommunityIcon(community: payload.community),
-            title: Text(
-              payload.community.title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-            subtitle: TextScroll(
-              '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-              delayBefore: const Duration(seconds: 2),
-              pauseBetween: const Duration(seconds: 3),
-              velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
-            ),
-          ),
-        );
-      },
-    );
-  }
-
-  /// Shows a dialog which takes input and offers suggestions
-  void showPickerDialog<T>({
-    required String title,
-    required String inputLabel,
-    required Future<String?> Function({T? payload, String? value}) onSubmitted,
-    required Future<Iterable<T>> Function(String query) getSuggestions,
-    required Widget Function(T payload) suggestionBuilder,
-  }) async {
-    final textController = TextEditingController();
-
-    await showDialog(
-      context: context,
-      builder: (context) {
-        bool okEnabled = false;
-        String? error;
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: Text(title),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TypeAheadField<T>(
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: textController,
-                      onChanged: (value) => setState(() {
-                        okEnabled = value.isNotEmpty;
-                        error = null;
-                      }),
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: const OutlineInputBorder(),
-                        labelText: inputLabel,
-                        errorText: error,
-                      ),
-                      onSubmitted: (text) async {
-                        setState(() => okEnabled = false);
-                        final String? submitError = await onSubmitted(value: text);
-                        setState(() => error = submitError);
-                      },
-                    ),
-                    suggestionsCallback: getSuggestions,
-                    itemBuilder: (context, payload) => suggestionBuilder(payload),
-                    onSuggestionSelected: (payload) async {
-                      setState(() => okEnabled = false);
-                      final String? submitError = await onSubmitted(payload: payload);
-                      setState(() => error = submitError);
-                    },
-                    hideOnEmpty: true,
-                    hideOnLoading: true,
-                    hideOnError: true,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text(AppLocalizations.of(context)!.cancel),
-                      ),
-                      const SizedBox(width: 5),
-                      FilledButton(
-                        onPressed: okEnabled
-                            ? () async {
-                                setState(() => okEnabled = false);
-                                final String? submitError = await onSubmitted(value: textController.text);
-                                setState(() => error = submitError);
-                              }
-                            : null,
-                        child: Text(AppLocalizations.of(context)!.ok),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
-          },
-        );
-      },
     );
   }
 }
