@@ -18,6 +18,7 @@
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 - Add option to disabling graying out read posts - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
+- Automatically save drafts for posts and comments - contribution from @micahmo
 
 ### Changed
 
@@ -30,6 +31,7 @@
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
 - Improved ability to refresh posts - contribution from @micahmo
 - Improve the option selector dialog to show the currently selected item - contribution from @micahmo
+- Improve contrast and distinction of special user identifiers - contribution from @micahmo
 - Show swatches and live previews for accent color selection - contribution from @micahmo
 - Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
 

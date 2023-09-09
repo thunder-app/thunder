@@ -95,6 +95,8 @@ enum LocalSettings {
   postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
+
+  draftsCache(name: 'drafts_cache', label: ''),
   ;
 
   const LocalSettings({
@@ -107,4 +109,7 @@ enum LocalSettings {
 
   /// The label of the setting as seen in the Settings page
   final String label;
+
+  /// Defines the settings that are excluded from import/export
+  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
 }
