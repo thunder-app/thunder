@@ -112,11 +112,6 @@ class PostCardViewCompact extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           size: 15 * textScaleFactor,
                         )),
-                        if (!postViewMedia.postView.post.featuredCommunity && !postViewMedia.postView.saved)
-                          const WidgetSpan(
-                              child: SizedBox(
-                            width: 3,
-                          )),
                       ],
                       if (postViewMedia.postView.saved)
                         WidgetSpan(
