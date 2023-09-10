@@ -142,7 +142,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                             child: InkWell(
                                               borderRadius: BorderRadius.circular(50),
                                               onTap: () {
-                                                navigateToUserByName(context, '${state.personBlocks[index].name}@${fetchInstanceNameFromUrl(state.personBlocks[index].actorId)}');
+                                                navigateToUserPage(context, username: '${state.personBlocks[index].name}@${fetchInstanceNameFromUrl(state.personBlocks[index].actorId)}');
                                               },
                                               child: ListTile(
                                                 leading: UserAvatar(person: state.personBlocks[index]),
@@ -249,7 +249,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                             child: InkWell(
                                               borderRadius: BorderRadius.circular(50),
                                               onTap: () {
-                                                navigateToCommunityByName(context, '${state.communityBlocks[index].name}@${fetchInstanceNameFromUrl(state.communityBlocks[index].actorId)}');
+                                                navigateToCommunityPage(context,
+                                                    communityName: '${state.communityBlocks[index].name}@${fetchInstanceNameFromUrl(state.communityBlocks[index].actorId)}');
                                               },
                                               child: ListTile(
                                                 leading: CommunityIcon(community: state.communityBlocks[index], radius: 16.0),
