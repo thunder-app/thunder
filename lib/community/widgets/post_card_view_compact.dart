@@ -19,7 +19,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool showTextPostIndicator;
   final bool showPostAuthor;
   final bool hideNsfwPreviews;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
   final PostListingType? listingType;
@@ -33,7 +33,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.showTextPostIndicator,
     required this.showPostAuthor,
     required this.hideNsfwPreviews,
-    required this.showInstanceName,
+    required this.communityMode,
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     required this.listingType,
@@ -153,7 +153,7 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCommunityAndAuthor(
                   compactMode: true,
                   showCommunityIcons: false,
-                  showInstanceName: showInstanceName,
+                  communityMode: communityMode,
                   postView: postViewMedia.postView,
                   textStyleCommunity: textStyleCommunityAndAuthor,
                   textStyleAuthor: textStyleCommunityAndAuthor,

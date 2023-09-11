@@ -24,7 +24,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -44,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.showInstanceName,
+    required this.communityMode,
     required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -237,7 +237,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     children: [
                       PostCommunityAndAuthor(
                         showCommunityIcons: showCommunityIcons,
-                        showInstanceName: showInstanceName,
+                        communityMode: communityMode,
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,
