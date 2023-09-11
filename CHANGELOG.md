@@ -17,6 +17,7 @@
 - Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 - Add option to disabling graying out read posts - contribution from @micahmo
+- Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
 - Automatically save drafts for posts and comments - contribution from @micahmo
 
