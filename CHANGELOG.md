@@ -20,6 +20,7 @@
 - Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
 - Automatically save drafts for posts and comments - contribution from @micahmo
+- Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 
 ### Changed
 

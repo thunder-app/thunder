@@ -265,7 +265,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         )
                       ],
                     ),
-                    drawer: (widget.communityId != null || widget.communityName != null) ? null : const CommunityDrawer(),
+                    drawer: (widget.communityId != null || widget.communityName != null)
+                        ? null
+                        : CommunityDrawer(
+                            currentPostListingType: currentCommunityBloc!.state.listingType,
+                            communityId: currentCommunityBloc!.state.communityId,
+                            communityName: currentCommunityBloc!.state.communityName,
+                          ),
                     floatingActionButton: enableFab
                         ? AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
