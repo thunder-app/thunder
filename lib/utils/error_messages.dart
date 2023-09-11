@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 String? getErrorMessage(BuildContext context, String lemmyApiErrorCode) {
   return switch (lemmyApiErrorCode) {
     "cant_block_admin" => AppLocalizations.of(context)!.cantBlockAdmin,
-    _ => null,
+    "cant_block_yourself" => AppLocalizations.of(context)!.cantBlockYourself,
+    _ => lemmyApiErrorCode,
   };
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 

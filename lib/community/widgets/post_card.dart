@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -269,7 +271,8 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
-        backGestureDetectionStartOffset: 45,
+        backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+        backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(

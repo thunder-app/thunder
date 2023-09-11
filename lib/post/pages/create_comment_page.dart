@@ -32,6 +32,9 @@ class CreateCommentPage extends StatefulWidget {
 
   final bool isEdit;
 
+  final void Function(DraftComment? draftComment)? onUpdateDraft;
+  final DraftComment? previousDraftComment;
+
   const CreateCommentPage({
     super.key,
     this.postView,
@@ -41,6 +44,8 @@ class CreateCommentPage extends StatefulWidget {
     this.isEdit = false,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.previousDraftComment,
+    this.onUpdateDraft,
   });
 
   @override
@@ -64,6 +69,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
   final ImageBloc imageBloc = ImageBloc();
+
+  DraftComment newDraftComment = DraftComment();
 
   @override
   void initState() {
@@ -97,7 +104,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
         setState(() => isSubmitButtonDisabled = _bodyTextController.text.isEmpty);
       });
+
+      widget.onUpdateDraft?.call(newDraftComment..text = _bodyTextController.text);
     });
+
+    if (widget.previousDraftComment != null) {
+      _bodyTextController.text = widget.previousDraftComment!.text ?? '';
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        showSnackbar(context, AppLocalizations.of(context)!.restoredCommentFromDraft);
+      });
+    }
   }
 
   @override
@@ -193,6 +211,8 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                 onPressed: (isSubmitButtonDisabled || isLoading)
                     ? null
                     : () {
+                        newDraftComment.saveAsDraft = false;
+
                         if (widget.isEdit) {
                           return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                         }
@@ -346,4 +366,21 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
       ),
     );
   }
+}
+
+class DraftComment {
+  String? text;
+  bool saveAsDraft = true;
+
+  DraftComment({this.text});
+
+  Map<String, dynamic> toJson() => {
+        'text': text,
+      };
+
+  static fromJson(Map<String, dynamic> json) => DraftComment(
+        text: json['text'],
+      );
+
+  bool get isNotEmpty => text?.isNotEmpty == true;
 }
