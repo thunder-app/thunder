@@ -28,6 +28,7 @@ class PostPageSuccess extends StatefulWidget {
   final List<CommentViewTree> comments;
   final int? selectedCommentId;
   final String? selectedCommentPath;
+  final int? newlyCreatedCommentId;
   final int? moddingCommentId;
 
   final ItemScrollController itemScrollController;
@@ -47,6 +48,7 @@ class PostPageSuccess extends StatefulWidget {
     this.hasReachedCommentEnd = false,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.newlyCreatedCommentId,
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
     required this.moderators,
@@ -85,6 +87,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             moddingCommentId: widget.moddingCommentId,
             selectedCommentId: widget.selectedCommentId,
             selectedCommentPath: widget.selectedCommentPath,
+            newlyCreatedCommentId: widget.newlyCreatedCommentId,
             now: DateTime.now().toUtc(),
             itemScrollController: widget.itemScrollController,
             itemPositionsListener: widget.itemPositionsListener,

@@ -90,7 +90,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
+          emit(state.copyWith(
+              status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -126,18 +127,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             }
           }
 
-          emit(
-            state.copyWith(
-                status: PostStatus.success,
-                postId: postView?.postView.post.id,
-                postView: postView,
-                communityId: postView?.postView.post.communityId,
-                moderators: moderators,
-                selectedCommentPath: event.selectedCommentPath,
-                selectedCommentId: event.selectedCommentId),
-          );
+          emit(state.copyWith(
+              status: PostStatus.success,
+              postId: postView?.postView.post.id,
+              postView: postView,
+              communityId: postView?.postView.post.communityId,
+              moderators: moderators,
+              selectedCommentPath: event.selectedCommentPath,
+              selectedCommentId: event.selectedCommentId,
+              newlyCreatedCommentId: event.newlyCreatedCommentId));
 
-          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
+          emit(state.copyWith(
+              status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -183,7 +184,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 communityId: postView?.postView.post.communityId,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
-                selectedCommentPath: event.selectedCommentPath),
+                selectedCommentPath: event.selectedCommentPath,
+                newlyCreatedCommentId: event.newlyCreatedCommentId),
           );
         } catch (e) {
           exception = e;
@@ -469,17 +471,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       int? selectedCommentId = event.selectedCommentId;
       String? selectedCommentPath = event.selectedCommentPath;
 
-      // for now, refresh the post and refetch the comments
-      // @todo: insert the new comment in place without requiring a refetch
-      // @todo: alternatively, insert and scroll to new comment on refetch
-      if (event.parentCommentId != null) {
-        add(GetPostEvent(postView: state.postView!, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
-      } else {
+      List<CommentViewTree> updatedComments = insertNewComment(state.comments, createComment.commentView);
+
+      if (event.parentCommentId == null) {
         selectedCommentId = null;
         selectedCommentPath = null;
-        add(GetPostEvent(postView: state.postView!, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
       }
-      return emit(state.copyWith(status: PostStatus.success, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
+      return emit(state.copyWith(
+          status: PostStatus.success,
+          comments: updatedComments,
+          selectedCommentId: selectedCommentId,
+          selectedCommentPath: selectedCommentPath,
+          newlyCreatedCommentId: createComment.commentView.comment.id));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }

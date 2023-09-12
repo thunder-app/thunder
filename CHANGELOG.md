@@ -20,6 +20,7 @@
 - Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
 - Automatically save drafts for posts and comments - contribution from @micahmo
+- Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
 
 ### Changed
 
@@ -49,6 +50,7 @@
 - Fix issues entering URLs with some keyboards when logging in - contribution from @micahmo
 - Fix issue with accessibility in sort picker - contribution from @micahmo
 - Fix issue where deleted replies could not be marked read - contribution from @micahmo
+- Fix issue where creating new comment refreshes the whole post page - contribution from @ajsosa
 
 ## 0.2.3+16 - 2023-08-15
 
