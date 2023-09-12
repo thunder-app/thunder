@@ -119,5 +119,7 @@
   "successfullyBlocked": "Pomyślnie zablokowano!",
   "showMore": "Pokaż więcej",
   "downvotesDisabled": "Downvotes are disabled on this instance.",
+  "accessibility": "Accessibility",
+  "animations": "Animations",
   "showLess": "Pokaż mniej"
 }

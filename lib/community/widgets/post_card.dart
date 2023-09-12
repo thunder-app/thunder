@@ -257,6 +257,9 @@ class _PostCardState extends State<PostCard> {
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     CommunityBloc communityBloc = context.read<CommunityBloc>();
 
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
+
     // Mark post as read when tapped
     if (isUserLoggedIn) {
       int postId = widget.postViewMedia.postView.post.id;
@@ -271,6 +274,7 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
+        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
         backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
         backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),

@@ -86,9 +86,13 @@ class _CommentReferenceState extends State<CommentReference> {
         AuthBloc authBloc = context.read<AuthBloc>();
         ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
+        final ThunderState state = context.read<ThunderBloc>().state;
+        final bool reduceAnimations = state.reduceAnimations;
+
         // To to specific post for now, in the future, will be best to scroll to the position of the comment
         await Navigator.of(context).push(
           SwipeablePageRoute(
+            transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
             backGestureDetectionWidth: 45,
             canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
             builder: (context) => MultiBlocProvider(

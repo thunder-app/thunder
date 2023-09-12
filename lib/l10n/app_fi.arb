@@ -122,5 +122,7 @@
   "cantBlockAdmin": "You may not block an instance administrator.",
   "sortByTop": "Sort by Top",
   "downvotesDisabled": "Downvotes are disabled on this instance.",
+  "accessibility": "Accessibility",
+  "animations": "Animations",
   "backButton": "Back button"
 }

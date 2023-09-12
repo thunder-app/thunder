@@ -94,6 +94,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
+    final reduceAnimations = state.reduceAnimations;
+
     if (!widget.viewFullCommentsRefreshing && _removeViewFullCommentsButton) {
       _animatingIn = true;
       _fullCommentsAnimation.reverse();
@@ -110,6 +112,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         }
       },
       child: ScrollablePositionedList.builder(
+        physics: reduceAnimations ? const ClampingScrollPhysics() : null,
         addSemanticIndexes: false,
         itemScrollController: widget.itemScrollController,
         itemPositionsListener: widget.itemPositionsListener,

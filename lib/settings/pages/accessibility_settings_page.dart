@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -52,7 +53,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
     final ThemeData theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Accessibility'), centerTitle: false),
+      appBar: AppBar(title: Text(AppLocalizations.of(context)!.accessibility), centerTitle: false),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -65,12 +66,13 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                   Padding(
                     padding: const EdgeInsets.only(left: 4, bottom: 8.0),
                     child: Text(
-                      'Animations',
+                      AppLocalizations.of(context)!.animations,
                       style: theme.textTheme.titleLarge,
                     ),
                   ),
                   ToggleOption(
                     description: LocalSettings.reduceAnimations.label,
+                    subtitle: 'Reduces the animations used within Thunder', // @TODO: Add subtitle field to LocalSettings for these strings
                     value: reduceAnimations,
                     iconEnabled: Icons.animation,
                     iconDisabled: Icons.animation,

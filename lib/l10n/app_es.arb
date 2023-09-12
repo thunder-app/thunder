@@ -122,5 +122,7 @@
   "cantBlockAdmin": "No se puede bloquear un administrador de instancia.",
   "sortByTop": "Sort by Top",
   "downvotesDisabled": "Downvotes are disabled on this instance.",
+  "accessibility": "Accessibility",
+  "animations": "Animations",
   "backButton": "Back button"
 }

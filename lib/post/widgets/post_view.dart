@@ -316,6 +316,9 @@ class PostSubview extends StatelessWidget {
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
                           account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
 
+                          final ThunderState state = context.read<ThunderBloc>().state;
+                          final bool reduceAnimations = state.reduceAnimations;
+
                           SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                           DraftComment? newDraftComment;
                           DraftComment? previousDraftComment;
@@ -333,6 +336,7 @@ class PostSubview extends StatelessWidget {
                           Navigator.of(context)
                               .push(
                             SwipeablePageRoute(
+                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                               canOnlySwipeFromEdge: true,
                               backGestureDetectionWidth: 45,
                               builder: (context) {

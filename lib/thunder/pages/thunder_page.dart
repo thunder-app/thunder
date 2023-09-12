@@ -301,7 +301,7 @@ class _ThunderState extends State<Thunder> {
             if (selectedPageIndex != index) {
               setState(() {
                 selectedPageIndex = index;
-                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                pageController.jumpToPage(index);
               });
             }
 

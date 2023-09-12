@@ -52,9 +52,13 @@ class InboxMentionsView extends StatelessWidget {
               AuthBloc authBloc = context.read<AuthBloc>();
               ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
+              final ThunderState state = context.read<ThunderBloc>().state;
+              final bool reduceAnimations = state.reduceAnimations;
+
               // To to specific post for now, in the future, will be best to scroll to the position of the comment
               await Navigator.of(context).push(
                 SwipeablePageRoute(
+                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                   backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
                   backGestureDetectionWidth: 45,
                   canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
@@ -118,6 +122,9 @@ class InboxMentionsView extends StatelessWidget {
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
                           AccountBloc accountBloc = context.read<AccountBloc>();
 
+                          final ThunderState state = context.read<ThunderBloc>().state;
+                          final bool reduceAnimations = state.reduceAnimations;
+
                           SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                           DraftComment? newDraftComment;
                           DraftComment? previousDraftComment;
@@ -135,6 +142,7 @@ class InboxMentionsView extends StatelessWidget {
                           Navigator.of(context)
                               .push(
                             SwipeablePageRoute(
+                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                               canOnlySwipeFromEdge: true,
                               backGestureDetectionWidth: 45,
                               builder: (context) {

@@ -290,6 +290,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
                             AccountBloc accountBloc = context.read<AccountBloc>();
 
+                            final ThunderState state = context.read<ThunderBloc>().state;
+                            final bool reduceAnimations = state.reduceAnimations;
+
                             SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                             DraftComment? newDraftComment;
                             DraftComment? previousDraftComment;
@@ -307,6 +310,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             Navigator.of(context)
                                 .push(
                               SwipeablePageRoute(
+                                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                                 canOnlySwipeFromEdge: true,
                                 backGestureDetectionWidth: 45,
                                 builder: (context) {
@@ -385,6 +389,9 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             UserBloc postBloc = context.read<UserBloc>();
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
+                            final ThunderState state = context.read<ThunderBloc>().state;
+                            final bool reduceAnimations = state.reduceAnimations;
+
                             SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                             DraftComment? newDraftComment;
                             DraftComment? previousDraftComment;
@@ -402,6 +409,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             Navigator.of(context)
                                 .push(
                               SwipeablePageRoute(
+                                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                                 canOnlySwipeFromEdge: true,
                                 backGestureDetectionWidth: 45,
                                 builder: (context) {
