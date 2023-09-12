@@ -19,6 +19,7 @@
 - Add option to disabling graying out read posts - contribution from @micahmo
 - Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
+- Added accessibility settings to reduce animations/motion
 - Automatically save drafts for posts and comments - contribution from @micahmo
 
 ### Changed
