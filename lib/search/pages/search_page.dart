@@ -26,6 +26,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -261,73 +262,59 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               CommunityView communityView = state.communities![index];
               final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
               return Tooltip(
-                  excludeFromSemantics: true,
-                  message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
-                  preferBelow: false,
-                  child: ListTile(
-                      leading: CommunityIcon(community: communityView.community, radius: 25),
-                      title: Text(
-                        communityView.community.title,
+                excludeFromSemantics: true,
+                message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+                preferBelow: false,
+                child: ListTile(
+                  leading: CommunityIcon(community: communityView.community, radius: 25),
+                  title: Text(
+                    communityView.community.title,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  subtitle: Row(children: [
+                    Flexible(
+                      child: Text(
+                        '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
                         overflow: TextOverflow.ellipsis,
                       ),
-                      subtitle: Row(children: [
-                        Flexible(
-                          child: Text(
-                            '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                        ),
-                        Text(
-                          ' · ${communityView.counts.subscribers}',
-                          semanticsLabel: '${communityView.counts.subscribers} subscribers',
-                        ),
-                        const SizedBox(width: 4),
-                        const Icon(Icons.people_rounded, size: 16.0),
-                      ]),
-                      trailing: IconButton(
-                        onPressed: () {
-                          SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
-                          _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-                          showSnackbar(
-                              context,
-                              subscriptionStatus == SubscribedType.notSubscribed
-                                  ? AppLocalizations.of(context)!.addedCommunityToSubscriptions
-                                  : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
-                          context.read<AccountBloc>().add(GetAccountInformation());
-                        },
-                        icon: Icon(
-                          switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-                            SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                            SubscribedType.pending => Icons.pending_outlined,
-                            SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                          },
-                        ),
-                        tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-                          SubscribedType.notSubscribed => 'Subscribe',
-                          SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                          SubscribedType.subscribed => 'Unsubscribe',
-                        },
-                        visualDensity: VisualDensity.compact,
-                      ),
-                      onTap: () {
-                        AccountBloc accountBloc = context.read<AccountBloc>();
-                        AuthBloc authBloc = context.read<AuthBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                        Navigator.of(context).push(
-                          SwipeablePageRoute(
-                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(value: accountBloc),
-                                BlocProvider.value(value: authBloc),
-                                BlocProvider.value(value: thunderBloc),
-                              ],
-                              child: CommunityPage(communityId: communityView.community.id),
-                            ),
-                          ),
-                        );
-                      }));
+                    ),
+                    Text(
+                      ' · ${communityView.counts.subscribers}',
+                      semanticsLabel: '${communityView.counts.subscribers} subscribers',
+                    ),
+                    const SizedBox(width: 4),
+                    const Icon(Icons.people_rounded, size: 16.0),
+                  ]),
+                  trailing: IconButton(
+                    onPressed: () {
+                      SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
+                      _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
+                      showSnackbar(
+                          context,
+                          subscriptionStatus == SubscribedType.notSubscribed
+                              ? AppLocalizations.of(context)!.addedCommunityToSubscriptions
+                              : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
+                      context.read<AccountBloc>().add(GetAccountInformation());
+                    },
+                    icon: Icon(
+                      switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+                        SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                        SubscribedType.pending => Icons.pending_outlined,
+                        SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                      },
+                    ),
+                    tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+                      SubscribedType.notSubscribed => 'Subscribe',
+                      SubscribedType.pending => 'Unsubscribe (subscription pending)',
+                      SubscribedType.subscribed => 'Unsubscribe',
+                    },
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  onTap: () {
+                    navigateToCommunityPage(context, communityId: communityView.community.id);
+                  },
+                ),
+              );
             }
           },
         );

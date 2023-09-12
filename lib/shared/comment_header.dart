@@ -10,6 +10,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
@@ -71,23 +72,7 @@ class CommentHeader extends StatelessWidget {
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
                           onTap: () {
-                            account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                            AuthBloc authBloc = context.read<AuthBloc>();
-                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                            Navigator.of(context).push(
-                              SwipeablePageRoute(
-                                canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                                builder: (context) => MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider.value(value: accountBloc),
-                                    BlocProvider.value(value: authBloc),
-                                    BlocProvider.value(value: thunderBloc),
-                                  ],
-                                  child: UserPage(userId: comment.creator.id),
-                                ),
-                              ),
-                            );
+                            navigateToUserPage(context, userId: comment.creator.id);
                           },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),

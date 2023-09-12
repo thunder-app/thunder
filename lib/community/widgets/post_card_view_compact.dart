@@ -19,7 +19,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool showTextPostIndicator;
   final bool showPostAuthor;
   final bool hideNsfwPreviews;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
   final PostListingType? listingType;
@@ -33,7 +33,7 @@ class PostCardViewCompact extends StatelessWidget {
     required this.showTextPostIndicator,
     required this.showPostAuthor,
     required this.hideNsfwPreviews,
-    required this.showInstanceName,
+    required this.communityMode,
     required this.markPostReadOnMediaView,
     required this.isUserLoggedIn,
     required this.listingType,
@@ -112,11 +112,6 @@ class PostCardViewCompact extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           size: 15 * textScaleFactor,
                         )),
-                        if (!postViewMedia.postView.post.featuredCommunity && !postViewMedia.postView.saved)
-                          const WidgetSpan(
-                              child: SizedBox(
-                            width: 3,
-                          )),
                       ],
                       if (postViewMedia.postView.saved)
                         WidgetSpan(
@@ -133,6 +128,12 @@ class PostCardViewCompact extends StatelessWidget {
                             Icons.push_pin_rounded,
                             size: 15 * textScaleFactor,
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                        const WidgetSpan(
+                          child: SizedBox(
+                            width: 3.5,
                           ),
                         ),
                       TextSpan(
@@ -152,7 +153,7 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCommunityAndAuthor(
                   compactMode: true,
                   showCommunityIcons: false,
-                  showInstanceName: showInstanceName,
+                  communityMode: communityMode,
                   postView: postViewMedia.postView,
                   textStyleCommunity: textStyleCommunityAndAuthor,
                   textStyleAuthor: textStyleCommunityAndAuthor,

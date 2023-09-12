@@ -140,7 +140,13 @@ class _PostPageState extends State<PostPage> {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                subtitle: Text(sortTypeLabel ?? ''),
+                subtitle: Row(
+                  children: [
+                    Icon(sortTypeIcon, size: 13),
+                    const SizedBox(width: 4),
+                    Text(sortTypeLabel ?? ''),
+                  ],
+                ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 0),
               ),
               flexibleSpace: GestureDetector(
@@ -460,6 +466,7 @@ class _PostPageState extends State<PostPage> {
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
+            sortTypeLabel = selected.label;
             sortTypeIcon = selected.icon;
           });
           context.read<PostBloc>().add(
@@ -503,8 +510,11 @@ class _PostPageState extends State<PostPage> {
         }
       });
 
-      Navigator.of(context).push(
+      Navigator.of(context)
+          .push(
         SwipeablePageRoute(
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 45,
           builder: (context) {
             return MultiBlocProvider(
                 providers: [
@@ -519,7 +529,8 @@ class _PostPageState extends State<PostPage> {
                 ));
           },
         ),
-      ).whenComplete(() async {
+      )
+          .whenComplete(() async {
         timer.cancel();
 
         if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {

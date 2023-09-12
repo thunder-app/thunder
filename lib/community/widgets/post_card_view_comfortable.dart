@@ -24,7 +24,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -44,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.showInstanceName,
+    required this.communityMode,
     required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -113,11 +113,6 @@ class PostCardViewComfortable extends StatelessWidget {
                         color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                         size: 15 * textScaleFactor,
                       )),
-                      if (!postViewMedia.postView.post.featuredCommunity && (useSaveButton || !postViewMedia.postView.saved))
-                        const WidgetSpan(
-                            child: SizedBox(
-                          width: 3,
-                        )),
                     ],
                     if (!useSaveButton && postViewMedia.postView.saved)
                       WidgetSpan(
@@ -134,6 +129,12 @@ class PostCardViewComfortable extends StatelessWidget {
                           Icons.push_pin_rounded,
                           size: 15 * textScaleFactor,
                           color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                        ),
+                      ),
+                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      const WidgetSpan(
+                        child: SizedBox(
+                          width: 3.5,
                         ),
                       ),
                     TextSpan(
@@ -173,11 +174,6 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
                           size: 15 * textScaleFactor,
                         )),
-                        if (!postViewMedia.postView.post.featuredCommunity && (useSaveButton || !postViewMedia.postView.saved))
-                          const WidgetSpan(
-                              child: SizedBox(
-                            width: 3,
-                          )),
                       ],
                       if (!useSaveButton && postViewMedia.postView.saved)
                         WidgetSpan(
@@ -194,6 +190,12 @@ class PostCardViewComfortable extends StatelessWidget {
                             Icons.push_pin_rounded,
                             size: 15 * textScaleFactor,
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                        const WidgetSpan(
+                          child: SizedBox(
+                            width: 3.5,
                           ),
                         ),
                       TextSpan(
@@ -235,7 +237,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     children: [
                       PostCommunityAndAuthor(
                         showCommunityIcons: showCommunityIcons,
-                        showInstanceName: showInstanceName,
+                        communityMode: communityMode,
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,

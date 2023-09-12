@@ -63,8 +63,11 @@ void triggerCommentAction({
         }
       });
 
-      Navigator.of(context).push(
+      Navigator.of(context)
+          .push(
         SwipeablePageRoute(
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 45,
           builder: (context) {
             return MultiBlocProvider(
               providers: [
@@ -83,7 +86,8 @@ void triggerCommentAction({
             );
           },
         ),
-      ).whenComplete(() async {
+      )
+          .whenComplete(() async {
         timer.cancel();
 
         if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (swipeAction != SwipeAction.edit || commentView.comment.content != newDraftComment?.text)) {

@@ -28,6 +28,8 @@ import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_community.dart';
+import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -110,25 +112,7 @@ class PostSubview extends StatelessWidget {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () {
-                        account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                        AuthBloc authBloc = context.read<AuthBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                        Navigator.of(context).push(
-                          SwipeablePageRoute(
-                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(value: accountBloc),
-                                BlocProvider.value(value: authBloc),
-                                BlocProvider.value(value: thunderBloc),
-                              ],
-                              child: UserPage(
-                                userId: postView.creator.id,
-                              ),
-                            ),
-                          ),
-                        );
+                        navigateToUserPage(context, userId: postView.creator.id);
                       },
                       child: Padding(
                         padding: const EdgeInsets.only(left: 5, right: 5),
@@ -196,23 +180,7 @@ class PostSubview extends StatelessWidget {
                 InkWell(
                   borderRadius: BorderRadius.circular(5),
                   onTap: () {
-                    account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                    AuthBloc authBloc = context.read<AuthBloc>();
-                    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                    Navigator.of(context).push(
-                      SwipeablePageRoute(
-                        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                        builder: (context) => MultiBlocProvider(
-                          providers: [
-                            BlocProvider.value(value: accountBloc),
-                            BlocProvider.value(value: authBloc),
-                            BlocProvider.value(value: thunderBloc),
-                          ],
-                          child: CommunityPage(communityId: postView.community.id),
-                        ),
-                      ),
-                    );
+                    navigateToCommunityPage(context, communityId: postView.community.id);
                   },
                   child: Tooltip(
                     excludeFromSemantics: true,
@@ -362,8 +330,11 @@ class PostSubview extends StatelessWidget {
                             }
                           });
 
-                          Navigator.of(context).push(
+                          Navigator.of(context)
+                              .push(
                             SwipeablePageRoute(
+                              canOnlySwipeFromEdge: true,
+                              backGestureDetectionWidth: 45,
                               builder: (context) {
                                 return MultiBlocProvider(
                                   providers: [
@@ -379,7 +350,8 @@ class PostSubview extends StatelessWidget {
                                 );
                               },
                             ),
-                          ).whenComplete(() async {
+                          )
+                              .whenComplete(() async {
                             timer.cancel();
 
                             if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {

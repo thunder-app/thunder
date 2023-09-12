@@ -139,8 +139,11 @@ enum FeedFabAction {
               }
             });
 
-            Navigator.of(context).push(
+            Navigator.of(context)
+                .push(
               SwipeablePageRoute(
+                canOnlySwipeFromEdge: true,
+                backGestureDetectionWidth: 45,
                 builder: (context) {
                   return MultiBlocProvider(
                     providers: [
@@ -157,7 +160,8 @@ enum FeedFabAction {
                   );
                 },
               ),
-            ).whenComplete(() async {
+            )
+                .whenComplete(() async {
               timer.cancel();
 
               if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {

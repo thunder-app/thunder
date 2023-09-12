@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +25,7 @@ import '../../user/bloc/user_bloc.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool indicateRead;
 
   final Function(VoteType) onVoteAction;
@@ -35,7 +37,7 @@ class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.postViewMedia,
-    this.showInstanceName = true,
+    required this.communityMode,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
@@ -202,7 +204,7 @@ class _PostCardState extends State<PostCard> {
                       showPostAuthor: state.showPostAuthor,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      showInstanceName: widget.showInstanceName,
+                      communityMode: widget.communityMode,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
@@ -213,7 +215,7 @@ class _PostCardState extends State<PostCard> {
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      showInstanceName: widget.showInstanceName,
+                      communityMode: widget.communityMode,
                       showPostAuthor: state.showPostAuthor,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,
@@ -269,7 +271,8 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
-        backGestureDetectionStartOffset: 45,
+        backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+        backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(

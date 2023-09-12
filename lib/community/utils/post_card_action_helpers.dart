@@ -19,6 +19,8 @@ import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/utils/navigate_community.dart';
+import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -116,23 +118,7 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         onTapCommunityName(context, postViewMedia.postView.community.id);
                         break;
                       case PostCardAction.visitProfile:
-                        AccountBloc accountBloc = context.read<AccountBloc>();
-                        AuthBloc authBloc = context.read<AuthBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                        Navigator.of(context).push(
-                          SwipeablePageRoute(
-                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(value: accountBloc),
-                                BlocProvider.value(value: authBloc),
-                                BlocProvider.value(value: thunderBloc),
-                              ],
-                              child: UserPage(userId: postViewMedia.postView.post.creatorId),
-                            ),
-                          ),
-                        );
+                        navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
                         break;
                       case PostCardAction.sharePost:
                         Share.share(postViewMedia.postView.post.apId);
@@ -183,41 +169,9 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
 }
 
 void onTapCommunityName(BuildContext context, int communityId) {
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: CommunityPage(communityId: communityId),
-      ),
-    ),
-  );
+  navigateToCommunityPage(context, communityId: communityId);
 }
 
 void onTapUserName(BuildContext context, int userId) {
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: UserPage(userId: userId),
-      ),
-    ),
-  );
+  navigateToUserPage(context, userId: userId);
 }

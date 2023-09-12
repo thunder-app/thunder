@@ -17,6 +17,7 @@
 - Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 - Add option to disabling graying out read posts - contribution from @micahmo
+- Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
 - Automatically save drafts for posts and comments - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
@@ -35,6 +36,7 @@
 - Improve contrast and distinction of special user identifiers - contribution from @micahmo
 - Show swatches and live previews for accent color selection - contribution from @micahmo
 - Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
+- Hide community name and show usernames when viewing a community - contribution from @micahmo
 
 ### Fixed
 
