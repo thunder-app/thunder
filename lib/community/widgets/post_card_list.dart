@@ -179,7 +179,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
         child: Stack(
           children: [
             MasonryGridView.builder(
-              physics: reduceAnimations ? const ClampingScrollPhysics() : null,
+              physics: reduceAnimations ? const BouncingScrollPhysics() : null,
               gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
               crossAxisSpacing: 40,
               mainAxisSpacing: 0,
