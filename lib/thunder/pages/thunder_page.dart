@@ -240,6 +240,8 @@ class _ThunderState extends State<Thunder> {
     final ThunderState state = context.read<ThunderBloc>().state;
     final InboxState inboxState = context.read<InboxBloc>().state;
 
+    final bool reduceAnimations = state.reduceAnimations;
+
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
         splashColor: Colors.transparent,
@@ -301,7 +303,12 @@ class _ThunderState extends State<Thunder> {
             if (selectedPageIndex != index) {
               setState(() {
                 selectedPageIndex = index;
-                pageController.jumpToPage(index);
+
+                if (reduceAnimations) {
+                  pageController.jumpToPage(index);
+                } else {
+                  pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                }
               });
             }
 
