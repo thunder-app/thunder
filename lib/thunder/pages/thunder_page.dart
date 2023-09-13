@@ -339,7 +339,7 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          openLink(context, url: 'https://github.com/hjiangsu/thunder/releases/latest', openInExternalBrowser: openInExternalBrowser);
+          openLink(context, url: 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
         },
       ),
       background: theme.cardColor,
