@@ -55,5 +55,9 @@
 		<string>We need Photos access to allow you to save media.</string>
  		<key>NSPhotoLibraryAddUsageDescription</key>
     	<string>We need Photos access to allow you to save media.</string>
+
+		<!-- Security compliance -->
+		<key>ITSAppUsesNonExemptEncryption</key>
+		<false/>
 	</dict>
 </plist>
