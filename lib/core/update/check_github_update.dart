@@ -30,13 +30,14 @@ Future<Version> fetchVersion() async {
     if (response.statusCode == 200) {
       final release = json.decode(response.body);
       String latestVersion = release[0]['tag_name'];
+      String latestVersionUrl = release[0]['html_url'];
 
       version_parser.Version latestVersionParsed = version_parser.Version.parse(_trimV(latestVersion));
 
       if (latestVersionParsed > currentVersionParsed) {
-        return Version(version: currentVersion, latestVersion: latestVersion, hasUpdate: true);
+        return Version(version: currentVersion, latestVersion: latestVersion, latestVersionUrl: latestVersionUrl, hasUpdate: true);
       } else {
-        return Version(version: 'N/A', latestVersion: latestVersion, hasUpdate: false);
+        return Version(version: 'N/A', latestVersion: latestVersion, latestVersionUrl: latestVersionUrl, hasUpdate: false);
       }
     }
 

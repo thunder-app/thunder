@@ -340,22 +340,8 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
         ),
-        onTap: () async {
-          String? releaseUrl;
-
-          try {
-            // Find the latest release
-            const String url = 'https://api.github.com/repos/thunder-app/thunder/releases';
-            final Response response = await get(Uri.parse(url)).timeout(const Duration(seconds: 3));
-            if (response.statusCode == 200) {
-              final release = json.decode(response.body);
-              releaseUrl = release[0]['html_url'];
-            }
-          } catch (e) {}
-
-          if (context.mounted) {
-            openLink(context, url: releaseUrl ?? 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
-          }
+        onTap: () {
+          openLink(context, url: version?.latestVersionUrl ?? 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
         },
       ),
       background: theme.cardColor,
