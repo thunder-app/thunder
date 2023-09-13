@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 // Flutter
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:http/http.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/utils/profiles.dart';
@@ -338,8 +340,22 @@ class _ThunderState extends State<Thunder> {
             ),
           ],
         ),
-        onTap: () {
-          openLink(context, url: 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
+        onTap: () async {
+          String? releaseUrl;
+
+          try {
+            // Find the latest release
+            const String url = 'https://api.github.com/repos/thunder-app/thunder/releases';
+            final Response response = await get(Uri.parse(url)).timeout(const Duration(seconds: 3));
+            if (response.statusCode == 200) {
+              final release = json.decode(response.body);
+              releaseUrl = release[0]['html_url'];
+            }
+          } catch (e) {}
+
+          if (context.mounted) {
+            openLink(context, url: releaseUrl ?? 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
+          }
         },
       ),
       background: theme.cardColor,
