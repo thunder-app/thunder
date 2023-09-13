@@ -49,6 +49,8 @@ class _ThunderState extends State<Thunder> {
 
   bool _isFabOpen = false;
 
+  bool reduceAnimations = false;
+
   @override
   void initState() {
     super.initState();
@@ -113,7 +115,12 @@ class _ThunderState extends State<Thunder> {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-        pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
+        if (reduceAnimations) {
+          pageController.jumpToPage(selectedPageIndex);
+        } else {
+          pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        }
       });
       return Future.value(false);
     }
@@ -149,6 +156,8 @@ class _ThunderState extends State<Thunder> {
           },
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
+              reduceAnimations = thunderBlocState.reduceAnimations;
+
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
