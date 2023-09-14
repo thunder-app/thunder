@@ -55,7 +55,7 @@ void triggerCommentAction({
       SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       DraftComment? newDraftComment;
       DraftComment? previousDraftComment;
-      String draftId = '${LocalSettings.draftsCache.name}-$selectedCommentId';
+      String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
       String? draftCommentJson = prefs.getString(draftId);
       if (draftCommentJson != null) {
         previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
