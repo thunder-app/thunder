@@ -28,6 +28,7 @@ class PostPageSuccess extends StatefulWidget {
   final List<CommentViewTree> comments;
   final int? selectedCommentId;
   final String? selectedCommentPath;
+  final int? newlyCreatedCommentId;
   final int? moddingCommentId;
 
   final ItemScrollController itemScrollController;
@@ -47,6 +48,7 @@ class PostPageSuccess extends StatefulWidget {
     this.hasReachedCommentEnd = false,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.newlyCreatedCommentId,
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
     required this.moderators,
@@ -85,6 +87,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             moddingCommentId: widget.moddingCommentId,
             selectedCommentId: widget.selectedCommentId,
             selectedCommentPath: widget.selectedCommentPath,
+            newlyCreatedCommentId: widget.newlyCreatedCommentId,
             now: DateTime.now().toUtc(),
             itemScrollController: widget.itemScrollController,
             itemPositionsListener: widget.itemPositionsListener,
@@ -98,6 +101,9 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               PostBloc postBloc = context.read<PostBloc>();
               ThunderBloc thunderBloc = context.read<ThunderBloc>();
               AccountBloc accountBloc = context.read<AccountBloc>();
+
+              final ThunderState state = context.read<ThunderBloc>().state;
+              final bool reduceAnimations = state.reduceAnimations;
 
               SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
               DraftComment? newDraftComment;
@@ -116,6 +122,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               Navigator.of(context)
                   .push(
                 SwipeablePageRoute(
+                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                   canOnlySwipeFromEdge: true,
                   backGestureDetectionWidth: 45,
                   builder: (context) {

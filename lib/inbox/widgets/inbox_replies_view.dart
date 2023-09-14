@@ -80,6 +80,9 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 ThunderBloc thunderBloc = context.read<ThunderBloc>();
                 AccountBloc accountBloc = context.read<AccountBloc>();
 
+                final ThunderState state = context.read<ThunderBloc>().state;
+                final bool reduceAnimations = state.reduceAnimations;
+
                 SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                 DraftComment? newDraftComment;
                 DraftComment? previousDraftComment;
@@ -97,6 +100,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 Navigator.of(context)
                     .push(
                   SwipeablePageRoute(
+                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                     canOnlySwipeFromEdge: true,
                     backGestureDetectionWidth: 45,
                     builder: (context) {

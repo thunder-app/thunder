@@ -108,6 +108,9 @@ class ThunderState extends Equatable {
     this.enableCommentNavigation = true,
     this.combineNavAndFab = true,
 
+    /// -------------------------- Accessibility Related Settings --------------------------
+    this.reduceAnimations = false,
+
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
     this.scrollToTopId = 0,
@@ -227,6 +230,9 @@ class ThunderState extends Equatable {
   final bool enableCommentNavigation;
   final bool combineNavAndFab;
 
+  /// -------------------------- Accessibility Related Settings --------------------------
+  final bool reduceAnimations;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -341,6 +347,9 @@ class ThunderState extends Equatable {
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
     bool? combineNavAndFab,
+
+    /// -------------------------- Accessibility Related Settings --------------------------
+    bool? reduceAnimations,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -459,6 +468,9 @@ class ThunderState extends Equatable {
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
       combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
 
+      /// -------------------------- Accessibility Related Settings --------------------------
+      reduceAnimations: reduceAnimations ?? this.reduceAnimations,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -575,6 +587,9 @@ class ThunderState extends Equatable {
 
         enableCommentNavigation,
         combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

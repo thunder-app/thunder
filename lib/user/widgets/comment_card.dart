@@ -31,6 +31,7 @@ class CommentCard extends StatelessWidget {
     int downvotes = comment.counts.downvotes ?? 0;
 
     final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
 
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -43,6 +44,7 @@ class CommentCard extends StatelessWidget {
           // To to specific post for now, in the future, will be best to scroll to the position of the comment
           await Navigator.of(context).push(
             SwipeablePageRoute(
+              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
               backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
               backGestureDetectionWidth: 45,
               canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),

@@ -125,6 +125,9 @@ enum FeedFabAction {
             ThunderBloc thunderBloc = context.read<ThunderBloc>();
             AccountBloc accountBloc = context.read<AccountBloc>();
 
+            final ThunderState thunderState = context.read<ThunderBloc>().state;
+            final bool reduceAnimations = thunderState.reduceAnimations;
+
             SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
             DraftPost? newDraftPost;
             DraftPost? previousDraftPost;
@@ -142,6 +145,7 @@ enum FeedFabAction {
             Navigator.of(context)
                 .push(
               SwipeablePageRoute(
+                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                 canOnlySwipeFromEdge: true,
                 backGestureDetectionWidth: 45,
                 builder: (context) {

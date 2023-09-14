@@ -13,8 +13,9 @@ class GetPostEvent extends PostEvent {
   final CommentSortType? sortType;
   final String? selectedCommentPath;
   final int? selectedCommentId;
+  final int? newlyCreatedCommentId;
 
-  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId});
+  const GetPostEvent({this.sortType, this.postView, this.postId, this.selectedCommentPath, this.selectedCommentId, this.newlyCreatedCommentId});
 }
 
 class GetPostCommentsEvent extends PostEvent {

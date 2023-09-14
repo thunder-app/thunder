@@ -19,6 +19,7 @@ class PostState extends Equatable {
     this.sortTypeIcon,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.newlyCreatedCommentId,
     this.moddingCommentId = -1,
     this.viewAllCommentsRefresh = false,
     this.navigateCommentIndex = 0,
@@ -44,7 +45,9 @@ class PostState extends Equatable {
   final int commentCount;
   final bool hasReachedCommentEnd;
   final int? selectedCommentId;
+  final int? newlyCreatedCommentId;
   final String? selectedCommentPath;
+
   // This is to track what comment is being restored or deleted so we can
   // show a spinner indicator that thunder is working on it
   final int moddingCommentId;
@@ -52,6 +55,7 @@ class PostState extends Equatable {
   final String? errorMessage;
 
   final int navigateCommentIndex;
+
   // This exists purely for forcing the bloc to refire
   // even if the comment index doesn't change
   final int navigateCommentId;
@@ -72,6 +76,7 @@ class PostState extends Equatable {
     IconData? sortTypeIcon,
     int? selectedCommentId,
     String? selectedCommentPath,
+    int? newlyCreatedCommentId,
     int? moddingCommentId,
     bool? viewAllCommentsRefresh = false,
     int? navigateCommentIndex,
@@ -93,6 +98,7 @@ class PostState extends Equatable {
       sortTypeIcon: sortTypeIcon ?? this.sortTypeIcon,
       selectedCommentId: selectedCommentId,
       selectedCommentPath: selectedCommentPath,
+      newlyCreatedCommentId: newlyCreatedCommentId,
       moddingCommentId: moddingCommentId ?? this.moddingCommentId,
       viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
       navigateCommentIndex: navigateCommentIndex ?? 0,
@@ -116,6 +122,7 @@ class PostState extends Equatable {
         sortTypeIcon,
         selectedCommentId,
         selectedCommentPath,
+        newlyCreatedCommentId,
         viewAllCommentsRefresh,
         moddingCommentId,
         navigateCommentIndex,

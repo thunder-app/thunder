@@ -144,6 +144,9 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             AccountBloc accountBloc = context.read<AccountBloc>();
                                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
+                                            final ThunderState state = context.read<ThunderBloc>().state;
+                                            final bool reduceAnimations = state.reduceAnimations;
+
                                             SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                                             DraftPost? newDraftPost;
                                             DraftPost? previousDraftPost;
@@ -161,6 +164,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> with TickerProvider
                                             Navigator.of(context)
                                                 .push(
                                               SwipeablePageRoute(
+                                                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                                                 canOnlySwipeFromEdge: true,
                                                 backGestureDetectionWidth: 45,
                                                 builder: (context) {
