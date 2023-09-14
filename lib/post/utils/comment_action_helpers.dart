@@ -72,6 +72,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     icon: Icons.arrow_downward_rounded,
     color: Colors.blue,
     getForegroundColor: (commentView) => commentView.myVote == VoteType.down ? Colors.blue : null,
+    shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(

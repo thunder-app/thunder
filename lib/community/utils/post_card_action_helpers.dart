@@ -41,6 +41,7 @@ class ExtendedPostCardActions {
     this.color,
     this.getForegroundColor,
     this.getOverrideIcon,
+    this.shouldShow,
     this.shouldEnable,
   });
 
@@ -50,6 +51,7 @@ class ExtendedPostCardActions {
   final Color? color;
   final Color? Function(PostView postView)? getForegroundColor;
   final IconData? Function(PostView postView)? getOverrideIcon;
+  final bool Function(BuildContext context, PostView commentView)? shouldShow;
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
 
@@ -99,6 +101,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     icon: Icons.arrow_downward_rounded,
     color: Colors.blue,
     getForegroundColor: (postView) => postView.myVote == VoteType.down ? Colors.blue : null,
+    shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
@@ -162,7 +165,7 @@ void showPostActionBottomModalSheet(
             ),
             MultiPickerItem(
               pickerItems: [
-                ...multiPostCardActionItemsToUse.map(
+                ...multiPostCardActionItemsToUse.where((a) => a.shouldShow?.call(context, postViewMedia.postView) ?? true).map(
                   (a) {
                     return PickerItemData(
                       label: a.label,
