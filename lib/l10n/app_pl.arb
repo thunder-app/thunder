@@ -122,5 +122,18 @@
   "downvotesDisabled": "Downvotes are disabled on this instance.",
   "accessibility": "Accessibility",
   "animations": "Animations",
+  "copyText": "Copy Text",
+  "shareLink": "Share Link",
+  "upvote": "Upvote",
+  "downvote": "Downvote",
+  "edit": "Edit",
+  "restore": "Restore",
+  "delete": "Delete",
+  "visitCommunity": "Visit Community",
+  "visitUserProfile": "Visit User Profile",
+  "sharePost": "Share Post",
+  "shareMedia": "Share Media",
+  "toggelRead": "Toggle Read",
+  "share": "Share",
   "showLess": "Pokaż mniej"
 }

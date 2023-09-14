@@ -58,7 +58,7 @@ class CommentCardActions extends StatelessWidget {
                   ),
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
-                    showCommentActionBottomModalSheet(context, commentView, onSaveAction, onDeleteAction);
+                    showCommentActionBottomModalSheet(context, commentView, onSaveAction, onDeleteAction, onVoteAction, onReplyEditAction);
                     HapticFeedback.mediumImpact();
                   }),
             ),
