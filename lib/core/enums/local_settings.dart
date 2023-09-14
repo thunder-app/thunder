@@ -45,6 +45,9 @@ enum LocalSettings {
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
 
+  /// -------------------------- Accessibility Related Settings --------------------------
+  reduceAnimations(name: 'setting_accessibility_reduce_animations', label: 'Reduce Animations'),
+
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   appTheme(name: 'setting_theme_app_theme', label: 'Theme'),

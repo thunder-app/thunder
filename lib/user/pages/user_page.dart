@@ -33,6 +33,9 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -97,6 +100,7 @@ class _UserPageState extends State<UserPage> {
                   final ThunderBloc thunderBloc = context.read<ThunderBloc>();
                   Navigator.of(context).push(
                     SwipeablePageRoute(
+                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                       builder: (context) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: accountBloc),

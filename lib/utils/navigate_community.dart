@@ -41,8 +41,12 @@ Future<void> navigateToCommunityPage(BuildContext context, {String? communityNam
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
+  ThunderState thunderState = thunderBloc.state;
+  final bool reduceAnimations = thunderState.reduceAnimations;
+
   Navigator.of(context).push(
     SwipeablePageRoute(
+      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionWidth: 45,
       canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
       builder: (context) => MultiBlocProvider(

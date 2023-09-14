@@ -187,6 +187,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
       bool combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
+      /// -------------------------- Accessibility Related Settings --------------------------
+      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -290,6 +293,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         enableCommentNavigation: enableCommentNavigation,
         combineNavAndFab: combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations: reduceAnimations,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

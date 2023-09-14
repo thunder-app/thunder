@@ -51,6 +51,8 @@ class _ThunderState extends State<Thunder> {
 
   bool _isFabOpen = false;
 
+  bool reduceAnimations = false;
+
   @override
   void initState() {
     super.initState();
@@ -115,7 +117,12 @@ class _ThunderState extends State<Thunder> {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-        pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
+        if (reduceAnimations) {
+          pageController.jumpToPage(selectedPageIndex);
+        } else {
+          pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        }
       });
       return Future.value(false);
     }
@@ -151,6 +158,8 @@ class _ThunderState extends State<Thunder> {
           },
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
+              reduceAnimations = thunderBlocState.reduceAnimations;
+
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
@@ -242,6 +251,8 @@ class _ThunderState extends State<Thunder> {
     final ThunderState state = context.read<ThunderBloc>().state;
     final InboxState inboxState = context.read<InboxBloc>().state;
 
+    final bool reduceAnimations = state.reduceAnimations;
+
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
         splashColor: Colors.transparent,
@@ -303,7 +314,12 @@ class _ThunderState extends State<Thunder> {
             if (selectedPageIndex != index) {
               setState(() {
                 selectedPageIndex = index;
-                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
+                if (reduceAnimations) {
+                  pageController.jumpToPage(index);
+                } else {
+                  pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                }
               });
             }
 

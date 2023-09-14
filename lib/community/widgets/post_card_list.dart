@@ -141,6 +141,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
     bool tabletMode = state.tabletMode;
     bool compactMode = state.useCompactView;
+    bool reduceAnimations = state.reduceAnimations;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -178,6 +179,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
         child: Stack(
           children: [
             MasonryGridView.builder(
+              physics: reduceAnimations ? const BouncingScrollPhysics() : null,
               gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
               crossAxisSpacing: 40,
               mainAxisSpacing: 0,
