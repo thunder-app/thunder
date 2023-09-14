@@ -21,6 +21,7 @@
 - Downvote actions will be disabled when instances have downvotes disabled
 - Added accessibility settings to reduce animations/motion
 - Automatically save drafts for posts and comments - contribution from @micahmo
+- Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
 
 ### Changed

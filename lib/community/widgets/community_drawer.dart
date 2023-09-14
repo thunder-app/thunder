@@ -33,8 +33,16 @@ class DrawerItem extends StatelessWidget {
   final IconData icon;
 
   final bool disabled;
+  final bool isSelected;
 
-  const DrawerItem({super.key, required this.onTap, required this.label, required this.icon, this.disabled = false});
+  const DrawerItem({
+    super.key,
+    required this.onTap,
+    required this.label,
+    required this.icon,
+    this.disabled = false,
+    required this.isSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -44,26 +52,30 @@ class DrawerItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12.0),
       child: SizedBox(
         height: 56.0,
-        child: InkWell(
-          splashColor: disabled ? Colors.transparent : null,
-          highlightColor: Colors.transparent,
-          onTap: disabled ? null : onTap,
-          customBorder: const StadiumBorder(),
-          child: Stack(
-            alignment: Alignment.center,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  const SizedBox(width: 16),
-                  Icon(icon, color: disabled ? theme.dividerColor : null),
-                  const SizedBox(width: 12),
-                  Text(
-                    label,
-                    style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
-                  ),
-                ],
-              ),
-            ],
+        child: Material(
+          color: isSelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
+          shape: const StadiumBorder(),
+          child: InkWell(
+            splashColor: disabled ? Colors.transparent : null,
+            highlightColor: Colors.transparent,
+            onTap: disabled ? null : onTap,
+            customBorder: const StadiumBorder(),
+            child: Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    const SizedBox(width: 16),
+                    Icon(icon, color: disabled ? theme.dividerColor : null),
+                    const SizedBox(width: 12),
+                    Text(
+                      label,
+                      style: disabled ? theme.textTheme.bodyMedium?.copyWith(color: theme.dividerColor) : null,
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -72,7 +84,16 @@ class DrawerItem extends StatelessWidget {
 }
 
 class CommunityDrawer extends StatefulWidget {
-  const CommunityDrawer({super.key});
+  final PostListingType? currentPostListingType;
+  final int? communityId;
+  final String? communityName;
+
+  const CommunityDrawer({
+    super.key,
+    required this.currentPostListingType,
+    this.communityId,
+    this.communityName,
+  });
 
   @override
   State<CommunityDrawer> createState() => _CommunityDrawerState();
@@ -122,6 +143,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     children: destinations.map((Destination destination) {
                       return DrawerItem(
                         disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
+                        isSelected: destination.listingType == widget.currentPostListingType && widget.communityId == null && widget.communityName == null,
                         onTap: () {
                           context.read<CommunityBloc>().add(GetCommunityPostsEvent(
                                 reset: true,
@@ -163,10 +185,13 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         itemBuilder: (context, index) {
                                           CommunitySafe community = _getSubscriptions(context)[index];
 
+                                          final bool isCommunitySelected =
+                                              (widget.communityId != null && community.id == widget.communityId) || (widget.communityName != null && community.name == widget.communityName);
                                           return TextButton(
                                             style: TextButton.styleFrom(
                                               alignment: Alignment.centerLeft,
                                               minimumSize: const Size.fromHeight(50),
+                                              backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
                                             ),
                                             onPressed: () {
                                               context.read<CommunityBloc>().add(
