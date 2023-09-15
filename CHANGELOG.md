@@ -53,6 +53,7 @@
 - Fix issue with accessibility in sort picker - contribution from @micahmo
 - Fix issue where deleted replies could not be marked read - contribution from @micahmo
 - Fix issue where creating new comment refreshes the whole post page - contribution from @ajsosa
+- Fix issue where dismiss read FAB action would not work at times
 
 ## 0.2.3+16 - 2023-08-15
 
