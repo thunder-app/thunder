@@ -44,7 +44,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
     on<OnDismissEvent>(
       _onDismissEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
     );
     on<OnFabToggle>(
       _onFabToggle,
