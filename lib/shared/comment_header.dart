@@ -71,9 +71,11 @@ class CommentHeader extends StatelessWidget {
                         borderRadius: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                          onTap: () {
-                            navigateToUserPage(context, userId: comment.creator.id);
-                          },
+                          onTap: isHidden && collapseParentCommentOnGesture
+                              ? null
+                              : () {
+                                  navigateToUserPage(context, userId: comment.creator.id);
+                                },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),
                             child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
