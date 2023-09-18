@@ -46,7 +46,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
     on<OnDismissEvent>(
       _onDismissEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
     );
     on<OnFabToggle>(
       _onFabToggle,
@@ -201,6 +201,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
       bool combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
 
+      /// -------------------------- Accessibility Related Settings --------------------------
+      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+
       List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
           // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
           ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
@@ -309,6 +312,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         enableCommentNavigation: enableCommentNavigation,
         combineNavAndFab: combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations: reduceAnimations,
 
         anonymousInstances: anonymousInstances,
         currentAnonymousInstance: currentAnonymousInstance,

@@ -107,6 +107,9 @@ class ThunderState extends Equatable {
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
     this.combineNavAndFab = true,
+
+    /// -------------------------- Accessibility Related Settings --------------------------
+    this.reduceAnimations = false,
     this.anonymousInstances = const ['lemmy.ml'],
     this.currentAnonymousInstance = 'lemmy.ml',
 
@@ -229,6 +232,9 @@ class ThunderState extends Equatable {
   final bool enableCommentNavigation;
   final bool combineNavAndFab;
 
+  /// -------------------------- Accessibility Related Settings --------------------------
+  final bool reduceAnimations;
+
   final List<String> anonymousInstances;
   final String currentAnonymousInstance;
 
@@ -346,6 +352,9 @@ class ThunderState extends Equatable {
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
     bool? combineNavAndFab,
+
+    /// -------------------------- Accessibility Related Settings --------------------------
+    bool? reduceAnimations,
     List<String>? anonymousInstances,
     String? currentAnonymousInstance,
 
@@ -466,6 +475,9 @@ class ThunderState extends Equatable {
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
       combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
 
+      /// -------------------------- Accessibility Related Settings --------------------------
+      reduceAnimations: reduceAnimations ?? this.reduceAnimations,
+
       anonymousInstances: anonymousInstances ?? this.anonymousInstances,
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
 
@@ -585,6 +597,9 @@ class ThunderState extends Equatable {
 
         enableCommentNavigation,
         combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations,
 
         anonymousInstances,
         currentAnonymousInstance,

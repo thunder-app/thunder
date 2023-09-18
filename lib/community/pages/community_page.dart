@@ -60,6 +60,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
   bool isFabSummoned = true;
   bool enableFab = false;
   bool isActivePage = true;
+  bool showBackButton = false;
 
   @override
   void initState() {
@@ -69,6 +70,8 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
       isActivePage = widget.pageController!.page == 0;
     });
     BackButtonInterceptor.add(_handleBack);
+
+    showBackButton = Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true;
   }
 
   @override
@@ -180,7 +183,13 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
-                        subtitle: Text(getSortName(state)),
+                        subtitle: Row(
+                          children: [
+                            Icon(getSortIcon(state), size: 13),
+                            const SizedBox(width: 4),
+                            Text(getSortName(state)),
+                          ],
+                        ),
                         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                       ),
                       centerTitle: false,
@@ -192,7 +201,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                           }
                         },
                       ),
-                      leading: Navigator.of(context).canPop() && currentCommunityBloc?.state.communityId != null && widget.scaffoldKey?.currentState?.isDrawerOpen != true
+                      leading: showBackButton
                           ? IconButton(
                               icon: Icon(
                                 Icons.arrow_back_rounded,
@@ -267,7 +276,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         )
                       ],
                     ),
-                    drawer: (widget.communityId != null || widget.communityName != null) ? null : CommunityDrawer(navigateToAccount: widget.navigateToAccount),
+                    drawer: (widget.communityId != null || widget.communityName != null)
+                        ? null
+                        : CommunityDrawer(
+                            currentPostListingType: currentCommunityBloc!.state.listingType,
+                            communityId: currentCommunityBloc!.state.communityId,
+                            communityName: currentCommunityBloc!.state.communityName,
+                            navigateToAccount: widget.navigateToAccount,
+                          ),
                     floatingActionButton: enableFab
                         ? AnimatedSwitcher(
                             duration: const Duration(milliseconds: 200),
@@ -502,6 +518,14 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
 
     return sortTypeLabel ?? '';
+  }
+
+  IconData? getSortIcon(CommunityState state) {
+    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+      return null;
+    }
+
+    return sortTypeIcon;
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {

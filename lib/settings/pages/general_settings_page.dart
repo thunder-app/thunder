@@ -410,6 +410,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             },
                             previouslySelected: defaultSortType,
                           ),
+                          valueDisplay: Row(
+                            children: [
+                              Icon(allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).icon, size: 13),
+                              const SizedBox(width: 4),
+                              Text(
+                                allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),
@@ -602,6 +612,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                             },
                             previouslySelected: defaultCommentSortType,
+                          ),
+                          valueDisplay: Row(
+                            children: [
+                              Icon(commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                              const SizedBox(width: 4),
+                              Text(
+                                commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
                           ),
                         ),
                         ListOption(

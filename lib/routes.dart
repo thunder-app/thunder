@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/settings/pages/about_settings_page.dart';
+import 'package:thunder/settings/pages/accessibility_settings_page.dart';
 import 'package:thunder/settings/pages/debug_settings_page.dart';
 import 'package:thunder/settings/pages/fab_settings_page.dart';
 import 'package:thunder/settings/pages/general_settings_page.dart';
@@ -66,6 +68,16 @@ final GoRouter router = GoRouter(
             return BlocProvider.value(
               value: state.extra! as ThunderBloc,
               child: const FabSettingsPage(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'accessibility',
+          path: 'accessibility',
+          builder: (context, state) {
+            return BlocProvider.value(
+              value: state.extra! as ThunderBloc,
+              child: const AccessibilitySettingsPage(),
             );
           },
         ),

@@ -254,7 +254,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (communityName != null) {
         try {
-          await navigateToCommunityByName(context, communityName);
+          await navigateToCommunityPage(context, communityName: communityName);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid community we'll perform the next fallback
@@ -265,7 +265,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (username != null) {
         try {
-          await navigateToUserByName(context, username);
+          await navigateToUserPage(context, username: username);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid user, we'll perform the next fallback

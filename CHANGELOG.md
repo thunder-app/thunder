@@ -17,7 +17,12 @@
 - Added setting to import and export settings
 - Added liveness and latency indicators for instances in profile switcher - contribution from @micahmo
 - Add option to disabling graying out read posts - contribution from @micahmo
+- Show sort type icon - contribution from @micahmo
 - Downvote actions will be disabled when instances have downvotes disabled
+- Added accessibility settings to reduce animations/motion
+- Automatically save drafts for posts and comments - contribution from @micahmo
+- Highlight the currently selected page in the navigation drawer - contribution from @micahmo
+- Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
 - Improved account switching and added anonymous browsing mode for any intance - contribution from @micahmo
 
 ### Changed
@@ -31,8 +36,10 @@
 - Star indicator for saved posts now prefixes the post title so that it's consistent with the indicators for locked posts and featured community posts - contribution from @ajsosa
 - Improved ability to refresh posts - contribution from @micahmo
 - Improve the option selector dialog to show the currently selected item - contribution from @micahmo
+- Improve contrast and distinction of special user identifiers - contribution from @micahmo
 - Show swatches and live previews for accent color selection - contribution from @micahmo
 - Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
+- Hide community name and show usernames when viewing a community - contribution from @micahmo
 
 ### Fixed
 
@@ -46,6 +53,8 @@
 - Fix issues entering URLs with some keyboards when logging in - contribution from @micahmo
 - Fix issue with accessibility in sort picker - contribution from @micahmo
 - Fix issue where deleted replies could not be marked read - contribution from @micahmo
+- Fix issue where creating new comment refreshes the whole post page - contribution from @ajsosa
+- Fix issue where dismiss read FAB action would not work at times
 
 ## 0.2.3+16 - 2023-08-15
 

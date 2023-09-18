@@ -13,6 +13,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_community.dart';
 
 import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
@@ -378,22 +379,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                 for (var mods in widget.moderates!)
                                                   GestureDetector(
                                                     onTap: () {
-                                                      account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                                      Navigator.of(context).push(
-                                                        SwipeablePageRoute(
-                                                          builder: (context) => MultiBlocProvider(
-                                                            providers: [
-                                                              BlocProvider.value(value: accountBloc),
-                                                              BlocProvider.value(value: authBloc),
-                                                              BlocProvider.value(value: thunderBloc),
-                                                            ],
-                                                            child: CommunityPage(communityId: mods.community.id),
-                                                          ),
-                                                        ),
-                                                      );
+                                                      navigateToCommunityPage(context, communityId: mods.community.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(bottom: 8.0),

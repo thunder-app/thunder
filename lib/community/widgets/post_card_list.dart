@@ -141,6 +141,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
     bool tabletMode = state.tabletMode;
     bool compactMode = state.useCompactView;
+    bool reduceAnimations = state.reduceAnimations;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,
@@ -178,6 +179,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
         child: Stack(
           children: [
             MasonryGridView.builder(
+              physics: reduceAnimations ? const BouncingScrollPhysics() : null,
               gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
               crossAxisSpacing: 40,
               mainAxisSpacing: 0,
@@ -327,7 +329,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                     child: !toRemoveSet.contains(postViewMedia.postView.post.id)
                         ? PostCard(
                             postViewMedia: postViewMedia,
-                            showInstanceName: widget.communityId == null,
+                            communityMode: widget.communityId != null || widget.communityName != null,
                             onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                             onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                             onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),

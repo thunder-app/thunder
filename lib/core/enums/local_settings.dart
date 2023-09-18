@@ -45,6 +45,9 @@ enum LocalSettings {
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
 
+  /// -------------------------- Accessibility Related Settings --------------------------
+  reduceAnimations(name: 'setting_accessibility_reduce_animations', label: 'Reduce Animations'),
+
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
   appTheme(name: 'setting_theme_app_theme', label: 'Theme'),
@@ -96,6 +99,8 @@ enum LocalSettings {
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
   combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
 
+  draftsCache(name: 'drafts_cache', label: ''),
+
   anonymousInstances(name: 'setting_anonymous_instances', label: ''),
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', label: ''),
   ;
@@ -110,4 +115,7 @@ enum LocalSettings {
 
   /// The label of the setting as seen in the Settings page
   final String label;
+
+  /// Defines the settings that are excluded from import/export
+  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
 }
