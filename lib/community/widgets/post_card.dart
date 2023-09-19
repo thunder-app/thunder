@@ -16,6 +16,7 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -255,7 +256,7 @@ class _PostCardState extends State<PostCard> {
     AccountBloc accountBloc = context.read<AccountBloc>();
     AuthBloc authBloc = context.read<AuthBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    CommunityBloc communityBloc = context.read<CommunityBloc>();
+    // CommunityBloc communityBloc = context.read<CommunityBloc>();
 
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
@@ -267,8 +268,8 @@ class _PostCardState extends State<PostCard> {
         UserBloc userBloc = BlocProvider.of<UserBloc>(context);
         userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
       } catch (e) {
-        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-        communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
+        // CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
+        // communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
       }
     }
 
@@ -278,23 +279,30 @@ class _PostCardState extends State<PostCard> {
         backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
         backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
-        builder: (context) {
+        builder: (otherContext) {
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: accountBloc),
               BlocProvider.value(value: authBloc),
               BlocProvider.value(value: thunderBloc),
-              BlocProvider.value(value: communityBloc),
+              // BlocProvider.value(value: communityBloc),
               BlocProvider(create: (context) => post_bloc.PostBloc()),
             ],
             child: PostPage(
               postView: widget.postViewMedia,
-              onPostUpdated: () {},
+              onPostUpdated: (PostViewMedia postViewMedia) {
+                try {
+                  context.read<FeedBloc>().add(FeedItemUpdated(postViewMedia: postViewMedia));
+                } catch (e) {
+                  print('here');
+                }
+              },
             ),
           );
         },
       ),
     );
-    if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
+
+    // if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
   }
 }

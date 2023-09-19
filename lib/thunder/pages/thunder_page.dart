@@ -9,12 +9,14 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:http/http.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -216,10 +218,8 @@ class _ThunderState extends State<Thunder> {
                                       onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
-                                        CommunityPage(
-                                          scaffoldKey: _feedScaffoldKey,
-                                          pageController: pageController,
-                                        ),
+                                        // CommunityPage(scaffoldKey: _feedScaffoldKey, pageController: pageController),
+                                        const FeedPage(feedType: FeedType.general, postListingType: PostListingType.all, sortType: SortType.hot),
                                         const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),

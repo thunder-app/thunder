@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -55,7 +56,7 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: () => {}),
+                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: (PostViewMedia postViewMedia) => {}),
               ),
             ),
           );

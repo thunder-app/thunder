@@ -12,6 +12,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -69,7 +70,11 @@ class InboxMentionsView extends StatelessWidget {
                       BlocProvider.value(value: thunderBloc),
                       BlocProvider(create: (context) => PostBloc()),
                     ],
-                    child: PostPage(selectedCommentPath: mentions[index].comment.path, selectedCommentId: mentions[index].comment.id, postId: mentions[index].post.id, onPostUpdated: () => {}),
+                    child: PostPage(
+                        selectedCommentPath: mentions[index].comment.path,
+                        selectedCommentId: mentions[index].comment.id,
+                        postId: mentions[index].post.id,
+                        onPostUpdated: (PostViewMedia postViewMedia) => {}),
                   ),
                 ),
               );

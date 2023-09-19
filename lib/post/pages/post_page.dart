@@ -35,7 +35,7 @@ class PostPage extends StatefulWidget {
   final String? selectedCommentPath;
   final int? selectedCommentId;
 
-  final VoidCallback onPostUpdated;
+  final Function(PostViewMedia) onPostUpdated;
 
   const PostPage({
     super.key,
@@ -352,9 +352,8 @@ class _PostPageState extends State<PostPage> {
                       return true;
                     },
                     listener: (context, state) {
-                      if (state.status == PostStatus.success && widget.postView != null) {
-                        // Update the community's post
-                        context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      if (state.status == PostStatus.success && widget.postView != null && state.postView != null) {
+                        widget.onPostUpdated(state.postView!);
                       }
                     },
                     builder: (context, state) {
