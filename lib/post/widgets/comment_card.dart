@@ -382,59 +382,63 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                 child: isHidden
                     ? Container()
                     : widget.commentViewTree.replies.isEmpty && widget.commentViewTree.commentView!.counts.childCount > 0
-                        ? Container(
-                            margin: EdgeInsets.only(
-                              left: switch (nestedCommentIndicatorStyle) {
-                                NestedCommentIndicatorStyle.thin => 7,
-                                NestedCommentIndicatorStyle.thick => 4,
-                              },
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentViewTree.commentView!.comment.id));
-                                setState(() {
-                                  isFetchingMoreComments = true;
-                                });
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const Divider(height: 1),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        ? Column(
+                            children: [
+                              Container(
+                                margin: EdgeInsets.only(
+                                  left: switch (nestedCommentIndicatorStyle) {
+                                    NestedCommentIndicatorStyle.thin => 7,
+                                    NestedCommentIndicatorStyle.thick => 4,
+                                  },
+                                ),
+                                child: InkWell(
+                                  onTap: () {
+                                    context.read<PostBloc>().add(GetPostCommentsEvent(commentParentId: widget.commentViewTree.commentView!.comment.id));
+                                    setState(() {
+                                      isFetchingMoreComments = true;
+                                    });
+                                  },
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border(
-                                            left: BorderSide(
-                                              width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
-                                              // This is the color of the nested comment indicator for deferred load
-                                              color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
+                                      const Divider(height: 1),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Container(
+                                            decoration: BoxDecoration(
+                                              border: Border(
+                                                left: BorderSide(
+                                                  width: nestedCommentIndicatorStyle == NestedCommentIndicatorStyle.thick ? 4.0 : 1,
+                                                  // This is the color of the nested comment indicator for deferred load
+                                                  color: nestedCommentIndicatorColor == NestedCommentIndicatorColor.colorful ? getColor(theme, (widget.level % 6).toInt()) : theme.hintColor,
+                                                ),
+                                              ),
+                                            ),
+                                            padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
+                                            child: Text(
+                                              widget.commentViewTree.commentView!.counts.childCount == 1
+                                                  ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
+                                                  : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
+                                              textScaleFactor: MediaQuery.of(context).textScaleFactor * state.commentFontSizeScale.textScaleFactor,
+                                              style: theme.textTheme.bodyMedium?.copyWith(
+                                                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                                        child: Text(
-                                          widget.commentViewTree.commentView!.counts.childCount == 1
-                                              ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
-                                              : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
-                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.commentFontSizeScale.textScaleFactor,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
-                                          ),
-                                        ),
-                                      ),
-                                      isFetchingMoreComments
-                                          ? const Padding(
-                                              padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                              child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
-                                            )
-                                          : Container(),
+                                          isFetchingMoreComments
+                                              ? const Padding(
+                                                  padding: EdgeInsets.symmetric(horizontal: 8.0),
+                                                  child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                                                )
+                                              : Container(),
+                                        ],
+                                      )
                                     ],
-                                  )
-                                ],
-                              ),
-                            ),
+                                  ),
+                                ),
+                              )
+                            ],
                           )
                         : ListView.builder(
                             // addSemanticIndexes: false,
