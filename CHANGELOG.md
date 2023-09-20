@@ -23,6 +23,7 @@
 - Automatically save drafts for posts and comments - contribution from @micahmo
 - Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
+- Added buttons to quickly insert user or community mention in post or comment - contribution from @micahmo
 
 ### Changed
 
