@@ -756,9 +756,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3ded84267bb951a1d9312a308313d47ea714d210"
-      resolved-ref: "3ded84267bb951a1d9312a308313d47ea714d210"
-      url: "https://github.com/hjiangsu/markdown-editable-textinput.git"
+      ref: "9695d78cdc0fea98e30a6ddffb956bc7acb783bd"
+      resolved-ref: "9695d78cdc0fea98e30a6ddffb956bc7acb783bd"
+      url: "https://github.com/micahmo/markdown-editor.git"
     source: git
     version: "2.2.1"
   matcher:
