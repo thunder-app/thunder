@@ -85,7 +85,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedFetched(FeedFetched event, Emitter<FeedState> emit) async {
     // Assert any requirements
     if (event.reset) assert(event.feedType != null);
-    if (event.reset && event.feedType == FeedType.community) assert(event.communityId != null && event.communityName != null);
+    if (event.reset && event.feedType == FeedType.community) assert(!(event.communityId == null && event.communityName == null));
     if (event.reset && event.feedType == FeedType.user) assert(event.userId != null && event.username != null);
     if (event.reset && event.feedType == FeedType.general) assert(event.postListingType != null);
 
@@ -213,7 +213,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   Future<FullCommunityView> _fetchCommunityInformation({int? id, String? name}) async {
-    assert(id != null && name != null);
+    assert(!(id == null && name == null));
 
     Account? account = await fetchActiveProfileAccount();
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;

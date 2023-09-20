@@ -16,6 +16,8 @@ class FeedPageAppBar extends StatelessWidget {
     final l10n = AppLocalizations.of(context)!;
     final FeedBloc feedBloc = context.read<FeedBloc>();
 
+    final bool showBackAction = Navigator.of(context).canPop() && (feedBloc.state.communityId != null || feedBloc.state.communityName != null);
+
     return SliverAppBar(
       pinned: true,
       floating: true,
@@ -23,8 +25,10 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: const Icon(Icons.menu),
-        onPressed: () {},
+        icon: showBackAction ? const Icon(Icons.arrow_back_ios_new_rounded) : const Icon(Icons.menu),
+        onPressed: () {
+          showBackAction ? Navigator.of(context).pop() : null;
+        },
       ),
       actions: [
         Container(
