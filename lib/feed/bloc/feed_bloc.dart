@@ -58,6 +58,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
+      fullCommunityView: null,
       communityId: null,
       communityName: null,
       userId: null,
@@ -93,9 +94,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       add(ResetFeed());
       emit(state.copyWith(status: FeedStatus.fetching));
 
+      FullCommunityView? fullCommunityView;
+
       switch (event.feedType) {
         case FeedType.community:
           // Fetch community information
+          fullCommunityView = await _fetchCommunityInformation(id: event.communityId, name: event.communityName);
           break;
         case FeedType.user:
           // Fetch user information
@@ -128,6 +132,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         feedType: event.feedType,
         postListingType: event.postListingType,
         sortType: event.sortType,
+        fullCommunityView: fullCommunityView,
         communityId: event.communityId,
         communityName: event.communityName,
         userId: event.userId,
@@ -205,5 +210,20 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     } while (!hasReachedEnd && postViewMedias.length < limit);
 
     return {'postViewMedias': postViewMedias, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
+  }
+
+  Future<FullCommunityView> _fetchCommunityInformation({int? id, String? name}) async {
+    assert(id != null && name != null);
+
+    Account? account = await fetchActiveProfileAccount();
+    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+    FullCommunityView fullCommunityView = await lemmy.run(GetCommunity(
+      auth: account?.jwt,
+      id: id,
+      name: name,
+    ));
+
+    return fullCommunityView;
   }
 }

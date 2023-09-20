@@ -219,7 +219,14 @@ class _ThunderState extends State<Thunder> {
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
                                         // CommunityPage(scaffoldKey: _feedScaffoldKey, pageController: pageController),
-                                        const FeedPage(feedType: FeedType.general, postListingType: PostListingType.all, sortType: SortType.hot),
+                                        // const FeedPage(feedType: FeedType.general, postListingType: PostListingType.all, sortType: SortType.hot),
+                                        const FeedPage(
+                                          feedType: FeedType.community,
+                                          communityId: 16,
+                                          communityName: 'technology',
+                                          sortType: SortType.active,
+                                        ),
+
                                         const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),

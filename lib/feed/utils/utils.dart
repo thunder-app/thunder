@@ -10,8 +10,7 @@ String getCommunityName(FeedState state) {
   }
 
   if (state.communityId != null || state.communityName != null) {
-    // return state?.communityInfo?.communityView.community.title ?? '';
-    return '';
+    return state.fullCommunityView?.communityView.community.title ?? '';
   }
 
   return (state.postListingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.postListingType).label) : '';

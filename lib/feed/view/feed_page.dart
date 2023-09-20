@@ -171,7 +171,7 @@ class FeedHeader extends StatelessWidget {
       children: [
         Text(
           getCommunityName(feedBloc.state),
-          style: theme.textTheme.headlineSmall,
+          style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

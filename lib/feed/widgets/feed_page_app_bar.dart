@@ -22,7 +22,10 @@ class FeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
-      leading: const Icon(Icons.menu),
+      leading: IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {},
+      ),
       actions: [
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),

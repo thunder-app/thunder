@@ -165,22 +165,22 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                   return Scaffold(
                     key: widget.scaffoldKey,
                     appBar: AppBar(
-                      title: ListTile(
-                        title: Text(
-                          getCommunityName(state),
-                          style: theme.textTheme.titleLarge,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        subtitle: Row(
-                          children: [
-                            Icon(getSortIcon(state), size: 13),
-                            const SizedBox(width: 4),
-                            Text(getSortName(state)),
-                          ],
-                        ),
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 0),
-                      ),
+                      // title: ListTile(
+                      //   title: Text(
+                      //     getCommunityName(state),
+                      //     style: theme.textTheme.titleLarge,
+                      //     maxLines: 1,
+                      //     overflow: TextOverflow.ellipsis,
+                      //   ),
+                      //   subtitle: Row(
+                      //     children: [
+                      //       Icon(getSortIcon(state), size: 13),
+                      //       const SizedBox(width: 4),
+                      //       Text(getSortName(state)),
+                      //     ],
+                      //   ),
+                      //   contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                      // ),
                       centerTitle: false,
                       toolbarHeight: 70.0,
                       flexibleSpace: GestureDetector(
@@ -258,7 +258,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                     context.read<ThunderBloc>().add(const OnFabToggle(false));
                                   }
                                   HapticFeedback.mediumImpact();
-                                  showSortBottomSheet(context, state);
+                                  // showSortBottomSheet(context, state);
                                 }),
                             const SizedBox(width: 8.0),
                           ],
@@ -297,7 +297,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           ? singlePressAction.execute(context, state,
                                               bloc: context.read<CommunityBloc>(),
                                               widget: widget,
-                                              override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              // override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
                                               sortType: sortType)
                                           : FeedFabAction.dismissRead.execute(context, state);
                                     },
@@ -306,7 +306,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                           ? longPressAction.execute(context, state,
                                               bloc: context.read<CommunityBloc>(),
                                               widget: widget,
-                                              override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                                              // override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
                                               sortType: sortType)
                                           : FeedFabAction.openFab.execute(context, state);
                                     },
@@ -337,7 +337,7 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                                         ActionButton(
                                           onPressed: () {
                                             HapticFeedback.mediumImpact();
-                                            FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
+                                            // FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
                                           },
                                           title: FeedFabAction.changeSort.getTitle(context),
                                           icon: Icon(
@@ -459,60 +459,60 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
   }
 
-  void showSortBottomSheet(BuildContext context, CommunityState state) {
-    showModalBottomSheet(
-      context: context,
-      showDragHandle: true,
-      isScrollControlled: true,
-      builder: (builderContext) => SortPicker(
-        title: AppLocalizations.of(context)!.sortOptions,
-        onSelect: (selected) {
-          setState(() {
-            sortType = selected.payload;
-            sortTypeIcon = selected.icon;
-          });
+  // void showSortBottomSheet(BuildContext context, CommunityState state) {
+  //   showModalBottomSheet(
+  //     context: context,
+  //     showDragHandle: true,
+  //     isScrollControlled: true,
+  //     builder: (builderContext) => SortPicker(
+  //       title: AppLocalizations.of(context)!.sortOptions,
+  //       onSelect: (selected) {
+  //         setState(() {
+  //           sortType = selected.payload;
+  //           sortTypeIcon = selected.icon;
+  //         });
 
-          context.read<CommunityBloc>().add(
-                GetCommunityPostsEvent(
-                  sortType: selected.payload,
-                  reset: true,
-                  listingType: state.communityId != null ? null : state.listingType,
-                  communityId: widget.communityId ?? state.communityId,
-                ),
-              );
-        },
-        previouslySelected: sortType,
-      ),
-    );
-  }
+  //         context.read<CommunityBloc>().add(
+  //               GetCommunityPostsEvent(
+  //                 sortType: selected.payload,
+  //                 reset: true,
+  //                 listingType: state.communityId != null ? null : state.listingType,
+  //                 communityId: widget.communityId ?? state.communityId,
+  //               ),
+  //             );
+  //       },
+  //       previouslySelected: sortType,
+  //     ),
+  //   );
+  // }
 
-  String getCommunityName(CommunityState state) {
-    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-      return '';
-    }
+  // String getCommunityName(CommunityState state) {
+  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+  //     return '';
+  //   }
 
-    if (state.communityId != null || state.communityName != null) {
-      return state.communityInfo?.communityView.community.title ?? '';
-    }
+  //   if (state.communityId != null || state.communityName != null) {
+  //     return state.communityInfo?.communityView.community.title ?? '';
+  //   }
 
-    return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
-  }
+  //   return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
+  // }
 
-  String getSortName(CommunityState state) {
-    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-      return '';
-    }
+  // String getSortName(CommunityState state) {
+  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+  //     return '';
+  //   }
 
-    return sortTypeLabel ?? '';
-  }
+  //   return sortTypeLabel ?? '';
+  // }
 
-  IconData? getSortIcon(CommunityState state) {
-    if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-      return null;
-    }
+  // IconData? getSortIcon(CommunityState state) {
+  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
+  //     return null;
+  //   }
 
-    return sortTypeIcon;
-  }
+  //   return sortTypeIcon;
+  // }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     if (context.read<ThunderBloc>().state.isFabOpen) {

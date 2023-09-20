@@ -8,6 +8,7 @@ final class FeedState extends Equatable {
     this.postViewMedias = const <PostViewMedia>[],
     this.hasReachedEnd = false,
     this.feedType = FeedType.general,
+    this.fullCommunityView,
     this.postListingType,
     this.sortType,
     this.communityId,
@@ -35,6 +36,9 @@ final class FeedState extends Equatable {
   /// The sorting to be applied to the feed.
   final SortType? sortType;
 
+  /// The community information if applicable
+  final FullCommunityView? fullCommunityView;
+
   /// The id of the community to display posts for.
   final int? communityId;
 
@@ -57,6 +61,7 @@ final class FeedState extends Equatable {
     FeedType? feedType,
     PostListingType? postListingType,
     SortType? sortType,
+    FullCommunityView? fullCommunityView,
     int? communityId,
     String? communityName,
     int? userId,
@@ -70,6 +75,7 @@ final class FeedState extends Equatable {
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
+      fullCommunityView: fullCommunityView ?? this.fullCommunityView,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
       userId: userId ?? this.userId,
@@ -84,5 +90,5 @@ final class FeedState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage];
+  List<dynamic> get props => [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage];
 }
