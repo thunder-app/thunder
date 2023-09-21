@@ -28,6 +28,7 @@
 - Automatically save drafts for posts and comments - contribution from @micahmo
 - Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
+- Improved account switching and added anonymous browsing mode for any intance - contribution from @micahmo
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo
