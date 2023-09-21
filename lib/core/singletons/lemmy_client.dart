@@ -1,7 +1,7 @@
 import 'package:lemmy_api_client/v3.dart';
 
 class LemmyClient {
-  LemmyApiV3 lemmyApiV3 = const LemmyApiV3('lemmy.ml');
+  LemmyApiV3 lemmyApiV3 = const LemmyApiV3('');
 
   LemmyClient._initialize();
 

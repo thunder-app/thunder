@@ -218,14 +218,23 @@ class _ThunderState extends State<Thunder> {
                                       onPageChanged: (index) => setState(() => selectedPageIndex = index),
                                       physics: const NeverScrollableScrollPhysics(),
                                       children: <Widget>[
-                                        // CommunityPage(scaffoldKey: _feedScaffoldKey, pageController: pageController),
                                         const FeedPage(feedType: FeedType.general, postListingType: PostListingType.all, sortType: SortType.hot),
-                                        // const FeedPage(
-                                        //   feedType: FeedType.community,
-                                        //   communityName: 'technology',
-                                        //   sortType: SortType.active,
-                                        // ),
 
+                                        // CommunityPage(
+                                        //   scaffoldKey: _feedScaffoldKey,
+                                        //   pageController: pageController,
+                                        //   navigateToAccount: () {
+                                        //     _feedScaffoldKey.currentState?.closeDrawer();
+                                        //     setState(() {
+                                        //       selectedPageIndex = 2;
+                                        //       if (reduceAnimations) {
+                                        //         pageController.jumpToPage(2);
+                                        //       } else {
+                                        //         pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                        //       }
+                                        //     });
+                                        //   },
+                                        // ),
                                         const SearchPage(),
                                         const AccountPage(),
                                         const InboxPage(),

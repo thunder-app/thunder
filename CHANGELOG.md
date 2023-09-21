@@ -1,5 +1,7 @@
 ## Unreleased
 ### Added
+- Improved account switching logic - contribution from @micahmo
+- Added anonymous browsing mode for any instance - contribution from @micahmo
 
 ### Changed
 
