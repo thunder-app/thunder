@@ -16,6 +16,7 @@ final class FeedState extends Equatable {
     this.userId,
     this.username,
     this.currentPage = 1,
+    this.message,
   });
 
   /// The status of the feed
@@ -54,6 +55,9 @@ final class FeedState extends Equatable {
   /// The current page of the feed
   final int currentPage;
 
+  /// The message to display on failure
+  final String? message;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -67,6 +71,7 @@ final class FeedState extends Equatable {
     int? userId,
     String? username,
     int? currentPage,
+    String? message,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -81,6 +86,7 @@ final class FeedState extends Equatable {
       userId: userId ?? this.userId,
       username: username ?? this.username,
       currentPage: currentPage ?? this.currentPage,
+      message: message,
     );
   }
 
@@ -90,5 +96,5 @@ final class FeedState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage];
+  List<dynamic> get props => [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message];
 }

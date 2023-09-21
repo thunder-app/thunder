@@ -56,11 +56,23 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onFeedItemActioned,
       transformer: throttleDroppable(Duration.zero),
     );
+
+    /// Handles clearing any messages from the state
+    on<FeedClearMessage>(
+      _onFeedClearMessage,
+      transformer: throttleDroppable(Duration.zero),
+    );
+  }
+
+  Future<void> _onFeedClearMessage(FeedClearMessage event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, message: null));
   }
 
   Future<void> _onFeedItemActioned(FeedItemActioned event, Emitter<FeedState> emit) async {
     assert(!(event.postViewMedia == null && event.postId == null));
     emit(state.copyWith(status: FeedStatus.fetching));
+
+    // TODO: Check if the current account has permission to perform the PostAction
 
     switch (event.postAction) {
       case PostAction.vote:
@@ -150,6 +162,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       case PostAction.purge:
       // TODO: Handle this case.
       default:
+        emit(state.copyWith(status: FeedStatus.failure, message: 'Action is not supported'));
         break;
     }
   }

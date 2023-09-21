@@ -76,3 +76,5 @@ final class FeedItemActioned extends FeedEvent {
 
   const FeedItemActioned({this.postViewMedia, this.postId, required this.postAction, this.value});
 }
+
+final class FeedClearMessage extends FeedEvent {}

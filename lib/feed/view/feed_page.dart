@@ -11,6 +11,7 @@ import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/shared/snackbar.dart';
 
 enum FeedType { community, user, general }
 
@@ -111,7 +112,13 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<FeedBloc, FeedState>(
+    return BlocConsumer<FeedBloc, FeedState>(
+      listener: (context, state) {
+        if (state.status == FeedStatus.failure && state.message != null) {
+          showSnackbar(context, state.message!);
+          context.read<FeedBloc>().add(FeedClearMessage()); // Clear the message so that it does not spam
+        }
+      },
       builder: (context, state) {
         List<PostViewMedia> postViewMedias = state.postViewMedias;
 
@@ -145,10 +152,10 @@ class _FeedViewState extends State<FeedView> {
                           context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
                         },
                         onReadAction: (bool read) {
-                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.purge, value: read));
                         },
                         listingType: state.postListingType,
-                        indicateRead: false,
+                        indicateRead: true,
                       );
                     } else {
                       return const SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator()));
