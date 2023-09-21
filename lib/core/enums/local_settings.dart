@@ -117,5 +117,9 @@ enum LocalSettings {
   final String label;
 
   /// Defines the settings that are excluded from import/export
-  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
+  static List<LocalSettings> importExportExcludedSettings = [
+    LocalSettings.draftsCache,
+    LocalSettings.anonymousInstances,
+    LocalSettings.currentAnonymousInstance,
+  ];
 }
