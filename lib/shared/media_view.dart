@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -78,20 +79,33 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
           child: Container(
             color: theme.cardColor.darken(5),
-            child: SizedBox(
-              height: 75.0,
-              width: 75.0,
-              child: Padding(
-                padding: const EdgeInsets.only(left: 2.0),
-                child: Text(
-                  widget.postView!.postView.post.body ?? '',
-                  style: TextStyle(
-                    fontSize: 4.5,
-                    color: widget.read ?? true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+            child: widget.postView!.postView.post.body?.isNotEmpty == true
+                ? SizedBox(
+                    height: 75.0,
+                    width: 75.0,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          widget.postView!.postView.post.body!,
+                          style: TextStyle(
+                            fontSize: min(20, max(4.5, (20 * (1 / log(widget.postView!.postView.post.body!.length))))),
+                            color: widget.read == true ? theme.colorScheme.onBackground.withOpacity(0.55) : theme.colorScheme.onBackground.withOpacity(0.7),
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container(
+                    height: 75,
+                    width: 75,
+                    color: theme.cardColor.darken(5),
+                    child: Icon(
+                      Icons.text_fields_rounded,
+                      color: theme.colorScheme.onSecondaryContainer.withOpacity(widget.read == true ? 0.55 : 1.0),
+                    ),
                   ),
-                ),
-              ),
-            ),
           ),
         );
       } else {
@@ -162,11 +176,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       transitionDuration: const Duration(milliseconds: 100),
                       reverseTransitionDuration: const Duration(milliseconds: 50),
                       pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-                        String heroKey = generateRandomHeroString();
-
                         return ImageViewer(
                           url: widget.postView!.media.first.mediaUrl!,
-                          heroKey: heroKey,
                           postId: widget.postView!.postView.post.id,
                           navigateToPost: widget.navigateToPost,
                         );
@@ -199,96 +210,85 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
 
-    return Hero(
-      tag: widget.postView!.media.first.mediaUrl!,
-      // This is used for image post previews in compact and comfortable mode
-      child: ExtendedImage.network(
-        color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
-        colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-        widget.postView!.media.first.mediaUrl!,
-        height: height,
-        width: width,
-        fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
-        cache: true,
-        clearMemoryCacheWhenDispose: true,
-        cacheWidth: widget.viewMode == ViewMode.compact
-            ? (75 * View.of(context).devicePixelRatio.ceil())
-            : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
-        loadStateChanged: (ExtendedImageState state) {
-          switch (state.extendedImageLoadState) {
-            case LoadState.loading:
-              _controller.reset();
+    return ExtendedImage.network(
+      color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.5) : null,
+      colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+      widget.postView!.media.first.mediaUrl!,
+      height: height,
+      width: width,
+      fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
+      cache: true,
+      clearMemoryCacheWhenDispose: true,
+      cacheWidth: widget.viewMode == ViewMode.compact
+          ? (75 * View.of(context).devicePixelRatio.ceil())
+          : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
+      loadStateChanged: (ExtendedImageState state) {
+        switch (state.extendedImageLoadState) {
+          case LoadState.loading:
+            _controller.reset();
 
-              return Container(
-                color: theme.cardColor.darken(3),
-                child: SizedBox(
-                  height: height,
-                  width: width,
-                  child: const Center(child: SizedBox(width: 40, height: 40, child: CircularProgressIndicator())),
-                ),
-              );
-            case LoadState.completed:
-              if (state.wasSynchronouslyLoaded) {
-                return state.completedWidget;
-              }
-              _controller.forward();
+            return Container();
+          case LoadState.completed:
+            if (state.wasSynchronouslyLoaded) {
+              return state.completedWidget;
+            }
+            _controller.forward();
 
-              return FadeTransition(
-                opacity: _controller,
-                child: state.completedWidget,
-              );
-            case LoadState.failed:
-              _controller.reset();
+            return FadeTransition(
+              opacity: _controller,
+              child: state.completedWidget,
+            );
+          case LoadState.failed:
+            _controller.reset();
 
-              state.imageProvider.evict();
+            state.imageProvider.evict();
 
-              return Container(
-                color: theme.cardColor.darken(3),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
-                  child: Material(
-                    clipBehavior: Clip.hardEdge,
-                    borderRadius: BorderRadius.circular(12),
-                    child: Stack(
-                      alignment: Alignment.bottomRight,
-                      fit: StackFit.passthrough,
-                      children: [
-                        Container(
-                          color: theme.colorScheme.secondary.withOpacity(0.4),
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
-                          child: Row(
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 8.0),
-                                child: Icon(
-                                  Icons.link,
-                                ),
+            return Container(
+              color: theme.cardColor.darken(3),
+              child: Padding(
+                padding: const EdgeInsets.only(top: 4.0, bottom: 8.0),
+                child: Material(
+                  clipBehavior: Clip.hardEdge,
+                  borderRadius: BorderRadius.circular(12),
+                  child: Stack(
+                    alignment: Alignment.bottomRight,
+                    fit: StackFit.passthrough,
+                    children: [
+                      Container(
+                        color: theme.colorScheme.secondary.withOpacity(0.4),
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 12.0),
+                        child: Row(
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Icon(
+                                Icons.link,
                               ),
-                              Expanded(
-                                child: Text(
-                                  widget.post?.url ?? '',
-                                  overflow: TextOverflow.ellipsis,
-                                  style: theme.textTheme.bodyMedium,
-                                ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                widget.post?.url ?? '',
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium,
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        InkWell(
-                          onTap: () {
-                            if (widget.post?.url != null) {
-                              openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
+                      ),
+                      InkWell(
+                        onTap: () {
+                          if (widget.post?.url != null) {
+                            openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
-              );
-          }
-        },
-      ),
+              ),
+            );
+        }
+      },
     );
   }
 }

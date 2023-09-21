@@ -28,7 +28,7 @@ class AboutSettingsPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: FutureBuilder(
-                future: getCurrentVersion(),
+                future: getCurrentVersion(removeInternalBuildNumber: true),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return Center(child: Text('Version ${snapshot.data ?? 'N/A'}'));
@@ -60,7 +60,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('lemmy.world/c/thunder_app'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    navigateToCommunityByName(context, 'thunder_app@lemmy.world');
+                    navigateToCommunityPage(context, communityName: 'thunder_app@lemmy.world');
                   },
                 ),
                 ListTile(

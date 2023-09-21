@@ -3,10 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart' as community;
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
@@ -30,6 +33,9 @@ class _UserPageState extends State<UserPage> {
 
   @override
   Widget build(BuildContext context) {
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
+
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
@@ -90,9 +96,18 @@ class _UserPageState extends State<UserPage> {
               padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0, 4.0),
               child: IconButton(
                 onPressed: () {
+                  final AccountBloc accountBloc = context.read<AccountBloc>();
+                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
                   Navigator.of(context).push(
                     SwipeablePageRoute(
-                      builder: (context) => UserSettingsPage(widget.userId),
+                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      builder: (context) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(value: accountBloc),
+                          BlocProvider.value(value: thunderBloc),
+                        ],
+                        child: UserSettingsPage(widget.userId),
+                      ),
                     ),
                   );
                 },
@@ -125,6 +140,10 @@ class _UserPageState extends State<UserPage> {
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           userBloc = context.read<UserBloc>();
 
+          if (state.status == UserStatus.failedToBlock) {
+            showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+          }
+
           switch (state.status) {
             case UserStatus.initial:
               context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, isAccountUser: widget.isAccountUser, username: widget.username, reset: true));
@@ -134,6 +153,7 @@ class _UserPageState extends State<UserPage> {
               return const Center(child: CircularProgressIndicator());
             case UserStatus.refreshing:
             case UserStatus.success:
+            case UserStatus.failedToBlock:
               return UserPageSuccess(
                 userId: widget.userId,
                 isAccountUser: widget.isAccountUser,
@@ -142,6 +162,7 @@ class _UserPageState extends State<UserPage> {
                 commentViewTrees: state.comments,
                 postViews: state.posts,
                 savedPostViews: state.savedPosts,
+                savedComments: state.savedComments,
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
                 blockedPerson: state.blockedPerson,

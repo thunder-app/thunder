@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -29,6 +31,7 @@ class CommentCard extends StatelessWidget {
     int downvotes = comment.counts.downvotes ?? 0;
 
     final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
 
     return Card(
       clipBehavior: Clip.hardEdge,
@@ -41,7 +44,9 @@ class CommentCard extends StatelessWidget {
           // To to specific post for now, in the future, will be best to scroll to the position of the comment
           await Navigator.of(context).push(
             SwipeablePageRoute(
-              backGestureDetectionStartOffset: 45,
+              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+              backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+              backGestureDetectionWidth: 45,
               canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
               builder: (context) => MultiBlocProvider(
                 providers: [
@@ -115,36 +120,7 @@ class CommentCard extends StatelessWidget {
               const Divider(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  // IconButton(
-                  //   onPressed: () {
-                  //     InboxBloc inboxBloc = context.read<InboxBloc>();
-
-                  //     showModalBottomSheet(
-                  //       isScrollControlled: true,
-                  //       context: context,
-                  //       showDragHandle: true,
-                  //       builder: (context) {
-                  //         return Padding(
-                  //           padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom + 40),
-                  //           child: FractionallySizedBox(
-                  //             heightFactor: 0.8,
-                  //             child: BlocProvider<InboxBloc>.value(
-                  //               value: inboxBloc,
-                  //               child: CreateCommentModal(comment: comment.comment, parentCommentAuthor: comment.creator.name),
-                  //             ),
-                  //           ),
-                  //         );
-                  //       },
-                  //     );
-                  //   },
-                  //   icon: const Icon(
-                  //     Icons.reply_rounded,
-                  //     semanticLabel: 'Reply',
-                  //   ),
-                  //   visualDensity: VisualDensity.compact,
-                  // ),
-                ],
+                children: [],
               )
             ],
           ),

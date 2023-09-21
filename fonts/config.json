@@ -49,6 +49,12 @@
       ]
     },
     {
+      "uid": "4d2fa63100b37049b9a283d624cbf3ab",
+      "css": "robot",
+      "code": 62788,
+      "src": "fontawesome5"
+    },
+    {
       "uid": "f2088d40faba7c348aa6284425f43501",
       "css": "shield-account",
       "code": 59393,

@@ -15,9 +15,14 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/picker_item.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
+import 'package:thunder/utils/navigate_community.dart';
+import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 enum PostCardAction { visitProfile, visitCommunity, sharePost, shareMedia, shareLink, blockCommunity }
 
@@ -77,11 +82,11 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
           mainAxisSize: MainAxisSize.max,
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 16.0, left: 16.0, right: 16.0),
+              padding: const EdgeInsets.only(bottom: 16.0, left: 26.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
-                  'Actions',
+                  AppLocalizations.of(context)!.actions,
                   style: theme.textTheme.titleLarge!.copyWith(),
                 ),
               ),
@@ -100,13 +105,10 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                   return Container();
                 }
 
-                return ListTile(
-                  title: Text(
-                    postCardActionItemsToUse[index].label,
-                    style: theme.textTheme.bodyMedium,
-                  ),
-                  leading: Icon(postCardActionItemsToUse[index].icon),
-                  onTap: () async {
+                return PickerItem(
+                  label: postCardActionItemsToUse[index].label,
+                  icon: postCardActionItemsToUse[index].icon,
+                  onSelected: () async {
                     Navigator.of(context).pop();
 
                     PostCardAction postCardAction = postCardActionItemsToUse[index].postCardAction;
@@ -116,23 +118,7 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
                         onTapCommunityName(context, postViewMedia.postView.community.id);
                         break;
                       case PostCardAction.visitProfile:
-                        AccountBloc accountBloc = context.read<AccountBloc>();
-                        AuthBloc authBloc = context.read<AuthBloc>();
-                        ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                        Navigator.of(context).push(
-                          SwipeablePageRoute(
-                            canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-                            builder: (context) => MultiBlocProvider(
-                              providers: [
-                                BlocProvider.value(value: accountBloc),
-                                BlocProvider.value(value: authBloc),
-                                BlocProvider.value(value: thunderBloc),
-                              ],
-                              child: UserPage(userId: postViewMedia.postView.post.creatorId),
-                            ),
-                          ),
-                        );
+                        navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
                         break;
                       case PostCardAction.sharePost:
                         Share.share(postViewMedia.postView.post.apId);
@@ -146,36 +132,20 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
 
                             if (media == null) {
                               // Tell user we're downloading the image
-                              SnackBar snackBar = const SnackBar(
-                                content: Text('Downloading media to share...'),
-                                behavior: SnackBarBehavior.floating,
-                              );
-                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                                ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              });
+                              showSnackbar(context, AppLocalizations.of(context)!.downloadingMedia);
 
                               // Download
                               mediaFile = await DefaultCacheManager().getSingleFile(postViewMedia.media.first.mediaUrl!);
 
                               // Hide snackbar
-                              WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                                ScaffoldMessenger.of(context).clearSnackBars();
-                              });
+                              hideSnackbar(context);
                             }
 
                             // Share
                             await Share.shareXFiles([XFile(mediaFile!.path)]);
                           } catch (e) {
                             // Tell the user that the download failed
-                            SnackBar snackBar = SnackBar(
-                              content: Text('There was an error downloading the media file to share: $e'),
-                              behavior: SnackBarBehavior.floating,
-                            );
-                            WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-                              ScaffoldMessenger.of(context).clearSnackBars();
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                            });
+                            showSnackbar(context, AppLocalizations.of(context)!.errorDownloadingMedia(e));
                           }
                         }
                         break;
@@ -199,41 +169,9 @@ void showPostActionBottomModalSheet(BuildContext context, PostViewMedia postView
 }
 
 void onTapCommunityName(BuildContext context, int communityId) {
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: CommunityPage(communityId: communityId),
-      ),
-    ),
-  );
+  navigateToCommunityPage(context, communityId: communityId);
 }
 
 void onTapUserName(BuildContext context, int userId) {
-  AccountBloc accountBloc = context.read<AccountBloc>();
-  AuthBloc authBloc = context.read<AuthBloc>();
-  ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-  Navigator.of(context).push(
-    SwipeablePageRoute(
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
-      builder: (context) => MultiBlocProvider(
-        providers: [
-          BlocProvider.value(value: accountBloc),
-          BlocProvider.value(value: authBloc),
-          BlocProvider.value(value: thunderBloc),
-        ],
-        child: UserPage(userId: userId),
-      ),
-    ),
-  );
+  navigateToUserPage(context, userId: userId);
 }

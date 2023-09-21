@@ -103,6 +103,49 @@ List<CommentViewTree> buildCommentViewTree(List<CommentView> comments, {bool fla
   return commentMap.values.where((commentView) => commentView.commentView!.comment.path.isEmpty || commentView.commentView!.comment.path == '0.${commentView.commentView!.comment.id}').toList();
 }
 
+List<CommentViewTree> insertNewComment(List<CommentViewTree> comments, CommentView commentView) {
+  List<String> parentIds = commentView.comment.path.split('.');
+  String commentTime = commentView.comment.published.toIso8601String();
+
+  CommentViewTree newCommentTree = CommentViewTree(
+    datePostedOrEdited: formatTimeToString(dateTime: commentTime),
+    commentView: commentView,
+    replies: [],
+    level: commentView.comment.path.split('.').length - 2,
+  );
+
+  if (parentIds[1] == commentView.comment.id.toString()) {
+    comments.insert(0, newCommentTree);
+    return comments;
+  }
+
+  String parentId = parentIds[parentIds.length - 2];
+  CommentViewTree? parentComment = findParentComment(1, parentIds, parentId.toString(), comments);
+
+  // TODO: surface some sort of error maybe if for some reason we fail to find parent comment
+  if (parentComment != null) {
+    parentComment.replies.insert(0, newCommentTree);
+  }
+
+  return comments;
+}
+
+CommentViewTree? findParentComment(int index, List<String> parentIds, String targetId, List<CommentViewTree> comments) {
+  for (CommentViewTree existing in comments) {
+    if (existing.commentView?.comment.id.toString() != parentIds[index]) {
+      continue;
+    }
+
+    if (targetId == existing.commentView?.comment.id.toString()) {
+      return existing;
+    }
+
+    return findParentComment(index + 1, parentIds, targetId, existing.replies);
+  }
+
+  return null;
+}
+
 List<int> findCommentIndexesFromCommentViewTree(List<CommentViewTree> commentTrees, int commentId, [List<int>? indexes]) {
   indexes ??= [];
 
@@ -158,7 +201,8 @@ CommentView cleanDeletedCommentView(CommentView commentView) {
       creatorBannedFromCommunity: commentView.creatorBannedFromCommunity,
       saved: commentView.saved,
       creatorBlocked: commentView.creatorBlocked,
-      instanceHost: commentView.instanceHost);
+      instanceHost: commentView.instanceHost,
+      commentReply: commentView.commentReply);
 }
 
 Comment convertToDeletedComment(Comment comment) {

@@ -90,7 +90,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
+          emit(state.copyWith(
+              status: PostStatus.loading, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -126,18 +127,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             }
           }
 
-          emit(
-            state.copyWith(
-                status: PostStatus.success,
-                postId: postView?.postView.post.id,
-                postView: postView,
-                communityId: postView?.postView.post.communityId,
-                moderators: moderators,
-                selectedCommentPath: event.selectedCommentPath,
-                selectedCommentId: event.selectedCommentId),
-          );
+          emit(state.copyWith(
+              status: PostStatus.success,
+              postId: postView?.postView.post.id,
+              postView: postView,
+              communityId: postView?.postView.post.communityId,
+              moderators: moderators,
+              selectedCommentPath: event.selectedCommentPath,
+              selectedCommentId: event.selectedCommentId,
+              newlyCreatedCommentId: event.newlyCreatedCommentId));
 
-          emit(state.copyWith(status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId));
+          emit(state.copyWith(
+              status: PostStatus.refreshing, selectedCommentPath: event.selectedCommentPath, selectedCommentId: event.selectedCommentId, newlyCreatedCommentId: event.newlyCreatedCommentId));
 
           CommentSortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
@@ -183,7 +184,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 communityId: postView?.postView.post.communityId,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
-                selectedCommentPath: event.selectedCommentPath),
+                selectedCommentPath: event.selectedCommentPath,
+                newlyCreatedCommentId: event.newlyCreatedCommentId),
           );
         } catch (e) {
           exception = e;
@@ -264,6 +266,12 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             if (!state.hasReachedCommentEnd && state.commentCount == state.postView!.postView.counts.comments) {
               emit(state.copyWith(status: state.status, hasReachedCommentEnd: true));
             }
+            if (event.commentParentId != null) {
+              // If we come here, we've determined that we've already loaded all of the comments.
+              // But we're currently being asked to load some children.
+              // Therefore we will treat this as an error.
+              throw Exception('Unable to load more replies.');
+            }
             return;
           }
           emit(state.copyWith(status: PostStatus.refreshing));
@@ -284,6 +292,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               .timeout(timeout, onTimeout: () {
             throw Exception('Error: Timeout when attempting to fetch more comments');
           });
+
+          // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
+          // so we should display an error
+          if (event.commentParentId != null) {
+            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            if (!anyDirectChildren) {
+              throw Exception('Unable to load more replies.');
+            }
+          }
 
           // Combine all of the previous comments list
           List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
@@ -315,6 +332,9 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (is50xError(exception.toString()) != null) {
         emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
       } else {
+        // In case there are two errors in a row without the status changing,
+        // emit a blank error then the real error so that the widget detects a change and rebuilds.
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: ''));
         emit(state.copyWith(status: PostStatus.failure, errorMessage: exception.toString()));
       }
     } catch (e) {
@@ -451,17 +471,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       int? selectedCommentId = event.selectedCommentId;
       String? selectedCommentPath = event.selectedCommentPath;
 
-      // for now, refresh the post and refetch the comments
-      // @todo: insert the new comment in place without requiring a refetch
-      // @todo: alternatively, insert and scroll to new comment on refetch
-      if (event.parentCommentId != null) {
-        add(GetPostEvent(postView: state.postView!, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
-      } else {
+      List<CommentViewTree> updatedComments = insertNewComment(state.comments, createComment.commentView);
+
+      if (event.parentCommentId == null) {
         selectedCommentId = null;
         selectedCommentPath = null;
-        add(GetPostEvent(postView: state.postView!, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
       }
-      return emit(state.copyWith(status: PostStatus.success, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
+      return emit(state.copyWith(
+          status: PostStatus.success,
+          comments: updatedComments,
+          selectedCommentId: selectedCommentId,
+          selectedCommentPath: selectedCommentPath,
+          newlyCreatedCommentId: createComment.commentView.comment.id));
     } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString()));
     }

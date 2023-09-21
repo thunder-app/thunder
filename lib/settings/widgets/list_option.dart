@@ -18,6 +18,8 @@ class ListOption<T> extends StatelessWidget {
   final bool? isBottomModalScrollControlled;
 
   final bool disabled;
+  final Widget? valueDisplay;
+  final bool closeOnSelect;
 
   const ListOption({
     super.key,
@@ -29,6 +31,8 @@ class ListOption<T> extends StatelessWidget {
     this.customListPicker,
     this.isBottomModalScrollControlled,
     this.disabled = false,
+    this.valueDisplay,
+    this.closeOnSelect = true,
   });
 
   @override
@@ -52,6 +56,8 @@ class ListOption<T> extends StatelessWidget {
                       onSelect: (value) {
                         onChanged(value);
                       },
+                      previouslySelected: value.payload,
+                      closeOnSelect: closeOnSelect,
                     ),
               );
             },
@@ -69,14 +75,15 @@ class ListOption<T> extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                    return ' ${match.group(0)}';
-                  }),
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
-                  ),
-                ),
+                valueDisplay ??
+                    Text(
+                      value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                        return ' ${match.group(0)}';
+                      }),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
+                      ),
+                    ),
                 Icon(
                   Icons.chevron_right_rounded,
                   color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : null,

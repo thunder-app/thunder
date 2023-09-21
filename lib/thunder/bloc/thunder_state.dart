@@ -28,7 +28,7 @@ class ThunderState extends Equatable {
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
-    this.showInAppUpdateNotification = true,
+    this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
@@ -47,6 +47,7 @@ class ThunderState extends Equatable {
     this.showEdgeToEdgeImages = false,
     this.showTextContent = false,
     this.showPostAuthor = false,
+    this.dimReadPosts = true,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -99,11 +100,16 @@ class ThunderState extends Equatable {
     this.postFabEnableBackToTop = true,
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
+    this.postFabEnableRefresh = true,
     this.feedFabSinglePressAction = FeedFabAction.dismissRead,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
     this.enableCommentNavigation = true,
+    this.combineNavAndFab = true,
+
+    /// -------------------------- Accessibility Related Settings --------------------------
+    this.reduceAnimations = false,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -157,6 +163,7 @@ class ThunderState extends Equatable {
   final bool showTextContent;
   final bool showPostAuthor;
   final bool scoreCounters;
+  final bool dimReadPosts;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -213,6 +220,7 @@ class ThunderState extends Equatable {
   final bool postFabEnableBackToTop;
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
+  final bool postFabEnableRefresh;
 
   final FeedFabAction feedFabSinglePressAction;
   final FeedFabAction feedFabLongPressAction;
@@ -220,6 +228,10 @@ class ThunderState extends Equatable {
   final PostFabAction postFabLongPressAction;
 
   final bool enableCommentNavigation;
+  final bool combineNavAndFab;
+
+  /// -------------------------- Accessibility Related Settings --------------------------
+  final bool reduceAnimations;
 
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
@@ -275,6 +287,7 @@ class ThunderState extends Equatable {
     bool? showEdgeToEdgeImages,
     bool? showTextContent,
     bool? showPostAuthor,
+    bool? dimReadPosts,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -327,11 +340,16 @@ class ThunderState extends Equatable {
     bool? postFabEnableBackToTop,
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
+    bool? postFabEnableRefresh,
     FeedFabAction? feedFabSinglePressAction,
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
     PostFabAction? postFabLongPressAction,
     bool? enableCommentNavigation,
+    bool? combineNavAndFab,
+
+    /// -------------------------- Accessibility Related Settings --------------------------
+    bool? reduceAnimations,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -385,6 +403,7 @@ class ThunderState extends Equatable {
       showEdgeToEdgeImages: showEdgeToEdgeImages ?? this.showEdgeToEdgeImages,
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
+      dimReadPosts: dimReadPosts ?? this.dimReadPosts,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -440,12 +459,17 @@ class ThunderState extends Equatable {
       postFabEnableBackToTop: postFabEnableBackToTop ?? this.postFabEnableBackToTop,
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
+      postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
       feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
       feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
       postFabLongPressAction: postFabLongPressAction ?? this.postFabLongPressAction,
 
       enableCommentNavigation: enableCommentNavigation ?? this.enableCommentNavigation,
+      combineNavAndFab: combineNavAndFab ?? this.combineNavAndFab,
+
+      /// -------------------------- Accessibility Related Settings --------------------------
+      reduceAnimations: reduceAnimations ?? this.reduceAnimations,
 
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
@@ -501,6 +525,7 @@ class ThunderState extends Equatable {
         showEdgeToEdgeImages,
         showTextContent,
         showPostAuthor,
+        dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -554,12 +579,17 @@ class ThunderState extends Equatable {
         postFabEnableBackToTop,
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
+        postFabEnableRefresh,
         feedFabSinglePressAction,
         feedFabLongPressAction,
         postFabSinglePressAction,
         postFabLongPressAction,
 
         enableCommentNavigation,
+        combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

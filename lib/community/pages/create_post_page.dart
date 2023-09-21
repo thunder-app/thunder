@@ -13,21 +13,25 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/link_preview_card.dart';
+import 'package:thunder/user/widgets/user_indicator.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 
-import 'package:image_picker/image_picker.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/account/models/account.dart';
-
-const List<Widget> postTypes = <Widget>[Text('Text'), Text('Image'), Text('Link')];
-
 class CreatePostPage extends StatefulWidget {
   final int communityId;
   final FullCommunityView? communityInfo;
+  final void Function(DraftPost? draftPost)? onUpdateDraft;
+  final DraftPost? previousDraftPost;
 
-  const CreatePostPage({super.key, required this.communityId, this.communityInfo});
+  const CreatePostPage({
+    super.key,
+    required this.communityId,
+    this.communityInfo,
+    this.previousDraftPost,
+    this.onUpdateDraft,
+  });
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -37,12 +41,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool showPreview = false;
   bool isSubmitButtonDisabled = true;
   bool isNSFW = false;
+  bool imageUploading = false;
+  bool postImageUploading = false;
   String url = "";
+  DraftPost newDraftPost = DraftPost();
 
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
-  final FocusNode _markdownFocusNode = FocusNode();
+  final FocusNode _bodyFocusNode = FocusNode();
   final imageBloc = ImageBloc();
 
   @override
@@ -52,12 +59,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _titleTextController.addListener(() {
       if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
       if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+
+      widget.onUpdateDraft?.call(newDraftPost..title = _titleTextController.text);
     });
 
     _urlTextController.addListener(() {
       url = _urlTextController.text;
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
+
+      widget.onUpdateDraft?.call(newDraftPost..url = _urlTextController.text);
     });
+
+    _bodyTextController.addListener(() {
+      widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
+    });
+
+    if (widget.previousDraftPost != null) {
+      _titleTextController.text = widget.previousDraftPost!.title ?? '';
+      _urlTextController.text = widget.previousDraftPost!.url ?? '';
+      _bodyTextController.text = widget.previousDraftPost!.text ?? '';
+
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
+      });
+    }
   }
 
   @override
@@ -65,6 +91,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
+    _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
 
@@ -88,6 +115,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               onPressed: isSubmitButtonDisabled
                   ? null
                   : () {
+                      newDraftPost.saveAsDraft = false;
                       url != ''
                           ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
                           : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
@@ -105,12 +133,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
           listener: (context, state) {
             if (state.status == ImageStatus.success) {
               _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              setState(() => imageUploading = false);
             }
             if (state.status == ImageStatus.successPostImage) {
               _urlTextController.text = state.imageUrl;
+              setState(() => postImageUploading = false);
+            }
+            if (state.status == ImageStatus.uploading) {
+              setState(() => imageUploading = true);
+            }
+            if (state.status == ImageStatus.uploadingPostImage) {
+              setState(() => postImageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(AppLocalizations.of(context)!.postUploadImageError)));
+              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              setState(() {
+                imageUploading = false;
+                postImageUploading = false;
+              });
             }
           },
           bloc: imageBloc,
@@ -119,17 +159,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 children: <Widget>[
                   Expanded(
                     child: SingleChildScrollView(
-                      child: Column(children: <Widget>[
+                      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
                         const SizedBox(height: 12.0),
                         Row(
                           children: [
                             CommunityIcon(community: widget.communityInfo?.communityView.community, radius: 16),
                             const SizedBox(
-                              width: 20,
+                              width: 12,
                             ),
                             Text(
                               '${widget.communityInfo?.communityView.community.name} '
@@ -138,6 +177,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 12.0),
+                        const UserIndicator(),
                         const SizedBox(height: 12.0),
                         TextFormField(
                           controller: _titleTextController,
@@ -154,12 +195,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               hintText: AppLocalizations.of(context)!.postURL,
                               suffixIcon: IconButton(
                                   onPressed: () {
-                                    _uploadImage(postImage: true);
+                                    if (!postImageUploading) {
+                                      uploadImage(context, imageBloc, postImage: true);
+                                    }
                                   },
-                                  icon: Icon(
-                                    Icons.image,
-                                    semanticLabel: AppLocalizations.of(context)!.uploadImage,
-                                  ))),
+                                  icon: postImageUploading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: Center(
+                                              child: SizedBox(
+                                            width: 18,
+                                            height: 18,
+                                            child: CircularProgressIndicator(),
+                                          )))
+                                      : Icon(Icons.image, semanticLabel: AppLocalizations.of(context)!.uploadImage))),
                         ),
                         const SizedBox(
                           height: 10,
@@ -203,13 +253,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 decoration: BoxDecoration(border: Border.all(color: Colors.grey), borderRadius: BorderRadius.circular(10)),
                                 padding: const EdgeInsets.all(12),
                                 child: SingleChildScrollView(
-                                  child: CommonMarkdownBody(body: _bodyTextController.text),
+                                  child: CommonMarkdownBody(
+                                    body: _bodyTextController.text,
+                                    isComment: true,
+                                  ),
                                 ),
                               )
                             : MarkdownTextInputField(
                                 controller: _bodyTextController,
-                                focusNode: _markdownFocusNode,
-                                initialValue: _bodyTextController.text,
+                                focusNode: _bodyFocusNode,
                                 label: AppLocalizations.of(context)!.postBody,
                                 minLines: 8,
                                 maxLines: null,
@@ -223,27 +275,33 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     children: [
                       Expanded(
                         child: MarkdownButtons(
-                          controller: _bodyTextController,
-                          focusNode: _markdownFocusNode,
-                          actions: const [
-                            MarkdownType.image,
-                            MarkdownType.link,
-                            MarkdownType.bold,
-                            MarkdownType.italic,
-                            MarkdownType.blockquote,
-                            MarkdownType.strikethrough,
-                            MarkdownType.title,
-                            MarkdownType.list,
-                            MarkdownType.separator,
-                            MarkdownType.code,
-                          ],
-                          customImageButtonAction: _uploadImage,
-                        ),
+                            controller: _bodyTextController,
+                            focusNode: _bodyFocusNode,
+                            actions: const [
+                              MarkdownType.image,
+                              MarkdownType.link,
+                              MarkdownType.bold,
+                              MarkdownType.italic,
+                              MarkdownType.blockquote,
+                              MarkdownType.strikethrough,
+                              MarkdownType.title,
+                              MarkdownType.list,
+                              MarkdownType.separator,
+                              MarkdownType.code,
+                            ],
+                            imageIsLoading: imageUploading,
+                            customImageButtonAction: () => uploadImage(context, imageBloc)),
                       ),
                       Padding(
                         padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                         child: IconButton(
-                            onPressed: () => setState(() => showPreview = !showPreview),
+                            onPressed: () {
+                              FocusManager.instance.primaryFocus?.unfocus();
+                              setState(() => showPreview = !showPreview);
+                              if (!showPreview) {
+                                _bodyFocusNode.requestFocus();
+                              }
+                            },
                             icon: Icon(
                               showPreview ? Icons.visibility_outlined : Icons.visibility,
                               color: theme.colorScheme.onSecondary,
@@ -263,21 +321,32 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  void _uploadImage({bool postImage = false}) async {
-    final ImagePicker picker = ImagePicker();
-    XFile? file = await picker.pickImage(source: ImageSource.gallery);
-    try {
-      Account? account = await fetchActiveProfileAccount();
-      String path = file!.path;
-      imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
-    } catch (e) {
-      null;
-    }
-  }
-
   void _updatePreview(String text) {
     if (url == text) {
       setState(() {});
     }
   }
+}
+
+class DraftPost {
+  String? title;
+  String? url;
+  String? text;
+  bool saveAsDraft = true;
+
+  DraftPost({this.title, this.url, this.text});
+
+  Map<String, dynamic> toJson() => {
+        'title': title,
+        'url': url,
+        'text': text,
+      };
+
+  static fromJson(Map<String, dynamic> json) => DraftPost(
+        title: json['title'],
+        url: json['url'],
+        text: json['text'],
+      );
+
+  bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
 }

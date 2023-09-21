@@ -11,6 +11,7 @@ import 'package:thunder/settings/widgets/swipe_picker.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GestureSettingsPage extends StatefulWidget {
   const GestureSettingsPage({super.key});
@@ -243,15 +244,6 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enablePostGestures, value),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Text(
-                            'Customize swipe actions (tap to change)',
-                            style: TextStyle(
-                              color: theme.colorScheme.onBackground.withOpacity(0.75),
-                            ),
-                          ),
-                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
@@ -265,6 +257,18 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           child: enablePostGestures
                               ? Column(
                                   children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          AppLocalizations.of(context)!.customizeSwipeActions,
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     SwipePicker(
                                       side: SwipePickerSide.left,
                                       items: [
@@ -338,15 +342,6 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           iconDisabled: Icons.swipe_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.enableCommentGestures, value),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Text(
-                            'Customize swipe actions (tap to change)',
-                            style: TextStyle(
-                              color: theme.colorScheme.onBackground.withOpacity(0.75),
-                            ),
-                          ),
-                        ),
                         AnimatedSwitcher(
                           duration: const Duration(milliseconds: 200),
                           switchInCurve: Curves.easeInOut,
@@ -360,6 +355,18 @@ class _GestureSettingsPageState extends State<GestureSettingsPage> with TickerPr
                           child: enableCommentGestures
                               ? Column(
                                   children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(6.0),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                          AppLocalizations.of(context)!.customizeSwipeActions,
+                                          style: TextStyle(
+                                            color: theme.colorScheme.onBackground.withOpacity(0.75),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                     SwipePicker(
                                       side: SwipePickerSide.left,
                                       items: [

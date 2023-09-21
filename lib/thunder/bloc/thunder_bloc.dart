@@ -44,7 +44,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
     on<OnDismissEvent>(
       _onDismissEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
     );
     on<OnFabToggle>(
       _onFabToggle,
@@ -101,7 +101,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? true;
+      bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -120,6 +120,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
+      bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -176,6 +177,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableBackToTop = prefs.getBool(LocalSettings.postFabEnableBackToTop.name) ?? true;
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
+      bool postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
 
       FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
       FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
@@ -183,6 +185,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
 
       bool enableCommentNavigation = prefs.getBool(LocalSettings.enableCommentNavigation.name) ?? true;
+      bool combineNavAndFab = prefs.getBool(LocalSettings.combineNavAndFab.name) ?? true;
+
+      /// -------------------------- Accessibility Related Settings --------------------------
+      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
 
       return emit(state.copyWith(
         status: ThunderStatus.success,
@@ -223,6 +229,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showTextContent: showTextContent,
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
+        dimReadPosts: dimReadPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
@@ -277,6 +284,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabEnableBackToTop: postFabEnableBackToTop,
         postFabEnableChangeSort: postFabEnableChangeSort,
         postFabEnableReplyToPost: postFabEnableReplyToPost,
+        postFabEnableRefresh: postFabEnableRefresh,
 
         feedFabSinglePressAction: feedFabSinglePressAction,
         feedFabLongPressAction: feedFabLongPressAction,
@@ -284,6 +292,10 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabLongPressAction: postFabLongPressAction,
 
         enableCommentNavigation: enableCommentNavigation,
+        combineNavAndFab: combineNavAndFab,
+
+        /// -------------------------- Accessibility Related Settings --------------------------
+        reduceAnimations: reduceAnimations,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));

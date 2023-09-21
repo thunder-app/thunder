@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 // Flutter
 import 'package:flutter/material.dart';
@@ -7,12 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:http/http.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -47,6 +50,8 @@ class _ThunderState extends State<Thunder> {
   bool hasShownUpdateDialog = false;
 
   bool _isFabOpen = false;
+
+  bool reduceAnimations = false;
 
   @override
   void initState() {
@@ -105,25 +110,19 @@ class _ThunderState extends State<Thunder> {
   }
 
   void _showExitWarning() {
-    final theme = Theme.of(context);
-    const snackBarTextColor = TextStyle(color: Colors.white);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        backgroundColor: theme.primaryColorDark,
-        width: 190,
-        duration: const Duration(milliseconds: 3500),
-        content: Center(child: Text(AppLocalizations.of(context)!.tapToExit, style: snackBarTextColor)),
-      ),
-    );
+    showSnackbar(context, AppLocalizations.of(context)!.tapToExit, duration: const Duration(milliseconds: 3500));
   }
 
   Future<bool> _handleBackButtonPress() async {
     if (selectedPageIndex != 0) {
       setState(() {
         selectedPageIndex = 0;
-        pageController.animateToPage(0, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
+        if (reduceAnimations) {
+          pageController.jumpToPage(selectedPageIndex);
+        } else {
+          pageController.animateToPage(selectedPageIndex, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+        }
       });
       return Future.value(false);
     }
@@ -159,6 +158,8 @@ class _ThunderState extends State<Thunder> {
           },
           child: BlocBuilder<ThunderBloc, ThunderState>(
             builder: (context, thunderBlocState) {
+              reduceAnimations = thunderBlocState.reduceAnimations;
+
               switch (thunderBlocState.status) {
                 case ThunderStatus.initial:
                   context.read<ThunderBloc>().add(InitializeAppEvent());
@@ -250,6 +251,8 @@ class _ThunderState extends State<Thunder> {
     final ThunderState state = context.read<ThunderBloc>().state;
     final InboxState inboxState = context.read<InboxBloc>().state;
 
+    final bool reduceAnimations = state.reduceAnimations;
+
     return Theme(
       data: ThemeData.from(colorScheme: theme.colorScheme).copyWith(
         splashColor: Colors.transparent,
@@ -311,7 +314,12 @@ class _ThunderState extends State<Thunder> {
             if (selectedPageIndex != index) {
               setState(() {
                 selectedPageIndex = index;
-                pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+
+                if (reduceAnimations) {
+                  pageController.jumpToPage(index);
+                } else {
+                  pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                }
               });
             }
 
@@ -349,7 +357,7 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          openLink(context, url: 'https://github.com/hjiangsu/thunder/releases/latest', openInExternalBrowser: openInExternalBrowser);
+          openLink(context, url: version?.latestVersionUrl ?? 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
         },
       ),
       background: theme.cardColor,

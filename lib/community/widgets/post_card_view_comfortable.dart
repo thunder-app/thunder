@@ -24,7 +24,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool hideNsfwPreviews;
   final bool edgeToEdgeImages;
   final bool showTitleFirst;
-  final bool showInstanceName;
+  final bool communityMode;
   final bool showPostAuthor;
   final bool showFullHeightImages;
   final bool showVoteActions;
@@ -35,6 +35,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final PostListingType? listingType;
   final void Function()? navigateToPost;
+  final bool indicateRead;
 
   const PostCardViewComfortable({
     super.key,
@@ -43,7 +44,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.hideNsfwPreviews,
     required this.edgeToEdgeImages,
     required this.showTitleFirst,
-    required this.showInstanceName,
+    required this.communityMode,
     required this.showPostAuthor,
     required this.showFullHeightImages,
     required this.showVoteActions,
@@ -55,6 +56,7 @@ class PostCardViewComfortable extends StatelessWidget {
     required this.onSaveAction,
     required this.markPostReadOnMediaView,
     required this.listingType,
+    required this.indicateRead,
     this.navigateToPost,
   });
 
@@ -69,10 +71,10 @@ class PostCardViewComfortable extends StatelessWidget {
 
     final String textContent = postViewMedia.postView.post.body ?? "";
     final TextStyle? textStyleCommunityAndAuthor = theme.textTheme.bodyMedium?.copyWith(
-      color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
+      color: indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.85),
     );
 
-    final Color? readColor = postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
+    final Color? readColor = indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.45) : theme.textTheme.bodyMedium?.color?.withOpacity(0.90);
 
     var mediaView = MediaView(
       scrapeMissingPreviews: state.scrapeMissingPreviews,
@@ -83,7 +85,7 @@ class PostCardViewComfortable extends StatelessWidget {
       markPostReadOnMediaView: markPostReadOnMediaView,
       isUserLoggedIn: isUserLoggedIn,
       navigateToPost: navigateToPost,
-      read: postViewMedia.postView.read,
+      read: indicateRead && postViewMedia.postView.read,
     );
 
     final bool useSaveButton = state.showSaveAction;
@@ -92,7 +94,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
     return Container(
-      color: postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
+      color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -104,42 +106,46 @@ class PostCardViewComfortable extends StatelessWidget {
               child: Text.rich(
                 TextSpan(
                   children: [
+                    if (postViewMedia.postView.post.locked) ...[
+                      WidgetSpan(
+                          child: Icon(
+                        Icons.lock,
+                        color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                        size: 15 * textScaleFactor,
+                      )),
+                    ],
+                    if (!useSaveButton && postViewMedia.postView.saved)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.star_rounded,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                          size: 17 * textScaleFactor,
+                          semanticLabel: 'Saved',
+                        ),
+                      ),
+                    if (postViewMedia.postView.post.featuredCommunity)
+                      WidgetSpan(
+                        child: Icon(
+                          Icons.push_pin_rounded,
+                          size: 15 * textScaleFactor,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                        ),
+                      ),
+                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      const WidgetSpan(
+                        child: SizedBox(
+                          width: 3.5,
+                        ),
+                      ),
                     TextSpan(
                       text: postViewMedia.postView.post.name,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
                         color: postViewMedia.postView.post.featuredCommunity
-                            ? (postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
-                            : (postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                            ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                            : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                       ),
                     ),
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
-                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                          ),
-                        ),
-                      ),
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.star_rounded,
-                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
-                            size: 16.0 * textScaleFactor,
-                            semanticLabel: 'Saved',
-                          ),
-                        ),
-                      ),
                   ],
                 ),
                 textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
@@ -157,49 +163,54 @@ class PostCardViewComfortable extends StatelessWidget {
             ),
           if (!showTitleFirst)
             Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
-              child: Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text: postViewMedia.postView.post.name,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                        color: postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.65) : null,
-                      ),
-                    ),
-                    if (postViewMedia.postView.post.featuredCommunity)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
-                          child: Icon(
-                            Icons.push_pin_rounded,
-                            size: 17.0 * textScaleFactor,
-                            color: postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
-                          ),
-                        ),
-                      ),
-                    if (!useSaveButton && postViewMedia.postView.saved)
-                      WidgetSpan(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                            left: 8.0,
-                          ),
+                padding: const EdgeInsets.only(top: 4.0, bottom: 6.0, left: 12.0, right: 12.0),
+                child: Text.rich(
+                  TextSpan(
+                    children: [
+                      if (postViewMedia.postView.post.locked) ...[
+                        WidgetSpan(
+                            child: Icon(
+                          Icons.lock,
+                          color: indicateRead && postViewMedia.postView.read ? Colors.red.withOpacity(0.55) : Colors.red,
+                          size: 15 * textScaleFactor,
+                        )),
+                      ],
+                      if (!useSaveButton && postViewMedia.postView.saved)
+                        WidgetSpan(
                           child: Icon(
                             Icons.star_rounded,
-                            color: postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
-                            size: 16.0 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.purple.withOpacity(0.55) : Colors.purple,
+                            size: 17 * textScaleFactor,
                             semanticLabel: 'Saved',
                           ),
                         ),
+                      if (postViewMedia.postView.post.featuredCommunity)
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.push_pin_rounded,
+                            size: 15 * textScaleFactor,
+                            color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
+                          ),
+                        ),
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                        const WidgetSpan(
+                          child: SizedBox(
+                            width: 3.5,
+                          ),
+                        ),
+                      TextSpan(
+                        text: postViewMedia.postView.post.name,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w600,
+                          color: postViewMedia.postView.post.featuredCommunity
+                              ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
+                              : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
+                        ),
                       ),
-                  ],
-                ),
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
-              ),
-            ),
+                    ],
+                  ),
+                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                )),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
@@ -226,7 +237,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     children: [
                       PostCommunityAndAuthor(
                         showCommunityIcons: showCommunityIcons,
-                        showInstanceName: showInstanceName,
+                        communityMode: communityMode,
                         postView: postViewMedia.postView,
                         textStyleCommunity: textStyleCommunityAndAuthor,
                         textStyleAuthor: textStyleCommunityAndAuthor,

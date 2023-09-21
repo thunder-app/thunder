@@ -85,21 +85,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
 
-            // Tally up how many unread messages/mentions/replies there are so far
-            // This will only tally up at most 20 for each type for a total of 60 unread counts
-            int totalUnreadCount = 0;
-
-            for (PrivateMessageView privateMessageView in privateMessageViews) {
-              if (privateMessageView.privateMessage.read == false) totalUnreadCount++;
-            }
-
-            for (PersonMentionView personMentionView in personMentionViews) {
-              if (personMentionView.personMention.read == false) totalUnreadCount++;
-            }
-
-            for (CommentView commentView in commentViews) {
-              if (commentView.commentReply?.read == false) totalUnreadCount++;
-            }
+            int totalUnreadCount = getUnreadCount(privateMessageViews, personMentionViews, commentViews);
 
             return emit(
               state.copyWith(
@@ -204,7 +190,13 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       // Remove the post from the current reply list
       List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
 
-      emit(state.copyWith(status: InboxStatus.success, replies: replies));
+      int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
+
+      emit(state.copyWith(
+        status: InboxStatus.success,
+        replies: replies,
+        totalUnreadCount: totalUnreadCount,
+      ));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
     }
@@ -332,5 +324,25 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         saved: mention.saved,
         creatorBlocked: mention.creatorBlocked,
         instanceHost: mention.instanceHost);
+  }
+
+  int getUnreadCount(List<PrivateMessageView> privateMessageViews, List<PersonMentionView> personMentionViews, List<CommentView> commentViews) {
+    // Tally up how many unread messages/mentions/replies there are so far
+    // This will only tally up at most 20 for each type for a total of 60 unread counts
+    int totalUnreadCount = 0;
+
+    for (PrivateMessageView privateMessageView in privateMessageViews) {
+      if (privateMessageView.privateMessage.read == false) totalUnreadCount++;
+    }
+
+    for (PersonMentionView personMentionView in personMentionViews) {
+      if (personMentionView.personMention.read == false) totalUnreadCount++;
+    }
+
+    for (CommentView commentView in commentViews) {
+      if (commentView.commentReply?.read == false) totalUnreadCount++;
+    }
+
+    return totalUnreadCount;
   }
 }

@@ -33,9 +33,15 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   // For now, we will use the pre-made themes provided by FlexScheme
   // @TODO: Make this into our own custom enum list and extend this functionality to allow for more themes
 
-  List<ListPickerItem> customThemeOptions = CustomThemeType.values.map((CustomThemeType scheme) {
-    return ListPickerItem(color: scheme.color, label: scheme.label, payload: scheme);
-  }).toList();
+  List<ListPickerItem> customThemeOptions = [
+    ListPickerItem(
+        colors: [CustomThemeType.deepBlue.primaryColor, CustomThemeType.deepBlue.secondaryColor, CustomThemeType.deepBlue.tertiaryColor],
+        label: '${CustomThemeType.deepBlue.label} (Default)',
+        payload: CustomThemeType.deepBlue),
+    ...CustomThemeType.values.where((element) => element != CustomThemeType.deepBlue).map((CustomThemeType scheme) {
+      return ListPickerItem(colors: [scheme.primaryColor, scheme.secondaryColor, scheme.tertiaryColor], label: scheme.label, payload: scheme);
+    }).toList()
+  ];
 
   // Font Settings
   FontScale titleFontSizeScale = FontScale.base;
@@ -169,11 +175,52 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             icon: Icons.wallpaper_rounded,
                             onChanged: (value) => setPreferences(LocalSettings.appTheme, value.payload.index)),
                         ListOption(
-                            description: LocalSettings.appThemeAccentColor.label,
-                            value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
-                            options: customThemeOptions,
-                            icon: Icons.wallpaper_rounded,
-                            onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload)),
+                          description: LocalSettings.appThemeAccentColor.label,
+                          value: ListPickerItem(label: selectedTheme.label, icon: Icons.wallpaper_rounded, payload: selectedTheme),
+                          valueDisplay: Stack(
+                            children: [
+                              Container(
+                                height: 28,
+                                width: 28,
+                                decoration: BoxDecoration(
+                                  color: selectedTheme.primaryColor,
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                child: Container(
+                                  height: 14,
+                                  width: 14,
+                                  decoration: BoxDecoration(
+                                    color: selectedTheme.secondaryColor,
+                                    borderRadius: const BorderRadius.only(
+                                      bottomLeft: Radius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 14,
+                                  width: 14,
+                                  decoration: BoxDecoration(
+                                    color: selectedTheme.tertiaryColor,
+                                    borderRadius: const BorderRadius.only(
+                                      bottomRight: Radius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          options: customThemeOptions,
+                          icon: Icons.wallpaper_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
+                          closeOnSelect: false,
+                        ),
                         if (Platform.isAndroid) ...[
                           ToggleOption(
                             description: LocalSettings.useMaterialYouTheme.label,

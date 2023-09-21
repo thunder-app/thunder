@@ -19,10 +19,13 @@ class CommentSubview extends StatefulWidget {
 
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
+  final Function(int, bool) onDeleteAction;
+  final Function(CommentView, bool) onReplyEditAction;
 
   final PostViewMedia? postViewMedia;
   final int? selectedCommentId;
   final String? selectedCommentPath;
+  final int? newlyCreatedCommentId;
   final int? moddingCommentId;
   final ItemScrollController itemScrollController;
   final ItemPositionsListener itemPositionsListener;
@@ -30,7 +33,6 @@ class CommentSubview extends StatefulWidget {
   final bool hasReachedCommentEnd;
   final bool viewFullCommentsRefreshing;
   final DateTime now;
-  final Function(int, bool) onDeleteAction;
 
   final List<CommunityModeratorView>? moderators;
 
@@ -40,16 +42,18 @@ class CommentSubview extends StatefulWidget {
     this.level = 0,
     required this.onVoteAction,
     required this.onSaveAction,
+    required this.onDeleteAction,
+    required this.onReplyEditAction,
     this.postViewMedia,
     this.selectedCommentId,
     this.selectedCommentPath,
+    this.newlyCreatedCommentId,
     this.moddingCommentId,
     required this.itemScrollController,
     required this.itemPositionsListener,
     this.hasReachedCommentEnd = false,
     this.viewFullCommentsRefreshing = false,
     required this.now,
-    required this.onDeleteAction,
     required this.moderators,
   });
 
@@ -92,6 +96,8 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
+    final reduceAnimations = state.reduceAnimations;
+
     if (!widget.viewFullCommentsRefreshing && _removeViewFullCommentsButton) {
       _animatingIn = true;
       _fullCommentsAnimation.reverse();
@@ -105,9 +111,17 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
             duration: const Duration(milliseconds: 250),
             curve: Curves.easeInOut,
           );
+        } else if (state.newlyCreatedCommentId != null && state.comments.first.commentView?.comment.id == state.newlyCreatedCommentId) {
+          // Only scroll for top level comments since you can comment from anywhere in the comment section.
+          widget.itemScrollController.scrollTo(
+            index: 1,
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+          );
         }
       },
       child: ScrollablePositionedList.builder(
+        physics: reduceAnimations ? const BouncingScrollPhysics() : null,
         addSemanticIndexes: false,
         itemScrollController: widget.itemScrollController,
         itemPositionsListener: widget.itemPositionsListener,
@@ -170,6 +184,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       now: widget.now,
                       selectCommentId: widget.selectedCommentId,
                       selectedCommentPath: widget.selectedCommentPath,
+                      newlyCreatedCommentId: widget.newlyCreatedCommentId,
                       moddingCommentId: widget.moddingCommentId,
                       commentViewTree: widget.comments[index - 1],
                       collapsedCommentSet: collapsedCommentSet,
@@ -178,6 +193,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                      onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                       moderators: widget.moderators,
                     ),
                   if (index == widget.comments.length + 1) ...[

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -23,7 +25,8 @@ import '../../user/bloc/user_bloc.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
-  final bool showInstanceName;
+  final bool communityMode;
+  final bool indicateRead;
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
@@ -34,11 +37,12 @@ class PostCard extends StatefulWidget {
   const PostCard({
     super.key,
     required this.postViewMedia,
-    this.showInstanceName = true,
+    required this.communityMode,
     required this.onVoteAction,
     required this.onSaveAction,
     required this.onToggleReadAction,
     required this.listingType,
+    required this.indicateRead,
   });
 
   @override
@@ -200,17 +204,18 @@ class _PostCardState extends State<PostCard> {
                       showPostAuthor: state.showPostAuthor,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      showInstanceName: widget.showInstanceName,
+                      communityMode: widget.communityMode,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
+                      indicateRead: widget.indicateRead!,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
                       showThumbnailPreviewOnRight: state.showThumbnailPreviewOnRight,
                       hideNsfwPreviews: state.hideNsfwPreviews,
                       markPostReadOnMediaView: state.markPostReadOnMediaView,
-                      showInstanceName: widget.showInstanceName,
+                      communityMode: widget.communityMode,
                       showPostAuthor: state.showPostAuthor,
                       showFullHeightImages: state.showFullHeightImages,
                       edgeToEdgeImages: state.showEdgeToEdgeImages,
@@ -224,6 +229,7 @@ class _PostCardState extends State<PostCard> {
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
+                      indicateRead: widget.indicateRead!,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
@@ -251,6 +257,9 @@ class _PostCardState extends State<PostCard> {
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     CommunityBloc communityBloc = context.read<CommunityBloc>();
 
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool reduceAnimations = state.reduceAnimations;
+
     // Mark post as read when tapped
     if (isUserLoggedIn) {
       int postId = widget.postViewMedia.postView.post.id;
@@ -265,7 +274,9 @@ class _PostCardState extends State<PostCard> {
 
     await Navigator.of(context).push(
       SwipeablePageRoute(
-        backGestureDetectionStartOffset: 45,
+        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+        backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+        backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
         builder: (context) {
           return MultiBlocProvider(

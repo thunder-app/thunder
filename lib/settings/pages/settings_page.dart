@@ -25,6 +25,7 @@ class SettingsPage extends StatelessWidget {
     SettingTopic(title: 'Theming', icon: Icons.text_fields, path: '/settings/themes'),
     SettingTopic(title: 'Gestures', icon: Icons.swipe, path: '/settings/gestures'),
     SettingTopic(title: 'Floating Action Button', icon: Icons.settings_applications_rounded, path: '/settings/fab'),
+    SettingTopic(title: 'Accessibility', icon: Icons.accessibility, path: '/settings/accessibility'),
     SettingTopic(title: 'About', icon: Icons.info_rounded, path: '/settings/about'),
     SettingTopic(title: 'Debug', icon: Icons.developer_mode_rounded, path: '/settings/debug'),
   ];
@@ -67,7 +68,7 @@ class SettingsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: FutureBuilder(
-              future: getCurrentVersion(),
+              future: getCurrentVersion(removeInternalBuildNumber: true),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
                   return Center(child: Text('Thunder ${snapshot.data ?? 'N/A'}'));

@@ -1,24 +1,19 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
-import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/swipe.dart';
+import 'package:thunder/utils/navigate_community.dart';
 
 import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
@@ -89,7 +84,6 @@ class _UserSidebarState extends State<UserSidebar> {
     }
 
     bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    String locale = Localizations.localeOf(context).languageCode;
 
     if (widget.personBlocks != null) {
       for (var user in widget.personBlocks!) {
@@ -163,10 +157,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                   children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: null /*() {
-                                    HapticFeedback.mediumImpact();
-                                  }*/
-                                        ,
+                                        onPressed: null,
                                         style: TextButton.styleFrom(
                                           fixedSize: const Size.fromHeight(40),
                                           padding: EdgeInsets.zero,
@@ -195,7 +186,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                         onPressed: isLoggedIn
                                             ? () {
                                                 HapticFeedback.heavyImpact();
-                                                ScaffoldMessenger.of(context).clearSnackBars();
+                                                hideSnackbar(context);
                                                 context.read<UserBloc>().add(
                                                       BlockUserEvent(
                                                         personId: widget.userInfo!.person.id,
@@ -388,40 +379,13 @@ class _UserSidebarState extends State<UserSidebar> {
                                                 for (var mods in widget.moderates!)
                                                   GestureDetector(
                                                     onTap: () {
-                                                      account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
-                                                      AuthBloc authBloc = context.read<AuthBloc>();
-                                                      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-                                                      Navigator.of(context).push(
-                                                        SwipeablePageRoute(
-                                                          builder: (context) => MultiBlocProvider(
-                                                            providers: [
-                                                              BlocProvider.value(value: accountBloc),
-                                                              BlocProvider.value(value: authBloc),
-                                                              BlocProvider.value(value: thunderBloc),
-                                                            ],
-                                                            child: CommunityPage(communityId: mods.community.id),
-                                                          ),
-                                                        ),
-                                                      );
+                                                      navigateToCommunityPage(context, communityId: mods.community.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(bottom: 8.0),
                                                       child: Row(
                                                         children: [
-                                                          CircleAvatar(
-                                                            backgroundColor: mods.community.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                            foregroundImage: mods.community.icon != null ? CachedNetworkImageProvider(mods.community.icon!) : null,
-                                                            maxRadius: 20,
-                                                            child: Text(
-                                                              mods.community.name[0].toUpperCase() ?? '',
-                                                              semanticsLabel: '',
-                                                              style: const TextStyle(
-                                                                fontWeight: FontWeight.bold,
-                                                                fontSize: 16,
-                                                              ),
-                                                            ),
-                                                          ),
+                                                          CommunityIcon(community: mods.community, radius: 20.0),
                                                           const SizedBox(width: 16.0),
                                                           Expanded(
                                                             child: Column(
@@ -429,7 +393,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                               crossAxisAlignment: CrossAxisAlignment.start,
                                                               children: [
                                                                 Text(
-                                                                  mods.community.title ?? mods.community.name ?? '',
+                                                                  mods.community.title,
                                                                   overflow: TextOverflow.ellipsis,
                                                                   maxLines: 1,
                                                                   style: const TextStyle(
@@ -438,7 +402,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                                   ),
                                                                 ),
                                                                 Text(
-                                                                  '${mods.community.name ?? ''} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
+                                                                  '${mods.community.name} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
                                                                   overflow: TextOverflow.ellipsis,
                                                                   style: TextStyle(
                                                                     color: theme.colorScheme.onBackground.withOpacity(0.6),

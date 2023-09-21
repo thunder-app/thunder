@@ -16,7 +16,7 @@ enum LocalSettings {
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
-  showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Show in-app Update Notification'),
+  showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
   scoreCounters(name: 'setting_score_counters', label: "Display User Scores"),
 
   /// -------------------------- Feed Post Related Settings --------------------------
@@ -35,6 +35,7 @@ enum LocalSettings {
   showPostEdgeToEdgeImages(name: 'setting_general_show_edge_to_edge_images', label: 'Edge-to-Edge Images'),
   showPostTextContentPreview(name: 'setting_general_show_text_content', label: 'Show Text Content'),
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
+  dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -43,6 +44,9 @@ enum LocalSettings {
   showCommentActionButtons(name: 'setting_general_show_comment_button_actions', label: 'Show Comment Button Actions'),
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
+
+  /// -------------------------- Accessibility Related Settings --------------------------
+  reduceAnimations(name: 'setting_accessibility_reduce_animations', label: 'Reduce Animations'),
 
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
@@ -87,11 +91,15 @@ enum LocalSettings {
   postFabEnableBackToTop(name: 'setting_post_fab_enable_back_to_top', label: 'Back to Top'),
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
+  postFabEnableRefresh(name: 'setting_post_fab_enable_refresh', label: 'Refresh'),
   feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
   feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),
   postFabLongPressAction(name: 'settings_post_fab_long_press_action', label: ''),
   enableCommentNavigation(name: 'setting_enable_comment_navigation', label: 'Enable Comment Navigation Buttons'),
+  combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
+
+  draftsCache(name: 'drafts_cache', label: ''),
   ;
 
   const LocalSettings({
@@ -104,4 +112,7 @@ enum LocalSettings {
 
   /// The label of the setting as seen in the Settings page
   final String label;
+
+  /// Defines the settings that are excluded from import/export
+  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
 }

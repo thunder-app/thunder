@@ -98,10 +98,6 @@ class LinkPreviewCard extends StatelessWidget {
                             link: originURL!,
                             showBody: false,
                             showTitle: false,
-                            placeholderWidget: Container(
-                              margin: const EdgeInsets.all(15),
-                              child: const CircularProgressIndicator(),
-                            ),
                             cacheDuration: Duration.zero,
                           ))
                       : LinkPreviewGenerator(
@@ -109,9 +105,6 @@ class LinkPreviewCard extends StatelessWidget {
                           link: originURL!,
                           showBody: false,
                           showTitle: false,
-                          placeholderWidget: const Center(
-                            child: CircularProgressIndicator(),
-                          ),
                           cacheDuration: Duration.zero,
                         ),
                 ),
@@ -173,10 +166,6 @@ class LinkPreviewCard extends StatelessWidget {
                                   link: originURL!,
                                   showBody: false,
                                   showTitle: false,
-                                  placeholderWidget: Container(
-                                    margin: const EdgeInsets.all(15),
-                                    child: const CircularProgressIndicator(),
-                                  ),
                                   cacheDuration: Duration.zero,
                                 ))
                             : LinkPreviewGenerator(
@@ -184,10 +173,6 @@ class LinkPreviewCard extends StatelessWidget {
                                 link: originURL!,
                                 showBody: false,
                                 showTitle: false,
-                                placeholderWidget: Container(
-                                  margin: const EdgeInsets.all(15),
-                                  child: const CircularProgressIndicator(),
-                                ),
                                 cacheDuration: Duration.zero,
                               ),
                       )
@@ -269,7 +254,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (communityName != null) {
         try {
-          await navigateToCommunityByName(context, communityName);
+          await navigateToCommunityPage(context, communityName: communityName);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid community we'll perform the next fallback
@@ -280,7 +265,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (username != null) {
         try {
-          await navigateToUserByName(context, username);
+          await navigateToUserPage(context, username: username);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid user, we'll perform the next fallback
