@@ -223,7 +223,11 @@ class _ThunderState extends State<Thunder> {
                                             _feedScaffoldKey.currentState?.closeDrawer();
                                             setState(() {
                                               selectedPageIndex = 2;
-                                              pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                              if (reduceAnimations) {
+                                                pageController.jumpToPage(2);
+                                              } else {
+                                                pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                              }
                                             });
                                           },
                                         ),
