@@ -57,3 +57,22 @@ final class FeedItemUpdated extends FeedEvent {
 
   const FeedItemUpdated({required this.postViewMedia});
 }
+
+final class FeedItemActioned extends FeedEvent {
+  /// This is the original PostViewMedia to perform the action upon. One of [postViewMedia] or [postId] must be provided
+  /// If both are provided, [postId] will take precedence.
+  final PostViewMedia? postViewMedia;
+
+  /// This is the post id to perform the action upon. One of [postViewMedia] or [postId] must be provided
+  /// If both are provided, [postId] will take precedence
+  final int? postId;
+
+  /// This indicates the relevant action to perform on the post
+  final PostAction postAction;
+
+  /// This indicates the value to assign the action to. It is of type dynamic to allow for any type
+  /// TODO: Change the dynamic type to the correct type(s)
+  final dynamic value;
+
+  const FeedItemActioned({this.postViewMedia, this.postId, required this.postAction, this.value});
+}

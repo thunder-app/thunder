@@ -31,7 +31,7 @@ class PostCard extends StatefulWidget {
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
-  final Function(bool) onToggleReadAction;
+  final Function(bool) onReadAction;
 
   final PostListingType? listingType;
 
@@ -41,7 +41,7 @@ class PostCard extends StatefulWidget {
     required this.communityMode,
     required this.onVoteAction,
     required this.onSaveAction,
-    required this.onToggleReadAction,
+    required this.onReadAction,
     required this.listingType,
     required this.indicateRead,
   });
@@ -99,7 +99,7 @@ class _PostCardState extends State<PostCard> {
             swipeAction: swipeAction,
             onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
             onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
-            onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
+            onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
             voteType: myVote ?? VoteType.none,
             saved: saved,
             read: read,

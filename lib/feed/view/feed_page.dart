@@ -9,6 +9,8 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
+import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/utils/post.dart';
 
 enum FeedType { community, user, general }
 
@@ -136,9 +138,15 @@ class _FeedViewState extends State<FeedView> {
                       return PostCard(
                         postViewMedia: postViewMedias[index],
                         communityMode: state.feedType == FeedType.community,
-                        onVoteAction: (VoteType voteType) => {},
-                        onSaveAction: (bool saved) => {},
-                        onToggleReadAction: (bool read) => {},
+                        onVoteAction: (VoteType voteType) {
+                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                        },
+                        onSaveAction: (bool saved) {
+                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                        },
+                        onReadAction: (bool read) {
+                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                        },
                         listingType: state.postListingType,
                         indicateRead: false,
                       );

@@ -9,7 +9,8 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/post/utils/post.dart';
 
 part 'feed_event.dart';
 part 'feed_state.dart';
@@ -26,13 +27,131 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   final LemmyClient lemmyClient;
 
   FeedBloc({required this.lemmyClient}) : super(const FeedState()) {
-    on<ResetFeed>(_onResetFeed);
+    /// Handles resetting the feed to its initial state
+    on<ResetFeed>(
+      _onResetFeed,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    /// Handles fetching the feed
     on<FeedFetched>(
       _onFeedFetched,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<FeedChangeSortTypeEvent>(_onFeedChangeSortType);
-    on<FeedItemUpdated>(_onFeedItemUpdated);
+
+    /// Handles changing the sort type of the feed
+    on<FeedChangeSortTypeEvent>(
+      _onFeedChangeSortType,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    /// Handles updating a given item within the feed
+    on<FeedItemUpdated>(
+      _onFeedItemUpdated,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    /// Handles actions on a given item within the feed
+    on<FeedItemActioned>(
+      _onFeedItemActioned,
+      transformer: throttleDroppable(Duration.zero),
+    );
+  }
+
+  Future<void> _onFeedItemActioned(FeedItemActioned event, Emitter<FeedState> emit) async {
+    assert(!(event.postViewMedia == null && event.postId == null));
+    emit(state.copyWith(status: FeedStatus.fetching));
+
+    switch (event.postAction) {
+      case PostAction.vote:
+        // Optimistically update the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyVotePost(postViewMedia, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          PostView postView = await votePost(originalPostView.post.id, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+
+          emit(state.copyWith(status: FeedStatus.success));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
+      case PostAction.save:
+        // Optimistically save the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallySavePost(postViewMedia, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          PostView postView = await savePost(originalPostView.post.id, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+
+          emit(state.copyWith(status: FeedStatus.success));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
+      case PostAction.read:
+        // Optimistically read the post
+        int existingPostViewMediaIndex = state.postViewMedias.indexWhere((PostViewMedia postViewMedia) => postViewMedia.postView.post.id == event.postId);
+
+        PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
+        PostView originalPostView = postViewMedia.postView;
+
+        try {
+          PostView updatedPostView = optimisticallyReadPost(postViewMedia, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;
+
+          // Emit the state to update UI immediately
+          emit(state.copyWith(status: FeedStatus.success));
+          emit(state.copyWith(status: FeedStatus.fetching));
+
+          PostView postView = await markPostAsRead(originalPostView.post.id, event.value);
+          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+
+          emit(state.copyWith(status: FeedStatus.success));
+        } catch (e) {
+          // Restore the original post contents
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
+        }
+      case PostAction.delete:
+      // TODO: Handle this case.
+      case PostAction.report:
+      // TODO: Handle this case.
+      case PostAction.lock:
+      // TODO: Handle this case.
+      case PostAction.pinCommunity:
+      // TODO: Handle this case.
+      case PostAction.remove:
+      // TODO: Handle this case.
+      case PostAction.pinInstance:
+      // TODO: Handle this case.
+      case PostAction.purge:
+      // TODO: Handle this case.
+      default:
+        break;
+    }
   }
 
   Future<void> _onFeedItemUpdated(FeedItemUpdated event, Emitter<FeedState> emit) async {

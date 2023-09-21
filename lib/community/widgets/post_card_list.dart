@@ -332,7 +332,7 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                             communityMode: widget.communityId != null || widget.communityName != null,
                             onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                             onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
-                            onToggleReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
+                            onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                             listingType: widget.listingType,
                             indicateRead: widget.indicateRead,
                           )

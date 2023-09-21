@@ -13,7 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/utils/post.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';

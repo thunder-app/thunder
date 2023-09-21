@@ -17,7 +17,7 @@ import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/network_errors.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/utils/post.dart';
 
 import '../../utils/constants.dart';
 

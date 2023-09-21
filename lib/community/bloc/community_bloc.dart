@@ -17,7 +17,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/utils/post.dart';
 
 part 'community_event.dart';
 part 'community_state.dart';
