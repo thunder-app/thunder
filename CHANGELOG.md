@@ -4,6 +4,7 @@
 - Added anonymous browsing mode for any instance - contribution from @micahmo
 
 ### Changed
+- Collapsed comments are easier to expand - contribution from @micahmo
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
@@ -46,7 +47,6 @@
 - Show swatches and live previews for accent color selection - contribution from @micahmo
 - Use Android system back button to navigate from Saved to History on profile page - contribution from @micahmo
 - Hide community name and show usernames when viewing a community - contribution from @micahmo
-- Collapsed comments are easier to expand - contribution from @micahmo
 
 ### Fixed
 - Handle issue where some deferred comments won't load - contribution from @micahmo
