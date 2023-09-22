@@ -3,6 +3,7 @@ import 'dart:convert';
 
 // Flutter
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,12 +15,15 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
+import 'package:thunder/core/enums/fab_action.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -135,6 +139,7 @@ class _ThunderState extends State<Thunder> {
 
                 return Scaffold(
                   drawer: const CommunityDrawer(),
+                  floatingActionButton: FeedFAB(),
                   bottomNavigationBar: CustomBottomNavigationBar(
                     selectedPageIndex: selectedPageIndex,
                     onPageChange: (int index) {

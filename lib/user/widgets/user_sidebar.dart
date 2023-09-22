@@ -8,12 +8,13 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 
 import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
@@ -379,7 +380,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                 for (var mods in widget.moderates!)
                                                   GestureDetector(
                                                     onTap: () {
-                                                      navigateToCommunityPage(context, communityId: mods.community.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(bottom: 8.0),

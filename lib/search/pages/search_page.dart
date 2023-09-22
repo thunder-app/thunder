@@ -17,6 +17,8 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -26,7 +28,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -321,7 +322,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     visualDensity: VisualDensity.compact,
                   ),
                   onTap: () {
-                    navigateToCommunityPage(context, communityId: communityView.community.id);
+                    navigateToFeedPage(context, feedType: FeedType.community, communityId: communityView.community.id);
                   },
                 ),
               );

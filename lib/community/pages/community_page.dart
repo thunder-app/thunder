@@ -276,119 +276,119 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
                         )
                       ],
                     ),
-                    drawer: (widget.communityId != null || widget.communityName != null)
-                        ? null
-                        : CommunityDrawer(
-                            currentPostListingType: currentCommunityBloc!.state.listingType,
-                            communityId: currentCommunityBloc!.state.communityId,
-                            communityName: currentCommunityBloc!.state.communityName,
-                            navigateToAccount: widget.navigateToAccount,
-                          ),
-                    floatingActionButton: enableFab
-                        ? AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 200),
-                            switchInCurve: Curves.ease,
-                            switchOutCurve: Curves.ease,
-                            transitionBuilder: (child, animation) {
-                              return SlideTransition(
-                                position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
-                                child: child,
-                              );
-                            },
-                            child: isFabSummoned
-                                ? GestureFab(
-                                    distance: 60,
-                                    icon: Icon(
-                                      singlePressAction.isAllowed(state: state, widget: widget) ? singlePressAction.getIcon() : FeedFabAction.dismissRead.getIcon(),
-                                      semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
-                                      size: 35,
-                                    ),
-                                    onPressed: () {
-                                      HapticFeedback.lightImpact();
-                                      singlePressAction.isAllowed(state: state, widget: widget)
-                                          ? singlePressAction.execute(context, state,
-                                              bloc: context.read<CommunityBloc>(),
-                                              widget: widget,
-                                              // override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-                                              sortType: sortType)
-                                          : FeedFabAction.dismissRead.execute(context, state);
-                                    },
-                                    onLongPress: () {
-                                      longPressAction.isAllowed(state: state, widget: widget)
-                                          ? longPressAction.execute(context, state,
-                                              bloc: context.read<CommunityBloc>(),
-                                              widget: widget,
-                                              // override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-                                              sortType: sortType)
-                                          : FeedFabAction.openFab.execute(context, state);
-                                    },
-                                    children: [
-                                      if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
-                                        ActionButton(
-                                          onPressed: () {
-                                            HapticFeedback.lightImpact();
-                                            FeedFabAction.dismissRead.execute(context, state);
-                                          },
-                                          title: FeedFabAction.dismissRead.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.dismissRead.getIcon(),
-                                          ),
-                                        ),
-                                      if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
-                                        ActionButton(
-                                          onPressed: () {
-                                            HapticFeedback.lightImpact();
-                                            FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
-                                          },
-                                          title: FeedFabAction.refresh.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.refresh.getIcon(),
-                                          ),
-                                        ),
-                                      if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
-                                        ActionButton(
-                                          onPressed: () {
-                                            HapticFeedback.mediumImpact();
-                                            // FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
-                                          },
-                                          title: FeedFabAction.changeSort.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.changeSort.getIcon(),
-                                          ),
-                                        ),
-                                      if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
-                                        ActionButton(
-                                          onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
-                                          title: FeedFabAction.subscriptions.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.subscriptions.getIcon(),
-                                          ),
-                                        ),
-                                      if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
-                                        ActionButton(
-                                          onPressed: () {
-                                            FeedFabAction.backToTop.execute(context, state);
-                                          },
-                                          title: FeedFabAction.backToTop.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.backToTop.getIcon(),
-                                          ),
-                                        ),
-                                      if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
-                                        ActionButton(
-                                          onPressed: () {
-                                            FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
-                                          },
-                                          title: FeedFabAction.newPost.getTitle(context),
-                                          icon: Icon(
-                                            FeedFabAction.newPost.getIcon(),
-                                          ),
-                                        ),
-                                    ],
-                                  )
-                                : null,
-                          )
-                        : null,
+                    // drawer: (widget.communityId != null || widget.communityName != null)
+                    //     ? null
+                    //     : CommunityDrawer(
+                    //         currentPostListingType: currentCommunityBloc!.state.listingType,
+                    //         communityId: currentCommunityBloc!.state.communityId,
+                    //         communityName: currentCommunityBloc!.state.communityName,
+                    //         navigateToAccount: widget.navigateToAccount,
+                    //       ),
+                    // floatingActionButton: enableFab
+                    //     ? AnimatedSwitcher(
+                    //         duration: const Duration(milliseconds: 200),
+                    //         switchInCurve: Curves.ease,
+                    //         switchOutCurve: Curves.ease,
+                    //         transitionBuilder: (child, animation) {
+                    //           return SlideTransition(
+                    //             position: Tween<Offset>(begin: const Offset(0, 0.2), end: const Offset(0, 0)).animate(animation),
+                    //             child: child,
+                    //           );
+                    //         },
+                    //         child: isFabSummoned
+                    //             ? GestureFab(
+                    //                 distance: 60,
+                    //                 icon: Icon(
+                    //                   singlePressAction.isAllowed(state: state, widget: widget) ? singlePressAction.getIcon() : FeedFabAction.dismissRead.getIcon(),
+                    //                   semanticLabel: singlePressAction.isAllowed(state: state) ? singlePressAction.getTitle(context) : FeedFabAction.dismissRead.getTitle(context),
+                    //                   size: 35,
+                    //                 ),
+                    //                 onPressed: () {
+                    //                   HapticFeedback.lightImpact();
+                    //                   singlePressAction.isAllowed(state: state, widget: widget)
+                    //                       ? singlePressAction.execute(context, state,
+                    //                           bloc: context.read<CommunityBloc>(),
+                    //                           widget: widget,
+                    //                           // override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                    //                           sortType: sortType)
+                    //                       : FeedFabAction.dismissRead.execute(context, state);
+                    //                 },
+                    //                 onLongPress: () {
+                    //                   longPressAction.isAllowed(state: state, widget: widget)
+                    //                       ? longPressAction.execute(context, state,
+                    //                           bloc: context.read<CommunityBloc>(),
+                    //                           widget: widget,
+                    //                           // override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
+                    //                           sortType: sortType)
+                    //                       : FeedFabAction.openFab.execute(context, state);
+                    //                 },
+                    //                 children: [
+                    //                   if (FeedFabAction.dismissRead.isAllowed() == true && enableDismissRead)
+                    //                     ActionButton(
+                    //                       onPressed: () {
+                    //                         HapticFeedback.lightImpact();
+                    //                         FeedFabAction.dismissRead.execute(context, state);
+                    //                       },
+                    //                       title: FeedFabAction.dismissRead.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.dismissRead.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                   if (FeedFabAction.refresh.isAllowed() == true && enableRefresh)
+                    //                     ActionButton(
+                    //                       onPressed: () {
+                    //                         HapticFeedback.lightImpact();
+                    //                         FeedFabAction.refresh.execute(context, state, bloc: context.read<CommunityBloc>(), sortType: sortType);
+                    //                       },
+                    //                       title: FeedFabAction.refresh.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.refresh.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                   if (FeedFabAction.changeSort.isAllowed() == true && enableChangeSort)
+                    //                     ActionButton(
+                    //                       onPressed: () {
+                    //                         HapticFeedback.mediumImpact();
+                    //                         // FeedFabAction.changeSort.execute(context, state, override: () => showSortBottomSheet(context, state));
+                    //                       },
+                    //                       title: FeedFabAction.changeSort.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.changeSort.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                   if (FeedFabAction.subscriptions.isAllowed(widget: widget) == true && enableSubscriptions)
+                    //                     ActionButton(
+                    //                       onPressed: () => FeedFabAction.subscriptions.execute(context, state, widget: widget),
+                    //                       title: FeedFabAction.subscriptions.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.subscriptions.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                   if (FeedFabAction.backToTop.isAllowed() && enableBackToTop)
+                    //                     ActionButton(
+                    //                       onPressed: () {
+                    //                         FeedFabAction.backToTop.execute(context, state);
+                    //                       },
+                    //                       title: FeedFabAction.backToTop.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.backToTop.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                   if (FeedFabAction.newPost.isAllowed(state: state) && enableNewPost)
+                    //                     ActionButton(
+                    //                       onPressed: () {
+                    //                         FeedFabAction.newPost.execute(context, state, bloc: context.read<CommunityBloc>());
+                    //                       },
+                    //                       title: FeedFabAction.newPost.getTitle(context),
+                    //                       icon: Icon(
+                    //                         FeedFabAction.newPost.getIcon(),
+                    //                       ),
+                    //                     ),
+                    //                 ],
+                    //               )
+                    //             : null,
+                    //       )
+                    //     : null,
                     body: Stack(
                       alignment: Alignment.bottomRight,
                       children: [

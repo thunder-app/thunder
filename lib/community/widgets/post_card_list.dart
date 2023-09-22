@@ -90,18 +90,18 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
   @override
   void initState() {
-    _scrollController.addListener(_onScroll);
+    // _scrollController.addListener(_onScroll);
 
-    // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+    // // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
 
-      if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
-        widget.onScrollEndReached();
-      }
-    });
+    //   if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+    //     widget.onScrollEndReached();
+    //   }
+    // });
 
-    super.initState();
+    // super.initState();
   }
 
   @override
@@ -111,9 +111,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
-      widget.onScrollEndReached();
-    }
+    // if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+    //   widget.onScrollEndReached();
+    // }
 
     if (!disableFabs) {
       // Adjust the threshold as needed

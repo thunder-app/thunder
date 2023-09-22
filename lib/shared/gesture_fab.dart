@@ -68,27 +68,28 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState state = context.watch<ThunderBloc>().state;
-    if (state.isFabOpen != _previousIsFabOpen) {
-      isFabOpen = state.isFabOpen;
-      _previousIsFabOpen = isFabOpen;
-      if (isFabOpen) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    }
-
-    return SizedBox.expand(
-      child: Stack(
-        alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
-        clipBehavior: Clip.none,
-        children: [
-          _buildTapToCloseFab(),
-          ..._buildExpandingActionButtons(),
-          _buildTapToOpenFab(),
-        ],
-      ),
+    return BlocConsumer<ThunderBloc, ThunderState>(
+      listenWhen: (previous, current) => previous.isFabOpen != current.isFabOpen,
+      listener: (context, state) {
+        if (state.isFabOpen) {
+          _controller.forward();
+        } else {
+          _controller.reverse();
+        }
+      },
+      builder: (context, state) {
+        return SizedBox.expand(
+          child: Stack(
+            alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
+            clipBehavior: Clip.none,
+            children: [
+              _buildTapToCloseFab(),
+              ..._buildExpandingActionButtons(),
+              _buildTapToOpenFab(),
+            ],
+          ),
+        );
+      },
     );
   }
 
