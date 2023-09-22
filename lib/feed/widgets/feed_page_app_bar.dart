@@ -26,9 +26,7 @@ class FeedPageAppBar extends StatelessWidget {
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         icon: showBackAction ? const Icon(Icons.arrow_back_ios_new_rounded) : const Icon(Icons.menu),
-        onPressed: () {
-          showBackAction ? Navigator.of(context).pop() : null;
-        },
+        onPressed: () => showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer(),
       ),
       actions: [
         Container(

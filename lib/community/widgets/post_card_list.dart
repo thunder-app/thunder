@@ -150,10 +150,6 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
       crossAxisCount: 1,
     );
 
-    if (state.scrollToTopId > _previousScrollId) {
-      scrollToTop();
-      _previousScrollId = state.scrollToTopId;
-    }
     if (state.dismissEvent == true) {
       dismissRead(compactMode);
       context.read<ThunderBloc>().add(const OnDismissEvent(false));

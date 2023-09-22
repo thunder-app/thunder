@@ -17,6 +17,7 @@ final class FeedState extends Equatable {
     this.username,
     this.currentPage = 1,
     this.message,
+    this.scrollId = 0,
   });
 
   /// The status of the feed
@@ -58,6 +59,9 @@ final class FeedState extends Equatable {
   /// The message to display on failure
   final String? message;
 
+  /// This id is used for scrolling back to the top
+  final int scrollId;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -72,6 +76,7 @@ final class FeedState extends Equatable {
     String? username,
     int? currentPage,
     String? message,
+    int? scrollId,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -87,6 +92,7 @@ final class FeedState extends Equatable {
       username: username ?? this.username,
       currentPage: currentPage ?? this.currentPage,
       message: message,
+      scrollId: scrollId ?? this.scrollId,
     );
   }
 
@@ -96,5 +102,6 @@ final class FeedState extends Equatable {
   }
 
   @override
-  List<dynamic> get props => [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message];
+  List<dynamic> get props =>
+      [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message, scrollId];
 }

@@ -10,7 +10,6 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/post/enums/post_action.dart';
-import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 enum FeedType { community, user, general }
@@ -22,9 +21,12 @@ enum FeedType { community, user, general }
 /// If [FeedType.community] is provided, one of [communityId] or [communityName] must be provided. If both are provided, [communityId] will take precedence.
 /// If [FeedType.user] is provided, one of [userId] or [username] must be provided. If both are provided, [userId] will take precedence.
 /// If [FeedType.general] is provided, [postListingType] must be provided.
+///
+/// TODO: Add support for user feeds here
 class FeedPage extends StatelessWidget {
   const FeedPage({
     super.key,
+    this.useGlobalFeedBloc = false,
     required this.feedType,
     this.postListingType,
     required this.sortType,
@@ -55,11 +57,38 @@ class FeedPage extends StatelessWidget {
   /// The username of the user to display posts for.
   final String? username;
 
+  /// This dictates whether we should create a new bloc when the feed is fetched, or use the global feed bloc
+  /// The global feed bloc is contains the state of the main feed (without pushing to a new page/route)
+  ///
+  /// This is useful if we want to keep the user on the "same" page
+  final bool useGlobalFeedBloc;
+
   @override
   Widget build(BuildContext context) {
+    /// When this is true, we find the feed bloc already present in the widget tree
+    if (useGlobalFeedBloc) {
+      FeedBloc feedBloc = context.read<FeedBloc>();
+
+      feedBloc.add(FeedFetchedEvent(
+        feedType: feedType,
+        postListingType: postListingType,
+        sortType: sortType,
+        communityId: communityId,
+        communityName: communityName,
+        userId: userId,
+        username: username,
+        reset: true,
+      ));
+
+      return BlocProvider.value(
+        value: feedBloc,
+        child: const FeedView(),
+      );
+    }
+
     return BlocProvider<FeedBloc>(
       create: (_) => FeedBloc(lemmyClient: LemmyClient.instance)
-        ..add(FeedFetched(
+        ..add(FeedFetchedEvent(
           feedType: feedType,
           postListingType: postListingType,
           sortType: sortType,
@@ -99,7 +128,7 @@ class _FeedViewState extends State<FeedView> {
       }
 
       if (_scrollController.position.pixels == _scrollController.position.maxScrollExtent) {
-        context.read<FeedBloc>().add(const FeedFetched());
+        context.read<FeedBloc>().add(const FeedFetchedEvent());
       }
     });
   }
@@ -113,10 +142,14 @@ class _FeedViewState extends State<FeedView> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<FeedBloc, FeedState>(
+      listenWhen: (previous, current) {
+        if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        return true;
+      },
       listener: (context, state) {
         if (state.status == FeedStatus.failure && state.message != null) {
           showSnackbar(context, state.message!);
-          context.read<FeedBloc>().add(FeedClearMessage()); // Clear the message so that it does not spam
+          context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
         }
       },
       builder: (context, state) {
@@ -146,13 +179,13 @@ class _FeedViewState extends State<FeedView> {
                         postViewMedia: postViewMedias[index],
                         communityMode: state.feedType == FeedType.community,
                         onVoteAction: (VoteType voteType) {
-                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
                         },
                         onSaveAction: (bool saved) {
-                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
                         },
                         onReadAction: (bool read) {
-                          context.read<FeedBloc>().add(FeedItemActioned(postId: postViewMedias[index].postView.post.id, postAction: PostAction.purge, value: read));
+                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
                         },
                         listingType: state.postListingType,
                         indicateRead: true,

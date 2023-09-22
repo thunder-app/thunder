@@ -28,13 +28,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   FeedBloc({required this.lemmyClient}) : super(const FeedState()) {
     /// Handles resetting the feed to its initial state
-    on<ResetFeed>(
+    on<ResetFeedEvent>(
       _onResetFeed,
       transformer: throttleDroppable(Duration.zero),
     );
 
     /// Handles fetching the feed
-    on<FeedFetched>(
+    on<FeedFetchedEvent>(
       _onFeedFetched,
       transformer: throttleDroppable(throttleDuration),
     );
@@ -46,29 +46,39 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     );
 
     /// Handles updating a given item within the feed
-    on<FeedItemUpdated>(
+    on<FeedItemUpdatedEvent>(
       _onFeedItemUpdated,
       transformer: throttleDroppable(Duration.zero),
     );
 
     /// Handles actions on a given item within the feed
-    on<FeedItemActioned>(
+    on<FeedItemActionedEvent>(
       _onFeedItemActioned,
       transformer: throttleDroppable(Duration.zero),
     );
 
     /// Handles clearing any messages from the state
-    on<FeedClearMessage>(
+    on<FeedClearMessageEvent>(
       _onFeedClearMessage,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    /// Handles scrolling to top of the feed
+    on<ScrollToTopEvent>(
+      _onFeedScrollToTop,
       transformer: throttleDroppable(Duration.zero),
     );
   }
 
-  Future<void> _onFeedClearMessage(FeedClearMessage event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedScrollToTop(ScrollToTopEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, scrollId: state.scrollId + 1));
+  }
+
+  Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, message: null));
   }
 
-  Future<void> _onFeedItemActioned(FeedItemActioned event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
     assert(!(event.postViewMedia == null && event.postId == null));
     emit(state.copyWith(status: FeedStatus.fetching));
 
@@ -167,7 +177,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
   }
 
-  Future<void> _onFeedItemUpdated(FeedItemUpdated event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
     List<PostViewMedia> updatedPostViewMedias = state.postViewMedias.map((PostViewMedia postViewMedia) {
@@ -182,7 +192,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   /// Resets the FeedState to its initial state
-  Future<void> _onResetFeed(ResetFeed event, Emitter<FeedState> emit) async {
+  Future<void> _onResetFeed(ResetFeedEvent event, Emitter<FeedState> emit) async {
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
@@ -201,7 +211,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Changes the current sort type of the feed, and refreshes the feed
   Future<void> _onFeedChangeSortType(FeedChangeSortTypeEvent event, Emitter<FeedState> emit) async {
-    add(FeedFetched(
+    add(FeedFetchedEvent(
       feedType: state.feedType,
       postListingType: state.postListingType,
       sortType: event.sortType,
@@ -214,7 +224,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   }
 
   /// Fetches the posts, community information, and user information for the feed
-  Future<void> _onFeedFetched(FeedFetched event, Emitter<FeedState> emit) async {
+  Future<void> _onFeedFetched(FeedFetchedEvent event, Emitter<FeedState> emit) async {
     // Assert any requirements
     if (event.reset) assert(event.feedType != null);
     if (event.reset && event.feedType == FeedType.community) assert(!(event.communityId == null && event.communityName == null));
@@ -223,7 +233,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
-      add(ResetFeed());
+      add(ResetFeedEvent());
       emit(state.copyWith(status: FeedStatus.fetching));
 
       FullCommunityView? fullCommunityView;

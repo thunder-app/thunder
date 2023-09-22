@@ -114,8 +114,6 @@ class ThunderState extends Equatable {
     this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    this.scrollToTopId = 0,
     // Dismiss posts from loaded view event
     this.dismissEvent = false,
     // Expand/Close FAB event
@@ -239,9 +237,6 @@ class ThunderState extends Equatable {
   final String currentAnonymousInstance;
 
   /// --------------------------------- UI Events ---------------------------------
-  // Scroll to top event
-  final int scrollToTopId;
-
   // Dismiss posts from loaded view event
   final bool dismissEvent;
 
@@ -359,8 +354,6 @@ class ThunderState extends Equatable {
     String? currentAnonymousInstance,
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    int? scrollToTopId,
     // Dismiss posts from loaded view event
     bool? dismissEvent,
     // Expand/Close FAB event
@@ -482,8 +475,6 @@ class ThunderState extends Equatable {
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
 
       /// --------------------------------- UI Events ---------------------------------
-      // Scroll to top event
-      scrollToTopId: scrollToTopId ?? this.scrollToTopId,
       // Dismiss posts from loaded view event
       dismissEvent: dismissEvent ?? this.dismissEvent,
       // Expand/Close FAB event
@@ -605,8 +596,6 @@ class ThunderState extends Equatable {
         currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------
-        // Scroll to top event
-        scrollToTopId,
         // Dismiss posts from loaded view event
         dismissEvent,
         // Expand/Close FAB event

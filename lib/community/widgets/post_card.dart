@@ -292,7 +292,7 @@ class _PostCardState extends State<PostCard> {
               postView: widget.postViewMedia,
               onPostUpdated: (PostViewMedia postViewMedia) {
                 try {
-                  context.read<FeedBloc>().add(FeedItemUpdated(postViewMedia: postViewMedia));
+                  context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
                 } catch (e) {
                   print('here');
                 }

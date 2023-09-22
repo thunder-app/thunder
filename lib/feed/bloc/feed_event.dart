@@ -7,7 +7,7 @@ sealed class FeedEvent extends Equatable {
   List<Object> get props => [];
 }
 
-final class FeedFetched extends FeedEvent {
+final class FeedFetchedEvent extends FeedEvent {
   /// The type of feed to display.
   final FeedType? feedType;
 
@@ -32,7 +32,7 @@ final class FeedFetched extends FeedEvent {
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
-  const FeedFetched({
+  const FeedFetchedEvent({
     this.feedType,
     this.postListingType,
     this.sortType,
@@ -50,15 +50,15 @@ final class FeedChangeSortTypeEvent extends FeedEvent {
   const FeedChangeSortTypeEvent(this.sortType);
 }
 
-final class ResetFeed extends FeedEvent {}
+final class ResetFeedEvent extends FeedEvent {}
 
-final class FeedItemUpdated extends FeedEvent {
+final class FeedItemUpdatedEvent extends FeedEvent {
   final PostViewMedia postViewMedia;
 
-  const FeedItemUpdated({required this.postViewMedia});
+  const FeedItemUpdatedEvent({required this.postViewMedia});
 }
 
-final class FeedItemActioned extends FeedEvent {
+final class FeedItemActionedEvent extends FeedEvent {
   /// This is the original PostViewMedia to perform the action upon. One of [postViewMedia] or [postId] must be provided
   /// If both are provided, [postId] will take precedence.
   final PostViewMedia? postViewMedia;
@@ -74,7 +74,9 @@ final class FeedItemActioned extends FeedEvent {
   /// TODO: Change the dynamic type to the correct type(s)
   final dynamic value;
 
-  const FeedItemActioned({this.postViewMedia, this.postId, required this.postAction, this.value});
+  const FeedItemActionedEvent({this.postViewMedia, this.postId, required this.postAction, this.value});
 }
 
-final class FeedClearMessage extends FeedEvent {}
+final class FeedClearMessageEvent extends FeedEvent {}
+
+final class ScrollToTopEvent extends FeedEvent {}
