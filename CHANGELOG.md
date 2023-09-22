@@ -4,6 +4,7 @@
 - Added anonymous browsing mode for any instance - contribution from @micahmo
 
 ### Changed
+- Collapsed comments are easier to expand - contribution from @micahmo
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
