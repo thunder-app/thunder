@@ -6,6 +6,7 @@
 ### Changed
 
 ### Fixed
+- Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
 
 ## 0.2.4 - 2023-09-20
 ### Added
