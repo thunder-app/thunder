@@ -141,7 +141,7 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
             width: size.width,
             height: size.height,
           ));
-        } catch(e) {
+        } catch (e) {
           // If it fails, fall back to a media type of link
           media.add(Media(originalUrl: url, mediaType: MediaType.link));
         }
