@@ -33,3 +33,5 @@ class SwitchAccount extends AuthEvent {
 
   const SwitchAccount({required this.accountId});
 }
+
+class LogOutOfAllAccounts extends AuthEvent {}

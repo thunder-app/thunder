@@ -164,9 +164,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         }
       }
 
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString()));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: exception.toString(), totalUnreadCount: 0));
     } catch (e) {
-      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString(), totalUnreadCount: 0));
     }
   }
 

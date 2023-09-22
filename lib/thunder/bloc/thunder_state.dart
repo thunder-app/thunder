@@ -110,6 +110,8 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     this.reduceAnimations = false,
+    this.anonymousInstances = const ['lemmy.ml'],
+    this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -233,6 +235,9 @@ class ThunderState extends Equatable {
   /// -------------------------- Accessibility Related Settings --------------------------
   final bool reduceAnimations;
 
+  final List<String> anonymousInstances;
+  final String currentAnonymousInstance;
+
   /// --------------------------------- UI Events ---------------------------------
   // Scroll to top event
   final int scrollToTopId;
@@ -350,6 +355,8 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Accessibility Related Settings --------------------------
     bool? reduceAnimations,
+    List<String>? anonymousInstances,
+    String? currentAnonymousInstance,
 
     /// --------------------------------- UI Events ---------------------------------
     // Scroll to top event
@@ -471,6 +478,9 @@ class ThunderState extends Equatable {
       /// -------------------------- Accessibility Related Settings --------------------------
       reduceAnimations: reduceAnimations ?? this.reduceAnimations,
 
+      anonymousInstances: anonymousInstances ?? this.anonymousInstances,
+      currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
+
       /// --------------------------------- UI Events ---------------------------------
       // Scroll to top event
       scrollToTopId: scrollToTopId ?? this.scrollToTopId,
@@ -590,6 +600,9 @@ class ThunderState extends Equatable {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations,
+
+        anonymousInstances,
+        currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------
         // Scroll to top event

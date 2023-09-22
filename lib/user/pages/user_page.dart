@@ -16,6 +16,7 @@ import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/user/utils/logout_dialog.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;
@@ -41,37 +42,7 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () {
-                  showDialog<void>(
-                      context: context,
-                      builder: (context) => BlocProvider<AuthBloc>.value(
-                            value: context.read<AuthBloc>(),
-                            child: AlertDialog(
-                              title: Text(
-                                'Are you sure you want to log out?',
-                                style: Theme.of(context).textTheme.bodyLarge,
-                              ),
-                              actions: [
-                                TextButton(
-                                    onPressed: () {
-                                      context.pop();
-                                    },
-                                    child: const Text('Cancel')),
-                                const SizedBox(
-                                  width: 12,
-                                ),
-                                FilledButton(
-                                    onPressed: () {
-                                      context.read<AuthBloc>().add(RemoveAccount(
-                                            accountId: context.read<AuthBloc>().state.account!.id,
-                                          ));
-                                      context.pop();
-                                    },
-                                    child: const Text('Log out'))
-                              ],
-                            ),
-                          ));
-                },
+                onPressed: () => showLogOutDialog(context),
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
