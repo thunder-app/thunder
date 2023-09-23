@@ -218,7 +218,8 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: true,
+      clearMemoryCacheWhenDispose: false,
+      cacheMaxAge: const Duration(minutes: 1),
       cacheWidth: widget.viewMode == ViewMode.compact
           ? (75 * View.of(context).devicePixelRatio.ceil())
           : ((MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24)) * View.of(context).devicePixelRatio.ceil()).toInt(),
