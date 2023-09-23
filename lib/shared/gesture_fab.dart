@@ -6,7 +6,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
 
-@immutable
 class GestureFab extends StatefulWidget {
   const GestureFab({
     super.key,
@@ -209,7 +208,6 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   }
 }
 
-@immutable
 class ActionButton extends StatelessWidget {
   ActionButton({
     super.key,

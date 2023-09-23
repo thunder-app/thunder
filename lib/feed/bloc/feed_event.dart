@@ -80,3 +80,11 @@ final class FeedItemActionedEvent extends FeedEvent {
 final class FeedClearMessageEvent extends FeedEvent {}
 
 final class ScrollToTopEvent extends FeedEvent {}
+
+final class FeedDismissReadEvent extends FeedEvent {}
+
+final class FeedHidePostsFromViewEvent extends FeedEvent {
+  final List<int> postIds;
+
+  const FeedHidePostsFromViewEvent({required this.postIds});
+}

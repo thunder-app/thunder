@@ -473,61 +473,6 @@ class _CommunityPageState extends State<CommunityPage> with AutomaticKeepAliveCl
     }
   }
 
-  // void showSortBottomSheet(BuildContext context, CommunityState state) {
-  //   showModalBottomSheet(
-  //     context: context,
-  //     showDragHandle: true,
-  //     isScrollControlled: true,
-  //     builder: (builderContext) => SortPicker(
-  //       title: AppLocalizations.of(context)!.sortOptions,
-  //       onSelect: (selected) {
-  //         setState(() {
-  //           sortType = selected.payload;
-  //           sortTypeIcon = selected.icon;
-  //         });
-
-  //         context.read<CommunityBloc>().add(
-  //               GetCommunityPostsEvent(
-  //                 sortType: selected.payload,
-  //                 reset: true,
-  //                 listingType: state.communityId != null ? null : state.listingType,
-  //                 communityId: widget.communityId ?? state.communityId,
-  //               ),
-  //             );
-  //       },
-  //       previouslySelected: sortType,
-  //     ),
-  //   );
-  // }
-
-  // String getCommunityName(CommunityState state) {
-  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-  //     return '';
-  //   }
-
-  //   if (state.communityId != null || state.communityName != null) {
-  //     return state.communityInfo?.communityView.community.title ?? '';
-  //   }
-
-  //   return (state.listingType != null) ? (destinations.firstWhere((destination) => destination.listingType == state.listingType).label) : '';
-  // }
-
-  // String getSortName(CommunityState state) {
-  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-  //     return '';
-  //   }
-
-  //   return sortTypeLabel ?? '';
-  // }
-
-  // IconData? getSortIcon(CommunityState state) {
-  //   if (state.status == CommunityStatus.initial || state.status == CommunityStatus.loading) {
-  //     return null;
-  //   }
-
-  //   return sortTypeIcon;
-  // }
-
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     if (context.read<ThunderBloc>().state.isFabOpen) {
       context.read<ThunderBloc>().add(const OnFabToggle(false));

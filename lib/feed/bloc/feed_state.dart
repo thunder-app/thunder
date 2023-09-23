@@ -18,6 +18,7 @@ final class FeedState extends Equatable {
     this.currentPage = 1,
     this.message,
     this.scrollId = 0,
+    this.dismissReadId = 0,
   });
 
   /// The status of the feed
@@ -62,6 +63,9 @@ final class FeedState extends Equatable {
   /// This id is used for scrolling back to the top
   final int scrollId;
 
+  /// This id is used for dismissing already read posts in the feed
+  final int dismissReadId;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -77,6 +81,7 @@ final class FeedState extends Equatable {
     int? currentPage,
     String? message,
     int? scrollId,
+    int? dismissReadId,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -93,6 +98,7 @@ final class FeedState extends Equatable {
       currentPage: currentPage ?? this.currentPage,
       message: message,
       scrollId: scrollId ?? this.scrollId,
+      dismissReadId: dismissReadId ?? this.dismissReadId,
     );
   }
 
@@ -103,5 +109,5 @@ final class FeedState extends Equatable {
 
   @override
   List<dynamic> get props =>
-      [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message, scrollId];
+      [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message, scrollId, dismissReadId];
 }

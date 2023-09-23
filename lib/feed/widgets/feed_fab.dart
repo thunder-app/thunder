@@ -4,7 +4,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -26,7 +25,6 @@ class FeedFAB extends StatelessWidget {
 
   @override
   build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
     final ThunderState state = context.watch<ThunderBloc>().state;
 
     FeedFabAction singlePressAction = state.feedFabSinglePressAction;
@@ -45,28 +43,61 @@ class FeedFAB extends StatelessWidget {
       child: GestureFab(
         distance: 60,
         icon: Icon(
-          singlePressAction != null ? singlePressAction.icon : FeedFabAction.dismissRead.icon,
-          semanticLabel: singlePressAction != null ? singlePressAction.title : FeedFabAction.dismissRead.title,
+          singlePressAction.icon,
+          semanticLabel: singlePressAction.title,
           size: 35,
         ),
         onPressed: () {
-          // HapticFeedback.lightImpact();
-          // singlePressAction.isAllowed()
-          //     ? singlePressAction.execute(context, state,
-          //         bloc: context.read<CommunityBloc>(),
-          //         widget: widget,
-          //         // override: singlePressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-          //         sortType: sortType)
-          //     : FeedFabAction.dismissRead.execute();
+          HapticFeedback.lightImpact();
+
+          switch (singlePressAction) {
+            case FeedFabAction.dismissRead:
+              triggerDismissRead(context);
+              break;
+            case FeedFabAction.refresh:
+              triggerRefresh(context);
+              break;
+            case FeedFabAction.changeSort:
+              triggerChangeSort(context);
+              break;
+            case FeedFabAction.subscriptions:
+              triggerOpenDrawer(context);
+              break;
+            case FeedFabAction.backToTop:
+              triggerScrollToTop(context);
+              break;
+            case FeedFabAction.newPost:
+              triggerNewPost(context);
+              break;
+            default:
+              break;
+          }
         },
         onLongPress: () {
-          // longPressAction.isAllowed(state: state, widget: widget)
-          //     ? longPressAction.execute(context, state,
-          //         bloc: context.read<CommunityBloc>(),
-          //         widget: widget,
-          //         // override: longPressAction == FeedFabAction.changeSort ? () => showSortBottomSheet(context, state) : null,
-          //         sortType: sortType)
-          //     : FeedFabAction.openFab.execute(context, state);
+          HapticFeedback.mediumImpact();
+
+          switch (longPressAction) {
+            case FeedFabAction.dismissRead:
+              triggerDismissRead(context);
+              break;
+            case FeedFabAction.refresh:
+              triggerRefresh(context);
+              break;
+            case FeedFabAction.changeSort:
+              triggerChangeSort(context);
+              break;
+            case FeedFabAction.subscriptions:
+              triggerOpenDrawer(context);
+              break;
+            case FeedFabAction.backToTop:
+              triggerScrollToTop(context);
+              break;
+            case FeedFabAction.newPost:
+              triggerNewPost(context);
+              break;
+            default:
+              break;
+          }
         },
         children: [
           ActionButton(
@@ -74,30 +105,15 @@ class FeedFAB extends StatelessWidget {
             icon: Icon(FeedFabAction.dismissRead.icon),
             onPressed: () {
               HapticFeedback.lightImpact();
-              // context.read<FeedBloc>().add(const OnDismissEvent(true));
-              context.read<FeedBloc>().add(FeedChangeSortTypeEvent(SortType.active));
+              triggerDismissRead(context);
             },
           ),
           ActionButton(
             title: FeedFabAction.refresh.title,
             icon: Icon(FeedFabAction.refresh.icon),
             onPressed: () {
-              FeedState state = context.read<FeedBloc>().state;
-
               HapticFeedback.lightImpact();
-              context.read<AccountBloc>().add(GetAccountInformation());
-              context.read<FeedBloc>().add(
-                    FeedFetchedEvent(
-                      feedType: state.feedType,
-                      postListingType: state.postListingType,
-                      sortType: state.sortType,
-                      communityId: state.communityId,
-                      communityName: state.communityName,
-                      userId: state.userId,
-                      username: state.username,
-                      reset: true,
-                    ),
-                  );
+              triggerRefresh(context);
             },
           ),
           ActionButton(
@@ -105,15 +121,7 @@ class FeedFAB extends StatelessWidget {
             icon: Icon(FeedFabAction.changeSort.icon),
             onPressed: () {
               HapticFeedback.lightImpact();
-              showModalBottomSheet<void>(
-                showDragHandle: true,
-                context: context,
-                builder: (builderContext) => SortPicker(
-                  title: l10n.sortOptions,
-                  onSelect: (selected) => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
-                  previouslySelected: context.read<FeedBloc>().state.sortType,
-                ),
-              );
+              triggerChangeSort(context);
             },
           ),
           ActionButton(
@@ -121,7 +129,7 @@ class FeedFAB extends StatelessWidget {
             icon: Icon(FeedFabAction.subscriptions.icon),
             onPressed: () {
               HapticFeedback.lightImpact();
-              Scaffold.of(context).openDrawer();
+              triggerOpenDrawer(context);
             },
           ),
           ActionButton(
@@ -129,79 +137,126 @@ class FeedFAB extends StatelessWidget {
             icon: Icon(FeedFabAction.backToTop.icon),
             onPressed: () {
               HapticFeedback.lightImpact();
-              context.read<FeedBloc>().add(ScrollToTopEvent());
+              triggerScrollToTop(context);
             },
           ),
           ActionButton(
             title: FeedFabAction.newPost.title,
             icon: Icon(FeedFabAction.newPost.icon),
-            onPressed: () async {
+            onPressed: () {
               HapticFeedback.lightImpact();
-
-              FeedBloc feedBloc = context.read<FeedBloc>();
-
-              if (!context.read<AuthBloc>().state.isLoggedIn) {
-                showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
-              } else {
-                ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                AccountBloc accountBloc = context.read<AccountBloc>();
-
-                final ThunderState thunderState = context.read<ThunderBloc>().state;
-                final bool reduceAnimations = thunderState.reduceAnimations;
-
-                SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                DraftPost? newDraftPost;
-                DraftPost? previousDraftPost;
-                String draftId = '${LocalSettings.draftsCache.name}-${feedBloc.state.communityId}';
-                String? draftPostJson = prefs.getString(draftId);
-                if (draftPostJson != null) {
-                  previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-                }
-                Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                  if (newDraftPost?.isNotEmpty == true) {
-                    prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                  }
-                });
-
-                Navigator.of(context)
-                    .push(
-                  SwipeablePageRoute(
-                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                    canOnlySwipeFromEdge: true,
-                    backGestureDetectionWidth: 45,
-                    builder: (context) {
-                      return MultiBlocProvider(
-                        providers: [
-                          BlocProvider<FeedBloc>.value(value: feedBloc),
-                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                          BlocProvider<AccountBloc>.value(value: accountBloc),
-                        ],
-                        child: CreatePostPage(
-                          communityId: feedBloc.state.communityId!,
-                          communityInfo: feedBloc.state.fullCommunityView,
-                          previousDraftPost: previousDraftPost,
-                          onUpdateDraft: (p) => newDraftPost = p,
-                        ),
-                      );
-                    },
-                  ),
-                )
-                    .whenComplete(() async {
-                  timer.cancel();
-
-                  if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
-                    await Future.delayed(const Duration(milliseconds: 300));
-                    showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
-                    prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                  } else {
-                    prefs.remove(draftId);
-                  }
-                });
-              }
+              triggerNewPost(context);
             },
           ),
         ],
       ),
     );
+  }
+
+  Future<void> triggerDismissRead(BuildContext context) async {
+    context.read<FeedBloc>().add(FeedDismissReadEvent());
+  }
+
+  Future<void> triggerRefresh(BuildContext context) async {
+    FeedState state = context.read<FeedBloc>().state;
+
+    context.read<AccountBloc>().add(GetAccountInformation());
+    context.read<FeedBloc>().add(
+          FeedFetchedEvent(
+            feedType: state.feedType,
+            postListingType: state.postListingType,
+            sortType: state.sortType,
+            communityId: state.communityId,
+            communityName: state.communityName,
+            userId: state.userId,
+            username: state.username,
+            reset: true,
+          ),
+        );
+  }
+
+  Future<void> triggerChangeSort(BuildContext context) async {
+    final l10n = AppLocalizations.of(context)!;
+
+    showModalBottomSheet<void>(
+      showDragHandle: true,
+      context: context,
+      builder: (builderContext) => SortPicker(
+        title: l10n.sortOptions,
+        onSelect: (selected) => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
+        previouslySelected: context.read<FeedBloc>().state.sortType,
+      ),
+    );
+  }
+
+  Future<void> triggerOpenDrawer(BuildContext context) async {
+    Scaffold.of(context).openDrawer();
+  }
+
+  Future<void> triggerScrollToTop(BuildContext context) async {
+    context.read<FeedBloc>().add(ScrollToTopEvent());
+  }
+
+  Future<void> triggerNewPost(BuildContext context) async {
+    FeedBloc feedBloc = context.read<FeedBloc>();
+
+    if (!context.read<AuthBloc>().state.isLoggedIn) {
+      showSnackbar(context, AppLocalizations.of(context)!.mustBeLoggedInPost);
+    } else {
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+      AccountBloc accountBloc = context.read<AccountBloc>();
+
+      final ThunderState thunderState = context.read<ThunderBloc>().state;
+      final bool reduceAnimations = thunderState.reduceAnimations;
+
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      DraftPost? newDraftPost;
+      DraftPost? previousDraftPost;
+      String draftId = '${LocalSettings.draftsCache.name}-${feedBloc.state.communityId}';
+      String? draftPostJson = prefs.getString(draftId);
+      if (draftPostJson != null) {
+        previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
+      }
+      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+        if (newDraftPost?.isNotEmpty == true) {
+          prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+        }
+      });
+
+      Navigator.of(context)
+          .push(
+        SwipeablePageRoute(
+          transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+          canOnlySwipeFromEdge: true,
+          backGestureDetectionWidth: 45,
+          builder: (context) {
+            return MultiBlocProvider(
+              providers: [
+                BlocProvider<FeedBloc>.value(value: feedBloc),
+                BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                BlocProvider<AccountBloc>.value(value: accountBloc),
+              ],
+              child: CreatePostPage(
+                communityId: feedBloc.state.communityId!,
+                communityInfo: feedBloc.state.fullCommunityView,
+                previousDraftPost: previousDraftPost,
+                onUpdateDraft: (p) => newDraftPost = p,
+              ),
+            );
+          },
+        ),
+      )
+          .whenComplete(() async {
+        timer.cancel();
+
+        if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+          prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+        } else {
+          prefs.remove(draftId);
+        }
+      });
+    }
   }
 }

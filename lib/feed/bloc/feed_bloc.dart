@@ -68,6 +68,30 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onFeedScrollToTop,
       transformer: throttleDroppable(Duration.zero),
     );
+
+    /// Handles dismissing read posts from the feed
+    on<FeedDismissReadEvent>(
+      _onFeedDismissRead,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
+    on<FeedHidePostsFromViewEvent>(
+      _onFeedHidePostsFromView,
+      transformer: throttleDroppable(Duration.zero),
+    );
+  }
+
+  Future<void> _onFeedHidePostsFromView(FeedHidePostsFromViewEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.fetching));
+
+    List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+    postViewMedias.removeWhere((PostViewMedia postViewMedia) => event.postIds.contains(postViewMedia.postView.post.id));
+
+    emit(state.copyWith(status: FeedStatus.success, postViewMedias: postViewMedias));
+  }
+
+  Future<void> _onFeedDismissRead(FeedDismissReadEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.success, dismissReadId: state.dismissReadId + 1));
   }
 
   Future<void> _onFeedScrollToTop(ScrollToTopEvent event, Emitter<FeedState> emit) async {

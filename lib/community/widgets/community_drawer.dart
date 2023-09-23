@@ -241,7 +241,14 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                             ),
                                             onPressed: () {
                                               Navigator.of(context).pop();
-                                              navigateToFeedPage(context, feedType: FeedType.community, communityId: community.id);
+                                              context.read<FeedBloc>().add(
+                                                    FeedFetchedEvent(
+                                                      feedType: FeedType.community,
+                                                      sortType: SortType.hot,
+                                                      communityId: community.id,
+                                                      reset: true,
+                                                    ),
+                                                  );
                                             },
                                             child: Row(
                                               children: [

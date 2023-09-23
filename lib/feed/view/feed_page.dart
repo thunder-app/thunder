@@ -68,6 +68,7 @@ class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     /// When this is true, we find the feed bloc already present in the widget tree
+    /// This is to keep the events on the main page (rather than presenting a new page)
     if (useGlobalFeedBloc) {
       FeedBloc feedBloc = context.read<FeedBloc>();
 
@@ -117,6 +118,8 @@ class _FeedViewState extends State<FeedView> {
 
   bool showAppBarTitle = false;
 
+  List<int> queuedForRemoval = [];
+
   @override
   void initState() {
     super.initState();
@@ -141,6 +144,27 @@ class _FeedViewState extends State<FeedView> {
     super.dispose();
   }
 
+  Future<void> dismissRead() async {
+    ThunderState state = context.read<ThunderBloc>().state;
+
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    List<PostViewMedia> postViewMedias = feedBloc.state.postViewMedias;
+
+    if (postViewMedias.isNotEmpty) {
+      for (PostViewMedia postViewMedia in postViewMedias) {
+        if (postViewMedia.postView.read) {
+          setState(() => queuedForRemoval.add(postViewMedia.postView.post.id));
+          await Future.delayed(Duration(milliseconds: state.useCompactView ? 60 : 100));
+        }
+      }
+
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      feedBloc.add(FeedHidePostsFromViewEvent(postIds: List.from(queuedForRemoval)));
+      setState(() => queuedForRemoval.clear());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
@@ -148,6 +172,7 @@ class _FeedViewState extends State<FeedView> {
     return BlocConsumer<FeedBloc, FeedState>(
       listenWhen: (previous, current) {
         if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+        if (previous.dismissReadId != current.dismissReadId) dismissRead();
         return true;
       },
       listener: (context, state) {
@@ -187,20 +212,46 @@ class _FeedViewState extends State<FeedView> {
                 mainAxisSpacing: 0,
                 itemBuilder: (BuildContext context, int index) {
                   if (index < postViewMedias.length) {
-                    return PostCard(
-                      postViewMedia: postViewMedias[index],
-                      communityMode: state.feedType == FeedType.community,
-                      onVoteAction: (VoteType voteType) {
-                        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                    return AnimatedSwitcher(
+                      switchOutCurve: Curves.ease,
+                      duration: const Duration(milliseconds: 0),
+                      reverseDuration: const Duration(milliseconds: 400),
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(
+                          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                            CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
+                          ),
+                          child: SlideTransition(
+                            position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                            child: SizeTransition(
+                              sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: const Interval(0.0, 0.25),
+                                ),
+                              ),
+                              child: child,
+                            ),
+                          ),
+                        );
                       },
-                      onSaveAction: (bool saved) {
-                        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                      },
-                      onReadAction: (bool read) {
-                        context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                      },
-                      listingType: state.postListingType,
-                      indicateRead: true,
+                      child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
+                          ? PostCard(
+                              postViewMedia: postViewMedias[index],
+                              communityMode: state.feedType == FeedType.community,
+                              onVoteAction: (VoteType voteType) {
+                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                              },
+                              onSaveAction: (bool saved) {
+                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                              },
+                              onReadAction: (bool read) {
+                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                              },
+                              listingType: state.postListingType,
+                              indicateRead: true,
+                            )
+                          : null,
                     );
                   } else {
                     return const SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator()));
