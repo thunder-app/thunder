@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
@@ -14,6 +15,7 @@ import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/update/check_github_update.dart';
 import 'package:thunder/utils/constants.dart';
@@ -44,7 +46,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
     on<OnDismissEvent>(
       _onDismissEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
     );
     on<OnFabToggle>(
       _onFabToggle,
@@ -52,6 +54,18 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     );
     on<OnFabSummonToggle>(
       _onFabSummonToggle,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnAddAnonymousInstance>(
+      _onAddAnonymousInstance,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnRemoveAnonymousInstance>(
+      _onRemoveAnonymousInstance,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<OnSetCurrentAnonymousInstance>(
+      _onSetCurrentAnonymousInstance,
       transformer: throttleDroppable(throttleDuration),
     );
   }
@@ -190,6 +204,11 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       /// -------------------------- Accessibility Related Settings --------------------------
       bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
 
+      List<String> anonymousInstances = prefs.getStringList(LocalSettings.anonymousInstances.name) ??
+          // If the user already has some accouts (i.e., an upgrade), we don't want to just throw an anonymous instance at them
+          ((await Account.accounts()).isNotEmpty ? [] : ['lemmy.ml']);
+      String currentAnonymousInstance = prefs.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
+
       return emit(state.copyWith(
         status: ThunderStatus.success,
 
@@ -296,6 +315,9 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Accessibility Related Settings --------------------------
         reduceAnimations: reduceAnimations,
+
+        anonymousInstances: anonymousInstances,
+        currentAnonymousInstance: currentAnonymousInstance,
       ));
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
@@ -316,5 +338,32 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
   void _onFabSummonToggle(OnFabSummonToggle event, Emitter<ThunderState> emit) {
     emit(state.copyWith(isFabSummoned: !state.isFabSummoned));
+  }
+
+  void _onAddAnonymousInstance(OnAddAnonymousInstance event, Emitter<ThunderState> emit) async {
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    prefs.setStringList(LocalSettings.anonymousInstances.name, [...state.anonymousInstances, event.instance]);
+
+    emit(state.copyWith(anonymousInstances: [...state.anonymousInstances, event.instance]));
+  }
+
+  void _onRemoveAnonymousInstance(OnRemoveAnonymousInstance event, Emitter<ThunderState> emit) async {
+    final List<String> instances = state.anonymousInstances;
+    instances.remove(event.instance);
+
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    prefs.setStringList(LocalSettings.anonymousInstances.name, instances);
+
+    emit(state.copyWith(anonymousInstances: instances));
+  }
+
+  void _onSetCurrentAnonymousInstance(OnSetCurrentAnonymousInstance event, Emitter<ThunderState> emit) async {
+    LemmyClient.instance.changeBaseUrl(event.instance);
+
+    final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    prefs.setString(LocalSettings.currentAnonymousInstance.name, event.instance);
+
+    emit(state.copyWith(currentAnonymousInstance: event.instance));
   }
 }

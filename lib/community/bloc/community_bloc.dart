@@ -69,7 +69,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     );
     on<DismissReadEvent>(
       _dismissReadEvent,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
     );
   }
 

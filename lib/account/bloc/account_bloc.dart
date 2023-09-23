@@ -67,7 +67,13 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
               throw Exception('Error: Timeout when attempting to fetch account details');
             });
 
-            return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
+            // This eliminates an issue which has plagued me a lot which is that there's a race condition
+            // with so many calls to GetAccountInformation, we can return success for the new and old account.
+            if (fullPersonView.personView.person.id == (await fetchActiveProfileAccount())?.userId) {
+              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
+            } else {
+              return emit(state.copyWith(status: AccountStatus.success));
+            }
           } catch (e) {
             exception = e;
             attemptCount++;

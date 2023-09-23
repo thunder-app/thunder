@@ -100,6 +100,9 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
 
   draftsCache(name: 'drafts_cache', label: ''),
+
+  anonymousInstances(name: 'setting_anonymous_instances', label: ''),
+  currentAnonymousInstance(name: 'setting_current_anonymous_instance', label: ''),
   ;
 
   const LocalSettings({
@@ -114,5 +117,9 @@ enum LocalSettings {
   final String label;
 
   /// Defines the settings that are excluded from import/export
-  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
+  static List<LocalSettings> importExportExcludedSettings = [
+    LocalSettings.draftsCache,
+    LocalSettings.anonymousInstances,
+    LocalSettings.currentAnonymousInstance,
+  ];
 }

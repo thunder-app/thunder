@@ -219,6 +219,17 @@ class _ThunderState extends State<Thunder> {
                                         CommunityPage(
                                           scaffoldKey: _feedScaffoldKey,
                                           pageController: pageController,
+                                          navigateToAccount: () {
+                                            _feedScaffoldKey.currentState?.closeDrawer();
+                                            setState(() {
+                                              selectedPageIndex = 2;
+                                              if (reduceAnimations) {
+                                                pageController.jumpToPage(2);
+                                              } else {
+                                                pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                                              }
+                                            });
+                                          },
                                         ),
                                         const SearchPage(),
                                         const AccountPage(),

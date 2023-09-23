@@ -163,5 +163,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       }
     });
+
+    on<LogOutOfAllAccounts>((event, emit) async {
+      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      prefs.setString('active_profile_id', '');
+      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false));
+    });
   }
 }
