@@ -269,14 +269,15 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         Icons.delete,
                                         semanticLabel: AppLocalizations.of(context)!.removeAccount,
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
 
-                                        if ((anonymousInstances?.length ?? 0) > 0) {
-                                          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                        } else {
-                                          context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
+                                        if (currentAccountId != null) {
+                                          await Future.delayed(const Duration(milliseconds: 1500), () {
+                                            context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                          });
                                         }
+
                                         setState(() => accounts = null);
                                       })
                               : null,
