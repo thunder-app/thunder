@@ -156,10 +156,10 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
           media.add(Media(originalUrl: url, mediaType: MediaType.link));
         }
       } else {
-        // For external links, attempt to fetch any media associated with it (image, title)
-        LinkInfo linkInfo = await getLinkInfo(url);
-
         try {
+          // For external links, attempt to fetch any media associated with it (image, title)
+          LinkInfo linkInfo = await getLinkInfo(url);
+
           if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
             Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 

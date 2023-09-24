@@ -59,8 +59,6 @@ class PostCardViewCompact extends StatelessWidget {
 
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
-    print(indicateRead);
-
     return Container(
       color: indicateRead && postViewMedia.postView.read ? theme.colorScheme.onBackground.withOpacity(darkTheme ? 0.05 : 0.075) : null,
       padding: const EdgeInsets.only(

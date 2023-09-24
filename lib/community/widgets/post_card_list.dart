@@ -380,24 +380,24 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                 )
                               : null,
                         ),
-                        AnimatedSwitcher(
-                          switchInCurve: Curves.decelerate,
-                          switchOutCurve: Curves.easeOut,
-                          transitionBuilder: (child, animation) {
-                            return SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                              child: child,
-                            );
-                          },
-                          duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar
-                              ? CommunitySidebar(
-                                  communityInfo: widget.communityInfo,
-                                  subscribedType: widget.subscribeType,
-                                  blockedCommunity: widget.blockedCommunity,
-                                )
-                              : null,
-                        ),
+                        // AnimatedSwitcher(
+                        //   switchInCurve: Curves.decelerate,
+                        //   switchOutCurve: Curves.easeOut,
+                        //   transitionBuilder: (child, animation) {
+                        //     return SlideTransition(
+                        //       position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                        //       child: child,
+                        //     );
+                        //   },
+                        //   duration: const Duration(milliseconds: 300),
+                        //   child: _displaySidebar
+                        //       // ? CommunitySidebar(
+                        //       //     communityInfo: widget.communityInfo,
+                        //       //     subscribedType: widget.subscribeType,
+                        //       //     blockedCommunity: widget.blockedCommunity,
+                        //       //   )
+                        //       : null,
+                        // ),
                       ],
                     ),
                   ),
@@ -411,46 +411,46 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   }
 
   Future<void> dismissRead(bool compactMode) async {
-    if (widget.postViews != null) {
-      int unreadCount = 0;
-      for (var post in widget.postViews!) {
-        if (post.postView.read) {
-          unreadCount++;
-        }
-      }
-      // Load in new posts if we are about dismiss all or nearly all
-      if (unreadCount < 10) {
-        widget.onScrollEndReached();
-      }
-      for (var post in widget.postViews!) {
-        if (post.postView.read) {
-          setState(() {
-            toRemoveSet.add(post.postView.post.id);
-          });
-          await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
-        }
-      }
-      await Future.delayed(const Duration(milliseconds: 500));
-      setState(() {
-        widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
-        toRemoveSet.clear();
-      });
-      // Load in more posts, if so many got dismissed that scrolling may not be possible
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+    // if (widget.postViews != null) {
+    //   int unreadCount = 0;
+    //   for (var post in widget.postViews!) {
+    //     if (post.postView.read) {
+    //       unreadCount++;
+    //     }
+    //   }
+    //   // Load in new posts if we are about dismiss all or nearly all
+    //   if (unreadCount < 10) {
+    //     widget.onScrollEndReached();
+    //   }
+    //   for (var post in widget.postViews!) {
+    //     if (post.postView.read) {
+    //       setState(() {
+    //         toRemoveSet.add(post.postView.post.id);
+    //       });
+    //       await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
+    //     }
+    //   }
+    //   await Future.delayed(const Duration(milliseconds: 500));
+    //   setState(() {
+    //     widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
+    //     toRemoveSet.clear();
+    //   });
+    //   // Load in more posts, if so many got dismissed that scrolling may not be possible
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
 
-        if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
-          widget.onScrollEndReached();
-        }
-      });
-    }
+    //     if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+    //       widget.onScrollEndReached();
+    //     }
+    //   });
+    // }
   }
 
   void scrollToTop() {
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeInOut,
-    );
+    // _scrollController.animateTo(
+    //   0,
+    //   duration: const Duration(milliseconds: 500),
+    //   curve: Curves.easeInOut,
+    // );
   }
 }

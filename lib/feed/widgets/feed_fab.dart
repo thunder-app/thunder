@@ -15,6 +15,7 @@ import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -47,6 +48,9 @@ class FeedFAB extends StatelessWidget {
           semanticLabel: singlePressAction.title,
           size: 35,
         ),
+        onSlideUp: () {
+          context.read<ThunderBloc>().add(const OnFabToggle(true));
+        },
         onPressed: () {
           HapticFeedback.lightImpact();
 
@@ -155,24 +159,6 @@ class FeedFAB extends StatelessWidget {
 
   Future<void> triggerDismissRead(BuildContext context) async {
     context.read<FeedBloc>().add(FeedDismissReadEvent());
-  }
-
-  Future<void> triggerRefresh(BuildContext context) async {
-    FeedState state = context.read<FeedBloc>().state;
-
-    context.read<AccountBloc>().add(GetAccountInformation());
-    context.read<FeedBloc>().add(
-          FeedFetchedEvent(
-            feedType: state.feedType,
-            postListingType: state.postListingType,
-            sortType: state.sortType,
-            communityId: state.communityId,
-            communityName: state.communityName,
-            userId: state.userId,
-            username: state.username,
-            reset: true,
-          ),
-        );
   }
 
   Future<void> triggerChangeSort(BuildContext context) async {

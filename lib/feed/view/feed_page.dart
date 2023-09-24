@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/community/widgets/community_header.dart';
+import 'package:thunder/community/widgets/community_sidebar.dart';
 
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -25,7 +27,7 @@ enum FeedType { community, user, general }
 /// If [FeedType.general] is provided, [postListingType] must be provided.
 ///
 /// TODO: Add support for user feeds here
-class FeedPage extends StatelessWidget {
+class FeedPage extends StatefulWidget {
   const FeedPage({
     super.key,
     this.useGlobalFeedBloc = false,
@@ -66,25 +68,37 @@ class FeedPage extends StatelessWidget {
   final bool useGlobalFeedBloc;
 
   @override
+  State<FeedPage> createState() => _FeedPageState();
+}
+
+class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<FeedPage> {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     /// When this is true, we find the feed bloc already present in the widget tree
     /// This is to keep the events on the main page (rather than presenting a new page)
-    if (useGlobalFeedBloc) {
-      FeedBloc feedBloc = context.read<FeedBloc>();
+    if (widget.useGlobalFeedBloc) {
+      FeedBloc bloc = context.read<FeedBloc>();
 
-      feedBloc.add(FeedFetchedEvent(
-        feedType: feedType,
-        postListingType: postListingType,
-        sortType: sortType,
-        communityId: communityId,
-        communityName: communityName,
-        userId: userId,
-        username: username,
-        reset: true,
-      ));
+      if (bloc.state.status == FeedStatus.initial) {
+        bloc.add(FeedFetchedEvent(
+          feedType: widget.feedType,
+          postListingType: widget.postListingType,
+          sortType: widget.sortType,
+          communityId: widget.communityId,
+          communityName: widget.communityName,
+          userId: widget.userId,
+          username: widget.username,
+          reset: true,
+        ));
+      }
 
       return BlocProvider.value(
-        value: feedBloc,
+        value: bloc,
         child: const FeedView(),
       );
     }
@@ -92,13 +106,13 @@ class FeedPage extends StatelessWidget {
     return BlocProvider<FeedBloc>(
       create: (_) => FeedBloc(lemmyClient: LemmyClient.instance)
         ..add(FeedFetchedEvent(
-          feedType: feedType,
-          postListingType: postListingType,
-          sortType: sortType,
-          communityId: communityId,
-          communityName: communityName,
-          userId: userId,
-          username: username,
+          feedType: widget.feedType,
+          postListingType: widget.postListingType,
+          sortType: widget.sortType,
+          communityId: widget.communityId,
+          communityName: widget.communityName,
+          userId: widget.userId,
+          username: widget.username,
           reset: true,
         )),
       child: const FeedView(),
@@ -116,22 +130,36 @@ class FeedView extends StatefulWidget {
 class _FeedViewState extends State<FeedView> {
   final ScrollController _scrollController = ScrollController();
 
+  /// Boolean which indicates whether the title on the app bar should be shown
   bool showAppBarTitle = false;
 
+  /// Boolean which indicates whether the community sidebar should be shown
+  bool showCommunitySidebar = false;
+
+  /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
+
+  double overlayPosition = 0.0;
+
+  void onDrag(double newPosition) {
+    setState(() {
+      overlayPosition = newPosition;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
 
-    // Attach the scroll controller and listen for scroll events
     _scrollController.addListener(() {
+      // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
       if (_scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
         setState(() => showAppBarTitle = true);
       } else if (_scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
         setState(() => showAppBarTitle = false);
       }
 
+      // Fetches new posts when the user has scrolled past 70% list
       if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7) {
         context.read<FeedBloc>().add(const FeedFetchedEvent());
       }
@@ -144,6 +172,10 @@ class _FeedViewState extends State<FeedView> {
     super.dispose();
   }
 
+  /// This function is called whenever the user triggers the dismiss read FAB action
+  /// It looks for any posts that have been read, and adds them to the [queuedForRemoval] list
+  ///
+  /// Once those posts are fully added, an event is triggered which filters those posts from the feed bloc state
   Future<void> dismissRead() async {
     ThunderState state = context.read<ThunderBloc>().state;
 
@@ -176,7 +208,8 @@ class _FeedViewState extends State<FeedView> {
         return true;
       },
       listener: (context, state) {
-        // Continue to fetch more posts as long as the device view is not scrollable. This is to avoid cases where more posts cannot be fetched because the conditions are not met
+        // Continue to fetch more posts as long as the device view is not scrollable.
+        // This is to avoid cases where more posts cannot be fetched because the conditions are not met
         if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
           bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
           if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
@@ -193,71 +226,102 @@ class _FeedViewState extends State<FeedView> {
         return RefreshIndicator(
           onRefresh: () async {
             HapticFeedback.mediumImpact();
+            triggerRefresh(context);
           },
-          edgeOffset: 120.0,
-          child: CustomScrollView(
-            controller: _scrollController,
-            slivers: <Widget>[
-              FeedPageAppBar(showAppBarTitle: showAppBarTitle),
-              SliverToBoxAdapter(
-                child: Container(
-                  margin: const EdgeInsets.only(bottom: 20.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  child: const FeedHeader(),
-                ),
-              ),
-              SliverMasonryGrid.count(
-                crossAxisCount: tabletMode ? 2 : 1,
-                crossAxisSpacing: 40,
-                mainAxisSpacing: 0,
-                itemBuilder: (BuildContext context, int index) {
-                  if (index < postViewMedias.length) {
-                    return AnimatedSwitcher(
-                      switchOutCurve: Curves.ease,
-                      duration: const Duration(milliseconds: 0),
-                      reverseDuration: const Duration(milliseconds: 400),
-                      transitionBuilder: (child, animation) {
-                        return FadeTransition(
-                          opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                            CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-                          ),
-                          child: SlideTransition(
-                            position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                            child: SizeTransition(
-                              sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                CurvedAnimation(
-                                  parent: animation,
-                                  curve: const Interval(0.0, 0.25),
-                                ),
-                              ),
-                              child: child,
+          edgeOffset: 80.0,
+          child: Stack(
+            children: [
+              CustomScrollView(
+                controller: _scrollController,
+                slivers: <Widget>[
+                  FeedPageAppBar(showAppBarTitle: showAppBarTitle),
+                  // SliverToBoxAdapter(
+                  //   child: Container(
+                  //     margin: const EdgeInsets.only(bottom: 20.0),
+                  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                  //     child: const FeedHeader(),
+                  //   ),
+                  // ),
+                  SliverToBoxAdapter(
+                    child: Visibility(
+                      visible: state.fullCommunityView != null,
+                      child: GestureDetector(
+                        onTap: () => setState(() => showCommunitySidebar = true),
+                        child: CommunityHeader(communityInfo: state.fullCommunityView),
+                      ),
+                    ),
+                  ),
+                  SliverMasonryGrid.count(
+                    crossAxisCount: tabletMode ? 2 : 1,
+                    crossAxisSpacing: 40,
+                    mainAxisSpacing: 0,
+                    itemBuilder: (BuildContext context, int index) {
+                      return AnimatedSwitcher(
+                        switchOutCurve: Curves.ease,
+                        duration: const Duration(milliseconds: 0),
+                        reverseDuration: const Duration(milliseconds: 400),
+                        transitionBuilder: (child, animation) {
+                          return FadeTransition(
+                            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                              CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
                             ),
-                          ),
-                        );
-                      },
-                      child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
-                          ? PostCard(
-                              postViewMedia: postViewMedias[index],
-                              communityMode: state.feedType == FeedType.community,
-                              onVoteAction: (VoteType voteType) {
-                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                              },
-                              onSaveAction: (bool saved) {
-                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                              },
-                              onReadAction: (bool read) {
-                                context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                              },
-                              listingType: state.postListingType,
-                              indicateRead: true,
-                            )
-                          : null,
-                    );
-                  } else {
-                    return const SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator()));
-                  }
+                            child: SlideTransition(
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                              child: SizeTransition(
+                                sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(
+                                    parent: animation,
+                                    curve: const Interval(0.0, 0.25),
+                                  ),
+                                ),
+                                child: child,
+                              ),
+                            ),
+                          );
+                        },
+                        child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
+                            ? PostCard(
+                                postViewMedia: postViewMedias[index],
+                                communityMode: state.feedType == FeedType.community,
+                                onVoteAction: (VoteType voteType) {
+                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                                },
+                                onSaveAction: (bool saved) {
+                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                                },
+                                onReadAction: (bool read) {
+                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                                },
+                                listingType: state.postListingType,
+                                indicateRead: true,
+                              )
+                            : null,
+                      );
+                    },
+                    childCount: postViewMedias.length,
+                  ),
+                  const SliverToBoxAdapter(
+                    child: SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator())),
+                  ),
+                ],
+              ),
+              if (showCommunitySidebar) ModalBarrier(color: Colors.black.withOpacity(0.5)),
+              AnimatedSwitcher(
+                switchInCurve: Curves.decelerate,
+                switchOutCurve: Curves.easeOut,
+                transitionBuilder: (child, animation) {
+                  return SlideTransition(
+                    position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                    child: child,
+                  );
                 },
-                childCount: postViewMedias.length + 1,
+                duration: const Duration(milliseconds: 300),
+                child: showCommunitySidebar
+                    ? CommunitySidebar(
+                        fullCommunityView: state.fullCommunityView!,
+                        onDismissed: () => setState(() => showCommunitySidebar = false),
+                      )
+                    : null,
               ),
             ],
           ),

@@ -1,41 +1,29 @@
 import 'dart:async';
-import 'dart:convert';
 
 // Flutter
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:http/http.dart';
-import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:thunder/core/enums/fab_action.dart';
 
 // Internal
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
-import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
-import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/account/account.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/version.dart';
 import 'package:thunder/search/pages/search_page.dart';
@@ -127,19 +115,26 @@ class _ThunderState extends State<Thunder> {
             switch (thunderBlocState.status) {
               case ThunderStatus.initial:
                 context.read<ThunderBloc>().add(InitializeAppEvent());
-                return const Center(child: CircularProgressIndicator());
+                return Container();
               case ThunderStatus.loading:
-                return const Center(child: CircularProgressIndicator());
+                return Container();
               case ThunderStatus.refreshing:
               case ThunderStatus.success:
                 FlutterNativeSplash.remove();
 
                 // Update the variable so that it can be used in _handleBackButtonPress
                 _isFabOpen = thunderBlocState.isFabOpen;
+                print(_isFabOpen);
 
                 return Scaffold(
-                  drawer: const CommunityDrawer(),
-                  floatingActionButton: FeedFAB(),
+                  drawer: selectedPageIndex == 0 ? const CommunityDrawer() : null,
+                  floatingActionButton: AnimatedOpacity(
+                    opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeIn,
+                    child: const FeedFAB(),
+                  ),
+                  floatingActionButtonAnimator: FloatingActionButtonAnimator.scaling,
                   bottomNavigationBar: CustomBottomNavigationBar(
                     selectedPageIndex: selectedPageIndex,
                     onPageChange: (int index) {
@@ -170,7 +165,7 @@ class _ThunderState extends State<Thunder> {
                       switch (state.status) {
                         case AuthStatus.initial:
                           context.read<AuthBloc>().add(CheckAuth());
-                          return const Center(child: CircularProgressIndicator());
+                          return Container();
                         case AuthStatus.success:
                           Version? version = thunderBlocState.version;
                           bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
@@ -187,7 +182,22 @@ class _ThunderState extends State<Thunder> {
                             onPageChanged: (index) => setState(() => selectedPageIndex = index),
                             physics: const NeverScrollableScrollPhysics(),
                             children: <Widget>[
-                              const FeedPage(useGlobalFeedBloc: true, feedType: FeedType.general, postListingType: PostListingType.all, sortType: SortType.hot),
+                              Stack(
+                                children: [
+                                  FeedPage(useGlobalFeedBloc: true, feedType: FeedType.general, postListingType: thunderBlocState.defaultPostListingType, sortType: thunderBlocState.defaultSortType),
+                                  AnimatedOpacity(
+                                    opacity: _isFabOpen ? 1.0 : 0.0,
+                                    duration: const Duration(milliseconds: 150),
+                                    child: _isFabOpen
+                                        ? ModalBarrier(
+                                            color: Colors.black.withOpacity(0.5),
+                                            dismissible: true,
+                                            onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                                          )
+                                        : null,
+                                  ),
+                                ],
+                              ),
                               const SearchPage(),
                               const AccountPage(),
                               const InboxPage(),

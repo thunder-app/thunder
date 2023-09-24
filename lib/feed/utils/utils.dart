@@ -95,3 +95,21 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
     ),
   );
 }
+
+Future<void> triggerRefresh(BuildContext context) async {
+  FeedState state = context.read<FeedBloc>().state;
+
+  context.read<AccountBloc>().add(GetAccountInformation());
+  context.read<FeedBloc>().add(
+        FeedFetchedEvent(
+          feedType: state.feedType,
+          postListingType: state.postListingType,
+          sortType: state.sortType,
+          communityId: state.communityId,
+          communityName: state.communityName,
+          userId: state.userId,
+          username: state.username,
+          reset: true,
+        ),
+      );
+}
