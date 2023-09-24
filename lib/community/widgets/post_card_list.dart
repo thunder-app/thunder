@@ -185,7 +185,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
               mainAxisSpacing: 0,
               cacheExtent: 1000,
               controller: _scrollController,
-              itemCount: widget.postViews?.length != null ? ((widget.communityId != null || widget.communityName != null) ? widget.postViews!.length + 2 : widget.postViews!.length + 1) : 1,
+              itemCount: widget.postViews?.length != null
+                  ? ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 2 : widget.postViews!.length + 1)
+                  : 1,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   if (widget.communityId != null || widget.communityName != null) {
