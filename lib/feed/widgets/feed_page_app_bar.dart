@@ -28,7 +28,7 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: showBackAction ? (Platform.isAndroid ? const Icon(Icons.arrow_back_rounded) : const Icon(Icons.arrow_back_ios_new_rounded)) : const Icon(Icons.menu),
+        icon: showBackAction ? (Platform.isIOS ? const Icon(Icons.arrow_back_ios_new_rounded) : const Icon(Icons.arrow_back_rounded)) : const Icon(Icons.menu),
         onPressed: () {
           HapticFeedback.mediumImpact();
           showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer();

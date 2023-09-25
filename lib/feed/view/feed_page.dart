@@ -231,26 +231,20 @@ class _FeedViewState extends State<FeedView> {
             HapticFeedback.mediumImpact();
             triggerRefresh(context);
           },
-          edgeOffset: 110.0,
+          edgeOffset: 95.0,
           child: Stack(
             children: [
               CustomScrollView(
                 controller: _scrollController,
                 slivers: <Widget>[
-                  FeedPageAppBar(showAppBarTitle: showAppBarTitle),
+                  FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
                   SliverToBoxAdapter(
                     child: Visibility(
                       visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
                       child: Container(
                         margin: const EdgeInsets.only(bottom: 4.0),
                         padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: const Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            FeedHeader(),
-                            TagLine(),
-                          ],
-                        ),
+                        child: const TagLine(),
                       ),
                     ),
                   ),

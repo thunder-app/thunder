@@ -199,7 +199,7 @@ class _ThunderState extends State<Thunder> {
                                     duration: const Duration(milliseconds: 150),
                                     child: _isFabOpen
                                         ? ModalBarrier(
-                                            color: theme.colorScheme.background.withOpacity(0.5),
+                                            color: theme.colorScheme.background.withOpacity(0.95),
                                             dismissible: true,
                                             onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
                                           )

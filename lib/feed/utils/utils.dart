@@ -84,7 +84,7 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
         child: Material(
           child: FeedPage(
             feedType: feedType,
-            sortType: sortType ?? SortType.hot,
+            sortType: sortType ?? thunderBloc.state.defaultSortType,
             communityName: communityName,
             communityId: communityId,
             postListingType: postListingType,
