@@ -78,6 +78,9 @@ class _ProfileSelectState extends State<ProfileSelect> {
   List<AccountExtended>? accounts;
   List<AnonymousInstanceExtended>? anonymousInstances;
 
+  // Represents the ID of the account/instance we're currently logging out of / removing
+  String? loggingOutId;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -256,27 +259,47 @@ class _ProfileSelectState extends State<ProfileSelect> {
                           trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
                               ? (currentAccountId == accounts![index].account.id)
                                   ? IconButton(
-                                      icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
+                                      icon: loggingOutId == accounts![index].account.id
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            )
+                                          : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
                                       onPressed: () async {
                                         if (await showLogOutDialog(context)) {
+                                          setState(() => loggingOutId = accounts![index].account.id);
+
                                           await Future.delayed(const Duration(milliseconds: 1000), () {
                                             if ((anonymousInstances?.length ?? 0) > 0) {
                                               context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
                                             } else {
                                               context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
                                             }
-                                            setState(() => accounts = null);
+
+                                            setState(() {
+                                              accounts = null;
+                                              loggingOutId = null;
+                                            });
                                           });
                                         }
                                       },
                                     )
                                   : IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        semanticLabel: AppLocalizations.of(context)!.removeAccount,
-                                      ),
+                                      icon: loggingOutId == accounts![index].account.id
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            )
+                                          : Icon(
+                                              Icons.delete,
+                                              semanticLabel: AppLocalizations.of(context)!.removeAccount,
+                                            ),
                                       onPressed: () async {
                                         context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
+
+                                        setState(() => loggingOutId = accounts![index].account.id);
 
                                         if (currentAccountId != null) {
                                           await Future.delayed(const Duration(milliseconds: 1000), () {
@@ -284,7 +307,10 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                           });
                                         }
 
-                                        setState(() => accounts = null);
+                                        setState(() {
+                                          accounts = null;
+                                          loggingOutId = null;
+                                        });
                                       })
                               : null,
                         ),
