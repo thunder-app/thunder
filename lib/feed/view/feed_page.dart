@@ -230,7 +230,7 @@ class _FeedViewState extends State<FeedView> {
             HapticFeedback.mediumImpact();
             triggerRefresh(context);
           },
-          edgeOffset: 80.0,
+          edgeOffset: 110.0,
           child: Stack(
             children: [
               CustomScrollView(
@@ -312,7 +312,14 @@ class _FeedViewState extends State<FeedView> {
                     childCount: postViewMedias.length,
                   ),
                   SliverToBoxAdapter(
-                    child: state.hasReachedEnd ? const FeedReachedEnd() : const SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator())),
+                    child: state.hasReachedEnd
+                        ? const FeedReachedEnd()
+                        : Container(
+                            height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height / 1.5 : null, // Might have to adjust this to be more robust
+                            alignment: Alignment.center,
+                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                            child: const CircularProgressIndicator(),
+                          ),
                   ),
                 ],
               ),
