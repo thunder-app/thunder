@@ -40,10 +40,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       _userPreferencesChangeEvent,
       transformer: throttleDroppable(throttleDuration),
     );
-    on<OnDismissEvent>(
-      _onDismissEvent,
-      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on dismiss read
-    );
     on<OnFabToggle>(
       _onFabToggle,
       transformer: throttleDroppable(throttleDuration),
@@ -318,10 +314,6 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
     } catch (e) {
       return emit(state.copyWith(status: ThunderStatus.failure, errorMessage: e.toString()));
     }
-  }
-
-  void _onDismissEvent(OnDismissEvent event, Emitter<ThunderState> emit) {
-    emit(state.copyWith(dismissEvent: !state.dismissEvent));
   }
 
   void _onFabToggle(OnFabToggle event, Emitter<ThunderState> emit) {

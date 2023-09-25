@@ -75,12 +75,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
+    /// Handles hiding posts from the feed
     on<FeedHidePostsFromViewEvent>(
       _onFeedHidePostsFromView,
       transformer: throttleDroppable(Duration.zero),
     );
   }
 
+  /// Handles hiding posts from the feed. This will remove any posts from the feed for the given post ids
   Future<void> _onFeedHidePostsFromView(FeedHidePostsFromViewEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
@@ -90,24 +92,27 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.copyWith(status: FeedStatus.success, postViewMedias: postViewMedias));
   }
 
+  /// Handles dismissing read posts from the feed
   Future<void> _onFeedDismissRead(FeedDismissReadEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, dismissReadId: state.dismissReadId + 1));
   }
 
+  /// Handles scrolling to top of the feed
   Future<void> _onFeedScrollToTop(ScrollToTopEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, scrollId: state.scrollId + 1));
   }
 
+  /// Handles clearing any messages from the state
   Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.success, message: null));
   }
 
+  /// Handles post related actions on a given item within the feed
   Future<void> _onFeedItemActioned(FeedItemActionedEvent event, Emitter<FeedState> emit) async {
     assert(!(event.postViewMedia == null && event.postId == null));
     emit(state.copyWith(status: FeedStatus.fetching));
 
     // TODO: Check if the current account has permission to perform the PostAction
-
     switch (event.postAction) {
       case PostAction.vote:
         // Optimistically update the post
@@ -201,6 +206,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }
   }
 
+  /// Handles updating a given item within the feed
   Future<void> _onFeedItemUpdated(FeedItemUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 

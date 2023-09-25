@@ -71,7 +71,7 @@ final class FeedItemActionedEvent extends FeedEvent {
   final PostAction postAction;
 
   /// This indicates the value to assign the action to. It is of type dynamic to allow for any type
-  /// TODO: Change the dynamic type to the correct type(s)
+  /// TODO: Change the dynamic type to the correct type(s) if possible
   final dynamic value;
 
   const FeedItemActionedEvent({this.postViewMedia, this.postId, required this.postAction, this.value});
