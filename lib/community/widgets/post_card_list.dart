@@ -90,18 +90,18 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
 
   @override
   void initState() {
-    // _scrollController.addListener(_onScroll);
+    _scrollController.addListener(_onScroll);
 
-    // // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+    // Check to see if the initial load did not load enough items to allow for scrolling to occur and fetches more items
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
 
-    //   if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
-    //     widget.onScrollEndReached();
-    //   }
-    // });
+      if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+        widget.onScrollEndReached();
+      }
+    });
 
-    // super.initState();
+    super.initState();
   }
 
   @override
@@ -111,9 +111,9 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   }
 
   void _onScroll() {
-    // if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
-    //   widget.onScrollEndReached();
-    // }
+    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.7) {
+      widget.onScrollEndReached();
+    }
 
     if (!disableFabs) {
       // Adjust the threshold as needed
@@ -267,36 +267,35 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   }
                 }
                 if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
-                  return Container();
-                  // if (widget.hasReachedEnd == true) {
-                  //   return Column(
-                  //     crossAxisAlignment: CrossAxisAlignment.stretch,
-                  //     children: [
-                  //       Container(
-                  //         color: theme.dividerColor.withOpacity(0.1),
-                  //         padding: const EdgeInsets.symmetric(vertical: 32.0),
-                  //         child: Text(
-                  //           'Hmmm. It seems like you\'ve reached the bottom.',
-                  //           textAlign: TextAlign.center,
-                  //           style: theme.textTheme.titleSmall,
-                  //           textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                  //         ),
-                  //       ),
-                  //       const SizedBox(
-                  //         height: 160,
-                  //       )
-                  //     ],
-                  //   );
-                  // } else {
-                  //   return Column(
-                  //     children: [
-                  //       Container(
-                  //         padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  //         child: const CircularProgressIndicator(),
-                  //       ),
-                  //     ],
-                  //   );
-                  // }
+                  if (widget.hasReachedEnd == true) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          color: theme.dividerColor.withOpacity(0.1),
+                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          child: Text(
+                            'Hmmm. It seems like you\'ve reached the bottom.',
+                            textAlign: TextAlign.center,
+                            style: theme.textTheme.titleSmall,
+                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 160,
+                        )
+                      ],
+                    );
+                  } else {
+                    return Column(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: const CircularProgressIndicator(),
+                        ),
+                      ],
+                    );
+                  }
                 } else {
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? index - 1 : index];
                   return AnimatedSwitcher(
@@ -383,24 +382,23 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                                 )
                               : null,
                         ),
-                        // AnimatedSwitcher(
-                        //   switchInCurve: Curves.decelerate,
-                        //   switchOutCurve: Curves.easeOut,
-                        //   transitionBuilder: (child, animation) {
-                        //     return SlideTransition(
-                        //       position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                        //       child: child,
-                        //     );
-                        //   },
-                        //   duration: const Duration(milliseconds: 300),
-                        //   child: _displaySidebar
-                        //       // ? CommunitySidebar(
-                        //       //     communityInfo: widget.communityInfo,
-                        //       //     subscribedType: widget.subscribeType,
-                        //       //     blockedCommunity: widget.blockedCommunity,
-                        //       //   )
-                        //       : null,
-                        // ),
+                        AnimatedSwitcher(
+                          switchInCurve: Curves.decelerate,
+                          switchOutCurve: Curves.easeOut,
+                          transitionBuilder: (child, animation) {
+                            return SlideTransition(
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                              child: child,
+                            );
+                          },
+                          duration: const Duration(milliseconds: 300),
+                          child: _displaySidebar
+                              ? CommunitySidebar(
+                                  fullCommunityView: widget.communityInfo!,
+                                  onDismissed: () {},
+                                )
+                              : null,
+                        ),
                       ],
                     ),
                   ),
@@ -414,46 +412,46 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
   }
 
   Future<void> dismissRead(bool compactMode) async {
-    // if (widget.postViews != null) {
-    //   int unreadCount = 0;
-    //   for (var post in widget.postViews!) {
-    //     if (post.postView.read) {
-    //       unreadCount++;
-    //     }
-    //   }
-    //   // Load in new posts if we are about dismiss all or nearly all
-    //   if (unreadCount < 10) {
-    //     widget.onScrollEndReached();
-    //   }
-    //   for (var post in widget.postViews!) {
-    //     if (post.postView.read) {
-    //       setState(() {
-    //         toRemoveSet.add(post.postView.post.id);
-    //       });
-    //       await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
-    //     }
-    //   }
-    //   await Future.delayed(const Duration(milliseconds: 500));
-    //   setState(() {
-    //     widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
-    //     toRemoveSet.clear();
-    //   });
-    //   // Load in more posts, if so many got dismissed that scrolling may not be possible
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+    if (widget.postViews != null) {
+      int unreadCount = 0;
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          unreadCount++;
+        }
+      }
+      // Load in new posts if we are about dismiss all or nearly all
+      if (unreadCount < 10) {
+        widget.onScrollEndReached();
+      }
+      for (var post in widget.postViews!) {
+        if (post.postView.read) {
+          setState(() {
+            toRemoveSet.add(post.postView.post.id);
+          });
+          await Future.delayed(Duration(milliseconds: compactMode ? 60 : 100));
+        }
+      }
+      await Future.delayed(const Duration(milliseconds: 500));
+      setState(() {
+        widget.postViews!.removeWhere((e) => toRemoveSet.contains(e.postView.post.id));
+        toRemoveSet.clear();
+      });
+      // Load in more posts, if so many got dismissed that scrolling may not be possible
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
 
-    //     if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
-    //       widget.onScrollEndReached();
-    //     }
-    //   });
-    // }
+        if (context.read<CommunityBloc>().state.hasReachedEnd == false && isScrollable == false) {
+          widget.onScrollEndReached();
+        }
+      });
+    }
   }
 
   void scrollToTop() {
-    // _scrollController.animateTo(
-    //   0,
-    //   duration: const Duration(milliseconds: 500),
-    //   curve: Curves.easeInOut,
-    // );
+    _scrollController.animateTo(
+      0,
+      duration: const Duration(milliseconds: 500),
+      curve: Curves.easeInOut,
+    );
   }
 }

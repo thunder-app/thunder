@@ -261,7 +261,7 @@ class _PostCardState extends State<PostCard> {
     AccountBloc accountBloc = context.read<AccountBloc>();
     AuthBloc authBloc = context.read<AuthBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    // CommunityBloc communityBloc = context.read<CommunityBloc>();
+    FeedBloc feedBloc = context.read<FeedBloc>();
 
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
@@ -269,13 +269,7 @@ class _PostCardState extends State<PostCard> {
     // Mark post as read when tapped
     if (isUserLoggedIn) {
       int postId = widget.postViewMedia.postView.post.id;
-      try {
-        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-        userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-      } catch (e) {
-        // CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-        // communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-      }
+      feedBloc.add(FeedItemActionedEvent(postId: postId, postAction: PostAction.read, value: true));
     }
 
     await Navigator.of(context).push(
@@ -290,24 +284,17 @@ class _PostCardState extends State<PostCard> {
               BlocProvider.value(value: accountBloc),
               BlocProvider.value(value: authBloc),
               BlocProvider.value(value: thunderBloc),
-              // BlocProvider.value(value: communityBloc),
               BlocProvider(create: (context) => post_bloc.PostBloc()),
             ],
             child: PostPage(
               postView: widget.postViewMedia,
               onPostUpdated: (PostViewMedia postViewMedia) {
-                try {
-                  context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
-                } catch (e) {
-                  print('here');
-                }
+                context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
               },
             ),
           );
         },
       ),
     );
-
-    // if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
   }
 }

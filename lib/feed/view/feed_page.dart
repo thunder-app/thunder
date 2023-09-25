@@ -205,6 +205,7 @@ class _FeedViewState extends State<FeedView> {
 
     return BlocConsumer<FeedBloc, FeedState>(
       listenWhen: (previous, current) {
+        if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
         if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
         if (previous.dismissReadId != current.dismissReadId) dismissRead();
         return true;
