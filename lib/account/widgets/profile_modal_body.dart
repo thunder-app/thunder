@@ -9,6 +9,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
@@ -77,9 +78,17 @@ class _ProfileSelectState extends State<ProfileSelect> {
   List<AccountExtended>? accounts;
   List<AnonymousInstanceExtended>? anonymousInstances;
 
+  // Represents the ID of the account/instance we're currently logging out of / removing
+  String? loggingOutId;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    Color selectedColor = theme.colorScheme.primaryContainer;
+    if (!darkTheme) {
+      selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor();
+    }
     String? currentAccountId = context.watch<AuthBloc>().state.account?.id;
     String? currentAnonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
@@ -157,7 +166,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Material(
-                      color: currentAccountId == accounts![index].account.id ? HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor() : null,
+                      color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         onTap: (currentAccountId == accounts![index].account.id)
@@ -196,7 +205,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   height: 12,
                                   child: Material(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: currentAccountId == accounts![index].account.id ? HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor() : null,
+                                    color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                                   ),
                                 ),
                               ),
@@ -250,34 +259,58 @@ class _ProfileSelectState extends State<ProfileSelect> {
                           trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
                               ? (currentAccountId == accounts![index].account.id)
                                   ? IconButton(
-                                      icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
+                                      icon: loggingOutId == accounts![index].account.id
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            )
+                                          : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
                                       onPressed: () async {
                                         if (await showLogOutDialog(context)) {
-                                          await Future.delayed(const Duration(milliseconds: 1500), () {
+                                          setState(() => loggingOutId = accounts![index].account.id);
+
+                                          await Future.delayed(const Duration(milliseconds: 1000), () {
                                             if ((anonymousInstances?.length ?? 0) > 0) {
                                               context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
                                             } else {
                                               context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
                                             }
-                                            setState(() => accounts = null);
+
+                                            setState(() {
+                                              accounts = null;
+                                              loggingOutId = null;
+                                            });
                                           });
                                         }
                                       },
                                     )
                                   : IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        semanticLabel: AppLocalizations.of(context)!.removeAccount,
-                                      ),
-                                      onPressed: () {
+                                      icon: loggingOutId == accounts![index].account.id
+                                          ? const SizedBox(
+                                              height: 20,
+                                              width: 20,
+                                              child: CircularProgressIndicator(),
+                                            )
+                                          : Icon(
+                                              Icons.delete,
+                                              semanticLabel: AppLocalizations.of(context)!.removeAccount,
+                                            ),
+                                      onPressed: () async {
                                         context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
 
-                                        if ((anonymousInstances?.length ?? 0) > 0) {
-                                          context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                        } else {
-                                          context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
+                                        setState(() => loggingOutId = accounts![index].account.id);
+
+                                        if (currentAccountId != null) {
+                                          await Future.delayed(const Duration(milliseconds: 1000), () {
+                                            context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                          });
                                         }
-                                        setState(() => accounts = null);
+
+                                        setState(() {
+                                          accounts = null;
+                                          loggingOutId = null;
+                                        });
                                       })
                               : null,
                         ),
@@ -289,9 +322,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Material(
-                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance
-                          ? HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor()
-                          : null,
+                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
@@ -330,9 +361,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   height: 12,
                                   child: Material(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance
-                                        ? HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor()
-                                        : null,
+                                    color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                                   ),
                                 ),
                               ),
