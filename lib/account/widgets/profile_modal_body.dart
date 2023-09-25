@@ -9,6 +9,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/pages/login_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/utils/instance.dart';
@@ -80,6 +81,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
+    Color selectedColor = theme.colorScheme.primaryContainer;
+    if (!darkTheme) {
+      selectedColor = HSLColor.fromColor(theme.colorScheme.primaryContainer).withLightness(0.95).toColor();
+    }
     String? currentAccountId = context.watch<AuthBloc>().state.account?.id;
     String? currentAnonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
@@ -157,7 +163,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Material(
-                      color: currentAccountId == accounts![index].account.id ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                      color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         onTap: (currentAccountId == accounts![index].account.id)
@@ -196,7 +202,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   height: 12,
                                   child: Material(
                                     borderRadius: BorderRadius.circular(10),
-                                    color: currentAccountId == accounts![index].account.id ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                                   ),
                                 ),
                               ),
@@ -290,7 +296,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                   return Padding(
                     padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
                     child: Material(
-                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                       borderRadius: BorderRadius.circular(50),
                       child: InkWell(
                         onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
@@ -329,8 +335,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   height: 12,
                                   child: Material(
                                     borderRadius: BorderRadius.circular(10),
-                                    color:
-                                        currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? theme.colorScheme.primaryContainer.withOpacity(0.25) : null,
+                                    color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                                   ),
                                 ),
                               ),
