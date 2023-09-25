@@ -219,7 +219,6 @@ class _LoginPageState extends State<LoginPage> {
                             controller: _passwordTextEditingController,
                             obscureText: !showPassword,
                             enableSuggestions: false,
-                            maxLength: 60, // This is what lemmy retricts password length to
                             autofillHints: const [AutofillHints.password],
                             decoration: InputDecoration(
                               isDense: true,
