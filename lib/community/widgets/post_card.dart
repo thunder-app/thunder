@@ -18,6 +18,7 @@ import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
+import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
@@ -244,7 +245,11 @@ class _PostCardState extends State<PostCard> {
                   PostCardAction.shareLink,
                 ],
               ),
-              onTap: () async => await navigateToPost(context),
+              onTap: () async {
+                PostView postView = widget.postViewMedia.postView;
+                if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
+                return await navigateToPost(context);
+              },
             ),
           ),
         ],

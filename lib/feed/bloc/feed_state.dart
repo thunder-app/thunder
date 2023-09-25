@@ -19,6 +19,7 @@ final class FeedState extends Equatable {
     this.message,
     this.scrollId = 0,
     this.dismissReadId = 0,
+    this.insertedPostIds = const [],
   });
 
   /// The status of the feed
@@ -66,6 +67,9 @@ final class FeedState extends Equatable {
   /// This id is used for dismissing already read posts in the feed
   final int dismissReadId;
 
+  /// The inserted post ids. This is used to prevent duplicate posts
+  final List<int> insertedPostIds;
+
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
@@ -82,6 +86,7 @@ final class FeedState extends Equatable {
     String? message,
     int? scrollId,
     int? dismissReadId,
+    List<int>? insertedPostIds,
   }) {
     return FeedState(
       status: status ?? this.status,
@@ -99,6 +104,7 @@ final class FeedState extends Equatable {
       message: message,
       scrollId: scrollId ?? this.scrollId,
       dismissReadId: dismissReadId ?? this.dismissReadId,
+      insertedPostIds: insertedPostIds ?? this.insertedPostIds,
     );
   }
 
@@ -108,6 +114,22 @@ final class FeedState extends Equatable {
   }
 
   @override
-  List<dynamic> get props =>
-      [status, fullCommunityView, postViewMedias, hasReachedEnd, feedType, postListingType, sortType, communityId, communityName, userId, username, currentPage, message, scrollId, dismissReadId];
+  List<dynamic> get props => [
+        status,
+        fullCommunityView,
+        postViewMedias,
+        hasReachedEnd,
+        feedType,
+        postListingType,
+        sortType,
+        communityId,
+        communityName,
+        userId,
+        username,
+        currentPage,
+        message,
+        scrollId,
+        dismissReadId,
+        insertedPostIds
+      ];
 }

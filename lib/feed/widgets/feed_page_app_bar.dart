@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -28,14 +29,25 @@ class FeedPageAppBar extends StatelessWidget {
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         icon: showBackAction ? (Platform.isAndroid ? const Icon(Icons.arrow_back_rounded) : const Icon(Icons.arrow_back_ios_new_rounded)) : const Icon(Icons.menu),
-        onPressed: () => showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer(),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer();
+        },
       ),
       actions: [
+        IconButton(
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              triggerRefresh(context);
+            },
+            icon: const Icon(Icons.refresh_rounded)),
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 8.0),
           child: IconButton(
             icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
             onPressed: () {
+              HapticFeedback.mediumImpact();
+
               showModalBottomSheet<void>(
                 showDragHandle: true,
                 context: context,

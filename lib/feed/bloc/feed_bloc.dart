@@ -327,7 +327,19 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
     int currentPage = postViewMediaResult['currentPage'];
 
-    postViewMedias.addAll(newPostViewMedias);
+    Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
+    List<PostViewMedia> filteredPostViewMedias = [];
+
+    // Ensure we don't add existing posts to view
+    for (PostViewMedia postViewMedia in newPostViewMedias) {
+      int id = postViewMedia.postView.post.id;
+      if (!newInsertedPostIds.contains(id)) {
+        newInsertedPostIds.add(id);
+        filteredPostViewMedias.add(postViewMedia);
+      }
+    }
+
+    postViewMedias.addAll(filteredPostViewMedias);
 
     return emit(state.copyWith(
       status: FeedStatus.success,
