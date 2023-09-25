@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -25,7 +27,7 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: showBackAction ? const Icon(Icons.arrow_back_ios_new_rounded) : const Icon(Icons.menu),
+        icon: showBackAction ? (Platform.isAndroid ? const Icon(Icons.arrow_back_rounded) : const Icon(Icons.arrow_back_ios_new_rounded)) : const Icon(Icons.menu),
         onPressed: () => showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer(),
       ),
       actions: [

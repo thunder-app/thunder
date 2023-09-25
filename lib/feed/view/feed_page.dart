@@ -13,8 +13,10 @@ import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
@@ -147,14 +149,6 @@ class _FeedViewState extends State<FeedView> {
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
 
-  double overlayPosition = 0.0;
-
-  void onDrag(double newPosition) {
-    setState(() {
-      overlayPosition = newPosition;
-    });
-  }
-
   @override
   void initState() {
     super.initState();
@@ -247,15 +241,16 @@ class _FeedViewState extends State<FeedView> {
                     child: Visibility(
                       visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
                       child: Container(
-                          margin: const EdgeInsets.only(bottom: 4.0),
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          child: const Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: [
-                              FeedHeader(),
-                              TagLine(),
-                            ],
-                          )),
+                        margin: const EdgeInsets.only(bottom: 4.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: const Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            FeedHeader(),
+                            TagLine(),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                   SliverToBoxAdapter(
@@ -321,7 +316,7 @@ class _FeedViewState extends State<FeedView> {
                   ),
                 ],
               ),
-              if (showCommunitySidebar) ModalBarrier(color: Colors.black.withOpacity(0.5)),
+              if (showCommunitySidebar) ModalBarrier(color: context.read<ThemeBloc>().state.themeType == ThemeType.light ? Colors.white.withOpacity(1) : Colors.black.withOpacity(0.5)),
               AnimatedSwitcher(
                 switchInCurve: Curves.decelerate,
                 switchOutCurve: Curves.easeOut,

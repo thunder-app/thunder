@@ -97,6 +97,8 @@ class _ThunderState extends State<Thunder> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ThunderBloc()),
@@ -197,7 +199,7 @@ class _ThunderState extends State<Thunder> {
                                     duration: const Duration(milliseconds: 150),
                                     child: _isFabOpen
                                         ? ModalBarrier(
-                                            color: Colors.black.withOpacity(0.5),
+                                            color: theme.colorScheme.background.withOpacity(0.5),
                                             dismissible: true,
                                             onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
                                           )
