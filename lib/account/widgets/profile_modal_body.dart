@@ -253,7 +253,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                       icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
                                       onPressed: () async {
                                         if (await showLogOutDialog(context)) {
-                                          await Future.delayed(const Duration(milliseconds: 1500), () {
+                                          await Future.delayed(const Duration(milliseconds: 1000), () {
                                             if ((anonymousInstances?.length ?? 0) > 0) {
                                               context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
                                             } else {
@@ -273,7 +273,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                         context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
 
                                         if (currentAccountId != null) {
-                                          await Future.delayed(const Duration(milliseconds: 1500), () {
+                                          await Future.delayed(const Duration(milliseconds: 1000), () {
                                             context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
                                           });
                                         }
