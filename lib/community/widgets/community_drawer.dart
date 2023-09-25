@@ -125,6 +125,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     AccountStatus status = context.watch<AccountBloc>().state.status;
     AnonymousSubscriptionsBloc subscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+
+    FeedBloc feedBloc = context.watch<FeedBloc>();
+
     return BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
         listener: (c, s) {},
         builder: (context, state) {
@@ -197,7 +200,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     children: destinations.map((Destination destination) {
                       return DrawerItem(
                         disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
-                        isSelected: destination.listingType == widget.currentPostListingType && widget.communityId == null && widget.communityName == null,
+                        isSelected: destination.listingType == feedBloc.state.postListingType,
                         onTap: () {
                           Navigator.of(context).pop();
                           navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
@@ -231,8 +234,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         itemBuilder: (context, index) {
                                           CommunitySafe community = _getSubscriptions(context)[index];
 
-                                          final bool isCommunitySelected =
-                                              (widget.communityId != null && community.id == widget.communityId) || (widget.communityName != null && community.name == widget.communityName);
+                                          final bool isCommunitySelected = feedBloc.state.communityId == community.id;
+
                                           return TextButton(
                                             style: TextButton.styleFrom(
                                               alignment: Alignment.centerLeft,

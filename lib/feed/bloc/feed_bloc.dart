@@ -369,6 +369,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     int currentPage = page;
 
+    // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
     do {
       List<PostView> batch = await lemmy.run(GetPosts(
         auth: account?.jwt,
@@ -378,6 +379,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         communityId: communityId,
         communityName: communityName,
       ));
+
+      batch.removeWhere((PostView postView) => postView.post.deleted == true);
 
       // Parse the posts and add in media information which is used elsewhere in the app
       List<PostViewMedia> formattedPosts = await parsePostViews(batch);
