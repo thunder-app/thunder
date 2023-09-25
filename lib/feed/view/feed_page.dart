@@ -1,20 +1,28 @@
+import 'dart:math';
+
+import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
-
 import 'package:thunder/community/widgets/post_card.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/cache.dart';
 
 enum FeedType { community, user, general }
 
@@ -235,16 +243,24 @@ class _FeedViewState extends State<FeedView> {
                 controller: _scrollController,
                 slivers: <Widget>[
                   FeedPageAppBar(showAppBarTitle: showAppBarTitle),
-                  // SliverToBoxAdapter(
-                  //   child: Container(
-                  //     margin: const EdgeInsets.only(bottom: 20.0),
-                  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  //     child: const FeedHeader(),
-                  //   ),
-                  // ),
                   SliverToBoxAdapter(
                     child: Visibility(
-                      visible: state.fullCommunityView != null,
+                      visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
+                      child: Container(
+                          margin: const EdgeInsets.only(bottom: 4.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              FeedHeader(),
+                              TagLine(),
+                            ],
+                          )),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Visibility(
+                      visible: state.feedType == FeedType.community,
                       child: GestureDetector(
                         onTap: () => setState(() => showCommunitySidebar = true),
                         child: CommunityHeader(communityInfo: state.fullCommunityView),
@@ -300,8 +316,8 @@ class _FeedViewState extends State<FeedView> {
                     },
                     childCount: postViewMedias.length,
                   ),
-                  const SliverToBoxAdapter(
-                    child: SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator())),
+                  SliverToBoxAdapter(
+                    child: state.hasReachedEnd ? const FeedReachedEnd() : const SizedBox(height: 40.0, child: Center(child: CircularProgressIndicator())),
                   ),
                 ],
               ),
@@ -360,6 +376,110 @@ class FeedHeader extends StatelessWidget {
             ),
           ],
         ),
+      ],
+    );
+  }
+}
+
+class TagLine extends StatelessWidget {
+  const TagLine({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final taglineToShowCache = Cache<String>();
+
+    final fullSiteView = context.read<AuthBloc>().state.fullSiteView!;
+    if (fullSiteView.taglines.isEmpty) return Container();
+
+    String tagline = taglineToShowCache.getOrSet(() {
+      String tagline = fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content;
+      return tagline;
+    }, const Duration(seconds: 1));
+
+    final bool taglineIsLong = tagline.length > 200;
+
+    return Container(
+      margin: const EdgeInsets.only(top: 10.0),
+      decoration: BoxDecoration(
+        color: theme.splashColor,
+        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: !taglineIsLong
+            // TODO: Eventually pass in textScalingFactor
+            ? CommonMarkdownBody(body: tagline)
+            : ExpandableNotifier(
+                child: Column(
+                  children: [
+                    Expandable(
+                      collapsed: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          // TODO: Eventually pass in textScalingFactor
+                          CommonMarkdownBody(
+                            body: '${tagline.substring(0, 150)}...',
+                          ),
+                          ExpandableButton(
+                            theme: const ExpandableThemeData(
+                              useInkWell: false,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.showMore,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      expanded: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          CommonMarkdownBody(body: tagline),
+                          ExpandableButton(
+                            theme: const ExpandableThemeData(useInkWell: false),
+                            child: Text(
+                              AppLocalizations.of(context)!.showLess,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+      ),
+    );
+  }
+}
+
+class FeedReachedEnd extends StatelessWidget {
+  const FeedReachedEnd({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final state = context.read<ThunderBloc>().state;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          color: theme.dividerColor.withOpacity(0.1),
+          padding: const EdgeInsets.symmetric(vertical: 32.0),
+          child: Text(
+            'Hmmm. It seems like you\'ve reached the bottom.',
+            textAlign: TextAlign.center,
+            style: theme.textTheme.titleSmall,
+            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+          ),
+        ),
+        const SizedBox(height: 160)
       ],
     );
   }

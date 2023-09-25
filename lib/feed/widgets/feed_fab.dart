@@ -48,9 +48,6 @@ class FeedFAB extends StatelessWidget {
           semanticLabel: singlePressAction.title,
           size: 35,
         ),
-        onSlideUp: () {
-          context.read<ThunderBloc>().add(const OnFabToggle(true));
-        },
         onPressed: () {
           HapticFeedback.lightImpact();
 
@@ -103,58 +100,82 @@ class FeedFAB extends StatelessWidget {
               break;
           }
         },
-        children: [
-          ActionButton(
-            title: FeedFabAction.dismissRead.title,
-            icon: Icon(FeedFabAction.dismissRead.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerDismissRead(context);
-            },
-          ),
-          ActionButton(
-            title: FeedFabAction.refresh.title,
-            icon: Icon(FeedFabAction.refresh.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerRefresh(context);
-            },
-          ),
-          ActionButton(
-            title: FeedFabAction.changeSort.title,
-            icon: Icon(FeedFabAction.changeSort.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerChangeSort(context);
-            },
-          ),
-          ActionButton(
-            title: FeedFabAction.subscriptions.title,
-            icon: Icon(FeedFabAction.subscriptions.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerOpenDrawer(context);
-            },
-          ),
-          ActionButton(
-            title: FeedFabAction.backToTop.title,
-            icon: Icon(FeedFabAction.backToTop.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerScrollToTop(context);
-            },
-          ),
-          ActionButton(
-            title: FeedFabAction.newPost.title,
-            icon: Icon(FeedFabAction.newPost.icon),
-            onPressed: () {
-              HapticFeedback.lightImpact();
-              triggerNewPost(context);
-            },
-          ),
-        ],
+        children: getEnabledActions(context),
       ),
     );
+  }
+
+  List<ActionButton> getEnabledActions(BuildContext context) {
+    final ThunderState state = context.watch<ThunderBloc>().state;
+
+    bool enableBackToTop = state.enableBackToTop;
+    bool enableSubscriptions = state.enableSubscriptions;
+    bool enableChangeSort = state.enableChangeSort;
+    bool enableRefresh = state.enableRefresh;
+    bool enableDismissRead = state.enableDismissRead;
+    bool enableNewPost = state.enableNewPost;
+
+    List<ActionButton> actions = [
+      if (enableDismissRead)
+        ActionButton(
+          title: FeedFabAction.dismissRead.title,
+          icon: Icon(FeedFabAction.dismissRead.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerDismissRead(context);
+          },
+        ),
+      if (enableRefresh)
+        ActionButton(
+          title: FeedFabAction.refresh.title,
+          icon: Icon(FeedFabAction.refresh.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerRefresh(context);
+          },
+        ),
+      if (enableChangeSort)
+        ActionButton(
+          title: FeedFabAction.changeSort.title,
+          icon: Icon(FeedFabAction.changeSort.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerChangeSort(context);
+          },
+        ),
+      if (enableSubscriptions)
+        ActionButton(
+          title: FeedFabAction.subscriptions.title,
+          icon: Icon(FeedFabAction.subscriptions.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerOpenDrawer(context);
+          },
+        ),
+      if (enableBackToTop)
+        ActionButton(
+          title: FeedFabAction.backToTop.title,
+          icon: Icon(FeedFabAction.backToTop.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerScrollToTop(context);
+          },
+        ),
+      if (enableNewPost)
+        ActionButton(
+          title: FeedFabAction.newPost.title,
+          icon: Icon(FeedFabAction.newPost.icon),
+          onPressed: () {
+            HapticFeedback.lightImpact();
+            triggerNewPost(context);
+          },
+        ),
+    ];
+
+    // Filter the action that is currently selected as the single press action
+    actions.removeWhere((element) => element.title == context.read<ThunderBloc>().state.feedFabSinglePressAction.title);
+
+    return actions;
   }
 
   Future<void> triggerDismissRead(BuildContext context) async {

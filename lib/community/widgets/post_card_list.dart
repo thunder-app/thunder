@@ -265,35 +265,36 @@ class _PostCardListState extends State<PostCardList> with TickerProviderStateMix
                   }
                 }
                 if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
-                  if (widget.hasReachedEnd == true) {
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          color: theme.dividerColor.withOpacity(0.1),
-                          padding: const EdgeInsets.symmetric(vertical: 32.0),
-                          child: Text(
-                            'Hmmm. It seems like you\'ve reached the bottom.',
-                            textAlign: TextAlign.center,
-                            style: theme.textTheme.titleSmall,
-                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 160,
-                        )
-                      ],
-                    );
-                  } else {
-                    return Column(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(vertical: 24.0),
-                          child: const CircularProgressIndicator(),
-                        ),
-                      ],
-                    );
-                  }
+                  return Container();
+                  // if (widget.hasReachedEnd == true) {
+                  //   return Column(
+                  //     crossAxisAlignment: CrossAxisAlignment.stretch,
+                  //     children: [
+                  //       Container(
+                  //         color: theme.dividerColor.withOpacity(0.1),
+                  //         padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  //         child: Text(
+                  //           'Hmmm. It seems like you\'ve reached the bottom.',
+                  //           textAlign: TextAlign.center,
+                  //           style: theme.textTheme.titleSmall,
+                  //           textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                  //         ),
+                  //       ),
+                  //       const SizedBox(
+                  //         height: 160,
+                  //       )
+                  //     ],
+                  //   );
+                  // } else {
+                  //   return Column(
+                  //     children: [
+                  //       Container(
+                  //         padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  //         child: const CircularProgressIndicator(),
+                  //       ),
+                  //     ],
+                  //   );
+                  // }
                 } else {
                   PostViewMedia postViewMedia = widget.postViews![(widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? index - 1 : index];
                   return AnimatedSwitcher(

@@ -44,7 +44,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -95,7 +95,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
       }
     });
 
@@ -150,7 +150,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {
