@@ -96,7 +96,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
                   auth: activeAccount.jwt,
                 ),
               )
-              .timeout(const Duration(seconds: 5));
+              .timeout(const Duration(seconds: 15));
 
           downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
         } catch (e) {
