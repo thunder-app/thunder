@@ -56,9 +56,9 @@ class CommunityHeader extends StatelessWidget {
                   colors: [
                     theme.colorScheme.background,
                     theme.colorScheme.background,
-                    theme.colorScheme.background.withOpacity(0.85),
-                    theme.colorScheme.background.withOpacity(0.4),
-                    Colors.transparent,
+                    theme.colorScheme.background.withOpacity(0.9),
+                    theme.colorScheme.background.withOpacity(0.6),
+                    theme.colorScheme.background.withOpacity(0.3),
                   ],
                 ),
               ),

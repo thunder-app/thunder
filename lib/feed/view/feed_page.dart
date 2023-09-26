@@ -13,10 +13,8 @@ import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
@@ -231,32 +229,61 @@ class _FeedViewState extends State<FeedView> {
             HapticFeedback.mediumImpact();
             triggerRefresh(context);
           },
-          edgeOffset: 95.0,
+          edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
           child: Stack(
             children: [
               CustomScrollView(
+                physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
                 controller: _scrollController,
                 slivers: <Widget>[
                   FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
                   SliverToBoxAdapter(
                     child: Visibility(
                       visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                      child: Container(
-                        margin: const EdgeInsets.only(bottom: 4.0),
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                        child: const TagLine(),
-                      ),
+                      child: const TagLine(),
                     ),
                   ),
                   SliverToBoxAdapter(
                     child: Visibility(
                       visible: state.feedType == FeedType.community,
                       child: GestureDetector(
-                        onTap: () => setState(() => showCommunitySidebar = true),
+                        onTap: () {
+                          // Scroll to top first before showing the sidebar
+                          _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                          setState(() => showCommunitySidebar = !showCommunitySidebar);
+                        },
+                        onHorizontalDragEnd: (DragEndDetails dragEndDetails) {
+                          if (dragEndDetails.velocity.pixelsPerSecond.dx >= 0) {
+                            setState(() => showCommunitySidebar = false);
+                          } else if (dragEndDetails.velocity.pixelsPerSecond.dx < 0) {
+                            setState(() => showCommunitySidebar = true);
+                          }
+                        },
                         child: CommunityHeader(communityInfo: state.fullCommunityView),
                       ),
                     ),
                   ),
+                  // Contains the widget for the community sidebar
+                  SliverToBoxAdapter(
+                    child: AnimatedSwitcher(
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeOut,
+                      transitionBuilder: (child, animation) {
+                        return SlideTransition(
+                          position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                          child: child,
+                        );
+                      },
+                      duration: const Duration(milliseconds: 300),
+                      child: showCommunitySidebar
+                          ? CommunitySidebar(
+                              fullCommunityView: state.fullCommunityView!,
+                              onDismissed: () => setState(() => showCommunitySidebar = false),
+                            )
+                          : Container(),
+                    ),
+                  ),
+                  // Widget representing the list of posts on the feed
                   SliverMasonryGrid.count(
                     crossAxisCount: tabletMode ? 2 : 1,
                     crossAxisSpacing: 40,
@@ -306,6 +333,7 @@ class _FeedViewState extends State<FeedView> {
                     },
                     childCount: postViewMedias.length,
                   ),
+                  // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                   SliverToBoxAdapter(
                     child: state.hasReachedEnd
                         ? const FeedReachedEnd()
@@ -317,24 +345,6 @@ class _FeedViewState extends State<FeedView> {
                           ),
                   ),
                 ],
-              ),
-              if (showCommunitySidebar) ModalBarrier(color: context.read<ThemeBloc>().state.themeType == ThemeType.light ? Colors.white.withOpacity(1) : Colors.black.withOpacity(0.5)),
-              AnimatedSwitcher(
-                switchInCurve: Curves.decelerate,
-                switchOutCurve: Curves.easeOut,
-                transitionBuilder: (child, animation) {
-                  return SlideTransition(
-                    position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                    child: child,
-                  );
-                },
-                duration: const Duration(milliseconds: 300),
-                child: showCommunitySidebar
-                    ? CommunitySidebar(
-                        fullCommunityView: state.fullCommunityView!,
-                        onDismissed: () => setState(() => showCommunitySidebar = false),
-                      )
-                    : null,
               ),
             ],
           ),
@@ -386,8 +396,8 @@ class TagLine extends StatelessWidget {
     final theme = Theme.of(context);
     final taglineToShowCache = Cache<String>();
 
-    final fullSiteView = context.read<AuthBloc>().state.fullSiteView!;
-    if (fullSiteView.taglines.isEmpty) return Container();
+    final fullSiteView = context.read<AuthBloc>().state.fullSiteView;
+    if (fullSiteView == null || fullSiteView.taglines.isEmpty) return Container();
 
     String tagline = taglineToShowCache.getOrSet(() {
       String tagline = fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content;
@@ -396,60 +406,62 @@ class TagLine extends StatelessWidget {
 
     final bool taglineIsLong = tagline.length > 200;
 
-    return Container(
-      margin: const EdgeInsets.only(top: 10.0),
-      decoration: BoxDecoration(
-        color: theme.splashColor,
-        borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: !taglineIsLong
-            // TODO: Eventually pass in textScalingFactor
-            ? CommonMarkdownBody(body: tagline)
-            : ExpandableNotifier(
-                child: Column(
-                  children: [
-                    Expandable(
-                      collapsed: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          // TODO: Eventually pass in textScalingFactor
-                          CommonMarkdownBody(
-                            body: '${tagline.substring(0, 150)}...',
-                          ),
-                          ExpandableButton(
-                            theme: const ExpandableThemeData(
-                              useInkWell: false,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.splashColor,
+          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: !taglineIsLong
+              // TODO: Eventually pass in textScalingFactor
+              ? CommonMarkdownBody(body: tagline)
+              : ExpandableNotifier(
+                  child: Column(
+                    children: [
+                      Expandable(
+                        collapsed: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // TODO: Eventually pass in textScalingFactor
+                            CommonMarkdownBody(
+                              body: '${tagline.substring(0, 150)}...',
                             ),
-                            child: Text(
-                              AppLocalizations.of(context)!.showMore,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                            ExpandableButton(
+                              theme: const ExpandableThemeData(
+                                useInkWell: false,
+                              ),
+                              child: Text(
+                                AppLocalizations.of(context)!.showMore,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                      expanded: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          CommonMarkdownBody(body: tagline),
-                          ExpandableButton(
-                            theme: const ExpandableThemeData(useInkWell: false),
-                            child: Text(
-                              AppLocalizations.of(context)!.showLess,
-                              style: theme.textTheme.bodySmall?.copyWith(
-                                color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                          ],
+                        ),
+                        expanded: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            CommonMarkdownBody(body: tagline),
+                            ExpandableButton(
+                              theme: const ExpandableThemeData(useInkWell: false),
+                              child: Text(
+                                AppLocalizations.of(context)!.showLess,
+                                style: theme.textTheme.bodySmall?.copyWith(
+                                  color: theme.textTheme.bodySmall?.color?.withOpacity(0.5),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+        ),
       ),
     );
   }

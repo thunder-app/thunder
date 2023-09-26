@@ -40,18 +40,20 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
   late final Function(String val)? toggle;
-  bool _previousIsFabOpen = false;
   bool isFabOpen = false;
 
   @override
   void initState() {
     super.initState();
+
     isFabOpen = widget.initialOpen ?? false;
+
     _controller = AnimationController(
       value: isFabOpen ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
+
     _expandAnimation = CurvedAnimation(
       curve: Curves.fastOutSlowIn,
       reverseCurve: Curves.easeOutQuad,
@@ -74,6 +76,10 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
           _controller.forward();
         } else {
           _controller.reverse();
+        }
+
+        if (isFabOpen != state.isFabOpen) {
+          setState(() => isFabOpen = state.isFabOpen);
         }
       },
       builder: (context, state) {

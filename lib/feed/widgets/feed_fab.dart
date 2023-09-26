@@ -172,9 +172,6 @@ class FeedFAB extends StatelessWidget {
         ),
     ];
 
-    // Filter the action that is currently selected as the single press action
-    actions.removeWhere((element) => element.title == context.read<ThunderBloc>().state.feedFabSinglePressAction.title);
-
     return actions;
   }
 
