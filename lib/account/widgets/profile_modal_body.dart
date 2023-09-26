@@ -482,7 +482,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> fetchInstanceIcons(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
       final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(account.instance).timeout(
-        const Duration(seconds: 3),
+        const Duration(seconds: 5),
         onTimeout: () => const GetInstanceIconResponse(success: false),
       );
       setState(() {
@@ -517,7 +517,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   Future<void> fetchAnonymousInstanceIcons(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
     anonymousInstancesExtended.forEach((anonymousInstance) async {
       final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(anonymousInstance.instance).timeout(
-        const Duration(seconds: 3),
+        const Duration(seconds: 5),
         onTimeout: () => const GetInstanceIconResponse(success: false),
       );
       setState(() {

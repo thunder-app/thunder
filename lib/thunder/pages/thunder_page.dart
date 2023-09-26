@@ -15,6 +15,7 @@ import 'package:thunder/account/utils/profiles.dart';
 
 // Internal
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
@@ -242,6 +243,14 @@ class _ThunderState extends State<Thunder> {
                                   case AuthStatus.failure:
                                   case AuthStatus.loading:
                                     return Container();
+                                  case AuthStatus.failureCheckingInstance:
+                                    showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                                    return ErrorMessage(
+                                      title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                                      message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                                      actionText: AppLocalizations.of(context)!.accountSettings,
+                                      action: () => showProfileModalSheet(context),
+                                    );
                                 }
                               })));
                 case ThunderStatus.failure:
