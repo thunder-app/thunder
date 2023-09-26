@@ -25,7 +25,7 @@ Future<Version> fetchVersion() async {
     String currentVersion = await getCurrentVersion();
     version_parser.Version currentVersionParsed = version_parser.Version.parse(_trimV(currentVersion));
 
-    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 3));
+    final response = await http.get(Uri.parse(url)).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       final release = json.decode(response.body);

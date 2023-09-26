@@ -87,13 +87,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Check to see the instance settings (for checking if downvotes are enabled)
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        FullSiteView fullSiteView = await lemmy.run(
-          GetSite(
-            auth: activeAccount.jwt,
-          ),
-        );
+        bool downvotesEnabled = true;
+        try {
+          FullSiteView fullSiteView = await lemmy
+              .run(
+                GetSite(
+                  auth: activeAccount.jwt,
+                ),
+              )
+              .timeout(const Duration(seconds: 5));
 
-        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+          downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+        } catch (e) {
+          // If this call fails, it may mean that the instance is down or the user's network is unstable.
+          // We won't care too much about donvotes being disbled in that case.
+        }
 
         return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       }
