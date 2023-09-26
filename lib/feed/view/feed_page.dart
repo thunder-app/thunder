@@ -199,7 +199,8 @@ class _FeedViewState extends State<FeedView> {
 
   @override
   Widget build(BuildContext context) {
-    bool tabletMode = context.read<ThunderBloc>().state.tabletMode;
+    ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    bool tabletMode = thunderBloc.state.tabletMode;
 
     return BlocConsumer<FeedBloc, FeedState>(
       listenWhen: (previous, current) {

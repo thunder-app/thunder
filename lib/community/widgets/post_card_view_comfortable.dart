@@ -272,9 +272,13 @@ class PostCardViewComfortable extends StatelessWidget {
                           PostCardAction.visitProfile,
                           PostCardAction.visitCommunity,
                           PostCardAction.blockCommunity,
-                          PostCardAction.sharePost,
-                          PostCardAction.shareMedia,
-                          PostCardAction.shareLink,
+                        ],
+                        multiActionsToInclude: [
+                          PostCardAction.upvote,
+                          PostCardAction.downvote,
+                          PostCardAction.save,
+                          PostCardAction.toggelRead,
+                          PostCardAction.share,
                         ],
                       );
                       HapticFeedback.mediumImpact();

@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/feed/feed.dart';
+import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class PostCardMetaData extends StatelessWidget {
@@ -242,7 +244,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                 padding: const EdgeInsets.only(right: 8.0),
                 child: CommunityIcon(community: postView.community, radius: 14),
               ),
-              onTap: () => onTapCommunityName(context, postView.community.id),
+              onTap: () => navigateToFeedPage(context, communityId: postView.community.id, feedType: FeedType.community),
             ),
           Expanded(
             child: Padding(
@@ -258,7 +260,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         InkWell(
                             borderRadius: BorderRadius.circular(6),
-                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapUserName(context, postView.creator.id),
+                            onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
                             child: Text('$creatorName', textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor, style: textStyleAuthor)),
                         if (!communityMode)
                           Text(
@@ -272,7 +274,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                     ),
                   InkWell(
                     borderRadius: BorderRadius.circular(6),
-                    onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => onTapCommunityName(context, postView.community.id),
+                    onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
