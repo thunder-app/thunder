@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -14,6 +13,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 
 import '../../utils/numbers.dart';
@@ -113,7 +113,7 @@ class CommentCard extends StatelessWidget {
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
                 ),
-                onTap: () => onTapCommunityName(context, comment.community.id),
+                onTap: () => navigateToCommunityPage(context, communityId: comment.community.id),
               ),
               const SizedBox(height: 10),
               CommonMarkdownBody(body: comment.comment.content),
