@@ -135,6 +135,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -249,6 +250,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showPostAuthor: showPostAuthor,
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
+        useAdvancedShareSheet: useAdvancedShareSheet,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings

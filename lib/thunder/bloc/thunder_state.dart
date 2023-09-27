@@ -48,6 +48,7 @@ class ThunderState extends Equatable {
     this.showTextContent = false,
     this.showPostAuthor = false,
     this.dimReadPosts = true,
+    this.useAdvancedShareSheet = true,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -166,6 +167,7 @@ class ThunderState extends Equatable {
   final bool showPostAuthor;
   final bool scoreCounters;
   final bool dimReadPosts;
+  final bool useAdvancedShareSheet;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -293,6 +295,7 @@ class ThunderState extends Equatable {
     bool? showTextContent,
     bool? showPostAuthor,
     bool? dimReadPosts,
+    bool? useAdvancedShareSheet,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -411,6 +414,7 @@ class ThunderState extends Equatable {
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
+      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -536,6 +540,7 @@ class ThunderState extends Equatable {
         showTextContent,
         showPostAuthor,
         dimReadPosts,
+        useAdvancedShareSheet,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,

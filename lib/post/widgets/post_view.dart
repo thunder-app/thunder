@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/community/pages/community_page.dart';
@@ -52,6 +53,7 @@ class PostSubview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
 
     final PostView postView = postViewMedia.postView;
     final Post post = postView.post;
@@ -377,13 +379,15 @@ class PostSubview extends StatelessWidget {
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: postViewMedia.media.isEmpty
-                      ? () => Share.share(post.apId)
-                      : () => showPostActionBottomModalSheet(
-                            context,
-                            postViewMedia,
-                            actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                          ),
+                  onPressed: useAdvancedShareSheet
+                      ? () => showAdvancedShareSheet(context, postViewMedia)
+                      : postViewMedia.media.isEmpty
+                          ? () => Share.share(post.apId)
+                          : () => showPostActionBottomModalSheet(
+                                context,
+                                postViewMedia,
+                                actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                              ),
                 ),
               )
             ],
