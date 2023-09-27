@@ -299,7 +299,7 @@ class _ThunderState extends State<Thunder> {
             BottomNavigationBarItem(
               icon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 9 ? '9+' : inboxState.totalUnreadCount.toString()),
+                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_rounded),
               ),
               label: AppLocalizations.of(context)!.inbox,
