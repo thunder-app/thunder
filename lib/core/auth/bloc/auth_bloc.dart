@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/utils/error_messages.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -87,13 +88,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Check to see the instance settings (for checking if downvotes are enabled)
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        FullSiteView fullSiteView = await lemmy.run(
-          GetSite(
-            auth: activeAccount.jwt,
-          ),
-        );
+        bool downvotesEnabled = true;
+        try {
+          FullSiteView fullSiteView = await lemmy
+              .run(
+                GetSite(
+                  auth: activeAccount.jwt,
+                ),
+              )
+              .timeout(const Duration(seconds: 15));
 
-        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+          downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+        } catch (e) {
+          return emit(state.copyWith(status: AuthStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
+        }
 
         return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
       }
