@@ -122,7 +122,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
             BottomNavigationBarItem(
               icon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
-                label: Text(inboxState.totalUnreadCount > 9 ? '9+' : inboxState.totalUnreadCount.toString()),
+                label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_rounded),
               ),
               label: AppLocalizations.of(context)!.inbox,

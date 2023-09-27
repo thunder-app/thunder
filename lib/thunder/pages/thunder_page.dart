@@ -8,6 +8,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 
 // Internal
@@ -218,6 +219,14 @@ class _ThunderState extends State<Thunder> {
                         case AuthStatus.failure:
                         case AuthStatus.loading:
                           return Container();
+                        case AuthStatus.failureCheckingInstance:
+                          showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.missingErrorMessage);
+                          return ErrorMessage(
+                            title: AppLocalizations.of(context)!.unableToLoadInstance(LemmyClient.instance.lemmyApiV3.host),
+                            message: AppLocalizations.of(context)!.internetOrInstanceIssues,
+                            actionText: AppLocalizations.of(context)!.accountSettings,
+                            action: () => showProfileModalSheet(context),
+                          );
                       }
                     },
                   ),

@@ -5,6 +5,7 @@
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
+- Show up to 99 before adding + in the unread count - contribution from @micahmo
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
