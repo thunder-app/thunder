@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:overlay_support/overlay_support.dart';
+import 'package:sliver_tools/sliver_tools.dart';
 
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
@@ -244,96 +246,110 @@ class _FeedViewState extends State<FeedView> {
                       child: const TagLine(),
                     ),
                   ),
-                  SliverToBoxAdapter(
-                    child: Visibility(
-                      visible: state.feedType == FeedType.community,
-                      child: GestureDetector(
-                        onTap: () {
-                          // Scroll to top first before showing the sidebar
-                          _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                          setState(() => showCommunitySidebar = !showCommunitySidebar);
-                        },
-                        onHorizontalDragEnd: (DragEndDetails dragEndDetails) {
-                          if (dragEndDetails.velocity.pixelsPerSecond.dx >= 0) {
-                            setState(() => showCommunitySidebar = false);
-                          } else if (dragEndDetails.velocity.pixelsPerSecond.dx < 0) {
-                            setState(() => showCommunitySidebar = true);
-                          }
-                        },
-                        child: CommunityHeader(communityInfo: state.fullCommunityView),
+                  if (state.fullCommunityView != null)
+                    SliverToBoxAdapter(
+                      child: Visibility(
+                        visible: state.feedType == FeedType.community,
+                        child: CommunityHeader(
+                          fullCommunityView: state.fullCommunityView!,
+                          onToggle: (bool toggled) {
+                            // Scroll to top first before showing the sidebar
+                            _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                            setState(() => showCommunitySidebar = toggled);
+                          },
+                        ),
                       ),
                     ),
-                  ),
-                  // Contains the widget for the community sidebar
-                  SliverToBoxAdapter(
-                    child: AnimatedSwitcher(
-                      switchInCurve: Curves.easeOut,
-                      switchOutCurve: Curves.easeOut,
-                      transitionBuilder: (child, animation) {
-                        return SlideTransition(
-                          position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                          child: child,
-                        );
-                      },
-                      duration: const Duration(milliseconds: 300),
-                      child: showCommunitySidebar
-                          ? CommunitySidebar(
-                              fullCommunityView: state.fullCommunityView!,
-                              onDismissed: () => setState(() => showCommunitySidebar = false),
-                            )
-                          : Container(),
-                    ),
-                  ),
-                  // Widget representing the list of posts on the feed
-                  SliverMasonryGrid.count(
-                    crossAxisCount: tabletMode ? 2 : 1,
-                    crossAxisSpacing: 40,
-                    mainAxisSpacing: 0,
-                    itemBuilder: (BuildContext context, int index) {
-                      return AnimatedSwitcher(
-                        switchOutCurve: Curves.ease,
-                        duration: const Duration(milliseconds: 0),
-                        reverseDuration: const Duration(milliseconds: 400),
-                        transitionBuilder: (child, animation) {
-                          return FadeTransition(
-                            opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                              CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-                            ),
-                            child: SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                              child: SizeTransition(
-                                sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                  CurvedAnimation(
-                                    parent: animation,
-                                    curve: const Interval(0.0, 0.25),
+                  SliverStack(
+                    children: [
+                      // Widget representing the list of posts on the feed
+                      SliverMasonryGrid.count(
+                        crossAxisCount: tabletMode ? 2 : 1,
+                        crossAxisSpacing: 40,
+                        mainAxisSpacing: 0,
+                        itemBuilder: (BuildContext context, int index) {
+                          return AnimatedSwitcher(
+                            switchOutCurve: Curves.ease,
+                            duration: const Duration(milliseconds: 0),
+                            reverseDuration: const Duration(milliseconds: 400),
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
+                                ),
+                                child: SlideTransition(
+                                  position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                  child: SizeTransition(
+                                    sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                      CurvedAnimation(
+                                        parent: animation,
+                                        curve: const Interval(0.0, 0.25),
+                                      ),
+                                    ),
+                                    child: child,
                                   ),
                                 ),
-                                child: child,
-                              ),
-                            ),
+                              );
+                            },
+                            child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
+                                ? PostCard(
+                                    postViewMedia: postViewMedias[index],
+                                    communityMode: state.feedType == FeedType.community,
+                                    onVoteAction: (VoteType voteType) {
+                                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                                    },
+                                    onSaveAction: (bool saved) {
+                                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                                    },
+                                    onReadAction: (bool read) {
+                                      context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                                    },
+                                    listingType: state.postListingType,
+                                    indicateRead: true,
+                                  )
+                                : null,
                           );
                         },
-                        child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
-                            ? PostCard(
-                                postViewMedia: postViewMedias[index],
-                                communityMode: state.feedType == FeedType.community,
-                                onVoteAction: (VoteType voteType) {
-                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                                },
-                                onSaveAction: (bool saved) {
-                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                                },
-                                onReadAction: (bool read) {
-                                  context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                                },
-                                listingType: state.postListingType,
-                                indicateRead: true,
-                              )
-                            : null,
-                      );
-                    },
-                    childCount: postViewMedias.length,
+                        childCount: postViewMedias.length,
+                      ),
+                      SliverToBoxAdapter(
+                        child: IgnorePointer(
+                          ignoring: !showCommunitySidebar,
+                          child: AnimatedOpacity(
+                            opacity: showCommunitySidebar ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 200),
+                            curve: Curves.ease,
+                            child: Container(
+                              height: MediaQuery.of(context).size.height,
+                              width: MediaQuery.of(context).size.width,
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                        ),
+                      ),
+                      // Contains the widget for the community sidebar
+                      SliverToBoxAdapter(
+                        child: AnimatedSwitcher(
+                          switchInCurve: Curves.easeOut,
+                          switchOutCurve: Curves.easeOut,
+                          transitionBuilder: (child, animation) {
+                            return SlideTransition(
+                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                              child: child,
+                            );
+                          },
+                          duration: const Duration(milliseconds: 300),
+                          child: showCommunitySidebar
+                              ? CommunitySidebar(
+                                  fullCommunityView: state.fullCommunityView!,
+                                  onDismiss: () => setState(() => showCommunitySidebar = false),
+                                )
+                              : Container(),
+                        ),
+                      ),
+                    ],
                   ),
+
                   // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                   SliverToBoxAdapter(
                     child: state.hasReachedEnd
@@ -491,6 +507,42 @@ class FeedReachedEnd extends StatelessWidget {
         ),
         const SizedBox(height: 160)
       ],
+    );
+  }
+}
+
+class IosStyleToast extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: DefaultTextStyle(
+        style: Theme.of(context).textTheme.titleSmall!.copyWith(color: Colors.white),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Center(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Container(
+                color: Colors.black87,
+                padding: const EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 16,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Icon(
+                      Icons.check,
+                      color: Colors.white,
+                    ),
+                    Text('Succeed')
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
