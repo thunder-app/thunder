@@ -131,7 +131,7 @@ class _ThunderState extends State<Thunder> {
                 return Scaffold(
                   drawer: selectedPageIndex == 0 ? const CommunityDrawer() : null,
                   floatingActionButton: AnimatedOpacity(
-                    opacity: selectedPageIndex == 0 ? 1.0 : 0.0,
+                    opacity: (selectedPageIndex == 0 && thunderBlocState.enableFeedsFab) ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 150),
                     curve: Curves.easeIn,
                     child: const FeedFAB(),

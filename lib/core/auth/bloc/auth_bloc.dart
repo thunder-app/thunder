@@ -89,8 +89,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
         bool downvotesEnabled = true;
+        FullSiteView? fullSiteView;
         try {
-          FullSiteView fullSiteView = await lemmy
+          fullSiteView = await lemmy
               .run(
                 GetSite(
                   auth: activeAccount.jwt,

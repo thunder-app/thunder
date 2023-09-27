@@ -20,6 +20,7 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/thunder/thunder_icons.dart';
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key});
@@ -41,67 +42,88 @@ class FeedFAB extends StatelessWidget {
           child: child,
         );
       },
-      child: GestureFab(
-        distance: 60,
-        icon: Icon(
-          singlePressAction.icon,
-          semanticLabel: singlePressAction.title,
-          size: 35,
-        ),
-        onPressed: () {
-          HapticFeedback.lightImpact();
+      child: state.isFabSummoned
+          ? GestureFab(
+              distance: 60,
+              icon: Icon(
+                singlePressAction.icon,
+                semanticLabel: singlePressAction.title,
+                size: 35,
+              ),
+              onSlideDown: () {
+                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+              },
+              onPressed: () {
+                HapticFeedback.lightImpact();
 
-          switch (singlePressAction) {
-            case FeedFabAction.dismissRead:
-              triggerDismissRead(context);
-              break;
-            case FeedFabAction.refresh:
-              triggerRefresh(context);
-              break;
-            case FeedFabAction.changeSort:
-              triggerChangeSort(context);
-              break;
-            case FeedFabAction.subscriptions:
-              triggerOpenDrawer(context);
-              break;
-            case FeedFabAction.backToTop:
-              triggerScrollToTop(context);
-              break;
-            case FeedFabAction.newPost:
-              triggerNewPost(context);
-              break;
-            default:
-              break;
-          }
-        },
-        onLongPress: () {
-          HapticFeedback.mediumImpact();
+                switch (singlePressAction) {
+                  case FeedFabAction.dismissRead:
+                    triggerDismissRead(context);
+                    break;
+                  case FeedFabAction.refresh:
+                    triggerRefresh(context);
+                    break;
+                  case FeedFabAction.changeSort:
+                    triggerChangeSort(context);
+                    break;
+                  case FeedFabAction.subscriptions:
+                    triggerOpenDrawer(context);
+                    break;
+                  case FeedFabAction.backToTop:
+                    triggerScrollToTop(context);
+                    break;
+                  case FeedFabAction.newPost:
+                    triggerNewPost(context);
+                    break;
+                  default:
+                    break;
+                }
+              },
+              onLongPress: () {
+                HapticFeedback.mediumImpact();
 
-          switch (longPressAction) {
-            case FeedFabAction.dismissRead:
-              triggerDismissRead(context);
-              break;
-            case FeedFabAction.refresh:
-              triggerRefresh(context);
-              break;
-            case FeedFabAction.changeSort:
-              triggerChangeSort(context);
-              break;
-            case FeedFabAction.subscriptions:
-              triggerOpenDrawer(context);
-              break;
-            case FeedFabAction.backToTop:
-              triggerScrollToTop(context);
-              break;
-            case FeedFabAction.newPost:
-              triggerNewPost(context);
-              break;
-            default:
-              break;
-          }
-        },
-        children: getEnabledActions(context),
-      ),
+                switch (longPressAction) {
+                  case FeedFabAction.dismissRead:
+                    triggerDismissRead(context);
+                    break;
+                  case FeedFabAction.refresh:
+                    triggerRefresh(context);
+                    break;
+                  case FeedFabAction.changeSort:
+                    triggerChangeSort(context);
+                    break;
+                  case FeedFabAction.subscriptions:
+                    triggerOpenDrawer(context);
+                    break;
+                  case FeedFabAction.backToTop:
+                    triggerScrollToTop(context);
+                    break;
+                  case FeedFabAction.newPost:
+                    triggerNewPost(context);
+                    break;
+                  default:
+                    break;
+                }
+              },
+              children: getEnabledActions(context),
+            )
+          : Stack(
+              // This creates an invisible touch target to summon the FAB
+              alignment: AlignmentDirectional.bottomEnd,
+              children: [
+                SizedBox(
+                  width: 75,
+                  height: 75,
+                  child: GestureDetector(
+                    onVerticalDragEnd: (DragEndDetails details) {
+                      if (details.primaryVelocity! < 0) {
+                        context.read<ThunderBloc>().add(const OnFabSummonToggle(true));
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
     );
   }
 
