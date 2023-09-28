@@ -18,13 +18,17 @@ dependencies:
     sdk: flutter
   sqflite: ^2.2.8+4
   path: ^1.8.3
+  gallery_saver:
+    git:
+      url: https://github.com/gwbischof/gallery_saver.git
+      ref: 1e902f066778756b36d709cd611e62e0abdf7767
   markdown_editable_textinput:
     git:
-      url: https://github.com/hjiangsu/markdown-editable-textinput.git
+      url: https://github.com/thunder-app/markdown-editor.git
       ref: 017c8614c59b7081f54a7af70cc9586888d53b56
   lemmy_api_client:
     git:
-      url: https://github.com/hjiangsu/lemmy_api_client.git
+      url: https://github.com/thunder-app/lemmy_api_client.git
       ref: ea73e9d03ba925003424c58ef674a4d34df9c1fe
   link_preview_generator:
     git:
@@ -63,7 +67,6 @@ dependencies:
   share_plus: ^7.0.2
   flex_color_scheme: ^7.1.2
   dynamic_color: ^1.6.5
-  # gallery_saver: ^2.3.2
   flutter_cache_manager: ^3.3.0
   permission_handler: ^10.3.0
   path_provider: ^2.0.15
