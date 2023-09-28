@@ -20,12 +20,8 @@ dependencies:
   path: ^1.8.3
   markdown_editable_textinput:
     git:
-      url: https://github.com/thunder-app/markdown-editor.git
+      url: https://github.com/hjiangsu/markdown-editable-textinput.git
       ref: 017c8614c59b7081f54a7af70cc9586888d53b56
-  extended_image:
-    git:
-      url: https://github.com/hjiangsu/extended_image.git
-      ref: 8.0.3
   lemmy_api_client:
     git:
       url: https://github.com/hjiangsu/lemmy_api_client.git
@@ -34,6 +30,7 @@ dependencies:
     git:
       url: https://github.com/thunder-app/link_preview_generator.git
       ref: 0b697ff173d67743ae3c490f49b26e74c46e841c
+  extended_image: ^8.1.1
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
   flutter_bloc: ^8.1.3
