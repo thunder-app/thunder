@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
-
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/shared/community_icon.dart';
 
+import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -102,11 +101,10 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  widget.fullCommunityView.communityView.community.title ?? widget.fullCommunityView.communityView.community.name ?? 'N/A',
+                                  widget.fullCommunityView.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text(
-                                    '${widget.fullCommunityView.communityView.community.name ?? 'N/A'}@${fetchInstanceNameFromUrl(widget.fullCommunityView.communityView.community.actorId) ?? 'N/A'}'),
+                                Text('${widget.fullCommunityView.communityView.community.name}@${fetchInstanceNameFromUrl(widget.fullCommunityView.communityView.community.actorId) ?? 'N/A'}'),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [

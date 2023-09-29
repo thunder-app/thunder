@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -53,6 +55,8 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  CommunityBloc communityBloc = context.read<CommunityBloc>();
+  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
   ThunderState thunderState = thunderBloc.state;
   final bool reduceAnimations = thunderState.reduceAnimations;
@@ -80,6 +84,8 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
+          BlocProvider.value(value: anonymousSubscriptionsBloc),
+          BlocProvider.value(value: communityBloc),
         ],
         child: Material(
           child: FeedPage(

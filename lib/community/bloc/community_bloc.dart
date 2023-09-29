@@ -56,6 +56,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         }
         break;
       case CommunityAction.follow:
+        try {
+          CommunityView communityView = await followCommunity(event.communityId, event.value);
+          emit(state.copyWith(status: CommunityStatus.success, communityView: communityView));
+        } catch (e) {
+          return emit(state.copyWith(status: CommunityStatus.failure));
+        }
         break;
     }
   }

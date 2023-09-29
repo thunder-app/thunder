@@ -51,6 +51,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
+    on<FeedCommunityViewUpdatedEvent>(
+      _onFeedCommunityViewUpdated,
+      transformer: throttleDroppable(Duration.zero),
+    );
+
     /// Handles actions on a given item within the feed
     on<FeedItemActionedEvent>(
       _onFeedItemActioned,
@@ -219,6 +224,15 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     }).toList();
 
     emit(state.copyWith(status: FeedStatus.success, postViewMedias: updatedPostViewMedias));
+  }
+
+  /// Handles updating information about a community
+  Future<void> _onFeedCommunityViewUpdated(FeedCommunityViewUpdatedEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(status: FeedStatus.fetching));
+
+    FullCommunityView? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView);
+
+    emit(state.copyWith(status: FeedStatus.success, fullCommunityView: updatedFullCommunityView));
   }
 
   /// Resets the FeedState to its initial state

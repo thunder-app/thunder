@@ -58,6 +58,12 @@ final class FeedItemUpdatedEvent extends FeedEvent {
   const FeedItemUpdatedEvent({required this.postViewMedia});
 }
 
+final class FeedCommunityViewUpdatedEvent extends FeedEvent {
+  final CommunityView communityView;
+
+  const FeedCommunityViewUpdatedEvent({required this.communityView});
+}
+
 final class FeedItemActionedEvent extends FeedEvent {
   /// This is the original PostViewMedia to perform the action upon. One of [postViewMedia] or [postId] must be provided
   /// If both are provided, [postId] will take precedence.

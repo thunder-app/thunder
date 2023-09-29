@@ -18,3 +18,18 @@ Future<BlockedCommunity> blockCommunity(int communityId, bool block) async {
 
   return blockedCommunity;
 }
+
+Future<CommunityView> followCommunity(int communityId, bool follow) async {
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  if (account?.jwt == null) throw Exception('User not logged in');
+
+  CommunityView communityView = await lemmy.run(FollowCommunity(
+    auth: account!.jwt!,
+    communityId: communityId,
+    follow: follow,
+  ));
+
+  return communityView;
+}
