@@ -5,6 +5,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/settings/widgets/accessibility_profile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -72,11 +73,54 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                   ),
                   ToggleOption(
                     description: LocalSettings.reduceAnimations.label,
-                    subtitle: 'Reduces the animations used within Thunder', // @TODO: Add subtitle field to LocalSettings for these strings
+                    subtitle: AppLocalizations.of(context)!.reducesAnimations, // @TODO: Add subtitle field to LocalSettings for these strings
                     value: reduceAnimations,
                     iconEnabled: Icons.animation,
                     iconDisabled: Icons.animation,
                     onToggle: (bool value) => setPreferences(LocalSettings.reduceAnimations, value),
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 4, bottom: 8.0),
+                    child: Text(
+                      AppLocalizations.of(context)!.profiles,
+                      style: theme.textTheme.titleLarge,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(6.0),
+                    child: Text(
+                      AppLocalizations.of(context)!.accessibilityProfilesDescription,
+                      style: TextStyle(
+                        color: theme.colorScheme.onBackground.withOpacity(0.75),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 8,
+                  ),
+                  AccessibilityProfile(
+                    name: AppLocalizations.of(context)!.screenReaderProfile,
+                    description: AppLocalizations.of(context)!.screenReaderProfileDescription,
+                    icon: Icons.smart_screen_rounded,
+                    settingsToChange: const {
+                      LocalSettings.useCompactView: true,
+                      LocalSettings.tappableAuthorCommunity: false,
+                      LocalSettings.showCommentActionButtons: false,
+                      LocalSettings.enableCommentNavigation: false,
+                      LocalSettings.sidebarBottomNavBarSwipeGesture: false,
+                      LocalSettings.sidebarBottomNavBarDoubleTapGesture: false,
+                      LocalSettings.enablePostGestures: false,
+                      LocalSettings.enableCommentGestures: false,
+                    },
                   ),
                 ],
               ),

@@ -2,6 +2,7 @@
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo
+- Added support for accessibility profiles in settings - contribution from @micahmo
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
