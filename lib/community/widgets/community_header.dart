@@ -10,11 +10,13 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class CommunityHeader extends StatefulWidget {
+  final bool showCommunitySidebar;
   final FullCommunityView fullCommunityView;
   final Function(bool toggled) onToggle;
 
   const CommunityHeader({
     super.key,
+    required this.showCommunitySidebar,
     required this.fullCommunityView,
     required this.onToggle,
   });
@@ -24,34 +26,24 @@ class CommunityHeader extends StatefulWidget {
 }
 
 class _CommunityHeaderState extends State<CommunityHeader> {
-  bool toggled = false;
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Material(
-      elevation: toggled ? 5.0 : 0,
+      elevation: widget.showCommunitySidebar ? 5.0 : 0,
       child: GestureDetector(
-        onTap: () {
-          setState(() => toggled = !toggled);
-          widget.onToggle(toggled);
-        },
+        onTap: () => widget.onToggle(!widget.showCommunitySidebar),
         onHorizontalDragEnd: (DragEndDetails dragEndDetails) {
           if (dragEndDetails.velocity.pixelsPerSecond.dx >= 0) {
-            setState(() => toggled = false);
             widget.onToggle(false);
           } else if (dragEndDetails.velocity.pixelsPerSecond.dx < 0) {
-            setState(() => toggled = true);
             widget.onToggle(true);
           }
         },
         child: Stack(
           children: [
-            if (widget.fullCommunityView.communityView.community.banner == null)
-              Positioned.fill(
-                child: Container(color: theme.colorScheme.background),
-              ),
+            if (widget.fullCommunityView.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
             if (widget.fullCommunityView.communityView.community.banner != null)
               Positioned.fill(
                 child: Row(
