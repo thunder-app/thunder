@@ -10,7 +10,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';

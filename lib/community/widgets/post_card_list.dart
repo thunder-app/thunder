@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';

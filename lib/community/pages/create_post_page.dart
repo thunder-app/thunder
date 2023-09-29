@@ -7,7 +7,7 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/shared/common_markdown_body.dart';

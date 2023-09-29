@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 
 // Internal
@@ -108,6 +109,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => AccountBloc()),
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+        BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(),
