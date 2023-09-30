@@ -377,6 +377,7 @@ class CommunityActions extends StatelessWidget {
                     CommunityBloc communityBloc = context.read<CommunityBloc>();
                     AccountBloc accountBloc = context.read<AccountBloc>();
                     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                    FeedBloc feedBloc = context.read<FeedBloc>();
 
                     final ThunderState state = context.read<ThunderBloc>().state;
                     final bool reduceAnimations = state.reduceAnimations;
@@ -406,7 +407,8 @@ class CommunityActions extends StatelessWidget {
                             providers: [
                               BlocProvider<CommunityBloc>.value(value: communityBloc),
                               BlocProvider<AccountBloc>.value(value: accountBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc)
+                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                              BlocProvider<FeedBloc>.value(value: feedBloc),
                             ],
                             child: CreatePostPage(
                               communityId: communityView.community.id,

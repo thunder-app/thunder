@@ -54,14 +54,16 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   bool isDownloadingMedia = false;
 
-  void _maybeSlide() {
+  void _maybeSlide(BuildContext context) {
     setState(() {
       maybeSlideZooming = true;
     });
     Timer(const Duration(milliseconds: 300), () {
-      setState(() {
-        maybeSlideZooming = false;
-      });
+      if (context.mounted) {
+        setState(() {
+          maybeSlideZooming = false;
+        });
+      }
     });
   }
 
@@ -185,7 +187,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                       onPointerUp: (details) {
                         downCoord = details.position;
                         if (!slideZooming) {
-                          _maybeSlide();
+                          _maybeSlide(context);
                         }
                       },
                       child: ExtendedImageSlidePage(
