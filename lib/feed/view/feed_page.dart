@@ -322,43 +322,51 @@ class _FeedViewState extends State<FeedView> {
                           childCount: postViewMedias.length,
                         ),
                         // Widgets to display on the feed when feedType == FeedType.community
-                        if (state.feedType == FeedType.community) ...[
-                          SliverToBoxAdapter(
-                            child: GestureDetector(
-                              onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
-                              child: AnimatedOpacity(
-                                opacity: showCommunitySidebar ? 1.0 : 0.0,
-                                duration: const Duration(milliseconds: 200),
-                                curve: Curves.ease,
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height,
-                                  width: MediaQuery.of(context).size.width,
-                                  color: Colors.black.withOpacity(0.5),
+                        SliverToBoxAdapter(
+                          child: AnimatedSwitcher(
+                            switchInCurve: Curves.easeOut,
+                            switchOutCurve: Curves.easeOut,
+                            transitionBuilder: (child, animation) {
+                              return FadeTransition(
+                                opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                  CurvedAnimation(parent: animation, curve: const Interval(0, 1.0)),
                                 ),
-                              ),
-                            ),
+                                child: child,
+                              );
+                            },
+                            duration: const Duration(milliseconds: 300),
+                            child: showCommunitySidebar
+                                ? GestureDetector(
+                                    onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
+                                    child: Container(
+                                      height: MediaQuery.of(context).size.height,
+                                      width: MediaQuery.of(context).size.width,
+                                      color: Colors.black.withOpacity(0.5),
+                                    ),
+                                  )
+                                : null,
                           ),
-                          // Contains the widget for the community sidebar
-                          SliverToBoxAdapter(
-                            child: AnimatedSwitcher(
-                              switchInCurve: Curves.easeOut,
-                              switchOutCurve: Curves.easeOut,
-                              transitionBuilder: (child, animation) {
-                                return SlideTransition(
-                                  position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                  child: child,
-                                );
-                              },
-                              duration: const Duration(milliseconds: 300),
-                              child: showCommunitySidebar && state.fullCommunityView != null
-                                  ? CommunitySidebar(
-                                      fullCommunityView: state.fullCommunityView!,
-                                      onDismiss: () => setState(() => showCommunitySidebar = false),
-                                    )
-                                  : Container(),
-                            ),
+                        ),
+                        // Contains the widget for the community sidebar
+                        SliverToBoxAdapter(
+                          child: AnimatedSwitcher(
+                            switchInCurve: Curves.easeOut,
+                            switchOutCurve: Curves.easeOut,
+                            transitionBuilder: (child, animation) {
+                              return SlideTransition(
+                                position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                child: child,
+                              );
+                            },
+                            duration: const Duration(milliseconds: 300),
+                            child: showCommunitySidebar
+                                ? CommunitySidebar(
+                                    fullCommunityView: state.fullCommunityView,
+                                    onDismiss: () => setState(() => showCommunitySidebar = false),
+                                  )
+                                : Container(),
                           ),
-                        ]
+                        ),
                       ],
                     ),
                     // Widget representing the bottom of the feed (reached end or loading more posts indicators)

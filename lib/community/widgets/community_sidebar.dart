@@ -20,6 +20,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -29,10 +30,10 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class CommunitySidebar extends StatefulWidget {
-  final FullCommunityView fullCommunityView;
+  final FullCommunityView? fullCommunityView;
   final Function onDismiss;
 
-  const CommunitySidebar({super.key, required this.fullCommunityView, required this.onDismiss});
+  const CommunitySidebar({super.key, this.fullCommunityView, required this.onDismiss});
 
   @override
   State<CommunitySidebar> createState() => _CommunitySidebarState();
@@ -52,130 +53,139 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    CommunityView communityView = widget.fullCommunityView.communityView;
+    if (widget.fullCommunityView == null) return Container();
+
+    CommunityView communityView = widget.fullCommunityView!.communityView;
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
-      child: Container(
-        alignment: Alignment.centerRight,
-        child: Dismissible(
-          key: Key(communityView.community.id.toString()),
-          onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
-          direction: DismissDirection.startToEnd,
-          child: FractionallySizedBox(
-            widthFactor: 0.8,
-            alignment: FractionalOffset.centerRight,
-            child: Container(
-              color: theme.colorScheme.background,
-              alignment: Alignment.topRight,
-              child: Column(
-                children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 100),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return SizeTransition(
-                        sizeFactor: animation,
-                        child: FadeTransition(opacity: animation, child: child),
-                      );
-                    },
-                    child: communityView.blocked == false
-                        ? Padding(
-                            padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
-                            child: CommunityActions(isUserLoggedIn: isUserLoggedIn, fullCommunityView: widget.fullCommunityView),
-                          )
-                        : null,
-                  ),
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 150),
-                    transitionBuilder: (Widget child, Animation<double> animation) {
-                      return SizeTransition(
-                        sizeFactor: animation,
-                        child: FadeTransition(opacity: animation, child: child),
-                      );
-                    },
-                    child: communityView.subscribed != SubscribedType.subscribed && communityView.subscribed != SubscribedType.pending
-                        ? BlockCommunityButton(communityView: communityView, isUserLoggedIn: isUserLoggedIn)
-                        : null,
-                  ),
-                  const SizedBox(height: 10.0),
-                  const Divider(height: 1, thickness: 2),
-                  Container(
-                    alignment: Alignment.topCenter,
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                    height: MediaQuery.of(context).size.height - 200,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: [
-                        CommonMarkdownBody(body: communityView.community.description ?? ''),
-                        const SidebarSectionHeader(value: "Stats"),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: CommunityStatsList(communityView: communityView),
-                        ),
-                        const SidebarSectionHeader(value: "Moderators"),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: CommunityModeratorList(fullCommunityView: widget.fullCommunityView),
-                        ),
-                        Container(
-                          child: widget.fullCommunityView.site != null
-                              ? Column(
-                                  children: [
-                                    const SidebarSectionHeader(value: "Host Instance"),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundColor: widget.fullCommunityView.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                foregroundImage: widget.fullCommunityView.site?.icon != null ? CachedNetworkImageProvider(widget.fullCommunityView.site!.icon!) : null,
-                                                maxRadius: 24,
-                                                child: widget.fullCommunityView.site?.icon == null
-                                                    ? Text(
-                                                        widget.fullCommunityView.moderators.first.moderator!.name[0].toUpperCase(),
-                                                        semanticsLabel: '',
-                                                        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                                      )
-                                                    : null,
-                                              ),
-                                              const SizedBox(width: 16.0),
-                                              Column(
-                                                mainAxisAlignment: MainAxisAlignment.start,
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  Text(
-                                                    widget.fullCommunityView.site?.name ?? '',
-                                                    overflow: TextOverflow.ellipsis,
-                                                    maxLines: 1,
-                                                    style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                                                  ),
-                                                  Flexible(
-                                                    child: Text(
-                                                      widget.fullCommunityView.site?.description ?? '',
-                                                      style: theme.textTheme.bodyMedium,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                          const Divider(),
-                                          CommonMarkdownBody(body: widget.fullCommunityView.site?.sidebar ?? ''),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                )
-                              : null,
-                        ),
-                        const SizedBox(height: 256)
-                      ],
+      child: BlocListener<CommunityBloc, CommunityState>(
+        listener: (context, state) {
+          if (state.status == CommunityStatus.success && state.communityView != null) {
+            context.read<FeedBloc>().add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+          }
+        },
+        child: Container(
+          alignment: Alignment.centerRight,
+          child: Dismissible(
+            key: Key(communityView.community.id.toString()),
+            onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
+            direction: DismissDirection.startToEnd,
+            child: FractionallySizedBox(
+              widthFactor: 0.8,
+              alignment: FractionalOffset.centerRight,
+              child: Container(
+                color: theme.colorScheme.background,
+                alignment: Alignment.topRight,
+                child: Column(
+                  children: [
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 100),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return SizeTransition(
+                          sizeFactor: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: communityView.blocked == false
+                          ? Padding(
+                              padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
+                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, fullCommunityView: widget.fullCommunityView!),
+                            )
+                          : null,
                     ),
-                  )
-                ],
+                    AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 150),
+                      transitionBuilder: (Widget child, Animation<double> animation) {
+                        return SizeTransition(
+                          sizeFactor: animation,
+                          child: FadeTransition(opacity: animation, child: child),
+                        );
+                      },
+                      child: communityView.subscribed != SubscribedType.subscribed && communityView.subscribed != SubscribedType.pending
+                          ? BlockCommunityButton(communityView: communityView, isUserLoggedIn: isUserLoggedIn)
+                          : null,
+                    ),
+                    const SizedBox(height: 10.0),
+                    const Divider(height: 1, thickness: 2),
+                    Container(
+                      alignment: Alignment.topCenter,
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      height: MediaQuery.of(context).size.height - 200,
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: [
+                          CommonMarkdownBody(body: communityView.community.description ?? ''),
+                          const SidebarSectionHeader(value: "Stats"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: CommunityStatsList(communityView: communityView),
+                          ),
+                          const SidebarSectionHeader(value: "Moderators"),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            child: CommunityModeratorList(fullCommunityView: widget.fullCommunityView!),
+                          ),
+                          Container(
+                            child: widget.fullCommunityView!.site != null
+                                ? Column(
+                                    children: [
+                                      const SidebarSectionHeader(value: "Host Instance"),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: Column(
+                                          children: [
+                                            Row(
+                                              children: [
+                                                CircleAvatar(
+                                                  backgroundColor: widget.fullCommunityView!.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
+                                                  foregroundImage: widget.fullCommunityView!.site?.icon != null ? CachedNetworkImageProvider(widget.fullCommunityView!.site!.icon!) : null,
+                                                  maxRadius: 24,
+                                                  child: widget.fullCommunityView!.site?.icon == null
+                                                      ? Text(
+                                                          widget.fullCommunityView!.moderators.first.moderator!.name[0].toUpperCase(),
+                                                          semanticsLabel: '',
+                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                                        )
+                                                      : null,
+                                                ),
+                                                const SizedBox(width: 16.0),
+                                                Column(
+                                                  mainAxisAlignment: MainAxisAlignment.start,
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      widget.fullCommunityView!.site?.name ?? '',
+                                                      overflow: TextOverflow.ellipsis,
+                                                      maxLines: 1,
+                                                      style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                                    ),
+                                                    Flexible(
+                                                      child: Text(
+                                                        widget.fullCommunityView!.site?.description ?? '',
+                                                        style: theme.textTheme.bodyMedium,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                            const Divider(),
+                                            CommonMarkdownBody(body: widget.fullCommunityView!.site?.sidebar ?? ''),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                : null,
+                          ),
+                          const SizedBox(height: 256)
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
           ),
@@ -442,12 +452,8 @@ class CommunityActions extends StatelessWidget {
             onPressed: isUserLoggedIn
                 ? () {
                     HapticFeedback.mediumImpact();
-                    // context.read<CommunityBloc>().add(
-                    //       ChangeCommunitySubsciptionStatusEvent(
-                    //         communityId: communityView.community.id,
-                    //         follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
-                    //       ),
-                    //     );
+                    context.read<CommunityBloc>().add(CommunityActionEvent(
+                        communityAction: CommunityAction.follow, communityId: communityView.community.id, value: communityView.subscribed == SubscribedType.notSubscribed ? true : false));
                   }
                 : null,
             style: TextButton.styleFrom(

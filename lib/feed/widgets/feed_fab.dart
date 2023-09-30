@@ -16,6 +16,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -183,7 +184,7 @@ class FeedFAB extends StatelessWidget {
             triggerScrollToTop(context);
           },
         ),
-      if (enableNewPost)
+      if (enableNewPost && context.read<FeedBloc>().state.feedType == FeedType.community)
         ActionButton(
           title: FeedFabAction.newPost.title,
           icon: Icon(FeedFabAction.newPost.icon),

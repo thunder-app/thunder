@@ -33,3 +33,18 @@ Future<CommunityView> followCommunity(int communityId, bool follow) async {
 
   return communityView;
 }
+
+Future<FullCommunityView> fetchCommunityInformation({int? id, String? name}) async {
+  assert(!(id == null && name == null));
+
+  Account? account = await fetchActiveProfileAccount();
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  FullCommunityView fullCommunityView = await lemmy.run(GetCommunity(
+    auth: account?.jwt,
+    id: id,
+    name: name,
+  ));
+
+  return fullCommunityView;
+}

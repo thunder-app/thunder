@@ -94,3 +94,13 @@ final class FeedHidePostsFromViewEvent extends FeedEvent {
 
   const FeedHidePostsFromViewEvent({required this.postIds});
 }
+
+final class CreatePostEvent extends FeedEvent {
+  final int communityId;
+  final String name;
+  final String? body;
+  final String? url;
+  final bool? nsfw;
+
+  const CreatePostEvent({required this.communityId, required this.name, this.body, this.url, this.nsfw});
+}

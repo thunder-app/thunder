@@ -8,7 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc_old.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
@@ -266,6 +267,8 @@ class _PostCardState extends State<PostCard> {
     AuthBloc authBloc = context.read<AuthBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
     FeedBloc feedBloc = context.read<FeedBloc>();
+    CommunityBloc communityBloc = context.read<CommunityBloc>();
+    AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
@@ -289,6 +292,8 @@ class _PostCardState extends State<PostCard> {
               BlocProvider.value(value: authBloc),
               BlocProvider.value(value: thunderBloc),
               BlocProvider(create: (context) => post_bloc.PostBloc()),
+              BlocProvider.value(value: communityBloc),
+              BlocProvider.value(value: anonymousSubscriptionsBloc),
             ],
             child: PostPage(
               postView: widget.postViewMedia,
