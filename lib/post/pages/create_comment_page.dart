@@ -14,11 +14,13 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -336,7 +338,23 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.username,
+                                MarkdownType.community,
                               ],
+                              customTapActions: {
+                                MarkdownType.username: () {
+                                  showUserInputDialog(context, title: AppLocalizations.of(context)!.username, onUserSelected: (person) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                  });
+                                },
+                                MarkdownType.community: () {
+                                  showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (community) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                  });
+                                },
+                              },
                               imageIsLoading: imageUploading,
                               customImageButtonAction: () => uploadImage(context, imageBloc))),
                       Padding(
