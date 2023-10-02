@@ -392,6 +392,11 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 AppLocalizations.of(context)!.anonymous,
                                 style: theme.textTheme.titleMedium?.copyWith(),
                               ),
+                            ],
+                          ),
+                          subtitle: Row(
+                            children: [
+                              Text(anonymousInstances![realIndex].instance),
                               AnimatedOpacity(
                                 opacity: anonymousInstances![realIndex].latency == null ? 0 : 1,
                                 duration: const Duration(milliseconds: 500),
@@ -414,11 +419,6 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                   ],
                                 ),
                               ),
-                            ],
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Text(anonymousInstances![realIndex].instance),
                             ],
                           ),
                           trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
