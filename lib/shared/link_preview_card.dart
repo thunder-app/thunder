@@ -5,19 +5,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
@@ -254,7 +251,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (communityName != null) {
         try {
-          await navigateToCommunityPage(context, communityName: communityName);
+          await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid community we'll perform the next fallback
