@@ -45,39 +45,46 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     title: title,
     inputLabel: AppLocalizations.of(context)!.username,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) async {
-      if (query.isNotEmpty != true) {
-        return const Iterable.empty();
-      }
-      Account? account = await fetchActiveProfileAccount();
-      final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
-        q: query,
-        auth: account?.jwt,
-        type: SearchType.users,
-        limit: 10,
-      ));
-      return searchReults.users;
-    },
-    suggestionBuilder: (payload) {
-      return Tooltip(
-        message: '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
-        preferBelow: false,
-        child: ListTile(
-          leading: UserAvatar(person: payload.person),
-          title: Text(
-            payload.person.displayName ?? payload.person.name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: TextScroll(
-            '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
-          ),
+    getSuggestions: getUserSuggestions,
+    suggestionBuilder: (payload) => buildUserSuggestionWidget(payload),
+  );
+}
+
+Future<Iterable<PersonViewSafe>> getUserSuggestions(String query) async {
+  if (query.isNotEmpty != true) {
+    return const Iterable.empty();
+  }
+  Account? account = await fetchActiveProfileAccount();
+  final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
+    q: query,
+    auth: account?.jwt,
+    type: SearchType.users,
+    limit: 10,
+  ));
+  return searchReults.users;
+}
+
+Widget buildUserSuggestionWidget(PersonViewSafe payload, {void Function(PersonViewSafe)? onSelected}) {
+  return Tooltip(
+    message: '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
+    preferBelow: false,
+    child: InkWell(
+      onTap: onSelected == null ? null : () => onSelected(payload),
+      child: ListTile(
+        leading: UserAvatar(person: payload.person),
+        title: Text(
+          payload.person.displayName ?? payload.person.name,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-      );
-    },
+        subtitle: TextScroll(
+          '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
+          delayBefore: const Duration(seconds: 2),
+          pauseBetween: const Duration(seconds: 3),
+          velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+        ),
+      ),
+    ),
   );
 }
 
@@ -116,39 +123,46 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) async {
-      if (query.isNotEmpty != true) {
-        return const Iterable.empty();
-      }
-      Account? account = await fetchActiveProfileAccount();
-      final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
-        q: query,
-        auth: account?.jwt,
-        type: SearchType.communities,
-        limit: 10,
-      ));
-      return searchReults.communities;
-    },
-    suggestionBuilder: (payload) {
-      return Tooltip(
-        message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-        preferBelow: false,
-        child: ListTile(
-          leading: CommunityIcon(community: payload.community),
-          title: Text(
-            payload.community.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: TextScroll(
-            '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
-          ),
+    getSuggestions: getCommunitySuggestions,
+    suggestionBuilder: buildCommunitySuggestionWidget,
+  );
+}
+
+Future<Iterable<CommunityView>> getCommunitySuggestions(String query) async {
+  if (query.isNotEmpty != true) {
+    return const Iterable.empty();
+  }
+  Account? account = await fetchActiveProfileAccount();
+  final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
+    q: query,
+    auth: account?.jwt,
+    type: SearchType.communities,
+    limit: 10,
+  ));
+  return searchReults.communities;
+}
+
+Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? onSelected}) {
+  return Tooltip(
+    message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+    preferBelow: false,
+    child: InkWell(
+      onTap: onSelected == null ? null : () => onSelected(payload),
+      child: ListTile(
+        leading: CommunityIcon(community: payload.community),
+        title: Text(
+          payload.community.title,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
         ),
-      );
-    },
+        subtitle: TextScroll(
+          '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+          delayBefore: const Duration(seconds: 2),
+          pauseBetween: const Duration(seconds: 3),
+          velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+        ),
+      ),
+    ),
   );
 }
 

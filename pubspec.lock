@@ -748,9 +748,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "3ded84267bb951a1d9312a308313d47ea714d210"
-      resolved-ref: "3ded84267bb951a1d9312a308313d47ea714d210"
-      url: "https://github.com/hjiangsu/markdown-editable-textinput.git"
+      ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
+      resolved-ref: "017c8614c59b7081f54a7af70cc9586888d53b56"
+      url: "https://github.com/thunder-app/markdown-editor.git"
     source: git
     version: "2.2.1"
   matcher:
