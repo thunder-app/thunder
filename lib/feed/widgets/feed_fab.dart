@@ -58,6 +58,9 @@ class FeedFAB extends StatelessWidget {
                 HapticFeedback.lightImpact();
 
                 switch (singlePressAction) {
+                  case FeedFabAction.openFab:
+                    triggerOpenFab(context);
+                    break;
                   case FeedFabAction.dismissRead:
                     triggerDismissRead(context);
                     break;
@@ -84,6 +87,9 @@ class FeedFAB extends StatelessWidget {
                 HapticFeedback.mediumImpact();
 
                 switch (longPressAction) {
+                  case FeedFabAction.openFab:
+                    triggerOpenFab(context);
+                    break;
                   case FeedFabAction.dismissRead:
                     triggerDismissRead(context);
                     break;
@@ -196,6 +202,10 @@ class FeedFAB extends StatelessWidget {
     ];
 
     return actions;
+  }
+
+  Future<void> triggerOpenFab(BuildContext context) async {
+    context.read<ThunderBloc>().add(const OnFabToggle(true));
   }
 
   Future<void> triggerDismissRead(BuildContext context) async {

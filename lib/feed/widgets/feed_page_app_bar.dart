@@ -83,7 +83,7 @@ class FeedPageAppBar extends StatelessWidget {
             },
             icon: const Icon(Icons.refresh_rounded)),
         Container(
-          margin: const EdgeInsets.symmetric(horizontal: 8.0),
+          margin: const EdgeInsets.only(right: 8.0),
           child: IconButton(
             icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
             onPressed: () {
