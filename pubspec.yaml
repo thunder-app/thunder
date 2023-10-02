@@ -20,11 +20,8 @@ dependencies:
   path: ^1.8.3
   markdown_editable_textinput:
     git:
-      # TODO: Update this once markdown-editor change is merged.
-      #url: https://github.com/thunder-app/markdown-editor.git
-      #ref: 3ded84267bb951a1d9312a308313d47ea714d210
-      url: https://github.com/micahmo/markdown-editor.git
-      ref: 30e3b3087aa2ea5d255c39142ca39e510345c2e7
+      url: https://github.com/thunder-app/markdown-editor.git
+      ref: 017c8614c59b7081f54a7af70cc9586888d53b56
   extended_image:
     git:
       url: https://github.com/hjiangsu/extended_image.git
