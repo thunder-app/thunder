@@ -748,8 +748,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "9695d78cdc0fea98e30a6ddffb956bc7acb783bd"
-      resolved-ref: "9695d78cdc0fea98e30a6ddffb956bc7acb783bd"
+      ref: "30e3b3087aa2ea5d255c39142ca39e510345c2e7"
+      resolved-ref: "30e3b3087aa2ea5d255c39142ca39e510345c2e7"
       url: "https://github.com/micahmo/markdown-editor.git"
     source: git
     version: "2.2.1"
@@ -1199,7 +1199,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  translator:
+translator:
     dependency: transitive
     description:
       name: translator
