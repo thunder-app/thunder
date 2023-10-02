@@ -495,18 +495,18 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_markdown
-      sha256: a10979814c5f4ddbe2b6143fba25d927599e21e3ba65b3862995960606fae78f
+      sha256: "519bf9e1d5df40dbb77d2f0a357a40fadf6b72e4dc44301916b81cad294db676"
       url: "https://pub.dev"
     source: hosted
-    version: "0.6.17+3"
+    version: "0.6.17+4"
   flutter_native_splash:
     dependency: "direct main"
     description:
       name: flutter_native_splash
-      sha256: ecff62b3b893f2f665de7e4ad3de89f738941fcfcaaba8ee601e749efafa4698
+      sha256: "91004565166dbbc7a85e7e99b84124a287839830ca957cfe45004793fe6fe69f"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.2"
+    version: "2.3.3"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
@@ -707,8 +707,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "41505c2a877e207a3924b4a8a2ee39315888c0ce"
-      resolved-ref: "41505c2a877e207a3924b4a8a2ee39315888c0ce"
+      ref: "2e8391f301d420f07f10e1882ac5ef4d926cc27c"
+      resolved-ref: "2e8391f301d420f07f10e1882ac5ef4d926cc27c"
       url: "https://github.com/thunder-app/link_preview_generator.git"
     source: git
     version: "1.2.0"
@@ -1331,10 +1331,10 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter
-      sha256: "5fde460534f252704feb9f787ab5501d333028a10f66e3132ae306ef09257321"
+      sha256: c1ab9b81090705c6069197d9fdc1625e587b52b8d70cdde2339d177ad0dbb98e
       url: "https://pub.dev"
     source: hosted
-    version: "4.4.0"
+    version: "4.4.1"
   webview_flutter_android:
     dependency: "direct main"
     description:
