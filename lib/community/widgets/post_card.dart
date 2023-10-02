@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/utils/post_actions.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
@@ -16,7 +17,9 @@ import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to prevent clash with VotePostEvent, etc from community_bloc
+import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
@@ -30,7 +33,7 @@ class PostCard extends StatefulWidget {
 
   final Function(VoteType) onVoteAction;
   final Function(bool) onSaveAction;
-  final Function(bool) onToggleReadAction;
+  final Function(bool) onReadAction;
 
   final PostListingType? listingType;
 
@@ -40,7 +43,7 @@ class PostCard extends StatefulWidget {
     required this.communityMode,
     required this.onVoteAction,
     required this.onSaveAction,
-    required this.onToggleReadAction,
+    required this.onReadAction,
     required this.listingType,
     required this.indicateRead,
   });
@@ -98,7 +101,7 @@ class _PostCardState extends State<PostCard> {
             swipeAction: swipeAction,
             onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
             onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
-            onToggleReadAction: (int postId, bool read) => widget.onToggleReadAction(read),
+            onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
             voteType: myVote ?? VoteType.none,
             saved: saved,
             read: read,
@@ -238,12 +241,20 @@ class _PostCardState extends State<PostCard> {
                   PostCardAction.visitProfile,
                   PostCardAction.visitCommunity,
                   PostCardAction.blockCommunity,
-                  PostCardAction.sharePost,
-                  PostCardAction.shareMedia,
-                  PostCardAction.shareLink,
+                ],
+                multiActionsToInclude: [
+                  PostCardAction.upvote,
+                  PostCardAction.downvote,
+                  PostCardAction.save,
+                  PostCardAction.toggleRead,
+                  PostCardAction.share,
                 ],
               ),
-              onTap: () async => await navigateToPost(context),
+              onTap: () async {
+                PostView postView = widget.postViewMedia.postView;
+                if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
+                return await navigateToPost(context);
+              },
             ),
           ),
         ],
@@ -255,7 +266,9 @@ class _PostCardState extends State<PostCard> {
     AccountBloc accountBloc = context.read<AccountBloc>();
     AuthBloc authBloc = context.read<AuthBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    FeedBloc feedBloc = context.read<FeedBloc>();
     CommunityBloc communityBloc = context.read<CommunityBloc>();
+    AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
@@ -263,13 +276,7 @@ class _PostCardState extends State<PostCard> {
     // Mark post as read when tapped
     if (isUserLoggedIn) {
       int postId = widget.postViewMedia.postView.post.id;
-      try {
-        UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-        userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-      } catch (e) {
-        CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-        communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-      }
+      feedBloc.add(FeedItemActionedEvent(postId: postId, postAction: PostAction.read, value: true));
     }
 
     await Navigator.of(context).push(
@@ -278,23 +285,25 @@ class _PostCardState extends State<PostCard> {
         backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
         backGestureDetectionWidth: 45,
         canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
-        builder: (context) {
+        builder: (otherContext) {
           return MultiBlocProvider(
             providers: [
               BlocProvider.value(value: accountBloc),
               BlocProvider.value(value: authBloc),
               BlocProvider.value(value: thunderBloc),
-              BlocProvider.value(value: communityBloc),
               BlocProvider(create: (context) => post_bloc.PostBloc()),
+              BlocProvider.value(value: communityBloc),
+              BlocProvider.value(value: anonymousSubscriptionsBloc),
             ],
             child: PostPage(
               postView: widget.postViewMedia,
-              onPostUpdated: () {},
+              onPostUpdated: (PostViewMedia postViewMedia) {
+                context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
+              },
             ),
           );
         },
       ),
     );
-    if (context.mounted) context.read<CommunityBloc>().add(ForceRefreshEvent());
   }
 }

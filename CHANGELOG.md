@@ -5,9 +5,11 @@
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
+- Show up to 99 before adding + in the unread count - contribution from @micahmo
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
+- Show additional posts loading indicator on instances with taglines - contribution from @micahmo
 
 ## 0.2.4 - 2023-09-20
 ### Added
@@ -32,6 +34,7 @@
 - Automatically save drafts for posts and comments - contribution from @micahmo
 - Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
+- Add new actions to the post and comment bottom sheets - contribution from @micahmo
 - Added buttons to quickly insert user or community mention in post or comment - contribution from @micahmo
 
 ### Changed

@@ -3,6 +3,7 @@ import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
+import 'package:thunder/utils/error_messages.dart';
 import 'package:uuid/uuid.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -44,7 +45,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -87,15 +88,23 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         // Check to see the instance settings (for checking if downvotes are enabled)
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-        FullSiteView fullSiteView = await lemmy.run(
-          GetSite(
-            auth: activeAccount.jwt,
-          ),
-        );
+        bool downvotesEnabled = true;
+        FullSiteView? fullSiteView;
+        try {
+          fullSiteView = await lemmy
+              .run(
+                GetSite(
+                  auth: activeAccount.jwt,
+                ),
+              )
+              .timeout(const Duration(seconds: 15));
 
-        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+          downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+        } catch (e) {
+          return emit(state.copyWith(status: AuthStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
+        }
 
-        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
       }
     });
 
@@ -150,7 +159,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled));
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {

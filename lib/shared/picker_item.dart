@@ -5,7 +5,7 @@ class PickerItem<T> extends StatelessWidget {
   final IconData? icon;
   final Widget? leading;
   final IconData? trailingIcon;
-  final void Function() onSelected;
+  final void Function()? onSelected;
   final bool? isSelected;
 
   const PickerItem({
@@ -28,11 +28,11 @@ class PickerItem<T> extends StatelessWidget {
         color: isSelected == true ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(50),
-          onTap: () => onSelected(),
+          onTap: onSelected,
           child: ListTile(
             title: Text(
               label,
-              style: theme.textTheme.bodyMedium,
+              style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(onSelected == null ? 0.5 : 1)),
             ),
             leading: icon != null ? Icon(icon) : this.leading,
             trailing: Icon(trailingIcon),

@@ -16,22 +16,20 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
-import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 
@@ -180,7 +178,7 @@ class PostSubview extends StatelessWidget {
                 InkWell(
                   borderRadius: BorderRadius.circular(5),
                   onTap: () {
-                    navigateToCommunityPage(context, communityId: postView.community.id);
+                    navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id);
                   },
                   child: Tooltip(
                     excludeFromSemantics: true,

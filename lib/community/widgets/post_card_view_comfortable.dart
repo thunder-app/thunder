@@ -12,6 +12,7 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -272,9 +273,13 @@ class PostCardViewComfortable extends StatelessWidget {
                           PostCardAction.visitProfile,
                           PostCardAction.visitCommunity,
                           PostCardAction.blockCommunity,
-                          PostCardAction.sharePost,
-                          PostCardAction.shareMedia,
-                          PostCardAction.shareLink,
+                        ],
+                        multiActionsToInclude: [
+                          PostCardAction.upvote,
+                          PostCardAction.downvote,
+                          PostCardAction.save,
+                          PostCardAction.toggleRead,
+                          PostCardAction.share,
                         ],
                       );
                       HapticFeedback.mediumImpact();

@@ -345,7 +345,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                             InkWell(
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
-                                showCommentActionBottomModalSheet(context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction);
+                                showCommentActionBottomModalSheet(
+                                    context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction, widget.onVoteAction, widget.onReplyEditAction);
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
