@@ -268,20 +268,19 @@ packages:
   extended_image:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "8.0.3"
-      resolved-ref: "480152ccc34403c030f1f810828dece46494016f"
-      url: "https://github.com/hjiangsu/extended_image.git"
-    source: git
-    version: "8.0.3"
+      name: extended_image
+      sha256: b4d72a27851751cfadaf048936d42939db7cd66c08fdcfe651eeaa1179714ee6
+      url: "https://pub.dev"
+    source: hosted
+    version: "8.1.1"
   extended_image_library:
     dependency: transitive
     description:
       name: extended_image_library
-      sha256: af3ff1c09c23ca7663f94272313d63499a6bd19121e99378e375e0cf2ac7a3e4
+      sha256: "8bf87c0b14dcb59200c923a9a3952304e4732a0901e40811428834ef39018ee1"
       url: "https://pub.dev"
     source: hosted
-    version: "3.5.2"
+    version: "3.6.0"
   fake_async:
     dependency: transitive
     description:
@@ -553,10 +552,11 @@ packages:
   gallery_saver:
     dependency: "direct main"
     description:
-      name: gallery_saver
-      sha256: df8b7e207ca12d64c71e0710a7ee3bc48aa7206d51cc720716fedb1543a66712
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: "1e902f066778756b36d709cd611e62e0abdf7767"
+      resolved-ref: "1e902f066778756b36d709cd611e62e0abdf7767"
+      url: "https://github.com/gwbischof/gallery_saver.git"
+    source: git
     version: "2.3.2"
   go_router:
     dependency: "direct main"
@@ -578,18 +578,18 @@ packages:
     dependency: "direct main"
     description:
       name: http
-      sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
+      sha256: "759d1a329847dd0f39226c688d3e06a6b8679668e350e2891a6474f8b4bb8525"
       url: "https://pub.dev"
     source: hosted
-    version: "0.13.6"
+    version: "1.1.0"
   http_client_helper:
     dependency: transitive
     description:
       name: http_client_helper
-      sha256: "14c6e756644339f561321dab021215475ba4779aa962466f59ccb3ecf66b36c3"
+      sha256: "8a9127650734da86b5c73760de2b404494c968a3fd55602045ffec789dac3cb1"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.4"
+    version: "3.0.0"
   http_parser:
     dependency: transitive
     description:
@@ -698,17 +698,17 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
-      resolved-ref: "77f50e5a6cdd76ae177f188e574c2df11b75a14d"
-      url: "https://github.com/hjiangsu/lemmy_api_client.git"
+      ref: ea73e9d03ba925003424c58ef674a4d34df9c1fe
+      resolved-ref: ea73e9d03ba925003424c58ef674a4d34df9c1fe
+      url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"
   link_preview_generator:
     dependency: "direct main"
     description:
       path: "."
-      ref: "0b697ff173d67743ae3c490f49b26e74c46e841c"
-      resolved-ref: "0b697ff173d67743ae3c490f49b26e74c46e841c"
+      ref: "41505c2a877e207a3924b4a8a2ee39315888c0ce"
+      resolved-ref: "41505c2a877e207a3924b4a8a2ee39315888c0ce"
       url: "https://github.com/thunder-app/link_preview_generator.git"
     source: git
     version: "1.2.0"
@@ -1199,14 +1199,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  translator:
-    dependency: transitive
-    description:
-      name: translator
-      sha256: "225ee22fc482736c593be5c232c0c5884b16d7cc42945c51ac73d9a0441dddcc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.7"
   typed_data:
     dependency: transitive
     description:
