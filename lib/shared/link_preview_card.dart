@@ -77,13 +77,24 @@ class LinkPreviewCard extends StatelessWidget {
             fit: StackFit.passthrough,
             children: [
               if (mediaURL != null) ...[
-                ImagePreview(
-                  read: read,
-                  url: mediaURL ?? originURL!,
-                  height: showFullHeightImages ? mediaHeight : 150,
-                  width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
-                  isExpandable: false,
-                )
+                hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL ?? originURL!,
+                          height: showFullHeightImages ? mediaHeight : 150,
+                          width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL ?? originURL!,
+                        height: showFullHeightImages ? mediaHeight : 150,
+                        width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                        isExpandable: false,
+                      )
               ] else if (scrapeMissingPreviews)
                 SizedBox(
                   height: 150,
@@ -111,11 +122,10 @@ class LinkPreviewCard extends StatelessWidget {
               if (hideNsfw)
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
                   child: Column(
                     children: [
                       const Icon(Icons.warning_rounded, size: 55),
-                      // This won't show but it does cause the icon above to center
                       Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                     ],
                   ),
@@ -144,13 +154,24 @@ class LinkPreviewCard extends StatelessWidget {
           fit: StackFit.passthrough,
           children: [
             mediaURL != null
-                ? ImagePreview(
-                    read: read,
-                    url: mediaURL!,
-                    height: 75,
-                    width: 75,
-                    isExpandable: false,
-                  )
+                ? hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL!,
+                          height: 75,
+                          width: 75,
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL!,
+                        height: 75,
+                        width: 75,
+                        isExpandable: false,
+                      )
                 : scrapeMissingPreviews
                     ? SizedBox(
                         height: 75,
@@ -183,7 +204,7 @@ class LinkPreviewCard extends StatelessWidget {
                         width: 75,
                         color: theme.cardColor.darken(5),
                         child: Icon(
-                          Icons.language,
+                          hideNsfw ? null : Icons.language,
                           color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
