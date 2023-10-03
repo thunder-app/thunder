@@ -92,25 +92,20 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
         onHorizontalDragUpdate: _handleDragUpdate,
         onHorizontalDragEnd: (DragEndDetails dragEndDetails) => _handleDragEnd(dragEndDetails, context),
         onDoubleTap: state.bottomNavBarDoubleTapGestures == true ? () => _handleDoubleTap(context) : null,
-        child: BottomNavigationBar(
-          currentIndex: widget.selectedPageIndex,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-          selectedItemColor: theme.colorScheme.primary,
-          type: BottomNavigationBarType.fixed,
-          unselectedFontSize: 20.0,
-          selectedFontSize: 20.0,
+        child: NavigationBar(selectedIndex: widget.selectedPageIndex,
+          backgroundColor: theme.colorScheme.surface,
+          labelBehavior:NavigationDestinationLabelBehavior.alwaysHide ,
           elevation: 1,
-          items: [
-            BottomNavigationBarItem(
+          destinations: [
+            NavigationDestination(
               icon: const Icon(Icons.dashboard_rounded),
               label: AppLocalizations.of(context)!.feed,
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: const Icon(Icons.search_rounded),
               label: AppLocalizations.of(context)!.search,
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: GestureDetector(
                   onLongPress: () {
                     HapticFeedback.mediumImpact();
@@ -119,7 +114,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                   child: const Icon(Icons.person_rounded)),
               label: AppLocalizations.of(context)!.account,
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: Badge(
                 isLabelVisible: inboxState.totalUnreadCount != 0,
                 label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
@@ -127,12 +122,12 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
               ),
               label: AppLocalizations.of(context)!.inbox,
             ),
-            BottomNavigationBarItem(
+            NavigationDestination(
               icon: const Icon(Icons.settings_rounded),
               label: AppLocalizations.of(context)!.settings,
             ),
           ],
-          onTap: (index) {
+          onDestinationSelected: (index) {
             if (context.read<ThunderBloc>().state.isFabOpen) {
               context.read<ThunderBloc>().add(const OnFabToggle(false));
             }
