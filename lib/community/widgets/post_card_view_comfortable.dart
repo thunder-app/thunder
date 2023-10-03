@@ -132,7 +132,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                         ),
                       ),
-                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                    if (postViewMedia.postView.post.featuredCommunity || (!useSaveButton && postViewMedia.postView.saved) || postViewMedia.postView.post.locked)
                       const WidgetSpan(
                         child: SizedBox(
                           width: 3.5,
@@ -193,7 +193,7 @@ class PostCardViewComfortable extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      if (postViewMedia.postView.post.featuredCommunity || (!useSaveButton && postViewMedia.postView.saved) || postViewMedia.postView.post.locked)
                         const WidgetSpan(
                           child: SizedBox(
                             width: 3.5,
