@@ -10,6 +10,7 @@
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
 - Show additional posts loading indicator on instances with taglines - contribution from @micahmo
+- Fix interactions with saved comments - contribution from @micahmo
 - Improve haptic feedback when interacting with FAB - contribution from @micahmo
 
 ## 0.2.4 - 2023-09-20

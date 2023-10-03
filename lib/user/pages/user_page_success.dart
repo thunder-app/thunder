@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
@@ -115,6 +116,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final DateTime now = DateTime.now().toUtc();
+    final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
     return Center(
       child: Stack(
@@ -443,7 +445,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               },
                             );
                           },
-                          isOwnComment: widget.isAccountUser,
+                          isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
                         ),
                       ],
                     ),
