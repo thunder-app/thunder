@@ -155,32 +155,6 @@ class _UserSidebarState extends State<UserSidebar> {
                                   children: [
                                     Expanded(
                                       child: ElevatedButton(
-                                        onPressed: null,
-                                        style: TextButton.styleFrom(
-                                          fixedSize: const Size.fromHeight(40),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        child: const Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.mail_outline_rounded,
-                                              semanticLabel: 'Message User',
-                                            ),
-                                            SizedBox(width: 4.0),
-                                            Text(
-                                              'Message User',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                      height: 8,
-                                    ),
-                                    Expanded(
-                                      child: ElevatedButton(
                                         onPressed: isLoggedIn
                                             ? () {
                                                 HapticFeedback.heavyImpact();
