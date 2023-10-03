@@ -7,6 +7,8 @@ import 'package:text_scroll/text_scroll.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/feed.dart';
+import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -14,7 +16,6 @@ import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
@@ -249,7 +250,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                                             child: InkWell(
                                               borderRadius: BorderRadius.circular(50),
                                               onTap: () {
-                                                navigateToCommunityPage(context,
+                                                navigateToFeedPage(context,
+                                                    feedType: FeedType.community,
                                                     communityName: '${state.communityBlocks[index].name}@${fetchInstanceNameFromUrl(state.communityBlocks[index].actorId)}');
                                               },
                                               child: ListTile(

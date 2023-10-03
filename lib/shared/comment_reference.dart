@@ -6,6 +6,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -106,7 +107,7 @@ class _CommentReferenceState extends State<CommentReference> {
                 selectedCommentId: widget.comment.comment.id,
                 selectedCommentPath: widget.comment.comment.path,
                 postId: widget.comment.post.id,
-                onPostUpdated: () => {},
+                onPostUpdated: (PostViewMedia postViewMedia) => {},
               ),
             ),
           ),

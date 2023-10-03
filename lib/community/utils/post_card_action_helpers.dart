@@ -1,23 +1,28 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:share_plus/share_plus.dart';
-
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/shared/multi_picker_item.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:lemmy_api_client/v3.dart';
+
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/shared/multi_picker_item.dart';
+import 'package:thunder/utils/global_context.dart';
 
 enum PostCardAction {
   visitProfile,
@@ -29,7 +34,7 @@ enum PostCardAction {
   upvote,
   downvote,
   save,
-  toggelRead,
+  toggleRead,
   share,
 }
 
@@ -114,7 +119,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.toggelRead,
+    postCardAction: PostCardAction.toggleRead,
     label: AppLocalizations.of(GlobalContext.context)!.toggelRead,
     icon: Icons.mail_outline_outlined,
     color: Colors.teal.shade300,
@@ -208,12 +213,16 @@ void showPostActionBottomModalSheet(
   );
 }
 
+void onTapCommunityName(BuildContext context, int communityId) {
+  navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
+}
+
 void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMedia postViewMedia) async {
   Navigator.of(context).pop();
 
   switch (postCardAction) {
     case PostCardAction.visitCommunity:
-      navigateToCommunityPage(context, communityId: postViewMedia.postView.community.id);
+      onTapCommunityName(context, postViewMedia.postView.community.id);
       break;
     case PostCardAction.visitProfile:
       navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
@@ -251,19 +260,23 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
       break;
     case PostCardAction.blockCommunity:
-      context.read<CommunityBloc>().add(BlockCommunityEvent(communityId: postViewMedia.postView.community.id, block: true));
+      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));
       break;
     case PostCardAction.upvote:
-      context.read<CommunityBloc>().add(VotePostEvent(postId: postViewMedia.postView.post.id, score: postViewMedia.postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
+      context
+          .read<FeedBloc>()
+          .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
       break;
     case PostCardAction.downvote:
-      context.read<CommunityBloc>().add(VotePostEvent(postId: postViewMedia.postView.post.id, score: postViewMedia.postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
+      context
+          .read<FeedBloc>()
+          .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
       break;
     case PostCardAction.save:
-      context.read<CommunityBloc>().add(SavePostEvent(postId: postViewMedia.postView.post.id, save: !postViewMedia.postView.saved));
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.saved));
       break;
-    case PostCardAction.toggelRead:
-      context.read<CommunityBloc>().add(MarkPostAsReadEvent(postId: postViewMedia.postView.post.id, read: !postViewMedia.postView.read));
+    case PostCardAction.toggleRead:
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.read));
       break;
     case PostCardAction.share:
       postViewMedia.media.isEmpty

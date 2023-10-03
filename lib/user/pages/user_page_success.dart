@@ -30,7 +30,7 @@ import '../widgets/user_sidebar.dart';
 
 List<Widget> userOptionTypes = <Widget>[
   Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comment)),
+  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
 ];
 
 class UserPageSuccess extends StatefulWidget {
@@ -169,7 +169,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 });
                               },
                               borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0.1))) - 12.0),
                               isSelected: _selectedUserOption,
                               children: userOptionTypes,
                             )

@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/pictrs.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 part 'image_state.dart';
 part 'image_event.dart';
 

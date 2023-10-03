@@ -20,8 +20,8 @@ dependencies:
   path: ^1.8.3
   markdown_editable_textinput:
     git:
-      url: https://github.com/hjiangsu/markdown-editable-textinput.git
-      ref: 3ded84267bb951a1d9312a308313d47ea714d210
+      url: https://github.com/thunder-app/markdown-editor.git
+      ref: 017c8614c59b7081f54a7af70cc9586888d53b56
   extended_image:
     git:
       url: https://github.com/hjiangsu/extended_image.git
@@ -92,6 +92,7 @@ dependencies:
   dart_ping_ios: ^4.0.0
   flutter_typeahead: ^4.6.2
   text_scroll: ^0.2.0
+  sliver_tools: ^0.2.12
 
 dev_dependencies:
   flutter_test:

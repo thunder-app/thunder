@@ -12,6 +12,7 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -131,7 +132,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                         ),
                       ),
-                    if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                    if (postViewMedia.postView.post.featuredCommunity || (!useSaveButton && postViewMedia.postView.saved) || postViewMedia.postView.post.locked)
                       const WidgetSpan(
                         child: SizedBox(
                           width: 3.5,
@@ -192,7 +193,7 @@ class PostCardViewComfortable extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      if (postViewMedia.postView.post.featuredCommunity || (!useSaveButton && postViewMedia.postView.saved) || postViewMedia.postView.post.locked)
                         const WidgetSpan(
                           child: SizedBox(
                             width: 3.5,
@@ -277,7 +278,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           PostCardAction.upvote,
                           PostCardAction.downvote,
                           PostCardAction.save,
-                          PostCardAction.toggelRead,
+                          PostCardAction.toggleRead,
                           PostCardAction.share,
                         ],
                       );

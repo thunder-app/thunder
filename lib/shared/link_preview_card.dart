@@ -5,19 +5,16 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
@@ -77,13 +74,24 @@ class LinkPreviewCard extends StatelessWidget {
             fit: StackFit.passthrough,
             children: [
               if (mediaURL != null) ...[
-                ImagePreview(
-                  read: read,
-                  url: mediaURL ?? originURL!,
-                  height: showFullHeightImages ? mediaHeight : 150,
-                  width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
-                  isExpandable: false,
-                )
+                hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL ?? originURL!,
+                          height: showFullHeightImages ? mediaHeight : 150,
+                          width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL ?? originURL!,
+                        height: showFullHeightImages ? mediaHeight : 150,
+                        width: mediaWidth ?? MediaQuery.of(context).size.width - (edgeToEdgeImages ? 0 : 24),
+                        isExpandable: false,
+                      )
               ] else if (scrapeMissingPreviews)
                 SizedBox(
                   height: 150,
@@ -111,11 +119,10 @@ class LinkPreviewCard extends StatelessWidget {
               if (hideNsfw)
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
                   child: Column(
                     children: [
                       const Icon(Icons.warning_rounded, size: 55),
-                      // This won't show but it does cause the icon above to center
                       Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
                     ],
                   ),
@@ -144,13 +151,24 @@ class LinkPreviewCard extends StatelessWidget {
           fit: StackFit.passthrough,
           children: [
             mediaURL != null
-                ? ImagePreview(
-                    read: read,
-                    url: mediaURL!,
-                    height: 75,
-                    width: 75,
-                    isExpandable: false,
-                  )
+                ? hideNsfw
+                    ? ImageFiltered(
+                        imageFilter: ImageFilter.blur(sigmaX: 30, sigmaY: 30),
+                        child: ImagePreview(
+                          read: read,
+                          url: mediaURL!,
+                          height: 75,
+                          width: 75,
+                          isExpandable: false,
+                        ),
+                      )
+                    : ImagePreview(
+                        read: read,
+                        url: mediaURL!,
+                        height: 75,
+                        width: 75,
+                        isExpandable: false,
+                      )
                 : scrapeMissingPreviews
                     ? SizedBox(
                         height: 75,
@@ -183,7 +201,7 @@ class LinkPreviewCard extends StatelessWidget {
                         width: 75,
                         color: theme.cardColor.darken(5),
                         child: Icon(
-                          Icons.language,
+                          hideNsfw ? null : Icons.language,
                           color: theme.colorScheme.onSecondaryContainer.withOpacity(read == true ? 0.55 : 1.0),
                         ),
                       ),
@@ -254,7 +272,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (communityName != null) {
         try {
-          await navigateToCommunityPage(context, communityName: communityName);
+          await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid community we'll perform the next fallback
