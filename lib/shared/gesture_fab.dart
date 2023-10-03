@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -180,8 +181,10 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
             },
             onHorizontalDragStart: null,
             onLongPress: () {
+              HapticFeedback.heavyImpact();
               widget.onLongPress?.call();
             },
+            onTapDown: (details) => HapticFeedback.mediumImpact(),
             child: widget.centered
                 ? SizedBox(
                     width: 45,
@@ -192,7 +195,10 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(50),
-                        onTap: () => widget.onPressed?.call(),
+                        onTap: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onPressed?.call();
+                        },
                         child: Icon(
                           widget.icon.icon,
                           size: 20,
