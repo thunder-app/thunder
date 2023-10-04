@@ -12,6 +12,7 @@
 - Show additional posts loading indicator on instances with taglines - contribution from @micahmo
 - Fix interactions with saved comments - contribution from @micahmo
 - Improve haptic feedback when interacting with FAB - contribution from @micahmo
+- Remove non-functional message user action on use sidebar
 
 ## 0.2.4 - 2023-09-20
 ### Added
