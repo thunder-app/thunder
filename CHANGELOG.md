@@ -12,6 +12,7 @@
 - Show additional posts loading indicator on instances with taglines - contribution from @micahmo
 - Fix interactions with saved comments - contribution from @micahmo
 - Improve haptic feedback when interacting with FAB - contribution from @micahmo
+- Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 
 ## 0.2.4 - 2023-09-20
 ### Added
