@@ -180,6 +180,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         PostViewMedia postViewMedia = state.postViewMedias[existingPostViewMediaIndex];
         PostView originalPostView = postViewMedia.postView;
 
+        // Give a slight delay to have the UI perform any navigation first
+        await Future.delayed(const Duration(milliseconds: 250));
+
         try {
           PostView updatedPostView = optimisticallyReadPost(postViewMedia, event.value);
           state.postViewMedias[existingPostViewMediaIndex].postView = updatedPostView;

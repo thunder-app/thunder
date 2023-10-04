@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -162,13 +164,18 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                 onTap: () {
                   if (widget.isUserLoggedIn && widget.markPostReadOnMediaView) {
                     int postId = widget.postView!.postView.post.id;
+
+                    // Mark post as read when on the feed page
+                    try {
+                      FeedBloc feedBloc = BlocProvider.of<FeedBloc>(context);
+                      feedBloc.add(FeedItemActionedEvent(postAction: PostAction.read, postId: postId, value: true));
+                    } catch (e) {}
+
+                    // Mark post as read when on the user page
                     try {
                       UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
-                    } catch (e) {
-                      CommunityBloc communityBloc = BlocProvider.of<CommunityBloc>(context);
-                      communityBloc.add(MarkPostAsReadEvent(postId: postId, read: true));
-                    }
+                      userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+                    } catch (e) {}
                   }
                   Navigator.of(context).push(
                     PageRouteBuilder(

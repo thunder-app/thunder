@@ -6,6 +6,7 @@
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
+- Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
@@ -13,6 +14,7 @@
 - Fix interactions with saved comments - contribution from @micahmo
 - Improve haptic feedback when interacting with FAB - contribution from @micahmo
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
+- Remove non-functional message user action on use sidebar
 
 ## 0.2.4 - 2023-09-20
 ### Added

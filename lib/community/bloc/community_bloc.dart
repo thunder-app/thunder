@@ -7,6 +7,7 @@ import 'package:thunder/community/enums/community_action.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
 
 part 'community_event.dart';
 part 'community_state.dart';
@@ -58,7 +59,15 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
       case CommunityAction.follow:
         try {
           CommunityView communityView = await followCommunity(event.communityId, event.value);
+
           emit(state.copyWith(status: CommunityStatus.success, communityView: communityView));
+          emit(state.copyWith(status: CommunityStatus.fetching));
+
+          // Wait for one second before fetching the community information to get any updated information
+          Future.delayed(const Duration(seconds: 1)).then((value) async {
+            FullCommunityView? fullCommunityView = await fetchCommunityInformation(id: event.communityId);
+            emit(state.copyWith(status: CommunityStatus.success, communityView: fullCommunityView.communityView));
+          });
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));
         }
