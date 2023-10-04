@@ -54,6 +54,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void initState() {
     _scrollController.addListener(_onScroll);
     initPrefs();
+    fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
     super.initState();
   }
 
