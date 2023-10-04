@@ -1199,14 +1199,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
-  translator:
-    dependency: transitive
-    description:
-      name: translator
-      sha256: "225ee22fc482736c593be5c232c0c5884b16d7cc42945c51ac73d9a0441dddcc"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.1.7"
   typed_data:
     dependency: transitive
     description:
