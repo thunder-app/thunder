@@ -20,7 +20,7 @@ dependencies:
   path: ^1.8.3
   gallery_saver:
     git:
-      url: https://github.com/gwbischof/gallery_saver.git
+      url: https://github.com/thunder-app/gallery_saver.git
       ref: 1e902f066778756b36d709cd611e62e0abdf7767
   markdown_editable_textinput:
     git:

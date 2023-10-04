@@ -189,18 +189,18 @@ packages:
     dependency: "direct main"
     description:
       name: dart_ping
-      sha256: dd3a93d9b986565cb2fadd0c9277cf9880298634ccc9588e353e63c6f736a386
+      sha256: "2f5418d0a5c64e53486caaac78677b25725b1e13c33c5be834ce874ea18bd24f"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.0.1"
   dart_ping_ios:
     dependency: "direct main"
     description:
       name: dart_ping_ios
-      sha256: "5d27e4d3e7fccbc123bbb5c2803f5cb5933aea2f91b80ee1151d852f51b20cf3"
+      sha256: "17df1b369331ec6c30a91a51db64ac8feed47fad71e444208de06edf2a22415f"
       url: "https://pub.dev"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   device_info_plus:
     dependency: "direct main"
     description:
@@ -555,7 +555,7 @@ packages:
       path: "."
       ref: "1e902f066778756b36d709cd611e62e0abdf7767"
       resolved-ref: "1e902f066778756b36d709cd611e62e0abdf7767"
-      url: "https://github.com/gwbischof/gallery_saver.git"
+      url: "https://github.com/thunder-app/gallery_saver.git"
     source: git
     version: "2.3.2"
   go_router:
@@ -1355,10 +1355,10 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter_wkwebview
-      sha256: "3c7d56ca4b82654ad1f58aeefb8d593a59224f26d6b2bf8feed074361eb34c86"
+      sha256: "30b9af6bdd457b44c08748b9190d23208b5165357cc2eb57914fee1366c42974"
       url: "https://pub.dev"
     source: hosted
-    version: "3.9.0"
+    version: "3.9.1"
   win32:
     dependency: transitive
     description:
