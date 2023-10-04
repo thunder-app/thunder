@@ -273,6 +273,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                           await Future.delayed(const Duration(milliseconds: 1000), () {
                                             if ((anonymousInstances?.length ?? 0) > 0) {
                                               context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
+                                              context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.last.instance));
                                             } else {
                                               context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
                                             }
@@ -330,6 +331,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                             : () async {
                                 context.read<AuthBloc>().add(LogOutOfAllAccounts());
                                 context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
+                                context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![realIndex].instance));
                                 context.pop();
                               },
                         borderRadius: BorderRadius.circular(50),
@@ -432,6 +434,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                           context
                                               .read<ThunderBloc>()
                                               .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
+                                          context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
                                         } else {
                                           context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
                                         }
