@@ -38,6 +38,10 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       _createCommentEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<MarkAllAsReadEvent>(
+      _markAllAsRead,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _getInboxEvent(GetInboxEvent event, emit) async {
@@ -252,6 +256,27 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       return emit(state.copyWith(status: InboxStatus.success));
     } catch (e) {
       return emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _markAllAsRead(MarkAllAsReadEvent event, emit) async {
+    try {
+      emit(state.copyWith(
+        status: InboxStatus.refreshing,
+      ));
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(status: InboxStatus.success));
+      }
+      await lemmy.run(MarkAllAsRead(
+        auth: account!.jwt!,
+      ));
+
+      add(GetInboxEvent(reset: true, showAll: !state.showUnreadOnly));
+    } catch (e) {
+      emit(state.copyWith(status: InboxStatus.failure, errorMessage: e.toString(), totalUnreadCount: 0));
     }
   }
 

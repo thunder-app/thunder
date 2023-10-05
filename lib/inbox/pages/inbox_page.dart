@@ -83,6 +83,15 @@ class _InboxPageState extends State<InboxPage> {
         actions: [
           IconButton(
             icon: const Icon(
+              Icons.checklist,
+              semanticLabel: 'Read All',
+            ),
+            onPressed: () {
+              context.read<InboxBloc>().add(MarkAllAsReadEvent());
+            },
+          ),
+          IconButton(
+            icon: const Icon(
               Icons.refresh_rounded,
               semanticLabel: 'Refresh',
             ),
