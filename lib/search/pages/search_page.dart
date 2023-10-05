@@ -55,6 +55,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     _scrollController.addListener(_onScroll);
     initPrefs();
     fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
+    context.read<SearchBloc>().add(GetTrendingCommunitiesEvent());
     super.initState();
   }
 
@@ -105,6 +106,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
 
+    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
+    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
+
     return MultiBlocListener(
       listeners: [
         BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
@@ -113,7 +118,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           final Account? activeProfile = await fetchActiveProfileAccount();
 
           // When account changes, that means our instance most likely changed, so reset search.
-          if (state.status == AccountStatus.success && (activeProfile?.userId == null || state.personView?.person.id == activeProfile?.userId) && _previousUserId != state.personView?.person.id) {
+          if (state.status == AccountStatus.success &&
+              ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id)) {
             _controller.clear();
             context.read<SearchBloc>().add(ResetSearch());
             setState(() {});
@@ -155,7 +161,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         },
                         decoration: InputDecoration(
                           fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                          hintText: 'Search for communities',
+                          hintText: AppLocalizations.of(context)!.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50),
@@ -206,38 +212,65 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     ],
                   ),
                 )),
-            body: _getSearchBody(context, state),
+            body: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
           );
         },
       ),
     );
   }
 
-  Widget _getSearchBody(BuildContext context, SearchState state) {
+  Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String currentAnonymousInstance) {
     final theme = Theme.of(context);
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
-    final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
-    final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
     switch (state.status) {
       case SearchStatus.initial:
+      case SearchStatus.trending:
         LemmyClient lemmyClient = LemmyClient.instance;
 
-        return Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Icon(Icons.search_rounded, size: 80, color: theme.dividerColor),
-            const SizedBox(height: 30),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 32.0),
-              child: Text(
-                AppLocalizations.of(context)!.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                textAlign: TextAlign.center,
-                style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+        return AnimatedCrossFade(
+          duration: const Duration(milliseconds: 250),
+          crossFadeState: state.trendingCommunities?.isNotEmpty == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          firstChild: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Icon(Icons.search_rounded, size: 80, color: theme.dividerColor),
+              const SizedBox(height: 30),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                child: Text(
+                  AppLocalizations.of(context)!.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                  textAlign: TextAlign.center,
+                  style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
+                ),
               ),
-            )
-          ],
+            ],
+          ),
+          secondChild: state.trendingCommunities?.isNotEmpty == true
+              ? SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                        child: Text(
+                          AppLocalizations.of(context)!.trendingCommunities,
+                          style: theme.textTheme.titleLarge,
+                        ),
+                      ),
+                      ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.trendingCommunities!.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          CommunityView communityView = state.trendingCommunities![index];
+                          final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                          return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
+                        },
+                      ),
+                    ],
+                  ),
+                )
+              : Container(),
         );
       case SearchStatus.loading:
         return const Center(child: CircularProgressIndicator());
@@ -269,60 +302,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             } else {
               CommunityView communityView = state.communities![index];
               final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-              return Tooltip(
-                excludeFromSemantics: true,
-                message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
-                preferBelow: false,
-                child: ListTile(
-                  leading: CommunityIcon(community: communityView.community, radius: 25),
-                  title: Text(
-                    communityView.community.title,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  subtitle: Row(children: [
-                    Flexible(
-                      child: Text(
-                        '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      ' · ${communityView.counts.subscribers}',
-                      semanticsLabel: '${communityView.counts.subscribers} subscribers',
-                    ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.people_rounded, size: 16.0),
-                  ]),
-                  trailing: IconButton(
-                    onPressed: () {
-                      SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
-                      _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-                      showSnackbar(
-                          context,
-                          subscriptionStatus == SubscribedType.notSubscribed
-                              ? AppLocalizations.of(context)!.addedCommunityToSubscriptions
-                              : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
-                      context.read<AccountBloc>().add(GetAccountInformation());
-                    },
-                    icon: Icon(
-                      switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-                        SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                        SubscribedType.pending => Icons.pending_outlined,
-                        SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                      },
-                    ),
-                    tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-                      SubscribedType.notSubscribed => 'Subscribe',
-                      SubscribedType.pending => 'Unsubscribe (subscription pending)',
-                      SubscribedType.subscribed => 'Unsubscribe',
-                    },
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  onTap: () {
-                    navigateToFeedPage(context, feedType: FeedType.community, communityId: communityView.community.id);
-                  },
-                ),
-              );
+              return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
             }
           },
         );
@@ -337,6 +317,60 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
+  Widget _buildCommunityEntry(CommunityView communityView, bool isUserLoggedIn, Set<int> currentSubscriptions) {
+    return Tooltip(
+      excludeFromSemantics: true,
+      message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+      preferBelow: false,
+      child: ListTile(
+        leading: CommunityIcon(community: communityView.community, radius: 25),
+        title: Text(
+          communityView.community.title,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Row(children: [
+          Flexible(
+            child: Text(
+              '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          Text(
+            ' · ${communityView.counts.subscribers}',
+            semanticsLabel: '${communityView.counts.subscribers} subscribers',
+          ),
+          const SizedBox(width: 4),
+          const Icon(Icons.people_rounded, size: 16.0),
+        ]),
+        trailing: IconButton(
+          onPressed: () {
+            SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
+            _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
+            showSnackbar(context,
+                subscriptionStatus == SubscribedType.notSubscribed ? AppLocalizations.of(context)!.addedCommunityToSubscriptions : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
+            context.read<AccountBloc>().add(GetAccountInformation());
+          },
+          icon: Icon(
+            switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+              SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+              SubscribedType.pending => Icons.pending_outlined,
+              SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+            },
+          ),
+          tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
+            SubscribedType.notSubscribed => 'Subscribe',
+            SubscribedType.pending => 'Unsubscribe (subscription pending)',
+            SubscribedType.subscribed => 'Unsubscribe',
+          },
+          visualDensity: VisualDensity.compact,
+        ),
+        onTap: () {
+          navigateToFeedPage(context, feedType: FeedType.community, communityId: communityView.community.id);
+        },
+      ),
+    );
+  }
+
   void showSortBottomSheet(BuildContext context, SearchState state) {
     showModalBottomSheet(
       context: context,
@@ -345,15 +379,19 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       builder: (builderContext) => SortPicker(
         title: AppLocalizations.of(context)!.sortOptions,
         onSelect: (selected) {
-          sortType = selected.payload;
-          sortTypeIcon = selected.icon;
-          sortTypeLabel = selected.label;
+          setState(() {
+            sortType = selected.payload;
+            sortTypeIcon = selected.icon;
+            sortTypeLabel = selected.label;
+          });
 
           prefs!.setString("search_default_sort_type", selected.payload.name);
 
-          context.read<SearchBloc>().add(
-                StartSearchEvent(query: _controller.text, sortType: sortType),
-              );
+          if (_controller.text.isNotEmpty) {
+            context.read<SearchBloc>().add(
+                  StartSearchEvent(query: _controller.text, sortType: sortType),
+                );
+          }
         },
         previouslySelected: sortType,
       ),
@@ -373,6 +411,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       context.read<SearchBloc>().add(ChangeCommunitySubsciptionStatusEvent(
             communityId: communityView.community.id,
             follow: communityView.subscribed == SubscribedType.notSubscribed ? true : false,
+            query: _controller.text,
           ));
       return;
     }

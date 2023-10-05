@@ -58,6 +58,8 @@
   "anonymous": "Anonymous",
   "removeInstance": "Remove instance",
   "searchCommunitiesFederatedWith": "Search for communities federated with {instance}",
+  "searchInstance": "Search {instance}",
+  "trendingCommunities": "Trending Communities",
   "confirmLogOut": "Are you sure you want to log out?",
   "cancel": "Cancel",
   "feed": "Feed",
