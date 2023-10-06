@@ -95,6 +95,7 @@ dependencies:
   sliver_tools: ^0.2.12
 
 dev_dependencies:
+  build_runner: ^2.4.6
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
