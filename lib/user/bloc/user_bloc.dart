@@ -13,7 +13,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'package:thunder/utils/post.dart';
+import 'package:thunder/post/utils/post.dart';
 
 part 'user_event.dart';
 part 'user_state.dart';
@@ -345,29 +345,30 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       emit(state.copyWith(status: UserStatus.refreshing));
 
-      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
-      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+      List<CommentViewTree> currentTrees = _getCommentTrees(event.commentId);
+      List<CommentView?> originalCommentViews = currentTrees.map((currentTree) => currentTree.commentView).toList();
+      if (currentTrees.isNotEmpty) {
+        // Optimistically update the comment
+        for (CommentViewTree currentTree in currentTrees) {
+          currentTree.commentView = optimisticallyVoteComment(currentTree, event.score);
+        }
 
-      for (int i = 1; i < commentIndexes.length; i++) {
-        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+        // Immediately set the status, and continue
+        emit(state.copyWith(status: UserStatus.success));
+        emit(state.copyWith(status: UserStatus.refreshing));
+
+        CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+          // Reset this on exception
+          for (int i = 0; i < currentTrees.length; ++i) {
+            currentTrees[i].commentView = originalCommentViews[i];
+          }
+          throw Exception('Error: Timeout when attempting to vote on comment');
+        });
+
+        for (CommentViewTree currentTree in currentTrees) {
+          currentTree.commentView = commentView;
+        }
       }
-
-      // Optimistically update the comment
-      CommentView? originalCommentView = currentTree.commentView;
-
-      CommentView updatedCommentView = optimisticallyVoteComment(currentTree, event.score);
-      currentTree.commentView = updatedCommentView;
-
-      // Immediately set the status, and continue
-      emit(state.copyWith(status: UserStatus.success));
-      emit(state.copyWith(status: UserStatus.refreshing));
-
-      CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
-        currentTree.commentView = originalCommentView; // Reset this on exception
-        throw Exception('Error: Timeout when attempting to vote on comment');
-      });
-
-      currentTree.commentView = commentView;
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
@@ -383,14 +384,11 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         throw Exception('Error: Timeout when attempting save a comment');
       });
 
-      List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
-      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
-
-      for (int i = 1; i < commentIndexes.length; i++) {
-        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      List<CommentViewTree> currentTrees = _getCommentTrees(event.commentId);
+      for (CommentViewTree currentTree in currentTrees) {
+        // Update the comment's information
+        currentTree.commentView = commentView;
       }
-
-      currentTree.commentView = commentView; // Update the comment's information
 
       return emit(state.copyWith(status: UserStatus.success));
     } catch (e) {
@@ -422,6 +420,35 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     if (savedPostsIndex >= 0) {
       state.savedPosts[savedPostsIndex].postView = postView;
     }
+  }
+
+  /// Returns [CommentViewTree]s for the given [commentId], searching both [state.comments] and [state.savedComments].
+  List<CommentViewTree> _getCommentTrees(int commentId) {
+    List<CommentViewTree> results = [];
+
+    List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, commentId);
+    if (commentIndexes.isNotEmpty) {
+      CommentViewTree currentTree = state.comments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      results.add(currentTree);
+    }
+
+    commentIndexes = findCommentIndexesFromCommentViewTree(state.savedComments, commentId);
+    if (commentIndexes.isNotEmpty) {
+      CommentViewTree currentTree = state.savedComments[commentIndexes[0]]; // Get the initial CommentViewTree
+
+      for (int i = 1; i < commentIndexes.length; i++) {
+        currentTree = currentTree.replies[commentIndexes[i]]; // Traverse to the next CommentViewTree
+      }
+
+      results.add(currentTree);
+    }
+
+    return results;
   }
 
   Future<void> _blockUserEvent(BlockUserEvent event, Emitter<UserState> emit) async {

@@ -7,13 +7,15 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/feed/feed.dart';
+import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -56,7 +58,7 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: () => {}),
+                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: (PostViewMedia postViewMedia) => {}),
               ),
             ),
           );
@@ -114,7 +116,7 @@ class CommentCard extends StatelessWidget {
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),
                 ),
-                onTap: () => navigateToCommunityPage(context, communityId: comment.community.id),
+                onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: comment.community.id),
               ),
               const SizedBox(height: 10),
               CommonMarkdownBody(body: comment.comment.content),

@@ -6,10 +6,15 @@
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
+- Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
 - Show additional posts loading indicator on instances with taglines - contribution from @micahmo
+- Fix interactions with saved comments - contribution from @micahmo
+- Improve haptic feedback when interacting with FAB - contribution from @micahmo
+- Fix issue with search page occasionally clearing results and query - contribution from @micahmo
+- Remove non-functional message user action on use sidebar
 
 ## 0.2.4 - 2023-09-20
 ### Added
@@ -35,6 +40,7 @@
 - Highlight the currently selected page in the navigation drawer - contribution from @micahmo
 - Newly created comments get inserted into comment list correctly without losing your scroll position. If comment is top level, the list scrolls to your comment. The comment also gets highlighted - contribution from @ajsosa
 - Add new actions to the post and comment bottom sheets - contribution from @micahmo
+- Added buttons to quickly insert user or community mention in post or comment - contribution from @micahmo
 
 ### Changed
 - Prioritize and label the default accent color - contribution from @micahmo

@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
-import 'package:thunder/community/bloc/community_bloc.dart' as community;
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
-
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/user/utils/logout_dialog.dart';
 
 class UserPage extends StatefulWidget {
@@ -104,10 +99,7 @@ class _UserPageState extends State<UserPage> {
         ],
       ),
       body: MultiBlocProvider(
-        providers: [
-          BlocProvider<UserBloc>(create: (BuildContext context) => UserBloc()),
-          BlocProvider(create: (context) => community.CommunityBloc()),
-        ],
+        providers: [BlocProvider<UserBloc>(create: (BuildContext context) => UserBloc())],
         child: BlocBuilder<UserBloc, UserState>(builder: (context, state) {
           userBloc = context.read<UserBloc>();
 
@@ -143,9 +135,7 @@ class _UserPageState extends State<UserPage> {
             case UserStatus.failure:
               return ErrorMessage(
                 message: state.errorMessage,
-                action: () {
-                  context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true));
-                },
+                action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
                 actionText: 'Refresh Content',
               );
           }

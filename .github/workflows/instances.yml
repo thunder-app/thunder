@@ -1,0 +1,45 @@
+name: instances
+
+on:
+  push:
+    branches:
+      - develop
+  workflow_dispatch:
+
+jobs:
+  instances: 
+    name: Instances
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Query Instances
+      run: |
+        # Query the list of instances
+        curl -H 'Content-Type: application/json' -X POST \
+        -d '{"query": "query {nodes(softwarename: \"lemmy\") {domain active_users_monthly}}"}' https://api.fediverse.observer 2> /dev/null | \
+        jq -r '.data.nodes | .[] | select(.active_users_monthly > 50) | .domain' > lemmy-instances.txt.tmp
+
+        # Combine the output with the existing instances.txt file.
+        sort lemmy-instances.txt lemmy-instances.txt.tmp | uniq -i > lemmy-instances.txt
+
+        # Delete the temp file
+        rm lemmy-instances.txt.tmp
+
+        # Convert the text file to a dart file
+        cat << EOF > lib/instances.dart
+        const List<String> instances = [
+        $(awk '{ print "  \047"$0"\047," }' lemmy-instances.txt)
+        ];
+        EOF
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5.0.2
+      with:
+          commit-message: Update instances
+          title: Update instances
+          body: This PR is updating `lemmy-instances.txt` and `instances.dart` with the latest list of instances retrieved from fediverse.observer.
+          branch: update-instances
+          delete-branch: true
+          author: GitHub <noreply@github.com>
