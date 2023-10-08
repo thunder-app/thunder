@@ -11,6 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_list.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
@@ -29,7 +30,7 @@ import '../widgets/user_sidebar.dart';
 
 List<Widget> userOptionTypes = <Widget>[
   Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
-  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comment)),
+  Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
 ];
 
 class UserPageSuccess extends StatefulWidget {
@@ -115,6 +116,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final DateTime now = DateTime.now().toUtc();
+    final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
 
     return Center(
       child: Stack(
@@ -167,7 +169,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 });
                               },
                               borderRadius: const BorderRadius.all(Radius.circular(8)),
-                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
+                              constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0.1))) - 12.0),
                               isSelected: _selectedUserOption,
                               children: userOptionTypes,
                             )
@@ -443,7 +445,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                               },
                             );
                           },
-                          isOwnComment: widget.isAccountUser,
+                          isOwnComment: widget.isAccountUser && widget.savedComments![index].commentView!.creator.id == currentUserId,
                         ),
                       ],
                     ),

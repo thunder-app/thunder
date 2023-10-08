@@ -13,7 +13,7 @@ part 'user_settings_event.dart';
 part 'user_settings_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
-const timeout = Duration(seconds: 3);
+const timeout = Duration(seconds: 5);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);

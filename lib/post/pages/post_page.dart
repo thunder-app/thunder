@@ -11,7 +11,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
@@ -35,7 +35,7 @@ class PostPage extends StatefulWidget {
   final String? selectedCommentPath;
   final int? selectedCommentId;
 
-  final VoidCallback onPostUpdated;
+  final Function(PostViewMedia) onPostUpdated;
 
   const PostPage({
     super.key,
@@ -352,9 +352,8 @@ class _PostPageState extends State<PostPage> {
                       return true;
                     },
                     listener: (context, state) {
-                      if (state.status == PostStatus.success && widget.postView != null) {
-                        // Update the community's post
-                        context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      if (state.status == PostStatus.success && widget.postView != null && state.postView != null) {
+                        widget.onPostUpdated(state.postView!);
                       }
                     },
                     builder: (context, state) {

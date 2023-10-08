@@ -2,15 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -94,7 +92,7 @@ class CommunityDrawer extends StatefulWidget {
 
   const CommunityDrawer({
     super.key,
-    required this.currentPostListingType,
+    this.currentPostListingType,
     this.communityId,
     this.communityName,
     this.navigateToAccount,
@@ -127,6 +125,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
     AccountStatus status = context.watch<AccountBloc>().state.status;
     AnonymousSubscriptionsBloc subscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+
+    FeedBloc feedBloc = context.watch<FeedBloc>();
+
     return BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
         listener: (c, s) {},
         builder: (context, state) {
@@ -199,14 +200,10 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     children: destinations.map((Destination destination) {
                       return DrawerItem(
                         disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
-                        isSelected: destination.listingType == widget.currentPostListingType && widget.communityId == null && widget.communityName == null,
+                        isSelected: destination.listingType == feedBloc.state.postListingType,
                         onTap: () {
-                          context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                reset: true,
-                                listingType: destination.listingType,
-                                communityId: null,
-                              ));
                           Navigator.of(context).pop();
+                          navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
                         },
                         label: destination.label,
                         icon: destination.icon,
@@ -237,8 +234,8 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         itemBuilder: (context, index) {
                                           CommunitySafe community = _getSubscriptions(context)[index];
 
-                                          final bool isCommunitySelected =
-                                              (widget.communityId != null && community.id == widget.communityId) || (widget.communityName != null && community.name == widget.communityName);
+                                          final bool isCommunitySelected = feedBloc.state.communityId == community.id;
+
                                           return TextButton(
                                             style: TextButton.styleFrom(
                                               alignment: Alignment.centerLeft,
@@ -246,14 +243,15 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                               backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
                                             ),
                                             onPressed: () {
-                                              context.read<CommunityBloc>().add(
-                                                    GetCommunityPostsEvent(
-                                                      reset: true,
+                                              Navigator.of(context).pop();
+                                              context.read<FeedBloc>().add(
+                                                    FeedFetchedEvent(
+                                                      feedType: FeedType.community,
+                                                      sortType: SortType.hot,
                                                       communityId: community.id,
+                                                      reset: true,
                                                     ),
                                                   );
-
-                                              Navigator.of(context).pop();
                                             },
                                             child: Row(
                                               children: [

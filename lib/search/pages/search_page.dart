@@ -1,22 +1,21 @@
 import 'dart:collection';
 
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/pages/community_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -26,8 +25,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
-import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SearchPage extends StatefulWidget {
@@ -57,6 +54,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void initState() {
     _scrollController.addListener(_onScroll);
     initPrefs();
+    fetchActiveProfileAccount().then((activeProfile) => _previousUserId = activeProfile?.userId);
     super.initState();
   }
 
@@ -321,7 +319,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     visualDensity: VisualDensity.compact,
                   ),
                   onTap: () {
-                    navigateToCommunityPage(context, communityId: communityView.community.id);
+                    navigateToFeedPage(context, feedType: FeedType.community, communityId: communityView.community.id);
                   },
                 ),
               );

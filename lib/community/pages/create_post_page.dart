@@ -7,11 +7,12 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -117,8 +118,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   : () {
                       newDraftPost.saveAsDraft = false;
                       url != ''
-                          ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
-                          : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                          ? context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
+                          : context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
                       Navigator.of(context).pop();
                     },
               icon: Icon(
@@ -288,7 +289,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               MarkdownType.list,
                               MarkdownType.separator,
                               MarkdownType.code,
+                              MarkdownType.username,
+                              MarkdownType.community,
                             ],
+                            customTapActions: {
+                              MarkdownType.username: () {
+                                showUserInputDialog(context, title: AppLocalizations.of(context)!.username, onUserSelected: (person) {
+                                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                      '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                });
+                              },
+                              MarkdownType.community: () {
+                                showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (community) {
+                                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                      '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                });
+                              },
+                            },
                             imageIsLoading: imageUploading,
                             customImageButtonAction: () => uploadImage(context, imageBloc)),
                       ),
