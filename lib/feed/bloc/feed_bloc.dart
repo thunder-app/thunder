@@ -372,6 +372,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     return emit(state.copyWith(
       status: FeedStatus.success,
+      insertedPostIds: newInsertedPostIds.toList(),
       postViewMedias: postViewMedias,
       hasReachedEnd: hasReachedEnd,
       currentPage: currentPage,
