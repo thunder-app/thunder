@@ -45,6 +45,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool imageUploading = false;
   bool postImageUploading = false;
   String url = "";
+  String? urlError;
   DraftPost newDraftPost = DraftPost();
 
   final TextEditingController _bodyTextController = TextEditingController();
@@ -58,13 +59,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     _titleTextController.addListener(() {
-      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
-      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+      _validateSubmission();
 
       widget.onUpdateDraft?.call(newDraftPost..title = _titleTextController.text);
     });
 
     _urlTextController.addListener(() {
+      _validateSubmission();
+
       url = _urlTextController.text;
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
 
@@ -194,6 +196,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           controller: _urlTextController,
                           decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)!.postURL,
+                              errorText: urlError,
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     if (!postImageUploading) {
@@ -341,6 +344,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
   void _updatePreview(String text) {
     if (url == text) {
       setState(() {});
+    }
+  }
+
+  void _validateSubmission() {
+    final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
+
+    if (isSubmitButtonDisabled) {
+      // It's disabled, check if we can enable it.
+      if (_titleTextController.text.isNotEmpty && parsedUrl != null) {
+        setState(() {
+          isSubmitButtonDisabled = false;
+          urlError = null;
+        });
+      }
+    } else {
+      // It's enabled, check if we need to disable it.
+      if (_titleTextController.text.isEmpty || parsedUrl == null) {
+        setState(() {
+          isSubmitButtonDisabled = true;
+          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
+        });
+      }
     }
   }
 }
