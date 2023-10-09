@@ -172,7 +172,7 @@ class FeedFAB extends StatelessWidget {
             triggerChangeSort(context);
           },
         ),
-      if (enableSubscriptions)
+      if (enableSubscriptions && Scaffold.maybeOf(context) != null)
         ActionButton(
           title: FeedFabAction.subscriptions.title,
           icon: Icon(FeedFabAction.subscriptions.icon),

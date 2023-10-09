@@ -8,7 +8,6 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
-import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
@@ -19,6 +18,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -205,7 +205,7 @@ class _FeedViewState extends State<FeedView> {
     bool tabletMode = thunderBloc.state.tabletMode;
 
     return SafeArea(
-      top: false,
+      top: false, // Don't apply to top of screen to allow for the status bar colour to extend
       child: BlocConsumer<FeedBloc, FeedState>(
         listenWhen: (previous, current) {
           if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
@@ -227,6 +227,7 @@ class _FeedViewState extends State<FeedView> {
           }
         },
         builder: (context, state) {
+          final theme = Theme.of(context);
           List<PostViewMedia> postViewMedias = state.postViewMedias;
 
           return RefreshIndicator(
@@ -385,6 +386,28 @@ class _FeedViewState extends State<FeedView> {
                     ],
                   ],
                 ),
+                // Widget to host the feed FAB when navigating to new page
+                AnimatedOpacity(
+                  opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                  duration: const Duration(milliseconds: 150),
+                  child: thunderBloc.state.isFabOpen
+                      ? ModalBarrier(
+                          color: theme.colorScheme.background.withOpacity(0.95),
+                          dismissible: true,
+                          onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                        )
+                      : null,
+                ),
+                if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null))
+                  AnimatedOpacity(
+                    opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 150),
+                    curve: Curves.easeIn,
+                    child: Container(
+                      margin: const EdgeInsets.all(16),
+                      child: const FeedFAB(),
+                    ),
+                  ),
               ],
             ),
           );
