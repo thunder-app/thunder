@@ -85,6 +85,7 @@
   "changeSort": "Cambiar orden",
   "postTitle": "Título",
   "postURL": "URL",
+  "notValidUrl": "Not a valid URL",
   "postBody": "Cuerpo de la publicación",
   "postTogglePreview": "Cambiar vista previa",
   "postUploadImageError": "Error al subir imagen",

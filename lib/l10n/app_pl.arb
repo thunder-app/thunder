@@ -85,6 +85,7 @@
   "changeSort": "Zmiana sortowania",
   "postTitle": "Tytuł",
   "postURL": "Link",
+  "notValidUrl": "Not a valid URL",
   "postBody": "Treść",
   "postTogglePreview": "Przełącz podgląd",
   "postUploadImageError": "Wystąpił błąd podczas przesyłania obrazu",
