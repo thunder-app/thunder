@@ -48,6 +48,7 @@ class ThunderState extends Equatable {
     this.showTextContent = false,
     this.showPostAuthor = false,
     this.dimReadPosts = true,
+    this.useAdvancedShareSheet = true,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -114,10 +115,6 @@ class ThunderState extends Equatable {
     this.currentAnonymousInstance = 'lemmy.ml',
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    this.scrollToTopId = 0,
-    // Dismiss posts from loaded view event
-    this.dismissEvent = false,
     // Expand/Close FAB event
     this.isFabOpen = false,
     // Summon/Unsummon FAB event
@@ -166,6 +163,7 @@ class ThunderState extends Equatable {
   final bool showPostAuthor;
   final bool scoreCounters;
   final bool dimReadPosts;
+  final bool useAdvancedShareSheet;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -239,12 +237,6 @@ class ThunderState extends Equatable {
   final String currentAnonymousInstance;
 
   /// --------------------------------- UI Events ---------------------------------
-  // Scroll to top event
-  final int scrollToTopId;
-
-  // Dismiss posts from loaded view event
-  final bool dismissEvent;
-
   // Expand/Close FAB event
   final bool isFabOpen;
 
@@ -293,6 +285,7 @@ class ThunderState extends Equatable {
     bool? showTextContent,
     bool? showPostAuthor,
     bool? dimReadPosts,
+    bool? useAdvancedShareSheet,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -359,10 +352,6 @@ class ThunderState extends Equatable {
     String? currentAnonymousInstance,
 
     /// --------------------------------- UI Events ---------------------------------
-    // Scroll to top event
-    int? scrollToTopId,
-    // Dismiss posts from loaded view event
-    bool? dismissEvent,
     // Expand/Close FAB event
     bool? isFabOpen,
     // Summon/Unsummon FAB event
@@ -411,6 +400,7 @@ class ThunderState extends Equatable {
       showTextContent: showTextContent ?? this.showTextContent,
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
+      useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -482,10 +472,6 @@ class ThunderState extends Equatable {
       currentAnonymousInstance: currentAnonymousInstance ?? this.currentAnonymousInstance,
 
       /// --------------------------------- UI Events ---------------------------------
-      // Scroll to top event
-      scrollToTopId: scrollToTopId ?? this.scrollToTopId,
-      // Dismiss posts from loaded view event
-      dismissEvent: dismissEvent ?? this.dismissEvent,
       // Expand/Close FAB event
       isFabOpen: isFabOpen ?? this.isFabOpen,
       // Summon/Unsummon FAB event
@@ -536,6 +522,7 @@ class ThunderState extends Equatable {
         showTextContent,
         showPostAuthor,
         dimReadPosts,
+        useAdvancedShareSheet,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -605,10 +592,6 @@ class ThunderState extends Equatable {
         currentAnonymousInstance,
 
         /// --------------------------------- UI Events ---------------------------------
-        // Scroll to top event
-        scrollToTopId,
-        // Dismiss posts from loaded view event
-        dismissEvent,
         // Expand/Close FAB event
         isFabOpen,
         // Expand/Close FAB event

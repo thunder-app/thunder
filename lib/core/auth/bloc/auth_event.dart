@@ -1,5 +1,11 @@
 part of 'auth_bloc.dart';
 
+/// The [AuthBloc] handles the overall state for authentication with a given instance and account.
+///
+/// The [AuthBloc] should be responsible for:
+/// - Checking authentication status within the Thunder
+/// - Logging in and out of accounts
+/// - Changes to the current active instance.
 abstract class AuthEvent extends Equatable {
   const AuthEvent();
 
@@ -7,6 +13,12 @@ abstract class AuthEvent extends Equatable {
   List<Object> get props => [];
 }
 
+/// The [CheckAuth] event should be triggered whenever the app starts.
+/// This is responsible for checking the authentication status of the user on app initialization.
+class CheckAuth extends AuthEvent {}
+
+/// The [LoginAttempt] event should be triggered whenever the user attempts to log in for the first time.
+/// This event is responsible for login authentication and handling related errors.
 class LoginAttempt extends AuthEvent {
   final String username;
   final String password;
@@ -16,22 +28,45 @@ class LoginAttempt extends AuthEvent {
   const LoginAttempt({required this.username, required this.password, required this.instance, this.totp = ""});
 }
 
-class CheckAuth extends AuthEvent {}
+/// TODO: Consolidate logic to have adding accounts (for both authenticated and anonymous accounts) placed here
+class AddAccount extends AuthEvent {}
 
+/// The [RemoveAccount] event should be triggered whenever the user removes a given account.
+/// Currently, this event only handles removing authenticated accounts.
+///
+/// TODO: Consolidate logic so that anonymous accounts are also handled here.
 class RemoveAccount extends AuthEvent {
   final String accountId;
 
   const RemoveAccount({required this.accountId});
 }
 
-class AddAccount extends AuthEvent {}
+/// TODO: Consolidate logic to have removing accounts (for both authenticated and anonymous accounts) placed here
+class RemoveAllAccounts extends AuthEvent {
+  const RemoveAllAccounts();
+}
 
-class RemoveAllAccounts extends AuthEvent {}
-
+/// The [SwitchAccount] event should be triggered whenever the user switches accounts.
+/// Currently, this event only handles switching between authenticated accounts.
+///
+/// TODO: Consolidate logic so that anonymous accounts are also handled here.
 class SwitchAccount extends AuthEvent {
   final String accountId;
 
   const SwitchAccount({required this.accountId});
 }
 
-class LogOutOfAllAccounts extends AuthEvent {}
+/// The [LogOutOfAllAccounts] event should be triggered whenever we want to clear the current logged in.
+///
+/// This event only clears the current logged in account. It does NOT remove any accounts. To remove an account, use the [RemoveAccount] event.
+class LogOutOfAllAccounts extends AuthEvent {
+  const LogOutOfAllAccounts();
+}
+
+/// The [InstanceChanged] event should be triggered whenever the user changes the instance.
+/// This event should handle any logic related to switching instances including fetching instance information and preferences.
+class InstanceChanged extends AuthEvent {
+  final String instance;
+
+  const InstanceChanged({required this.instance});
+}

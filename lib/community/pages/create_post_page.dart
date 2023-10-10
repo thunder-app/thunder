@@ -7,11 +7,12 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -44,6 +45,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   bool imageUploading = false;
   bool postImageUploading = false;
   String url = "";
+  String? urlError;
   DraftPost newDraftPost = DraftPost();
 
   final TextEditingController _bodyTextController = TextEditingController();
@@ -57,13 +59,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.initState();
 
     _titleTextController.addListener(() {
-      if (_titleTextController.text.isEmpty && !isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = true);
-      if (_titleTextController.text.isNotEmpty && isSubmitButtonDisabled) setState(() => isSubmitButtonDisabled = false);
+      _validateSubmission();
 
       widget.onUpdateDraft?.call(newDraftPost..title = _titleTextController.text);
     });
 
     _urlTextController.addListener(() {
+      _validateSubmission();
+
       url = _urlTextController.text;
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
 
@@ -117,8 +120,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   : () {
                       newDraftPost.saveAsDraft = false;
                       url != ''
-                          ? context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
-                          : context.read<CommunityBloc>().add(CreatePostEvent(name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                          ? context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
+                          : context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
                       Navigator.of(context).pop();
                     },
               icon: Icon(
@@ -193,6 +196,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           controller: _urlTextController,
                           decoration: InputDecoration(
                               hintText: AppLocalizations.of(context)!.postURL,
+                              errorText: urlError,
                               suffixIcon: IconButton(
                                   onPressed: () {
                                     if (!postImageUploading) {
@@ -288,7 +292,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               MarkdownType.list,
                               MarkdownType.separator,
                               MarkdownType.code,
+                              MarkdownType.username,
+                              MarkdownType.community,
                             ],
+                            customTapActions: {
+                              MarkdownType.username: () {
+                                showUserInputDialog(context, title: AppLocalizations.of(context)!.username, onUserSelected: (person) {
+                                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                      '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                });
+                              },
+                              MarkdownType.community: () {
+                                showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (community) {
+                                  _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                      '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                });
+                              },
+                            },
                             imageIsLoading: imageUploading,
                             customImageButtonAction: () => uploadImage(context, imageBloc)),
                       ),
@@ -324,6 +344,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
   void _updatePreview(String text) {
     if (url == text) {
       setState(() {});
+    }
+  }
+
+  void _validateSubmission() {
+    final Uri? parsedUrl = Uri.tryParse(_urlTextController.text);
+
+    if (isSubmitButtonDisabled) {
+      // It's disabled, check if we can enable it.
+      if (_titleTextController.text.isNotEmpty && parsedUrl != null) {
+        setState(() {
+          isSubmitButtonDisabled = false;
+          urlError = null;
+        });
+      }
+    } else {
+      // It's enabled, check if we need to disable it.
+      if (_titleTextController.text.isEmpty || parsedUrl == null) {
+        setState(() {
+          isSubmitButtonDisabled = true;
+          urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
+        });
+      }
     }
   }
 }

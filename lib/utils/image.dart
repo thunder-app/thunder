@@ -20,7 +20,12 @@ String generateRandomHeroString({int? len}) {
 bool isImageUrl(String url) {
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp'];
 
-  final uri = Uri.parse(url);
+  Uri uri;
+  try {
+    uri = Uri.parse(url);
+  } catch (e) {
+    return false;
+  }
   final path = uri.path.toLowerCase();
 
   for (final extension in imageExtensions) {

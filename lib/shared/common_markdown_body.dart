@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:thunder/utils/navigate_community.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -70,7 +71,7 @@ class CommonMarkdownBody extends StatelessWidget {
 
         if (communityName != null) {
           try {
-            await navigateToCommunityPage(context, communityName: communityName);
+            await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
             return;
           } catch (e) {
             // Ignore exception, if it's not a valid community we'll perform the next fallback

@@ -35,3 +35,5 @@ class CreateInboxCommentReplyEvent extends InboxEvent {
 
   const CreateInboxCommentReplyEvent({required this.content, required this.postId, required this.parentCommentId});
 }
+
+class MarkAllAsReadEvent extends InboxEvent {}

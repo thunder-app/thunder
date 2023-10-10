@@ -34,17 +34,17 @@ Future<PostView> markPostAsRead(int postId, bool read) async {
   return updatedPostView;
 }
 
-// Optimistically updates a post
+// Optimistically updates a post. This changes the value of the post locally, without sending the network request
 PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
   int newScore = postViewMedia.postView.counts.score;
   VoteType? existingVoteType = postViewMedia.postView.myVote;
 
   switch (voteType) {
     case VoteType.down:
-      newScore--;
+      existingVoteType == VoteType.up ? newScore -= 2 : newScore--;
       break;
     case VoteType.up:
-      newScore++;
+      existingVoteType == VoteType.down ? newScore += 2 : newScore++;
       break;
     case VoteType.none:
       // Determine score from existing
@@ -57,6 +57,16 @@ PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) 
   }
 
   return postViewMedia.postView.copyWith(myVote: voteType, counts: postViewMedia.postView.counts.copyWith(score: newScore));
+}
+
+// Optimistically saves a post. This changes the value of the post locally, without sending the network request
+PostView optimisticallySavePost(PostViewMedia postViewMedia, bool saved) {
+  return postViewMedia.postView.copyWith(saved: saved);
+}
+
+// Optimistically marks a post as read/unread. This changes the value of the post locally, without sending the network request
+PostView optimisticallyReadPost(PostViewMedia postViewMedia, bool read) {
+  return postViewMedia.postView.copyWith(read: read);
 }
 
 /// Logic to vote on a post
@@ -146,10 +156,10 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
           media.add(Media(originalUrl: url, mediaType: MediaType.link));
         }
       } else {
-        // For external links, attempt to fetch any media associated with it (image, title)
-        LinkInfo linkInfo = await getLinkInfo(url);
-
         try {
+          // For external links, attempt to fetch any media associated with it (image, title)
+          LinkInfo linkInfo = await getLinkInfo(url);
+
           if (linkInfo.imageURL != null && linkInfo.imageURL!.isNotEmpty) {
             Size result = await retrieveImageDimensions(linkInfo.imageURL!);
 
