@@ -164,5 +164,8 @@
   "readAll":"Read All",
   "emptyInbox":"Empty Inbox",
   "showAll":"Show All",
-  "loginToSeeInbox":"Log in to see your inbox"
+  "loginToSeeInbox":"Log in to see your inbox",
+  "report":"Report",
+  "submit":"Submit",
+  "commentReported":"The comment was Reported"
 }

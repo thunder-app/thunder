@@ -74,6 +74,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<NavigateCommentEvent>(
       _navigateCommentEvent,
     );
+    on<ReportCommentEvent>(
+      _reportCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -546,6 +550,32 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
       updateModifiedComment(state.comments, deletedComment);
+
+      return emit(
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } catch (e, s) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(
+            status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      }
+
+      if (state.postView?.postView.post.id == null) {
+        return emit(state.copyWith(
+            status: PostStatus.failure, errorMessage: 'Could not determine post to report the comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+      }
+
+      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account!.jwt!));
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));

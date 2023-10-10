@@ -22,6 +22,7 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
+  final Function(int, bool) onReportAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
@@ -42,6 +43,7 @@ class CommentCard extends StatefulWidget {
     required this.onSaveAction,
     required this.onCollapseCommentChange,
     required this.onReplyEditAction,
+    required this.onReportAction,
     required this.now,
     this.collapsedCommentSet = const {},
     this.selectCommentId,
@@ -346,7 +348,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               onLongPress: () {
                                 HapticFeedback.mediumImpact();
                                 showCommentActionBottomModalSheet(
-                                    context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction, widget.onVoteAction, widget.onReplyEditAction);
+                                    context, widget.commentViewTree.commentView!, widget.onSaveAction, widget.onDeleteAction, widget.onVoteAction, widget.onReplyEditAction, widget.onReportAction);
                               },
                               onTap: () {
                                 widget.onCollapseCommentChange(widget.commentViewTree.commentView!.comment.id, !isHidden);
@@ -359,6 +361,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                                 onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                                onReportAction: (int commentId, bool deleted) => widget.onReportAction(commentId, deleted),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,
@@ -456,6 +459,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                               collapsed: widget.collapsedCommentSet.contains(widget.commentViewTree.replies[index].commentView!.comment.id),
                               level: widget.level + 1,
                               onVoteAction: widget.onVoteAction,
+                              onReportAction: widget.onReportAction,
                               onSaveAction: widget.onSaveAction,
                               onCollapseCommentChange: widget.onCollapseCommentChange,
                               onDeleteAction: widget.onDeleteAction,

@@ -16,7 +16,9 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
+import 'package:thunder/post/widgets/report_comment_dialog.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -97,6 +99,12 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
             onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
             onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
             onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+            onReportAction: (int commentId, bool reported) {
+              showReportCommentActionBottomSheet(
+                context,
+                commentId: commentId,
+              );
+            },
             onReplyEditAction: (CommentView commentView, bool isEdit) async {
               PostBloc postBloc = context.read<PostBloc>();
               ThunderBloc thunderBloc = context.read<ThunderBloc>();

@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/widgets/report_comment_dialog.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -20,6 +22,7 @@ enum CommentCardAction {
   downvote,
   reply,
   edit,
+  report,
 }
 
 class ExtendedCommentCardActions {
@@ -54,6 +57,11 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.shareLink,
     icon: Icons.share_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.shareLink,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.report,
+    icon: Icons.report,
+    label: '${AppLocalizations.of(GlobalContext.context)!.report} ${AppLocalizations.of(GlobalContext.context)!.comment}',
   ),
 ];
 
@@ -99,7 +107,8 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
   ),
 ];
 
-void showCommentActionBottomModalSheet(BuildContext context, CommentView commentView, Function onSaveAction, Function onDeleteAction, Function onVoteAction, Function onReplyEditAction) {
+void showCommentActionBottomModalSheet(
+    BuildContext context, CommentView commentView, Function onSaveAction, Function onDeleteAction, Function onVoteAction, Function onReplyEditAction, Function onReportAction) {
   final theme = Theme.of(context);
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   List<ExtendedCommentCardActions> commentCardActionItems = _updateDefaultCommentActionItems(context, commentView);
@@ -134,7 +143,16 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentView comment
                       backgroundColor: a.color,
                       foregroundColor: a.getForegroundColor?.call(commentView),
                       onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true)
-                          ? () => onSelected(context, a.commentCardAction, commentView, onSaveAction, onDeleteAction, onVoteAction, onReplyEditAction)
+                          ? () => onSelected(
+                                context,
+                                a.commentCardAction,
+                                commentView,
+                                onSaveAction,
+                                onDeleteAction,
+                                onVoteAction,
+                                onReplyEditAction,
+                                onReportAction,
+                              )
                           : null,
                     );
                   },
@@ -150,7 +168,16 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentView comment
                   label: commentCardActionItems[index].label,
                   icon: commentCardActionItems[index].icon,
                   onSelected: (commentCardActionItems[index].shouldEnable?.call(isUserLoggedIn) ?? true)
-                      ? () => onSelected(context, commentCardActionItems[index].commentCardAction, commentView, onSaveAction, onDeleteAction, onVoteAction, onReplyEditAction)
+                      ? () => onSelected(
+                            context,
+                            commentCardActionItems[index].commentCardAction,
+                            commentView,
+                            onSaveAction,
+                            onDeleteAction,
+                            onVoteAction,
+                            onReplyEditAction,
+                            onReportAction,
+                          )
                       : null,
                 );
               },
@@ -164,7 +191,15 @@ void showCommentActionBottomModalSheet(BuildContext context, CommentView comment
 }
 
 void onSelected(
-    BuildContext context, CommentCardAction commentCardAction, CommentView commentView, Function onSaveAction, Function onDeleteAction, Function onUpvoteAction, Function onReplyEditAction) async {
+  BuildContext context,
+  CommentCardAction commentCardAction,
+  CommentView commentView,
+  Function onSaveAction,
+  Function onDeleteAction,
+  Function onUpvoteAction,
+  Function onReplyEditAction,
+  Function onReportAction,
+) async {
   Navigator.of(context).pop();
 
   switch (commentCardAction) {
@@ -193,6 +228,9 @@ void onSelected(
     case CommentCardAction.edit:
       onReplyEditAction(commentView, true);
       break;
+    case CommentCardAction.report:
+      onReportAction(commentView.comment.id, true);
+      break;
   }
 }
 
@@ -209,4 +247,23 @@ List<ExtendedCommentCardActions> _updateDefaultCommentActionItems(BuildContext c
     ));
   }
   return updatedList;
+}
+
+void showReportCommentActionBottomSheet(
+  BuildContext context, {
+  required int commentId,
+}) {
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (_) => BlocProvider.value(
+      value: context.read<PostBloc>(),
+      child: StatefulBuilder(
+        builder: (context, state) => ReportCommentDialog(
+          commentId: commentId,
+        ),
+      ),
+    ),
+  );
 }

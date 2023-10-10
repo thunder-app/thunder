@@ -15,6 +15,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
+import 'package:thunder/post/widgets/report_comment_dialog.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_header.dart';
@@ -288,6 +289,19 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                           onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                           onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                          onReportAction: (int commentId, bool reported) {
+                            //             showModalBottomSheet(
+                            //   context: context,
+                            //   builder: (_) => BlocProvider.value(
+                            //     value: context.read<PostBloc>(),
+                            //     child: StatefulBuilder(
+                            //       builder: (context, state) => ReportCommentDialog(
+                            //         comment: commentId,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // );
+                          },
                           onReplyEditAction: (CommentView commentView, bool isEdit) async {
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
                             AccountBloc accountBloc = context.read<AccountBloc>();
@@ -387,6 +401,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                           onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                           onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+                          onReportAction: (int commentId, bool reported) {},
                           onReplyEditAction: (CommentView commentView, bool isEdit) async {
                             UserBloc postBloc = context.read<UserBloc>();
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
