@@ -42,10 +42,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _focusSearchEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<GetTrendingCommunitiesEvent>(
+      _getTrendingCommunitiesEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
-    emit(state.copyWith(status: SearchStatus.initial));
+    emit(state.copyWith(status: SearchStatus.initial, trendingCommunities: []));
+    await _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent(), emit);
   }
 
   Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
@@ -136,7 +141,9 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
   Future<void> _changeCommunitySubsciptionStatusEvent(ChangeCommunitySubsciptionStatusEvent event, Emitter<SearchState> emit) async {
     try {
-      emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
+      if (event.query.isNotEmpty) {
+        emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
+      }
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -155,17 +162,32 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         id: event.communityId,
       ));
 
-      List<CommunityView> communities = state.communities ?? [];
+      List<CommunityView> communities;
+      if (event.query.isNotEmpty) {
+        communities = state.communities ?? [];
 
-      communities = state.communities?.map((CommunityView communityView) {
-            if (communityView.community.id == fullCommunityView.communityView.community.id) {
-              return fullCommunityView.communityView;
-            }
-            return communityView;
-          }).toList() ??
-          [];
+        communities = state.communities?.map((CommunityView communityView) {
+              if (communityView.community.id == fullCommunityView.communityView.community.id) {
+                return fullCommunityView.communityView;
+              }
+              return communityView;
+            }).toList() ??
+            [];
 
-      emit(state.copyWith(status: SearchStatus.success, communities: communities));
+        emit(state.copyWith(status: SearchStatus.success, communities: communities));
+      } else {
+        communities = state.trendingCommunities ?? [];
+
+        communities = state.trendingCommunities?.map((CommunityView communityView) {
+              if (communityView.community.id == fullCommunityView.communityView.community.id) {
+                return fullCommunityView.communityView;
+              }
+              return communityView;
+            }).toList() ??
+            [];
+
+        emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
+      }
 
       // Delay a bit then refetch the status of the community again for a better chance of getting the right subscribed type
       await Future.delayed(const Duration(seconds: 1));
@@ -175,19 +197,51 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         id: event.communityId,
       ));
 
-      communities = state.communities ?? [];
+      if (event.query.isNotEmpty) {
+        communities = state.communities ?? [];
 
-      communities = state.communities?.map((CommunityView communityView) {
-            if (communityView.community.id == fullCommunityView.communityView.community.id) {
-              return fullCommunityView.communityView;
-            }
-            return communityView;
-          }).toList() ??
-          [];
+        communities = state.communities?.map((CommunityView communityView) {
+              if (communityView.community.id == fullCommunityView.communityView.community.id) {
+                return fullCommunityView.communityView;
+              }
+              return communityView;
+            }).toList() ??
+            [];
 
-      return emit(state.copyWith(status: SearchStatus.success, communities: communities));
+        return emit(state.copyWith(status: event.query.isNotEmpty ? SearchStatus.success : SearchStatus.trending, communities: communities));
+      } else {
+        communities = state.trendingCommunities ?? [];
+
+        communities = state.trendingCommunities?.map((CommunityView communityView) {
+              if (communityView.community.id == fullCommunityView.communityView.community.id) {
+                return fullCommunityView.communityView;
+              }
+              return communityView;
+            }).toList() ??
+            [];
+
+        return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: communities));
+      }
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> _getTrendingCommunitiesEvent(GetTrendingCommunitiesEvent event, Emitter<SearchState> emit) async {
+    try {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      Account? account = await fetchActiveProfileAccount();
+
+      List<CommunityView> trendingCommunities = await lemmy.run(ListCommunities(
+        type: PostListingType.local,
+        sort: SortType.active,
+        limit: 5,
+        auth: account?.jwt,
+      ));
+
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: trendingCommunities));
+    } catch (e) {
+      // Not the end of the world if we can't load trending
     }
   }
 }
