@@ -39,7 +39,14 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: showBackAction ? (Platform.isIOS ? const Icon(Icons.arrow_back_ios_new_rounded) : const Icon(Icons.arrow_back_rounded)) : const Icon(Icons.menu),
+        icon: showBackAction
+            ? (Platform.isIOS
+                ? Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                  )
+                : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+            : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
         onPressed: () {
           HapticFeedback.mediumImpact();
           showBackAction ? Navigator.of(context).pop() : Scaffold.of(context).openDrawer();
@@ -81,7 +88,7 @@ class FeedPageAppBar extends StatelessWidget {
               HapticFeedback.mediumImpact();
               triggerRefresh(context);
             },
-            icon: const Icon(Icons.refresh_rounded)),
+            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
         Container(
           margin: const EdgeInsets.only(right: 8.0),
           child: IconButton(

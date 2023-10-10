@@ -86,7 +86,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.reply,
-    label: AppLocalizations.of(GlobalContext.context)!.reply,
+    label: AppLocalizations.of(GlobalContext.context)!.reply(0),
     icon: Icons.reply_rounded,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
