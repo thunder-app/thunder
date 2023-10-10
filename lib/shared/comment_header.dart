@@ -14,6 +14,7 @@ import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../core/auth/bloc/auth_bloc.dart';
 import '../utils/date_time.dart';
@@ -170,7 +171,7 @@ class CommentHeader extends StatelessWidget {
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(upvotes),
-                  semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                  semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
@@ -187,7 +188,7 @@ class CommentHeader extends StatelessWidget {
                   Text(
                     formatNumberToK(downvotes),
                     textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                    semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
+                    semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),

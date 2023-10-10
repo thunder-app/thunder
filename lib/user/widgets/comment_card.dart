@@ -17,6 +17,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../utils/numbers.dart';
 
@@ -83,7 +84,7 @@ class CommentCard extends StatelessWidget {
                   const SizedBox(width: 2.0),
                   Text(
                     formatNumberToK(upvotes),
-                    semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                    semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
                     textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onBackground,
@@ -99,7 +100,7 @@ class CommentCard extends StatelessWidget {
                   if (downvotes != 0)
                     Text(
                       formatNumberToK(downvotes),
-                      semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
+                      semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
                       textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
