@@ -107,7 +107,7 @@ class _AccessibilitySettingsPageState extends State<AccessibilitySettingsPage> w
                   const SizedBox(
                     height: 8,
                   ),
-                  AccessibilityProfile(
+                  SettingProfile(
                     name: AppLocalizations.of(context)!.screenReaderProfile,
                     description: AppLocalizations.of(context)!.screenReaderProfileDescription,
                     icon: Icons.smart_screen_rounded,

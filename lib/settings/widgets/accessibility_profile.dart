@@ -7,13 +7,13 @@ import 'package:thunder/settings/widgets/expandable_option.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class AccessibilityProfile extends StatelessWidget {
+class SettingProfile extends StatelessWidget {
   final IconData icon;
   final String name;
   final String description;
   final Map<LocalSettings, Object> settingsToChange;
 
-  const AccessibilityProfile({
+  const SettingProfile({
     super.key,
     required this.icon,
     required this.name,
