@@ -134,6 +134,7 @@
   "settingTypeNotSupported": "Settings of type {settingType} are not yet supported.",
   "profileAppliedSuccessfully": "{profile} applied successfully!",
   "apply": "Apply",
+  "applied": "Applied",
   "on": "on",
   "off": "off",
   "addedCommunityToSubscriptions": "Dodano społeczność do subskrypcji",

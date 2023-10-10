@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,6 +26,7 @@ class SettingProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    bool recentSuccess = false;
 
     return ExpandableOption(
       icon: icon,
@@ -43,32 +46,41 @@ class SettingProfile extends StatelessWidget {
             },
           ),
           const SizedBox(height: 12),
-          TextButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(45),
-              backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
-            ),
-            onPressed: () async {
-              bool success = true;
-              final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+          StatefulBuilder(
+            builder: (context, setState) => TextButton(
+              style: ElevatedButton.styleFrom(
+                minimumSize: const Size.fromHeight(45),
+                backgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer),
+                disabledBackgroundColor: theme.colorScheme.primaryContainer.harmonizeWith(theme.colorScheme.errorContainer).withOpacity(0.5),
+              ),
+              onPressed: recentSuccess
+                  ? null
+                  : () async {
+                      bool success = true;
+                      final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-              for (MapEntry<LocalSettings, Object> entry in settingsToChange.entries) {
-                if (entry.value is bool) {
-                  await prefs.setBool(entry.key.name, entry.value as bool);
-                } else {
-                  // This should never happen in production, since we should add support for any unsupported types
-                  // before adding a profile containing those types.
-                  success = false;
-                  if (context.mounted) {
-                    showSnackbar(context, AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
-                  }
-                }
-              }
-              if (context.mounted && success) {
-                showSnackbar(context, AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
-              }
-            },
-            child: Text(AppLocalizations.of(context)!.apply),
+                      for (MapEntry<LocalSettings, Object> entry in settingsToChange.entries) {
+                        if (entry.value is bool) {
+                          await prefs.setBool(entry.key.name, entry.value as bool);
+                        } else {
+                          // This should never happen in production, since we should add support for any unsupported types
+                          // before adding a profile containing those types.
+                          success = false;
+                          if (context.mounted) {
+                            showSnackbar(context, AppLocalizations.of(context)!.settingTypeNotSupported(entry.value.runtimeType));
+                          }
+                        }
+                      }
+                      if (context.mounted && success) {
+                        showSnackbar(context, AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
+                        setState(() => recentSuccess = true);
+                        Timer(const Duration(seconds: 5), () async {
+                          setState(() => recentSuccess = false);
+                        });
+                      }
+                    },
+              child: recentSuccess ? Text(AppLocalizations.of(context)!.applied) : Text(AppLocalizations.of(context)!.apply),
+            ),
           ),
         ],
       ),
