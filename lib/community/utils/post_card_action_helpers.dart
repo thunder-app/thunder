@@ -10,13 +10,14 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:lemmy_api_client/v3.dart';
 
@@ -141,6 +142,7 @@ void showPostActionBottomModalSheet(
 }) {
   final theme = Theme.of(context);
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+  final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
 
   actionsToInclude ??= [];
   final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
@@ -177,7 +179,7 @@ void showPostActionBottomModalSheet(
                       icon: a.getOverrideIcon?.call(postViewMedia.postView) ?? a.icon,
                       backgroundColor: a.color,
                       foregroundColor: a.getForegroundColor?.call(postViewMedia.postView),
-                      onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(context, a.postCardAction, postViewMedia) : null,
+                      onSelected: (a.shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(context, a.postCardAction, postViewMedia, useAdvancedShareSheet) : null,
                     );
                   },
                 ),
@@ -200,8 +202,9 @@ void showPostActionBottomModalSheet(
                 return PickerItem(
                   label: postCardActionItemsToUse[index].label,
                   icon: postCardActionItemsToUse[index].icon,
-                  onSelected:
-                      (postCardActionItemsToUse[index].shouldEnable?.call(isUserLoggedIn) ?? true) ? () => onSelected(context, postCardActionItemsToUse[index].postCardAction, postViewMedia) : null,
+                  onSelected: (postCardActionItemsToUse[index].shouldEnable?.call(isUserLoggedIn) ?? true)
+                      ? () => onSelected(context, postCardActionItemsToUse[index].postCardAction, postViewMedia, useAdvancedShareSheet)
+                      : null,
                 );
               },
             ),
@@ -217,7 +220,7 @@ void onTapCommunityName(BuildContext context, int communityId) {
   navigateToFeedPage(context, feedType: FeedType.community, communityId: communityId);
 }
 
-void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMedia postViewMedia) async {
+void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMedia postViewMedia, bool useAdvancedShareSheet) async {
   Navigator.of(context).pop();
 
   switch (postCardAction) {
@@ -279,13 +282,15 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.read, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.read));
       break;
     case PostCardAction.share:
-      postViewMedia.media.isEmpty
-          ? Share.share(postViewMedia.postView.post.apId)
-          : showPostActionBottomModalSheet(
-              context,
-              postViewMedia,
-              actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-            );
+      useAdvancedShareSheet
+          ? showAdvancedShareSheet(context, postViewMedia)
+          : postViewMedia.media.isEmpty
+              ? Share.share(postViewMedia.postView.post.apId)
+              : showPostActionBottomModalSheet(
+                  context,
+                  postViewMedia,
+                  actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                );
       break;
   }
 }

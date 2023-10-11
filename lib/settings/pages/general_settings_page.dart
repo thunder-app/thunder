@@ -61,6 +61,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool showPostAuthor = false;
   bool scoreCounters = false;
   bool dimReadPosts = true;
+  bool useAdvancedShareSheet = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -187,6 +188,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.dimReadPosts.name, value);
         setState(() => dimReadPosts = value);
         break;
+      case LocalSettings.useAdvancedShareSheet:
+        await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
+        setState(() => useAdvancedShareSheet = value);
+        break;
 
       // Comment Related Settings
       case LocalSettings.defaultCommentSortType:
@@ -258,6 +263,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+      useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -569,6 +575,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.chrome_reader_mode,
                           iconDisabled: Icons.chrome_reader_mode_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
+                        ),
+                        ToggleOption(
+                          description: LocalSettings.useAdvancedShareSheet.label,
+                          value: useAdvancedShareSheet,
+                          iconEnabled: Icons.screen_share_rounded,
+                          iconDisabled: Icons.screen_share_outlined,
+                          onToggle: (bool value) => setPreferences(LocalSettings.useAdvancedShareSheet, value),
                         ),
                       ],
                     ),

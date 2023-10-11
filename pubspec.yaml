@@ -93,6 +93,7 @@ dependencies:
   flutter_typeahead: ^4.6.2
   text_scroll: ^0.2.0
   sliver_tools: ^0.2.12
+  screenshot: ^2.1.0
 
 dev_dependencies:
   build_runner: ^2.4.6
