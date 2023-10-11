@@ -162,7 +162,7 @@ class _FeedViewState extends State<FeedView> {
       }
 
       // Fetches new posts when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7) {
+      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
         context.read<FeedBloc>().add(const FeedFetchedEvent());
       }
     });
