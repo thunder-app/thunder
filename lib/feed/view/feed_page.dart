@@ -425,13 +425,13 @@ class _FeedViewState extends State<FeedView> {
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     FeedBloc feedBloc = context.read<FeedBloc>();
+    ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
     // See if we're at the top level of navigation
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final prefs = (await UserPreferences.instance).sharedPreferences;
-    final desiredPostListingType = PostListingType.values.byName(prefs.getString("setting_general_default_listing_type") ?? DEFAULT_LISTING_TYPE.name);
+    final desiredPostListingType = thunderBloc.state.defaultPostListingType;
     final currentPostListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
