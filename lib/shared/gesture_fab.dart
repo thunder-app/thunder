@@ -176,7 +176,8 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                 context.read<ThunderBloc>().add(const OnFabToggle(true));
               }
               if (details.delta.dy > 5) {
-                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+                // Only allow hiding fab when on the main feed, and not when opening a community on a new page
+                if (Navigator.of(context).canPop() == false) context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
               }
             },
             onHorizontalDragStart: null,
