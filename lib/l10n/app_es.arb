@@ -167,5 +167,7 @@
   "loginToSeeInbox":"Log in to see your inbox",
   "report":"Report",
   "submit":"Submit",
-  "commentReported":"The comment was Reported"
+  "commentReported":"The comment has been marked for review.",
+  "cannotReportOwnComment":"You can't submit a report for your own comment."
+
 }

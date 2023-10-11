@@ -60,7 +60,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
-    icon: Icons.report,
+    icon: Icons.report_outlined,
     label: '${AppLocalizations.of(GlobalContext.context)!.report} ${AppLocalizations.of(GlobalContext.context)!.comment}',
   ),
 ];

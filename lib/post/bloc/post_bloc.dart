@@ -567,19 +567,20 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       if (account?.jwt == null) {
         return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+            status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot report a comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
       }
-
-      if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'Could not determine post to report the comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-      }
-
       await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account!.jwt!));
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } on LemmyApiException catch (e) {
+      return emit(state.copyWith(
+        status: PostStatus.failure,
+        errorMessage: e.message,
+        moddingCommentId: -1,
+      ));
     } catch (e, s) {
+      debugPrint(e.toString());
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }

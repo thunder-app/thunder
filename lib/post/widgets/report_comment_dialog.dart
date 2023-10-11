@@ -86,6 +86,8 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                           );
                           Navigator.of(context).pop();
                           break;
+                        case PostStatus.failure:
+                          showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError);
                         default:
                       }
                     },

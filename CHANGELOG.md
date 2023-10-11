@@ -2,7 +2,8 @@
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo
-- Added Read All in inbox. - contribution from @ggriffo
+- Added Read All in inbox. - contribution from @ggichure
+- Introduced support for reporting comments. - contribution from @ggichure
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
