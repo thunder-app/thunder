@@ -75,19 +75,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   List<bool> _selectedUserOption = <bool>[true, false];
   bool savedToggle = false;
 
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(seconds: 1),
-    vsync: this,
-  );
-
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.elasticIn,
-  ));
-
   @override
   void initState() {
     _scrollController.addListener(_onScroll);

@@ -136,7 +136,7 @@ class _UserPageState extends State<UserPage> {
               return ErrorMessage(
                 message: state.errorMessage,
                 action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
-                actionText: 'Refresh Content',
+                actionText: AppLocalizations.of(context)!.refreshContent,
               );
           }
         }),

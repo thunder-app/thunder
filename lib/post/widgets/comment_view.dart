@@ -10,6 +10,7 @@ import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/post_bloc.dart';
 
@@ -171,7 +172,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                                     _animatingOut = true;
                                     _fullCommentsAnimation.forward();
                                   },
-                                  child: const Text('View all comments'),
+                                  child: Text(AppLocalizations.of(context)!.viewAllComments),
                                 ),
                               ),
                               const Padding(padding: EdgeInsets.only(right: 15))
@@ -208,7 +209,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
-                              widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
+                              widget.comments.isEmpty ? AppLocalizations.of(context)!.noComments : AppLocalizations.of(context)!.reachedTheBottom,
                               textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
