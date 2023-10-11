@@ -445,7 +445,7 @@ class _FeedViewState extends State<FeedView> {
     if (!canPop && (desiredPostListingType != currentPostListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
-          sortType: feedBloc.state.sortType,
+          sortType: thunderBloc.state.defaultSortType,
           reset: true,
           postListingType: desiredPostListingType,
           feedType: FeedType.general,
