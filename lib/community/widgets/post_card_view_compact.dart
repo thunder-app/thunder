@@ -23,7 +23,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
   final PostListingType? listingType;
-  final void Function()? navigateToPost;
+  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool indicateRead;
 
   const PostCardViewCompact({

@@ -31,7 +31,7 @@ class MediaView extends StatefulWidget {
   final bool isUserLoggedIn;
   final bool? scrapeMissingPreviews;
   final ViewMode viewMode;
-  final void Function()? navigateToPost;
+  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool? read;
 
   const MediaView({
