@@ -5,6 +5,7 @@
 - Show trending communities on search page - contribution from @micahmo
 - Added new post sharing options - contribution from @micahmo
 - Added Read All in inbox. - contribution from @ggriffo
+- Added support for lemmy 0.19.x authentication - contribution from @micahmo
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
