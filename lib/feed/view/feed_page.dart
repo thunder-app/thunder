@@ -435,14 +435,14 @@ class _FeedViewState extends State<FeedView> {
     final currentPostListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
-    final currentCommunityId = feedBloc.state.communityId;
+    final communityMode = feedBloc.state.feedType == FeedType.community;
 
     // If
     // - We're at the top level of navigation AND
     // - We're not on the desired listing type OR
     // - We're on a community
     // THEN navigate to the desired listing type
-    if (!canPop && (desiredPostListingType != currentPostListingType || currentCommunityId != null)) {
+    if (!canPop && (desiredPostListingType != currentPostListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
           sortType: feedBloc.state.sortType,
