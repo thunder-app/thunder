@@ -51,9 +51,6 @@ class FeedFAB extends StatelessWidget {
                 semanticLabel: singlePressAction.title,
                 size: 35,
               ),
-              onSlideDown: () {
-                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
-              },
               onPressed: () {
                 HapticFeedback.lightImpact();
 
