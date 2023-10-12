@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,7 +76,7 @@ class PostSubview extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              post.name,
+              HtmlUnescape().convert(post.name),
               textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
               style: theme.textTheme.titleMedium,
             ),
