@@ -160,8 +160,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               Row(
                                 children: [
                                   if (!isLoggedIn) ...[
-                                    const Icon(
+                                    Icon(
                                       Icons.person_off_rounded,
+                                      color: theme.textTheme.bodyMedium?.color,
                                       size: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -186,7 +187,11 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             child: Container(),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.more_vert_outlined),
+                            icon: Icon(
+                              Icons.more_vert_outlined,
+                              color: theme.textTheme.bodyMedium?.color,
+                              semanticLabel: AppLocalizations.of(context)!.openAccountSwitcher,
+                            ),
                             onPressed: () => showProfileModalSheet(context),
                           ),
                         ],

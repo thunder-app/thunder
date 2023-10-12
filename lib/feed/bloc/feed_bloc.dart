@@ -30,19 +30,19 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     /// Handles resetting the feed to its initial state
     on<ResetFeedEvent>(
       _onResetFeed,
-      transformer: throttleDroppable(Duration.zero),
+      transformer: restartable(),
     );
 
     /// Handles fetching the feed
     on<FeedFetchedEvent>(
       _onFeedFetched,
-      transformer: throttleDroppable(throttleDuration),
+      transformer: restartable(),
     );
 
     /// Handles changing the sort type of the feed
     on<FeedChangeSortTypeEvent>(
       _onFeedChangeSortType,
-      transformer: throttleDroppable(Duration.zero),
+      transformer: restartable(),
     );
 
     /// Handles updating a given item within the feed
@@ -286,8 +286,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
-      add(ResetFeedEvent());
-      emit(state.copyWith(status: FeedStatus.fetching));
+      if (state.status != FeedStatus.initial) add(ResetFeedEvent());
 
       FullCommunityView? fullCommunityView;
 
@@ -335,6 +334,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         currentPage: currentPage,
       ));
     }
+
+    // If the feed is already being fetched but it is not a reset, then just wait
+    if (state.status == FeedStatus.fetching) return;
 
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: FeedStatus.fetching));
