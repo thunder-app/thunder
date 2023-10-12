@@ -8,6 +8,7 @@ discuss.online
 discuss.tchncs.de
 exploding-heads.com
 feddit.ch
+feddit.cl
 feddit.de
 feddit.dk
 feddit.it
@@ -27,13 +28,13 @@ lemmy.ca
 lemmy.dbzer0.com
 lemmy.eco.br
 lemmy.fmhy.ml
-lemmy.fmhy.net
 lemmy.kya.moe
 lemmy.ml
 lemmy.nz
 lemmy.one
 lemmy.sdf.org
 lemmy.today
+lemmy.whynotdrs.org
 lemmy.world
 lemmy.zip
 lemmygrad.ml
@@ -43,7 +44,6 @@ midwest.social
 monero.town
 monyet.cc
 pawb.social
-pornlemmy.com
 programming.dev
 reddthat.com
 sh.itjust.works
