@@ -27,7 +27,7 @@ class CommentReference extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
-  final Function(int, bool) onReportAction;
+  final Function(int) onReportAction;
   final Function(CommentView, bool) onReplyEditAction;
   final Widget? child;
 
@@ -323,7 +323,7 @@ class _CommentReferenceState extends State<CommentReference> {
                         onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                         onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                         onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, widget.isOwnComment),
-                        onReportAction: (int commentId, bool deleted) => widget.onReportAction(commentId, deleted),
+                        onReportAction: (int commentId) => widget.onReportAction(commentId),
                         isOwnComment: widget.isOwnComment,
                         isHidden: false,
                         excludeSemantics: true,

@@ -46,7 +46,7 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               AutoSizeText(
-                '${AppLocalizations.of(context)!.report} ${AppLocalizations.of(context)!.comment}',
+                AppLocalizations.of(context)!.reportComment,
               ),
               const SizedBox(
                 height: 12,
@@ -84,59 +84,63 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                   const SizedBox(
                     width: 8,
                   ),
-                  BlocConsumer<PostBloc, PostState>(
-                    bloc: context.read<PostBloc>(),
-                    listener: (context, state) {
-                      switch (state.status) {
-                        case PostStatus.loading:
-                          setState(() {
-                            hasError = false;
-                          });
-                        case PostStatus.refreshing:
-                          setState(() {
-                            hasError = false;
-                          });
-                        case PostStatus.success:
-                          showSnackbar(
-                            context,
-                            AppLocalizations.of(context)!.commentReported,
-                          );
-                          Navigator.of(context).pop();
-                          break;
-                        case PostStatus.failure:
-                          setState(() {
-                            hasError = true;
-                            errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
-                          });
+                  FilledButton(
+                      onPressed: () {
+                        if (messageController.text.isNotEmpty) {
+                          context.read<PostBloc>().add(
+                                ReportCommentEvent(
+                                  commentId: widget.commentId,
+                                  message: messageController.text,
+                                ),
+                              );
+                        }
+                      },
+                      child: BlocConsumer<PostBloc, PostState>(
+                        bloc: context.read<PostBloc>(),
+                        listener: (context, state) {
+                          switch (state.status) {
+                            case PostStatus.loading:
+                              setState(() {
+                                hasError = false;
+                              });
+                            case PostStatus.refreshing:
+                              setState(() {
+                                hasError = false;
+                              });
+                            case PostStatus.success:
+                              showSnackbar(
+                                context,
+                                AppLocalizations.of(context)!.commentReported,
+                              );
+                              Navigator.of(context).pop();
+                              break;
+                            case PostStatus.failure:
+                              setState(() {
+                                hasError = true;
+                                errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
+                              });
 
-                        default:
-                      }
-                    },
-                    builder: (context, state) {
-                      switch (state.status) {
-                        case PostStatus.loading:
-                          return const CircularProgressIndicator.adaptive();
+                            default:
+                          }
+                        },
+                        builder: (context, state) {
+                          switch (state.status) {
+                            case PostStatus.loading:
+                              return CircularProgressIndicator.adaptive(
+                                backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primaryContainer,
+                              );
 
-                        case PostStatus.refreshing:
-                          return const CircularProgressIndicator.adaptive();
-                        default:
-                          return FilledButton(
-                              onPressed: () {
-                                if (messageController.text.isNotEmpty) {
-                                  context.read<PostBloc>().add(
-                                        ReportCommentEvent(
-                                          commentId: widget.commentId,
-                                          message: messageController.text,
-                                        ),
-                                      );
-                                }
-                              },
-                              child: Text(
+                            case PostStatus.refreshing:
+                              return CircularProgressIndicator.adaptive(
+                                backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primaryContainer,
+                              );
+                            default:
+                              return Text(
                                 AppLocalizations.of(context)!.submit,
-                              ));
-                      }
-                    },
-                  )
+                              );
+                          }
+                        },
+                      ))
                 ],
               ),
               const SizedBox(

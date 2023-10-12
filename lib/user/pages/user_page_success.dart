@@ -276,7 +276,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-                            onReportAction: (int commentId, bool reported) {
+                            onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
                                 showSnackbar(context, AppLocalizations.of(context)!.cannotReportOwnComment);
                               } else {
@@ -385,7 +385,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
-                            onReportAction: (int commentId, bool reported) {
+                            onReportAction: (int commentId) {
                               if (widget.isAccountUser) {
                                 showSnackbar(context, AppLocalizations.of(context)!.cannotReportOwnComment);
                               } else {

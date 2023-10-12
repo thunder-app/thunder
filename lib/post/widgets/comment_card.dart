@@ -22,7 +22,7 @@ class CommentCard extends StatefulWidget {
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
-  final Function(int, bool) onReportAction;
+  final Function(int) onReportAction;
 
   final Set collapsedCommentSet;
   final int? selectCommentId;
@@ -361,7 +361,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
                                 onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
-                                onReportAction: (int commentId, bool deleted) => widget.onReportAction(commentId, deleted),
+                                onReportAction: (int commentId) => widget.onReportAction(commentId),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                                 isOwnComment: isOwnComment,
                                 isHidden: isHidden,

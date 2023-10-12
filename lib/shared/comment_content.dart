@@ -19,7 +19,7 @@ class CommentContent extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
-  final Function(int, bool) onReportAction;
+  final Function(int) onReportAction;
   final Function(CommentView, bool) onReplyEditAction;
 
   final int? moddingCommentId;

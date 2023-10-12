@@ -17,7 +17,7 @@ class CommentCardActions extends StatelessWidget {
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(CommentView, bool) onReplyEditAction;
-  final Function(int, bool) onReportAction;
+  final Function(int) onReportAction;
 
   const CommentCardActions({
     super.key,

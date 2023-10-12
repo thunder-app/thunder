@@ -61,7 +61,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
     icon: Icons.report_outlined,
-    label: '${AppLocalizations.of(GlobalContext.context)!.report} ${AppLocalizations.of(GlobalContext.context)!.comment}',
+    label: AppLocalizations.of(GlobalContext.context)!.reportComment,
   ),
 ];
 
@@ -229,7 +229,7 @@ void onSelected(
       onReplyEditAction(commentView, true);
       break;
     case CommentCardAction.report:
-      onReportAction(commentView.comment.id, true);
+      onReportAction(commentView.comment.id);
       break;
   }
 }

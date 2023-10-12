@@ -575,14 +575,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-    } on LemmyApiException catch (e) {
-      return emit(state.copyWith(
-        status: PostStatus.failure,
-        errorMessage: getErrorMessage(GlobalContext.context, e.message),
-        moddingCommentId: -1,
-      ));
     } catch (e, s) {
-      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+      return emit(
+        state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: e is LemmyApiException
+                ? getErrorMessage(
+                    GlobalContext.context,
+                    e.message,
+                  )
+                : e.toString(),
+            moddingCommentId: -1),
+      );
     }
   }
 
