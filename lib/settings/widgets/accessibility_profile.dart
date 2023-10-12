@@ -74,7 +74,7 @@ class SettingProfile extends StatelessWidget {
                       if (context.mounted && success) {
                         showSnackbar(context, AppLocalizations.of(context)!.profileAppliedSuccessfully(name));
                         setState(() => recentSuccess = true);
-                        Timer(const Duration(seconds: 5), () async {
+                        Future.delayed(const Duration(seconds: 5), () async {
                           setState(() => recentSuccess = false);
                         });
                       }
