@@ -126,14 +126,21 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                         builder: (context, state) {
                           switch (state.status) {
                             case PostStatus.loading:
-                              return CircularProgressIndicator.adaptive(
-                                backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primaryContainer,
+                              return const SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
                               );
 
                             case PostStatus.refreshing:
-                              return CircularProgressIndicator.adaptive(
-                                backgroundColor: Theme.of(context).buttonTheme.colorScheme?.primaryContainer,
-                              );
+                              return const SizedBox(
+                                  width: 15,
+                                  height: 15,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ));
                             default:
                               return Text(
                                 AppLocalizations.of(context)!.submit,
