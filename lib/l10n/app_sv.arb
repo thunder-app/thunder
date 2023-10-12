@@ -186,6 +186,17 @@
   "reachedTheBottom":"Hmmm. It seems like you've reached the bottom.",
   "viewAllComments":"View all comments.",
   "couldntCreateReport":"Your comment report could not be submitted at this time. Please try again later",
-  "reportComment":"Report Comment"
+  "reportComment":"Report Comment",
+  "reportComment":"Report Comment",
+  "timeoutComments":"Error: Timeout when attempting to fetch comments",
+  "unableToLoadReplies":"Unable to load more replies.",
+  "serverErrorComments":"A server error was encountered when fetching more comments: {message}",
+  "timeoutVotingPost":"Error: Timeout when attempting to vote  post.",
+  "timeoutSavingPost":"Error: Timeout when attempting to save post.",
+  "timeoutUpvoteComment":"Error: Timeout when attempting to vote on comment",
+  "timeoutSaveComment":"Error: Timeout when attempting to save a comment",
+  "loginToPerformAction":"You need to be logged in to carry out this task.",
+  "couldNotDetermineCommentDelete":"Could not determine post to delete the comment.",
+  "couldNotDeterminePostComment":"Could not determine post to comment to."
 
 }
