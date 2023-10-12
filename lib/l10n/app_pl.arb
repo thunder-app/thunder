@@ -136,6 +136,7 @@
   "failedToLoadBlocks": "Nie udało się wczytać listy blokowanych: {errorMessage}",
   "successfullyUnblocked": "Pomyślnie odblokowano!",
   "successfullyBlocked": "Pomyślnie zablokowano!",
+  "openAccountSwitcher": "Open account switcher",
   "preview": "Preview",
   "nothingToShare": "Nothing to share",
   "image": "Image",

@@ -4,14 +4,16 @@
 - Added anonymous browsing mode for any instance - contribution from @micahmo
 - Show trending communities on search page - contribution from @micahmo
 - Added new post sharing options - contribution from @micahmo
-- Added Read All in inbox. - contribution from @ggriffo
+- Added Read All in inbox. - contribution from @ggichure
 - Introduced support for reporting comments. - contribution from @ggichure
+- Added support for lemmy 0.19.x authentication - contribution from @micahmo
 
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
 - Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
+- Adjusted logic to allow for instant switching of sort types, refreshing feed, and switching communities/pages in drawer
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
@@ -20,6 +22,7 @@
 - Improve haptic feedback when interacting with FAB - contribution from @micahmo
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 - Remove non-functional message user action on use sidebar
+- Fixed issue where post titles were not properly escaped in feed and post page
 
 ## 0.2.4 - 2023-09-20
 ### Added

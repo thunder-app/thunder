@@ -136,6 +136,7 @@
   "failedToLoadBlocks": "Fallo al cargar bloques: {errorMessage}",
   "successfullyUnblocked": "Desbloqueado con éxito",
   "successfullyBlocked": "Bloqueado con éxito",
+  "openAccountSwitcher": "Open account switcher",
   "preview": "Preview",
   "nothingToShare": "Nothing to share",
   "image": "Image",

@@ -342,10 +342,7 @@ class BlockCommunityButton extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  blocked ? Icons.undo_rounded : Icons.block_rounded,
-                  semanticLabel: (state.communityView?.blocked ?? communityView.blocked) ? 'Unblock Community' : 'Block Community',
-                ),
+                Icon(blocked ? Icons.undo_rounded : Icons.block_rounded),
                 const SizedBox(width: 4.0),
                 Text(blocked ? 'Unblock Community' : 'Block Community'),
               ],
@@ -438,13 +435,16 @@ class CommunityActions extends StatelessWidget {
               foregroundColor: null,
               padding: EdgeInsets.zero,
             ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.library_books_rounded, semanticLabel: 'New Post'),
-                SizedBox(width: 4.0),
-                Text('New Post', style: TextStyle(color: null)),
-              ],
+            child: Semantics(
+              focused: true,
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.library_books_rounded),
+                  SizedBox(width: 4.0),
+                  Text('New Post', style: TextStyle(color: null)),
+                ],
+              ),
             ),
           ),
         ),
@@ -472,7 +472,6 @@ class CommunityActions extends StatelessWidget {
                     SubscribedType.pending => Icons.pending_outlined,
                     SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
                   },
-                  semanticLabel: (communityView.subscribed == SubscribedType.notSubscribed) ? 'Subscribe' : 'Unsubscribe',
                 ),
                 const SizedBox(width: 4.0),
                 Text(
