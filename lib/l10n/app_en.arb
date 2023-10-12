@@ -136,6 +136,7 @@
   "failedToLoadBlocks": "Failed to load blocks: {errorMessage}",
   "successfullyUnblocked": "Successfully unblocked!",
   "successfullyBlocked": "Successfully blocked!",
+  "openAccountSwitcher": "Open account switcher",
   "preview": "Preview",
   "nothingToShare": "Nothing to share",
   "image": "Image",
