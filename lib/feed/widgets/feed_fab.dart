@@ -51,9 +51,6 @@ class FeedFAB extends StatelessWidget {
                 semanticLabel: singlePressAction.title,
                 size: 35,
               ),
-              onSlideDown: () {
-                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
-              },
               onPressed: () {
                 HapticFeedback.lightImpact();
 
@@ -172,7 +169,7 @@ class FeedFAB extends StatelessWidget {
             triggerChangeSort(context);
           },
         ),
-      if (enableSubscriptions)
+      if (enableSubscriptions && Scaffold.maybeOf(context) != null)
         ActionButton(
           title: FeedFabAction.subscriptions.title,
           icon: Icon(FeedFabAction.subscriptions.icon),

@@ -36,6 +36,7 @@ enum LocalSettings {
   showPostTextContentPreview(name: 'setting_general_show_text_content', label: 'Show Text Content'),
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
   dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
+  useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -103,6 +104,8 @@ enum LocalSettings {
 
   anonymousInstances(name: 'setting_anonymous_instances', label: ''),
   currentAnonymousInstance(name: 'setting_current_anonymous_instance', label: ''),
+
+  advancedShareOptions(name: 'advanced_share_options', label: ''),
   ;
 
   const LocalSettings({
@@ -121,5 +124,6 @@ enum LocalSettings {
     LocalSettings.draftsCache,
     LocalSettings.anonymousInstances,
     LocalSettings.currentAnonymousInstance,
+    LocalSettings.advancedShareOptions,
   ];
 }

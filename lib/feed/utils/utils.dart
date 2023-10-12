@@ -30,8 +30,10 @@ String getSortName(FeedState state) {
     return '';
   }
 
-  final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  return sortTypeItem.label;
+  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+
+  return sortTypeItem?.label ?? '';
 }
 
 IconData? getSortIcon(FeedState state) {
@@ -39,8 +41,10 @@ IconData? getSortIcon(FeedState state) {
     return null;
   }
 
-  final sortTypeItem = allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
-  return sortTypeItem.icon;
+  final sortTypeItemIndex = allSortTypeItems.indexWhere((sortTypeItem) => sortTypeItem.payload == state.sortType);
+  final sortTypeItem = sortTypeItemIndex > -1 ? allSortTypeItems[sortTypeItemIndex] : null;
+
+  return sortTypeItem?.icon;
 }
 
 /// Navigates to a [FeedPage] with the given parameters
@@ -66,7 +70,7 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
           FeedFetchedEvent(
             feedType: feedType,
             postListingType: postListingType,
-            sortType: sortType ?? SortType.hot,
+            sortType: sortType ?? thunderBloc.state.defaultSortType,
             communityId: communityId,
             communityName: communityName,
             reset: true,

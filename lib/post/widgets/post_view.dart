@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -19,6 +20,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
+import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -50,6 +52,7 @@ class PostSubview extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
 
     final PostView postView = postViewMedia.postView;
     final Post post = postView.post;
@@ -73,7 +76,7 @@ class PostSubview extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Text(
-              post.name,
+              HtmlUnescape().convert(post.name),
               textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
               style: theme.textTheme.titleMedium,
             ),
@@ -368,20 +371,22 @@ class PostSubview extends StatelessWidget {
                       : null,
                   icon: postView.post.locked
                       ? Icon(Icons.lock, semanticLabel: AppLocalizations.of(context)!.postLocked, color: Colors.red)
-                      : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply),
+                      : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
                 ),
               ),
               Expanded(
                 flex: 1,
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
-                  onPressed: postViewMedia.media.isEmpty
-                      ? () => Share.share(post.apId)
-                      : () => showPostActionBottomModalSheet(
-                            context,
-                            postViewMedia,
-                            actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
-                          ),
+                  onPressed: useAdvancedShareSheet
+                      ? () => showAdvancedShareSheet(context, postViewMedia)
+                      : postViewMedia.media.isEmpty
+                          ? () => Share.share(post.apId)
+                          : () => showPostActionBottomModalSheet(
+                                context,
+                                postViewMedia,
+                                actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
+                              ),
                 ),
               )
             ],

@@ -229,7 +229,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               selectedCommentPath: widget.selectedCommentPath));
                         }
                       },
-                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Icon(Icons.send_rounded, semanticLabel: AppLocalizations.of(context)!.reply),
+                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Icon(Icons.send_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
               ),
             ],
           ),

@@ -120,6 +120,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
+    ThunderState thunderState = context.read<ThunderBloc>().state;
     String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
     AccountStatus status = context.watch<AccountBloc>().state.status;
@@ -159,8 +160,9 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                               Row(
                                 children: [
                                   if (!isLoggedIn) ...[
-                                    const Icon(
+                                    Icon(
                                       Icons.person_off_rounded,
+                                      color: theme.textTheme.bodyMedium?.color,
                                       size: 15,
                                     ),
                                     const SizedBox(width: 5),
@@ -185,7 +187,11 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                             child: Container(),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.more_vert_outlined),
+                            icon: Icon(
+                              Icons.more_vert_outlined,
+                              color: theme.textTheme.bodyMedium?.color,
+                              semanticLabel: AppLocalizations.of(context)!.openAccountSwitcher,
+                            ),
                             onPressed: () => showProfileModalSheet(context),
                           ),
                         ],
@@ -203,7 +209,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                         isSelected: destination.listingType == feedBloc.state.postListingType,
                         onTap: () {
                           Navigator.of(context).pop();
-                          navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType);
+                          navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.defaultSortType);
                         },
                         label: destination.label,
                         icon: destination.icon,
@@ -247,7 +253,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                               context.read<FeedBloc>().add(
                                                     FeedFetchedEvent(
                                                       feedType: FeedType.community,
-                                                      sortType: SortType.hot,
+                                                      sortType: thunderState.defaultSortType,
                                                       communityId: community.id,
                                                       reset: true,
                                                     ),
