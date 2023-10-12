@@ -238,6 +238,7 @@ class _PostCardState extends State<PostCard> {
                 context,
                 widget.postViewMedia,
                 actionsToInclude: [
+                  PostCardAction.visitInstance,
                   PostCardAction.visitProfile,
                   PostCardAction.visitCommunity,
                   PostCardAction.blockCommunity,

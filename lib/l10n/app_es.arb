@@ -112,6 +112,8 @@
   "editComment": "Editar comentario",
   "comment": "Comentario",
   "comments": "Comments",
+  "visitInstance": "Visit Instance",
+  "openInBrowser": "Open in Browser",
   "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Responder a {author}",
   "unexpectedError": "Error inesperado",

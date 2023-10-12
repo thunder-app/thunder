@@ -21,6 +21,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/instance/instance_view.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -133,47 +134,9 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                                       const SidebarSectionHeader(value: "Host Instance"),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundColor: widget.fullCommunityView!.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                  foregroundImage: widget.fullCommunityView!.site?.icon != null ? CachedNetworkImageProvider(widget.fullCommunityView!.site!.icon!) : null,
-                                                  maxRadius: 24,
-                                                  child: widget.fullCommunityView!.site?.icon == null
-                                                      ? Text(
-                                                          widget.fullCommunityView!.moderators.first.moderator!.name[0].toUpperCase(),
-                                                          semanticsLabel: '',
-                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                                        )
-                                                      : null,
-                                                ),
-                                                const SizedBox(width: 16.0),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      widget.fullCommunityView!.site?.name ?? '',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                                                    ),
-                                                    Flexible(
-                                                      child: Text(
-                                                        widget.fullCommunityView!.site?.description ?? '',
-                                                        style: theme.textTheme.bodyMedium,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            const Divider(),
-                                            CommonMarkdownBody(body: widget.fullCommunityView!.site?.sidebar ?? ''),
-                                          ],
+                                        child: InstanceView(
+                                          site: widget.fullCommunityView!.site!,
+                                          alternateSiteName: widget.fullCommunityView!.moderators.first.moderator!.name[0].toUpperCase(),
                                         ),
                                       ),
                                     ],

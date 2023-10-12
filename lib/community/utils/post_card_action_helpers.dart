@@ -18,6 +18,8 @@ import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:lemmy_api_client/v3.dart';
 
@@ -28,6 +30,7 @@ import 'package:thunder/utils/global_context.dart';
 enum PostCardAction {
   visitProfile,
   visitCommunity,
+  visitInstance,
   sharePost,
   shareMedia,
   shareLink,
@@ -77,6 +80,11 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.visitProfile,
     icon: Icons.person_search_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.visitInstance,
+    icon: Icons.language,
+    label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.sharePost,
@@ -229,6 +237,9 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.visitProfile:
       navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
+      break;
+    case PostCardAction.visitInstance:
+      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!);
       break;
     case PostCardAction.sharePost:
       Share.share(postViewMedia.postView.post.apId);
