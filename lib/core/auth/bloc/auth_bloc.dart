@@ -184,7 +184,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       FullSiteView fullSiteView = await lemmy.run(GetSite(auth: account?.jwt));
       bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId != null, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
     });
   }
 }
