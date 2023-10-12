@@ -20,6 +20,7 @@ class GestureFab extends StatefulWidget {
     this.onPressed,
     this.onLongPress,
     this.centered = false,
+    this.heroTag,
   });
 
   final bool? initialOpen;
@@ -32,6 +33,7 @@ class GestureFab extends StatefulWidget {
   final Function? onPressed;
   final Function? onLongPress;
   final bool centered;
+  final String? heroTag;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -209,6 +211,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                     ),
                   )
                 : FloatingActionButton(
+                    heroTag: widget.heroTag,
                     onPressed: () {
                       widget.onPressed?.call();
                     },

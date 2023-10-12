@@ -24,14 +24,47 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 
 class FeedFAB extends StatelessWidget {
-  const FeedFAB({super.key});
+  const FeedFAB({super.key, this.heroTag});
+
+  final String? heroTag;
 
   @override
   build(BuildContext context) {
     final ThunderState state = context.watch<ThunderBloc>().state;
+    final FeedState feedState = context.watch<FeedBloc>().state;
+
+    // A list of actions that are not supported through the general feed
+    List<FeedFabAction> unsupportedGeneralFeedFabActions = [
+      FeedFabAction.newPost,
+    ];
+
+    // A list of actions that are not supported through the navigated community feed
+    List<FeedFabAction> unsupportedNavigatedCommunityFeedFabActions = [
+      FeedFabAction.subscriptions,
+    ];
 
     FeedFabAction singlePressAction = state.feedFabSinglePressAction;
     FeedFabAction longPressAction = state.feedFabLongPressAction;
+
+    // Check to see if we are in the general feeds
+    bool isGeneralFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.general;
+    bool isCommunityFeed = feedState.status != FeedStatus.initial && feedState.feedType == FeedType.community;
+
+    bool isNavigatedFeed = Navigator.canPop(context);
+
+    // Check single-press action
+    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(singlePressAction)) {
+      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(singlePressAction)) {
+      singlePressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    }
+
+    // Check long-press action
+    if (isGeneralFeed && unsupportedGeneralFeedFabActions.contains(longPressAction)) {
+      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    } else if (isCommunityFeed && isNavigatedFeed && unsupportedNavigatedCommunityFeedFabActions.contains(longPressAction)) {
+      longPressAction = FeedFabAction.openFab; // Default to open fab on unsupported actions
+    }
 
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
@@ -45,6 +78,7 @@ class FeedFAB extends StatelessWidget {
       },
       child: state.isFabSummoned
           ? GestureFab(
+              heroTag: heroTag,
               distance: 60,
               icon: Icon(
                 singlePressAction.icon,
