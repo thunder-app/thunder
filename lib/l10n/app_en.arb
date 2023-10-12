@@ -183,7 +183,8 @@
   "cannotReportOwnComment":"You can't submit a report for your own comment.",
   "noComments":"Oh. There are no comments.",
   "reachedTheBottom":"Hmmm. It seems like you've reached the bottom.",
-  "viewAllComments":"View all comments."
+  "viewAllComments":"View all comments.",
+  "couldntCreateReport":"Your comment report could not be submitted at this time. Please try again later"
 
 
 }

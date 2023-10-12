@@ -28,6 +28,8 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
     super.dispose();
   }
 
+  bool hasError = false;
+  String errorMessage = '';
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -62,6 +64,13 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
               const SizedBox(
                 height: 12,
               ),
+              if (hasError)
+                AutoSizeText(
+                  errorMessage,
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(context).colorScheme.error,
+                      ),
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
@@ -79,6 +88,14 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                     bloc: context.read<PostBloc>(),
                     listener: (context, state) {
                       switch (state.status) {
+                        case PostStatus.loading:
+                          setState(() {
+                            hasError = false;
+                          });
+                        case PostStatus.refreshing:
+                          setState(() {
+                            hasError = false;
+                          });
                         case PostStatus.success:
                           showSnackbar(
                             context,
@@ -87,7 +104,11 @@ class _ReportCommentDialogState extends State<ReportCommentDialog> {
                           Navigator.of(context).pop();
                           break;
                         case PostStatus.failure:
-                          showSnackbar(context, state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError);
+                          setState(() {
+                            hasError = true;
+                            errorMessage = state.errorMessage ?? AppLocalizations.of(context)!.unexpectedError;
+                          });
+
                         default:
                       }
                     },

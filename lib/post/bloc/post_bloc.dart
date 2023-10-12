@@ -16,6 +16,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/network_errors.dart';
 import 'package:thunder/post/utils/post.dart';
 
@@ -576,11 +578,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } on LemmyApiException catch (e) {
       return emit(state.copyWith(
         status: PostStatus.failure,
-        errorMessage: e.message,
+        errorMessage: getErrorMessage(GlobalContext.context, e.message),
         moddingCommentId: -1,
       ));
     } catch (e, s) {
-      debugPrint(e.toString());
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }
