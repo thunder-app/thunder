@@ -259,10 +259,8 @@ void showReportCommentActionBottomSheet(
     isScrollControlled: true,
     builder: (_) => BlocProvider.value(
       value: context.read<PostBloc>(),
-      child: StatefulBuilder(
-        builder: (context, state) => ReportCommentDialog(
-          commentId: commentId,
-        ),
+      child: ReportCommentDialog(
+        commentId: commentId,
       ),
     ),
   );
