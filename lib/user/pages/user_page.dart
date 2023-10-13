@@ -67,6 +67,7 @@ class _UserPageState extends State<UserPage> {
                   Navigator.of(context).push(
                     SwipeablePageRoute(
                       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
                       builder: (context) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: accountBloc),

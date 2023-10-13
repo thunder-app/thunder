@@ -284,7 +284,7 @@ class _PostCardState extends State<PostCard> {
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
         backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
         backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
+        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
         builder: (otherContext) {
           return MultiBlocProvider(
             providers: [

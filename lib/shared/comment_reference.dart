@@ -106,7 +106,7 @@ class _CommentReferenceState extends State<CommentReference> {
             SwipeablePageRoute(
               transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
               backGestureDetectionWidth: 45,
-              canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
+              canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
               builder: (context) => MultiBlocProvider(
                 providers: [
                   BlocProvider.value(value: accountBloc),
