@@ -8,6 +8,7 @@
 - Added Read All in inbox. - contribution from @ggriffo
 - Added support for lemmy 0.19.x authentication - contribution from @micahmo
 - Added support for accessibility profiles in settings - contribution from @micahmo
+- Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
