@@ -249,6 +249,7 @@ class FeedFAB extends StatelessWidget {
     showModalBottomSheet<void>(
       showDragHandle: true,
       context: context,
+      isScrollControlled: true,
       builder: (builderContext) => SortPicker(
         title: l10n.sortOptions,
         onSelect: (selected) => context.read<FeedBloc>().add(FeedChangeSortTypeEvent(selected.payload)),
