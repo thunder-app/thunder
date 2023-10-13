@@ -106,7 +106,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                               ),
                               Expanded(
                                 child: Text(
-                                  widget.mediaUrl ?? '',
+                                  widget.mediaUrl,
                                   overflow: TextOverflow.ellipsis,
                                   style: theme.textTheme.bodyMedium!.copyWith(
                                     color: Colors.white60,

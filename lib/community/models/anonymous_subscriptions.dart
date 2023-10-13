@@ -1,4 +1,3 @@
-import 'package:lemmy_api_client/v3.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:thunder/core/singletons/database.dart';
 

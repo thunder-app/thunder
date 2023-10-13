@@ -15,10 +15,8 @@ import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
@@ -26,9 +24,9 @@ import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/cache.dart';
-import 'package:thunder/utils/constants.dart';
 
 enum FeedType { community, user, general }
 
@@ -586,11 +584,11 @@ class FeedReachedEnd extends StatelessWidget {
         Container(
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: Text(
+          child: ScalableText(
             'Hmmm. It seems like you\'ve reached the bottom.',
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
-            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+            fontScale: state.metadataFontSizeScale,
           ),
         ),
         const SizedBox(height: 160)

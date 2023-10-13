@@ -398,7 +398,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
         });
       } else {
-        context.read<AuthBloc>().add(LogOutOfAllAccounts());
+        context.read<AuthBloc>().add(const LogOutOfAllAccounts());
         context.read<ThunderBloc>().add(OnAddAnonymousInstance(_instanceTextEditingController.text));
         context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
         widget.popRegister();

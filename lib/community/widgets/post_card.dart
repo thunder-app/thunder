@@ -24,7 +24,6 @@ import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
-import '../../user/bloc/user_bloc.dart';
 
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
@@ -211,7 +210,7 @@ class _PostCardState extends State<PostCard> {
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
-                      indicateRead: widget.indicateRead!,
+                      indicateRead: widget.indicateRead,
                     )
                   : PostCardViewComfortable(
                       postViewMedia: widget.postViewMedia,
@@ -232,7 +231,7 @@ class _PostCardState extends State<PostCard> {
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
                       navigateToPost: () async => await navigateToPost(context),
-                      indicateRead: widget.indicateRead!,
+                      indicateRead: widget.indicateRead,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,

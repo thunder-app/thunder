@@ -148,7 +148,7 @@ class PostCardViewCompact extends StatelessWidget {
                       ),
                     ],
                   ),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.titleFontSizeScale.textScaleFactor,
+                  textScaler: TextScaler.linear(state.titleFontSizeScale.textScaleFactor),
                 ),
                 const SizedBox(height: 6.0),
                 PostCommunityAndAuthor(

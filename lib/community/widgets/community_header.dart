@@ -53,7 +53,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.fullCommunityView!.communityView.community.banner!),
+                            image: CachedNetworkImageProvider(widget.fullCommunityView.communityView.community.banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -110,12 +110,12 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.people_rounded),
-                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.subscribers ?? 0),
+                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.subscribers),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
                                       icon: const Icon(Icons.calendar_month_rounded),
-                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.usersActiveMonth ?? 0),
+                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.usersActiveMonth),
                                     ),
                                   ],
                                 ),

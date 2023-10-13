@@ -3,11 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
@@ -55,7 +54,7 @@ class PostCardMetaData extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                        fontScale: state.metadataFontSizeScale,
                         text: formatNumberToK(score),
                         textColor: voteType == VoteType.up
                             ? upVoteColor
@@ -73,7 +72,7 @@ class PostCardMetaData extends StatelessWidget {
                       ),
                       const SizedBox(width: 10.0),
                       IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                        fontScale: state.metadataFontSizeScale,
                         icon: Icon(
                           /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
                           size: 15.0,
@@ -88,7 +87,7 @@ class PostCardMetaData extends StatelessWidget {
                       ),
                       const SizedBox(width: 10.0),
                       IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                        fontScale: state.metadataFontSizeScale,
                         icon: Icon(
                           hasBeenEdited ? Icons.edit : Icons.history_rounded,
                           size: 15.0,
@@ -107,7 +106,7 @@ class PostCardMetaData extends StatelessWidget {
                         message: hostURL,
                         preferBelow: false,
                         child: IconText(
-                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                          fontScale: state.metadataFontSizeScale,
                           icon: Icon(
                             Icons.public,
                             size: 15.0,
@@ -160,26 +159,8 @@ class PostViewMetaData extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                /*Container(
-                  child: unreadComments != 0 && unreadComments != comments ? Row(
-                    children: [
-                      IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        icon: Icon(
-                          Icons.mark_unread_chat_alt_rounded,
-                          size: 17.0,
-                          color: theme.primaryColor,
-                        ),
-                        text: '+${formatNumberToK(unreadComments)}',
-                        textColor: theme.primaryColor,
-                        padding: 5.0,
-                      ),
-                      const SizedBox(width: 10.0),
-                    ],
-                  ) : null,
-                ),*/
                 IconText(
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                  fontScale: state.metadataFontSizeScale,
                   icon: Icon(
                     Icons.chat,
                     size: 17.0,
@@ -191,7 +172,7 @@ class PostViewMetaData extends StatelessWidget {
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                  fontScale: state.metadataFontSizeScale,
                   icon: Icon(
                     hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
@@ -261,11 +242,15 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         InkWell(
                             borderRadius: BorderRadius.circular(6),
                             onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
-                            child: Text('$creatorName', textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor, style: textStyleAuthor)),
+                            child: ScalableText(
+                              '$creatorName',
+                              fontScale: state.metadataFontSizeScale,
+                              style: textStyleAuthor,
+                            )),
                         if (!communityMode)
-                          Text(
+                          ScalableText(
                             ' to ',
-                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            fontScale: state.metadataFontSizeScale,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                             ),
@@ -279,9 +264,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!communityMode)
-                          Text(
+                          ScalableText(
                             '${postView.community.name} · ${fetchInstanceNameFromUrl(postView.community.actorId)}',
-                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            fontScale: state.metadataFontSizeScale,
                             style: textStyleCommunity,
                           ),
                         if (showCommunitySubscription)

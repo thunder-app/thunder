@@ -329,7 +329,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
                             ? null
                             : () async {
-                                context.read<AuthBloc>().add(LogOutOfAllAccounts());
+                                context.read<AuthBloc>().add(const LogOutOfAllAccounts());
                                 context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
                                 context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![realIndex].instance));
                                 context.pop();

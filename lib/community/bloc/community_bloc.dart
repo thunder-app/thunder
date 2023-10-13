@@ -7,7 +7,6 @@ import 'package:thunder/community/enums/community_action.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 
 part 'community_event.dart';
 part 'community_state.dart';
