@@ -2,6 +2,7 @@ import 'dart:async';
 
 // Flutter
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -32,6 +33,7 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:uni_links/uni_links.dart';
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -51,16 +53,71 @@ class _ThunderState extends State<Thunder> {
   bool _isFabOpen = false;
 
   bool reduceAnimations = false;
-
+  final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+  StreamSubscription? _uniLinksStreamSubscription;
   @override
   void initState() {
     super.initState();
+    _handleInitialURI();
+    _handleIncomingLinks();
   }
 
   @override
   void dispose() {
     pageController.dispose();
+    _uniLinksStreamSubscription?.cancel();
     super.dispose();
+  }
+
+  /// Handle incoming links - the ones that the app will recieve from the OS
+  /// while already started.
+  void _handleIncomingLinks() {
+    // It will handle app links while the app is already started - be it in
+    // the foreground or in the background.
+    _uniLinksStreamSubscription = uriLinkStream.listen((Uri? uri) {
+      if (!mounted) return;
+      print('got uri: $uri');
+      // TODO(nav_user_to_page_unilinks): Navigate user to post page
+      // dependes on https://github.com/thunder-app/thunder/pull/818
+      if (context.mounted) showSnackbar(context, 'Got URI $uri');
+    }, onError: (Object err) {
+      if (!mounted) return;
+      print('got err: $err');
+
+      if (err is FormatException) {
+        // TODO(localize_no_uri_found): Localize uri not malformed error
+        if (context.mounted) showSnackbar(context, 'malformed initial uri');
+      } else {
+        // TODO(localize_no_uri_found): Localize uri not malformed error
+        if (context.mounted) showSnackbar(context, 'malformed initial uri');
+      }
+    });
+  }
+
+  /// Handle the initial Uri - the one the app was started with
+  void _handleInitialURI() async {
+    try {
+      final uri = await getInitialUri();
+      if (uri == null) {
+        // TODO(localize_no_uri_found): Localize uri not found error
+        if (context.mounted) showSnackbar(context, 'Couldn\'t parse an empty link');
+      } else {
+        // TODO(nav_user_to_page_unilinks): Navigate user to post page
+        // dependes on https://github.com/thunder-app/thunder/pull/818
+        if (context.mounted) showSnackbar(context, 'Got URI $uri');
+      }
+    } on PlatformException {
+      // Platform messages may fail but we ignore the exception
+      // TODO(localize_no_uri_found): Localize uri not found error
+      if (context.mounted) showSnackbar(context, 'falied to get initial uri');
+    } on FormatException catch (err) {
+      if (!mounted) return;
+      // TODO(localize_no_uri_found): Localize uri not malformed error
+      if (context.mounted) showSnackbar(context, 'malformed initial uri');
+    } catch (e) {
+      // TODO(localize_no_uri_found): Localize uri not found exception
+      if (context.mounted) showSnackbar(context, 'falied to get initial uri');
+    }
   }
 
   void _showExitWarning() {
@@ -131,6 +188,7 @@ class _ThunderState extends State<Thunder> {
                 _isFabOpen = thunderBlocState.isFabOpen;
 
                 return Scaffold(
+                  key: scaffoldMessengerKey,
                   drawer: selectedPageIndex == 0 ? const CommunityDrawer() : null,
                   floatingActionButton: thunderBlocState.enableFeedsFab
                       ? AnimatedOpacity(
