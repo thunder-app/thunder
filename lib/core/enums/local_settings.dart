@@ -80,6 +80,8 @@ enum LocalSettings {
   commentGestureRightPrimary(name: 'setting_gesture_comment_right_primary_gesture', label: 'Right Short Swipe'),
   commentGestureRightSecondary(name: 'setting_gesture_comment_right_secondary_gesture', label: 'Right Long Swipe'),
 
+  enableFullScreenSwipeNavigationGesture(name: 'setting_gesture_enable_fullscreen_navigation_gesture', label: 'Enable Fullscreen Swipe Navigation'),
+
   /// -------------------------- FAB Related Settings --------------------------
   enableFeedsFab(name: 'setting_enable_feed_fab', label: 'Enable Floating Button on Feeds'),
   enablePostsFab(name: 'setting_enable_post_fab', label: 'Enable Floating Button on Posts'),

@@ -412,7 +412,7 @@ class _FeedViewState extends State<FeedView> {
                     curve: Curves.easeIn,
                     child: Container(
                       margin: const EdgeInsets.all(16),
-                      child: const FeedFAB(),
+                      child: FeedFAB(heroTag: state.communityName),
                     ),
                   ),
               ],

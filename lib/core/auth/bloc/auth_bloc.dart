@@ -162,6 +162,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     /// When we log out of all accounts, clear the instance information
     on<LogOutOfAllAccounts>((event, emit) async {
+      emit(state.copyWith(status: AuthStatus.initial));
       final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', '');
       return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false, fullSiteView: null));
@@ -184,7 +185,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       FullSiteView fullSiteView = await lemmy.run(GetSite(auth: account?.jwt));
       bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId != null, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
     });
   }
 }
