@@ -2,6 +2,7 @@ import 'dart:collection';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instances.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
   if (url == null) {
@@ -135,6 +136,10 @@ final validInstances = HashSet<String>();
 Future<bool> isLemmyInstance(String? url) async {
   if (url?.isEmpty ?? true) {
     return false;
+  }
+
+  if (instances.contains(url)) {
+    return true;
   }
 
   if (validInstances.contains(url)) {

@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:math';
 
+import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,6 +18,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
@@ -25,6 +28,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/cache.dart';
+import 'package:thunder/utils/constants.dart';
 
 enum FeedType { community, user, general }
 
@@ -162,15 +166,18 @@ class _FeedViewState extends State<FeedView> {
       }
 
       // Fetches new posts when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7) {
+      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
         context.read<FeedBloc>().add(const FeedFetchedEvent());
       }
     });
+
+    BackButtonInterceptor.add(_handleBack);
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    BackButtonInterceptor.remove(_handleBack);
     super.dispose();
   }
 
@@ -398,14 +405,14 @@ class _FeedViewState extends State<FeedView> {
                         )
                       : null,
                 ),
-                if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null))
+                if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
                   AnimatedOpacity(
                     opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
                     duration: const Duration(milliseconds: 150),
                     curve: Curves.easeIn,
                     child: Container(
                       margin: const EdgeInsets.all(16),
-                      child: const FeedFAB(),
+                      child: FeedFAB(heroTag: state.communityName),
                     ),
                   ),
               ],
@@ -414,6 +421,41 @@ class _FeedViewState extends State<FeedView> {
         },
       ),
     );
+  }
+
+  FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    FeedBloc feedBloc = context.read<FeedBloc>();
+    ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+    // See if we're at the top level of navigation
+    final canPop = Navigator.of(context).canPop();
+
+    // Get the desired post listing so we can check against current
+    final desiredPostListingType = thunderBloc.state.defaultPostListingType;
+    final currentPostListingType = feedBloc.state.postListingType;
+
+    // See if we're in a community
+    final communityMode = feedBloc.state.feedType == FeedType.community;
+
+    // If
+    // - We're at the top level of navigation AND
+    // - We're not on the desired listing type OR
+    // - We're on a community
+    // THEN navigate to the desired listing type
+    if (!canPop && (desiredPostListingType != currentPostListingType || communityMode)) {
+      feedBloc.add(
+        FeedFetchedEvent(
+          sortType: thunderBloc.state.defaultSortType,
+          reset: true,
+          postListingType: desiredPostListingType,
+          feedType: FeedType.general,
+          communityId: null,
+        ),
+      );
+
+      return true;
+    }
+    return false;
   }
 }
 

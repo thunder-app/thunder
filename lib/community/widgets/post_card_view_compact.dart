@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -137,7 +138,7 @@ class PostCardViewCompact extends StatelessWidget {
                           ),
                         ),
                       TextSpan(
-                        text: postViewMedia.postView.post.name,
+                        text: HtmlUnescape().convert(postViewMedia.postView.post.name),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: postViewMedia.postView.post.featuredCommunity
