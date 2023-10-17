@@ -1,6 +1,7 @@
 import 'dart:collection';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instances.dart';
 
 String? fetchInstanceNameFromUrl(String? url) {
@@ -78,6 +79,32 @@ Future<String?> getLemmyUser(String text) async {
   final RegExpMatch? usernameMatch = username.firstMatch(text);
   if (usernameMatch != null && usernameMatch.groupCount >= 3 && await isLemmyInstance(usernameMatch.group(3))) {
     return '${usernameMatch.group(2)}@${usernameMatch.group(3)}';
+  }
+
+  return null;
+}
+
+final RegExp _post = RegExp(r'^(https?:\/\/)(.*)\/post\/([0-9]*).*$');
+Future<int?> getLemmyPostId(String text) async {
+  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  final RegExpMatch? postMatch = _post.firstMatch(text);
+  if (postMatch != null) {
+    final String? instance = postMatch.group(2);
+    final int? postId = int.tryParse(postMatch.group(3)!);
+    if (postId != null) {
+      if (instance == lemmy.host) {
+        return postId;
+      } else {
+        // This is a post on another instance. Try to resolve it
+        try {
+          final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
+          return resolveObjectResponse.post?.post.id;
+        } catch (e) {
+          return null;
+        }
+      }
+    }
   }
 
   return null;
