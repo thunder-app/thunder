@@ -850,9 +850,9 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "66bddc050f505d7cbda73b38258f72b5d4aeb07d"
-      resolved-ref: "66bddc050f505d7cbda73b38258f72b5d4aeb07d"
-      url: "https://github.com/micahmo/lemmy_api_client.git"
+      ref: "9c0f20c3ca3cdcfff447034c1b857dca3c0444d4"
+      resolved-ref: "9c0f20c3ca3cdcfff447034c1b857dca3c0444d4"
+      url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"
   link_preview_generator:
