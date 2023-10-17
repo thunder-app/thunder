@@ -87,3 +87,13 @@ class NavigateCommentEvent extends PostEvent {
 
   const NavigateCommentEvent({required this.targetIndex, required this.direction});
 }
+
+class ReportCommentEvent extends PostEvent {
+  final int commentId;
+  final String message;
+
+  const ReportCommentEvent({
+    required this.commentId,
+    required this.message,
+  });
+}

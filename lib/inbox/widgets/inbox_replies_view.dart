@@ -18,6 +18,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -72,6 +73,12 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
               onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
               onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
               onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
+              onReportAction: (int commentId) {
+                showReportCommentActionBottomSheet(
+                  context,
+                  commentId: commentId,
+                );
+              },
               onReplyEditAction: (CommentView commentView, bool isEdit) async {
                 HapticFeedback.mediumImpact();
                 InboxBloc inboxBloc = context.read<InboxBloc>();
