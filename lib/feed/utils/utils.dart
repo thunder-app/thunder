@@ -82,7 +82,7 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
     SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
       backGestureDetectionWidth: 45,
-      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
+      canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true) || !thunderState.enableFullScreenSwipeNavigationGesture,
       builder: (context) => MultiBlocProvider(
         providers: [
           BlocProvider.value(value: accountBloc),
