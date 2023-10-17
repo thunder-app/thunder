@@ -409,5 +409,21 @@
   "showAll": "Show All",
   "@showAll": {},
   "loginToSeeInbox": "Log in to see your inbox",
-  "@loginToSeeInbox": {}
+  "@loginToSeeInbox": {},
+  "navigation": "Navegación",
+  "@navigation": {},
+  "sidebarBottomNavDoubleTapDescription": "Doble toque en la barra inferior para abrir la barra lateral",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Deslizar la barra inferior para abrir la barra lateral",
+  "@sidebarBottomNavSwipeDescription": {},
+  "sidebar": "Barra lateral",
+  "@sidebar": {},
+  "commentSwipeGesturesHint": "¿Quieres utilizar los botones? Habilítalos en la sección de comentarios de los ajustes generales.",
+  "@commentSwipeGesturesHint": {},
+  "fullScreenNavigationSwipeDescription": "Desliza el dedo en cualquier lugar para volver atrás cuando los gestos de izquierda a derecha estén desactivados",
+  "@fullScreenNavigationSwipeDescription": {},
+  "postSwipeGesturesHint": "¿Quieres utilizar los botones? Cambia los botones que aparecen en los temas en los ajustes generales.",
+  "@postSwipeGesturesHint": {},
+  "gestures": "Gestos",
+  "@gestures": {}
 }
