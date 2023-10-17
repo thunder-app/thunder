@@ -22,6 +22,7 @@ import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc; // renamed to pr
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/swipe.dart';
 
 import '../../user/bloc/user_bloc.dart';
@@ -210,7 +211,7 @@ class _PostCardState extends State<PostCard> {
                       communityMode: widget.communityMode,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
-                      navigateToPost: () async => await navigateToPost(context),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, widget.postViewMedia),
                       indicateRead: widget.indicateRead!,
                     )
                   : PostCardViewComfortable(
@@ -231,7 +232,7 @@ class _PostCardState extends State<PostCard> {
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
-                      navigateToPost: () async => await navigateToPost(context),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, widget.postViewMedia),
                       indicateRead: widget.indicateRead!,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
@@ -253,56 +254,11 @@ class _PostCardState extends State<PostCard> {
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
                 if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
-                return await navigateToPost(context);
+                return await navigateToPost(context, widget.postViewMedia);
               },
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Future<void> navigateToPost(BuildContext context) async {
-    AccountBloc accountBloc = context.read<AccountBloc>();
-    AuthBloc authBloc = context.read<AuthBloc>();
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    FeedBloc feedBloc = context.read<FeedBloc>();
-    CommunityBloc communityBloc = context.read<CommunityBloc>();
-    AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
-
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool reduceAnimations = state.reduceAnimations;
-
-    // Mark post as read when tapped
-    if (isUserLoggedIn) {
-      int postId = widget.postViewMedia.postView.post.id;
-      feedBloc.add(FeedItemActionedEvent(postId: postId, postAction: PostAction.read, value: true));
-    }
-
-    await Navigator.of(context).push(
-      SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
-        backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true),
-        builder: (otherContext) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider.value(value: accountBloc),
-              BlocProvider.value(value: authBloc),
-              BlocProvider.value(value: thunderBloc),
-              BlocProvider(create: (context) => post_bloc.PostBloc()),
-              BlocProvider.value(value: communityBloc),
-              BlocProvider.value(value: anonymousSubscriptionsBloc),
-            ],
-            child: PostPage(
-              postView: widget.postViewMedia,
-              onPostUpdated: (PostViewMedia postViewMedia) {
-                context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
-              },
-            ),
-          );
-        },
       ),
     );
   }
