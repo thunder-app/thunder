@@ -409,7 +409,7 @@ class CommunityActions extends StatelessWidget {
                             ],
                             child: CreatePostPage(
                               communityId: communityView.community.id,
-                              communityInfo: fullCommunityView,
+                              communityView: fullCommunityView.communityView,
                               previousDraftPost: previousDraftPost,
                               onUpdateDraft: (p) => newDraftPost = p,
                             ),

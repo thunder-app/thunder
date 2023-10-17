@@ -11,6 +11,7 @@
 - Added support for accessibility profiles in settings - contribution from @micahmo
 - Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
 - Introduced support for reporting comments. - contribution from @ggichure
+- Added ability to create post from home feed - contribution from @micahmo
 
 
 ### Changed

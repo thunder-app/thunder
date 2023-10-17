@@ -21,15 +21,15 @@ import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/instance.dart';
 
 class CreatePostPage extends StatefulWidget {
-  final int communityId;
-  final FullCommunityView? communityInfo;
+  final int? communityId;
+  final CommunityView? communityView;
   final void Function(DraftPost? draftPost)? onUpdateDraft;
   final DraftPost? previousDraftPost;
 
   const CreatePostPage({
     super.key,
     required this.communityId,
-    this.communityInfo,
+    this.communityView,
     this.previousDraftPost,
     this.onUpdateDraft,
   });
@@ -48,6 +48,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String? urlError;
   DraftPost newDraftPost = DraftPost();
 
+  int? communityId;
+  CommunityView? communityView;
+
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
@@ -57,6 +60,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   void initState() {
     super.initState();
+
+    communityId = widget.communityId;
+    communityView = widget.communityView;
 
     _titleTextController.addListener(() {
       _validateSubmission();
@@ -120,8 +126,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   : () {
                       newDraftPost.saveAsDraft = false;
                       url != ''
-                          ? context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
-                          : context.read<FeedBloc>().add(CreatePostEvent(communityId: widget.communityId, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                          ? context.read<FeedBloc>().add(CreatePostEvent(communityId: communityId!, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
+                          : context.read<FeedBloc>().add(CreatePostEvent(communityId: communityId!, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
                       Navigator.of(context).pop();
                     },
               icon: Icon(
@@ -166,21 +172,45 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                        const SizedBox(height: 12.0),
-                        Row(
-                          children: [
-                            CommunityIcon(community: widget.communityInfo?.communityView.community, radius: 16),
-                            const SizedBox(
-                              width: 12,
+                        Transform.translate(
+                          offset: const Offset(-8, 0),
+                          child: InkWell(
+                            onTap: () {
+                              showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (cv) {
+                                setState(() {
+                                  communityId = cv.community.id;
+                                  communityView = cv;
+                                });
+                                _validateSubmission();
+                              });
+                            },
+                            borderRadius: const BorderRadius.all(Radius.circular(50)),
+                            child: Padding(
+                              padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+                              child: Row(
+                                children: [
+                                  CommunityIcon(community: communityView?.community, radius: 16),
+                                  const SizedBox(
+                                    width: 12,
+                                  ),
+                                  communityId != null
+                                      ? Text(
+                                          '${communityView?.community.name} '
+                                          '· ${fetchInstanceNameFromUrl(communityView?.community.actorId)}',
+                                          style: theme.textTheme.titleSmall,
+                                        )
+                                      : Text(
+                                          AppLocalizations.of(context)!.selectCommunity,
+                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                            fontStyle: FontStyle.italic,
+                                            color: theme.colorScheme.error,
+                                          ),
+                                        ),
+                                ],
+                              ),
                             ),
-                            Text(
-                              '${widget.communityInfo?.communityView.community.name} '
-                              '· ${fetchInstanceNameFromUrl(widget.communityInfo?.communityView.community.actorId)}',
-                              style: theme.textTheme.titleSmall,
-                            ),
-                          ],
+                          ),
                         ),
-                        const SizedBox(height: 12.0),
                         const UserIndicator(),
                         const SizedBox(height: 12.0),
                         TextFormField(
@@ -352,7 +382,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (isSubmitButtonDisabled) {
       // It's disabled, check if we can enable it.
-      if (_titleTextController.text.isNotEmpty && parsedUrl != null) {
+      if (_titleTextController.text.isNotEmpty && parsedUrl != null && communityId != null) {
         setState(() {
           isSubmitButtonDisabled = false;
           urlError = null;
@@ -360,7 +390,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
     } else {
       // It's enabled, check if we need to disable it.
-      if (_titleTextController.text.isEmpty || parsedUrl == null) {
+      if (_titleTextController.text.isEmpty || parsedUrl == null || communityId == null) {
         setState(() {
           isSubmitButtonDisabled = true;
           urlError = parsedUrl == null ? AppLocalizations.of(context)!.notValidUrl : null;
