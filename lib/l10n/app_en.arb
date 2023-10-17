@@ -202,6 +202,11 @@
   "sidebarBottomNavDoubleTapDescription": "Double-tap bottom nav to open sidebar",
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
-  "loginToSeeInbox":"Log in to see your inbox"
+  "loginToSeeInbox":"Log in to see your inbox",
+  "malformedUri":"The link you provided is in an unsupported format. Please make sure it's a valid link.",
+  "exceptionProcessingUri":"An unknown error occurred while processing the link.",
+  "uriNotSupported":"This type of link is not supported at the moment.",
+  "emptyUri":"The link is empty. Please provide a valid dynamic link to proceed."
+
 
 }

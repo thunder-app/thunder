@@ -22,6 +22,7 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
 
 void main() async {
@@ -61,6 +62,9 @@ class ThunderApp extends StatelessWidget {
         BlocProvider(
           create: (context) => AuthBloc(),
         ),
+        BlocProvider(
+          create: (context) => DeepLinksCubit(),
+        )
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

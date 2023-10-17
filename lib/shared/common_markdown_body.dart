@@ -108,7 +108,7 @@ class CommonMarkdownBody extends StatelessWidget {
             ));
 
             if (context.mounted) {
-              navigateToPost(context, (await parsePostViews([post.postView])).first);
+              navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
               return;
             }
           } catch (e) {
