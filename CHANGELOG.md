@@ -5,11 +5,13 @@
 - Instance autocomplete when logging in - contribution from @micahmo
 - Show trending communities on search page - contribution from @micahmo
 - Added new post sharing options - contribution from @micahmo
-- Added Read All in inbox. - contribution from @ggriffo
+- Added Read All in inbox. - contribution from @ggichure
 - Open links to posts and comments in the app instead of browser - contribution from @micahmo
 - Added support for lemmy 0.19.x authentication - contribution from @micahmo
 - Added support for accessibility profiles in settings - contribution from @micahmo
 - Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
+- Introduced support for reporting comments. - contribution from @ggichure
+
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
