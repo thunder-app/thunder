@@ -125,7 +125,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                   child: Icon(
                     Icons.close,
                     size: widget.centered ? 20 : 25,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     semanticLabel: AppLocalizations.of(context)!.close,
                   ),
                 ),
