@@ -13,6 +13,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/numbers.dart';
 
 import '../core/enums/swipe_action.dart';
@@ -95,37 +96,7 @@ class _CommentReferenceState extends State<CommentReference> {
           ${formatTimeToString(dateTime: (widget.comment.comment.updated ?? widget.comment.comment.published).toIso8601String())}\n
           ${widget.comment.comment.content}""",
       child: InkWell(
-        onTap: () async {
-          AccountBloc accountBloc = context.read<AccountBloc>();
-          AuthBloc authBloc = context.read<AuthBloc>();
-          ThunderBloc thunderBloc = context.read<ThunderBloc>();
-
-          final ThunderState state = context.read<ThunderBloc>().state;
-          final bool reduceAnimations = state.reduceAnimations;
-
-          // To to specific post for now, in the future, will be best to scroll to the position of the comment
-          await Navigator.of(context).push(
-            SwipeablePageRoute(
-              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-              backGestureDetectionWidth: 45,
-              canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
-              builder: (context) => MultiBlocProvider(
-                providers: [
-                  BlocProvider.value(value: accountBloc),
-                  BlocProvider.value(value: authBloc),
-                  BlocProvider.value(value: thunderBloc),
-                  BlocProvider(create: (context) => PostBloc()),
-                ],
-                child: PostPage(
-                  selectedCommentId: widget.comment.comment.id,
-                  selectedCommentPath: widget.comment.comment.path,
-                  postId: widget.comment.post.id,
-                  onPostUpdated: (PostViewMedia postViewMedia) => {},
-                ),
-              ),
-            ),
-          );
-        },
+        onTap: () async => await navigateToComment(context, widget.comment),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 4.0),
           child: Column(
