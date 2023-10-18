@@ -16,8 +16,11 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/utils/error_messages.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/network_errors.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../../utils/constants.dart';
 
@@ -74,6 +77,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<NavigateCommentEvent>(
       _navigateCommentEvent,
     );
+    on<ReportCommentEvent>(
+      _reportCommentEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
   }
 
   /// Fetches the post, along with the initial set of comments
@@ -99,7 +106,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           if (event.postId != null) {
             getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
-              throw Exception('Error: Timeout when attempting to fetch post');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
 
@@ -160,7 +167,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch comments');
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
           });
 
           // Build the tree view from the flattened comments
@@ -236,7 +243,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               type: CommentListingType.all,
             ))
                 .timeout(timeout, onTimeout: () {
-              throw Exception('Error: Timeout when attempting to fetch comments');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
 
             // Build the tree view from the flattened comments
@@ -270,7 +277,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               // If we come here, we've determined that we've already loaded all of the comments.
               // But we're currently being asked to load some children.
               // Therefore we will treat this as an error.
-              throw Exception('Unable to load more replies.');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
             }
             return;
           }
@@ -290,7 +297,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             type: CommentListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
-            throw Exception('Error: Timeout when attempting to fetch more comments');
+            throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
           });
 
           // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
@@ -298,7 +305,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           if (event.commentParentId != null) {
             final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
             if (!anyDirectChildren) {
-              throw Exception('Unable to load more replies.');
+              throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
             }
           }
 
@@ -330,7 +337,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       }
 
       if (is50xError(exception.toString()) != null) {
-        emit(state.copyWith(status: PostStatus.failure, errorMessage: 'A server error was encountered when fetching more comments: ${is50xError(exception.toString())}'));
+        emit(state.copyWith(status: PostStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.serverErrorComments('${is50xError(exception.toString())}')));
       } else {
         // In case there are two errors in a row without the status changing,
         // emit a blank error then the real error so that the widget detects a change and rebuilds.
@@ -358,7 +365,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       PostView postView = await votePost(event.postId, event.score).timeout(timeout, onTimeout: () {
         state.postView?.postView = originalPostView;
-        throw Exception('Error: Timeout when attempting to vote post');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutVotingPost);
       });
 
       state.postView?.postView = postView;
@@ -374,7 +381,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing));
 
       PostView postView = await savePost(event.postId, event.save).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting to save post');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSavingPost);
       });
 
       state.postView?.postView = postView;
@@ -412,7 +419,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       CommentView commentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
         currentTree.commentView = originalCommentView; // Reset this on exception
-        throw Exception('Error: Timeout when attempting to vote on comment');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutUpvoteComment);
       });
 
       currentTree.commentView = commentView;
@@ -428,7 +435,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.refreshing, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
 
       CommentView commentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
-        throw Exception('Error: Timeout when attempting save a comment');
+        throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutSaveComment);
       });
 
       List<int> commentIndexes = findCommentIndexesFromCommentViewTree(state.comments, event.commentId);
@@ -454,11 +461,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot create a post.'));
+        return emit(state.copyWith(
+          status: PostStatus.failure,
+          errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+        ));
       }
 
       if (state.postView?.postView.post.id == null) {
-        return emit(state.copyWith(status: PostStatus.failure, errorMessage: 'Could not determine post to comment to.'));
+        return emit(state.copyWith(
+          status: PostStatus.failure,
+          errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
+        ));
       }
 
       FullCommentView createComment = await lemmy.run(CreateComment(
@@ -498,7 +511,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (account?.jwt == null) {
         return emit(state.copyWith(
             status: PostStatus.failure,
-            errorMessage: 'You are not logged in. Cannot create a post.',
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
             moddingCommentId: event.commentId,
             selectedCommentId: state.selectedCommentId,
             selectedCommentPath: state.selectedCommentPath));
@@ -507,7 +520,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       if (state.postView?.postView.post.id == null) {
         return emit(state.copyWith(
             status: PostStatus.failure,
-            errorMessage: 'Could not determine post to comment to.',
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDeterminePostComment,
             moddingCommentId: event.commentId,
             selectedCommentId: state.selectedCommentId,
             selectedCommentPath: state.selectedCommentPath));
@@ -536,12 +549,18 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       if (account?.jwt == null) {
         return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'You are not logged in. Cannot delete a comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
       if (state.postView?.postView.post.id == null) {
         return emit(state.copyWith(
-            status: PostStatus.failure, errorMessage: 'Could not determine post to delete the comment.', selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.couldNotDetermineCommentDelete,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
       }
 
       FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
@@ -550,6 +569,35 @@ class PostBloc extends Bloc<PostEvent, PostState> {
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
     } catch (e) {
+      return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
+    }
+  }
+
+  Future<void> _reportCommentEvent(ReportCommentEvent event, Emitter<PostState> emit) async {
+    try {
+      emit(state.copyWith(status: PostStatus.refreshing, moddingCommentId: event.commentId, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+
+      Account? account = await fetchActiveProfileAccount();
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      if (account?.jwt == null) {
+        return emit(state.copyWith(
+            status: PostStatus.failure,
+            errorMessage: AppLocalizations.of(GlobalContext.context)!.loginToPerformAction,
+            selectedCommentId: state.selectedCommentId,
+            selectedCommentPath: state.selectedCommentPath));
+      }
+      await lemmy.run(CreateCommentReport(commentId: event.commentId, reason: event.message, auth: account!.jwt!));
+
+      return emit(
+          state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
+    } on LemmyApiException catch (e) {
+      return emit(state.copyWith(
+        status: PostStatus.failure,
+        errorMessage: getErrorMessage(GlobalContext.context, e.message),
+        moddingCommentId: -1,
+      ));
+    } catch (e, s) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }

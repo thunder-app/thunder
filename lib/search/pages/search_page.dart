@@ -152,6 +152,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   child: Stack(
                     children: [
                       TextField(
+                        keyboardType: TextInputType.url,
                         focusNode: searchTextFieldFocus,
                         onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
                         controller: _controller,

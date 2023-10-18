@@ -25,6 +25,7 @@ String? getErrorMessage(BuildContext context, String lemmyApiErrorCode) {
     "cant_block_admin" => AppLocalizations.of(context)!.cantBlockAdmin,
     "cant_block_yourself" => AppLocalizations.of(context)!.cantBlockYourself,
     "only_mods_can_post_in_community" => AppLocalizations.of(context)!.onlyModsCanPostInCommunity,
+    "couldnt_create_report" => AppLocalizations.of(context)!.couldntCreateReport,
     _ => lemmyApiErrorCode,
   };
 }

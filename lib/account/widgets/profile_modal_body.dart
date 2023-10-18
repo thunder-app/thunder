@@ -57,6 +57,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         break;
     }
     return SwipeablePageRoute<dynamic>(
+      canOnlySwipeFromEdge: !context.read<ThunderBloc>().state.enableFullScreenSwipeNavigationGesture,
       builder: (context) {
         return page;
       },
