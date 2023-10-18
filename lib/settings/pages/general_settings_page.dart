@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
@@ -719,6 +720,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.add_link_rounded,
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
+                        ),
+                        ListTile(
+                          onTap: () {
+                            // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
+                            openAppSettings();
+                          },
+                          trailing: Icon(Icons.arrow_forward_ios),
+                          title: Text('Open by default'),
+                          subtitle: Text('Allow app to open supported links'),
                         ),
                       ],
                     ),
