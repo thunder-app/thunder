@@ -722,14 +722,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
                         ),
-                        ListTile(
-                          onTap: () {
-                            // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
-                            openAppSettings();
-                          },
-                          trailing: const Icon(Icons.arrow_forward_ios),
-                          title: Text(l10n.openByDefault),
-                          subtitle: Text(l10n.allowOpenSupportedLinks),
+                        // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
+                        GestureDetector(
+                          onTap: () => openAppSettings(),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.add_link),
+                              const SizedBox(
+                                width: 12,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    l10n.openByDefault,
+                                    style: theme.textTheme.bodyMedium,
+                                  ),
+                                  Text(l10n.allowOpenSupportedLinks)
+                                ],
+                              ),
+                              const Spacer(),
+                              const Icon(Icons.arrow_forward_ios)
+                            ],
+                          ),
                         ),
                       ],
                     ),
