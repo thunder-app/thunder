@@ -323,7 +323,7 @@
   "@includeText": {},
   "includeCommunity": "Include Community",
   "@includeCommunity": {},
-  "link": "Link",
+  "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "includePostLink": "Include Post Link",
   "@includePostLink": {},
@@ -419,7 +419,65 @@
   "loginToSeeInbox": "Log in to see your inbox",
   "@loginToSeeInbox": {},
   "malformedUri":"The link you provided is in an unsupported format. Please make sure it's a valid link.",
+  "@malformedUri":{
+    "description": "Error related to unsupported link format."
+    },
   "exceptionProcessingUri":"An unknown error occurred while processing the link.",
+  "@exceptionProcessingUri":{
+    "description": "An unspecified error during link processing."},
   "uriNotSupported":"This type of link is not supported at the moment.",
-  "emptyUri":"The link is empty. Please provide a valid dynamic link to proceed."
+  "@uriNotSupported":{
+    "description": "Unsupported link type at the present time."
+  },
+  "emptyUri":"The link is empty. Please provide a valid dynamic link to proceed.",
+  "@emptyUri":{
+    "description": "Error message for empty link."},
+  "general":"General",
+  "@general":{
+    "description": "General settings category."},
+  "settingsFeedCards":"These settings apply to the cards in the main feed, actions are always available when actually opening posts.",
+  "@settingsFeedCards":{
+    "description": "Settings for controlling the display of cards in the main feed."},
+  "useCompactView":"Enable for small posts, disable for big.",
+  "@useCompactView":{
+    "description": "Option to enable or disable compact view for small posts."},
+  "dimReadPosts":"Read posts will be grayed out",
+  "@dimReadPosts":{
+    "description": "Description of the effect on read posts."
+  },
+  "commentSortType":"Comment Sort Type",
+  "@commentSortType":{},
+  "combineNavAndFab":"Floating Action Button will be shown between navigation buttons.",
+  "@combineNavAndFab":{},
+  "scrapeMissingPreviews":"Enabling will have a performance hit.",
+  "@scrapeMissingPreviews":{
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "openByDefault":"Open by default",
+  "@openByDefault":{
+    "description": "Indicating the default behavior of opening links."
+  },
+  "allowOpenSupportedLinks":"Allow app to open supported links.",
+  "@allowOpenSupportedLinks":{
+    "description": "Option to permit the app to open supported links."
+  },
+  "userProfiles":"User Profiles",
+  "@userProfiles":{
+    "description": "Settings related to user profiles."
+    },
+  "displayUserScore":"Display User Scores (Karma).",
+  "@displayUserScore":{
+    "description": "Option for displaying user scores or karma."},
+  "notifications": "{count, plural, zero {Notification} one {Notifications} other {Notifications}}",
+  "@notifications":{
+    "description": "Message formatting for notifications count."},
+  "importExportSettings":"Import/Export Settings",
+  "@importExportSettings":{
+    "description": "Category for settings related to import and export."},
+  "saveSettings":"Save Settings",
+  "@saveSettings":{
+    "description": "Action to save the application settings."},
+  "importSettings":"Import Settings",
+  "@importSettings":{
+    "description": "Action to import application settings."}
 }
