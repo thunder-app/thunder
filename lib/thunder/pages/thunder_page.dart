@@ -7,10 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -35,6 +38,7 @@ import 'package:thunder/search/pages/search_page.dart';
 import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
@@ -113,8 +117,8 @@ class _ThunderState extends State<Thunder> {
   }) async {
     switch (linkType) {
       case LinkType.comment:
-        final commentId = await getLemmyCommentId(link!);
-      //if (context.mounted) await navigateToPost(context, selectedCommentId: commentId);
+        _navigateToComment(link!);
+
       case LinkType.user:
         String? username = await getLemmyUser(link!);
         if (username != null) if (context.mounted) await navigateToUserPage(context, username: username);
@@ -123,7 +127,34 @@ class _ThunderState extends State<Thunder> {
         final postId = await getLemmyPostId(link!);
         if (context.mounted) await navigateToPost(context, postId: postId);
       case LinkType.unknown:
-        if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported);
+        if (context.mounted) {
+          showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported);
+          final ThunderState state = context.watch<ThunderBloc>().state;
+          bool openInExternalBrowser = state.openInExternalBrowser;
+          openLink(context, url: link!, openInExternalBrowser: openInExternalBrowser);
+        }
+    }
+  }
+
+  Future<void> _navigateToComment(String link) async {
+    final commentId = await getLemmyCommentId(link);
+    if (commentId != null) {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      Account? account = await fetchActiveProfileAccount();
+
+      try {
+        FullCommentView fullCommentView = await lemmy.run(GetComment(
+          id: commentId,
+          auth: account?.jwt,
+        ));
+
+        if (context.mounted) {
+          navigateToComment(context, fullCommentView.commentView);
+          return;
+        }
+      } catch (e) {
+        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+      }
     }
   }
 
@@ -133,7 +164,6 @@ class _ThunderState extends State<Thunder> {
     final l10n = AppLocalizations.of(context)!;
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ThunderBloc()),
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),

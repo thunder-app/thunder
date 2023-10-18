@@ -64,7 +64,8 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => DeepLinksCubit(),
-        )
+        ),
+        BlocProvider(create: (context) => ThunderBloc()),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

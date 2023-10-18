@@ -136,7 +136,6 @@ Future<int?> getLemmyCommentId(String text) async {
   return null;
 }
 
-
 class GetInstanceIconResponse {
   final String? icon;
   final bool success;
