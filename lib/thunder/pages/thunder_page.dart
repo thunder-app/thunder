@@ -117,7 +117,7 @@ class _ThunderState extends State<Thunder> {
   }) async {
     switch (linkType) {
       case LinkType.comment:
-        _navigateToComment(link!);
+        if (context.mounted) _navigateToComment(link!);
 
       case LinkType.user:
         String? username = await getLemmyUser(link!);
@@ -143,6 +143,7 @@ class _ThunderState extends State<Thunder> {
       Account? account = await fetchActiveProfileAccount();
 
       try {
+        if (context.mounted) showSnackbar(context, 'Loading Comment');
         FullCommentView fullCommentView = await lemmy.run(GetComment(
           id: commentId,
           auth: account?.jwt,
@@ -167,7 +168,6 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
-        BlocProvider(create: (context) => AccountBloc()),
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
         BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
       ],
