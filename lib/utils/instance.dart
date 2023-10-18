@@ -114,18 +114,18 @@ final RegExp _comment = RegExp(r'^(https?:\/\/)(.*)\/comment\/([0-9]*).*$');
 Future<int?> getLemmyCommentId(String text) async {
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  final RegExpMatch? commentmatch = _comment.firstMatch(text);
-  if (commentmatch != null) {
-    final String? instance = commentmatch.group(2);
-    final int? postId = int.tryParse(commentmatch.group(3)!);
-    if (postId != null) {
+  final RegExpMatch? commentMatch = _comment.firstMatch(text);
+  if (commentMatch != null) {
+    final String? instance = commentMatch.group(2);
+    final int? commentId = int.tryParse(commentMatch.group(3)!);
+    if (commentId != null) {
       if (instance == lemmy.host) {
-        return postId;
+        return commentId;
       } else {
         // This is a comment on another instance. Try to resolve it
         try {
           final ResolveObjectResponse resolveObjectResponse = await lemmy.run(ResolveObject(q: text));
-          return resolveObjectResponse.post?.post.id;
+          return resolveObjectResponse.comment?.comment.id;
         } catch (e) {
           return null;
         }
@@ -135,6 +135,7 @@ Future<int?> getLemmyCommentId(String text) async {
 
   return null;
 }
+
 
 class GetInstanceIconResponse {
   final String? icon;
