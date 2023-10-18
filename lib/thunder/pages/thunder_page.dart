@@ -128,33 +128,51 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await navigateToPost(context, postId: postId);
       case LinkType.unknown:
         if (context.mounted) {
-          showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported);
-          final ThunderState state = context.watch<ThunderBloc>().state;
+          final ThunderState state = context.read<ThunderBloc>().state;
           bool openInExternalBrowser = state.openInExternalBrowser;
-          openLink(context, url: link!, openInExternalBrowser: openInExternalBrowser);
+          showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported,
+              trailingIcon: Icons.arrow_forward_ios,
+              clearSnackBars: false,
+              trailingAction: () => openLink(
+                    context,
+                    url: link!,
+                    openInExternalBrowser: openInExternalBrowser,
+                  ));
         }
     }
   }
 
   Future<void> _navigateToComment(String link) async {
     final commentId = await getLemmyCommentId(link);
-    if (commentId != null) {
-      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-      Account? account = await fetchActiveProfileAccount();
+    if (context.mounted) {
+      final ThunderState state = context.read<ThunderBloc>().state;
+      final openInExternalBrowser = state.openInExternalBrowser;
+      if (commentId != null) {
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+        Account? account = await fetchActiveProfileAccount();
 
-      try {
-        if (context.mounted) showSnackbar(context, 'Loading Comment');
-        FullCommentView fullCommentView = await lemmy.run(GetComment(
-          id: commentId,
-          auth: account?.jwt,
-        ));
-
-        if (context.mounted) {
-          navigateToComment(context, fullCommentView.commentView);
+        try {
+          FullCommentView fullCommentView = await lemmy.run(GetComment(
+            id: commentId,
+            auth: account?.jwt,
+          ));
+          if (context.mounted) navigateToComment(context, fullCommentView.commentView);
           return;
+        } catch (e) {
+          // Ignore exception, if it's not a valid comment, we'll perform the next fallback
         }
-      } catch (e) {
-        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+      } else {
+        // commentId not found or could not resolve link.
+        // show a snackbar with option to open link
+
+        showSnackbar(context, AppLocalizations.of(context)!.exceptionProcessingUri,
+            clearSnackBars: false,
+            trailingIcon: Icons.arrow_forward_ios,
+            trailingAction: () => openLink(
+                  context,
+                  url: link,
+                  openInExternalBrowser: openInExternalBrowser,
+                ));
       }
     }
   }
