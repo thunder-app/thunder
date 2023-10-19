@@ -752,7 +752,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             subtitle: l10n.allowOpenSupportedLinks,
                             description: l10n.openByDefault,
                           ),
-
                       ],
                     ),
                   ),

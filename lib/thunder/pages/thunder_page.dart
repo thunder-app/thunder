@@ -132,6 +132,7 @@ class _ThunderState extends State<Thunder> {
           bool openInExternalBrowser = state.openInExternalBrowser;
           showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported,
               trailingIcon: Icons.arrow_forward_ios,
+              duration: const Duration(seconds: 10),
               clearSnackBars: false,
               trailingAction: () => openLink(
                     context,
@@ -167,6 +168,7 @@ class _ThunderState extends State<Thunder> {
 
         showSnackbar(context, AppLocalizations.of(context)!.exceptionProcessingUri,
             clearSnackBars: false,
+            duration: const Duration(seconds: 10),
             trailingIcon: Icons.arrow_forward_ios,
             trailingAction: () => openLink(
                   context,
