@@ -10,6 +10,7 @@ import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../bloc/post_bloc.dart';
 
@@ -20,6 +21,7 @@ class CommentSubview extends StatefulWidget {
   final Function(int, VoteType) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
+  final Function(int) onReportAction;
   final Function(CommentView, bool) onReplyEditAction;
 
   final PostViewMedia? postViewMedia;
@@ -44,6 +46,7 @@ class CommentSubview extends StatefulWidget {
     required this.onSaveAction,
     required this.onDeleteAction,
     required this.onReplyEditAction,
+    required this.onReportAction,
     this.postViewMedia,
     this.selectedCommentId,
     this.selectedCommentPath,
@@ -121,7 +124,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         }
       },
       child: ScrollablePositionedList.builder(
-        physics: reduceAnimations ? const BouncingScrollPhysics() : null,
         addSemanticIndexes: false,
         itemScrollController: widget.itemScrollController,
         itemPositionsListener: widget.itemPositionsListener,
@@ -169,7 +171,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                                     _animatingOut = true;
                                     _fullCommentsAnimation.forward();
                                   },
-                                  child: const Text('View all comments'),
+                                  child: Text(AppLocalizations.of(context)!.viewAllComments),
                                 ),
                               ),
                               const Padding(padding: EdgeInsets.only(right: 15))
@@ -193,6 +195,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
+                      onReportAction: (int commentId) => widget.onReportAction(commentId),
                       onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),
                       moderators: widget.moderators,
                     ),
@@ -205,7 +208,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
                             child: Text(
-                              widget.comments.isEmpty ? 'Oh. There are no comments.' : 'Hmmm. It seems like you\'ve reached the bottom.',
+                              widget.comments.isEmpty ? AppLocalizations.of(context)!.noComments : AppLocalizations.of(context)!.reachedTheBottom,
                               textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,

@@ -1,14 +1,7 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
-import 'package:lemmy_api_client/v3.dart';
-import 'package:text_scroll/text_scroll.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
