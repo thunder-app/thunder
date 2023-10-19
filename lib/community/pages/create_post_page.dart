@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -27,12 +29,22 @@ class CreatePostPage extends StatefulWidget {
   final void Function(DraftPost? draftPost)? onUpdateDraft;
   final DraftPost? previousDraftPost;
 
+  // used create post from action sheet
+  final String? text;
+  final File? image;
+  final String? url;
+  final bool? creatingFromIntent;
+
   const CreatePostPage({
     super.key,
     required this.communityId,
     this.communityView,
     this.previousDraftPost,
     this.onUpdateDraft,
+    this.image,
+    this.text,
+    this.url,
+    this.creatingFromIntent = false,
   });
 
   @override
@@ -84,15 +96,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
       widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
     });
 
-    if (widget.previousDraftPost != null) {
-      _titleTextController.text = widget.previousDraftPost!.title ?? '';
-      _urlTextController.text = widget.previousDraftPost!.url ?? '';
-      _bodyTextController.text = widget.previousDraftPost!.text ?? '';
+    if (widget.creatingFromIntent ?? false) {
+      _urlTextController.text = widget.url ?? '';
+      _bodyTextController.text = widget.text ?? '';
+      // TODO (extend_gallery_bloc_intent_image)  Gallery Bloc receive an image intent
+    } else {
+      if (widget.previousDraftPost != null) {
+        _titleTextController.text = widget.previousDraftPost!.title ?? '';
+        _urlTextController.text = widget.previousDraftPost!.url ?? '';
+        _bodyTextController.text = widget.previousDraftPost!.text ?? '';
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        await Future.delayed(const Duration(milliseconds: 300));
-        showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
-      });
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+          await Future.delayed(const Duration(milliseconds: 300));
+          showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
+        });
+      }
     }
   }
 
