@@ -31,23 +31,21 @@ class LemmyClient {
   }
 
   bool supportsFeature(LemmyFeature feature) {
-    if (_lemmySites.containsKey(instance.lemmyApiV3.host)) {
-      // Parse the version
-      FullSiteView site = _lemmySites[instance.lemmyApiV3.host]!;
-      Version version;
-      try {
-        version = Version.parse(site.version);
-      } catch (e) {
-        return false;
-      }
+    if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) return false;
 
-      // Check the feature and return whether it's supported in this version
-      return switch (feature) {
-        LemmyFeature.sortTypeControversial || LemmyFeature.sortTypeScaled || LemmyFeature.commentSortTypeControversial => version >= Version(0, 19, 0, preRelease: ["rc", "1"]),
-      };
+    // Parse the version
+    FullSiteView site = _lemmySites[instance.lemmyApiV3.host]!;
+    Version version;
+    try {
+      version = Version.parse(site.version);
+    } catch (e) {
+      return false;
     }
 
-    return false;
+    // Check the feature and return whether it's supported in this version
+    return switch (feature) {
+      LemmyFeature.sortTypeControversial || LemmyFeature.sortTypeScaled || LemmyFeature.commentSortTypeControversial => version >= Version(0, 19, 0, preRelease: ["rc", "1"]),
+    };
   }
 
   static final Map<String, FullSiteView> _lemmySites = <String, FullSiteView>{};
