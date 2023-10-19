@@ -139,6 +139,7 @@
   "@trendingCommunities": {},
   "confirmLogOut": "Log out?",
   "@confirmLogOut": {},
+  "selectCommunity": "Select a community",
   "feed": "Feed",
   "@feed": {},
   "search": "Search",

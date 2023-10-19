@@ -34,9 +34,7 @@ class FeedFAB extends StatelessWidget {
     final FeedState feedState = context.watch<FeedBloc>().state;
 
     // A list of actions that are not supported through the general feed
-    List<FeedFabAction> unsupportedGeneralFeedFabActions = [
-      FeedFabAction.newPost,
-    ];
+    List<FeedFabAction> unsupportedGeneralFeedFabActions = [];
 
     // A list of actions that are not supported through the navigated community feed
     List<FeedFabAction> unsupportedNavigatedCommunityFeedFabActions = [
@@ -221,7 +219,7 @@ class FeedFAB extends StatelessWidget {
             triggerScrollToTop(context);
           },
         ),
-      if (enableNewPost && context.read<FeedBloc>().state.feedType == FeedType.community)
+      if (enableNewPost)
         ActionButton(
           title: FeedFabAction.newPost.title,
           icon: Icon(FeedFabAction.newPost.icon),
@@ -305,8 +303,8 @@ class FeedFAB extends StatelessWidget {
                 BlocProvider<AccountBloc>.value(value: accountBloc),
               ],
               child: CreatePostPage(
-                communityId: feedBloc.state.communityId!,
-                communityInfo: feedBloc.state.fullCommunityView,
+                communityId: feedBloc.state.communityId,
+                communityView: feedBloc.state.fullCommunityView?.communityView,
                 previousDraftPost: previousDraftPost,
                 onUpdateDraft: (p) => newDraftPost = p,
               ),
