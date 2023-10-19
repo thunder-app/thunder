@@ -89,7 +89,7 @@ Widget buildUserSuggestionWidget(PersonViewSafe payload, {void Function(PersonVi
 }
 
 /// Shows a dialog which allows typing/search for a community
-void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected}) async {
+void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
   Future<String?> onSubmitted({CommunityView? payload, String? value}) async {
     if (payload != null) {
       onCommunitySelected(payload);
@@ -123,14 +123,14 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: getCommunitySuggestions,
+    getSuggestions: (query) => getCommunitySuggestions(query, emptySuggestions),
     suggestionBuilder: buildCommunitySuggestionWidget,
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(String query) async {
+Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return const Iterable.empty();
+    return emptySuggestions ?? const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(

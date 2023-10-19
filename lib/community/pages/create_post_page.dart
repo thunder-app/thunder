@@ -6,6 +6,7 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -110,6 +111,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AccountState accountState = context.read<AccountBloc>().state;
+
     return GestureDetector(
       onTap: () {
         // Dismiss keyboard when we go tap anywhere on the screen
@@ -176,13 +179,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           offset: const Offset(-8, 0),
                           child: InkWell(
                             onTap: () {
-                              showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (cv) {
-                                setState(() {
-                                  communityId = cv.community.id;
-                                  communityView = cv;
-                                });
-                                _validateSubmission();
-                              });
+                              showCommunityInputDialog(
+                                context,
+                                title: AppLocalizations.of(context)!.community,
+                                onCommunitySelected: (cv) {
+                                  setState(() {
+                                    communityId = cv.community.id;
+                                    communityView = cv;
+                                  });
+                                  _validateSubmission();
+                                },
+                                emptySuggestions: accountState.subsciptions,
+                              );
                             },
                             borderRadius: const BorderRadius.all(Radius.circular(50)),
                             child: Padding(
