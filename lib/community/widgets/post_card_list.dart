@@ -118,7 +118,6 @@ class _PostCardListState extends State<PostCardList> {
           }
         },
         child: MasonryGridView.builder(
-          physics: reduceAnimations ? const BouncingScrollPhysics() : null,
           gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
           crossAxisSpacing: 40,
           mainAxisSpacing: 0,

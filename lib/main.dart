@@ -117,6 +117,7 @@ class ThunderApp extends StatelessWidget {
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
                   scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
                 ),
               );
             },
