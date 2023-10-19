@@ -124,7 +124,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         }
       },
       child: ScrollablePositionedList.builder(
-        physics: reduceAnimations ? const BouncingScrollPhysics() : null,
         addSemanticIndexes: false,
         itemScrollController: widget.itemScrollController,
         itemPositionsListener: widget.itemPositionsListener,
