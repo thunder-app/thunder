@@ -20,6 +20,7 @@ class InstancePage extends StatefulWidget {
 class _InstancePageState extends State<InstancePage> {
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final ThemeData theme = Theme.of(context);
 
     return Container(
@@ -33,11 +34,11 @@ class _InstancePageState extends State<InstancePage> {
               title: Text(fetchInstanceNameFromUrl(widget.site.actorId) ?? ''),
               actions: [
                 IconButton(
-                  tooltip: AppLocalizations.of(context)!.openInBrowser,
+                  tooltip: l10n.openInBrowser,
                   onPressed: () => openLink(context, url: widget.site.actorId),
                   icon: Icon(
                     Icons.open_in_browser_rounded,
-                    semanticLabel: AppLocalizations.of(context)!.openInBrowser,
+                    semanticLabel: l10n.openInBrowser,
                   ),
                 ),
               ],
