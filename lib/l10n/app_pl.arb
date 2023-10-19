@@ -175,8 +175,6 @@
   "edit": "Edit",
   "restore": "Restore",
   "delete": "Delete",
-  "scaled": "Scaled",
-  "controversial": "Controversial",
   "inReplyTo": "In reply to {post} in {community}",
   "xUpvotes": "{x} upvotes",
   "xDownvotes": "{x} downvotes",
