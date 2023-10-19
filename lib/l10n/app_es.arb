@@ -239,8 +239,6 @@
   "@comment": {},
   "comments": "Comments",
   "@comments": {},
-  "visitInstance": "Visit Instance",
-  "openInBrowser": "Open in Browser",
   "postLocked": "Tema bloqueado. No se permiten respuestas.",
   "@postLocked": {},
   "replyingTo": "Responder a {author}",
