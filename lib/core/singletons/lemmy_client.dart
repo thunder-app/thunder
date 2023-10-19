@@ -35,26 +35,39 @@ class LemmyClient {
 
     // Parse the version
     FullSiteView site = _lemmySites[instance.lemmyApiV3.host]!;
-    Version version;
+    Version instanceVersion;
     try {
-      version = Version.parse(site.version);
+      instanceVersion = Version.parse(site.version);
     } catch (e) {
       return false;
     }
 
     // Check the feature and return whether it's supported in this version
-    return switch (feature) {
-      LemmyFeature.sortTypeControversial || LemmyFeature.sortTypeScaled || LemmyFeature.commentSortTypeControversial => version >= Version(0, 19, 0, preRelease: ["rc", "1"]),
-    };
+    return instanceVersion > feature.minSupportedVersion;
   }
 
   static final Map<String, FullSiteView> _lemmySites = <String, FullSiteView>{};
 }
 
 enum LemmyFeature {
-  sortTypeControversial,
-  sortTypeScaled,
-  commentSortTypeControversial,
+  sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
+  sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
+  commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]);
+
+  final int major;
+  final int minor;
+  final int patch;
+  final List<String> preRelease;
+
+  const LemmyFeature(this.major, this.minor, this.patch, {this.preRelease = const []});
+
+  Version get minSupportedVersion => Version(
+        major,
+        minor,
+        patch,
+        // The Version package attempts to modify this list, so give them a non-final copy.
+        preRelease: List.from(preRelease),
+      );
 }
 
 enum IncludeVersionSpecificFeature {
