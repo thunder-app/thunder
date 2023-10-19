@@ -25,6 +25,7 @@ class ThunderState extends Equatable {
     // General Settings
     this.scrapeMissingPreviews = false,
     this.openInExternalBrowser = false,
+    this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
@@ -141,6 +142,7 @@ class ThunderState extends Equatable {
   // General Settings
   final bool scrapeMissingPreviews;
   final bool openInExternalBrowser;
+  final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
@@ -266,6 +268,7 @@ class ThunderState extends Equatable {
     // General Settings
     bool? scrapeMissingPreviews,
     bool? openInExternalBrowser,
+    bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
@@ -381,6 +384,7 @@ class ThunderState extends Equatable {
       // General Settings
       scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
+      openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,

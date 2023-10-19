@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
@@ -42,6 +44,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   // General Settings
   bool scrapeMissingPreviews = false;
   bool openInExternalBrowser = false;
+  bool openInReaderMode = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
   bool showInAppUpdateNotification = false;
@@ -117,6 +120,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.openLinksInExternalBrowser:
         await prefs.setBool(LocalSettings.openLinksInExternalBrowser.name, value);
         setState(() => openInExternalBrowser = value);
+        break;
+      case LocalSettings.openLinksInReaderMode:
+        await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
+        setState(() => openInReaderMode = value);
         break;
       case LocalSettings.useDisplayNamesForUsers:
         await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
@@ -283,6 +290,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       // Links
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       // Notification Settings
@@ -723,17 +731,28 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
                         ),
-                        // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
-                        SettingsListTile(
-                          icon: Icons.add_link,
-                          widget: const Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
+
+                        if (Platform.isIOS)
+                          ToggleOption(
+                            description: LocalSettings.openLinksInReaderMode.label,
+                            value: openInReaderMode,
+                            iconEnabled: Icons.menu_book_rounded,
+                            iconDisabled: Icons.menu_book_rounded,
+                            onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
                           ),
-                          onTap: () => openAppSettings(),
-                          subtitle: l10n.allowOpenSupportedLinks,
-                          description: l10n.openByDefault,
-                        ),
+                        // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
+                        if (Platform.isAndroid)
+                          SettingsListTile(
+                            icon: Icons.add_link,
+                            widget: const Icon(
+                              Icons.arrow_forward_ios,
+                              size: 16,
+                            ),
+                            onTap: () => openAppSettings(),
+                            subtitle: l10n.allowOpenSupportedLinks,
+                            description: l10n.openByDefault,
+                          ),
+
                       ],
                     ),
                   ),
