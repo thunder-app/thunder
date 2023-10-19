@@ -136,7 +136,6 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                         child: InstanceView(
                                           site: widget.fullCommunityView!.site!,
-                                          alternateSiteName: widget.fullCommunityView!.moderators.first.moderator!.name[0].toUpperCase(),
                                         ),
                                       ),
                                     ],

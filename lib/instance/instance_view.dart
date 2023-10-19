@@ -5,9 +5,8 @@ import 'package:thunder/shared/common_markdown_body.dart';
 
 class InstanceView extends StatelessWidget {
   final Site site;
-  final String? alternateSiteName;
 
-  const InstanceView({super.key, required this.site, this.alternateSiteName});
+  const InstanceView({super.key, required this.site});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +20,9 @@ class InstanceView extends StatelessWidget {
               backgroundColor: site.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
               foregroundImage: site.icon != null ? CachedNetworkImageProvider(site.icon!) : null,
               maxRadius: 24,
-              child: site.icon == null && alternateSiteName != null
+              child: site.icon == null
                   ? Text(
-                      alternateSiteName!,
+                      site.name[0],
                       semanticsLabel: '',
                       style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                     )
