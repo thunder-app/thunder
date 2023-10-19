@@ -119,8 +119,6 @@
   "editComment": "Edit Comment",
   "comment": "Comment",
   "comments": "Comments",
-  "visitInstance": "Visit Instance",
-  "openInBrowser": "Open in Browser",
   "postLocked": "Post is locked, replies not allowed",
   "replyingTo": "Replying to {author}",
   "unexpectedError": "Unexpected Error",
