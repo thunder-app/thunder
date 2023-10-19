@@ -264,7 +264,7 @@ void showAdvancedShareSheet(BuildContext context, PostViewMedia postViewMedia) a
                       Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
-                          AppLocalizations.of(context)!.link,
+                          AppLocalizations.of(context)!.link(0),
                           style: theme.textTheme.titleLarge,
                         ),
                       ),
