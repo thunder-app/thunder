@@ -2,10 +2,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:url_launcher/url_launcher.dart' hide launch;
+import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class LinkInfo {
   String? imageURL;
@@ -46,6 +49,8 @@ Future<LinkInfo> getLinkInfo(String url) async {
 }
 
 void openLink(BuildContext context, {required String url, bool openInExternalBrowser = false}) async {
+  ThunderState state = context.read<ThunderBloc>().state;
+
   if (openInExternalBrowser || (!Platform.isAndroid && !Platform.isIOS)) {
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   } else {
@@ -62,6 +67,7 @@ void openLink(BuildContext context, {required String url, bool openInExternalBro
         preferredBarTintColor: Theme.of(context).canvasColor,
         preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
         barCollapsingEnabled: true,
+        entersReaderIfAvailable: state.openInReaderMode,
       ),
     );
   }

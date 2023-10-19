@@ -14,6 +14,7 @@ enum LocalSettings {
   // General Settings
   scrapeMissingPreviews(name: 'setting_general_scrape_missing_previews', label: 'Scrape Missing External Link Previews'),
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
+  openLinksInReaderMode(name: 'setting_links_open_in_reader_mode', label: 'Open Links in Reader Mode when available'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
