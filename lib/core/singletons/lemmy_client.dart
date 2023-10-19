@@ -18,16 +18,16 @@ class LemmyClient {
   static LemmyClient get instance => _instance;
 
   Future<void> _populateSiteInfo() async {
-    if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) {
-      // Retrieve the site so we can look up metadata about it later
-      Account? account = await fetchActiveProfileAccount();
+    if (_lemmySites.containsKey(instance.lemmyApiV3.host)) return;
 
-      _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(
-        GetSite(
-          auth: account?.jwt,
-        ),
-      );
-    }
+    // Retrieve the site so we can look up metadata about it later
+    Account? account = await fetchActiveProfileAccount();
+
+    _lemmySites[instance.lemmyApiV3.host] = await instance.lemmyApiV3.run(
+      GetSite(
+        auth: account?.jwt,
+      ),
+    );
   }
 
   bool supportsFeature(LemmyFeature feature) {
