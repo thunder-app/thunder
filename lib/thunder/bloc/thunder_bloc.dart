@@ -170,6 +170,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       SwipeAction rightPrimaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightPrimary.name) ?? SwipeAction.reply.name);
       SwipeAction rightSecondaryCommentGesture = SwipeAction.values.byName(prefs.getString(LocalSettings.commentGestureRightSecondary.name) ?? SwipeAction.save.name);
 
+      bool enableFullScreenSwipeNavigationGesture = prefs.getBool(LocalSettings.enableFullScreenSwipeNavigationGesture.name) ?? true;
+
       /// -------------------------- FAB Related Settings --------------------------
       bool enableFeedsFab = prefs.getBool(LocalSettings.enableFeedsFab.name) ?? true;
       bool enablePostsFab = prefs.getBool(LocalSettings.enablePostsFab.name) ?? true;
@@ -282,6 +284,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         leftSecondaryCommentGesture: leftSecondaryCommentGesture,
         rightPrimaryCommentGesture: rightPrimaryCommentGesture,
         rightSecondaryCommentGesture: rightSecondaryCommentGesture,
+
+        enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture,
 
         /// -------------------------- FAB Related Settings --------------------------
         enablePostsFab: enablePostsFab,

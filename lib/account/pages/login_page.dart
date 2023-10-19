@@ -1,19 +1,23 @@
 import 'dart:async';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/instances.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/links.dart';
 import 'package:thunder/utils/text_input_formatter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -27,7 +31,7 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMixin {
   late TextEditingController _usernameTextEditingController;
   late TextEditingController _passwordTextEditingController;
   late TextEditingController _totpTextEditingController;
@@ -40,6 +44,7 @@ class _LoginPageState extends State<LoginPage> {
   Timer? instanceTextDebounceTimer;
   Timer? instanceValidationDebounceTimer;
   bool instanceValidated = true;
+  bool instanceAwaitingValidation = true;
   String? instanceError;
 
   bool isLoading = false;
@@ -94,6 +99,9 @@ class _LoginPageState extends State<LoginPage> {
       });
 
       // Debounce
+      setState(() {
+        instanceAwaitingValidation = true;
+      });
       if (instanceValidationDebounceTimer?.isActive == true) {
         instanceValidationDebounceTimer!.cancel();
       }
@@ -102,8 +110,9 @@ class _LoginPageState extends State<LoginPage> {
               if (currentInstance == _instanceTextEditingController.text)
                 {
                   setState(() {
+                    instanceAwaitingValidation = false;
                     instanceValidated = value;
-                    instanceError = '$currentInstance does not appear to be a valid Lemmy instance';
+                    instanceError = AppLocalizations.of(context)!.notValidLemmyInstance(currentInstance ?? '');
                   })
                 }
             });
@@ -172,22 +181,95 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                   ),
                   const SizedBox(height: 12.0),
-                  TextField(
-                    textInputAction: TextInputAction.next,
-                    keyboardType: TextInputType.url,
-                    autocorrect: false,
-                    controller: _instanceTextEditingController,
-                    inputFormatters: [LowerCaseTextFormatter()],
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                      labelText: 'Instance',
-                      hintText: 'e.g., lemmy.ml, lemmy.world, etc.',
-                      errorText: instanceValidated ? null : instanceError,
-                      errorMaxLines: 2,
+                  AnimatedCrossFade(
+                    crossFadeState: _instanceTextEditingController.text.isNotEmpty && !instanceAwaitingValidation && instanceValidated ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+                    duration: const Duration(milliseconds: 250),
+                    firstChild: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        RichText(
+                          text: TextSpan(
+                            style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
+                            text: AppLocalizations.of(context)!.gettingStarted,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                openLink(context, url: 'https://join-lemmy.org/');
+                              },
+                          ),
+                        ),
+                      ],
                     ),
-                    enableSuggestions: false,
-                    onSubmitted: (_instanceTextEditingController.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                    secondChild: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(width: 5),
+                        RichText(
+                          text: TextSpan(
+                            style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
+                            text: AppLocalizations.of(context)!.openInstance,
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                openLink(context, url: 'https://${_instanceTextEditingController.text}');
+                              },
+                          ),
+                        ),
+                        if (!widget.anonymous) ...[
+                          const SizedBox(width: 10),
+                          Text(
+                            '|',
+                            style: theme.textTheme.bodySmall,
+                          ),
+                          const SizedBox(width: 10),
+                          RichText(
+                            text: TextSpan(
+                              style: theme.textTheme.bodySmall?.copyWith(color: Colors.blue),
+                              text: AppLocalizations.of(context)!.createAccount,
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  openLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                                },
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 12.0),
+                  TypeAheadField<String>(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      textInputAction: TextInputAction.next,
+                      keyboardType: TextInputType.url,
+                      autocorrect: false,
+                      controller: _instanceTextEditingController,
+                      inputFormatters: [LowerCaseTextFormatter()],
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                        labelText: AppLocalizations.of(context)!.instance,
+                        errorText: instanceValidated ? null : instanceError,
+                        errorMaxLines: 2,
+                      ),
+                      enableSuggestions: false,
+                      onSubmitted: (_instanceTextEditingController.text.isNotEmpty && widget.anonymous) ? (_) => _addAnonymousInstance() : null,
+                    ),
+                    suggestionsCallback: (String pattern) {
+                      if (pattern.isNotEmpty != true) {
+                        return const Iterable.empty();
+                      }
+                      return instances.where((instance) => instance.contains(pattern));
+                    },
+                    itemBuilder: (BuildContext context, String itemData) {
+                      return ListTile(title: Text(itemData));
+                    },
+                    onSuggestionSelected: (String suggestion) {
+                      _instanceTextEditingController.text = suggestion;
+                      setState(() {
+                        instanceValidated = true;
+                      });
+                    },
+                    hideOnEmpty: true,
+                    hideOnLoading: true,
+                    hideOnError: true,
                   ),
                   if (!widget.anonymous) ...[
                     const SizedBox(height: 35.0),
@@ -200,10 +282,10 @@ class _LoginPageState extends State<LoginPage> {
                             autocorrect: false,
                             controller: _usernameTextEditingController,
                             autofillHints: const [AutofillHints.username],
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               isDense: true,
-                              border: OutlineInputBorder(),
-                              labelText: 'Username',
+                              border: const OutlineInputBorder(),
+                              labelText: AppLocalizations.of(context)!.username,
                             ),
                             enableSuggestions: false,
                           ),
@@ -224,13 +306,13 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               isDense: true,
                               border: const OutlineInputBorder(),
-                              labelText: 'Password',
+                              labelText: AppLocalizations.of(context)!.password,
                               suffixIcon: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                 child: IconButton(
                                   icon: Icon(
                                     showPassword ? Icons.visibility_rounded : Icons.visibility_off_rounded,
-                                    semanticLabel: showPassword ? 'Hide Password' : 'Show Password',
+                                    semanticLabel: showPassword ? AppLocalizations.of(context)!.hidePassword : AppLocalizations.of(context)!.showPassword,
                                   ),
                                   onPressed: () {
                                     setState(() {
@@ -251,10 +333,10 @@ class _LoginPageState extends State<LoginPage> {
                       maxLength: 6,
                       keyboardType: TextInputType.number,
                       inputFormatters: <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly],
-                      decoration: const InputDecoration(
+                      decoration: InputDecoration(
                         isDense: true,
-                        border: OutlineInputBorder(),
-                        labelText: 'TOTP (optional)',
+                        border: const OutlineInputBorder(),
+                        labelText: AppLocalizations.of(context)!.totp,
                         hintText: '000000',
                       ),
                       enableSuggestions: false,
@@ -281,7 +363,7 @@ class _LoginPageState extends State<LoginPage> {
                   TextButton(
                     style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(60)),
                     onPressed: !isLoading ? () => widget.popRegister() : null,
-                    child: Text('Cancel', style: theme.textTheme.titleMedium),
+                    child: Text(AppLocalizations.of(context)!.cancel, style: theme.textTheme.titleMedium),
                   ),
                   const SizedBox(height: 32.0),
                 ],

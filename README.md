@@ -35,6 +35,7 @@
   <a href="#features">Features</a> •
   <a href="#roadmap">Roadmap</a> •
   <a href="#contributing">Contributing</a> •
+  <a href="#translations">Translations</a> •
   <a href="#building-from-source">Building From Source</a> •
   <a href="#conventions">Conventions</a>
 </p>
@@ -131,6 +132,9 @@ Contributions are always welcome! To contribute potential features or bug-fixes:
 2. Base the feature or fix off the `develop` branch. This is to allow for pre-release versions without affecting the main general releases.
 3. Apply any changes and/or additions based off an existing issue (or create a new issue for the feature/fix you are working on)
 4. Create a pull request to have your changes reviewed and merged
+
+## Translations
+Interested in translating Thunder? We use [Weblate](https://hosted.weblate.org/engage/thunder/) to crowdsource translations, so anyone can create an account and contribute!
 
 ## Building From Source
 

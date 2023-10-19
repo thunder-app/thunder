@@ -20,6 +20,7 @@ class GestureFab extends StatefulWidget {
     this.onPressed,
     this.onLongPress,
     this.centered = false,
+    this.heroTag,
   });
 
   final bool? initialOpen;
@@ -32,6 +33,7 @@ class GestureFab extends StatefulWidget {
   final Function? onPressed;
   final Function? onLongPress;
   final bool centered;
+  final String? heroTag;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -123,7 +125,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                   child: Icon(
                     Icons.close,
                     size: widget.centered ? 20 : 25,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     semanticLabel: AppLocalizations.of(context)!.close,
                   ),
                 ),
@@ -176,7 +178,8 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                 context.read<ThunderBloc>().add(const OnFabToggle(true));
               }
               if (details.delta.dy > 5) {
-                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+                // Only allow hiding fab when on the main feed, and not when opening a community on a new page
+                if (Navigator.of(context).canPop() == false) context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
               }
             },
             onHorizontalDragStart: null,
@@ -208,6 +211,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                     ),
                   )
                 : FloatingActionButton(
+                    heroTag: widget.heroTag,
                     onPressed: () {
                       widget.onPressed?.call();
                     },

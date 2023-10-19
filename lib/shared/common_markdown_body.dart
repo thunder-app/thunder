@@ -2,13 +2,20 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class CommonMarkdownBody extends StatelessWidget {
@@ -51,6 +58,9 @@ class CommonMarkdownBody extends StatelessWidget {
       },
       selectable: isSelectableText,
       onTapLink: (text, url, title) async {
+        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+        Account? account = await fetchActiveProfileAccount();
+
         Uri? parsedUri = Uri.tryParse(text);
 
         String parsedUrl = text;
@@ -67,8 +77,8 @@ class CommonMarkdownBody extends StatelessWidget {
           parsedUrl = parsedUrl.replaceFirst('mailto:', '');
         }
 
+        // Try navigating to community
         String? communityName = await getLemmyCommunity(parsedUrl);
-
         if (communityName != null) {
           try {
             await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
@@ -78,8 +88,8 @@ class CommonMarkdownBody extends StatelessWidget {
           }
         }
 
+        // Try navigating to user
         String? username = await getLemmyUser(parsedUrl);
-
         if (username != null) {
           try {
             await navigateToUserPage(context, username: username);
@@ -89,6 +99,43 @@ class CommonMarkdownBody extends StatelessWidget {
           }
         }
 
+        // Try navigating to post
+        int? postId = await getLemmyPostId(parsedUrl);
+        if (postId != null) {
+          try {
+            FullPostView post = await lemmy.run(GetPost(
+              id: postId,
+              auth: account?.jwt,
+            ));
+
+            if (context.mounted) {
+              navigateToPost(context, (await parsePostViews([post.postView])).first);
+              return;
+            }
+          } catch (e) {
+            // Ignore exception, if it's not a valid post, we'll perform the next fallback
+          }
+        }
+
+        // Try navigating to comment
+        int? commentId = await getLemmyCommentId(parsedUrl);
+        if (commentId != null) {
+          try {
+            FullCommentView fullCommentView = await lemmy.run(GetComment(
+              id: commentId,
+              auth: account?.jwt,
+            ));
+
+            if (context.mounted) {
+              navigateToComment(context, fullCommentView.commentView);
+              return;
+            }
+          } catch (e) {
+            // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+          }
+        }
+
+        // Fallback: open link in browser
         if (url != null) {
           openLink(context, url: parsedUrl, openInExternalBrowser: openInExternalBrowser);
         }

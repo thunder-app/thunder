@@ -36,7 +36,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
   final PostListingType? listingType;
-  final void Function()? navigateToPost;
+  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool indicateRead;
 
   const PostCardViewComfortable({

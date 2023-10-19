@@ -67,6 +67,7 @@ class _UserPageState extends State<UserPage> {
                   Navigator.of(context).push(
                     SwipeablePageRoute(
                       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      canOnlySwipeFromEdge: !state.enableFullScreenSwipeNavigationGesture,
                       builder: (context) => MultiBlocProvider(
                         providers: [
                           BlocProvider.value(value: accountBloc),
@@ -136,7 +137,7 @@ class _UserPageState extends State<UserPage> {
               return ErrorMessage(
                 message: state.errorMessage,
                 action: () => context.read<UserBloc>().add(GetUserEvent(userId: widget.userId, reset: true)),
-                actionText: 'Refresh Content',
+                actionText: AppLocalizations.of(context)!.refreshContent,
               );
           }
         }),

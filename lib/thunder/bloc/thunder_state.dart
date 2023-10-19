@@ -77,6 +77,7 @@ class ThunderState extends Equatable {
     this.leftSecondaryCommentGesture = SwipeAction.downvote,
     this.rightPrimaryCommentGesture = SwipeAction.reply,
     this.rightSecondaryCommentGesture = SwipeAction.save,
+    this.enableFullScreenSwipeNavigationGesture = true,
 
     // Theme Settings
     this.themeType = ThemeType.system,
@@ -206,6 +207,8 @@ class ThunderState extends Equatable {
   final SwipeAction rightPrimaryCommentGesture;
   final SwipeAction rightSecondaryCommentGesture;
 
+  final bool enableFullScreenSwipeNavigationGesture;
+
   /// -------------------------- FAB Related Settings --------------------------
   final bool enableFeedsFab;
   final bool enablePostsFab;
@@ -325,6 +328,7 @@ class ThunderState extends Equatable {
     SwipeAction? leftSecondaryCommentGesture,
     SwipeAction? rightPrimaryCommentGesture,
     SwipeAction? rightSecondaryCommentGesture,
+    bool? enableFullScreenSwipeNavigationGesture,
 
     /// -------------------------- FAB Related Settings --------------------------
     bool? enableFeedsFab,
@@ -435,6 +439,8 @@ class ThunderState extends Equatable {
       leftSecondaryPostGesture: leftSecondaryPostGesture ?? this.leftSecondaryPostGesture,
       rightPrimaryPostGesture: rightPrimaryPostGesture ?? this.rightPrimaryPostGesture,
       rightSecondaryPostGesture: rightSecondaryPostGesture ?? this.rightSecondaryPostGesture,
+
+      enableFullScreenSwipeNavigationGesture: enableFullScreenSwipeNavigationGesture ?? this.enableFullScreenSwipeNavigationGesture,
 
       // Comment Gestures
       enableCommentGestures: enableCommentGestures ?? this.enableCommentGestures,
@@ -564,6 +570,8 @@ class ThunderState extends Equatable {
         leftSecondaryCommentGesture,
         rightPrimaryCommentGesture,
         rightSecondaryCommentGesture,
+
+        enableFullScreenSwipeNavigationGesture,
 
         /// -------------------------- FAB Related Settings --------------------------
         enableFeedsFab,
