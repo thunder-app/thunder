@@ -13,6 +13,7 @@
 - Introduced support for reporting comments. - contribution from @ggichure
 - Added ability to create post from home feed - contribution from @micahmo
 - Added option to enter reader mode when tapping on a link in iOS
+- Added support to open Lemmy links in app. Android only.  - contribution from @ggichure
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
