@@ -10,6 +10,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -723,28 +724,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
                         ),
                         // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
-                        GestureDetector(
-                          onTap: () => openAppSettings(),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.add_link),
-                              const SizedBox(
-                                width: 12,
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    l10n.openByDefault,
-                                    style: theme.textTheme.bodyMedium,
-                                  ),
-                                  Text(l10n.allowOpenSupportedLinks)
-                                ],
-                              ),
-                              const Spacer(),
-                              const Icon(Icons.arrow_forward_ios)
-                            ],
+                        SettingsListTile(
+                          icon: Icons.add_link,
+                          widget: const Icon(
+                            Icons.arrow_forward_ios,
+                            size: 16,
                           ),
+                          onTap: () => openAppSettings(),
+                          subtitle: l10n.allowOpenSupportedLinks,
+                          description: l10n.openByDefault,
                         ),
                       ],
                     ),
