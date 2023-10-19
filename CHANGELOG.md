@@ -11,7 +11,7 @@
 - Added support for accessibility profiles in settings - contribution from @micahmo
 - Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
 - Introduced support for reporting comments. - contribution from @ggichure
-
+- Added option to enter reader mode when tapping on a link in iOS
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
