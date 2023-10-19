@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
@@ -744,11 +745,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         if (Platform.isAndroid)
                           SettingsListTile(
                             icon: Icons.add_link,
-                            widget: const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
+                            widget: const SizedBox(
+                              height: 42.0,
+                              child: Icon(Icons.chevron_right_rounded),
                             ),
-                            onTap: () => openAppSettings(),
+                            onTap: () async {
+                              try {
+                                const AndroidIntent intent = AndroidIntent(
+                                  action: "android.settings.APP_OPEN_BY_DEFAULT_SETTINGS",
+                                  package: "com.hjiangsu.thunder",
+                                  data: "package:com.hjiangsu.thunder",
+                                  flags: [ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK],
+                                );
+                                await intent.launch();
+                              } catch (e) {
+                                openAppSettings();
+                              }
+                            },
                             subtitle: l10n.allowOpenSupportedLinks,
                             description: l10n.openByDefault,
                           ),
