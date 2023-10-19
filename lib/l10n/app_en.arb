@@ -240,6 +240,8 @@
   "@comment": {},
   "comments": "Comments",
   "@comments": {},
+  "visitInstance": "Visit Instance",
+  "openInBrowser": "Open in Browser",
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "replyingTo": "Replying to {author}",
