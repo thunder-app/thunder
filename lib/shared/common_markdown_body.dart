@@ -14,6 +14,7 @@ import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
@@ -108,7 +109,7 @@ class CommonMarkdownBody extends StatelessWidget {
             ));
 
             if (context.mounted) {
-              navigateToPost(context, (await parsePostViews([post.postView])).first);
+              navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
               return;
             }
           } catch (e) {
@@ -116,7 +117,23 @@ class CommonMarkdownBody extends StatelessWidget {
           }
         }
 
-        // TODO: Try navigating to comment
+        // Try navigating to comment
+        int? commentId = await getLemmyCommentId(parsedUrl);
+        if (commentId != null) {
+          try {
+            FullCommentView fullCommentView = await lemmy.run(GetComment(
+              id: commentId,
+              auth: account?.jwt,
+            ));
+
+            if (context.mounted) {
+              navigateToComment(context, fullCommentView.commentView);
+              return;
+            }
+          } catch (e) {
+            // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+          }
+        }
 
         // Fallback: open link in browser
         if (url != null) {

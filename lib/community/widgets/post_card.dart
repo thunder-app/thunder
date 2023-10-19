@@ -211,7 +211,7 @@ class _PostCardState extends State<PostCard> {
                       communityMode: widget.communityMode,
                       isUserLoggedIn: isUserLoggedIn,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead!,
                     )
                   : PostCardViewComfortable(
@@ -232,13 +232,14 @@ class _PostCardState extends State<PostCard> {
                       onVoteAction: widget.onVoteAction,
                       onSaveAction: widget.onSaveAction,
                       listingType: widget.listingType,
-                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, widget.postViewMedia),
+                      navigateToPost: ({PostViewMedia? postViewMedia}) async => await navigateToPost(context, postViewMedia: widget.postViewMedia),
                       indicateRead: widget.indicateRead!,
                     ),
               onLongPress: () => showPostActionBottomModalSheet(
                 context,
                 widget.postViewMedia,
                 actionsToInclude: [
+                  PostCardAction.visitInstance,
                   PostCardAction.visitProfile,
                   PostCardAction.visitCommunity,
                   PostCardAction.blockCommunity,
@@ -254,7 +255,7 @@ class _PostCardState extends State<PostCard> {
               onTap: () async {
                 PostView postView = widget.postViewMedia.postView;
                 if (postView.read == false && isUserLoggedIn) context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postView.post.id, postAction: PostAction.read, value: true));
-                return await navigateToPost(context, widget.postViewMedia);
+                return await navigateToPost(context, postViewMedia: widget.postViewMedia);
               },
             ),
           ),

@@ -15,7 +15,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 
-Future<void> navigateToPost(BuildContext context, PostViewMedia postViewMedia) async {
+Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia, int? selectedCommentId, String? selectedCommentPath, int? postId, Function(PostViewMedia)? onPostUpdated}) async {
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
@@ -34,8 +34,10 @@ Future<void> navigateToPost(BuildContext context, PostViewMedia postViewMedia) a
 
   // Mark post as read when tapped
   if (authBloc.state.isLoggedIn) {
-    int postId = postViewMedia.postView.post.id;
-    feedBloc?.add(FeedItemActionedEvent(postId: postId, postAction: PostAction.read, value: true));
+    int? _postId;
+    _postId = postViewMedia?.postView.post.id ?? postId;
+
+    feedBloc?.add(FeedItemActionedEvent(postId: _postId, postAction: PostAction.read, value: true));
   }
 
   await Navigator.of(context).push(
@@ -56,6 +58,9 @@ Future<void> navigateToPost(BuildContext context, PostViewMedia postViewMedia) a
           ],
           child: PostPage(
             postView: postViewMedia,
+            postId: postId,
+            selectedCommentId: selectedCommentId,
+            selectedCommentPath: selectedCommentPath,
             onPostUpdated: (PostViewMedia postViewMedia) {
               FeedBloc? feedBloc;
               try {
