@@ -23,7 +23,7 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
       SwipeablePageRoute(
         transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
         backGestureDetectionWidth: 45,
-        canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isFeedPage: true),
+        canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
         builder: (context) => MultiBlocProvider(
           providers: [
             BlocProvider.value(value: thunderBloc),
