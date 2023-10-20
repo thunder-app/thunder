@@ -14,6 +14,7 @@
 - Added ability to create post from home feed - contribution from @micahmo
 - Added option to enter reader mode when tapping on a link in iOS
 - Support new scaled and controversial sort types - contribution from @micahmo
+- Added support to open Lemmy links in app. Android only.  - contribution from @ggichure
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
