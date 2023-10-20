@@ -425,7 +425,7 @@
   "@malformedUri":{
     "description": "Error related to unsupported link format."
     },
-  "exceptionProcessingUri":"An unknown error occurred while processing the link.",
+  "exceptionProcessingUri":"An error occurred while processing the link. It may not be available on your instance.",
   "@exceptionProcessingUri":{
     "description": "An unspecified error during link processing."},
   "uriNotSupported":"This type of link is not supported at the moment.",

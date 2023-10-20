@@ -19,8 +19,16 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  CommunityBloc communityBloc = context.read<CommunityBloc>();
-  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+
+  CommunityBloc? communityBloc;
+  try {
+    communityBloc = context.read<CommunityBloc>();
+  } catch (e) {}
+
+  AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
+  try {
+    anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  } catch (e) {}
 
   FeedBloc? feedBloc;
   try {
@@ -53,8 +61,8 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
             BlocProvider.value(value: authBloc),
             BlocProvider.value(value: thunderBloc),
             BlocProvider(create: (context) => post_bloc.PostBloc()),
-            BlocProvider.value(value: communityBloc),
-            BlocProvider.value(value: anonymousSubscriptionsBloc),
+            if (communityBloc != null) BlocProvider.value(value: communityBloc),
+            if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
           ],
           child: PostPage(
             postView: postViewMedia,
