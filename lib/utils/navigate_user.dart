@@ -43,7 +43,10 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
+  try {
+    anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  } catch (e) {}
 
   ThunderState thunderState = thunderBloc.state;
   final bool reduceAnimations = thunderState.reduceAnimations;
@@ -58,7 +61,7 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
-          BlocProvider.value(value: anonymousSubscriptionsBloc),
+          if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
           BlocProvider<FeedBloc>(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider<CommunityBloc>(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
         ],
