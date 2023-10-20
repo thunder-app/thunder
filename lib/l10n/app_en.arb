@@ -354,6 +354,8 @@
   "@upvote": {},
   "downvote": "Downvote",
   "@downvote": {},
+  "scaled": "Scaled",
+  "controversial": "Controversial",
   "edit": "Edit",
   "@edit": {},
   "restore": "Restore",

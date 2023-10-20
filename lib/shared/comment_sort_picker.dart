@@ -1,41 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/global_context.dart';
 
-List<ListPickerItem<CommentSortType>> commentSortTypeItems = [
-  ListPickerItem(
-    payload: CommentSortType.top,
-    icon: Icons.military_tech,
-    label: AppLocalizations.of(GlobalContext.context)!.top,
-  ),
-  ListPickerItem(
-    payload: CommentSortType.old,
-    icon: Icons.access_time_outlined,
-    label: AppLocalizations.of(GlobalContext.context)!.old,
-  ),
-  ListPickerItem(
-    payload: CommentSortType.new_,
-    icon: Icons.auto_awesome_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.new_,
-  ),
-  ListPickerItem(
-    payload: CommentSortType.hot,
-    icon: Icons.local_fire_department,
-    label: AppLocalizations.of(GlobalContext.context)!.hot,
-  ),
-  //
-  // ListPickerItem(
-  //   payload: CommentSortType.chat,
-  //   icon: Icons.chat,
-  //   label: 'Chat',
-  // ),
-];
-
 class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
-  CommentSortPicker({super.key, required super.onSelect, required super.title, List<ListPickerItem<CommentSortType>>? items, super.previouslySelected}) : super(items: items ?? commentSortTypeItems);
+  final IncludeVersionSpecificFeature includeVersionSpecificFeature;
+
+  static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({IncludeVersionSpecificFeature includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported}) => [
+        ListPickerItem(
+          payload: CommentSortType.top,
+          icon: Icons.military_tech,
+          label: AppLocalizations.of(GlobalContext.context)!.top,
+        ),
+        ListPickerItem(
+          payload: CommentSortType.old,
+          icon: Icons.access_time_outlined,
+          label: AppLocalizations.of(GlobalContext.context)!.old,
+        ),
+        if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
+            (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.commentSortTypeControversial)))
+          ListPickerItem(
+            payload: CommentSortType.controversial,
+            icon: Icons.warning_rounded,
+            label: AppLocalizations.of(GlobalContext.context)!.controversial,
+          ),
+        ListPickerItem(
+          payload: CommentSortType.new_,
+          icon: Icons.auto_awesome_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.new_,
+        ),
+        ListPickerItem(
+          payload: CommentSortType.hot,
+          icon: Icons.local_fire_department,
+          label: AppLocalizations.of(GlobalContext.context)!.hot,
+        ),
+        //
+        // ListPickerItem(
+        //   payload: CommentSortType.chat,
+        //   icon: Icons.chat,
+        //   label: 'Chat',
+        // ),
+      ];
+
+  CommentSortPicker(
+      {super.key,
+      required super.onSelect,
+      required super.title,
+      List<ListPickerItem<CommentSortType>>? items,
+      super.previouslySelected,
+      this.includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported})
+      : super(items: items ?? CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: includeVersionSpecificFeature));
 
   @override
   State<StatefulWidget> createState() => _SortPickerState();
@@ -79,7 +96,7 @@ class _SortPickerState extends State<CommentSortPicker> {
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           children: [
-            ..._generateList(commentSortTypeItems, theme),
+            ..._generateList(CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: widget.includeVersionSpecificFeature), theme),
           ],
         ),
         const SizedBox(height: 16.0),
