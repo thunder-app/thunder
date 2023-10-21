@@ -56,11 +56,11 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
     return BlocListener<InboxBloc, InboxState>(
       listener: (context, state) {
         if (state.status == InboxStatus.success) {
+          if (inboxReplyMarkedAsRead == null) return;
+
           setState(() {
-            if (inboxReplyMarkedAsRead != null) {
-              inboxRepliesMarkedAsRead.add(inboxReplyMarkedAsRead!);
-              inboxReplyMarkedAsRead = null;
-            }
+            inboxRepliesMarkedAsRead.add(inboxReplyMarkedAsRead!);
+            inboxReplyMarkedAsRead = null;
           });
         }
       },
