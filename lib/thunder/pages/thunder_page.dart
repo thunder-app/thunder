@@ -10,7 +10,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
+
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
@@ -19,13 +21,16 @@ import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:collection/collection.dart';
 
 
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
@@ -45,6 +50,7 @@ import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
@@ -190,68 +196,126 @@ class _ThunderState extends State<Thunder> {
     required LinkType linkType,
     String? link,
   }) async {
+    // Start by retrieving the active account, if any, and setting the Lemmy base domain
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    String? activeProfileId = prefs.getString('active_profile_id');
+    List<Account> accounts = await Account.accounts();
+    Account? activeAccount = accounts.firstWhereOrNull((Account account) => account.id == activeProfileId);
+
+    if (activeAccount?.username != null && activeAccount?.jwt != null && activeAccount?.instance != null) {
+      // Set lemmy client to use the instance
+      LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
+    }
+
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) _navigateToComment(link!);
-
+        if (context.mounted) await _navigateToComment(link!);
       case LinkType.user:
-        String? username = await getLemmyUser(link!);
-        if (username != null) if (context.mounted) await navigateToUserPage(context, username: username);
-
+        if (context.mounted) await _navigateToUser(link!);
       case LinkType.post:
-        final postId = await getLemmyPostId(link!);
-        if (context.mounted) await navigateToPost(context, postId: postId);
+        if (context.mounted) await _navigateToPost(link!);
+      case LinkType.instance:
+        if (context.mounted) await _navigateToInstance(link!);
       case LinkType.unknown:
         if (context.mounted) {
-          final ThunderState state = context.read<ThunderBloc>().state;
-          bool openInExternalBrowser = state.openInExternalBrowser;
-          showSnackbar(context, AppLocalizations.of(context)!.uriNotSupported,
-              trailingIcon: Icons.arrow_forward_ios,
-              duration: const Duration(seconds: 10),
-              clearSnackBars: false,
-              trailingAction: () => openLink(
-                    context,
-                    url: link!,
-                    openInExternalBrowser: openInExternalBrowser,
-                  ));
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link!);
         }
+    }
+  }
+
+  Future<void> _navigateToInstance(String link) async {
+    try {
+      await navigateToInstancePage(context, instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), ''));
+    } catch (e) {
+      if (context.mounted) {
+        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      }
+    }
+  }
+
+  Future<void> _navigateToPost(String link) async {
+    final postId = await getLemmyPostId(link);
+    if (context.mounted && postId != null) {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      Account? account = await fetchActiveProfileAccount();
+
+      try {
+        FullPostView fullPostView = await lemmy.run(GetPost(
+          id: postId,
+          auth: account?.jwt,
+        ));
+        if (context.mounted) {
+          navigateToPost(context, postViewMedia: (await parsePostViews([fullPostView.postView])).first);
+          return;
+        }
+      } catch (e) {
+        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+      }
+
+      // postId not found or could not resolve link.
+      // show a snackbar with option to open link
+      if (context.mounted) {
+        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+      }
     }
   }
 
   Future<void> _navigateToComment(String link) async {
     final commentId = await getLemmyCommentId(link);
-    if (context.mounted) {
-      final ThunderState state = context.read<ThunderBloc>().state;
-      final openInExternalBrowser = state.openInExternalBrowser;
-      if (commentId != null) {
-        LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-        Account? account = await fetchActiveProfileAccount();
+    if (context.mounted && commentId != null) {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+      Account? account = await fetchActiveProfileAccount();
 
-        try {
-          FullCommentView fullCommentView = await lemmy.run(GetComment(
-            id: commentId,
-            auth: account?.jwt,
-          ));
-          if (context.mounted) navigateToComment(context, fullCommentView.commentView);
+      try {
+        FullCommentView fullCommentView = await lemmy.run(GetComment(
+          id: commentId,
+          auth: account?.jwt,
+        ));
+        if (context.mounted) {
+          navigateToComment(context, fullCommentView.commentView);
           return;
-        } catch (e) {
-          // Ignore exception, if it's not a valid comment, we'll perform the next fallback
         }
-      } else {
-        // commentId not found or could not resolve link.
-        // show a snackbar with option to open link
+      } catch (e) {
+        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+      }
 
-        showSnackbar(context, AppLocalizations.of(context)!.exceptionProcessingUri,
-            clearSnackBars: false,
-            duration: const Duration(seconds: 10),
-            trailingIcon: Icons.arrow_forward_ios,
-            trailingAction: () => openLink(
-                  context,
-                  url: link,
-                  openInExternalBrowser: openInExternalBrowser,
-                ));
+      // commentId not found or could not resolve link.
+      // show a snackbar with option to open link
+      if (context.mounted) {
+        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
       }
     }
+  }
+
+  Future<void> _navigateToUser(String link) async {
+    final String? username = await getLemmyUser(link);
+    if (context.mounted && username != null) {
+      try {
+        await navigateToUserPage(context, username: username);
+        return;
+      } catch (e) {
+        // Ignore exception, if it's not a valid comment, we'll perform the next fallback
+      }
+    }
+
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+    }
+  }
+
+  void _showLinkProcessingError(BuildContext context, String error, String link) {
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final bool openInExternalBrowser = state.openInExternalBrowser;
+
+    showSnackbar(context, error,
+        trailingIcon: Icons.open_in_browser_rounded,
+        duration: const Duration(seconds: 10),
+        clearSnackBars: false,
+        trailingAction: () => openLink(
+              context,
+              url: link,
+              openInExternalBrowser: openInExternalBrowser,
+            ));
   }
 
   @override

@@ -37,6 +37,12 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
           link: link,
           linkType: LinkType.comment,
         ));
+      } else if (!link.replaceAll(RegExp(r'https?:\/\/'), '').contains('/')) {
+        emit(state.copyWith(
+          deepLinkStatus: DeepLinkStatus.success,
+          link: link,
+          linkType: LinkType.instance,
+        ));
       } else {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.unknown,

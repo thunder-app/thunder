@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
@@ -416,11 +418,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ListOption(
                           description: LocalSettings.defaultFeedSortType.label,
                           value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-                          options: allSortTypeItems,
+                          options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
                           isBottomModalScrollControlled: true,
                           customListPicker: SortPicker(
+                            includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
                             title: LocalSettings.defaultFeedSortType.label,
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
@@ -627,10 +630,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ListOption(
                           description: LocalSettings.defaultCommentSortType.label,
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-                          options: commentSortTypeItems,
+                          options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
                           icon: Icons.comment_bank_rounded,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
+                            includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
                             title: l10n.commentSortType,
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
@@ -639,10 +643,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                           valueDisplay: Row(
                             children: [
-                              Icon(commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                              Icon(
+                                  CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
+                                      .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
+                                      .icon,
+                                  size: 13),
                               const SizedBox(width: 4),
                               Text(
-                                commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                                CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
+                                    .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
+                                    .label,
                                 style: theme.textTheme.titleSmall,
                               ),
                             ],
@@ -744,11 +754,23 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         if (Platform.isAndroid)
                           SettingsListTile(
                             icon: Icons.add_link,
-                            widget: const Icon(
-                              Icons.arrow_forward_ios,
-                              size: 16,
+                            widget: const SizedBox(
+                              height: 42.0,
+                              child: Icon(Icons.chevron_right_rounded),
                             ),
-                            onTap: () => openAppSettings(),
+                            onTap: () async {
+                              try {
+                                const AndroidIntent intent = AndroidIntent(
+                                  action: "android.settings.APP_OPEN_BY_DEFAULT_SETTINGS",
+                                  package: "com.hjiangsu.thunder",
+                                  data: "package:com.hjiangsu.thunder",
+                                  flags: [ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK],
+                                );
+                                await intent.launch();
+                              } catch (e) {
+                                openAppSettings();
+                              }
+                            },
                             subtitle: l10n.allowOpenSupportedLinks,
                             description: l10n.openByDefault,
                           ),
