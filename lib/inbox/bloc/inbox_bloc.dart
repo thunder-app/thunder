@@ -40,7 +40,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     );
     on<MarkAllAsReadEvent>(
       _markAllAsRead,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
   }
 
