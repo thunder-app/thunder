@@ -14,3 +14,6 @@ const int COMMENT_MAX_DEPTH = 8;
 const NestedCommentIndicatorStyle DEFAULT_NESTED_COMMENT_INDICATOR_STYLE = NestedCommentIndicatorStyle.thick;
 
 const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR = NestedCommentIndicatorColor.colorful;
+
+/// https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK
+const int ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK = 268435456;

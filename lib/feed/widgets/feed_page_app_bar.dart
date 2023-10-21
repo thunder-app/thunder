@@ -97,6 +97,7 @@ class FeedPageAppBar extends StatelessWidget {
               showModalBottomSheet<void>(
                 showDragHandle: true,
                 context: context,
+                isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
                   title: l10n.sortOptions,
                   onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
