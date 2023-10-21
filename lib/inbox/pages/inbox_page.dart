@@ -140,7 +140,7 @@ class _InboxPageState extends State<InboxPage> {
                       case InboxStatus.success:
                         if (inboxType == InboxType.mentions) return InboxMentionsView(mentions: state.mentions);
                         if (inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
-                        if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies);
+                        if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies, showAll: showAll);
                       case InboxStatus.empty:
                         return Center(child: Text(AppLocalizations.of(context)!.emptyInbox));
                       case InboxStatus.failure:
