@@ -1,5 +1,5 @@
-import 'dart:collection';
-
+import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -21,11 +21,15 @@ import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/debounce.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -40,6 +44,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
   final TextEditingController _controller = TextEditingController();
   final _scrollController = ScrollController(initialScrollOffset: 0);
+  // This exists only because it is required by FadingEdgeScrollView
+  final ScrollController _searchFiltersScrollController = ScrollController();
   SharedPreferences? prefs;
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
@@ -49,6 +55,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
   int? _previousUserId;
+
+  SearchType _currentSearchType = SearchType.communities;
+  PostListingType _currentFeedType = PostListingType.all;
+  IconData? _feedTypeIcon = Icons.grid_view_rounded;
+  String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.allPosts;
 
   @override
   void initState() {
@@ -86,7 +97,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
-        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType));
+        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, searchType: _currentSearchType));
       }
     }
   }
@@ -97,11 +108,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   _onChange(BuildContext context, String value) {
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType));
+    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType));
   }
 
   @override
   Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     super.build(context);
 
     context.read<AnonymousSubscriptionsBloc>().add(GetSubscribedCommunitiesEvent());
@@ -162,7 +176,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         },
                         decoration: InputDecoration(
                           fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                          hintText: AppLocalizations.of(context)!.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                          hintText: l10n.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                           filled: true,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(50),
@@ -173,14 +187,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           ),
                           suffixIcon: _controller.text.isNotEmpty
                               ? SizedBox(
-                                  width: 90,
+                                  width: 50,
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
                                       IconButton(
-                                        icon: const Icon(
+                                        icon: Icon(
                                           Icons.close,
-                                          semanticLabel: 'Clear Search',
+                                          semanticLabel: l10n.clearSearch,
                                         ),
                                         onPressed: () {
                                           resetTextField();
@@ -194,26 +208,131 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                           prefixIcon: const Icon(Icons.search_rounded),
                         ),
                       ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(top: 7, right: 5),
-                            child: IconButton(
-                              icon: Icon(sortTypeIcon, semanticLabel: 'Sort By'),
-                              tooltip: sortTypeLabel,
-                              onPressed: () {
-                                HapticFeedback.mediumImpact();
-                                showSortBottomSheet(context, state);
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                 )),
-            body: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
+            body: Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 15, top: 10, right: 15),
+                  child: FadingEdgeScrollView.fromSingleChildScrollView(
+                    gradientFractionOnStart: 0.1,
+                    gradientFractionOnEnd: 0.1,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      controller: _searchFiltersScrollController,
+                      child: Row(
+                        children: [
+                          ActionChip(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            side: BorderSide(color: theme.dividerColor),
+                            label: SizedBox(
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  Text(_currentSearchType.name.capitalize),
+                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                ],
+                              ),
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                showDragHandle: true,
+                                builder: (context) => BottomSheetListPicker(
+                                  title: l10n.selectSearchType,
+                                  items: [
+                                    ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
+                                    ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded)
+                                  ],
+                                  onSelect: (value) {
+                                    setState(() => _currentSearchType = value.payload);
+                                    if (_controller.text.isNotEmpty) {
+                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: _currentFeedType, searchType: value.payload));
+                                    }
+                                  },
+                                  previouslySelected: _currentSearchType,
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          ActionChip(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            side: BorderSide(color: theme.dividerColor),
+                            label: SizedBox(
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  Icon(sortTypeIcon, size: 15),
+                                  const SizedBox(width: 5),
+                                  Text(sortTypeLabel ?? l10n.sortBy),
+                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                ],
+                              ),
+                            ),
+                            onPressed: () => showSortBottomSheet(context),
+                          ),
+                          const SizedBox(width: 10),
+                          ActionChip(
+                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            side: BorderSide(color: theme.dividerColor),
+                            label: SizedBox(
+                              height: 20,
+                              child: Row(
+                                children: [
+                                  Icon(_feedTypeIcon, size: 15),
+                                  const SizedBox(width: 5),
+                                  Text(_feedTypeLabel ?? l10n.feed),
+                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                ],
+                              ),
+                            ),
+                            onPressed: () {
+                              showModalBottomSheet(
+                                context: context,
+                                showDragHandle: true,
+                                builder: (ctx) => BottomSheetListPicker(
+                                  title: l10n.selectFeedType,
+                                  items: [
+                                    ListPickerItem(label: l10n.subscriptions, payload: PostListingType.subscribed, icon: Icons.view_list_rounded),
+                                    ListPickerItem(label: l10n.localPosts, payload: PostListingType.local, icon: Icons.home_rounded),
+                                    ListPickerItem(label: l10n.allPosts, payload: PostListingType.all, icon: Icons.grid_view_rounded)
+                                  ],
+                                  onSelect: (value) {
+                                    setState(() {
+                                      if (value.payload == PostListingType.subscribed) {
+                                        _feedTypeLabel = l10n.subscriptions;
+                                        _feedTypeIcon = Icons.view_list_rounded;
+                                      } else if (value.payload == PostListingType.local) {
+                                        _feedTypeLabel = l10n.localPosts;
+                                        _feedTypeIcon = Icons.home_rounded;
+                                      } else if (value.payload == PostListingType.all) {
+                                        _feedTypeLabel = l10n.allPosts;
+                                        _feedTypeIcon = Icons.grid_view_rounded;
+                                      }
+                                      _currentFeedType = value.payload;
+                                    });
+                                    if (_controller.text.isNotEmpty) {
+                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: value.payload, searchType: _currentSearchType));
+                                    }
+                                  },
+                                  previouslySelected: _currentFeedType,
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 60),
+                  child: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -221,16 +340,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String currentAnonymousInstance) {
-    final theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     switch (state.status) {
       case SearchStatus.initial:
       case SearchStatus.trending:
-        LemmyClient lemmyClient = LemmyClient.instance;
-
         return AnimatedCrossFade(
           duration: const Duration(milliseconds: 250),
-          crossFadeState: state.trendingCommunities?.isNotEmpty == true ? CrossFadeState.showSecond : CrossFadeState.showFirst,
+          crossFadeState: state.trendingCommunities?.isNotEmpty == true && _currentSearchType == SearchType.communities ? CrossFadeState.showSecond : CrossFadeState.showFirst,
           firstChild: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -240,7 +358,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 32.0),
                 child: Text(
-                  AppLocalizations.of(context)!.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                  switch (_currentSearchType) {
+                    SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                    SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                    _ => '',
+                  },
                   textAlign: TextAlign.center,
                   style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
                 ),
@@ -255,7 +377,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: Text(
-                          AppLocalizations.of(context)!.trendingCommunities,
+                          l10n.trendingCommunities,
                           style: theme.textTheme.titleLarge,
                         ),
                       ),
@@ -278,47 +400,83 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.refreshing:
       case SearchStatus.success:
       case SearchStatus.done:
-        if (state.communities?.isEmpty ?? true) {
+        if ((_currentSearchType == SearchType.communities && state.communities?.isNotEmpty != true) || (_currentSearchType == SearchType.users && state.users?.isNotEmpty != true)) {
           return Center(
             child: Text(
-              'No communities found',
+              switch (_currentSearchType) {
+                SearchType.communities => l10n.noCommunitiesFound,
+                SearchType.users => l10n.noUsersFound,
+                _ => '',
+              },
               textAlign: TextAlign.center,
               style: theme.textTheme.titleMedium?.copyWith(color: theme.dividerColor),
             ),
           );
         }
-        return ListView.builder(
-          controller: _scrollController,
-          itemCount: state.communities!.length + 1,
-          itemBuilder: (BuildContext context, int index) {
-            if (index == state.communities!.length) {
-              return state.status == SearchStatus.refreshing
-                  ? const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(bottom: 10),
-                        child: CircularProgressIndicator(),
-                      ),
-                    )
-                  : Container();
-            } else {
-              CommunityView communityView = state.communities![index];
-              final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
-              return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
-            }
-          },
-        );
+        if (_currentSearchType == SearchType.communities) {
+          return FadingEdgeScrollView.fromScrollView(
+            gradientFractionOnEnd: 0,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: state.communities!.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == state.communities!.length) {
+                  return state.status == SearchStatus.refreshing
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Container();
+                } else {
+                  CommunityView communityView = state.communities![index];
+                  final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                  return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions);
+                }
+              },
+            ),
+          );
+        } else if (_currentSearchType == SearchType.users) {
+          return FadingEdgeScrollView.fromScrollView(
+            gradientFractionOnEnd: 0,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: state.users!.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == state.users!.length) {
+                  return state.status == SearchStatus.refreshing
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Container();
+                } else {
+                  PersonViewSafe personViewSafe = state.users![index];
+                  return _buildUserEntry(personViewSafe);
+                }
+              },
+            ),
+          );
+        } else {
+          return Container();
+        }
       case SearchStatus.empty:
-        return const Center(child: Text('Empty'));
+        return Center(child: Text(l10n.empty));
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType))},
-          actionText: 'Retry',
+          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType))},
+          actionText: l10n.retry,
         );
     }
   }
 
   Widget _buildCommunityEntry(CommunityView communityView, bool isUserLoggedIn, Set<int> currentSubscriptions) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Tooltip(
       excludeFromSemantics: true,
       message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
@@ -338,7 +496,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           ),
           Text(
             ' · ${communityView.counts.subscribers}',
-            semanticsLabel: '${communityView.counts.subscribers} subscribers',
+            semanticsLabel: l10n.countSubscribers(communityView.counts.subscribers),
           ),
           const SizedBox(width: 4),
           const Icon(Icons.people_rounded, size: 16.0),
@@ -347,8 +505,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           onPressed: () {
             SubscribedType subscriptionStatus = _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions);
             _onSubscribeIconPressed(isUserLoggedIn, context, communityView);
-            showSnackbar(context,
-                subscriptionStatus == SubscribedType.notSubscribed ? AppLocalizations.of(context)!.addedCommunityToSubscriptions : AppLocalizations.of(context)!.removedCommunityFromSubscriptions);
+            showSnackbar(context, subscriptionStatus == SubscribedType.notSubscribed ? l10n.addedCommunityToSubscriptions : l10n.removedCommunityFromSubscriptions);
             context.read<AccountBloc>().add(GetAccountInformation());
           },
           icon: Icon(
@@ -359,9 +516,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             },
           ),
           tooltip: switch (_getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions)) {
-            SubscribedType.notSubscribed => 'Subscribe',
-            SubscribedType.pending => 'Unsubscribe (subscription pending)',
-            SubscribedType.subscribed => 'Unsubscribe',
+            SubscribedType.notSubscribed => l10n.subscribe,
+            SubscribedType.pending => l10n.unsubscribePending,
+            SubscribedType.subscribed => l10n.unsubscribe,
           },
           visualDensity: VisualDensity.compact,
         ),
@@ -372,13 +529,41 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  void showSortBottomSheet(BuildContext context, SearchState state) {
+  Widget _buildUserEntry(PersonViewSafe personViewSafe) {
+    return Tooltip(
+      excludeFromSemantics: true,
+      message: '${personViewSafe.person.displayName ?? personViewSafe.person.name}\n${personViewSafe.person.name} · ${fetchInstanceNameFromUrl(personViewSafe.person.actorId)}',
+      preferBelow: false,
+      child: ListTile(
+        leading: UserAvatar(person: personViewSafe.person, radius: 25),
+        title: Text(
+          personViewSafe.person.displayName ?? personViewSafe.person.name,
+          overflow: TextOverflow.ellipsis,
+        ),
+        subtitle: Row(children: [
+          Flexible(
+            child: Text(
+              '${personViewSafe.person.name} · ${fetchInstanceNameFromUrl(personViewSafe.person.actorId)}',
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ]),
+        onTap: () {
+          navigateToUserPage(context, userId: personViewSafe.person.id);
+        },
+      ),
+    );
+  }
+
+  void showSortBottomSheet(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
       isScrollControlled: true,
       builder: (builderContext) => SortPicker(
-        title: AppLocalizations.of(context)!.sortOptions,
+        title: l10n.sortOptions,
         onSelect: (selected) {
           setState(() {
             sortType = selected.payload;
@@ -390,7 +575,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
           if (_controller.text.isNotEmpty) {
             context.read<SearchBloc>().add(
-                  StartSearchEvent(query: _controller.text, sortType: sortType),
+                  StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType),
                 );
           }
         },

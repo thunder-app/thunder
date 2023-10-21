@@ -10,8 +10,10 @@ abstract class SearchEvent extends Equatable {
 class StartSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
+  final PostListingType postListingType;
+  final SearchType searchType;
 
-  const StartSearchEvent({required this.query, required this.sortType});
+  const StartSearchEvent({required this.query, required this.sortType, required this.postListingType, required this.searchType});
 }
 
 class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
@@ -27,8 +29,9 @@ class ResetSearch extends SearchEvent {}
 class ContinueSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
+  final SearchType searchType;
 
-  const ContinueSearchEvent({required this.query, required this.sortType});
+  const ContinueSearchEvent({required this.query, required this.sortType, required this.searchType});
 }
 
 class FocusSearchEvent extends SearchEvent {}
