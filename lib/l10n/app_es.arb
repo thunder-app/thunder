@@ -323,7 +323,7 @@
   "@includeText": {},
   "includeCommunity": "Include Community",
   "@includeCommunity": {},
-  "link": "Link",
+  "link": "{count, plural, zero {Enlace} one {Enlace} other {Enlaces} } ",
   "@link": {},
   "includePostLink": "Include Post Link",
   "@includePostLink": {},
@@ -376,26 +376,45 @@
   "share": "Share",
   "@share": {},
   "backButton": "Back button",
-  "report":"Report",
-  "submit":"Submit",
-  "commentReported":"The comment has been marked for review.",
-  "cannotReportOwnComment":"You can't submit a report for your own comment.",
-  "noComments":"Oh. There are no comments.",
-  "reachedTheBottom":"Hmmm. It seems like you've reached the bottom.",
-  "viewAllComments":"View all comments.",
-  "couldntCreateReport":"Your comment report could not be submitted at this time. Please try again later",
-  "reportComment":"Report Comment",
-  "timeoutComments":"Error: Timeout when attempting to fetch comments",
-  "unableToLoadReplies":"Unable to load more replies.",
-  "serverErrorComments":"A server error was encountered when fetching more comments: {message}",
-  "timeoutVotingPost":"Error: Timeout when attempting to vote post.",
-  "timeoutSavingPost":"Error: Timeout when attempting to save post.",
-  "timeoutUpvoteComment":"Error: Timeout when attempting to vote on comment",
-  "timeoutSaveComment":"Error: Timeout when attempting to save a comment",
-  "loginToPerformAction":"You need to be logged in to carry out this task.",
-  "couldNotDetermineCommentDelete":"Could not determine post to delete the comment.",
-  "couldNotDeterminePostComment":"Could not determine post to comment to.",
   "@backButton": {},
+  "report": "Report",
+  "@report": {},
+  "submit": "Submit",
+  "@submit": {},
+  "commentReported": "The comment has been marked for review.",
+  "@commentReported": {},
+  "cannotReportOwnComment": "You can't submit a report for your own comment.",
+  "@cannotReportOwnComment": {},
+  "noComments": "Oh. There are no comments.",
+  "@noComments": {},
+  "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
+  "@reachedTheBottom": {},
+  "viewAllComments": "View all comments.",
+  "@viewAllComments": {},
+  "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
+  "@couldntCreateReport": {},
+  "reportComment": "Report Comment",
+  "@reportComment": {},
+  "timeoutComments": "Error: Timeout when attempting to fetch comments",
+  "@timeoutComments": {},
+  "unableToLoadReplies": "Unable to load more replies.",
+  "@unableToLoadReplies": {},
+  "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
+  "@serverErrorComments": {},
+  "timeoutVotingPost": "Error: Timeout when attempting to vote post.",
+  "@timeoutVotingPost": {},
+  "timeoutSavingPost": "Error: Timeout when attempting to save post.",
+  "@timeoutSavingPost": {},
+  "timeoutUpvoteComment": "Error: Timeout when attempting to vote on comment",
+  "@timeoutUpvoteComment": {},
+  "timeoutSaveComment": "Error: Timeout when attempting to save a comment",
+  "@timeoutSaveComment": {},
+  "loginToPerformAction": "You need to be logged in to carry out this task.",
+  "@loginToPerformAction": {},
+  "couldNotDetermineCommentDelete": "Could not determine post to delete the comment.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Could not determine post to comment to.",
+  "@couldNotDeterminePostComment": {},
   "reply": "{count, plural, zero {Responder} one {Responder} other {Replies} }",
   "@reply": {},
   "mention": "{count, plural, zero {Mención} one {Mención} other {Menciones} }",
@@ -425,5 +444,87 @@
   "postSwipeGesturesHint": "¿Quieres utilizar los botones? Cambia los botones que aparecen en los temas en los ajustes generales.",
   "@postSwipeGesturesHint": {},
   "gestures": "Gestos",
-  "@gestures": {}
+  "@gestures": {},
+  "uriNotSupported": "Este tipo de enlace no es compatible por el momento.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "importSettings": "Importar la configuración",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "settingsFeedCards": "Estos ajustes se aplican a las tarjetas del feed principal, las acciones están siempre disponibles al abrir las publicaciones.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "importExportSettings": "Ajustes para la importación/exportación",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "malformedUri": "El enlace que has proporcionado tiene un formato no válido. Por favor, asegúrese de que es un enlace válido.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "allowOpenSupportedLinks": "Permitir que la aplicación abra los enlaces compatibles.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "displayUserScore": "Mostrar las puntuaciones del usuario (Karma).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "exceptionProcessingUri": "Se ha producido un error al procesar el enlace. Puede que no esté disponible en su instancia.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "visitInstance": "Instancia de la visita",
+  "@visitInstance": {},
+  "notifications": "{count, plural, zero {Notificación} one {Notificación} other {Notificaciones}}",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "selectCommunity": "Elija una comunidad",
+  "@selectCommunity": {},
+  "scrapeMissingPreviews": "Habilitarlo afectará el rendimiento.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "emptyUri": "El enlace está vacío. Por favor, proporcione un enlace dinámico válido para continuar.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "commentSortType": "Tipo de clasificación de los comentarios",
+  "@commentSortType": {},
+  "saveSettings": "Guardar la configuración",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "general": "General",
+  "@general": {
+    "description": "General settings category."
+  },
+  "combineNavAndFab": "El botón de acción flotante se mostrará entre los botones de navegación.",
+  "@combineNavAndFab": {},
+  "openInBrowser": "Abrir en el navegador",
+  "@openInBrowser": {},
+  "dimReadPosts": "Los mensajes leídos aparecerán en gris",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "userProfiles": "Perfiles de los usuarios",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "controversial": "Polémico",
+  "@controversial": {},
+  "scaled": "Escala",
+  "@scaled": {},
+  "openByDefault": "Abrir por defecto",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "useCompactView": "Activar para mensajes pequeños, desactivar para grandes.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  }
 }
