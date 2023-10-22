@@ -32,7 +32,7 @@ class CreatePostPage extends StatefulWidget {
   // used create post from action sheet
   final String? text;
   final File? image;
-  final String? url;
+
   final bool? creatingFromIntent;
 
   const CreatePostPage({
@@ -44,7 +44,6 @@ class CreatePostPage extends StatefulWidget {
     this.image,
     this.text,
     this.creatingFromIntent = false,
-    this.url,
   });
 
   @override
@@ -98,7 +97,6 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     if (widget.creatingFromIntent ?? false) {
       _bodyTextController.text = widget.text ?? '';
-      _urlTextController.text = widget.url ?? '';
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           uploadImage(

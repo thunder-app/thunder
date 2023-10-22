@@ -137,11 +137,7 @@ class _ThunderState extends State<Thunder> {
     });
   }
 
-  Future<void> _navigateToCreatePostPage({
-    String? text,
-    String? url,
-    File? image,
-  }) async {
+  Future<void> _navigateToCreatePostPage({String? text, File? image}) async {
     try {
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
       AccountBloc accountBloc = context.read<AccountBloc>();
@@ -159,7 +155,6 @@ class _ThunderState extends State<Thunder> {
             child: CreatePostPage(
               text: text,
               image: image,
-              url: url,
               creatingFromIntent: true,
               onUpdateDraft: (p) => {},
               communityId: null,
