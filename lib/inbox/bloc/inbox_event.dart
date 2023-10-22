@@ -17,8 +17,9 @@ class GetInboxEvent extends InboxEvent {
 class MarkReplyAsReadEvent extends InboxEvent {
   final int commentReplyId;
   final bool read;
+  final bool showAll;
 
-  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read});
+  const MarkReplyAsReadEvent({required this.commentReplyId, required this.read, required this.showAll});
 }
 
 class MarkMentionAsReadEvent extends InboxEvent {
