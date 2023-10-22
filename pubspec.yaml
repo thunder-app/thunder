@@ -97,8 +97,9 @@ dependencies:
   html_unescape: ^2.0.0
   uni_links: ^0.5.1
   android_intent_plus: ^4.0.3
-  flutter_sharing_intent: ^1.1.0
-  receive_sharing_intent: ^1.4.5
+  receive_sharing_intent: 
+    git: 
+      url: https://github.com/AyushmanG26/receive_sharing_intent.git
 
 
 dev_dependencies:

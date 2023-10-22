@@ -23,7 +23,6 @@ import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:collection/collection.dart';
 
-
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -72,12 +71,18 @@ class _ThunderState extends State<Thunder> {
   bool _isFabOpen = false;
 
   bool reduceAnimations = false;
+
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  late final StreamSubscription mediaIntentDataStreamSubscription;
+
+  late final StreamSubscription textIntentDataStreamSubscription;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      listenShareMediaFiles();
+      handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
     });
@@ -86,75 +91,86 @@ class _ThunderState extends State<Thunder> {
   @override
   void dispose() {
     pageController.dispose();
+    textIntentDataStreamSubscription.cancel();
+    mediaIntentDataStreamSubscription.cancel();
     super.dispose();
   }
 
-//All listeners to listen Sharing media files & text
-  void listenShareMediaFiles() {
-    // For sharing images coming from outside the app
-    // while the app is in the memory
-    ReceiveSharingIntent.getMediaStream().listen((List<SharedMediaFile> value) {
+// All listeners to listen Sharing media files & text
+  void handleSharedFilesAndText() {
+    try {
+      handleSharedImages();
+      handleSharedText();
+    } catch (e) {
+      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.unexpectedError);
+    }
+  }
+
+  void handleSharedImages() async {
+    // For sharing images from outside the app while the app is closed
+    final initialMedia = await ReceiveSharingIntent.getInitialMedia();
+    if (initialMedia.isNotEmpty) {
+      _navigateToCreatePostPage(image: File(initialMedia.first.path));
+    }
+    // For sharing images while the app is in the memory
+    mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
+      List<SharedMediaFile> value,
+    ) {
       _navigateToCreatePostPage(image: File(value.first.path));
-    }, onError: (err) {
-      debugPrint("$err");
-    });
-
-    // For sharing images coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialMedia().then((List<SharedMediaFile> value) {
-      _navigateToCreatePostPage(image: File(value.first.path));
-    });
-// TODO (diff_btwn_text_and_uri) findout the diff btwn  getTextStream and  getInitialTextAsUri
-    // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    ReceiveSharingIntent.getTextStream().listen((String value) {
-      _navigateToCreatePostPage(text: value);
-    }, onError: (err) {
-      debugPrint("$err");
-    });
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then((String? value) {
-      _navigateToCreatePostPage(text: value);
-    });
-
-    // For sharing or opening urls coming from outside the app while the app is in the memory
-    ReceiveSharingIntent.getInitialTextAsUri().then((Uri? value) {
-      _navigateToCreatePostPage(text: value.toString());
-    }, onError: (err) {
-      debugPrint("$err");
-    });
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then((String? value) {
-      _navigateToCreatePostPage(text: value);
     });
   }
 
-  _navigateToCreatePostPage({String? text, String? url, File? image}) {
-    ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    AccountBloc accountBloc = context.read<AccountBloc>();
-    FeedBloc feedBloc = context.read<FeedBloc>();
-    Navigator.of(context).push(SwipeablePageRoute(
-      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      canOnlySwipeFromEdge: true,
-      backGestureDetectionWidth: 45,
-      builder: (context) {
-        return MultiBlocProvider(
-          providers: [
-            BlocProvider<FeedBloc>.value(value: feedBloc),
-            BlocProvider<ThunderBloc>.value(value: thunderBloc),
-            BlocProvider<AccountBloc>.value(value: accountBloc),
-          ],
-          child: CreatePostPage(
-            text: text,
-            url: url,
-            image: image,
-            onUpdateDraft: (p) => {},
-            // TODO (nav_to_post_page_null _communityid) Navigate to community page with a null community id
-            communityId: null,
-          ),
-        );
-      },
-    ));
+  void handleSharedText() async {
+    // For sharing URLs/text from outside the app while the app is closed
+    final initialText = await ReceiveSharingIntent.getInitialText();
+    if (initialText?.isNotEmpty ?? false) {
+      _navigateToCreatePostPage(text: initialText);
+    }
+
+    // For sharing URLs/text while the app is in the memory
+    textIntentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((
+      String? value,
+    ) {
+      if (value?.isNotEmpty ?? false) {
+        _navigateToCreatePostPage(text: value);
+      }
+    });
+  }
+
+  Future<void> _navigateToCreatePostPage({
+    String? text,
+    String? url,
+    File? image,
+  }) async {
+    try {
+      ThunderBloc thunderBloc = context.read<ThunderBloc>();
+      AccountBloc accountBloc = context.read<AccountBloc>();
+      Navigator.of(context).push(SwipeablePageRoute(
+        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+        canOnlySwipeFromEdge: true,
+        backGestureDetectionWidth: 45,
+        builder: (context) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
+              BlocProvider<ThunderBloc>.value(value: thunderBloc),
+              BlocProvider<AccountBloc>.value(value: accountBloc),
+            ],
+            child: CreatePostPage(
+              text: text,
+              image: image,
+              url: url,
+              creatingFromIntent: true,
+              onUpdateDraft: (p) => {},
+              communityId: null,
+            ),
+          );
+        },
+      ));
+    } catch (e) {
+      debugPrint("_navigateToCreatePostPage $e");
+      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.unexpectedError);
+    }
   }
 
   void _showExitWarning() {

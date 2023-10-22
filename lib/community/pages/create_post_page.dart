@@ -43,8 +43,8 @@ class CreatePostPage extends StatefulWidget {
     this.onUpdateDraft,
     this.image,
     this.text,
-    this.url,
     this.creatingFromIntent = false,
+    this.url,
   });
 
   @override
@@ -97,9 +97,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
 
     if (widget.creatingFromIntent ?? false) {
-      _urlTextController.text = widget.url ?? '';
       _bodyTextController.text = widget.text ?? '';
-      // TODO (extend_gallery_bloc_intent_image)  Gallery Bloc receive an image intent
+      _urlTextController.text = widget.url ?? '';
+      if (widget.image != null) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          uploadImage(
+            context,
+            imageBloc,
+            postImage: true,
+            imagePath: widget.image?.path,
+          );
+        });
+      }
     } else {
       if (widget.previousDraftPost != null) {
         _titleTextController.text = widget.previousDraftPost!.title ?? '';
