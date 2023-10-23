@@ -32,8 +32,9 @@ class CreatePostPage extends StatefulWidget {
   // used create post from action sheet
   final String? text;
   final File? image;
+  final String? url;
 
-  final bool? creatingFromIntent;
+  final bool? prePopulated;
 
   const CreatePostPage({
     super.key,
@@ -43,7 +44,8 @@ class CreatePostPage extends StatefulWidget {
     this.onUpdateDraft,
     this.image,
     this.text,
-    this.creatingFromIntent = false,
+    this.url,
+    this.prePopulated = false,
   });
 
   @override
@@ -95,8 +97,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
       widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
     });
 
-    if (widget.creatingFromIntent ?? false) {
+    if (widget.prePopulated == true) {
       _bodyTextController.text = widget.text ?? '';
+      _urlTextController.text = widget.url ?? '';
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           uploadImage(
@@ -107,17 +110,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
           );
         });
       }
-    } else {
-      if (widget.previousDraftPost != null) {
-        _titleTextController.text = widget.previousDraftPost!.title ?? '';
-        _urlTextController.text = widget.previousDraftPost!.url ?? '';
-        _bodyTextController.text = widget.previousDraftPost!.text ?? '';
+    } else if (widget.previousDraftPost != null) {
+      _titleTextController.text = widget.previousDraftPost!.title ?? '';
+      _urlTextController.text = widget.previousDraftPost!.url ?? '';
+      _bodyTextController.text = widget.previousDraftPost!.text ?? '';
 
-        WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-          await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
-        });
-      }
+      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+        await Future.delayed(const Duration(milliseconds: 300));
+        if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
+      });
     }
   }
 

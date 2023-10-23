@@ -11,13 +11,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
 
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
-import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -49,6 +47,7 @@ import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
@@ -110,13 +109,13 @@ class _ThunderState extends State<Thunder> {
     // For sharing images from outside the app while the app is closed
     final initialMedia = await ReceiveSharingIntent.getInitialMedia();
     if (initialMedia.isNotEmpty) {
-      _navigateToCreatePostPage(image: File(initialMedia.first.path));
+      if (context.mounted) navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
     }
     // For sharing images while the app is in the memory
     mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
       List<SharedMediaFile> value,
     ) {
-      _navigateToCreatePostPage(image: File(value.first.path));
+      if (context.mounted) navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
     });
   }
 
@@ -124,7 +123,12 @@ class _ThunderState extends State<Thunder> {
     // For sharing URLs/text from outside the app while the app is closed
     final initialText = await ReceiveSharingIntent.getInitialText();
     if (initialText?.isNotEmpty ?? false) {
-      _navigateToCreatePostPage(text: initialText);
+      final uri = Uri.tryParse(initialText!);
+      if (uri?.isAbsolute == true) {
+        if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+      } else {
+        if (context.mounted) navigateToCreatePostPage(context, text: initialText, prePopulated: true);
+      }
     }
 
     // For sharing URLs/text while the app is in the memory
@@ -132,40 +136,14 @@ class _ThunderState extends State<Thunder> {
       String? value,
     ) {
       if (value?.isNotEmpty ?? false) {
-        _navigateToCreatePostPage(text: value);
+        final uri = Uri.tryParse(value!);
+        if (uri?.isAbsolute == true) {
+          if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+        } else {
+          if (context.mounted) navigateToCreatePostPage(context, text: value, prePopulated: true);
+        }
       }
     });
-  }
-
-  Future<void> _navigateToCreatePostPage({String? text, File? image}) async {
-    try {
-      ThunderBloc thunderBloc = context.read<ThunderBloc>();
-      AccountBloc accountBloc = context.read<AccountBloc>();
-      Navigator.of(context).push(SwipeablePageRoute(
-        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-        canOnlySwipeFromEdge: true,
-        backGestureDetectionWidth: 45,
-        builder: (context) {
-          return MultiBlocProvider(
-            providers: [
-              BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
-              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-              BlocProvider<AccountBloc>.value(value: accountBloc),
-            ],
-            child: CreatePostPage(
-              text: text,
-              image: image,
-              creatingFromIntent: true,
-              onUpdateDraft: (p) => {},
-              communityId: null,
-            ),
-          );
-        },
-      ));
-    } catch (e) {
-      debugPrint("_navigateToCreatePostPage $e");
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.unexpectedError);
-    }
   }
 
   void _showExitWarning() {
