@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
@@ -100,6 +101,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (widget.prePopulated == true) {
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
+      _getDataFromLink();
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           uploadImage(
@@ -132,6 +134,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     super.dispose();
+  }
+
+  Future<void> _getDataFromLink() async {
+    if (widget.url?.isNotEmpty == true) {
+      final WebInfo info = await LinkPreview.scrapeFromURL(widget.url!);
+      _titleTextController.text = info.title;
+    }
   }
 
   @override
