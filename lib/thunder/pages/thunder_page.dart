@@ -149,7 +149,7 @@ class _ThunderState extends State<Thunder> {
 
   Future<void> _navigateToInstance(String link) async {
     try {
-      await navigateToInstancePage(context, instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), ''));
+      await navigateToInstancePage(context, instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''));
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
@@ -175,12 +175,12 @@ class _ThunderState extends State<Thunder> {
       } catch (e) {
         // Ignore exception, if it's not a valid comment, we'll perform the next fallback
       }
+    }
 
-      // postId not found or could not resolve link.
-      // show a snackbar with option to open link
-      if (context.mounted) {
-        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      }
+    // postId not found or could not resolve link.
+    // show a snackbar with option to open link
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -202,12 +202,12 @@ class _ThunderState extends State<Thunder> {
       } catch (e) {
         // Ignore exception, if it's not a valid comment, we'll perform the next fallback
       }
+    }
 
-      // commentId not found or could not resolve link.
-      // show a snackbar with option to open link
-      if (context.mounted) {
-        _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
-      }
+    // commentId not found or could not resolve link.
+    // show a snackbar with option to open link
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
     }
   }
 
@@ -272,7 +272,11 @@ class _ThunderState extends State<Thunder> {
                 showSnackbar(context, state.error ?? l10n.exceptionProcessingUri);
 
               case DeepLinkStatus.success:
-                _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                try {
+                  _handleDeepLinkNavigation(context, linkType: state.linkType, link: state.link);
+                } catch (e) {
+                  _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, state.link!);
+                }
 
               case DeepLinkStatus.unknown:
                 showSnackbar(context, state.error ?? l10n.uriNotSupported);
