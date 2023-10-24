@@ -70,6 +70,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool scoreCounters = false;
   bool dimReadPosts = true;
   bool useAdvancedShareSheet = true;
+  bool showCrossPosts = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
@@ -204,6 +205,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
         setState(() => useAdvancedShareSheet = value);
         break;
+      case LocalSettings.showCrossPosts:
+        await prefs.setBool(LocalSettings.showCrossPosts.name, value);
+        setState(() => showCrossPosts = value);
+        break;
 
       // Comment Related Settings
       case LocalSettings.defaultCommentSortType:
@@ -276,6 +281,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
+      showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -596,6 +602,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconEnabled: Icons.screen_share_rounded,
                           iconDisabled: Icons.screen_share_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.useAdvancedShareSheet, value),
+                        ),
+                        ToggleOption(
+                          description: LocalSettings.showCrossPosts.label,
+                          value: showCrossPosts,
+                          iconEnabled: Icons.repeat_on_rounded,
+                          iconDisabled: Icons.repeat_rounded,
+                          onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
                         ),
                       ],
                     ),

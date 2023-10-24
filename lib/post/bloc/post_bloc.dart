@@ -104,14 +104,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           FullPostView? getPostResponse;
 
-          if (event.postId != null) {
-            getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+          // Retrieve the full post for moderators and cross-posts
+          int? postId = event.postId ?? event.postView?.postView.post.id;
+          if (postId != null) {
+            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account?.jwt)).timeout(timeout, onTimeout: () {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
 
           PostViewMedia? postView = event.postView;
           List<CommunityModeratorView>? moderators;
+          List<PostView>? crossPosts;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
@@ -120,6 +123,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
 
             moderators = getPostResponse.moderators;
+            crossPosts = getPostResponse.crossPosts;
           }
 
           // If we can't get mods from the post response, fallback to getting the whole community.
@@ -140,6 +144,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postView: postView,
               communityId: postView?.postView.post.communityId,
               moderators: moderators,
+              crossPosts: crossPosts,
               selectedCommentPath: event.selectedCommentPath,
               selectedCommentId: event.selectedCommentId,
               newlyCreatedCommentId: event.newlyCreatedCommentId));

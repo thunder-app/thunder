@@ -129,6 +129,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
       bool dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
+      bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
 
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
@@ -247,6 +248,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         scoreCounters: scoreCounters,
         dimReadPosts: dimReadPosts,
         useAdvancedShareSheet: useAdvancedShareSheet,
+        showCrossPosts: showCrossPosts,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings
