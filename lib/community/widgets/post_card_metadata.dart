@@ -16,7 +16,7 @@ import 'package:thunder/utils/numbers.dart';
 
 class PostCardMetaData extends StatelessWidget {
   final int score;
-  final VoteType voteType;
+  final int voteType;
   final int unreadComments;
   final int comments;
   final bool hasBeenEdited;
@@ -57,16 +57,16 @@ class PostCardMetaData extends StatelessWidget {
                       IconText(
                         textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                         text: formatNumberToK(score),
-                        textColor: voteType == VoteType.up
+                        textColor: voteType == 1
                             ? upVoteColor
-                            : voteType == VoteType.down
+                            : voteType == -1
                                 ? downVoteColor
                                 : readColor,
-                        icon: Icon(voteType == VoteType.up ? Icons.arrow_upward : (voteType == VoteType.down ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
+                        icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
                             size: 20.0,
-                            color: voteType == VoteType.up
+                            color: voteType == 1
                                 ? upVoteColor
-                                : voteType == VoteType.down
+                                : voteType == -1
                                     ? downVoteColor
                                     : readColor),
                         padding: 2.0,

@@ -71,7 +71,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.upvote,
     icon: Icons.arrow_upward_rounded,
     color: Colors.orange,
-    getForegroundColor: (commentView) => commentView.myVote == VoteType.up ? Colors.orange : null,
+    getForegroundColor: (commentView) => commentView.myVote == 1 ? Colors.orange : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedCommentCardActions(
@@ -79,7 +79,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.downvote,
     icon: Icons.arrow_downward_rounded,
     color: Colors.blue,
-    getForegroundColor: (commentView) => commentView.myVote == VoteType.down ? Colors.blue : null,
+    getForegroundColor: (commentView) => commentView.myVote == -1 ? Colors.blue : null,
     shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -217,10 +217,10 @@ void onSelected(
     case CommentCardAction.delete:
       onDeleteAction(commentView.comment.id, !(commentView.comment.deleted));
     case CommentCardAction.upvote:
-      onUpvoteAction(commentView.comment.id, commentView.myVote == VoteType.up ? VoteType.none : VoteType.up);
+      onUpvoteAction(commentView.comment.id, commentView.myVote == 1 ? 0 : 1);
       break;
     case CommentCardAction.downvote:
-      onUpvoteAction(commentView.comment.id, commentView.myVote == VoteType.down ? VoteType.none : VoteType.down);
+      onUpvoteAction(commentView.comment.id, commentView.myVote == -1 ? 0 : -1);
       break;
     case CommentCardAction.reply:
       onReplyEditAction(commentView, false);

@@ -14,8 +14,8 @@ class UserSettingsState extends Equatable {
 
   final UserSettingsStatus status;
 
-  final List<PersonSafe> personBlocks;
-  final List<CommunitySafe> communityBlocks;
+  final List<Person> personBlocks;
+  final List<Community> communityBlocks;
 
   final int personBeingBlocked;
   final int communityBeingBlocked;
@@ -24,8 +24,8 @@ class UserSettingsState extends Equatable {
 
   UserSettingsState copyWith({
     required UserSettingsStatus status,
-    List<PersonSafe>? personBlocks,
-    List<CommunitySafe>? communityBlocks,
+    List<Person>? personBlocks,
+    List<Community>? communityBlocks,
     int? personBeingBlocked,
     int? communityBeingBlocked,
     String? errorMessage,

@@ -34,7 +34,7 @@ List<Widget> userOptionTypes = <Widget>[
 
 class UserPageSuccess extends StatefulWidget {
   final int? userId;
-  final PersonViewSafe? personView;
+  final PersonView? personView;
   final bool isAccountUser;
 
   final List<CommentViewTree>? commentViewTrees;
@@ -42,7 +42,7 @@ class UserPageSuccess extends StatefulWidget {
   final List<PostViewMedia>? savedPostViews;
   final List<CommentViewTree>? savedComments;
   final List<CommunityModeratorView>? moderates;
-  final BlockedPerson? blockedPerson;
+  final BlockPersonResponse? blockedPerson;
 
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
@@ -249,7 +249,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       hasReachedEnd: widget.hasReachedPostEnd,
                       onScrollEndReached: () => context.read<UserBloc>().add(const GetUserEvent()),
                       onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                      onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                      onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                       onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
                       indicateRead: !widget.isAccountUser,
                     ),
@@ -273,7 +273,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           CommentReference(
                             comment: widget.commentViewTrees![index].commentView!,
                             now: now,
-                            onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                            onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {
@@ -358,7 +358,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       hasReachedEnd: widget.hasReachedSavedPostEnd,
                       onScrollEndReached: () => context.read<UserBloc>().add(const GetUserSavedEvent()),
                       onSaveAction: (int postId, bool save) => context.read<UserBloc>().add(SavePostEvent(postId: postId, save: save)),
-                      onVoteAction: (int postId, VoteType voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
+                      onVoteAction: (int postId, int voteType) => context.read<UserBloc>().add(VotePostEvent(postId: postId, score: voteType)),
                       onToggleReadAction: (int postId, bool read) => context.read<UserBloc>().add(MarkUserPostAsReadEvent(postId: postId, read: read)),
                       indicateRead: !widget.isAccountUser,
                     ),
@@ -382,7 +382,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                           CommentReference(
                             comment: widget.savedComments![index].commentView!,
                             now: now,
-                            onVoteAction: (int commentId, VoteType voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                            onVoteAction: (int commentId, int voteType) => context.read<UserBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                             onSaveAction: (int commentId, bool save) => context.read<UserBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                             onDeleteAction: (int commentId, bool deleted) => context.read<UserBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
                             onReportAction: (int commentId) {

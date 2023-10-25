@@ -28,7 +28,7 @@ class GetUserSavedEvent extends UserEvent {
 
 class VotePostEvent extends UserEvent {
   final int postId;
-  final VoteType score;
+  final int score;
 
   const VotePostEvent({required this.postId, required this.score});
 }
@@ -42,7 +42,7 @@ class SavePostEvent extends UserEvent {
 
 class VoteCommentEvent extends UserEvent {
   final int commentId;
-  final VoteType score;
+  final int score;
 
   const VoteCommentEvent({required this.commentId, required this.score});
 }

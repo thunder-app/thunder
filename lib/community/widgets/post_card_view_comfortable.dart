@@ -18,7 +18,7 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
-  final Function(VoteType) onVoteAction;
+  final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
 
   final PostViewMedia postViewMedia;
@@ -35,7 +35,7 @@ class PostCardViewComfortable extends StatelessWidget {
   final bool showTextContent;
   final bool isUserLoggedIn;
   final bool markPostReadOnMediaView;
-  final PostListingType? listingType;
+  final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool indicateRead;
 
@@ -67,7 +67,7 @@ class PostCardViewComfortable extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
@@ -251,7 +251,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         readColor: readColor,
                         hostURL: postViewMedia.media.firstOrNull != null ? postViewMedia.media.first.originalUrl : null,
                         score: postViewMedia.postView.counts.score,
-                        voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                        voteType: postViewMedia.postView.myVote ?? 0,
                         comments: postViewMedia.postView.counts.comments,
                         unreadComments: postViewMedia.postView.unreadComments,
                         hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
@@ -289,7 +289,7 @@ class PostCardViewComfortable extends StatelessWidget {
                 if (isUserLoggedIn)
                   PostCardActions(
                     postId: postViewMedia.postView.post.id,
-                    voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                    voteType: postViewMedia.postView.myVote ?? 0,
                     saved: postViewMedia.postView.saved,
                     onVoteAction: onVoteAction,
                     onSaveAction: onSaveAction,

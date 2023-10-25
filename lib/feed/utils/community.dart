@@ -4,13 +4,13 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 /// Logic to block a community
-Future<BlockedCommunity> blockCommunity(int communityId, bool block) async {
+Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  BlockedCommunity blockedCommunity = await lemmy.run(BlockCommunity(
+  BlockCommunityResponse blockedCommunity = await lemmy.run(BlockCommunity(
     auth: account!.jwt!,
     communityId: communityId,
     block: block,
@@ -25,22 +25,22 @@ Future<CommunityView> followCommunity(int communityId, bool follow) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  CommunityView communityView = await lemmy.run(FollowCommunity(
+  CommunityResponse communityResponse = await lemmy.run(FollowCommunity(
     auth: account!.jwt!,
     communityId: communityId,
     follow: follow,
   ));
 
-  return communityView;
+  return communityResponse.communityView;
 }
 
-Future<FullCommunityView> fetchCommunityInformation({int? id, String? name}) async {
+Future<GetCommunityResponse> fetchCommunityInformation({int? id, String? name}) async {
   assert(!(id == null && name == null));
 
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  FullCommunityView fullCommunityView = await lemmy.run(GetCommunity(
+  GetCommunityResponse fullCommunityView = await lemmy.run(GetCommunity(
     auth: account?.jwt,
     id: id,
     name: name,

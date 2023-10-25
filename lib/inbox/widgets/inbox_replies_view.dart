@@ -25,8 +25,24 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+extension on CommentReplyView {
+  CommentView toCommentView() {
+    return CommentView(
+      comment: comment,
+      creator: creator,
+      post: post,
+      community: community,
+      counts: counts,
+      creatorBannedFromCommunity: creatorBannedFromCommunity,
+      subscribed: subscribed,
+      saved: saved,
+      creatorBlocked: creatorBlocked,
+    );
+  }
+}
+
 class InboxRepliesView extends StatefulWidget {
-  final List<CommentView> replies;
+  final List<CommentReplyView> replies;
   final bool showAll;
 
   const InboxRepliesView({super.key, this.replies = const [], required this.showAll});
@@ -81,9 +97,9 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                 ),
               ),
               CommentReference(
-                comment: widget.replies[index],
+                comment: widget.replies[index].toCommentView(),
                 now: now,
-                onVoteAction: (int commentId, VoteType voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+                onVoteAction: (int commentId, int voteType) => context.read<PostBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
                 onSaveAction: (int commentId, bool save) => context.read<PostBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
                 onDeleteAction: (int commentId, bool deleted) => context.read<PostBloc>().add(DeleteCommentEvent(deleted: deleted, commentId: commentId)),
                 onReportAction: (int commentId) {
