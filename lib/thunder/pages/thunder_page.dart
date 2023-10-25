@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 // Flutter
 import 'package:flutter/material.dart';
@@ -9,11 +10,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
+
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:collection/collection.dart';
 
@@ -43,6 +47,7 @@ import 'package:thunder/settings/pages/settings_page.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_comment.dart';
+import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
@@ -65,11 +70,18 @@ class _ThunderState extends State<Thunder> {
   bool _isFabOpen = false;
 
   bool reduceAnimations = false;
+
   final GlobalKey<ScaffoldMessengerState> scaffoldMessengerKey = GlobalKey<ScaffoldMessengerState>();
+
+  late final StreamSubscription mediaIntentDataStreamSubscription;
+
+  late final StreamSubscription textIntentDataStreamSubscription;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
       BlocProvider.of<DeepLinksCubit>(context).handleInitialURI();
     });
@@ -78,7 +90,60 @@ class _ThunderState extends State<Thunder> {
   @override
   void dispose() {
     pageController.dispose();
+    textIntentDataStreamSubscription.cancel();
+    mediaIntentDataStreamSubscription.cancel();
     super.dispose();
+  }
+
+// All listeners to listen Sharing media files & text
+  void handleSharedFilesAndText() {
+    try {
+      handleSharedImages();
+      handleSharedText();
+    } catch (e) {
+      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.unexpectedError);
+    }
+  }
+
+  void handleSharedImages() async {
+    // For sharing images from outside the app while the app is closed
+    final initialMedia = await ReceiveSharingIntent.getInitialMedia();
+    if (initialMedia.isNotEmpty) {
+      if (context.mounted) navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
+    }
+    // For sharing images while the app is in the memory
+    mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
+      List<SharedMediaFile> value,
+    ) {
+      if (context.mounted) navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
+    });
+  }
+
+  void handleSharedText() async {
+    // For sharing URLs/text from outside the app while the app is closed
+    final initialText = await ReceiveSharingIntent.getInitialText();
+    if (initialText?.isNotEmpty ?? false) {
+      final uri = Uri.tryParse(initialText!);
+      if (uri?.isAbsolute == true) {
+        if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+      } else {
+        if (context.mounted) navigateToCreatePostPage(context, text: initialText, prePopulated: true);
+      }
+    }
+
+    // For sharing URLs/text while the app is in the memory
+    textIntentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((
+      String? value,
+    ) {
+      if (value?.isNotEmpty ?? false) {
+        final uri = Uri.tryParse(value!);
+        if (uri?.isAbsolute == true) {
+          if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+        } else {
+          if (context.mounted) navigateToCreatePostPage(context, text: value, prePopulated: true);
+        }
+      }
+    });
   }
 
   void _showExitWarning() {

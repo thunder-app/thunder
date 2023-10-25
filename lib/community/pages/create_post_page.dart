@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
@@ -27,12 +30,23 @@ class CreatePostPage extends StatefulWidget {
   final void Function(DraftPost? draftPost)? onUpdateDraft;
   final DraftPost? previousDraftPost;
 
+  // used create post from action sheet
+  final String? text;
+  final File? image;
+  final String? url;
+
+  final bool? prePopulated;
+
   const CreatePostPage({
     super.key,
     required this.communityId,
     this.communityView,
     this.previousDraftPost,
     this.onUpdateDraft,
+    this.image,
+    this.text,
+    this.url,
+    this.prePopulated = false,
   });
 
   @override
@@ -84,14 +98,28 @@ class _CreatePostPageState extends State<CreatePostPage> {
       widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
     });
 
-    if (widget.previousDraftPost != null) {
+    if (widget.prePopulated == true) {
+      _bodyTextController.text = widget.text ?? '';
+      _urlTextController.text = widget.url ?? '';
+      _getDataFromLink();
+      if (widget.image != null) {
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          uploadImage(
+            context,
+            imageBloc,
+            postImage: true,
+            imagePath: widget.image?.path,
+          );
+        });
+      }
+    } else if (widget.previousDraftPost != null) {
       _titleTextController.text = widget.previousDraftPost!.title ?? '';
       _urlTextController.text = widget.previousDraftPost!.url ?? '';
       _bodyTextController.text = widget.previousDraftPost!.text ?? '';
 
       WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
         await Future.delayed(const Duration(milliseconds: 300));
-        showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
+        if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
       });
     }
   }
@@ -106,6 +134,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
     FocusManager.instance.primaryFocus?.unfocus();
 
     super.dispose();
+  }
+
+  Future<void> _getDataFromLink() async {
+    if (widget.url?.isNotEmpty == true) {
+      final WebInfo info = await LinkPreview.scrapeFromURL(widget.url!);
+      _titleTextController.text = info.title;
+    }
   }
 
   @override
