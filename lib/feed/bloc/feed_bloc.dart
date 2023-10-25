@@ -392,6 +392,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         body: event.body,
         url: event.url,
         nsfw: event.nsfw,
+        isEdit: event.isEdit,
+        postId: event.postId,
       );
 
       // Parse the newly created post

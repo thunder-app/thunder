@@ -12,11 +12,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
@@ -65,7 +69,7 @@ class PostSubview extends StatelessWidget {
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
-    final bool isOwnComment = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -97,19 +101,19 @@ class PostSubview extends StatelessWidget {
               ),
             ),
           Padding(
-            padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
+            padding: EdgeInsets.only(left: isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
                 Tooltip(
                   excludeFromSemantics: true,
-                  message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, post, null, postView.creator, moderators)}',
+                  message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, moderators)}',
                   preferBelow: false,
                   child: Material(
-                    color: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)
-                        ? fetchUsernameColor(context, isOwnComment, post, null, postView.creator, moderators) ?? theme.colorScheme.onBackground
+                    color: isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators)
+                        ? fetchUsernameColor(context, isOwnPost, post, null, postView.creator, moderators) ?? theme.colorScheme.onBackground
                         : Colors.transparent,
-                    borderRadius: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                    borderRadius: isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () {
@@ -123,12 +127,12 @@ class PostSubview extends StatelessWidget {
                               postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                               textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
+                                color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                     ?.withOpacity(0.75),
                               ),
                             ),
-                            if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 2.0),
-                            if (isOwnComment)
+                            if (isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators)) const SizedBox(width: 2.0),
+                            if (isOwnPost)
                               Padding(
                                 padding: const EdgeInsets.only(left: 1),
                                 child: Icon(
@@ -170,7 +174,7 @@ class PostSubview extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 8.0),
+                if (isSpecialUser(context, isOwnPost, post, null, postView.creator, moderators)) const SizedBox(width: 8.0),
                 Text(
                   'to',
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
@@ -313,6 +317,72 @@ class PostSubview extends StatelessWidget {
                             return;
                           }
 
+                          if (isOwnPost) {
+                            ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                            AccountBloc accountBloc = context.read<AccountBloc>();
+
+                            final ThunderState thunderState = context.read<ThunderBloc>().state;
+                            final bool reduceAnimations = thunderState.reduceAnimations;
+
+                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+                            DraftPost? newDraftPost;
+                            DraftPost? previousDraftPost;
+                            String draftId = '${LocalSettings.draftsCache.name}-post-edit-${postViewMedia.postView.post.id}';
+                            String? draftPostJson = prefs.getString(draftId);
+                            if (draftPostJson != null) {
+                              previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
+                            }
+                            Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+                              if (newDraftPost?.isNotEmpty == true) {
+                                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+                              }
+                            });
+
+                            if (context.mounted) {
+                              Navigator.of(context)
+                                  .push(
+                                SwipeablePageRoute(
+                                  transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                  canOnlySwipeFromEdge: true,
+                                  backGestureDetectionWidth: 45,
+                                  builder: (context) {
+                                    return MultiBlocProvider(
+                                      providers: [
+                                        BlocProvider<FeedBloc>.value(value: FeedBloc(lemmyClient: LemmyClient.instance)),
+                                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                        BlocProvider<AccountBloc>.value(value: accountBloc),
+                                      ],
+                                      child: CreatePostPage(
+                                        communityId: postViewMedia.postView.community.id,
+                                        //communityView: postViewMedia.postView.community, // TODO
+                                        previousDraftPost: previousDraftPost,
+                                        onUpdateDraft: (p) => newDraftPost = p,
+                                        isEdit: true,
+                                        postView: postViewMedia.postView,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                                  .whenComplete(() async {
+                                timer.cancel();
+
+                                if (newDraftPost?.saveAsDraft == true &&
+                                    newDraftPost?.isNotEmpty == true &&
+                                    (newDraftPost?.title != postViewMedia.postView.post.name ||
+                                        newDraftPost?.text != postViewMedia.postView.post.body ||
+                                        newDraftPost?.url != postViewMedia.postView.post.url)) {
+                                  await Future.delayed(const Duration(milliseconds: 300));
+                                  if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+                                  prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
+                                } else {
+                                  prefs.remove(draftId);
+                                }
+                              });
+                            }
+                            return;
+                          }
+
                           PostBloc postBloc = context.read<PostBloc>();
                           ThunderBloc thunderBloc = context.read<ThunderBloc>();
                           account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
@@ -371,7 +441,9 @@ class PostSubview extends StatelessWidget {
                       : null,
                   icon: postView.post.locked
                       ? Icon(Icons.lock, semanticLabel: AppLocalizations.of(context)!.postLocked, color: Colors.red)
-                      : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
+                      : isOwnPost
+                          ? const Icon(Icons.edit_rounded)
+                          : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
                 ),
               ),
               Expanded(

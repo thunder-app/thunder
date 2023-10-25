@@ -26,6 +26,8 @@ class CreatePostPage extends StatefulWidget {
   final CommunityView? communityView;
   final void Function(DraftPost? draftPost)? onUpdateDraft;
   final DraftPost? previousDraftPost;
+  final bool isEdit;
+  final PostView? postView;
 
   const CreatePostPage({
     super.key,
@@ -33,7 +35,11 @@ class CreatePostPage extends StatefulWidget {
     this.communityView,
     this.previousDraftPost,
     this.onUpdateDraft,
-  });
+    this.isEdit = false,
+    this.postView,
+  }) :
+        // If we're editing, we need a post to edit
+        assert(!isEdit || postView != null);
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -84,7 +90,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
       widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
     });
 
-    if (widget.previousDraftPost != null) {
+    if (widget.previousDraftPost != null &&
+        (_titleTextController.text != (widget.previousDraftPost!.title ?? '') ||
+            _urlTextController.text != (widget.previousDraftPost!.url ?? '') ||
+            _bodyTextController.text != (widget.previousDraftPost!.text ?? ''))) {
       _titleTextController.text = widget.previousDraftPost!.title ?? '';
       _urlTextController.text = widget.previousDraftPost!.url ?? '';
       _bodyTextController.text = widget.previousDraftPost!.text ?? '';
@@ -93,6 +102,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         await Future.delayed(const Duration(milliseconds: 300));
         showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
       });
+    } else if (widget.isEdit && widget.postView != null) {
+      _titleTextController.text = widget.postView!.post.name;
+      _urlTextController.text = widget.postView!.post.url ?? '';
+      _bodyTextController.text = widget.postView!.post.body ?? '';
+      isNSFW = widget.postView!.post.nsfw;
     }
   }
 
@@ -120,7 +134,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createPost),
+          title: Text(widget.isEdit ? 'Edit Post' : AppLocalizations.of(context)!.createPost), // TODO
           toolbarHeight: 70.0,
           actions: [
             IconButton(
@@ -128,9 +142,26 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   ? null
                   : () {
                       newDraftPost.saveAsDraft = false;
+
                       url != ''
-                          ? context.read<FeedBloc>().add(CreatePostEvent(communityId: communityId!, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW, url: url))
-                          : context.read<FeedBloc>().add(CreatePostEvent(communityId: communityId!, name: _titleTextController.text, body: _bodyTextController.text, nsfw: isNSFW));
+                          ? context.read<FeedBloc>().add(CreatePostEvent(
+                                communityId: communityId!,
+                                name: _titleTextController.text,
+                                body: _bodyTextController.text,
+                                nsfw: isNSFW,
+                                isEdit: widget.isEdit,
+                                postId: widget.postView?.post.id,
+                                url: url,
+                              ))
+                          : context.read<FeedBloc>().add(CreatePostEvent(
+                                communityId: communityId!,
+                                name: _titleTextController.text,
+                                body: _bodyTextController.text,
+                                nsfw: isNSFW,
+                                isEdit: widget.isEdit,
+                                postId: widget.postView?.post.id,
+                              ));
+
                       Navigator.of(context).pop();
                     },
               icon: Icon(
@@ -178,20 +209,22 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         Transform.translate(
                           offset: const Offset(-8, 0),
                           child: InkWell(
-                            onTap: () {
-                              showCommunityInputDialog(
-                                context,
-                                title: AppLocalizations.of(context)!.community,
-                                onCommunitySelected: (cv) {
-                                  setState(() {
-                                    communityId = cv.community.id;
-                                    communityView = cv;
-                                  });
-                                  _validateSubmission();
-                                },
-                                emptySuggestions: accountState.subsciptions,
-                              );
-                            },
+                            onTap: widget.isEdit
+                                ? null
+                                : () {
+                                    showCommunityInputDialog(
+                                      context,
+                                      title: AppLocalizations.of(context)!.community,
+                                      onCommunitySelected: (cv) {
+                                        setState(() {
+                                          communityId = cv.community.id;
+                                          communityView = cv;
+                                        });
+                                        _validateSubmission();
+                                      },
+                                      emptySuggestions: accountState.subsciptions,
+                                    );
+                                  },
                             borderRadius: const BorderRadius.all(Radius.circular(50)),
                             child: Padding(
                               padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),

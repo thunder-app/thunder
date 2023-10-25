@@ -1,3 +1,4 @@
+import 'package:flutter_launcher_icons/android.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -50,20 +51,34 @@ Future<Map<String, dynamic>> fetchPosts({
 }
 
 /// Logic to create a post
-Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw}) async {
+Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw, bool? isEdit, int? postId}) async {
+  assert(isEdit != true || postId != null);
+
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postView = await lemmy.run(CreatePost(
-    auth: account!.jwt!,
-    communityId: communityId,
-    name: name,
-    body: body,
-    url: url,
-    nsfw: nsfw,
-  ));
+  PostView postView;
+  if (isEdit == true) {
+    postView = await lemmy.run(EditPost(
+      auth: account!.jwt!,
+      name: name,
+      body: body,
+      url: url,
+      nsfw: nsfw,
+      postId: postId!,
+    ));
+  } else {
+    postView = await lemmy.run(CreatePost(
+      auth: account!.jwt!,
+      communityId: communityId,
+      name: name,
+      body: body,
+      url: url,
+      nsfw: nsfw,
+    ));
+  }
 
   return postView;
 }

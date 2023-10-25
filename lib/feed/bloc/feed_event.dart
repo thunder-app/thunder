@@ -101,6 +101,8 @@ final class CreatePostEvent extends FeedEvent {
   final String? body;
   final String? url;
   final bool? nsfw;
+  final bool? isEdit;
+  final int? postId;
 
-  const CreatePostEvent({required this.communityId, required this.name, this.body, this.url, this.nsfw});
+  const CreatePostEvent({required this.communityId, required this.name, this.body, this.url, this.nsfw, this.isEdit, this.postId}) : assert(isEdit != true || postId != null);
 }
