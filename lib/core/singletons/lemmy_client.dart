@@ -52,7 +52,8 @@ class LemmyClient {
 enum LemmyFeature {
   sortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
   sortTypeScaled(0, 19, 0, preRelease: ["rc", "1"]),
-  commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]);
+  commentSortTypeControversial(0, 19, 0, preRelease: ["rc", "1"]),
+  blockInstance(0, 19, 0, preRelease: ["rc", "1"]);
 
   final int major;
   final int minor;

@@ -2,6 +2,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/input_dialogs.dart';
@@ -122,15 +123,17 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     items: getCommunityBlocks(context, state, state.communityBlocks),
                   ),
                   const SizedBox(height: 20),
-                  const UserSettingTopic(
-                    icon: Icons.language,
-                    title: 'Blocked Instances',
-                  ),
-                  UserSettingBlockList(
-                    status: state.status,
-                    emptyText: 'No instances blocked.',
-                    items: getInstanceBlocks(context, state, state.instanceBlocks),
-                  ),
+                  if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
+                    const UserSettingTopic(
+                      icon: Icons.language,
+                      title: 'Blocked Instances',
+                    ),
+                    UserSettingBlockList(
+                      status: state.status,
+                      emptyText: 'No instances blocked.',
+                      items: getInstanceBlocks(context, state, state.instanceBlocks),
+                    ),
+                  ],
                 ],
               ),
             );
