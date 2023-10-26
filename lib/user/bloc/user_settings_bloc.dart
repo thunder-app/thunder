@@ -25,6 +25,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       _getUserBlocksEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<UnblockInstanceEvent>(
+      _unblockInstanceEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<UnblockCommunityEvent>(
       _unblockCommunityEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -47,11 +51,13 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
         final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
         final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+        final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
 
         return emit(state.copyWith(
           status: UserSettingsStatus.success,
           personBlocks: personBlocks,
           communityBlocks: communityBlocks,
+          instanceBlocks: instanceBlocks,
         ));
       }
     } catch (e) {
@@ -59,11 +65,39 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     }
   }
 
+  Future<void> _unblockInstanceEvent(UnblockInstanceEvent event, emit) async {
+    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+    Account? account = await fetchActiveProfileAccount();
+
+    emit(state.copyWith(status: UserSettingsStatus.blocking, instanceBeingBlocked: event.instanceId, personBeingBlocked: 0, communityBeingBlocked: 0));
+
+    try {
+      final BlockInstanceResponse blockInstanceResponse = await lemmy.run(BlockInstance(
+        auth: account!.jwt!,
+        instanceId: event.instanceId,
+        block: !event.unblock,
+      ));
+
+      add(const GetUserBlocksEvent());
+
+      return emit(state.copyWith(
+        status: event.unblock ? UserSettingsStatus.success : UserSettingsStatus.revert,
+        instanceBeingBlocked: event.instanceId,
+        personBeingBlocked: 0,
+        communityBeingBlocked: 0,
+      ));
+    } catch (e) {
+      return emit(state.copyWith(
+          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+    }
+  }
+
   Future<void> _unblockCommunityEvent(UnblockCommunityEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0));
+    emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
@@ -96,7 +130,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0));
+    emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final blockPerson = await lemmy.run(BlockPerson(

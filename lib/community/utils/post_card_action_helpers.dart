@@ -13,6 +13,8 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
@@ -34,6 +36,7 @@ enum PostCardAction {
   sharePost,
   shareMedia,
   shareLink,
+  blockInstance,
   blockCommunity,
   upvote,
   downvote,
@@ -69,6 +72,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.visitCommunity,
     icon: Icons.home_work_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitCommunity,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockInstance,
+    icon: Icons.block_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.blockCommunity,
@@ -272,6 +281,9 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.shareLink:
       if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
+      break;
+    case PostCardAction.blockInstance:
+      context.read<InstanceBloc>().add(InstanceActionEvent(instanceAction: InstanceAction.block, instanceId: postViewMedia.postView.community.instanceId, value: true));
       break;
     case PostCardAction.blockCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));

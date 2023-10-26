@@ -31,6 +31,8 @@
   "@unableToFindCommunity": {},
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
+  "blockInstance": "Block Instance",
+  "@blockInstance": {},
   "community": "Community",
   "@community": {},
   "cantBlockYourself": "You may not block yourself.",
