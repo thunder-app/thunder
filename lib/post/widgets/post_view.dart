@@ -31,6 +31,7 @@ import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
@@ -246,8 +247,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    // TODO: Use navigateToCreatePostPage
-                                    // https://github.com/thunder-app/thunder/blob/4bc8763d597c2fdb6a1e8ae1422cd7f222d2fb58/lib/utils/navigate_create_post.dart
+                                    await navigateToCreatePostPage(
+                                      context,
+                                      title: widget.postViewMedia.postView.post.name,
+                                      url: widget.postViewMedia.postView.post.url,
+                                      prePopulated: true,
+                                    );
                                   },
                                   borderRadius: BorderRadius.circular(10),
                                   child: Padding(
