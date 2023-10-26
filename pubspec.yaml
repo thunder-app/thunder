@@ -97,6 +97,10 @@ dependencies:
   html_unescape: ^2.0.0
   uni_links: ^0.5.1
   android_intent_plus: ^4.0.3
+  receive_sharing_intent: 
+    git: 
+      url: https://github.com/AyushmanG26/receive_sharing_intent.git
+
 
 dev_dependencies:
   build_runner: ^2.4.6

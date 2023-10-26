@@ -59,7 +59,7 @@ Future<Iterable<PersonViewSafe>> getUserSuggestions(String query) async {
     q: query,
     auth: account?.jwt,
     type: SearchType.users,
-    limit: 10,
+    limit: 20,
   ));
   return searchReults.users;
 }
@@ -137,7 +137,8 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
     q: query,
     auth: account?.jwt,
     type: SearchType.communities,
-    limit: 10,
+    limit: 20,
+    sort: SortType.topAll,
   ));
   return searchReults.communities;
 }
