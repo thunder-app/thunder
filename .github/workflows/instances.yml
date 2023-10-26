@@ -62,7 +62,7 @@ jobs:
       with:
           commit-message: Update instances
           title: Update instances
-          body: This PR is updating `lemmy-instances.txt` and `instances.dart` with the latest list of instances retrieved from fediverse.observer.
+          body: This PR is updating `lemmy-instances.txt`, `instances.dart`, and `AndroidManifest.xml` with the latest list of instances retrieved from fediverse.observer.
           branch: update-instances
           delete-branch: true
           author: GitHub <noreply@github.com>

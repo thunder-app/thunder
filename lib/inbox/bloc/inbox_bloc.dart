@@ -40,7 +40,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     );
     on<MarkAllAsReadEvent>(
       _markAllAsRead,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
   }
 
@@ -191,8 +193,16 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         read: event.read,
       ));
 
-      // Remove the post from the current reply list
-      List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
+      // Remove the post from the current reply list, or just mark it as read
+      List<CommentView> replies = List.from(state.replies);
+      bool matchMarkedComment(CommentView commentView) => commentView.commentReply?.id == response.commentReplyView.commentReply.id;
+      if (event.showAll) {
+        final CommentView markedComment = replies.firstWhere(matchMarkedComment);
+        final int index = replies.indexOf(markedComment);
+        replies[index] = markedComment.copyWith(commentReply: markedComment.commentReply?.copyWith(read: true));
+      } else {
+        replies.removeWhere(matchMarkedComment);
+      }
 
       int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
 
