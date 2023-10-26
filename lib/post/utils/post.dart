@@ -24,33 +24,33 @@ Future<PostView> markPostAsRead(int postId, bool read) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(MarkPostAsRead(
+  PostResponse postResponse = await lemmy.run(MarkPostAsRead(
     auth: account!.jwt!,
     postId: postId,
     read: read,
   ));
 
-  PostView updatedPostView = postResponse;
+  PostView updatedPostView = postResponse.postView;
   return updatedPostView;
 }
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
-PostView optimisticallyVotePost(PostViewMedia postViewMedia, VoteType voteType) {
+PostView optimisticallyVotePost(PostViewMedia postViewMedia, int voteType) {
   int newScore = postViewMedia.postView.counts.score;
-  VoteType? existingVoteType = postViewMedia.postView.myVote;
+  int? existingint = postViewMedia.postView.myVote;
 
   switch (voteType) {
-    case VoteType.down:
-      existingVoteType == VoteType.up ? newScore -= 2 : newScore--;
+    case -1:
+      existingint == 1 ? newScore -= 2 : newScore--;
       break;
-    case VoteType.up:
-      existingVoteType == VoteType.down ? newScore += 2 : newScore++;
+    case 1:
+      existingint == -1 ? newScore += 2 : newScore++;
       break;
-    case VoteType.none:
+    case 0:
       // Determine score from existing
-      if (existingVoteType == VoteType.down) {
+      if (existingint == -1) {
         newScore++;
-      } else if (existingVoteType == VoteType.up) {
+      } else if (existingint == 1) {
         newScore--;
       }
       break;
@@ -70,19 +70,19 @@ PostView optimisticallyReadPost(PostViewMedia postViewMedia, bool read) {
 }
 
 /// Logic to vote on a post
-Future<PostView> votePost(int postId, VoteType score) async {
+Future<PostView> votePost(int postId, int score) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(CreatePostLike(
+  PostResponse postResponse = await lemmy.run(CreatePostLike(
     auth: account!.jwt!,
     postId: postId,
     score: score,
   ));
 
-  PostView updatedPostView = postResponse;
+  PostView updatedPostView = postResponse.postView;
   return updatedPostView;
 }
 
@@ -93,13 +93,13 @@ Future<PostView> savePost(int postId, bool save) async {
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postResponse = await lemmy.run(SavePost(
+  PostResponse postResponse = await lemmy.run(SavePost(
     auth: account!.jwt!,
     postId: postId,
     save: save,
   ));
 
-  PostView updatedPostView = postResponse;
+  PostView updatedPostView = postResponse.postView;
   return updatedPostView;
 }
 
@@ -197,7 +197,6 @@ Future<PostViewMedia> parsePostView(PostView postView, bool fetchImageDimensions
       saved: postView.saved,
       subscribed: postView.subscribed,
       unreadComments: postView.unreadComments,
-      instanceHost: postView.instanceHost,
     ),
     media: media,
   );

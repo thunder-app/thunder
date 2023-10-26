@@ -33,7 +33,7 @@ class GeneralSettingsPage extends StatefulWidget {
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+  ListingType defaultListingType = DEFAULT_LISTING_TYPE;
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
 
   // NSFW Settings
@@ -92,7 +92,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Default Listing/Sort Settings
       case LocalSettings.defaultFeedListingType:
         await prefs.setString(LocalSettings.defaultFeedListingType.name, value);
-        setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
@@ -254,10 +254,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
 
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -406,11 +406,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
-                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
+                          value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
                           options: [
-                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
-                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
-                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
+                            ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                            ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                            ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
                           ],
                           icon: Icons.filter_alt_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),

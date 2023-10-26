@@ -85,7 +85,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           if (event.reset) {
             emit(state.copyWith(status: UserStatus.loading));
 
-            FullPersonView? fullPersonView;
+            GetPersonDetailsResponse? fullPersonView;
 
             if (event.userId != null || event.username != null) {
               fullPersonView = await lemmy
@@ -128,7 +128,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(status: UserStatus.refreshing));
 
-          FullPersonView? fullPersonView = await lemmy
+          GetPersonDetailsResponse? fullPersonView = await lemmy
               .run(GetPersonDetails(
             personId: state.userId,
             auth: account?.jwt,
@@ -193,7 +193,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           if (event.reset) {
             emit(state.copyWith(status: UserStatus.loading));
 
-            FullPersonView? fullPersonView;
+            GetPersonDetailsResponse? fullPersonView;
 
             if (event.userId != null) {
               fullPersonView = await lemmy
@@ -234,7 +234,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
           emit(state.copyWith(status: UserStatus.refreshing));
 
-          FullPersonView? fullPersonView = await lemmy
+          GetPersonDetailsResponse? fullPersonView = await lemmy
               .run(GetPersonDetails(
             personId: state.userId,
             auth: account?.jwt,
@@ -468,7 +468,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         );
       }
 
-      BlockedPerson blockedPerson = await lemmy.run(BlockPerson(
+      BlockPersonResponse blockedPerson = await lemmy.run(BlockPerson(
         auth: account!.jwt!,
         personId: event.personId,
         block: event.blocked,

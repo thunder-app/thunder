@@ -46,31 +46,32 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             List<CommunityView> subsciptions = [];
 
             while (!hasFetchedAllSubsciptions) {
-              List<CommunityView> communityViews = await lemmy.run(
+              ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(
                 ListCommunities(
                   auth: account.jwt,
                   page: currentPage,
-                  type: PostListingType.subscribed,
+                  type: ListingType.subscribed,
                   limit: 50, // Temporarily increasing this to address issue of missing subscriptions
                 ),
               );
 
-              subsciptions.addAll(communityViews);
+              subsciptions.addAll(listCommunitiesResponse.communities);
               currentPage++;
-              hasFetchedAllSubsciptions = communityViews.isEmpty;
+              hasFetchedAllSubsciptions = listCommunitiesResponse.communities.isEmpty;
             }
 
             // Sort subscriptions by their name
             subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
-            FullPersonView? fullPersonView = await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
+            GetPersonDetailsResponse? getPersonDetailsResponse =
+                await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
               throw Exception('Error: Timeout when attempting to fetch account details');
             });
 
             // This eliminates an issue which has plagued me a lot which is that there's a race condition
             // with so many calls to GetAccountInformation, we can return success for the new and old account.
-            if (fullPersonView.personView.person.id == (await fetchActiveProfileAccount())?.userId) {
-              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: fullPersonView.personView));
+            if (getPersonDetailsResponse.personView.person.id == (await fetchActiveProfileAccount())?.userId) {
+              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: getPersonDetailsResponse.personView));
             } else {
               return emit(state.copyWith(status: AccountStatus.success));
             }

@@ -18,14 +18,14 @@ class Destination {
   const Destination(this.label, this.listingType, this.icon);
 
   final String label;
-  final PostListingType listingType;
+  final ListingType listingType;
   final IconData icon;
 }
 
 const List<Destination> destinations = <Destination>[
-  Destination('Subscriptions', PostListingType.subscribed, Icons.view_list_rounded),
-  Destination('Local Posts', PostListingType.local, Icons.home_rounded),
-  Destination('All Posts', PostListingType.all, Icons.grid_view_rounded),
+  Destination('Subscriptions', ListingType.subscribed, Icons.view_list_rounded),
+  Destination('Local Posts', ListingType.local, Icons.home_rounded),
+  Destination('All Posts', ListingType.all, Icons.grid_view_rounded),
 ];
 
 class DrawerItem extends StatelessWidget {
@@ -85,14 +85,14 @@ class DrawerItem extends StatelessWidget {
 }
 
 class CommunityDrawer extends StatefulWidget {
-  final PostListingType? currentPostListingType;
+  final ListingType? currentListingType;
   final int? communityId;
   final String? communityName;
   final void Function()? navigateToAccount;
 
   const CommunityDrawer({
     super.key,
-    this.currentPostListingType,
+    this.currentListingType,
     this.communityId,
     this.communityName,
     this.navigateToAccount,
@@ -175,12 +175,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                   ),
                                 ],
                               ),
-                              Text(
-                                isLoggedIn ? context.read<AccountBloc>().state.personView?.instanceHost ?? '' : anonymousInstance,
-                                style: Theme.of(context).textTheme.bodyMedium,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
+                              // Text(
+                              //   isLoggedIn ? context.read<AccountBloc>().state.personView?.instanceHost ?? '' : anonymousInstance,
+                              //   style: Theme.of(context).textTheme.bodyMedium,
+                              //   maxLines: 1,
+                              //   overflow: TextOverflow.ellipsis,
+                              // ),
                             ],
                           ),
                           Expanded(
@@ -205,7 +205,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                   Column(
                     children: destinations.map((Destination destination) {
                       return DrawerItem(
-                        disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
+                        disabled: destination.listingType == ListingType.subscribed && isLoggedIn == false,
                         isSelected: destination.listingType == feedBloc.state.postListingType,
                         onTap: () {
                           Navigator.of(context).pop();
@@ -238,7 +238,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         physics: const NeverScrollableScrollPhysics(),
                                         itemCount: _getSubscriptions(context).length,
                                         itemBuilder: (context, index) {
-                                          CommunitySafe community = _getSubscriptions(context)[index];
+                                          Community community = _getSubscriptions(context)[index];
 
                                           final bool isCommunitySelected = feedBloc.state.communityId == community.id;
 
@@ -308,7 +308,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
         });
   }
 
-  List<CommunitySafe> _getSubscriptions(BuildContext context) {
+  List<Community> _getSubscriptions(BuildContext context) {
     if (context.read<AuthBloc>().state.isLoggedIn) {
       return context.read<AccountBloc>().state.subsciptions.map((e) => e.community).toList();
     }
