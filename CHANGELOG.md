@@ -16,6 +16,7 @@
 - Support new scaled and controversial sort types - contribution from @micahmo
 - Added support to open Lemmy links in app. Android only.  - contribution from @ggichure
 - Added support for receiving share intents. Android only. - contribution from @ggichure
+- Added ability to block instances from long-press menu and user settings
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
