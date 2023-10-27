@@ -81,7 +81,22 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                    UserSettingTopic(title: l10n.blockedInstances),
+                    UserSettingTopic(
+                      title: l10n.blockedInstances,
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.add_rounded,
+                          semanticLabel: l10n.add,
+                        ),
+                        onPressed: () => showInstanceInputDialog(
+                          context,
+                          title: l10n.blockInstance,
+                          onInstanceSelected: (instance) {
+                            context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
+                          },
+                        ),
+                      ),
+                    ),
                     UserSettingBlockList(
                       status: state.status,
                       emptyText: l10n.noInstanceBlocks,
