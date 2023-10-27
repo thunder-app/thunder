@@ -239,7 +239,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               showModalBottomSheet(
                                 context: context,
                                 showDragHandle: true,
-                                builder: (context) => BottomSheetListPicker(
+                                builder: (ctx) => BottomSheetListPicker(
                                   title: l10n.selectSearchType,
                                   items: [
                                     ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
