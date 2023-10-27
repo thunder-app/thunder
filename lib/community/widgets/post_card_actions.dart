@@ -9,12 +9,12 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardActions extends StatelessWidget {
   // Callback functions
-  final Function(VoteType) onVoteAction;
+  final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
 
   final int postId;
   final bool saved;
-  final VoteType voteType;
+  final int voteType;
 
   const PostCardActions({
     super.key,
@@ -46,25 +46,25 @@ class PostCardActions extends StatelessWidget {
               IconButton(
                   icon: Icon(
                     Icons.arrow_upward,
-                    semanticLabel: voteType == VoteType.up ? 'Upvoted' : 'Upvote',
+                    semanticLabel: voteType == 1 ? 'Upvoted' : 'Upvote',
                   ),
-                  color: voteType == VoteType.up ? upVoteColor : null,
+                  color: voteType == 1 ? upVoteColor : null,
                   visualDensity: VisualDensity.compact,
                   onPressed: () {
                     HapticFeedback.mediumImpact();
-                    onVoteAction(voteType == VoteType.up ? VoteType.none : VoteType.up);
+                    onVoteAction(voteType == 1 ? 0 : 1);
                   }),
             if (showVoteActions && downvotesEnabled)
               IconButton(
                 icon: Icon(
                   Icons.arrow_downward,
-                  semanticLabel: voteType == VoteType.down ? 'Downvoted' : 'Downvote',
+                  semanticLabel: voteType == -1 ? 'Downvoted' : 'Downvote',
                 ),
-                color: voteType == VoteType.down ? downVoteColor : null,
+                color: voteType == -1 ? downVoteColor : null,
                 visualDensity: VisualDensity.compact,
                 onPressed: () {
                   HapticFeedback.mediumImpact();
-                  onVoteAction(voteType == VoteType.down ? VoteType.none : VoteType.down);
+                  onVoteAction(voteType == -1 ? 0 : -1);
                 },
               ),
             if (showSaveAction)

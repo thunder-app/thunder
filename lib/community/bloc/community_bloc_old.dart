@@ -178,16 +178,16 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
     SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-    PostListingType defaultListingType;
+    ListingType defaultListingType;
     SortType defaultSortType;
     bool tabletMode;
 
     try {
-      defaultListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+      defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
     } catch (e) {
-      defaultListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+      defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
       defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       tabletMode = false;
     }
@@ -202,12 +202,12 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
         int? communityId = event.communityId;
         String? communityName = event.communityName;
-        PostListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
+        ListingType? listingType = (communityId != null || communityName != null) ? null : (event.listingType ?? defaultListingType);
         SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
         // Fetch community's information
         SubscribedType? subscribedType;
-        FullCommunityView? getCommunityResponse;
+        GetCommunityResponse? getCommunityResponse;
 
         if (communityId != null || communityName != null) {
           getCommunityResponse = await lemmy.run(GetCommunity(
@@ -225,7 +225,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         int currentPage = 1;
 
         do {
-          List<PostView> batch = await lemmy.run(GetPosts(
+          GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
             auth: account?.jwt,
             page: currentPage,
             limit: limit,
@@ -238,7 +238,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           currentPage++;
 
           // Parse the posts and add in media information which is used elsewhere in the app
-          List<PostViewMedia> formattedPosts = await parsePostViews(batch);
+          List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
           posts.addAll(formattedPosts);
 
           for (PostViewMedia post in formattedPosts) {
@@ -246,11 +246,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           }
 
           // Fetch any taglines from the instance
-          FullSiteView fullSiteView = await lemmy.run(
-            GetSite(
-              auth: account?.jwt,
-            ),
-          );
+          GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
 
           emit(
             state.copyWith(
@@ -261,11 +257,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
               listingType: listingType,
               communityId: communityId,
               communityName: event.communityName,
-              hasReachedEnd: batch.isEmpty || batch.length < limit,
+              hasReachedEnd: getPostsResponse.posts.isEmpty || getPostsResponse.posts.length < limit,
               subscribedType: subscribedType,
               sortType: sortType,
-              communityInfo: getCommunityResponse,
-              tagline: fullSiteView.taglines.isEmpty ? '' : fullSiteView.taglines[Random().nextInt(fullSiteView.taglines.length)].content,
+              communityInfo: getCommunityResponse?.communityView,
+              tagline: getSiteResponse.taglines.isEmpty ? '' : getSiteResponse.taglines[Random().nextInt(getSiteResponse.taglines.length)].content,
             ),
           );
         } while (tabletMode && posts.length < limit && currentPage <= 2); // Fetch two batches
@@ -281,7 +277,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         emit(state.copyWith(status: CommunityStatus.refreshing, listingType: state.listingType, communityId: state.communityId, communityName: state.communityName));
 
         int? communityId = event.communityId ?? state.communityId;
-        PostListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
+        ListingType? listingType = (communityId != null) ? null : (event.listingType ?? state.listingType);
         SortType sortType = event.sortType ?? (state.sortType ?? defaultSortType);
 
         // Fetch more posts from the community
@@ -289,7 +285,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         int currentPage = state.page;
 
         do {
-          List<PostView> batch = await lemmy.run(GetPosts(
+          GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
             auth: account?.jwt,
             page: currentPage,
             limit: limit,
@@ -302,7 +298,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
           currentPage++;
 
           // Parse the posts, and append them to the existing list
-          List<PostViewMedia> postMedias = await parsePostViews(batch);
+          List<PostViewMedia> postMedias = await parsePostViews(getPostsResponse.posts);
 
           Set<int> postIds = Set.from(state.postIds ?? {});
 
@@ -347,7 +343,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
       if (account?.jwt == null) return;
 
-      CommunityView communityView = await lemmy.run(FollowCommunity(
+      CommunityResponse communityResponse = await lemmy.run(FollowCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,
@@ -358,7 +354,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        subscribedType: communityView.subscribed,
+        subscribedType: communityResponse.communityView.subscribed,
       ));
 
       await Future.delayed(const Duration(seconds: 1));
@@ -418,10 +414,10 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      PostView postView = await lemmy.run(CreatePost(auth: account!.jwt!, communityId: state.communityId!, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw));
+      PostResponse postResponse = await lemmy.run(CreatePost(auth: account!.jwt!, communityId: state.communityId!, name: event.name, body: event.body, url: event.url, nsfw: event.nsfw));
 
       // Parse the posts, and append them to the existing list
-      List<PostViewMedia> posts = await parsePostViews([postView]);
+      List<PostViewMedia> posts = await parsePostViews([postResponse.postView]);
       List<PostViewMedia> postViews = List.from(state.postViews ?? []);
       postViews.addAll(posts);
 
@@ -462,7 +458,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         );
       }
 
-      BlockedCommunity blockedCommunity = await lemmy.run(BlockCommunity(
+      BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         block: event.block,
@@ -473,7 +469,7 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
         communityId: state.communityId,
         listingType: state.listingType,
         communityName: state.communityName,
-        blockedCommunity: blockedCommunity,
+        blockedCommunity: blockCommunityResponse.communityView,
       ));
     } catch (e) {
       return emit(

@@ -176,7 +176,7 @@ void _onSubscribeIconPressed(BuildContext context) {
     return;
   }
 
-  CommunitySafe community = feedBloc.state.fullCommunityView!.communityView.community;
+  Community community = feedBloc.state.fullCommunityView!.communityView.community;
   Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   if (currentSubscriptions.contains(community.id)) {

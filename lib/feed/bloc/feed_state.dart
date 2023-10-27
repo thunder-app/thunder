@@ -35,13 +35,13 @@ final class FeedState extends Equatable {
   final FeedType? feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final PostListingType? postListingType;
+  final ListingType? postListingType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
 
   /// The community information if applicable
-  final FullCommunityView? fullCommunityView;
+  final GetCommunityResponse? fullCommunityView;
 
   /// The id of the community to display posts for.
   final int? communityId;
@@ -75,9 +75,9 @@ final class FeedState extends Equatable {
     List<PostViewMedia>? postViewMedias,
     bool? hasReachedEnd,
     FeedType? feedType,
-    PostListingType? postListingType,
+    ListingType? postListingType,
     SortType? sortType,
-    FullCommunityView? fullCommunityView,
+    GetCommunityResponse? fullCommunityView,
     int? communityId,
     String? communityName,
     int? userId,
