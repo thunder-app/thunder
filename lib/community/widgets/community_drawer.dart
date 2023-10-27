@@ -175,12 +175,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                   ),
                                 ],
                               ),
-                              // Text(
-                              //   isLoggedIn ? context.read<AccountBloc>().state.personView?.instanceHost ?? '' : anonymousInstance,
-                              //   style: Theme.of(context).textTheme.bodyMedium,
-                              //   maxLines: 1,
-                              //   overflow: TextOverflow.ellipsis,
-                              // ),
+                              Text(
+                                isLoggedIn ? context.read<AuthBloc>().state.account?.instance ?? '' : anonymousInstance,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
                             ],
                           ),
                           Expanded(
