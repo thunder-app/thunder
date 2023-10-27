@@ -17,7 +17,7 @@ class SearchState extends Equatable {
   final SearchStatus status;
   List<CommunityView>? communities;
   List<CommunityView>? trendingCommunities;
-  List<PersonViewSafe>? users;
+  List<PersonView>? users;
 
   final String? errorMessage;
 
@@ -30,7 +30,7 @@ class SearchState extends Equatable {
     SearchStatus? status,
     List<CommunityView>? communities,
     List<CommunityView>? trendingCommunities,
-    List<PersonViewSafe>? users,
+    List<PersonView>? users,
     String? errorMessage,
     int? page,
     SortType? sortType,

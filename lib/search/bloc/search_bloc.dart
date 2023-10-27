@@ -66,7 +66,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         page: 1,
         limit: 15,
         sort: event.sortType,
-        listingType: event.postListingType,
+        listingType: event.listingType,
         type: event.searchType,
       ));
 

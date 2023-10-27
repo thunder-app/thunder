@@ -57,7 +57,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int? _previousUserId;
 
   SearchType _currentSearchType = SearchType.communities;
-  PostListingType _currentFeedType = PostListingType.all;
+  ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.allPosts;
 
@@ -108,7 +108,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   _onChange(BuildContext context, String value) {
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType));
+    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType));
   }
 
   @override
@@ -248,7 +248,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   onSelect: (value) {
                                     setState(() => _currentSearchType = value.payload);
                                     if (_controller.text.isNotEmpty) {
-                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: _currentFeedType, searchType: value.payload));
+                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: value.payload));
                                     }
                                   },
                                   previouslySelected: _currentSearchType,
@@ -295,26 +295,26 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                 builder: (ctx) => BottomSheetListPicker(
                                   title: l10n.selectFeedType,
                                   items: [
-                                    ListPickerItem(label: l10n.subscriptions, payload: PostListingType.subscribed, icon: Icons.view_list_rounded),
-                                    ListPickerItem(label: l10n.localPosts, payload: PostListingType.local, icon: Icons.home_rounded),
-                                    ListPickerItem(label: l10n.allPosts, payload: PostListingType.all, icon: Icons.grid_view_rounded)
+                                    ListPickerItem(label: l10n.subscriptions, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
+                                    ListPickerItem(label: l10n.localPosts, payload: ListingType.local, icon: Icons.home_rounded),
+                                    ListPickerItem(label: l10n.allPosts, payload: ListingType.all, icon: Icons.grid_view_rounded)
                                   ],
                                   onSelect: (value) {
                                     setState(() {
-                                      if (value.payload == PostListingType.subscribed) {
+                                      if (value.payload == ListingType.subscribed) {
                                         _feedTypeLabel = l10n.subscriptions;
                                         _feedTypeIcon = Icons.view_list_rounded;
-                                      } else if (value.payload == PostListingType.local) {
+                                      } else if (value.payload == ListingType.local) {
                                         _feedTypeLabel = l10n.localPosts;
                                         _feedTypeIcon = Icons.home_rounded;
-                                      } else if (value.payload == PostListingType.all) {
+                                      } else if (value.payload == ListingType.all) {
                                         _feedTypeLabel = l10n.allPosts;
                                         _feedTypeIcon = Icons.grid_view_rounded;
                                       }
                                       _currentFeedType = value.payload;
                                     });
                                     if (_controller.text.isNotEmpty) {
-                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: value.payload, searchType: _currentSearchType));
+                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _currentSearchType));
                                     }
                                   },
                                   previouslySelected: _currentFeedType,
@@ -454,8 +454,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         )
                       : Container();
                 } else {
-                  PersonViewSafe personViewSafe = state.users![index];
-                  return _buildUserEntry(personViewSafe);
+                  PersonView personView = state.users![index];
+                  return _buildUserEntry(personView);
                 }
               },
             ),
@@ -468,7 +468,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType))},
+          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType))},
           actionText: l10n.retry,
         );
     }
@@ -529,27 +529,27 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     );
   }
 
-  Widget _buildUserEntry(PersonViewSafe personViewSafe) {
+  Widget _buildUserEntry(PersonView personView) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${personViewSafe.person.displayName ?? personViewSafe.person.name}\n${personViewSafe.person.name} · ${fetchInstanceNameFromUrl(personViewSafe.person.actorId)}',
+      message: '${personView.person.displayName ?? personView.person.name}\n${personView.person.name} · ${fetchInstanceNameFromUrl(personView.person.actorId)}',
       preferBelow: false,
       child: ListTile(
-        leading: UserAvatar(person: personViewSafe.person, radius: 25),
+        leading: UserAvatar(person: personView.person, radius: 25),
         title: Text(
-          personViewSafe.person.displayName ?? personViewSafe.person.name,
+          personView.person.displayName ?? personView.person.name,
           overflow: TextOverflow.ellipsis,
         ),
         subtitle: Row(children: [
           Flexible(
             child: Text(
-              '${personViewSafe.person.name} · ${fetchInstanceNameFromUrl(personViewSafe.person.actorId)}',
+              '${personView.person.name} · ${fetchInstanceNameFromUrl(personView.person.actorId)}',
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ]),
         onTap: () {
-          navigateToUserPage(context, userId: personViewSafe.person.id);
+          navigateToUserPage(context, userId: personView.person.id);
         },
       ),
     );
@@ -575,7 +575,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
           if (_controller.text.isNotEmpty) {
             context.read<SearchBloc>().add(
-                  StartSearchEvent(query: _controller.text, sortType: sortType, postListingType: _currentFeedType, searchType: _currentSearchType),
+                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType),
                 );
           }
         },

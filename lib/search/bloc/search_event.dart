@@ -10,10 +10,10 @@ abstract class SearchEvent extends Equatable {
 class StartSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
-  final PostListingType postListingType;
+  final ListingType listingType;
   final SearchType searchType;
 
-  const StartSearchEvent({required this.query, required this.sortType, required this.postListingType, required this.searchType});
+  const StartSearchEvent({required this.query, required this.sortType, required this.listingType, required this.searchType});
 }
 
 class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
