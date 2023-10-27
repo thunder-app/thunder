@@ -23,7 +23,7 @@ class PostCardViewCompact extends StatelessWidget {
   final bool communityMode;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
-  final PostListingType? listingType;
+  final ListingType? listingType;
   final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool indicateRead;
 
@@ -47,7 +47,7 @@ class PostCardViewCompact extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
@@ -164,7 +164,7 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCardMetaData(
                   readColor: readColor,
                   score: postViewMedia.postView.counts.score,
-                  voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                  voteType: postViewMedia.postView.myVote ?? 0,
                   comments: postViewMedia.postView.counts.comments,
                   unreadComments: postViewMedia.postView.unreadComments,
                   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,

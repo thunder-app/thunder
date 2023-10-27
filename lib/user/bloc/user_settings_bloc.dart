@@ -41,12 +41,12 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
     try {
       if (account != null) {
-        FullSiteView fullSiteView = await lemmy.run(
+        GetSiteResponse getSiteResponse = await lemmy.run(
           GetSite(auth: account.jwt),
         );
 
-        final personBlocks = fullSiteView.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
-        final communityBlocks = fullSiteView.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+        final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
+        final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
 
         return emit(state.copyWith(
           status: UserSettingsStatus.success,
@@ -66,17 +66,17 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0));
 
     try {
-      final BlockedCommunity blockCommunity = await lemmy.run(BlockCommunity(
+      final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         block: !event.unblock,
       ));
 
-      List<CommunitySafe> updatedCommunityBlocks;
+      List<Community> updatedCommunityBlocks;
       if (event.unblock) {
         updatedCommunityBlocks = state.communityBlocks.where((community) => community.id != event.communityId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {
-        updatedCommunityBlocks = (state.communityBlocks + [blockCommunity.communityView.community])..sort((a, b) => a.name.compareTo(b.name));
+        updatedCommunityBlocks = (state.communityBlocks + [blockCommunityResponse.communityView.community])..sort((a, b) => a.name.compareTo(b.name));
       }
 
       return emit(state.copyWith(
@@ -105,7 +105,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         block: !event.unblock,
       ));
 
-      List<PersonSafe> updatedPersonBlocks;
+      List<Person> updatedPersonBlocks;
       if (event.unblock) {
         updatedPersonBlocks = state.personBlocks.where((person) => person.id != event.personId).toList()..sort((a, b) => a.name.compareTo(b.name));
       } else {

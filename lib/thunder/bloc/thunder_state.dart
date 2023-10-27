@@ -12,7 +12,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    this.defaultPostListingType = DEFAULT_LISTING_TYPE,
+    this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
 
     // NSFW Settings
@@ -130,7 +130,7 @@ class ThunderState extends Equatable {
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  final PostListingType defaultPostListingType;
+  final ListingType defaultListingType;
   final SortType defaultSortType;
 
   // NSFW Settings
@@ -257,7 +257,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    PostListingType? defaultPostListingType,
+    ListingType? defaultListingType,
     SortType? defaultSortType,
 
     // NSFW Settings
@@ -374,7 +374,7 @@ class ThunderState extends Equatable {
 
       /// -------------------------- Feed Related Settings --------------------------
       /// Default Listing/Sort Settings
-      defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
+      defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
 
       // NSFW Settings
@@ -501,7 +501,7 @@ class ThunderState extends Equatable {
 
         /// -------------------------- Feed Related Settings --------------------------
         /// Default Listing/Sort Settings
-        defaultPostListingType,
+        defaultListingType,
         defaultSortType,
 
         // NSFW Settings

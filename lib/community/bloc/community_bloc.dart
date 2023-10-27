@@ -50,8 +50,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     switch (event.communityAction) {
       case CommunityAction.block:
         try {
-          BlockedCommunity blockedCommunity = await blockCommunity(event.communityId, event.value);
-          emit(state.copyWith(status: CommunityStatus.success, communityView: blockedCommunity.communityView));
+          BlockCommunityResponse blockCommunityResponse = await blockCommunity(event.communityId, event.value);
+          emit(state.copyWith(status: CommunityStatus.success, communityView: blockCommunityResponse.communityView));
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));
         }
@@ -65,8 +65,8 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
 
           // Wait for one second before fetching the community information to get any updated information
           Future.delayed(const Duration(seconds: 1)).then((value) async {
-            FullCommunityView? fullCommunityView = await fetchCommunityInformation(id: event.communityId);
-            emit(state.copyWith(status: CommunityStatus.success, communityView: fullCommunityView.communityView));
+            GetCommunityResponse? getCommunityResponse = await fetchCommunityInformation(id: event.communityId);
+            emit(state.copyWith(status: CommunityStatus.success, communityView: getCommunityResponse.communityView));
           });
         } catch (e) {
           return emit(state.copyWith(status: CommunityStatus.failure));

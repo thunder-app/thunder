@@ -54,7 +54,7 @@ IconData? getSortIcon(FeedState state) {
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
 ///
 /// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderBloc]
-Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedType, PostListingType? postListingType, SortType? sortType, String? communityName, int? communityId}) async {
+Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedType, ListingType? postListingType, SortType? sortType, String? communityName, int? communityId}) async {
   // Push navigation
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();

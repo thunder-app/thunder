@@ -85,13 +85,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
-      PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+      ListingType defaultListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -211,7 +211,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Feed Related Settings --------------------------
         // Default Listing/Sort Settings
-        defaultPostListingType: defaultPostListingType,
+        defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
 
         // NSFW Settings

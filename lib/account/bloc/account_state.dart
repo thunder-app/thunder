@@ -17,12 +17,12 @@ class AccountState extends Equatable {
   final List<CommunityView> subsciptions;
 
   /// The user's information
-  final PersonViewSafe? personView;
+  final PersonView? personView;
 
   AccountState copyWith({
     AccountStatus? status,
     List<CommunityView>? subsciptions,
-    PersonViewSafe? personView,
+    PersonView? personView,
     String? errorMessage,
   }) {
     return AccountState(

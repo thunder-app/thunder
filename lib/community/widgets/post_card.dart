@@ -32,11 +32,11 @@ class PostCard extends StatefulWidget {
   final bool communityMode;
   final bool indicateRead;
 
-  final Function(VoteType) onVoteAction;
+  final Function(int) onVoteAction;
   final Function(bool) onSaveAction;
   final Function(bool) onReadAction;
 
-  final PostListingType? listingType;
+  final ListingType? listingType;
 
   const PostCard({
     super.key,
@@ -86,7 +86,7 @@ class _PostCardState extends State<PostCard> {
   Widget build(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    VoteType? myVote = widget.postViewMedia.postView.myVote;
+    int? myVote = widget.postViewMedia.postView.myVote;
     bool saved = widget.postViewMedia.postView.saved;
     bool read = widget.postViewMedia.postView.read;
 
@@ -101,9 +101,9 @@ class _PostCardState extends State<PostCard> {
             context: context,
             swipeAction: swipeAction,
             onSaveAction: (int postId, bool saved) => widget.onSaveAction(saved),
-            onVoteAction: (int postId, VoteType vote) => widget.onVoteAction(vote),
+            onVoteAction: (int postId, int vote) => widget.onVoteAction(vote),
             onToggleReadAction: (int postId, bool read) => widget.onReadAction(read),
-            voteType: myVote ?? VoteType.none,
+            voteType: myVote ?? 0,
             saved: saved,
             read: read,
             postViewMedia: widget.postViewMedia,

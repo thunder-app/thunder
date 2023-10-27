@@ -106,7 +106,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.upvote,
     icon: Icons.arrow_upward_rounded,
     color: Colors.orange,
-    getForegroundColor: (postView) => postView.myVote == VoteType.up ? Colors.orange : null,
+    getForegroundColor: (postView) => postView.myVote == 1 ? Colors.orange : null,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
@@ -114,7 +114,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     label: AppLocalizations.of(GlobalContext.context)!.downvote,
     icon: Icons.arrow_downward_rounded,
     color: Colors.blue,
-    getForegroundColor: (postView) => postView.myVote == VoteType.down ? Colors.blue : null,
+    getForegroundColor: (postView) => postView.myVote == -1 ? Colors.blue : null,
     shouldShow: (context, commentView) => context.read<AuthBloc>().state.downvotesEnabled,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
@@ -277,14 +277,10 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));
       break;
     case PostCardAction.upvote:
-      context
-          .read<FeedBloc>()
-          .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == 1 ? 0 : 1));
       break;
     case PostCardAction.downvote:
-      context
-          .read<FeedBloc>()
-          .add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
+      context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.vote, postId: postViewMedia.postView.post.id, value: postViewMedia.postView.myVote == -1 ? 0 : -1));
       break;
     case PostCardAction.save:
       context.read<FeedBloc>().add(FeedItemActionedEvent(postAction: PostAction.save, postId: postViewMedia.postView.post.id, value: !postViewMedia.postView.saved));
