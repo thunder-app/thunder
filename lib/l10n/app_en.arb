@@ -258,6 +258,8 @@
   "@fetchAccountError": {},
   "retry": "Retry",
   "@retry": {},
+  "userNotLoggedIn": "User not logged in",
+  "@userNotLoggedIn": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
   "mustBeLoggedInComment": "You need to be logged in to comment",

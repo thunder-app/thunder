@@ -3,8 +3,8 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:thunder/instance/enums/instance_action.dart';
 
+import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/instance/utils/instance.dart';
 
@@ -29,7 +29,7 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
       transformer: throttleDroppable(Duration.zero),
     );
 
-    /// Handles actions related to a instance
+    /// Handles actions related to an instance
     on<InstanceActionEvent>(
       _onInstanceAction,
       transformer: throttleDroppable(Duration.zero),
@@ -45,12 +45,11 @@ class InstanceBloc extends Bloc<InstanceEvent, InstanceState> {
   Future<void> _onInstanceAction(InstanceActionEvent event, Emitter<InstanceState> emit) async {
     emit(state.copyWith(status: InstanceStatus.fetching));
 
-    // TODO: Check if the current account has permission to perform the InstanceAction
     switch (event.instanceAction) {
       case InstanceAction.block:
         try {
           BlockInstanceResponse blockInstanceResponse = await blockInstance(event.instanceId, event.value);
-          emit(state.copyWith(status: InstanceStatus.success));
+          emit(state.copyWith(status: blockInstanceResponse.blocked == event.value ? InstanceStatus.success : InstanceStatus.failure));
         } catch (e) {
           return emit(state.copyWith(status: InstanceStatus.failure));
         }

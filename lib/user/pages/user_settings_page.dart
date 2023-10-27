@@ -66,7 +66,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               );
             }
 
-            if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
+            if (state.status == UserSettingsStatus.revert && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
               showSnackbar(context, l10n.successfullyBlocked);
             }
           },

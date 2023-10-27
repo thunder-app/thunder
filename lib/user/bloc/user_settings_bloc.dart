@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -54,7 +55,9 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
 
         return emit(state.copyWith(
-          status: UserSettingsStatus.success,
+          status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
+              ? UserSettingsStatus.revert
+              : UserSettingsStatus.success,
           personBlocks: personBlocks,
           communityBlocks: communityBlocks,
           instanceBlocks: instanceBlocks,
@@ -66,17 +69,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   }
 
   Future<void> _unblockInstanceEvent(UnblockInstanceEvent event, emit) async {
-    LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-    Account? account = await fetchActiveProfileAccount();
-
     emit(state.copyWith(status: UserSettingsStatus.blocking, instanceBeingBlocked: event.instanceId, personBeingBlocked: 0, communityBeingBlocked: 0));
 
     try {
-      final BlockInstanceResponse blockInstanceResponse = await lemmy.run(BlockInstance(
-        auth: account!.jwt!,
-        instanceId: event.instanceId,
-        block: !event.unblock,
-      ));
+      await blockInstance(event.instanceId, !event.unblock);
 
       emit(state.copyWith(
         status: state.status,

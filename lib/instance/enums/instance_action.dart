@@ -1,7 +1,7 @@
 import 'package:thunder/post/enums/post_action.dart';
 
 enum InstanceAction {
-  /// User level post actions
+  /// User level instance actions
   block(permissionType: PermissionType.user);
 
   const InstanceAction({
