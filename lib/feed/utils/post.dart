@@ -60,14 +60,26 @@ Future<PostView> createPost({required int communityId, required String name, Str
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostResponse postResponse = await lemmy.run(CreatePost(
-    auth: account!.jwt!,
-    communityId: communityId,
-    name: name,
-    body: body,
-    url: url,
-    nsfw: nsfw,
-  ));
+  PostResponse postResponse;
+  if (isEdit == true) {
+    postResponse = await lemmy.run(EditPost(
+      auth: account!.jwt!,
+      name: name,
+      body: body,
+      url: url,
+      nsfw: nsfw,
+      postId: postId!,
+    ));
+  } else {
+    postResponse = await lemmy.run(CreatePost(
+      auth: account!.jwt!,
+      communityId: communityId,
+      name: name,
+      body: body,
+      url: url,
+      nsfw: nsfw,
+    ));
+  }
 
   return postResponse.postView;
 }
