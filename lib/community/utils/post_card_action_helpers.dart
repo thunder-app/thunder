@@ -288,7 +288,12 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
       break;
     case PostCardAction.blockInstance:
-      context.read<InstanceBloc>().add(InstanceActionEvent(instanceAction: InstanceAction.block, instanceId: postViewMedia.postView.community.instanceId, value: true));
+      context.read<InstanceBloc>().add(InstanceActionEvent(
+            instanceAction: InstanceAction.block,
+            instanceId: postViewMedia.postView.community.instanceId,
+            domain: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+            value: true,
+          ));
       break;
     case PostCardAction.blockCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));
