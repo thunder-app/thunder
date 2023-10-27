@@ -48,5 +48,7 @@
   "unableToLoadPostsFrominstance": "Помилка завантаження публікацій з {instance}",
   "@unableToLoadPostsFrominstance": {},
   "blockUser": "Заблокувати користувача",
-  "@blockUser": {}
+  "@blockUser": {},
+  "notValidLemmyInstance": "{instance} ймовірно, не є дійсним сервером Lemmy",
+  "@notValidLemmyInstance": {}
 }
