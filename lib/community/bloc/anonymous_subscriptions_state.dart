@@ -12,12 +12,12 @@ class AnonymousSubscriptionsState extends Equatable {
 
   final AnonymousSubscriptionsStatus status;
   final String? errorMessage;
-  final List<CommunitySafe> subscriptions;
+  final List<Community> subscriptions;
   final Set<int> ids;
 
   AnonymousSubscriptionsState copyWith({
     AnonymousSubscriptionsStatus? status,
-    List<CommunitySafe>? subscriptions,
+    List<Community>? subscriptions,
     Set<int>? ids,
     String? errorMessage,
   }) {

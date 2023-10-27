@@ -103,7 +103,7 @@ class CommonMarkdownBody extends StatelessWidget {
         int? postId = await getLemmyPostId(parsedUrl);
         if (postId != null) {
           try {
-            FullPostView post = await lemmy.run(GetPost(
+            GetPostResponse post = await lemmy.run(GetPost(
               id: postId,
               auth: account?.jwt,
             ));
@@ -121,7 +121,7 @@ class CommonMarkdownBody extends StatelessWidget {
         int? commentId = await getLemmyCommentId(parsedUrl);
         if (commentId != null) {
           try {
-            FullCommentView fullCommentView = await lemmy.run(GetComment(
+            CommentResponse fullCommentView = await lemmy.run(GetComment(
               id: commentId,
               auth: account?.jwt,
             ));

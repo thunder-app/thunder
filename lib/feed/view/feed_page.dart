@@ -58,7 +58,7 @@ class FeedPage extends StatefulWidget {
   final FeedType feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final PostListingType? postListingType;
+  final ListingType? postListingType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
@@ -269,7 +269,7 @@ class _FeedViewState extends State<FeedView> {
                           child: Visibility(
                             visible: state.feedType == FeedType.community,
                             child: CommunityHeader(
-                              fullCommunityView: state.fullCommunityView!,
+                              getCommunityResponse: state.fullCommunityView!,
                               showCommunitySidebar: showCommunitySidebar,
                               onToggle: (bool toggled) {
                                 // Scroll to top first before showing the sidebar
@@ -314,7 +314,7 @@ class _FeedViewState extends State<FeedView> {
                                     ? PostCard(
                                         postViewMedia: postViewMedias[index],
                                         communityMode: state.feedType == FeedType.community,
-                                        onVoteAction: (VoteType voteType) {
+                                        onVoteAction: (int voteType) {
                                           context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
                                         },
                                         onSaveAction: (bool saved) {
@@ -371,7 +371,7 @@ class _FeedViewState extends State<FeedView> {
                               duration: const Duration(milliseconds: 300),
                               child: showCommunitySidebar
                                   ? CommunitySidebar(
-                                      fullCommunityView: state.fullCommunityView,
+                                      getCommunityResponse: state.fullCommunityView,
                                       onDismiss: () => setState(() => showCommunitySidebar = false),
                                     )
                                   : Container(),
@@ -431,8 +431,8 @@ class _FeedViewState extends State<FeedView> {
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final desiredPostListingType = thunderBloc.state.defaultPostListingType;
-    final currentPostListingType = feedBloc.state.postListingType;
+    final desiredListingType = thunderBloc.state.defaultListingType;
+    final currentListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
     final communityMode = feedBloc.state.feedType == FeedType.community;
@@ -442,12 +442,12 @@ class _FeedViewState extends State<FeedView> {
     // - We're not on the desired listing type OR
     // - We're on a community
     // THEN navigate to the desired listing type
-    if (!canPop && (desiredPostListingType != currentPostListingType || communityMode)) {
+    if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
           sortType: thunderBloc.state.defaultSortType,
           reset: true,
-          postListingType: desiredPostListingType,
+          postListingType: desiredListingType,
           feedType: FeedType.general,
           communityId: null,
         ),
@@ -501,7 +501,7 @@ class TagLine extends StatelessWidget {
     final theme = Theme.of(context);
     final taglineToShowCache = Cache<String>();
 
-    final fullSiteView = context.read<AuthBloc>().state.fullSiteView;
+    final fullSiteView = context.read<AuthBloc>().state.getSiteResponse;
     if (fullSiteView == null || fullSiteView.taglines.isEmpty) return Container();
 
     String tagline = taglineToShowCache.getOrSet(() {

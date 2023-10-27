@@ -22,9 +22,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void triggerCommentAction({
   required BuildContext context,
   SwipeAction? swipeAction,
-  required Function(int, VoteType) onVoteAction,
+  required Function(int, int) onVoteAction,
   required Function(int, bool) onSaveAction,
-  required VoteType voteType,
+  required int voteType,
   bool? saved,
   required CommentView commentView,
   int? selectedCommentId,
@@ -32,7 +32,7 @@ void triggerCommentAction({
 }) async {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(commentView.comment.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(commentView.comment.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
       bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
@@ -41,7 +41,7 @@ void triggerCommentAction({
         showSnackbar(context, AppLocalizations.of(context)!.downvotesDisabled);
         return;
       }
-      onVoteAction(commentView.comment.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(commentView.comment.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:

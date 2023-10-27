@@ -43,7 +43,12 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
     try {
       await insertSubscriptions(event.communities);
       emit(
-          state.copyWith(status: AnonymousSubscriptionsStatus.success, subscriptions: [...state.subscriptions, ...event.communities], ids: {...state.ids}..addAll(event.communities.map((e) => e.id))));
+        state.copyWith(
+          status: AnonymousSubscriptionsStatus.success,
+          subscriptions: [...state.subscriptions, ...event.communities],
+          ids: {...state.ids}..addAll(event.communities.map((e) => e.id)),
+        ),
+      );
     } catch (e) {
       emit(state.copyWith(status: AnonymousSubscriptionsStatus.failure, errorMessage: e.toString()));
     }
@@ -52,7 +57,7 @@ class AnonymousSubscriptionsBloc extends Bloc<AnonymousSubscriptionsEvent, Anony
   Future<void> _getSubscribedCommunities(GetSubscribedCommunitiesEvent event, Emitter<AnonymousSubscriptionsState> emit) async {
     emit(const AnonymousSubscriptionsState(status: AnonymousSubscriptionsStatus.loading));
     try {
-      List<CommunitySafe> subscribedCommunities = await getSubscriptions();
+      List<Community> subscribedCommunities = await getSubscriptions();
       emit(state.copyWith(
         status: AnonymousSubscriptionsStatus.success,
         subscriptions: subscribedCommunities,

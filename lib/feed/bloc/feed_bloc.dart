@@ -239,7 +239,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
   Future<void> _onFeedCommunityViewUpdated(FeedCommunityViewUpdatedEvent event, Emitter<FeedState> emit) async {
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    FullCommunityView? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView);
+    GetCommunityResponse? updatedFullCommunityView = state.fullCommunityView?.copyWith(communityView: event.communityView);
 
     emit(state.copyWith(status: FeedStatus.success, fullCommunityView: updatedFullCommunityView));
   }
@@ -288,7 +288,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (event.reset) {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent());
 
-      FullCommunityView? fullCommunityView;
+      GetCommunityResponse? fullCommunityView;
 
       switch (event.feedType) {
         case FeedType.community:

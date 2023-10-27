@@ -11,8 +11,8 @@ import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Shows a dialog which allows typing/search for a user
-void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonViewSafe) onUserSelected}) async {
-  Future<String?> onSubmitted({PersonViewSafe? payload, String? value}) async {
+void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
+  Future<String?> onSubmitted({PersonView? payload, String? value}) async {
     if (payload != null) {
       onUserSelected(payload);
       Navigator.of(context).pop();
@@ -22,12 +22,12 @@ void showUserInputDialog(BuildContext context, {required String title, required 
       if (normalizedUsername != null) {
         try {
           Account? account = await fetchActiveProfileAccount();
-          final FullPersonView fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
+          final GetPersonDetailsResponse getPersonDetailsResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
             auth: account?.jwt,
             username: normalizedUsername,
           ));
 
-          onUserSelected(fullPersonView.personView);
+          onUserSelected(getPersonDetailsResponse.personView);
 
           Navigator.of(context).pop();
         } catch (e) {
@@ -40,7 +40,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     return null;
   }
 
-  showInputDialog<PersonViewSafe>(
+  showInputDialog<PersonView>(
     context: context,
     title: title,
     inputLabel: AppLocalizations.of(context)!.username,
@@ -50,21 +50,21 @@ void showUserInputDialog(BuildContext context, {required String title, required 
   );
 }
 
-Future<Iterable<PersonViewSafe>> getUserSuggestions(String query) async {
+Future<Iterable<PersonView>> getUserSuggestions(String query) async {
   if (query.isNotEmpty != true) {
     return const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
-  final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
+  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.users,
-    limit: 10,
+    limit: 20,
   ));
-  return searchReults.users;
+  return searchResponse.users;
 }
 
-Widget buildUserSuggestionWidget(PersonViewSafe payload, {void Function(PersonViewSafe)? onSelected}) {
+Widget buildUserSuggestionWidget(PersonView payload, {void Function(PersonView)? onSelected}) {
   return Tooltip(
     message: '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
     preferBelow: false,
@@ -100,12 +100,12 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
       if (normalizedCommunity != null) {
         try {
           Account? account = await fetchActiveProfileAccount();
-          final FullCommunityView fullCommunityView = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+          final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
             auth: account?.jwt,
             name: normalizedCommunity,
           ));
 
-          onCommunitySelected(fullCommunityView.communityView);
+          onCommunitySelected(getCommunityResponse.communityView);
 
           Navigator.of(context).pop();
         } catch (e) {
@@ -133,13 +133,14 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
     return emptySuggestions ?? const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
-  final SearchResults searchReults = await LemmyClient.instance.lemmyApiV3.run(Search(
+  final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
     q: query,
     auth: account?.jwt,
     type: SearchType.communities,
-    limit: 10,
+    limit: 20,
+    sort: SortType.topAll,
   ));
-  return searchReults.communities;
+  return searchResponse.communities;
 }
 
 Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? onSelected}) {

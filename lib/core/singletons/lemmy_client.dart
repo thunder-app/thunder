@@ -34,7 +34,7 @@ class LemmyClient {
     if (!_lemmySites.containsKey(instance.lemmyApiV3.host)) return false;
 
     // Parse the version
-    FullSiteView site = _lemmySites[instance.lemmyApiV3.host]!;
+    GetSiteResponse site = _lemmySites[instance.lemmyApiV3.host]!;
     Version instanceVersion;
     try {
       instanceVersion = Version.parse(site.version);
@@ -46,7 +46,7 @@ class LemmyClient {
     return instanceVersion > feature.minSupportedVersion;
   }
 
-  static final Map<String, FullSiteView> _lemmySites = <String, FullSiteView>{};
+  static final Map<String, GetSiteResponse> _lemmySites = <String, GetSiteResponse>{};
 }
 
 enum LemmyFeature {
