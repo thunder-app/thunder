@@ -44,7 +44,7 @@ class CommentHeader extends StatelessWidget {
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
-    VoteType? myVote = comment.myVote;
+    int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
     int upvotes = comment.counts.upvotes ?? 0;
@@ -166,7 +166,7 @@ class CommentHeader extends StatelessWidget {
                 Icon(
                   Icons.north_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                  color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
@@ -174,14 +174,14 @@ class CommentHeader extends StatelessWidget {
                   semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                    color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(width: 10.0),
                 Icon(
                   Icons.south_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                  color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
                 const SizedBox(width: 2.0),
                 if (downvotes != 0)
@@ -190,7 +190,7 @@ class CommentHeader extends StatelessWidget {
                     textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                     semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                      color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),
                   ),
               ],

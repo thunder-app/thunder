@@ -13,17 +13,17 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 void triggerPostAction({
   required BuildContext context,
   SwipeAction? swipeAction,
-  required Function(int, VoteType) onVoteAction,
+  required Function(int, int) onVoteAction,
   required Function(int, bool) onSaveAction,
   required Function(int, bool) onToggleReadAction,
-  required VoteType voteType,
+  required int voteType,
   bool? saved,
   bool? read,
   required PostViewMedia postViewMedia,
 }) {
   switch (swipeAction) {
     case SwipeAction.upvote:
-      onVoteAction(postViewMedia.postView.post.id, voteType == VoteType.up ? VoteType.none : VoteType.up);
+      onVoteAction(postViewMedia.postView.post.id, voteType == 1 ? 0 : 1);
       return;
     case SwipeAction.downvote:
       bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
@@ -33,7 +33,7 @@ void triggerPostAction({
         return;
       }
 
-      onVoteAction(postViewMedia.postView.post.id, voteType == VoteType.down ? VoteType.none : VoteType.down);
+      onVoteAction(postViewMedia.postView.post.id, voteType == -1 ? 0 : -1);
       return;
     case SwipeAction.reply:
     case SwipeAction.edit:

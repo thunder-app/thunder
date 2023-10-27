@@ -50,7 +50,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   SortType sortType = SortType.active;
   IconData? sortTypeIcon;
   String? sortTypeLabel;
-  final Set<CommunitySafe> newAnonymousSubscriptions = {};
+  final Set<Community> newAnonymousSubscriptions = {};
   final Set<int> removedSubs = {};
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();

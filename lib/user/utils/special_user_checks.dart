@@ -6,7 +6,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 // These checks are for whether a given user falls into a given category
 
 /// Checks whether the given [person] is an administrator in the current instance
-bool isAdmin(PersonSafe? person) {
+bool isAdmin(Person? person) {
   return person?.admin == true;
 }
 
@@ -16,22 +16,22 @@ bool commentAuthorIsPostAuthor(Post? post, Comment? comment) {
 }
 
 /// Checks whether the given [person] is a moderator of the given [moderators].
-bool isModerator(PersonSafe? person, List<CommunityModeratorView>? moderators) {
+bool isModerator(Person? person, List<CommunityModeratorView>? moderators) {
   return person != null && moderators?.any((moderator) => moderator.moderator?.id == person.id) == true;
 }
 
 /// Checks whether the given [person] is a bot account
-bool isBot(PersonSafe? person) {
+bool isBot(Person? person) {
   return person?.botAccount == true;
 }
 
-bool isSpecialUser(BuildContext context, bool isOwnComment, Post? post, Comment? comment, PersonSafe creator, List<CommunityModeratorView>? moderators) {
+bool isSpecialUser(BuildContext context, bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
   return commentAuthorIsPostAuthor(post, comment) || isOwnComment || isAdmin(creator) || isModerator(creator, moderators) || isBot(creator);
 }
 
 // These helper methods are for building UI elements around special users
 
-Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, Comment? comment, PersonSafe creator, List<CommunityModeratorView>? moderators) {
+Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
   final theme = Theme.of(context);
   final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
 
@@ -66,7 +66,7 @@ Color? fetchUsernameColor(BuildContext context, bool isOwnComment, Post? post, C
   return color;
 }
 
-String fetchUsernameDescriptor(bool isOwnComment, Post? post, Comment? comment, PersonSafe creator, List<CommunityModeratorView>? moderators) {
+String fetchUsernameDescriptor(bool isOwnComment, Post? post, Comment? comment, Person creator, List<CommunityModeratorView>? moderators) {
   String descriptor = '';
 
   if (commentAuthorIsPostAuthor(post, comment)) descriptor += 'original poster';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 class CommunityIcon extends StatelessWidget {
-  final CommunitySafe? community;
+  final Community? community;
   final double radius;
 
   const CommunityIcon({super.key, required this.community, this.radius = 12.0});

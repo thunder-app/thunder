@@ -12,7 +12,7 @@ final class FeedFetchedEvent extends FeedEvent {
   final FeedType? feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final PostListingType? postListingType;
+  final ListingType? postListingType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;

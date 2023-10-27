@@ -229,7 +229,7 @@ class _ThunderState extends State<Thunder> {
       Account? account = await fetchActiveProfileAccount();
 
       try {
-        FullPostView fullPostView = await lemmy.run(GetPost(
+        GetPostResponse fullPostView = await lemmy.run(GetPost(
           id: postId,
           auth: account?.jwt,
         ));
@@ -256,7 +256,7 @@ class _ThunderState extends State<Thunder> {
       Account? account = await fetchActiveProfileAccount();
 
       try {
-        FullCommentView fullCommentView = await lemmy.run(GetComment(
+        CommentResponse fullCommentView = await lemmy.run(GetComment(
           id: commentId,
           auth: account?.jwt,
         ));
@@ -404,7 +404,7 @@ class _ThunderState extends State<Thunder> {
                         context.read<FeedBloc>().add(
                               FeedFetchedEvent(
                                 feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultPostListingType,
+                                postListingType: thunderBlocState.defaultListingType,
                                 sortType: thunderBlocState.defaultSortType,
                                 reset: true,
                               ),
@@ -433,7 +433,7 @@ class _ThunderState extends State<Thunder> {
                               children: <Widget>[
                                 Stack(
                                   children: [
-                                    FeedPage(useGlobalFeedBloc: true, feedType: FeedType.general, postListingType: thunderBlocState.defaultPostListingType, sortType: thunderBlocState.defaultSortType),
+                                    FeedPage(useGlobalFeedBloc: true, feedType: FeedType.general, postListingType: thunderBlocState.defaultListingType, sortType: thunderBlocState.defaultSortType),
                                     AnimatedOpacity(
                                       opacity: _isFabOpen ? 1.0 : 0.0,
                                       duration: const Duration(milliseconds: 150),
