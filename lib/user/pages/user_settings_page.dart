@@ -39,7 +39,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         create: (context) => UserSettingsBloc(),
         child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
           listener: (context, state) {
-            if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
+            if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
+                (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
               showSnackbar(
                 context,
                 state.status == UserSettingsStatus.failure ? l10n.failedToUnblock(state.errorMessage ?? l10n.missingErrorMessage) : l10n.failedToBlock(state.errorMessage ?? l10n.missingErrorMessage),
@@ -48,7 +49,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               showSnackbar(context, l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
             }
 
-            if (state.status == UserSettingsStatus.success && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0)) {
+            if (state.status == UserSettingsStatus.success && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
               showSnackbar(
                 context,
                 l10n.successfullyUnblocked,
@@ -58,6 +59,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: state.personBeingBlocked, unblock: false));
                   } else if (state.communityBeingBlocked != 0) {
                     context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: state.communityBeingBlocked, unblock: false));
+                  } else if (state.instanceBeingBlocked != 0) {
+                    context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: state.instanceBeingBlocked, unblock: false));
                   }
                 },
               );
@@ -77,8 +80,15 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
+                    UserSettingTopic(title: l10n.blockedInstances),
+                    UserSettingBlockList(
+                      status: state.status,
+                      emptyText: l10n.noInstanceBlocks,
+                      items: getInstanceBlocks(context, state, state.instanceBlocks),
+                    ),
+                  ],
                   UserSettingTopic(
-                    icon: Icons.person_rounded,
                     title: l10n.blockedUsers,
                     trailing: IconButton(
                       icon: Icon(
@@ -99,9 +109,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     emptyText: l10n.noUserBlocks,
                     items: getPersonBlocks(context, state, state.personBlocks),
                   ),
-                  const SizedBox(height: 20),
                   UserSettingTopic(
-                    icon: Icons.people_rounded,
                     title: l10n.blockedCommunities,
                     trailing: IconButton(
                       icon: Icon(
@@ -122,18 +130,6 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                     emptyText: l10n.noCommunityBlocks,
                     items: getCommunityBlocks(context, state, state.communityBlocks),
                   ),
-                  const SizedBox(height: 20),
-                  if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                    const UserSettingTopic(
-                      icon: Icons.language,
-                      title: 'Blocked Instances',
-                    ),
-                    UserSettingBlockList(
-                      status: state.status,
-                      emptyText: 'No instances blocked.',
-                      items: getInstanceBlocks(context, state, state.instanceBlocks),
-                    ),
-                  ],
                 ],
               ),
             );
@@ -145,6 +141,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
   List<Widget> getInstanceBlocks(BuildContext context, UserSettingsState state, List<Instance> instances) {
     final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
 
     return instances.map((instance) {
       return Padding(
@@ -159,6 +156,18 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 navigateToInstancePage(context, instanceHost: instance.domain);
               },
               child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: theme.colorScheme.secondaryContainer,
+                  maxRadius: 16.0,
+                  child: Text(
+                    instance.domain[0].toUpperCase(),
+                    semanticsLabel: '',
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.0,
+                    ),
+                  ),
+                ),
                 visualDensity: const VisualDensity(vertical: -2),
                 title: Text(
                   instance.domain,
@@ -337,7 +346,7 @@ class UserSettingBlockList extends StatelessWidget {
                 },
               )
             : Padding(
-                padding: const EdgeInsets.only(left: 70, right: 20),
+                padding: const EdgeInsets.only(left: 28, right: 20, bottom: 50),
                 child: Text(
                   emptyText ?? '',
                   style: TextStyle(color: theme.hintColor),

@@ -78,14 +78,14 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         block: !event.unblock,
       ));
 
-      add(const GetUserBlocksEvent());
-
-      return emit(state.copyWith(
-        status: event.unblock ? UserSettingsStatus.success : UserSettingsStatus.revert,
+      emit(state.copyWith(
+        status: state.status,
         instanceBeingBlocked: event.instanceId,
         personBeingBlocked: 0,
         communityBeingBlocked: 0,
       ));
+
+      return add(const GetUserBlocksEvent());
     } catch (e) {
       return emit(state.copyWith(
           status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
