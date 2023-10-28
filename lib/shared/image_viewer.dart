@@ -42,10 +42,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   final GlobalKey<ScaffoldMessengerState> _imageViewer = GlobalKey<ScaffoldMessengerState>();
   final GlobalKey<ExtendedImageGestureState> gestureKey = GlobalKey<ExtendedImageGestureState>();
   bool downloaded = false;
-
   double slideTransparency = 0.92;
   double imageTransparency = 1.0;
-
   bool maybeSlideZooming = false;
   bool slideZooming = false;
   bool fullscreen = false;
@@ -53,8 +51,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   /// User Settings
   bool isUserLoggedIn = false;
-
   bool isDownloadingMedia = false;
+  late int imagewidth;
+  late int imageheight;
+  late double maxzoomlevel = 3;
 
   void _maybeSlide(BuildContext context) {
     setState(() {
@@ -111,6 +111,26 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
         );
       },
     );
+  }
+
+  Future<void> getImageSize(String imageUrl, context) async {
+    final ByteData data = await NetworkAssetBundle(Uri.parse(imageUrl)).load(imageUrl);
+    final Uint8List bytes = data.buffer.asUint8List();
+    final decodedImage = await decodeImageFromList(bytes);
+
+    setState(() {
+      imagewidth = decodedImage.width;
+      imageheight = decodedImage.height;
+      maxzoomlevel = max(imagewidth, imageheight) / 128;
+      // ignore: avoid_print
+      print("$imagewidth + $imageheight + $maxzoomlevel");
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getImageSize(widget.url!, context);
   }
 
   @override
@@ -241,8 +261,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                   return GestureConfig(
                                     minScale: 0.8,
                                     animationMinScale: 0.8,
-                                    maxScale: 4.0,
-                                    animationMaxScale: 4.0,
+                                    maxScale: maxzoomlevel.toDouble(),
+                                    animationMaxScale: maxzoomlevel.toDouble(),
                                     speed: 1.0,
                                     inertialSpeed: 250.0,
                                     initialScale: 1.0,
