@@ -33,6 +33,8 @@
   "@unableToFindUser": {},
   "unableToFindCommunity": "Unable to find community",
   "@unableToFindCommunity": {},
+  "unableToFindInstance": "Unable to find instance",
+  "@unableToFindInstance": {},
   "blockCommunity": "Block Community",
   "@blockCommunity": {},
   "blockInstance": "Block Instance",

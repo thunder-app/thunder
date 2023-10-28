@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
@@ -171,14 +173,6 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
 
 /// Shows a dialog which allows typing/search for an instance
 void showInstanceInputDialog(BuildContext context, {required String title, required void Function(Instance) onInstanceSelected, Iterable<Instance>? emptySuggestions}) async {
-  Future<String?> onSubmitted({Instance? payload, String? value}) async {
-    if (payload == null) return null;
-
-    onInstanceSelected(payload);
-    Navigator.of(context).pop();
-    return null;
-  }
-
   Account? account = await fetchActiveProfileAccount();
 
   GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
@@ -186,6 +180,24 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
       auth: account?.jwt,
     ),
   );
+
+  Future<String?> onSubmitted({Instance? payload, String? value}) async {
+    if (payload != null) {
+      onInstanceSelected(payload);
+      Navigator.of(context).pop();
+    } else if (value != null) {
+      final Instance? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((Instance instance) => instance.domain == value);
+
+      if (instance != null) {
+        onInstanceSelected(instance);
+        Navigator.of(context).pop();
+      } else {
+        return AppLocalizations.of(context)!.unableToFindInstance;
+      }
+    }
+
+    return null;
+  }
 
   if (context.mounted) {
     showInputDialog<Instance>(
