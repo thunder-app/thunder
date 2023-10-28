@@ -26,7 +26,7 @@ class CommunityIcon extends StatelessWidget {
               )
             : null);
 
-    if (community?.icon == null || community!.icon!.isEmpty) return placeholderIcon;
+    if (community?.icon?.isNotEmpty != true) return placeholderIcon;
 
     return CachedNetworkImage(
       imageUrl: community!.icon!,

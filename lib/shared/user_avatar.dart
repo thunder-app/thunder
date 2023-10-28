@@ -24,7 +24,7 @@ class UserAvatar extends StatelessWidget {
           ),
         ));
 
-    if (person?.avatar == null || person!.avatar!.isEmpty) return placeholderIcon;
+    if (person?.avatar?.isNotEmpty != true) return placeholderIcon;
 
     return CachedNetworkImage(
       imageUrl: person?.avatar ?? '',

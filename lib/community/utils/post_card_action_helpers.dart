@@ -70,15 +70,14 @@ class ExtendedPostCardActions {
 
 final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.visitProfile,
+    icon: Icons.person_search_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
     icon: Icons.home_work_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitCommunity,
-  ),
-  ExtendedPostCardActions(
-    postCardAction: PostCardAction.blockInstance,
-    icon: Icons.block_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
-    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.blockCommunity,
@@ -87,14 +86,15 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.visitProfile,
-    icon: Icons.person_search_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
-  ),
-  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitInstance,
     icon: Icons.language,
     label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockInstance,
+    icon: Icons.block_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.sharePost,
