@@ -16,7 +16,7 @@ class CommentContent extends StatefulWidget {
   final bool isHidden;
   final bool excludeSemantics;
 
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(int) onReportAction;
@@ -107,7 +107,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                           padding: const EdgeInsets.only(bottom: 4, top: 6, right: 4.0),
                           child: CommentCardActions(
                             commentView: widget.comment,
-                            onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                            onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                             isEdit: widget.isOwnComment,
                             onSaveAction: widget.onSaveAction,
                             onDeleteAction: widget.onDeleteAction,

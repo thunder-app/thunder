@@ -31,12 +31,12 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
     // Get the id from the name
     Account? account = await fetchActiveProfileAccount();
 
-    final FullPersonView fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
+    final GetPersonDetailsResponse getPersonDetailsResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
       auth: account?.jwt,
       username: username,
     ));
 
-    _userId = fullPersonView.personView.person.id;
+    _userId = getPersonDetailsResponse.personView.person.id;
   }
 
   // Push navigation

@@ -66,7 +66,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   String? replyingToAuthor;
   String? replyingToContent;
-  PersonSafe? person;
+  Person? person;
 
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();

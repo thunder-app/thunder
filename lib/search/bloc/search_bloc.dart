@@ -60,7 +60,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      SearchResults searchResponse = await lemmy.run(Search(
+      SearchResponse searchResponse = await lemmy.run(Search(
         auth: account?.jwt,
         q: event.query,
         page: 1,
@@ -109,7 +109,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          SearchResults searchResponse = await lemmy.run(Search(
+          SearchResponse searchResponse = await lemmy.run(Search(
             auth: account?.jwt,
             q: event.query,
             page: state.page,
@@ -150,14 +150,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       if (account?.jwt == null) return;
 
-      CommunityView communityResponse = await lemmy.run(FollowCommunity(
+      CommunityResponse communityResponse = await lemmy.run(FollowCommunity(
         auth: account!.jwt!,
         communityId: event.communityId,
         follow: event.follow,
       ));
 
       // Refetch the status of the community - communityResponse does not return back with the proper subscription status
-      FullCommunityView fullCommunityView = await lemmy.run(GetCommunity(
+      GetCommunityResponse fullCommunityView = await lemmy.run(GetCommunity(
         auth: account.jwt,
         id: event.communityId,
       ));
@@ -232,14 +232,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
       Account? account = await fetchActiveProfileAccount();
 
-      List<CommunityView> trendingCommunities = await lemmy.run(ListCommunities(
-        type: PostListingType.local,
+      ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(ListCommunities(
+        type: ListingType.local,
         sort: SortType.active,
         limit: 5,
         auth: account?.jwt,
       ));
 
-      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: trendingCommunities));
+      return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: listCommunitiesResponse.communities));
     } catch (e) {
       // Not the end of the world if we can't load trending
     }

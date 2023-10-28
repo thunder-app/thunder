@@ -9,7 +9,7 @@ import 'package:thunder/post/utils/post.dart';
 Future<Map<String, dynamic>> fetchPosts({
   int limit = 20,
   int page = 1,
-  PostListingType? postListingType,
+  ListingType? postListingType,
   SortType? sortType,
   int? communityId,
   String? communityName,
@@ -27,7 +27,7 @@ Future<Map<String, dynamic>> fetchPosts({
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   do {
-    List<PostView> batch = await lemmy.run(GetPosts(
+    GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
       auth: account?.jwt,
       page: currentPage,
       sort: sortType,
@@ -36,13 +36,14 @@ Future<Map<String, dynamic>> fetchPosts({
       communityName: communityName,
     ));
 
-    batch.removeWhere((PostView postView) => postView.post.deleted == true);
+    // Remove deleted posts
+    getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
 
     // Parse the posts and add in media information which is used elsewhere in the app
-    List<PostViewMedia> formattedPosts = await parsePostViews(batch);
+    List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
     postViewMedias.addAll(formattedPosts);
 
-    if (batch.isEmpty) hasReachedEnd = true;
+    if (getPostsResponse.posts.isEmpty) hasReachedEnd = true;
     currentPage++;
   } while (!hasReachedEnd && postViewMedias.length < limit);
 
@@ -56,7 +57,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostView postView = await lemmy.run(CreatePost(
+  PostResponse postResponse = await lemmy.run(CreatePost(
     auth: account!.jwt!,
     communityId: communityId,
     name: name,
@@ -65,5 +66,5 @@ Future<PostView> createPost({required int communityId, required String name, Str
     nsfw: nsfw,
   ));
 
-  return postView;
+  return postResponse.postView;
 }

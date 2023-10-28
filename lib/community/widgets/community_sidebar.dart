@@ -31,10 +31,10 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class CommunitySidebar extends StatefulWidget {
-  final FullCommunityView? fullCommunityView;
+  final GetCommunityResponse? getCommunityResponse;
   final Function onDismiss;
 
-  const CommunitySidebar({super.key, this.fullCommunityView, required this.onDismiss});
+  const CommunitySidebar({super.key, this.getCommunityResponse, required this.onDismiss});
 
   @override
   State<CommunitySidebar> createState() => _CommunitySidebarState();
@@ -54,9 +54,9 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    if (widget.fullCommunityView == null) return Container();
+    if (widget.getCommunityResponse == null) return Container();
 
-    CommunityView communityView = widget.fullCommunityView!.communityView;
+    CommunityView communityView = widget.getCommunityResponse!.communityView;
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
@@ -91,7 +91,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                       child: communityView.blocked == false
                           ? Padding(
                               padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
-                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, fullCommunityView: widget.fullCommunityView!),
+                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, getCommunityResponse: widget.getCommunityResponse!),
                             )
                           : null,
                     ),
@@ -125,17 +125,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                           const SidebarSectionHeader(value: "Moderators"),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityModeratorList(fullCommunityView: widget.fullCommunityView!),
+                            child: CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
                           ),
                           Container(
-                            child: widget.fullCommunityView!.site != null
+                            child: widget.getCommunityResponse!.site != null
                                 ? Column(
                                     children: [
                                       const SidebarSectionHeader(value: "Host Instance"),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                         child: InstanceView(
-                                          site: widget.fullCommunityView!.site!,
+                                          site: widget.getCommunityResponse!.site!,
                                         ),
                                       ),
                                     ],
@@ -208,9 +208,9 @@ class CommunityStatsList extends StatelessWidget {
 }
 
 class CommunityModeratorList extends StatelessWidget {
-  const CommunityModeratorList({super.key, required this.fullCommunityView});
+  const CommunityModeratorList({super.key, required this.getCommunityResponse});
 
-  final FullCommunityView fullCommunityView;
+  final GetCommunityResponse getCommunityResponse;
 
   @override
   Widget build(BuildContext context) {
@@ -218,7 +218,7 @@ class CommunityModeratorList extends StatelessWidget {
 
     return Column(
       children: [
-        for (CommunityModeratorView mods in fullCommunityView.moderators)
+        for (CommunityModeratorView mods in getCommunityResponse.moderators)
           GestureDetector(
             onTap: () {
               navigateToUserPage(context, userId: mods.moderator!.id);
@@ -317,14 +317,14 @@ class BlockCommunityButton extends StatelessWidget {
 }
 
 class CommunityActions extends StatelessWidget {
-  const CommunityActions({super.key, required this.isUserLoggedIn, required this.fullCommunityView});
+  const CommunityActions({super.key, required this.isUserLoggedIn, required this.getCommunityResponse});
 
   final bool isUserLoggedIn;
-  final FullCommunityView fullCommunityView;
+  final GetCommunityResponse getCommunityResponse;
 
   @override
   Widget build(BuildContext context) {
-    CommunityView communityView = fullCommunityView.communityView;
+    CommunityView communityView = getCommunityResponse.communityView;
 
     return Row(
       children: [
@@ -371,7 +371,7 @@ class CommunityActions extends StatelessWidget {
                             ],
                             child: CreatePostPage(
                               communityId: communityView.community.id,
-                              communityView: fullCommunityView.communityView,
+                              communityView: getCommunityResponse.communityView,
                               previousDraftPost: previousDraftPost,
                               onUpdateDraft: (p) => newDraftPost = p,
                             ),
