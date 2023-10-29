@@ -7,6 +7,7 @@ class SearchState extends Equatable {
     this.status = SearchStatus.initial,
     this.communities,
     this.trendingCommunities,
+    this.users,
     this.errorMessage,
     this.page = 1,
     this.sortType,
@@ -16,6 +17,7 @@ class SearchState extends Equatable {
   final SearchStatus status;
   List<CommunityView>? communities;
   List<CommunityView>? trendingCommunities;
+  List<PersonView>? users;
 
   final String? errorMessage;
 
@@ -28,6 +30,7 @@ class SearchState extends Equatable {
     SearchStatus? status,
     List<CommunityView>? communities,
     List<CommunityView>? trendingCommunities,
+    List<PersonView>? users,
     String? errorMessage,
     int? page,
     SortType? sortType,
@@ -37,6 +40,7 @@ class SearchState extends Equatable {
       status: status ?? this.status,
       communities: communities ?? this.communities,
       trendingCommunities: trendingCommunities ?? this.trendingCommunities,
+      users: users ?? this.users,
       errorMessage: errorMessage,
       page: page ?? this.page,
       sortType: sortType ?? this.sortType,
@@ -45,5 +49,5 @@ class SearchState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [status, communities, trendingCommunities, errorMessage, page, focusSearchId];
+  List<Object?> get props => [status, communities, trendingCommunities, users, errorMessage, page, focusSearchId];
 }
