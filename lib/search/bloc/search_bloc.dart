@@ -66,10 +66,12 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         page: 1,
         limit: 15,
         sort: event.sortType,
+        listingType: event.listingType,
+        type: event.searchType,
       ));
 
       // If there are no search results, see if this is an exact search
-      if (searchResponse.communities.isEmpty) {
+      if (event.searchType == SearchType.communities && searchResponse.communities.isEmpty) {
         // Note: We could jump straight to GetCommunity here.
         // However, getLemmyCommunity has a nice instance check that can short-circuit things
         // if the instance is not valid to start.
@@ -90,7 +92,26 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       }
 
-      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, page: 2));
+      // Check for exact user search
+      if (event.searchType == SearchType.users && searchResponse.users.isEmpty) {
+        String? userName = await getLemmyUser(event.query);
+        if (userName != null) {
+          try {
+            Account? account = await fetchActiveProfileAccount();
+
+            final getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
+              username: userName,
+              auth: account?.jwt,
+            ));
+
+            searchResponse = searchResponse.copyWith(users: [getCommunityResponse.personView]);
+          } catch (e) {
+            // Ignore any exceptions here and return an empty response below
+          }
+        }
+      }
+
+      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, users: searchResponse.users, page: 2));
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
@@ -104,7 +125,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities));
+          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities, users: state.users));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -117,14 +138,15 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             sort: event.sortType,
           ));
 
-          if (searchResponse.communities.isEmpty) {
+          if ((event.searchType == SearchType.communities && searchResponse.communities.isEmpty) || event.searchType == SearchType.users && searchResponse.users.isEmpty) {
             return emit(state.copyWith(status: SearchStatus.done));
           }
 
           // Append the search results
           state.communities = [...state.communities ?? [], ...searchResponse.communities];
+          state.users = [...state.users ?? [], ...searchResponse.users];
 
-          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, page: state.page + 1));
+          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, users: state.users, page: state.page + 1));
         } catch (e) {
           exception = e;
           attemptCount++;
