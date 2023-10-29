@@ -27,6 +27,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
@@ -318,6 +319,7 @@ class _ThunderState extends State<Thunder> {
         BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
         BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
+        BlocProvider(create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(),

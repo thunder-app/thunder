@@ -6,6 +6,7 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instance/utils/instance.dart';
 import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -23,6 +24,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   UserSettingsBloc() : super(const UserSettingsState()) {
     on<GetUserBlocksEvent>(
       _getUserBlocksEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
+    on<UnblockInstanceEvent>(
+      _unblockInstanceEvent,
       transformer: throttleDroppable(throttleDuration),
     );
     on<UnblockCommunityEvent>(
@@ -47,11 +52,15 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
 
         final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
         final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+        final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
 
         return emit(state.copyWith(
-          status: UserSettingsStatus.success,
+          status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
+              ? UserSettingsStatus.revert
+              : UserSettingsStatus.success,
           personBlocks: personBlocks,
           communityBlocks: communityBlocks,
+          instanceBlocks: instanceBlocks,
         ));
       }
     } catch (e) {
@@ -59,11 +68,32 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     }
   }
 
+  Future<void> _unblockInstanceEvent(UnblockInstanceEvent event, emit) async {
+    emit(state.copyWith(status: UserSettingsStatus.blocking, instanceBeingBlocked: event.instanceId, personBeingBlocked: 0, communityBeingBlocked: 0));
+
+    try {
+      await blockInstance(event.instanceId, !event.unblock);
+
+      emit(state.copyWith(
+        status: state.status,
+        instanceBeingBlocked: event.instanceId,
+        personBeingBlocked: 0,
+        communityBeingBlocked: 0,
+      ));
+
+      return add(const GetUserBlocksEvent());
+    } catch (e) {
+      return emit(state.copyWith(
+          status: event.unblock ? UserSettingsStatus.failure : UserSettingsStatus.failedRevert,
+          errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
+    }
+  }
+
   Future<void> _unblockCommunityEvent(UnblockCommunityEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0));
+    emit(state.copyWith(status: UserSettingsStatus.blocking, communityBeingBlocked: event.communityId, personBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final BlockCommunityResponse blockCommunityResponse = await lemmy.run(BlockCommunity(
@@ -96,7 +126,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0));
+    emit(state.copyWith(status: UserSettingsStatus.blocking, personBeingBlocked: event.personId, communityBeingBlocked: 0, instanceBeingBlocked: 0));
 
     try {
       final blockPerson = await lemmy.run(BlockPerson(

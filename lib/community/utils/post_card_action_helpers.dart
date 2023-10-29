@@ -10,9 +10,12 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
@@ -34,6 +37,7 @@ enum PostCardAction {
   sharePost,
   shareMedia,
   shareLink,
+  blockInstance,
   blockCommunity,
   upvote,
   downvote,
@@ -66,6 +70,11 @@ class ExtendedPostCardActions {
 
 final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.visitProfile,
+    icon: Icons.person_search_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
     icon: Icons.home_work_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitCommunity,
@@ -77,14 +86,15 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.visitProfile,
-    icon: Icons.person_search_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
-  ),
-  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitInstance,
     icon: Icons.language,
     label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockInstance,
+    icon: Icons.block_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.sharePost,
@@ -153,7 +163,11 @@ void showPostActionBottomModalSheet(
   final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
 
   actionsToInclude ??= [];
-  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
+  List<ExtendedPostCardActions> postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
+
+  if (actionsToInclude.contains(PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
+  }
 
   multiActionsToInclude ??= [];
   final multiPostCardActionItemsToUse = postCardActionItems.where((extendedAction) => multiActionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
@@ -272,6 +286,14 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.shareLink:
       if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
+      break;
+    case PostCardAction.blockInstance:
+      context.read<InstanceBloc>().add(InstanceActionEvent(
+            instanceAction: InstanceAction.block,
+            instanceId: postViewMedia.postView.community.instanceId,
+            domain: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+            value: true,
+          ));
       break;
     case PostCardAction.blockCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));

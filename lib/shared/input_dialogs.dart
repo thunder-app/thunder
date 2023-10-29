@@ -1,14 +1,18 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
@@ -167,6 +171,86 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
   );
 }
 
+/// Shows a dialog which allows typing/search for an instance
+void showInstanceInputDialog(BuildContext context, {required String title, required void Function(Instance) onInstanceSelected, Iterable<Instance>? emptySuggestions}) async {
+  Account? account = await fetchActiveProfileAccount();
+
+  GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
+    GetFederatedInstances(
+      auth: account?.jwt,
+    ),
+  );
+
+  Future<String?> onSubmitted({Instance? payload, String? value}) async {
+    if (payload != null) {
+      onInstanceSelected(payload);
+      Navigator.of(context).pop();
+    } else if (value != null) {
+      final Instance? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((Instance instance) => instance.domain == value);
+
+      if (instance != null) {
+        onInstanceSelected(instance);
+        Navigator.of(context).pop();
+      } else {
+        return AppLocalizations.of(context)!.unableToFindInstance;
+      }
+    }
+
+    return null;
+  }
+
+  if (context.mounted) {
+    showInputDialog<Instance>(
+      context: context,
+      title: title,
+      inputLabel: AppLocalizations.of(context)!.instance,
+      onSubmitted: onSubmitted,
+      getSuggestions: (query) => getInstanceSuggestions(query, getFederatedInstancesResponse.federatedInstances?.linked),
+      suggestionBuilder: (payload) => buildInstanceSuggestionWidget(payload, context: context),
+    );
+  }
+}
+
+Future<Iterable<Instance>> getInstanceSuggestions(String query, Iterable<Instance>? emptySuggestions) async {
+  if (query.isEmpty) {
+    return const Iterable.empty();
+  }
+
+  Iterable<Instance> filteredInstances = emptySuggestions?.where((Instance instance) => instance.domain.contains(query)) ?? const Iterable.empty();
+  return filteredInstances;
+}
+
+Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelected, BuildContext? context}) {
+  final theme = Theme.of(context!);
+
+  return Tooltip(
+    message: '${payload.domain}',
+    preferBelow: false,
+    child: InkWell(
+      onTap: onSelected == null ? null : () => onSelected(payload),
+      child: ListTile(
+        leading: CircleAvatar(
+          backgroundColor: theme.colorScheme.secondaryContainer,
+          maxRadius: 16.0,
+          child: Text(
+            payload.domain[0].toUpperCase(),
+            semanticsLabel: '',
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 16.0,
+            ),
+          ),
+        ),
+        title: Text(
+          payload.domain,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ),
+  );
+}
+
 /// Shows a dialog which takes input and offers suggestions
 void showInputDialog<T>({
   required BuildContext context,
@@ -187,62 +271,65 @@ void showInputDialog<T>({
         builder: (context, setState) {
           return AlertDialog(
             title: Text(title),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TypeAheadField<T>(
-                  textFieldConfiguration: TextFieldConfiguration(
-                    controller: textController,
-                    onChanged: (value) => setState(() {
-                      okEnabled = value.isNotEmpty;
-                      error = null;
-                    }),
-                    autofocus: true,
-                    decoration: InputDecoration(
-                      isDense: true,
-                      border: const OutlineInputBorder(),
-                      labelText: inputLabel,
-                      errorText: error,
+            content: SizedBox(
+              width: min(MediaQuery.of(context).size.width, 700),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TypeAheadField<T>(
+                    textFieldConfiguration: TextFieldConfiguration(
+                      controller: textController,
+                      onChanged: (value) => setState(() {
+                        okEnabled = value.isNotEmpty;
+                        error = null;
+                      }),
+                      autofocus: true,
+                      decoration: InputDecoration(
+                        isDense: true,
+                        border: const OutlineInputBorder(),
+                        labelText: inputLabel,
+                        errorText: error,
+                      ),
+                      onSubmitted: (text) async {
+                        setState(() => okEnabled = false);
+                        final String? submitError = await onSubmitted(value: text);
+                        setState(() => error = submitError);
+                      },
                     ),
-                    onSubmitted: (text) async {
+                    suggestionsCallback: getSuggestions,
+                    itemBuilder: (context, payload) => suggestionBuilder(payload),
+                    onSuggestionSelected: (payload) async {
                       setState(() => okEnabled = false);
-                      final String? submitError = await onSubmitted(value: text);
+                      final String? submitError = await onSubmitted(payload: payload);
                       setState(() => error = submitError);
                     },
+                    hideOnEmpty: true,
+                    hideOnLoading: true,
+                    hideOnError: true,
                   ),
-                  suggestionsCallback: getSuggestions,
-                  itemBuilder: (context, payload) => suggestionBuilder(payload),
-                  onSuggestionSelected: (payload) async {
-                    setState(() => okEnabled = false);
-                    final String? submitError = await onSubmitted(payload: payload);
-                    setState(() => error = submitError);
-                  },
-                  hideOnEmpty: true,
-                  hideOnLoading: true,
-                  hideOnError: true,
-                ),
-                const SizedBox(height: 10),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Text(AppLocalizations.of(context)!.cancel),
-                    ),
-                    const SizedBox(width: 5),
-                    FilledButton(
-                      onPressed: okEnabled
-                          ? () async {
-                              setState(() => okEnabled = false);
-                              final String? submitError = await onSubmitted(value: textController.text);
-                              setState(() => error = submitError);
-                            }
-                          : null,
-                      child: Text(AppLocalizations.of(context)!.ok),
-                    ),
-                  ],
-                ),
-              ],
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: Text(AppLocalizations.of(context)!.cancel),
+                      ),
+                      const SizedBox(width: 5),
+                      FilledButton(
+                        onPressed: okEnabled
+                            ? () async {
+                                setState(() => okEnabled = false);
+                                final String? submitError = await onSubmitted(value: textController.text);
+                                setState(() => error = submitError);
+                              }
+                            : null,
+                        child: Text(AppLocalizations.of(context)!.ok),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
