@@ -4,17 +4,23 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:stream_transform/stream_transform.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:collection/collection.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/search/utils/search_utils.dart';
+import 'package:thunder/utils/comment.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 
 part 'search_event.dart';
 part 'search_state.dart';
 
 const throttleDuration = Duration(milliseconds: 300);
+const timeout = Duration(seconds: 10);
 
 EventTransformer<E> throttleDroppable<E>(Duration duration) {
   return (events, mapper) => droppable<E>().call(events.throttle(duration), mapper);
@@ -46,6 +52,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       _getTrendingCommunitiesEvent,
       transformer: throttleDroppable(throttleDuration),
     );
+    on<VoteCommentEvent>(
+      _voteCommentEvent,
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on vote
+    );
+    on<SaveCommentEvent>(
+      _saveCommentEvent,
+      transformer: throttleDroppable(Duration.zero), // Don't give a throttle on save
+    );
   }
 
   Future<void> _resetSearch(ResetSearch event, Emitter<SearchState> emit) async {
@@ -56,6 +70,10 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
   Future<void> _startSearchEvent(StartSearchEvent event, Emitter<SearchState> emit) async {
     try {
       emit(state.copyWith(status: SearchStatus.loading));
+
+      if (event.query.isEmpty) {
+        return emit(state.copyWith(status: SearchStatus.initial));
+      }
 
       Account? account = await fetchActiveProfileAccount();
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -111,7 +129,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       }
 
-      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, users: searchResponse.users, page: 2));
+      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, users: searchResponse.users, comments: searchResponse.comments, page: 2));
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
@@ -125,7 +143,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities, users: state.users));
+          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities, users: state.users, comments: state.comments));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -138,15 +156,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             sort: event.sortType,
           ));
 
-          if ((event.searchType == SearchType.communities && searchResponse.communities.isEmpty) || event.searchType == SearchType.users && searchResponse.users.isEmpty) {
+          if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
             return emit(state.copyWith(status: SearchStatus.done));
           }
 
           // Append the search results
           state.communities = [...state.communities ?? [], ...searchResponse.communities];
           state.users = [...state.users ?? [], ...searchResponse.users];
+          state.comments = [...state.comments ?? [], ...searchResponse.comments];
 
-          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, users: state.users, page: state.page + 1));
+          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, users: state.users, comments: state.comments, page: state.page + 1));
         } catch (e) {
           exception = e;
           attemptCount++;
@@ -264,6 +283,58 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
       return emit(state.copyWith(status: SearchStatus.trending, trendingCommunities: listCommunitiesResponse.communities));
     } catch (e) {
       // Not the end of the world if we can't load trending
+    }
+  }
+
+  Future<void> _voteCommentEvent(VoteCommentEvent event, Emitter<SearchState> emit) async {
+    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+
+    emit(state.copyWith(status: SearchStatus.performingCommentAction));
+
+    try {
+      CommentView updatedCommentView = await voteComment(event.commentId, event.score).timeout(timeout, onTimeout: () {
+        throw Exception(l10n.timeoutUpvoteComment);
+      });
+
+      // If it worked, update and emit
+      CommentView? commentView = state.comments?.firstWhereOrNull((commentView) => commentView.comment.id == event.commentId);
+      if (commentView != null) {
+        int index = (state.comments?.indexOf(commentView))!;
+
+        List<CommentView> comments = List.from(state.comments ?? []);
+        comments.insert(index, updatedCommentView);
+        comments.remove(commentView);
+
+        emit(state.copyWith(status: SearchStatus.success, comments: comments));
+      }
+    } catch (e) {
+      // It just fails
+    }
+  }
+
+  Future<void> _saveCommentEvent(SaveCommentEvent event, Emitter<SearchState> emit) async {
+    final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+
+    emit(state.copyWith(status: SearchStatus.performingCommentAction));
+
+    try {
+      CommentView updatedCommentView = await saveComment(event.commentId, event.save).timeout(timeout, onTimeout: () {
+        throw Exception(l10n.timeoutUpvoteComment);
+      });
+
+      // If it worked, update and emit
+      CommentView? commentView = state.comments?.firstWhereOrNull((commentView) => commentView.comment.id == event.commentId);
+      if (commentView != null) {
+        int index = (state.comments?.indexOf(commentView))!;
+
+        List<CommentView> comments = List.from(state.comments ?? []);
+        comments.insert(index, updatedCommentView);
+        comments.remove(commentView);
+
+        emit(state.copyWith(status: SearchStatus.success, comments: comments));
+      }
+    } catch (e) {
+      // It just fails
     }
   }
 }

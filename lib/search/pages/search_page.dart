@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:convert';
+
 import 'package:fading_edge_scrollview/fading_edge_scrollview.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
@@ -6,17 +9,22 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
+import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
+import 'package:thunder/search/utils/search_utils.dart';
+import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
@@ -243,7 +251,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   title: l10n.selectSearchType,
                                   items: [
                                     ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
-                                    ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded)
+                                    ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
+                                    ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
                                   ],
                                   onSelect: (value) {
                                     setState(() => _currentSearchType = value.payload);
@@ -361,6 +370,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   switch (_currentSearchType) {
                     SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                     SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                    SearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                     _ => '',
                   },
                   textAlign: TextAlign.center,
@@ -400,12 +410,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.refreshing:
       case SearchStatus.success:
       case SearchStatus.done:
-        if ((_currentSearchType == SearchType.communities && state.communities?.isNotEmpty != true) || (_currentSearchType == SearchType.users && state.users?.isNotEmpty != true)) {
+      case SearchStatus.performingCommentAction:
+        if (searchIsEmpty(_currentSearchType, searchState: state)) {
           return Center(
             child: Text(
               switch (_currentSearchType) {
                 SearchType.communities => l10n.noCommunitiesFound,
                 SearchType.users => l10n.noUsersFound,
+                SearchType.comments => l10n.noCommentsFound,
                 _ => '',
               },
               textAlign: TextAlign.center,
@@ -456,6 +468,42 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 } else {
                   PersonView personView = state.users![index];
                   return _buildUserEntry(personView);
+                }
+              },
+            ),
+          );
+        } else if (_currentSearchType == SearchType.comments) {
+          return FadingEdgeScrollView.fromScrollView(
+            gradientFractionOnEnd: 0,
+            child: ListView.builder(
+              controller: _scrollController,
+              itemCount: state.comments!.length + 1,
+              itemBuilder: (BuildContext context, int index) {
+                if (index == state.comments!.length) {
+                  return state.status == SearchStatus.refreshing
+                      ? const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(bottom: 10),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      : Container();
+                } else {
+                  CommentView commentView = state.comments![index];
+                  return Column(
+                    children: [
+                      Divider(
+                        height: 1.0,
+                        thickness: 1.0,
+                        color: ElevationOverlay.applySurfaceTint(
+                          Theme.of(context).colorScheme.surface,
+                          Theme.of(context).colorScheme.surfaceTint,
+                          10,
+                        ),
+                      ),
+                      _buildCommentEntry(context, commentView),
+                    ],
+                  );
                 }
               },
             ),
@@ -551,6 +599,84 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         onTap: () {
           navigateToUserPage(context, userId: personView.person.id);
         },
+      ),
+    );
+  }
+
+  Widget _buildCommentEntry(BuildContext context, CommentView commentView) {
+    final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
+
+    return BlocProvider<post_bloc.PostBloc>(
+      create: (BuildContext context) => post_bloc.PostBloc(),
+      child: CommentReference(
+        comment: commentView,
+        now: DateTime.now().toUtc(),
+        onVoteAction: (int commentId, int voteType) => context.read<SearchBloc>().add(VoteCommentEvent(commentId: commentId, score: voteType)),
+        onSaveAction: (int commentId, bool save) => context.read<SearchBloc>().add(SaveCommentEvent(commentId: commentId, save: save)),
+        // Only swipe actions are supported here, and delete is not one of those, so no implementation
+        onDeleteAction: (int commentId, bool deleted) {},
+        // Only swipe actions are supported here, and report is not one of those, so no implementation
+        onReportAction: (int commentId) {},
+        onReplyEditAction: (CommentView commentView, bool isEdit) async {
+          ThunderBloc thunderBloc = context.read<ThunderBloc>();
+          AccountBloc accountBloc = context.read<AccountBloc>();
+
+          final ThunderState state = context.read<ThunderBloc>().state;
+          final bool reduceAnimations = state.reduceAnimations;
+
+          SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+          DraftComment? newDraftComment;
+          DraftComment? previousDraftComment;
+          String draftId = '${LocalSettings.draftsCache.name}-${commentView.comment.id}';
+          String? draftCommentJson = prefs.getString(draftId);
+          if (draftCommentJson != null) {
+            previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
+          }
+          Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+            if (newDraftComment?.isNotEmpty == true) {
+              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+            }
+          });
+
+          if (context.mounted) {
+            Navigator.of(context)
+                .push(
+              SwipeablePageRoute(
+                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                canOnlySwipeFromEdge: true,
+                backGestureDetectionWidth: 45,
+                builder: (context) {
+                  return MultiBlocProvider(
+                      providers: [
+                        BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                        BlocProvider<AccountBloc>.value(value: accountBloc),
+                      ],
+                      child: CreateCommentPage(
+                        commentView: commentView,
+                        isEdit: isEdit,
+                        parentCommentAuthor: commentView.creator.name,
+                        previousDraftComment: previousDraftComment,
+                        onUpdateDraft: (c) => newDraftComment = c,
+                      ));
+                },
+              ),
+            )
+                .whenComplete(
+              () async {
+                timer.cancel();
+
+                if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
+                  await Future.delayed(const Duration(milliseconds: 300));
+                  if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                  prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                } else {
+                  prefs.remove(draftId);
+                }
+              },
+            );
+          }
+        },
+        isOwnComment: isOwnComment,
       ),
     );
   }
