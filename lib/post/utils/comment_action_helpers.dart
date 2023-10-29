@@ -62,6 +62,7 @@ final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
     commentCardAction: CommentCardAction.report,
     icon: Icons.report_outlined,
     label: AppLocalizations.of(GlobalContext.context)!.reportComment,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
 ];
 
