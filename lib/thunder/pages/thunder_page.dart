@@ -333,10 +333,7 @@ class _ThunderState extends State<Thunder> {
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
-        BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
-        BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
-        BlocProvider(create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(),
