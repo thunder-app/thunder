@@ -164,5 +164,11 @@
   "settings": "Налаштування",
   "@settings": {},
   "communities": "Спільноти",
-  "@communities": {}
+  "@communities": {},
+  "refresh": "Оновити",
+  "@refresh": {},
+  "subscriptions": "Підписки",
+  "@subscriptions": {},
+  "tapToExit": "Натисніть двічі кнопку Назад для виходу",
+  "@tapToExit": {}
 }
