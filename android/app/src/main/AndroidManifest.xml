@@ -54,8 +54,6 @@
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
               <data android:scheme="https"/>
-               <!-- TODO(lemmy_server_domain_finder): Setup a script to update available lemmy domains  -->
-              <!-- Obtained from github.com/dessalines/jerboa/blob/main/app/src/main/AndroidManifest.xml-->
               <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
               <data android:host="aussie.zone" />
               <data android:host="bakchodi.org" />

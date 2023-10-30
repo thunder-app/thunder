@@ -20,7 +20,6 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  InstanceBloc instanceBloc = context.read<InstanceBloc>();
 
   CommunityBloc? communityBloc;
   try {
@@ -38,6 +37,11 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
   } catch (e) {
     // Don't need feed block if we're not opening post in the context of a feed.
   }
+
+  InstanceBloc? instanceBloc;
+  try {
+    instanceBloc = context.read<InstanceBloc>();
+  } catch (e) {}
 
   final ThunderState state = context.read<ThunderBloc>().state;
   final bool reduceAnimations = state.reduceAnimations;
@@ -62,10 +66,10 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
             BlocProvider.value(value: accountBloc),
             BlocProvider.value(value: authBloc),
             BlocProvider.value(value: thunderBloc),
-            BlocProvider.value(value: instanceBloc),
             BlocProvider(create: (context) => post_bloc.PostBloc()),
             if (communityBloc != null) BlocProvider.value(value: communityBloc),
             if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
+            if (instanceBloc != null) BlocProvider.value(value: instanceBloc),
           ],
           child: PostPage(
             postView: postViewMedia,
