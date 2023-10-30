@@ -13,6 +13,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -49,6 +50,12 @@ void triggerCommentAction({
       ThunderBloc thunderBloc = context.read<ThunderBloc>();
       AccountBloc accountBloc = context.read<AccountBloc>();
 
+      InboxBloc? inboxBloc;
+
+      try {
+        inboxBloc = context.read<InboxBloc>();
+      } catch (e) {}
+
       final ThunderState state = context.read<ThunderBloc>().state;
       final bool reduceAnimations = state.reduceAnimations;
 
@@ -78,9 +85,11 @@ void triggerCommentAction({
                 BlocProvider<PostBloc>.value(value: postBloc),
                 BlocProvider<ThunderBloc>.value(value: thunderBloc),
                 BlocProvider<AccountBloc>.value(value: accountBloc),
+                if (inboxBloc != null) BlocProvider<InboxBloc>.value(value: inboxBloc),
               ],
               child: CreateCommentPage(
                 commentView: commentView,
+                comment: commentView.comment,
                 isEdit: swipeAction == SwipeAction.edit,
                 selectedCommentId: selectedCommentId,
                 selectedCommentPath: selectedCommentPath,
