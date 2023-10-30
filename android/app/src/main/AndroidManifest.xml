@@ -71,6 +71,7 @@
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
               <data android:host="feddit.nl" />
+              <data android:host="feddit.nu" />
               <data android:host="feddit.uk" />
               <data android:host="geddit.social" />
               <data android:host="hexbear.net" />
@@ -92,7 +93,6 @@
               <data android:host="lemmy.one" />
               <data android:host="lemmy.sdf.org" />
               <data android:host="lemmy.today" />
-              <data android:host="lemmy.whynotdrs.org" />
               <data android:host="lemmy.world" />
               <data android:host="lemmy.zip" />
               <data android:host="lemmygrad.ml" />

@@ -12,6 +12,7 @@ feddit.de
 feddit.dk
 feddit.it
 feddit.nl
+feddit.nu
 feddit.uk
 geddit.social
 hexbear.net
@@ -33,7 +34,6 @@ lemmy.nz
 lemmy.one
 lemmy.sdf.org
 lemmy.today
-lemmy.whynotdrs.org
 lemmy.world
 lemmy.zip
 lemmygrad.ml
