@@ -5,7 +5,6 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/instance/instance_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/utils/swipe.dart';
 
 Future<void> navigateToInstancePage(BuildContext context, {required String instanceHost}) async {
   ThunderBloc thunderBloc = context.read<ThunderBloc>();

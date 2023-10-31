@@ -12,7 +12,6 @@ import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/navigate_instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
 
 class UserSettingsPage extends StatefulWidget {
   final int? userId;
@@ -282,7 +281,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
-                navigateToUserPage(context, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
+                navigateToFeedPage(context, feedType: FeedType.user, username: '${person.name}@${fetchInstanceNameFromUrl(person.actorId)}');
               },
               child: ListTile(
                 leading: UserAvatar(person: person),

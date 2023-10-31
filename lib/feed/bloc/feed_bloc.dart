@@ -281,7 +281,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     // Assert any requirements
     if (event.reset) assert(event.feedType != null);
     if (event.reset && event.feedType == FeedType.community) assert(!(event.communityId == null && event.communityName == null));
-    if (event.reset && event.feedType == FeedType.user) assert(event.userId != null && event.username != null);
+    if (event.reset && event.feedType == FeedType.user) assert(!(event.userId != null && event.username != null));
     if (event.reset && event.feedType == FeedType.general) assert(event.postListingType != null);
 
     // Handle the initial fetch or reload of a feed

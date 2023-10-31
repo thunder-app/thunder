@@ -2,13 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/post_view_media.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
-import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
@@ -18,7 +13,6 @@ import 'package:thunder/utils/numbers.dart';
 
 import '../core/enums/swipe_action.dart';
 import '../post/utils/comment_actions.dart';
-import '../utils/swipe.dart';
 import 'comment_content.dart';
 
 class CommentReference extends StatefulWidget {
@@ -88,7 +82,8 @@ class _CommentReferenceState extends State<CommentReference> {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     return Semantics(
-      label: """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
+      label:
+          """${AppLocalizations.of(context)!.inReplyTo(widget.comment.community.name, widget.comment.post.name)}\n
           ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}\n
           ${widget.comment.creator.name}\n
           ${widget.comment.counts.upvotes == 0 ? '' : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(widget.comment.counts.upvotes))}\n

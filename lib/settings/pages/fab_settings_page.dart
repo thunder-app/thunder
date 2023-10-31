@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
@@ -296,7 +294,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: AppLocalizations.of(context)!.expandOptions,
                                         value: null,
-                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
+                                        semanticLabel:
+                                            """${AppLocalizations.of(context)!.expandOptions}
                                             ${feedFabSinglePressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.more_horiz_rounded,
@@ -318,7 +317,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableBackToTop.label,
                                         value: enableBackToTop,
-                                        semanticLabel: """${LocalSettings.enableBackToTop.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableBackToTop.label}
                                             ${feedFabSinglePressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.arrow_upward,
@@ -339,7 +339,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableSubscriptions.label,
                                         value: enableSubscriptions,
-                                        semanticLabel: """${LocalSettings.enableSubscriptions.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableSubscriptions.label}
                                             ${feedFabSinglePressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.people_rounded,
@@ -360,7 +361,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableChangeSort.label,
                                         value: enableChangeSort,
-                                        semanticLabel: """${LocalSettings.enableChangeSort.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableChangeSort.label}
                                             ${feedFabSinglePressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.sort_rounded,
@@ -381,7 +383,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableRefresh.label,
                                         value: enableRefresh,
-                                        semanticLabel: """${LocalSettings.enableRefresh.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableRefresh.label}
                                             ${feedFabSinglePressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.refresh_rounded,
@@ -402,7 +405,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableDismissRead.label,
                                         value: enableDismissRead,
-                                        semanticLabel: """${LocalSettings.enableDismissRead.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableDismissRead.label}
                                             ${feedFabSinglePressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.clear_all_rounded,
@@ -423,7 +427,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.enableNewPost.label,
                                         value: enableNewPost,
-                                        semanticLabel: """${LocalSettings.enableNewPost.label}
+                                        semanticLabel:
+                                            """${LocalSettings.enableNewPost.label}
                                             ${feedFabSinglePressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${feedFabLongPressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.add_rounded,
@@ -485,7 +490,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: AppLocalizations.of(context)!.expandOptions,
                                         value: null,
-                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
+                                        semanticLabel:
+                                            """${AppLocalizations.of(context)!.expandOptions}
                                             ${postFabSinglePressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${postFabLongPressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.more_horiz_rounded,
@@ -507,7 +513,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableBackToTop.label,
                                         value: postFabEnableBackToTop,
-                                        semanticLabel: """${LocalSettings.postFabEnableBackToTop.label}
+                                        semanticLabel:
+                                            """${LocalSettings.postFabEnableBackToTop.label}
                                             ${postFabSinglePressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${postFabLongPressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.arrow_upward,
@@ -528,7 +535,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableChangeSort.label,
                                         value: postFabEnableChangeSort,
-                                        semanticLabel: """${LocalSettings.postFabEnableChangeSort.label}
+                                        semanticLabel:
+                                            """${LocalSettings.postFabEnableChangeSort.label}
                                             ${postFabSinglePressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${postFabLongPressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.sort_rounded,
@@ -549,7 +557,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableReplyToPost.label,
                                         value: postFabEnableReplyToPost,
-                                        semanticLabel: """${LocalSettings.postFabEnableReplyToPost.label}
+                                        semanticLabel:
+                                            """${LocalSettings.postFabEnableReplyToPost.label}
                                             ${postFabSinglePressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${postFabLongPressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.reply_rounded,
@@ -570,7 +579,8 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                       ToggleOption(
                                         description: LocalSettings.postFabEnableRefresh.label,
                                         value: postFabEnableRefresh,
-                                        semanticLabel: """${LocalSettings.postFabEnableRefresh.label}
+                                        semanticLabel:
+                                            """${LocalSettings.postFabEnableRefresh.label}
                                             ${postFabSinglePressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
                                             ${postFabLongPressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
                                         iconEnabled: Icons.refresh_rounded,

@@ -1,22 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
-import 'package:thunder/core/models/comment_view_tree.dart';
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:thunder/user/pages/user_page.dart';
-import 'package:thunder/utils/swipe.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import '../core/auth/bloc/auth_bloc.dart';
 import '../utils/date_time.dart';
 
 class CommentHeader extends StatelessWidget {
@@ -75,7 +69,7 @@ class CommentHeader extends StatelessWidget {
                           onTap: isHidden && collapseParentCommentOnGesture
                               ? null
                               : () {
-                                  navigateToUserPage(context, userId: comment.creator.id);
+                                  navigateToFeedPage(context, feedType: FeedType.user, userId: comment.creator.id);
                                 },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),

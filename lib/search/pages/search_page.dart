@@ -12,7 +12,6 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -29,7 +28,6 @@ import 'package:thunder/utils/debounce.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/utils/navigate_user.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -549,7 +547,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           ),
         ]),
         onTap: () {
-          navigateToUserPage(context, userId: personView.person.id);
+          navigateToFeedPage(context, feedType: FeedType.user, userId: personView.person.id);
         },
       ),
     );

@@ -25,6 +25,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -50,7 +51,6 @@ import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
-import 'package:thunder/utils/navigate_user.dart';
 
 String? currentIntent;
 
@@ -295,7 +295,7 @@ class _ThunderState extends State<Thunder> {
     final String? username = await getLemmyUser(link);
     if (context.mounted && username != null) {
       try {
-        await navigateToUserPage(context, username: username);
+        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
         return;
       } catch (e) {
         // Ignore exception, if it's not a valid comment, we'll perform the next fallback

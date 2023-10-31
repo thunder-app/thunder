@@ -21,7 +21,6 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag});

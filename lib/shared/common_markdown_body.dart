@@ -16,7 +16,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/navigate_post.dart';
-import 'package:thunder/utils/navigate_user.dart';
 
 class CommonMarkdownBody extends StatelessWidget {
   final String body;
@@ -92,7 +91,7 @@ class CommonMarkdownBody extends StatelessWidget {
         String? username = await getLemmyUser(parsedUrl);
         if (username != null) {
           try {
-            await navigateToUserPage(context, username: username);
+            await navigateToFeedPage(context, feedType: FeedType.user, username: username);
             return;
           } catch (e) {
             // Ignore exception, if it's not a valid user, we'll perform the next fallback

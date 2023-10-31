@@ -27,23 +27,38 @@ Future<Map<String, dynamic>> fetchPosts({
 
   // Guarantee that we fetch at least x posts (unless we reach the end of the feed)
   do {
-    GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
-      auth: account?.jwt,
-      page: currentPage,
-      sort: sortType,
-      type: postListingType,
-      communityId: communityId,
-      communityName: communityName,
-    ));
+    List<PostView> postViews = [];
 
-    // Remove deleted posts
-    getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
+    if (userId != null || username != null) {
+      GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+        auth: account?.jwt,
+        page: currentPage,
+        sort: sortType,
+        personId: userId,
+        username: username,
+      ));
+
+      // Remove deleted posts
+      postViews = getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList();
+    } else {
+      GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
+        auth: account?.jwt,
+        page: currentPage,
+        sort: sortType,
+        type: postListingType,
+        communityId: communityId,
+        communityName: communityName,
+      ));
+
+      // Remove deleted posts
+      postViews = getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList();
+    }
 
     // Parse the posts and add in media information which is used elsewhere in the app
-    List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
+    List<PostViewMedia> formattedPosts = await parsePostViews(postViews);
     postViewMedias.addAll(formattedPosts);
 
-    if (getPostsResponse.posts.isEmpty) hasReachedEnd = true;
+    if (postViews.isEmpty) hasReachedEnd = true;
     currentPage++;
   } while (!hasReachedEnd && postViewMedias.length < limit);
 

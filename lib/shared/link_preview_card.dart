@@ -12,12 +12,10 @@ import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/navigate_user.dart';
 
 class LinkPreviewCard extends StatelessWidget {
   const LinkPreviewCard({
@@ -289,7 +287,7 @@ class LinkPreviewCard extends StatelessWidget {
 
       if (username != null) {
         try {
-          await navigateToUserPage(context, username: username);
+          await navigateToFeedPage(context, feedType: FeedType.user, username: username);
           return;
         } catch (e) {
           // Ignore exception, if it's not a valid user, we'll perform the next fallback
