@@ -13,9 +13,11 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -324,6 +326,12 @@ class PostSubview extends StatelessWidget {
                             final ThunderState thunderState = context.read<ThunderBloc>().state;
                             final bool reduceAnimations = thunderState.reduceAnimations;
 
+                            final Account? account = await fetchActiveProfileAccount();
+                            final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+                              auth: account?.jwt,
+                              id: postViewMedia.postView.community.id,
+                            ));
+
                             SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                             DraftPost? newDraftPost;
                             DraftPost? previousDraftPost;
@@ -354,7 +362,7 @@ class PostSubview extends StatelessWidget {
                                       ],
                                       child: CreatePostPage(
                                         communityId: postViewMedia.postView.community.id,
-                                        //communityView: postViewMedia.postView.community, // TODO
+                                        communityView: getCommunityResponse.communityView,
                                         previousDraftPost: previousDraftPost,
                                         onUpdateDraft: (p) => newDraftPost = p,
                                         postViewBeingEdited: postViewMedia.postView,
