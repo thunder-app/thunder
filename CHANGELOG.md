@@ -18,6 +18,7 @@
 - Added support for receiving share intents. Android only. - contribution from @ggichure
 - Added ability to block instances from long-press menu and user settings
 - Add more search options - contribution from @micahmo
+- Allow editing posts - contribution from @micahmo
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
