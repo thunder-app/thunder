@@ -34,6 +34,7 @@
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 - Remove non-functional message user action on use sidebar
 - Fixed issue where post titles were not properly escaped in feed and post page
+- Fixed issue where replying from the inbox was not working properly
 
 ## 0.2.4 - 2023-09-20
 ### Added
