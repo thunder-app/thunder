@@ -40,10 +40,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       LemmyClient.instance.changeBaseUrl(account.instance!.replaceAll('https://', ''));
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-      FullSiteView fullSiteView = await lemmy.run(GetSite(auth: account.jwt));
-      bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account.jwt));
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
     });
 
     // This event should be triggered during the start of the app, or when there is a change in the active account
@@ -87,16 +87,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
         bool downvotesEnabled = true;
-        FullSiteView? fullSiteView;
+        GetSiteResponse? getSiteResponse;
         try {
-          fullSiteView = await lemmy.run(GetSite(auth: activeAccount.jwt)).timeout(const Duration(seconds: 15));
+          getSiteResponse = await lemmy.run(GetSite(auth: activeAccount.jwt)).timeout(const Duration(seconds: 15));
 
-          downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+          downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
         } catch (e) {
           return emit(state.copyWith(status: AuthStatus.failureCheckingInstance, errorMessage: getExceptionErrorMessage(e)));
         }
 
-        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+        return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
       }
     });
 
@@ -120,11 +120,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           totp2faToken: event.totp,
         ));
 
-        if (loginResponse.jwt?.raw == null) {
+        if (loginResponse.jwt == null) {
           return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false));
         }
 
-        FullSiteView fullSiteView = await lemmy.run(GetSite(auth: loginResponse.jwt!.raw));
+        GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: loginResponse.jwt));
 
         // Create a new account in the database
         Uuid uuid = const Uuid();
@@ -132,10 +132,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         Account account = Account(
           id: accountId,
-          username: fullSiteView.myUser?.localUserView.person.name,
-          jwt: loginResponse.jwt?.raw,
+          username: getSiteResponse.myUser?.localUserView.person.name,
+          jwt: loginResponse.jwt,
           instance: instance,
-          userId: fullSiteView.myUser?.localUserView.person.id,
+          userId: getSiteResponse.myUser?.localUserView.person.id,
         );
 
         await Account.insertAccount(account);
@@ -144,9 +144,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
         prefs.setString('active_profile_id', accountId);
 
-        bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+        bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
-        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+        return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
       } on LemmyApiException catch (e) {
         return emit(state.copyWith(status: AuthStatus.failure, account: null, isLoggedIn: false, errorMessage: e.toString()));
       } catch (e) {
@@ -165,7 +165,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(status: AuthStatus.initial));
       final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
       prefs.setString('active_profile_id', '');
-      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false, fullSiteView: null));
+      return emit(state.copyWith(status: AuthStatus.success, isLoggedIn: false, getSiteResponse: null));
     });
 
     /// When the given instance changes, re-fetch the instance information and preferences.
@@ -182,10 +182,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       String? activeProfileId = prefs.getString('active_profile_id');
       Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
 
-      FullSiteView fullSiteView = await lemmy.run(GetSite(auth: account?.jwt));
-      bool downvotesEnabled = fullSiteView.siteView?.localSite.enableDownvotes ?? true;
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
+      bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
-      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, fullSiteView: fullSiteView));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
     });
   }
 }

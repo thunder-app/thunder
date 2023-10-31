@@ -224,12 +224,12 @@ class PostSubview extends StatelessWidget {
                   onPressed: isUserLoggedIn
                       ? () {
                           HapticFeedback.mediumImpact();
-                          context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.up ? VoteType.none : VoteType.up));
+                          context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == 1 ? 0 : 1));
                         }
                       : null,
                   style: TextButton.styleFrom(
                     fixedSize: const Size.fromHeight(40),
-                    foregroundColor: postView.myVote == VoteType.up ? theme.textTheme.bodyMedium?.color : Colors.orange,
+                    foregroundColor: postView.myVote == 1 ? theme.textTheme.bodyMedium?.color : Colors.orange,
                     padding: EdgeInsets.zero,
                   ),
                   child: Row(
@@ -237,14 +237,14 @@ class PostSubview extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.arrow_upward,
-                        semanticLabel: postView.myVote == VoteType.up ? 'Upvoted' : 'Upvote',
-                        color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
+                        semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
+                        color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                       ),
                       const SizedBox(width: 4.0),
                       Text(
                         formatNumberToK(postViewMedia.postView.counts.upvotes),
                         style: TextStyle(
-                          color: isUserLoggedIn ? (postView.myVote == VoteType.up ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
+                          color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
                       ),
                     ],
@@ -258,12 +258,12 @@ class PostSubview extends StatelessWidget {
                     onPressed: isUserLoggedIn
                         ? () {
                             HapticFeedback.mediumImpact();
-                            context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == VoteType.down ? VoteType.none : VoteType.down));
+                            context.read<PostBloc>().add(VotePostEvent(postId: post.id, score: postView.myVote == -1 ? 0 : -1));
                           }
                         : null,
                     style: TextButton.styleFrom(
                       fixedSize: const Size.fromHeight(40),
-                      foregroundColor: postView.myVote == VoteType.down ? theme.textTheme.bodyMedium?.color : Colors.blue,
+                      foregroundColor: postView.myVote == -1 ? theme.textTheme.bodyMedium?.color : Colors.blue,
                       padding: EdgeInsets.zero,
                     ),
                     child: Row(
@@ -271,14 +271,14 @@ class PostSubview extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.arrow_downward,
-                          semanticLabel: postView.myVote == VoteType.up ? 'Downvoted' : 'Downvote',
-                          color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                          semanticLabel: postView.myVote == 1 ? 'Downvoted' : 'Downvote',
+                          color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                         ),
                         const SizedBox(width: 4.0),
                         Text(
                           formatNumberToK(postViewMedia.postView.counts.downvotes),
                           style: TextStyle(
-                            color: isUserLoggedIn ? (postView.myVote == VoteType.down ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                            color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                           ),
                         ),
                       ],

@@ -21,6 +21,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/instance/instance_view.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -30,10 +31,10 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
 class CommunitySidebar extends StatefulWidget {
-  final FullCommunityView? fullCommunityView;
+  final GetCommunityResponse? getCommunityResponse;
   final Function onDismiss;
 
-  const CommunitySidebar({super.key, this.fullCommunityView, required this.onDismiss});
+  const CommunitySidebar({super.key, this.getCommunityResponse, required this.onDismiss});
 
   @override
   State<CommunitySidebar> createState() => _CommunitySidebarState();
@@ -53,9 +54,9 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
     final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
-    if (widget.fullCommunityView == null) return Container();
+    if (widget.getCommunityResponse == null) return Container();
 
-    CommunityView communityView = widget.fullCommunityView!.communityView;
+    CommunityView communityView = widget.getCommunityResponse!.communityView;
 
     return BlocProvider<CommunityBloc>(
       create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
@@ -90,7 +91,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                       child: communityView.blocked == false
                           ? Padding(
                               padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
-                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, fullCommunityView: widget.fullCommunityView!),
+                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, getCommunityResponse: widget.getCommunityResponse!),
                             )
                           : null,
                     ),
@@ -124,56 +125,17 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                           const SidebarSectionHeader(value: "Moderators"),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityModeratorList(fullCommunityView: widget.fullCommunityView!),
+                            child: CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
                           ),
                           Container(
-                            child: widget.fullCommunityView!.site != null
+                            child: widget.getCommunityResponse!.site != null
                                 ? Column(
                                     children: [
                                       const SidebarSectionHeader(value: "Host Instance"),
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: Column(
-                                          children: [
-                                            Row(
-                                              children: [
-                                                CircleAvatar(
-                                                  backgroundColor: widget.fullCommunityView!.site?.icon != null ? Colors.transparent : theme.colorScheme.secondaryContainer,
-                                                  foregroundImage: widget.fullCommunityView!.site?.icon != null ? CachedNetworkImageProvider(widget.fullCommunityView!.site!.icon!) : null,
-                                                  maxRadius: 24,
-                                                  child: widget.fullCommunityView!.site?.icon == null
-                                                      ? Text(
-                                                          widget.fullCommunityView!.moderators.first.moderator!.name[0].toUpperCase(),
-                                                          semanticsLabel: '',
-                                                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                                        )
-                                                      : null,
-                                                ),
-                                                const SizedBox(width: 16.0),
-                                                Column(
-                                                  mainAxisAlignment: MainAxisAlignment.start,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    Text(
-                                                      widget.fullCommunityView!.site?.name ?? '',
-                                                      overflow: TextOverflow.ellipsis,
-                                                      maxLines: 1,
-                                                      style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
-                                                    ),
-                                                    Flexible(
-                                                      child: Text(
-                                                        widget.fullCommunityView!.site?.description ?? '',
-                                                        style: theme.textTheme.bodyMedium,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            const Divider(),
-                                            CommonMarkdownBody(body: widget.fullCommunityView!.site?.sidebar ?? ''),
-                                          ],
+                                        child: InstanceView(
+                                          site: widget.getCommunityResponse!.site!,
                                         ),
                                       ),
                                     ],
@@ -246,9 +208,9 @@ class CommunityStatsList extends StatelessWidget {
 }
 
 class CommunityModeratorList extends StatelessWidget {
-  const CommunityModeratorList({super.key, required this.fullCommunityView});
+  const CommunityModeratorList({super.key, required this.getCommunityResponse});
 
-  final FullCommunityView fullCommunityView;
+  final GetCommunityResponse getCommunityResponse;
 
   @override
   Widget build(BuildContext context) {
@@ -256,7 +218,7 @@ class CommunityModeratorList extends StatelessWidget {
 
     return Column(
       children: [
-        for (CommunityModeratorView mods in fullCommunityView.moderators)
+        for (CommunityModeratorView mods in getCommunityResponse.moderators)
           GestureDetector(
             onTap: () {
               navigateToUserPage(context, userId: mods.moderator!.id);
@@ -355,14 +317,14 @@ class BlockCommunityButton extends StatelessWidget {
 }
 
 class CommunityActions extends StatelessWidget {
-  const CommunityActions({super.key, required this.isUserLoggedIn, required this.fullCommunityView});
+  const CommunityActions({super.key, required this.isUserLoggedIn, required this.getCommunityResponse});
 
   final bool isUserLoggedIn;
-  final FullCommunityView fullCommunityView;
+  final GetCommunityResponse getCommunityResponse;
 
   @override
   Widget build(BuildContext context) {
-    CommunityView communityView = fullCommunityView.communityView;
+    CommunityView communityView = getCommunityResponse.communityView;
 
     return Row(
       children: [
@@ -409,7 +371,7 @@ class CommunityActions extends StatelessWidget {
                             ],
                             child: CreatePostPage(
                               communityId: communityView.community.id,
-                              communityInfo: fullCommunityView,
+                              communityView: getCommunityResponse.communityView,
                               previousDraftPost: previousDraftPost,
                               onUpdateDraft: (p) => newDraftPost = p,
                             ),

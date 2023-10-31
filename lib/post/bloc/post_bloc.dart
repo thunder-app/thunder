@@ -102,7 +102,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-          FullPostView? getPostResponse;
+          GetPostResponse? getPostResponse;
 
           if (event.postId != null) {
             getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
@@ -154,7 +154,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             parentId = int.parse(event.selectedCommentPath!.split('.')[1]);
           }
 
-          List<CommentView> getCommentsResponse = await lemmy
+          GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
             page: event.selectedCommentId == null ? 1 : null,
             auth: account?.jwt,
@@ -163,7 +163,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postId: postView?.postView.post.id,
             sort: sortType,
             limit: commentLimit,
-            type: CommentListingType.all,
+            type: ListingType.all,
             parentId: parentId,
           ))
               .timeout(timeout, onTimeout: () {
@@ -171,10 +171,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           });
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+          List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
 
           Map<int, CommentView> responseMap = {};
-          for (CommentView comment in getCommentsResponse) {
+          for (CommentView comment in getCommentsResponse.comments) {
             responseMap[comment.comment.id] = comment;
           }
 
@@ -186,8 +186,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                 comments: commentTree,
                 commentPage: state.commentPage + (event.selectedCommentId == null ? 1 : 0),
                 commentResponseMap: responseMap,
-                commentCount: getCommentsResponse.length,
-                hasReachedCommentEnd: getCommentsResponse.isEmpty || getCommentsResponse.length < commentLimit,
+                commentCount: getCommentsResponse.comments.length,
+                hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || getCommentsResponse.comments.length < commentLimit,
                 communityId: postView?.postView.post.communityId,
                 sortType: sortType,
                 selectedCommentId: event.selectedCommentId,
@@ -230,7 +230,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               emit(state.copyWith(status: PostStatus.loading, sortType: sortType));
             }
 
-            List<CommentView> getCommentsResponse = await lemmy
+            GetCommentsResponse getCommentsResponse = await lemmy
                 .run(GetComments(
               auth: account?.jwt,
               communityId: state.communityId,
@@ -240,17 +240,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               limit: commentLimit,
               maxDepth: COMMENT_MAX_DEPTH,
               page: 1,
-              type: CommentListingType.all,
+              type: ListingType.all,
             ))
                 .timeout(timeout, onTimeout: () {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
 
             // Build the tree view from the flattened comments
-            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse);
+            List<CommentViewTree> commentTree = buildCommentViewTree(getCommentsResponse.comments);
 
             Map<int, CommentView> responseMap = {};
-            for (CommentView comment in getCommentsResponse) {
+            for (CommentView comment in getCommentsResponse.comments) {
               responseMap[comment.comment.id] = comment;
             }
 
@@ -263,7 +263,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
                   commentResponseMap: responseMap,
                   commentPage: 1,
                   commentCount: responseMap.length,
-                  hasReachedCommentEnd: getCommentsResponse.isEmpty || commentTree.length < commentLimit,
+                  hasReachedCommentEnd: getCommentsResponse.comments.isEmpty || commentTree.length < commentLimit,
                   sortType: sortType),
             );
           }
@@ -283,7 +283,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           }
           emit(state.copyWith(status: PostStatus.refreshing));
 
-          List<CommentView> getCommentsResponse = await lemmy
+          GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
             auth: account?.jwt,
             communityId: state.communityId,
@@ -294,7 +294,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             maxDepth: COMMENT_MAX_DEPTH,
             page: state.commentPage,
             //event.commentParentId != null ? 1 : state.commentPage,
-            type: CommentListingType.all,
+            type: ListingType.all,
           ))
               .timeout(timeout, onTimeout: () {
             throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
@@ -303,16 +303,16 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // Determine if any one of the results is direct descent of the parent. If not, the UI won't show it,
           // so we should display an error
           if (event.commentParentId != null) {
-            final bool anyDirectChildren = getCommentsResponse.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
+            final bool anyDirectChildren = getCommentsResponse.comments.any((commentView) => commentView.comment.path.contains('${event.commentParentId}.${commentView.comment.id}'));
             if (!anyDirectChildren) {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.unableToLoadReplies);
             }
           }
 
           // Combine all of the previous comments list
-          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse);
+          List<CommentView> fullCommentResponseList = List.from(state.commentResponseMap.values)..addAll(getCommentsResponse.comments);
 
-          for (CommentView comment in getCommentsResponse) {
+          for (CommentView comment in getCommentsResponse.comments) {
             state.commentResponseMap[comment.comment.id] = comment;
           }
           // Build the tree view from the flattened comments
@@ -328,7 +328,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
             commentCount: state.commentResponseMap.length,
-            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.isEmpty || state.commentCount == state.commentResponseMap.length),
+            hasReachedCommentEnd: event.commentParentId != null || (getCommentsResponse.comments.isEmpty || state.commentCount == state.commentResponseMap.length),
           ));
         } catch (e) {
           exception = e;
@@ -474,7 +474,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
         ));
       }
 
-      FullCommentView createComment = await lemmy.run(CreateComment(
+      CommentResponse createComment = await lemmy.run(CreateComment(
         auth: account!.jwt!,
         content: event.content,
         postId: state.postView!.postView.post.id,
@@ -526,7 +526,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             selectedCommentPath: state.selectedCommentPath));
       }
 
-      FullCommentView editComment = await lemmy.run(EditComment(
+      CommentResponse editComment = await lemmy.run(EditComment(
         auth: account!.jwt!,
         content: event.content,
         commentId: event.commentId,
@@ -563,7 +563,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             selectedCommentPath: state.selectedCommentPath));
       }
 
-      FullCommentView deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
+      CommentResponse deletedComment = await lemmy.run(DeleteComment(commentId: event.commentId, deleted: event.deleted, auth: account!.jwt!));
       updateModifiedComment(state.comments, deletedComment);
 
       return emit(

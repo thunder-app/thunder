@@ -17,16 +17,16 @@ class PostCardList extends StatefulWidget {
   final int? personId;
   final String? communityName;
   final bool? hasReachedEnd;
-  final PostListingType? listingType;
-  final FullCommunityView? communityInfo;
+  final ListingType? listingType;
+  final CommunityView? communityInfo;
   final SubscribedType? subscribeType;
-  final BlockedCommunity? blockedCommunity;
+  final CommunityView? blockedCommunity;
   final SortType? sortType;
   final String tagline;
   final bool indicateRead;
 
   final VoidCallback onScrollEndReached;
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onToggleReadAction;
 
@@ -118,7 +118,6 @@ class _PostCardListState extends State<PostCardList> {
           }
         },
         child: MasonryGridView.builder(
-          physics: reduceAnimations ? const BouncingScrollPhysics() : null,
           gridDelegate: tabletMode ? tabletGridDelegate : phoneGridDelegate,
           crossAxisSpacing: 40,
           mainAxisSpacing: 0,
@@ -163,7 +162,7 @@ class _PostCardListState extends State<PostCardList> {
               return PostCard(
                 postViewMedia: postViewMedia,
                 communityMode: widget.communityId != null || widget.communityName != null,
-                onVoteAction: (VoteType voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
+                onVoteAction: (int voteType) => widget.onVoteAction(postViewMedia.postView.post.id, voteType),
                 onSaveAction: (bool saved) => widget.onSaveAction(postViewMedia.postView.post.id, saved),
                 onReadAction: (bool read) => widget.onToggleReadAction(postViewMedia.postView.post.id, read),
                 listingType: widget.listingType,

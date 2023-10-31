@@ -10,13 +10,13 @@ import 'package:thunder/utils/numbers.dart';
 
 class CommunityHeader extends StatefulWidget {
   final bool showCommunitySidebar;
-  final FullCommunityView fullCommunityView;
+  final GetCommunityResponse getCommunityResponse;
   final Function(bool toggled) onToggle;
 
   const CommunityHeader({
     super.key,
     required this.showCommunitySidebar,
-    required this.fullCommunityView,
+    required this.getCommunityResponse,
     required this.onToggle,
   });
 
@@ -42,8 +42,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
         },
         child: Stack(
           children: [
-            if (widget.fullCommunityView.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
-            if (widget.fullCommunityView.communityView.community.banner != null)
+            if (widget.getCommunityResponse.communityView.community.banner == null) Positioned.fill(child: Container(color: theme.colorScheme.background)),
+            if (widget.getCommunityResponse.communityView.community.banner != null)
               Positioned.fill(
                 child: Row(
                   children: [
@@ -53,7 +53,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       child: Container(
                         decoration: BoxDecoration(
                           image: DecorationImage(
-                            image: CachedNetworkImageProvider(widget.fullCommunityView.communityView.community.banner!),
+                            image: CachedNetworkImageProvider(widget.getCommunityResponse.communityView.community.banner!),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -62,7 +62,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                   ],
                 ),
               ),
-            if (widget.fullCommunityView.communityView.community.banner != null)
+            if (widget.getCommunityResponse.communityView.community.banner != null)
               Positioned.fill(
                 child: Container(
                   decoration: BoxDecoration(
@@ -91,7 +91,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                       Row(
                         children: [
                           CommunityIcon(
-                            community: widget.fullCommunityView.communityView.community,
+                            community: widget.getCommunityResponse.communityView.community,
                             radius: 45.0,
                           ),
                           const SizedBox(width: 20.0),
@@ -101,21 +101,21 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Text(
-                                  widget.fullCommunityView.communityView.community.title,
+                                  widget.getCommunityResponse.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text('${widget.fullCommunityView.communityView.community.name}@${fetchInstanceNameFromUrl(widget.fullCommunityView.communityView.community.actorId) ?? 'N/A'}'),
+                                Text('${widget.getCommunityResponse.communityView.community.name}@${fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A'}'),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.people_rounded),
-                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.subscribers),
+                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.subscribers ?? 0),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
                                       icon: const Icon(Icons.calendar_month_rounded),
-                                      text: formatNumberToK(widget.fullCommunityView.communityView.counts.usersActiveMonth),
+                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth ?? 0),
                                     ),
                                   ],
                                 ),

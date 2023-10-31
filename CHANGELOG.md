@@ -11,13 +11,20 @@
 - Added support for accessibility profiles in settings - contribution from @micahmo
 - Added option to enable/disable full screen navigation swipe gesture to go back (applies when LTR gestures are disabled)
 - Introduced support for reporting comments. - contribution from @ggichure
-
+- Added ability to create post from home feed - contribution from @micahmo
+- Added option to enter reader mode when tapping on a link in iOS
+- Support new scaled and controversial sort types - contribution from @micahmo
+- Added support to open Lemmy links in app. Android only.  - contribution from @ggichure
+- Added support for receiving share intents. Android only. - contribution from @ggichure
+- Added ability to block instances from long-press menu and user settings
+- Add more search options - contribution from @micahmo
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
 - Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
 - Adjusted logic to allow for instant switching of sort types, refreshing feed, and switching communities/pages in drawer
+- Removed overscroll effect on Android when reduce animation setting is enabled
 
 ### Fixed
 - Handle issue where failing to retrieve image dimensions blocks post loading - contribution from @Fmstrat
@@ -27,6 +34,7 @@
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 - Remove non-functional message user action on use sidebar
 - Fixed issue where post titles were not properly escaped in feed and post page
+- Fixed issue where replying from the inbox was not working properly
 
 ## 0.2.4 - 2023-09-20
 ### Added

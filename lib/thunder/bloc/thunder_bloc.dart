@@ -85,13 +85,13 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
       /// -------------------------- Feed Related Settings --------------------------
       // Default Listing/Sort Settings
-      PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+      ListingType defaultListingType = DEFAULT_LISTING_TYPE;
       SortType defaultSortType = DEFAULT_SORT_TYPE;
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -105,6 +105,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       // General Settings
       bool scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
       bool openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      bool openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
@@ -209,7 +210,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
 
         /// -------------------------- Feed Related Settings --------------------------
         // Default Listing/Sort Settings
-        defaultPostListingType: defaultPostListingType,
+        defaultListingType: defaultListingType,
         defaultSortType: defaultSortType,
 
         // NSFW Settings
@@ -222,6 +223,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         // General Settings
         scrapeMissingPreviews: scrapeMissingPreviews,
         openInExternalBrowser: openInExternalBrowser,
+        openInReaderMode: openInReaderMode,
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,

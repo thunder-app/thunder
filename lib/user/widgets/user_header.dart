@@ -10,7 +10,7 @@ import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/numbers.dart';
 
 class UserHeader extends StatelessWidget {
-  final PersonViewSafe? userInfo;
+  final PersonView? userInfo;
 
   const UserHeader({
     super.key,

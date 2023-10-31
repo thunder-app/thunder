@@ -29,7 +29,7 @@ dependencies:
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
-      ref: 607f817e8687ebc60688fd4e0b51aeb11562cdbf
+      ref: 4273e3b1726117a89612219aeacbcdb2973619ff
   link_preview_generator:
     git:
       url: https://github.com/thunder-app/link_preview_generator.git
@@ -95,6 +95,13 @@ dependencies:
   sliver_tools: ^0.2.12
   screenshot: ^2.1.0
   html_unescape: ^2.0.0
+  uni_links: ^0.5.1
+  android_intent_plus: ^4.0.3
+  receive_sharing_intent: 
+    git: 
+      url: https://github.com/AyushmanG26/receive_sharing_intent.git
+  collection: ^1.17.0
+  fading_edge_scrollview: ^3.0.0
 
 dev_dependencies:
   build_runner: ^2.4.6

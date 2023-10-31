@@ -12,6 +12,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
@@ -31,19 +32,23 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
     // Get the id from the name
     Account? account = await fetchActiveProfileAccount();
 
-    final FullPersonView fullPersonView = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
+    final GetPersonDetailsResponse getPersonDetailsResponse = await LemmyClient.instance.lemmyApiV3.run(GetPersonDetails(
       auth: account?.jwt,
       username: username,
     ));
 
-    _userId = fullPersonView.personView.person.id;
+    _userId = getPersonDetailsResponse.personView.person.id;
   }
 
   // Push navigation
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
-  AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  InstanceBloc instanceBloc = context.read<InstanceBloc>();
+  AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
+  try {
+    anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
+  } catch (e) {}
 
   ThunderState thunderState = thunderBloc.state;
   final bool reduceAnimations = thunderState.reduceAnimations;
@@ -58,7 +63,8 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
-          BlocProvider.value(value: anonymousSubscriptionsBloc),
+          BlocProvider.value(value: instanceBloc),
+          if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
           BlocProvider<FeedBloc>(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider<CommunityBloc>(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
         ],

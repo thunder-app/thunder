@@ -65,7 +65,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   String? replyingToAuthor;
   String? replyingToContent;
-  PersonSafe? person;
+  Person? person;
 
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
@@ -73,9 +73,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   DraftComment newDraftComment = DraftComment();
 
+  bool isInInbox = false;
+
   @override
   void initState() {
     super.initState();
+
+    try {
+      BlocProvider.of<InboxBloc>(context); // Attempt to get inbox bloc
+      isInInbox = true;
+    } catch (e) {
+      isInInbox = false;
+    }
 
     _bodyFocusNode.requestFocus();
 
@@ -96,7 +105,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     } else if (widget.commentView != null) {
       replyingToAuthor = widget.commentView?.creator.name;
       replyingToContent = widget.commentView?.comment.content;
-    } else if (widget.comment != null) {
+    } else if (isInInbox) {
       replyingToAuthor = widget.parentCommentAuthor;
       replyingToContent = widget.comment?.content;
     }
@@ -158,7 +167,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             }
           },
         ),
-        if (widget.comment != null)
+        if (isInInbox)
           BlocListener<InboxBloc, InboxState>(
             listenWhen: (previous, current) {
               return previous.status != current.status;
@@ -218,7 +227,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                           return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                         }
 
-                        if (widget.comment != null) {
+                        if (isInInbox) {
                           context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                         } else {
                           context.read<PostBloc>().add(CreateCommentEvent(

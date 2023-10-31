@@ -17,7 +17,7 @@ import '../utils/comment_action_helpers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CommentCard extends StatefulWidget {
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onCollapseCommentChange;
   final Function(int, bool) onDeleteAction;
@@ -134,7 +134,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
 
   @override
   Widget build(BuildContext context) {
-    VoteType? myVote = widget.commentViewTree.commentView?.myVote;
+    int? myVote = widget.commentViewTree.commentView?.myVote;
     bool? saved = widget.commentViewTree.commentView?.saved;
 
     final theme = Theme.of(context);
@@ -201,8 +201,8 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                       context: context,
                       swipeAction: swipeAction,
                       onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                      onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                      voteType: myVote ?? VoteType.none,
+                      onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                      voteType: myVote ?? 0,
                       saved: saved,
                       commentView: widget.commentViewTree.commentView!,
                       selectedCommentId: widget.selectCommentId,
@@ -359,7 +359,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                 isUserLoggedIn: isUserLoggedIn,
                                 now: widget.now,
                                 onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                                onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
+                                onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
                                 onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                                 onReportAction: (int commentId) => widget.onReportAction(commentId),
                                 onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, isEdit),

@@ -34,12 +34,35 @@ jobs:
         ];
         EOF
 
+        # Put the instances in the Android manifest file
+        manifestInstances="$(awk '{ print "              <data android:host=\""$0"\" />" }' lemmy-instances.txt)"
+        inSection=false
+        while IFS= read -r line; do
+            if [[ $line == *"#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#"* ]]; then
+              inSection=true
+            fi
+
+            if [[ $line == *"#INSTANCE_LIST_END#"* ]]; then  
+              echo "$manifestInstances" >> android/app/src/main/AndroidManifest-new.xml
+              inSection=false
+            fi
+
+            if [[ $line == *"android:host"* ]]; then
+              if [ "$inSection" = true ]; then
+                continue
+              fi
+            fi
+
+            echo "$line" >> android/app/src/main/AndroidManifest-new.xml
+        done < android/app/src/main/AndroidManifest.xml
+        mv android/app/src/main/AndroidManifest-new.xml android/app/src/main/AndroidManifest.xml
+
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5.0.2
       with:
           commit-message: Update instances
           title: Update instances
-          body: This PR is updating `lemmy-instances.txt` and `instances.dart` with the latest list of instances retrieved from fediverse.observer.
+          body: This PR is updating `lemmy-instances.txt`, `instances.dart`, and `AndroidManifest.xml` with the latest list of instances retrieved from fediverse.observer.
           branch: update-instances
           delete-branch: true
           author: GitHub <noreply@github.com>

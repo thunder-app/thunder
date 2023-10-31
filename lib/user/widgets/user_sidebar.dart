@@ -20,11 +20,11 @@ import '../../utils/date_time.dart';
 import '../bloc/user_bloc.dart';
 
 class UserSidebar extends StatefulWidget {
-  final PersonViewSafe? userInfo;
+  final PersonView? userInfo;
   final List<CommunityModeratorView>? moderates;
   final bool isAccountUser;
   final List<PersonBlockView>? personBlocks;
-  final BlockedPerson? blockedPerson;
+  final BlockPersonResponse? blockedPerson;
 
   const UserSidebar({
     super.key,

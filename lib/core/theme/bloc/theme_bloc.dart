@@ -40,6 +40,9 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
 
       bool useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
+      // Fetch reduce animations preferences to remove overscrolling effects
+      bool reduceAnimations = prefs.getBool(LocalSettings.reduceAnimations.name) ?? false;
+
       // Check what the system theme is (light/dark)
       Brightness brightness = SchedulerBinding.instance.platformDispatcher.platformBrightness;
       bool useDarkTheme = themeType != ThemeType.light;
@@ -54,6 +57,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
           selectedTheme: selectedTheme,
           useMaterialYouTheme: useMaterialYouTheme,
           useDarkTheme: useDarkTheme,
+          reduceAnimations: reduceAnimations,
         ),
       );
     } catch (e) {

@@ -28,11 +28,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     );
     on<MarkReplyAsReadEvent>(
       _markReplyAsReadEvent,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
     on<MarkMentionAsReadEvent>(
       _markMentionAsReadEvent,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
     on<CreateInboxCommentReplyEvent>(
       _createCommentEvent,
@@ -40,7 +44,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     );
     on<MarkAllAsReadEvent>(
       _markAllAsRead,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
   }
 
@@ -60,7 +66,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           if (event.reset) {
             emit(state.copyWith(status: InboxStatus.loading));
             // Fetch all the things
-            List<PrivateMessageView> privateMessageViews = await lemmy.run(
+            PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
               GetPrivateMessages(
                 auth: account!.jwt!,
                 unreadOnly: !event.showAll,
@@ -69,42 +75,42 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               ),
             );
 
-            List<PersonMentionView> personMentionViews = await lemmy.run(
+            GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
               GetPersonMentions(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
-                sort: SortType.new_,
+                sort: CommentSortType.new_,
                 limit: limit,
                 page: 1,
               ),
             );
 
-            List<CommentView> commentViews = await lemmy.run(
+            GetRepliesResponse getRepliesResponse = await lemmy.run(
               GetReplies(
                 auth: account.jwt!,
                 unreadOnly: !event.showAll,
                 limit: limit,
-                sort: SortType.new_,
+                sort: CommentSortType.new_,
                 page: 1,
               ),
             );
 
-            int totalUnreadCount = getUnreadCount(privateMessageViews, personMentionViews, commentViews);
+            int totalUnreadCount = getUnreadCount(privateMessagesResponse.privateMessages, getPersonMentionsResponse.mentions, getRepliesResponse.replies);
 
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
-                privateMessages: cleanDeletedMessages(privateMessageViews),
-                mentions: cleanDeletedMentions(personMentionViews),
-                replies: cleanDeletedReplies(commentViews),
+                privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
+                mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
+                replies: cleanDeletedReplies(getRepliesResponse.replies),
                 showUnreadOnly: !event.showAll,
                 inboxMentionPage: 2,
                 inboxReplyPage: 2,
                 inboxPrivateMessagePage: 2,
                 totalUnreadCount: totalUnreadCount,
-                hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
-                hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
-                hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
+                hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
+                hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
+                hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
               ),
             );
           }
@@ -114,7 +120,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
           emit(state.copyWith(status: InboxStatus.refreshing));
 
           // Fetch all the things
-          List<PrivateMessageView> privateMessageViews = await lemmy.run(
+          PrivateMessagesResponse privateMessagesResponse = await lemmy.run(
             GetPrivateMessages(
               auth: account!.jwt!,
               unreadOnly: !event.showAll,
@@ -123,29 +129,29 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             ),
           );
 
-          List<PersonMentionView> personMentionViews = await lemmy.run(
+          GetPersonMentionsResponse getPersonMentionsResponse = await lemmy.run(
             GetPersonMentions(
               auth: account.jwt!,
               unreadOnly: !event.showAll,
-              sort: SortType.new_,
+              sort: CommentSortType.new_,
               limit: limit,
               page: state.inboxMentionPage,
             ),
           );
 
-          List<CommentView> commentViews = await lemmy.run(
+          GetRepliesResponse getRepliesResponse = await lemmy.run(
             GetReplies(
               auth: account.jwt!,
               unreadOnly: !event.showAll,
               limit: limit,
-              sort: SortType.new_,
+              sort: CommentSortType.new_,
               page: state.inboxReplyPage,
             ),
           );
 
-          List<CommentView> replies = List.from(state.replies)..addAll(commentViews);
-          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(personMentionViews);
-          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessageViews);
+          List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse.replies);
+          List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse.mentions);
+          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse.privateMessages);
 
           return emit(
             state.copyWith(
@@ -157,9 +163,9 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
               inboxMentionPage: state.inboxMentionPage + 1,
               inboxReplyPage: state.inboxReplyPage + 1,
               inboxPrivateMessagePage: state.inboxPrivateMessagePage + 1,
-              hasReachedInboxReplyEnd: commentViews.isEmpty || commentViews.length < limit,
-              hasReachedInboxMentionEnd: personMentionViews.isEmpty || personMentionViews.length < limit,
-              hasReachedInboxPrivateMessageEnd: privateMessageViews.isEmpty || privateMessageViews.length < limit,
+              hasReachedInboxReplyEnd: getRepliesResponse.replies.isEmpty || getRepliesResponse.replies.length < limit,
+              hasReachedInboxMentionEnd: getPersonMentionsResponse.mentions.isEmpty || getPersonMentionsResponse.mentions.length < limit,
+              hasReachedInboxPrivateMessageEnd: privateMessagesResponse.privateMessages.isEmpty || privateMessagesResponse.privateMessages.length < limit,
             ),
           );
         } catch (e) {
@@ -185,14 +191,22 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      FullCommentReplyView response = await lemmy.run(MarkCommentAsRead(
+      CommentReplyResponse response = await lemmy.run(MarkCommentReplyAsRead(
         auth: account!.jwt!,
         commentReplyId: event.commentReplyId,
         read: event.read,
       ));
 
-      // Remove the post from the current reply list
-      List<CommentView> replies = List.from(state.replies)..removeWhere((element) => element.commentReply?.id == response.commentReplyView.commentReply.id);
+      // Remove the post from the current reply list, or just mark it as read
+      List<CommentReplyView> replies = List.from(state.replies);
+      bool matchMarkedComment(CommentReplyView commentView) => commentView.commentReply.id == response.commentReplyView.commentReply.id;
+      if (event.showAll) {
+        final CommentReplyView markedComment = replies.firstWhere(matchMarkedComment);
+        final int index = replies.indexOf(markedComment);
+        replies[index] = markedComment.copyWith(comment: response.commentReplyView.comment);
+      } else {
+        replies.removeWhere(matchMarkedComment);
+      }
 
       int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
 
@@ -222,7 +236,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      PersonMentionView personMentionView = await lemmy.run(MarkPersonMentionAsRead(
+      PersonMentionResponse personMentionResponse = await lemmy.run(MarkPersonMentionAsRead(
         auth: account!.jwt!,
         personMentionId: event.personMentionId,
         read: event.read,
@@ -245,7 +259,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
       }
 
-      FullCommentView fullCommentView = await lemmy.run(CreateComment(
+      CommentResponse commentResponse = await lemmy.run(CreateComment(
         auth: account!.jwt!,
         content: event.content,
         postId: event.postId,
@@ -303,11 +317,18 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     return cleanedMentions;
   }
 
-  List<CommentView> cleanDeletedReplies(List<CommentView> replies) {
-    List<CommentView> cleanedReplies = [];
+  List<CommentReplyView> cleanDeletedReplies(List<CommentReplyView> replies) {
+    List<CommentReplyView> cleanedReplies = [];
 
-    for (CommentView reply in replies) {
-      cleanedReplies.add(cleanDeletedCommentView(reply));
+    for (CommentReplyView reply in replies) {
+      if (!reply.comment.deleted) {
+        cleanedReplies.add(reply);
+        continue;
+      }
+
+      Comment deletedComment = convertToDeletedComment(reply.comment);
+      CommentReplyView cleanedReply = reply.copyWith(comment: deletedComment);
+      cleanedReplies.add(cleanedReply);
     }
 
     return cleanedReplies;
@@ -319,18 +340,18 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
 
     PrivateMessage privateMessage = PrivateMessage(
-        id: message.privateMessage.id,
-        creatorId: message.privateMessage.creatorId,
-        recipientId: message.privateMessage.recipientId,
-        content: "_deleted by creator_",
-        deleted: message.privateMessage.deleted,
-        read: message.privateMessage.read,
-        published: message.privateMessage.published,
-        apId: message.privateMessage.apId,
-        local: message.privateMessage.local,
-        instanceHost: message.privateMessage.instanceHost);
+      id: message.privateMessage.id,
+      creatorId: message.privateMessage.creatorId,
+      recipientId: message.privateMessage.recipientId,
+      content: "_deleted by creator_",
+      deleted: message.privateMessage.deleted,
+      read: message.privateMessage.read,
+      published: message.privateMessage.published,
+      apId: message.privateMessage.apId,
+      local: message.privateMessage.local,
+    );
 
-    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient, instanceHost: message.instanceHost);
+    return PrivateMessageView(privateMessage: privateMessage, creator: message.creator, recipient: message.recipient);
   }
 
   PersonMentionView cleanDeletedMention(PersonMentionView mention) {
@@ -341,20 +362,22 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     Comment deletedComment = convertToDeletedComment(mention.comment);
 
     return PersonMentionView(
-        personMention: mention.personMention,
-        comment: deletedComment,
-        creator: mention.creator,
-        post: mention.post,
-        community: mention.community,
-        recipient: mention.recipient,
-        counts: mention.counts,
-        creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
-        saved: mention.saved,
-        creatorBlocked: mention.creatorBlocked,
-        instanceHost: mention.instanceHost);
+      personMention: mention.personMention,
+      comment: deletedComment,
+      creator: mention.creator,
+      post: mention.post,
+      community: mention.community,
+      recipient: mention.recipient,
+      counts: mention.counts,
+      creatorBannedFromCommunity: mention.creatorBannedFromCommunity,
+      saved: mention.saved,
+      creatorBlocked: mention.creatorBlocked,
+      subscribed: mention.subscribed,
+      myVote: mention.myVote,
+    );
   }
 
-  int getUnreadCount(List<PrivateMessageView> privateMessageViews, List<PersonMentionView> personMentionViews, List<CommentView> commentViews) {
+  int getUnreadCount(List<PrivateMessageView> privateMessageViews, List<PersonMentionView> personMentionViews, List<CommentReplyView> commentViews) {
     // Tally up how many unread messages/mentions/replies there are so far
     // This will only tally up at most 20 for each type for a total of 60 unread counts
     int totalUnreadCount = 0;
@@ -367,8 +390,8 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       if (personMentionView.personMention.read == false) totalUnreadCount++;
     }
 
-    for (CommentView commentView in commentViews) {
-      if (commentView.commentReply?.read == false) totalUnreadCount++;
+    for (CommentReplyView commentView in commentViews) {
+      if (commentView.commentReply.read == false) totalUnreadCount++;
     }
 
     return totalUnreadCount;

@@ -9,6 +9,7 @@ class ThemeState extends Equatable {
     this.selectedTheme = CustomThemeType.deepBlue,
     this.useDarkTheme = false,
     this.useMaterialYouTheme = false,
+    this.reduceAnimations = false,
   });
 
   final ThemeStatus status;
@@ -18,6 +19,7 @@ class ThemeState extends Equatable {
   final CustomThemeType selectedTheme;
   final bool useDarkTheme;
   final bool useMaterialYouTheme;
+  final bool reduceAnimations;
 
   ThemeState copyWith({
     required ThemeStatus status,
@@ -25,7 +27,7 @@ class ThemeState extends Equatable {
     CustomThemeType? selectedTheme,
     bool? useDarkTheme,
     bool? useMaterialYouTheme,
-    ThemeData? darkTheme,
+    bool? reduceAnimations,
   }) {
     return ThemeState(
       status: status,
@@ -33,9 +35,10 @@ class ThemeState extends Equatable {
       selectedTheme: selectedTheme ?? this.selectedTheme,
       useDarkTheme: useDarkTheme ?? false,
       useMaterialYouTheme: useMaterialYouTheme ?? false,
+      reduceAnimations: reduceAnimations ?? false,
     );
   }
 
   @override
-  List<Object?> get props => [status, themeType, selectedTheme, useDarkTheme, useMaterialYouTheme];
+  List<Object?> get props => [status, themeType, selectedTheme, useDarkTheme, useMaterialYouTheme, reduceAnimations];
 }

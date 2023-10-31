@@ -12,7 +12,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    this.defaultPostListingType = DEFAULT_LISTING_TYPE,
+    this.defaultListingType = DEFAULT_LISTING_TYPE,
     this.defaultSortType = DEFAULT_SORT_TYPE,
 
     // NSFW Settings
@@ -25,6 +25,7 @@ class ThunderState extends Equatable {
     // General Settings
     this.scrapeMissingPreviews = false,
     this.openInExternalBrowser = false,
+    this.openInReaderMode = false,
     this.useDisplayNames = true,
     this.markPostReadOnMediaView = false,
     this.disableFeedFab = false,
@@ -128,7 +129,7 @@ class ThunderState extends Equatable {
 
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  final PostListingType defaultPostListingType;
+  final ListingType defaultListingType;
   final SortType defaultSortType;
 
   // NSFW Settings
@@ -141,6 +142,7 @@ class ThunderState extends Equatable {
   // General Settings
   final bool scrapeMissingPreviews;
   final bool openInExternalBrowser;
+  final bool openInReaderMode;
   final bool useDisplayNames;
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
@@ -253,7 +255,7 @@ class ThunderState extends Equatable {
 
     /// -------------------------- Feed Related Settings --------------------------
     // Default Listing/Sort Settings
-    PostListingType? defaultPostListingType,
+    ListingType? defaultListingType,
     SortType? defaultSortType,
 
     // NSFW Settings
@@ -266,6 +268,7 @@ class ThunderState extends Equatable {
     // General Settings
     bool? scrapeMissingPreviews,
     bool? openInExternalBrowser,
+    bool? openInReaderMode,
     bool? useDisplayNames,
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
@@ -368,7 +371,7 @@ class ThunderState extends Equatable {
 
       /// -------------------------- Feed Related Settings --------------------------
       /// Default Listing/Sort Settings
-      defaultPostListingType: defaultPostListingType ?? this.defaultPostListingType,
+      defaultListingType: defaultListingType ?? this.defaultListingType,
       defaultSortType: defaultSortType ?? this.defaultSortType,
 
       // NSFW Settings
@@ -381,6 +384,7 @@ class ThunderState extends Equatable {
       // General Settings
       scrapeMissingPreviews: scrapeMissingPreviews ?? this.scrapeMissingPreviews,
       openInExternalBrowser: openInExternalBrowser ?? this.openInExternalBrowser,
+      openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
@@ -493,7 +497,7 @@ class ThunderState extends Equatable {
 
         /// -------------------------- Feed Related Settings --------------------------
         /// Default Listing/Sort Settings
-        defaultPostListingType,
+        defaultListingType,
         defaultSortType,
 
         // NSFW Settings

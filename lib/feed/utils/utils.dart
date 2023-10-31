@@ -8,6 +8,7 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -54,12 +55,13 @@ IconData? getSortIcon(FeedState state) {
 /// If [feedType] is [FeedType.community], one of [communityId] or [communityName] must be provided
 ///
 /// The [context] parameter should contain the following blocs within its widget tree: [AccountBloc], [AuthBloc], [ThunderBloc]
-Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedType, PostListingType? postListingType, SortType? sortType, String? communityName, int? communityId}) async {
+Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedType, ListingType? postListingType, SortType? sortType, String? communityName, int? communityId}) async {
   // Push navigation
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
   CommunityBloc communityBloc = context.read<CommunityBloc>();
+  InstanceBloc instanceBloc = context.read<InstanceBloc>();
   AnonymousSubscriptionsBloc anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
 
   ThunderState thunderState = thunderBloc.state;
@@ -88,6 +90,7 @@ Future<void> navigateToFeedPage(BuildContext context, {required FeedType feedTyp
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
+          BlocProvider.value(value: instanceBloc),
           BlocProvider.value(value: anonymousSubscriptionsBloc),
           BlocProvider.value(value: communityBloc),
         ],

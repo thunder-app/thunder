@@ -18,7 +18,7 @@ class CommentSubview extends StatefulWidget {
   final List<CommentViewTree> comments;
   final int level;
 
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(int) onReportAction;
@@ -124,7 +124,6 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
         }
       },
       child: ScrollablePositionedList.builder(
-        physics: reduceAnimations ? const BouncingScrollPhysics() : null,
         addSemanticIndexes: false,
         itemScrollController: widget.itemScrollController,
         itemPositionsListener: widget.itemPositionsListener,
@@ -193,7 +192,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                       collapsedCommentSet: collapsedCommentSet,
                       collapsed: collapsedCommentSet.contains(widget.comments[index - 1].commentView!.comment.id) || widget.level == 2,
                       onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                      onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                      onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
                       onCollapseCommentChange: (int commentId, bool collapsed) => onCollapseCommentChange(commentId, collapsed),
                       onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                       onReportAction: (int commentId) => widget.onReportAction(commentId),

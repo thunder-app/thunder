@@ -25,7 +25,7 @@ class CommentReference extends StatefulWidget {
   final CommentView comment;
   final DateTime now;
   final bool isOwnComment;
-  final Function(int, VoteType) onVoteAction;
+  final Function(int, int) onVoteAction;
   final Function(int, bool) onSaveAction;
   final Function(int, bool) onDeleteAction;
   final Function(int) onReportAction;
@@ -173,8 +173,8 @@ class _CommentReferenceState extends State<CommentReference> {
                           context: context,
                           swipeAction: swipeAction,
                           onSaveAction: (int commentId, bool saved) => widget.onSaveAction(commentId, saved),
-                          onVoteAction: (int commentId, VoteType vote) => widget.onVoteAction(commentId, vote),
-                          voteType: widget.comment.myVote ?? VoteType.none,
+                          onVoteAction: (int commentId, int vote) => widget.onVoteAction(commentId, vote),
+                          voteType: widget.comment.myVote ?? 0,
                           saved: widget.comment.saved,
                           commentView: widget.comment,
                           selectedCommentId: widget.comment.comment.id,
@@ -291,7 +291,7 @@ class _CommentReferenceState extends State<CommentReference> {
                         isUserLoggedIn: isUserLoggedIn,
                         now: widget.now,
                         onSaveAction: (int commentId, bool save) => widget.onSaveAction(commentId, save),
-                        onVoteAction: (int commentId, VoteType voteType) => widget.onVoteAction(commentId, voteType),
+                        onVoteAction: (int commentId, int voteType) => widget.onVoteAction(commentId, voteType),
                         onDeleteAction: (int commentId, bool deleted) => widget.onDeleteAction(commentId, deleted),
                         onReplyEditAction: (CommentView commentView, bool isEdit) => widget.onReplyEditAction(commentView, widget.isOwnComment),
                         onReportAction: (int commentId) => widget.onReportAction(commentId),

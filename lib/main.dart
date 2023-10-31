@@ -12,9 +12,13 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -22,6 +26,7 @@ import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
 
 void main() async {
@@ -60,6 +65,24 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AuthBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AccountBloc(),
+        ),
+        BlocProvider(
+          create: (context) => DeepLinksCubit(),
+        ),
+        BlocProvider(
+          create: (context) => ThunderBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AnonymousSubscriptionsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
+        ),
+        BlocProvider(
+          create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
@@ -117,6 +140,7 @@ class ThunderApp extends StatelessWidget {
                   darkTheme: darkTheme,
                   debugShowCheckedModeBanner: false,
                   scaffoldMessengerKey: GlobalContext.scaffoldMessengerKey,
+                  scrollBehavior: (state.reduceAnimations && Platform.isAndroid) ? const ScrollBehavior().copyWith(overscroll: false) : null,
                 ),
               );
             },

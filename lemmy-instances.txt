@@ -4,7 +4,6 @@ beehaw.org
 burggit.moe
 dataterm.digital
 delraymisfitsboard.com
-discuss.online
 discuss.tchncs.de
 exploding-heads.com
 feddit.ch
@@ -23,6 +22,7 @@ jlai.lu
 lemdro.id
 lemm.ee
 lemmings.world
+lemmus.org
 lemmy.blahaj.zone
 lemmy.ca
 lemmy.dbzer0.com
@@ -34,7 +34,6 @@ lemmy.nz
 lemmy.one
 lemmy.sdf.org
 lemmy.today
-lemmy.whynotdrs.org
 lemmy.world
 lemmy.zip
 lemmygrad.ml

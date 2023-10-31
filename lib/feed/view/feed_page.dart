@@ -11,6 +11,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/community/widgets/post_card.dart';
@@ -21,6 +22,7 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -56,7 +58,7 @@ class FeedPage extends StatefulWidget {
   final FeedType feedType;
 
   /// The type of general feed to display: all, local, subscribed.
-  final PostListingType? postListingType;
+  final ListingType? postListingType;
 
   /// The sorting to be applied to the feed.
   final SortType? sortType;
@@ -209,214 +211,232 @@ class _FeedViewState extends State<FeedView> {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
     bool tabletMode = thunderBloc.state.tabletMode;
 
-    return SafeArea(
-      top: false, // Don't apply to top of screen to allow for the status bar colour to extend
-      child: BlocConsumer<FeedBloc, FeedState>(
-        listenWhen: (previous, current) {
-          if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
-          if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-          if (previous.dismissReadId != current.dismissReadId) dismissRead();
-          return true;
-        },
-        listener: (context, state) {
-          // Continue to fetch more posts as long as the device view is not scrollable.
-          // This is to avoid cases where more posts cannot be fetched because the conditions are not met
-          if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
-            bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
-            if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
-          }
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<CommunityBloc, CommunityState>(
+          listener: (context, state) {
+            if (state.message != null) {
+              showSnackbar(context, state.message!);
+            }
+          },
+        ),
+        BlocListener<InstanceBloc, InstanceState>(
+          listener: (context, state) {
+            if (state.message != null) {
+              showSnackbar(context, state.message!);
+            }
+          },
+        ),
+      ],
+      child: SafeArea(
+        top: false, // Don't apply to top of screen to allow for the status bar colour to extend
+        child: BlocConsumer<FeedBloc, FeedState>(
+          listenWhen: (previous, current) {
+            if (current.status == FeedStatus.initial) setState(() => showAppBarTitle = false);
+            if (previous.scrollId != current.scrollId) _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+            if (previous.dismissReadId != current.dismissReadId) dismissRead();
+            return true;
+          },
+          listener: (context, state) {
+            // Continue to fetch more posts as long as the device view is not scrollable.
+            // This is to avoid cases where more posts cannot be fetched because the conditions are not met
+            if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
+              bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+              if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
+            }
 
-          if (state.status == FeedStatus.failure && state.message != null) {
-            showSnackbar(context, state.message!);
-            context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
-          }
-        },
-        builder: (context, state) {
-          final theme = Theme.of(context);
-          List<PostViewMedia> postViewMedias = state.postViewMedias;
+            if (state.status == FeedStatus.failure && state.message != null) {
+              showSnackbar(context, state.message!);
+              context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
+            }
+          },
+          builder: (context, state) {
+            final theme = Theme.of(context);
+            List<PostViewMedia> postViewMedias = state.postViewMedias;
 
-          return RefreshIndicator(
-            onRefresh: () async {
-              HapticFeedback.mediumImpact();
-              triggerRefresh(context);
-            },
-            edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
-            child: Stack(
-              children: [
-                CustomScrollView(
-                  physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
-                  controller: _scrollController,
-                  slivers: <Widget>[
-                    FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
-                    // Display loading indicator until the feed is fetched
-                    if (state.status == FeedStatus.initial)
-                      const SliverFillRemaining(
-                        hasScrollBody: false,
-                        child: Center(child: CircularProgressIndicator()),
-                      ),
-                    // Display tagline and list of posts once they are fetched
-                    if (state.status != FeedStatus.initial) ...[
-                      SliverToBoxAdapter(
-                        child: Visibility(
-                          visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
-                          child: const TagLine(),
+            return RefreshIndicator(
+              onRefresh: () async {
+                HapticFeedback.mediumImpact();
+                triggerRefresh(context);
+              },
+              edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+              child: Stack(
+                children: [
+                  CustomScrollView(
+                    physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
+                    controller: _scrollController,
+                    slivers: <Widget>[
+                      FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
+                      // Display loading indicator until the feed is fetched
+                      if (state.status == FeedStatus.initial)
+                        const SliverFillRemaining(
+                          hasScrollBody: false,
+                          child: Center(child: CircularProgressIndicator()),
                         ),
-                      ),
-                      if (state.fullCommunityView != null)
+                      // Display tagline and list of posts once they are fetched
+                      if (state.status != FeedStatus.initial) ...[
                         SliverToBoxAdapter(
                           child: Visibility(
-                            visible: state.feedType == FeedType.community,
-                            child: CommunityHeader(
-                              fullCommunityView: state.fullCommunityView!,
-                              showCommunitySidebar: showCommunitySidebar,
-                              onToggle: (bool toggled) {
-                                // Scroll to top first before showing the sidebar
-                                _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                setState(() => showCommunitySidebar = toggled);
-                              },
-                            ),
+                            visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,
+                            child: const TagLine(),
                           ),
                         ),
-                      SliverStack(
-                        children: [
-                          // Widget representing the list of posts on the feed
-                          SliverMasonryGrid.count(
-                            crossAxisCount: tabletMode ? 2 : 1,
-                            crossAxisSpacing: 40,
-                            mainAxisSpacing: 0,
-                            itemBuilder: (BuildContext context, int index) {
-                              return AnimatedSwitcher(
-                                switchOutCurve: Curves.ease,
-                                duration: const Duration(milliseconds: 0),
-                                reverseDuration: const Duration(milliseconds: 400),
+                        if (state.fullCommunityView != null)
+                          SliverToBoxAdapter(
+                            child: Visibility(
+                              visible: state.feedType == FeedType.community,
+                              child: CommunityHeader(
+                                getCommunityResponse: state.fullCommunityView!,
+                                showCommunitySidebar: showCommunitySidebar,
+                                onToggle: (bool toggled) {
+                                  // Scroll to top first before showing the sidebar
+                                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                                  setState(() => showCommunitySidebar = toggled);
+                                },
+                              ),
+                            ),
+                          ),
+                        SliverStack(
+                          children: [
+                            // Widget representing the list of posts on the feed
+                            SliverMasonryGrid.count(
+                              crossAxisCount: tabletMode ? 2 : 1,
+                              crossAxisSpacing: 40,
+                              mainAxisSpacing: 0,
+                              itemBuilder: (BuildContext context, int index) {
+                                return AnimatedSwitcher(
+                                  switchOutCurve: Curves.ease,
+                                  duration: const Duration(milliseconds: 0),
+                                  reverseDuration: const Duration(milliseconds: 400),
+                                  transitionBuilder: (child, animation) {
+                                    return FadeTransition(
+                                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                        CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
+                                      ),
+                                      child: SlideTransition(
+                                        position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                        child: SizeTransition(
+                                          sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
+                                            CurvedAnimation(
+                                              parent: animation,
+                                              curve: const Interval(0.0, 0.25),
+                                            ),
+                                          ),
+                                          child: child,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
+                                      ? PostCard(
+                                          postViewMedia: postViewMedias[index],
+                                          communityMode: state.feedType == FeedType.community,
+                                          onVoteAction: (int voteType) {
+                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
+                                          },
+                                          onSaveAction: (bool saved) {
+                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
+                                          },
+                                          onReadAction: (bool read) {
+                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
+                                          },
+                                          listingType: state.postListingType,
+                                          indicateRead: true,
+                                        )
+                                      : null,
+                                );
+                              },
+                              childCount: postViewMedias.length,
+                            ),
+                            // Widgets to display on the feed when feedType == FeedType.community
+                            SliverToBoxAdapter(
+                              child: AnimatedSwitcher(
+                                switchInCurve: Curves.easeOut,
+                                switchOutCurve: Curves.easeOut,
                                 transitionBuilder: (child, animation) {
                                   return FadeTransition(
                                     opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                      CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
+                                      CurvedAnimation(parent: animation, curve: const Interval(0, 1.0)),
                                     ),
-                                    child: SlideTransition(
-                                      position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                      child: SizeTransition(
-                                        sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                          CurvedAnimation(
-                                            parent: animation,
-                                            curve: const Interval(0.0, 0.25),
-                                          ),
-                                        ),
-                                        child: child,
-                                      ),
-                                    ),
+                                    child: child,
                                   );
                                 },
-                                child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
-                                    ? PostCard(
-                                        postViewMedia: postViewMedias[index],
-                                        communityMode: state.feedType == FeedType.community,
-                                        onVoteAction: (VoteType voteType) {
-                                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                                        },
-                                        onSaveAction: (bool saved) {
-                                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                                        },
-                                        onReadAction: (bool read) {
-                                          context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                                        },
-                                        listingType: state.postListingType,
-                                        indicateRead: true,
+                                duration: const Duration(milliseconds: 300),
+                                child: showCommunitySidebar
+                                    ? GestureDetector(
+                                        onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
+                                        child: Container(
+                                          height: MediaQuery.of(context).size.height,
+                                          width: MediaQuery.of(context).size.width,
+                                          color: Colors.black.withOpacity(0.5),
+                                        ),
                                       )
                                     : null,
-                              );
-                            },
-                            childCount: postViewMedias.length,
-                          ),
-                          // Widgets to display on the feed when feedType == FeedType.community
-                          SliverToBoxAdapter(
-                            child: AnimatedSwitcher(
-                              switchInCurve: Curves.easeOut,
-                              switchOutCurve: Curves.easeOut,
-                              transitionBuilder: (child, animation) {
-                                return FadeTransition(
-                                  opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                    CurvedAnimation(parent: animation, curve: const Interval(0, 1.0)),
-                                  ),
-                                  child: child,
-                                );
-                              },
-                              duration: const Duration(milliseconds: 300),
-                              child: showCommunitySidebar
-                                  ? GestureDetector(
-                                      onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
-                                      child: Container(
-                                        height: MediaQuery.of(context).size.height,
-                                        width: MediaQuery.of(context).size.width,
-                                        color: Colors.black.withOpacity(0.5),
-                                      ),
-                                    )
-                                  : null,
-                            ),
-                          ),
-                          // Contains the widget for the community sidebar
-                          SliverToBoxAdapter(
-                            child: AnimatedSwitcher(
-                              switchInCurve: Curves.easeOut,
-                              switchOutCurve: Curves.easeOut,
-                              transitionBuilder: (child, animation) {
-                                return SlideTransition(
-                                  position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                  child: child,
-                                );
-                              },
-                              duration: const Duration(milliseconds: 300),
-                              child: showCommunitySidebar
-                                  ? CommunitySidebar(
-                                      fullCommunityView: state.fullCommunityView,
-                                      onDismiss: () => setState(() => showCommunitySidebar = false),
-                                    )
-                                  : Container(),
-                            ),
-                          ),
-                        ],
-                      ),
-                      // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                      SliverToBoxAdapter(
-                        child: state.hasReachedEnd
-                            ? const FeedReachedEnd()
-                            : Container(
-                                height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                alignment: Alignment.center,
-                                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                child: const CircularProgressIndicator(),
                               ),
-                      ),
+                            ),
+                            // Contains the widget for the community sidebar
+                            SliverToBoxAdapter(
+                              child: AnimatedSwitcher(
+                                switchInCurve: Curves.easeOut,
+                                switchOutCurve: Curves.easeOut,
+                                transitionBuilder: (child, animation) {
+                                  return SlideTransition(
+                                    position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                    child: child,
+                                  );
+                                },
+                                duration: const Duration(milliseconds: 300),
+                                child: showCommunitySidebar
+                                    ? CommunitySidebar(
+                                        getCommunityResponse: state.fullCommunityView,
+                                        onDismiss: () => setState(() => showCommunitySidebar = false),
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                          ],
+                        ),
+                        // Widget representing the bottom of the feed (reached end or loading more posts indicators)
+                        SliverToBoxAdapter(
+                          child: state.hasReachedEnd
+                              ? const FeedReachedEnd()
+                              : Container(
+                                  height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                  alignment: Alignment.center,
+                                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                  child: const CircularProgressIndicator(),
+                                ),
+                        ),
+                      ],
                     ],
-                  ],
-                ),
-                // Widget to host the feed FAB when navigating to new page
-                AnimatedOpacity(
-                  opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                  duration: const Duration(milliseconds: 150),
-                  child: thunderBloc.state.isFabOpen
-                      ? ModalBarrier(
-                          color: theme.colorScheme.background.withOpacity(0.95),
-                          dismissible: true,
-                          onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                        )
-                      : null,
-                ),
-                if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
-                  AnimatedOpacity(
-                    opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
-                    duration: const Duration(milliseconds: 150),
-                    curve: Curves.easeIn,
-                    child: Container(
-                      margin: const EdgeInsets.all(16),
-                      child: FeedFAB(heroTag: state.communityName),
-                    ),
                   ),
-              ],
-            ),
-          );
-        },
+                  // Widget to host the feed FAB when navigating to new page
+                  AnimatedOpacity(
+                    opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                    duration: const Duration(milliseconds: 150),
+                    child: thunderBloc.state.isFabOpen
+                        ? ModalBarrier(
+                            color: theme.colorScheme.background.withOpacity(0.95),
+                            dismissible: true,
+                            onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                          )
+                        : null,
+                  ),
+                  if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
+                    AnimatedOpacity(
+                      opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                      duration: const Duration(milliseconds: 150),
+                      curve: Curves.easeIn,
+                      child: Container(
+                        margin: const EdgeInsets.all(16),
+                        child: FeedFAB(heroTag: state.communityName),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -429,8 +449,8 @@ class _FeedViewState extends State<FeedView> {
     final canPop = Navigator.of(context).canPop();
 
     // Get the desired post listing so we can check against current
-    final desiredPostListingType = thunderBloc.state.defaultPostListingType;
-    final currentPostListingType = feedBloc.state.postListingType;
+    final desiredListingType = thunderBloc.state.defaultListingType;
+    final currentListingType = feedBloc.state.postListingType;
 
     // See if we're in a community
     final communityMode = feedBloc.state.feedType == FeedType.community;
@@ -440,12 +460,12 @@ class _FeedViewState extends State<FeedView> {
     // - We're not on the desired listing type OR
     // - We're on a community
     // THEN navigate to the desired listing type
-    if (!canPop && (desiredPostListingType != currentPostListingType || communityMode)) {
+    if (!canPop && (desiredListingType != currentListingType || communityMode)) {
       feedBloc.add(
         FeedFetchedEvent(
           sortType: thunderBloc.state.defaultSortType,
           reset: true,
-          postListingType: desiredPostListingType,
+          postListingType: desiredListingType,
           feedType: FeedType.general,
           communityId: null,
         ),
@@ -499,7 +519,7 @@ class TagLine extends StatelessWidget {
     final theme = Theme.of(context);
     final taglineToShowCache = Cache<String>();
 
-    final fullSiteView = context.read<AuthBloc>().state.fullSiteView;
+    final fullSiteView = context.read<AuthBloc>().state.getSiteResponse;
     if (fullSiteView == null || fullSiteView.taglines.isEmpty) return Container();
 
     String tagline = taglineToShowCache.getOrSet(() {

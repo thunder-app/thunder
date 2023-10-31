@@ -97,6 +97,7 @@ class FeedPageAppBar extends StatelessWidget {
               showModalBottomSheet<void>(
                 showDragHandle: true,
                 context: context,
+                isScrollControlled: true,
                 builder: (builderContext) => SortPicker(
                   title: l10n.sortOptions,
                   onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
@@ -175,7 +176,7 @@ void _onSubscribeIconPressed(BuildContext context) {
     return;
   }
 
-  CommunitySafe community = feedBloc.state.fullCommunityView!.communityView.community;
+  Community community = feedBloc.state.fullCommunityView!.communityView.community;
   Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
 
   if (currentSubscriptions.contains(community.id)) {

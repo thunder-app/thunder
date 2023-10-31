@@ -1,20 +1,27 @@
+import 'dart:io';
+
+import 'package:android_intent_plus/android_intent.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
+import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -26,7 +33,7 @@ class GeneralSettingsPage extends StatefulWidget {
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
-  PostListingType defaultPostListingType = DEFAULT_LISTING_TYPE;
+  ListingType defaultListingType = DEFAULT_LISTING_TYPE;
   CommentSortType defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE;
 
   // NSFW Settings
@@ -39,6 +46,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   // General Settings
   bool scrapeMissingPreviews = false;
   bool openInExternalBrowser = false;
+  bool openInReaderMode = false;
   bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
   bool showInAppUpdateNotification = false;
@@ -84,7 +92,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Default Listing/Sort Settings
       case LocalSettings.defaultFeedListingType:
         await prefs.setString(LocalSettings.defaultFeedListingType.name, value);
-        setState(() => defaultPostListingType = PostListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
+        setState(() => defaultListingType = ListingType.values.byName(value ?? DEFAULT_LISTING_TYPE.name));
         break;
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
@@ -114,6 +122,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.openLinksInExternalBrowser:
         await prefs.setBool(LocalSettings.openLinksInExternalBrowser.name, value);
         setState(() => openInExternalBrowser = value);
+        break;
+      case LocalSettings.openLinksInReaderMode:
+        await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
+        setState(() => openInReaderMode = value);
         break;
       case LocalSettings.useDisplayNamesForUsers:
         await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
@@ -242,10 +254,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
 
       try {
-        defaultPostListingType = PostListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(prefs.getString(LocalSettings.defaultFeedListingType.name) ?? DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(prefs.getString(LocalSettings.defaultFeedSortType.name) ?? DEFAULT_SORT_TYPE.name);
       } catch (e) {
-        defaultPostListingType = PostListingType.values.byName(DEFAULT_LISTING_TYPE.name);
+        defaultListingType = ListingType.values.byName(DEFAULT_LISTING_TYPE.name);
         defaultSortType = SortType.values.byName(DEFAULT_SORT_TYPE.name);
       }
 
@@ -280,6 +292,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       // Links
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
+      openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
 
       // Notification Settings
@@ -318,9 +331,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: AppBar(title: const Text('General'), centerTitle: false),
+      appBar: AppBar(title: Text(l10n.general), centerTitle: false),
       body: isLoading
           ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
@@ -335,7 +348,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4, bottom: 8.0),
                           child: Text(
-                            'Feed',
+                            l10n.feed,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
@@ -393,11 +406,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
-                          value: ListPickerItem(label: defaultPostListingType.value, icon: Icons.feed, payload: defaultPostListingType),
+                          value: ListPickerItem(label: defaultListingType.value, icon: Icons.feed, payload: defaultListingType),
                           options: [
-                            ListPickerItem(icon: Icons.view_list_rounded, label: PostListingType.subscribed.value, payload: PostListingType.subscribed),
-                            ListPickerItem(icon: Icons.home_rounded, label: PostListingType.all.value, payload: PostListingType.all),
-                            ListPickerItem(icon: Icons.grid_view_rounded, label: PostListingType.local.value, payload: PostListingType.local),
+                            ListPickerItem(icon: Icons.view_list_rounded, label: ListingType.subscribed.value, payload: ListingType.subscribed),
+                            ListPickerItem(icon: Icons.home_rounded, label: ListingType.all.value, payload: ListingType.all),
+                            ListPickerItem(icon: Icons.grid_view_rounded, label: ListingType.local.value, payload: ListingType.local),
                           ],
                           icon: Icons.filter_alt_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.defaultFeedListingType, value.payload.name),
@@ -405,11 +418,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ListOption(
                           description: LocalSettings.defaultFeedSortType.label,
                           value: ListPickerItem(label: defaultSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultSortType),
-                          options: allSortTypeItems,
+                          options: [...SortPicker.getDefaultSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never), ...topSortTypeItems],
                           icon: Icons.sort_rounded,
                           onChanged: (_) {},
                           isBottomModalScrollControlled: true,
                           customListPicker: SortPicker(
+                            includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
                             title: LocalSettings.defaultFeedSortType.label,
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultFeedSortType, value.payload.name);
@@ -439,14 +453,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Posts',
+                            l10n.posts,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.all(6.0),
                           child: Text(
-                            'These settings apply to the cards in the main feed, actions are always available when actually opening posts.',
+                            l10n.settingsFeedCards,
                             style: TextStyle(
                               color: theme.colorScheme.onBackground.withOpacity(0.75),
                             ),
@@ -457,7 +471,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ToggleOption(
                           description: LocalSettings.useCompactView.label,
-                          subtitle: 'Enable for small posts, disable for big.',
+                          subtitle: l10n.useCompactView,
                           value: useCompactView,
                           iconEnabled: Icons.crop_16_9_rounded,
                           iconDisabled: Icons.crop_din_rounded,
@@ -570,7 +584,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ),
                         ToggleOption(
                           description: LocalSettings.dimReadPosts.label,
-                          subtitle: 'Read posts will be grayed out',
+                          subtitle: l10n.dimReadPosts,
                           value: dimReadPosts,
                           iconEnabled: Icons.chrome_reader_mode,
                           iconDisabled: Icons.chrome_reader_mode_outlined,
@@ -595,7 +609,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Comments',
+                            l10n.comments,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
@@ -616,11 +630,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         ListOption(
                           description: LocalSettings.defaultCommentSortType.label,
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
-                          options: commentSortTypeItems,
+                          options: CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.never),
                           icon: Icons.comment_bank_rounded,
                           onChanged: (_) {},
                           customListPicker: CommentSortPicker(
-                            title: 'Comment Sort Type',
+                            includeVersionSpecificFeature: IncludeVersionSpecificFeature.never,
+                            title: l10n.commentSortType,
                             onSelect: (value) {
                               setPreferences(LocalSettings.defaultCommentSortType, value.payload.name);
                             },
@@ -628,10 +643,16 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           ),
                           valueDisplay: Row(
                             children: [
-                              Icon(commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).icon, size: 13),
+                              Icon(
+                                  CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
+                                      .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
+                                      .icon,
+                                  size: 13),
                               const SizedBox(width: 4),
                               Text(
-                                commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType).label,
+                                CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
+                                    .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
+                                    .label,
                                 style: theme.textTheme.titleSmall,
                               ),
                             ],
@@ -680,7 +701,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                                   key: ValueKey(enableCommentNavigation),
                                   child: ToggleOption(
                                     description: LocalSettings.combineNavAndFab.label,
-                                    subtitle: 'Floating Action Button will be shown between navigation buttons',
+                                    subtitle: l10n.combineNavAndFab,
                                     value: combineNavAndFab,
                                     iconEnabled: Icons.join_full_rounded,
                                     iconDisabled: Icons.join_inner_rounded,
@@ -701,13 +722,13 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Links',
+                            l10n.link(3),
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         ToggleOption(
                           description: LocalSettings.scrapeMissingPreviews.label,
-                          subtitle: 'Enabling will have a performance hit',
+                          subtitle: l10n.scrapeMissingPreviews,
                           value: scrapeMissingPreviews,
                           iconEnabled: Icons.image_search_rounded,
                           iconDisabled: Icons.link_off_rounded,
@@ -720,6 +741,39 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.link_rounded,
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
                         ),
+
+                        if (Platform.isIOS)
+                          ToggleOption(
+                            description: LocalSettings.openLinksInReaderMode.label,
+                            value: openInReaderMode,
+                            iconEnabled: Icons.menu_book_rounded,
+                            iconDisabled: Icons.menu_book_rounded,
+                            onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
+                          ),
+                        // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
+                        if (Platform.isAndroid)
+                          SettingsListTile(
+                            icon: Icons.add_link,
+                            widget: const SizedBox(
+                              height: 42.0,
+                              child: Icon(Icons.chevron_right_rounded),
+                            ),
+                            onTap: () async {
+                              try {
+                                const AndroidIntent intent = AndroidIntent(
+                                  action: "android.settings.APP_OPEN_BY_DEFAULT_SETTINGS",
+                                  package: "com.hjiangsu.thunder",
+                                  data: "package:com.hjiangsu.thunder",
+                                  flags: [ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK],
+                                );
+                                await intent.launch();
+                              } catch (e) {
+                                openAppSettings();
+                              }
+                            },
+                            subtitle: l10n.allowOpenSupportedLinks,
+                            description: l10n.openByDefault,
+                          ),
                       ],
                     ),
                   ),
@@ -732,12 +786,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'User Profiles',
+                            l10n.userProfiles,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
                         ToggleOption(
-                          description: 'Display User Scores (Karma)',
+                          description: l10n.displayUserScore,
                           value: scoreCounters,
                           iconEnabled: Icons.score_rounded,
                           iconDisabled: Icons.score_rounded,
@@ -755,7 +809,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Notifications',
+                            l10n.notifications(3),
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
@@ -778,7 +832,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                         Padding(
                           padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
                           child: Text(
-                            'Import/Export Settings',
+                            l10n.importExportSettings,
                             style: theme.textTheme.titleLarge,
                           ),
                         ),
@@ -793,7 +847,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               const Icon(Icons.settings_rounded),
                               const SizedBox(width: 8.0),
                               Text(
-                                'Save Settings',
+                                l10n.saveSettings,
                                 style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
                               ),
                             ],
@@ -814,7 +868,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               const Icon(Icons.import_export_rounded),
                               const SizedBox(width: 8.0),
                               Text(
-                                'Import Settings',
+                                l10n.importSettings,
                                 style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
                               ),
                             ],
