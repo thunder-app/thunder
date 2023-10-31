@@ -21,6 +21,9 @@ Future<Map<String, dynamic>> fetchPosts({
 
   bool hasReachedEnd = false;
 
+  // User information if present
+  GetPersonDetailsResponse? getPersonDetailsResponse;
+
   List<PostViewMedia> postViewMedias = [];
 
   int currentPage = page;
@@ -30,7 +33,7 @@ Future<Map<String, dynamic>> fetchPosts({
     List<PostView> postViews = [];
 
     if (userId != null || username != null) {
-      GetPersonDetailsResponse getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
+      getPersonDetailsResponse = await lemmy.run(GetPersonDetails(
         auth: account?.jwt,
         page: currentPage,
         sort: sortType,
@@ -39,7 +42,7 @@ Future<Map<String, dynamic>> fetchPosts({
       ));
 
       // Remove deleted posts
-      postViews = getPersonDetailsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList();
+      postViews = getPersonDetailsResponse!.posts.where((PostView postView) => postView.post.deleted == false).toList();
     } else {
       GetPostsResponse getPostsResponse = await lemmy.run(GetPosts(
         auth: account?.jwt,
@@ -62,7 +65,12 @@ Future<Map<String, dynamic>> fetchPosts({
     currentPage++;
   } while (!hasReachedEnd && postViewMedias.length < limit);
 
-  return {'postViewMedias': postViewMedias, 'hasReachedEnd': hasReachedEnd, 'currentPage': currentPage};
+  return {
+    'postViewMedias': postViewMedias,
+    'hasReachedEnd': hasReachedEnd,
+    'currentPage': currentPage,
+    'getPersonDetailsResponse': getPersonDetailsResponse,
+  };
 }
 
 /// Logic to create a post

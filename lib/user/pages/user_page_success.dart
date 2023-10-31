@@ -111,21 +111,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
           children: [
             Column(
               children: [
-                GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      _displaySidebar = !_displaySidebar;
-                    });
-                  },
-                  onHorizontalDragUpdate: (details) {
-                    if (details.delta.dx < -3) {
-                      setState(() {
-                        _displaySidebar = true;
-                      });
-                    }
-                  },
-                  child: widget.personView != null ? UserHeader(userInfo: widget.personView) : const SizedBox(),
-                ),
                 Container(
                   margin: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
                   color: theme.colorScheme.background,
@@ -460,74 +445,6 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     ),
                   ),
               ],
-            ),
-            GestureDetector(
-              onHorizontalDragUpdate: (details) {
-                if (details.delta.dx > 3) {
-                  setState(() {
-                    _displaySidebar = false;
-                  });
-                }
-              },
-              child: Column(
-                children: [
-                  AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 300),
-                    child: _displaySidebar
-                        ? GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _displaySidebar = false;
-                              });
-                            },
-                            child: UserHeader(
-                              userInfo: widget.personView,
-                            ),
-                          )
-                        : null,
-                  ),
-                  Expanded(
-                    child: Stack(
-                      children: [
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar
-                              ? GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      _displaySidebar = false;
-                                    });
-                                  },
-                                  child: Container(
-                                    color: Colors.black.withOpacity(0.75),
-                                  ),
-                                )
-                              : null,
-                        ),
-                        AnimatedSwitcher(
-                          switchInCurve: Curves.decelerate,
-                          switchOutCurve: Curves.easeOut,
-                          transitionBuilder: (child, animation) {
-                            return SlideTransition(
-                              position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                              child: child,
-                            );
-                          },
-                          duration: const Duration(milliseconds: 300),
-                          child: _displaySidebar
-                              ? UserSidebar(
-                                  userInfo: widget.personView,
-                                  moderates: widget.moderates,
-                                  isAccountUser: widget.isAccountUser,
-                                  blockedPerson: widget.blockedPerson,
-                                )
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
             ),
           ],
         ),

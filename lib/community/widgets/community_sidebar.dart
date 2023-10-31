@@ -22,11 +22,10 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/instance/instance_view.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/sidebar.dart';
 import 'package:thunder/shared/snackbar.dart';
-import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
-import 'package:thunder/utils/instance.dart';
 
 class CommunitySidebar extends StatefulWidget {
   final GetCommunityResponse? getCommunityResponse;
@@ -49,7 +48,6 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
 
     if (widget.getCommunityResponse == null) return Container();
@@ -64,91 +62,76 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
             context.read<FeedBloc>().add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
           }
         },
-        child: Container(
-          alignment: Alignment.centerRight,
-          child: Dismissible(
-            key: Key(communityView.community.id.toString()),
-            onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
-            direction: DismissDirection.startToEnd,
-            child: FractionallySizedBox(
-              widthFactor: 0.8,
-              alignment: FractionalOffset.centerRight,
-              child: Container(
-                color: theme.colorScheme.background,
-                alignment: Alignment.topRight,
-                child: Column(
-                  children: [
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 100),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return SizeTransition(
-                          sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
-                        );
-                      },
-                      child: communityView.blocked == false
-                          ? Padding(
-                              padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
-                              child: CommunityActions(isUserLoggedIn: isUserLoggedIn, getCommunityResponse: widget.getCommunityResponse!),
-                            )
-                          : null,
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 150),
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return SizeTransition(
-                          sizeFactor: animation,
-                          child: FadeTransition(opacity: animation, child: child),
-                        );
-                      },
-                      child: communityView.subscribed != SubscribedType.subscribed && communityView.subscribed != SubscribedType.pending
-                          ? BlockCommunityButton(communityView: communityView, isUserLoggedIn: isUserLoggedIn)
-                          : null,
-                    ),
-                    const SizedBox(height: 10.0),
-                    const Divider(height: 1, thickness: 2),
-                    Container(
-                      alignment: Alignment.topCenter,
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      height: MediaQuery.of(context).size.height - 200,
-                      child: ListView(
-                        shrinkWrap: true,
-                        children: [
-                          CommonMarkdownBody(body: communityView.community.description ?? ''),
-                          const SidebarSectionHeader(value: "Stats"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityStatsList(communityView: communityView),
-                          ),
-                          const SidebarSectionHeader(value: "Moderators"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
-                          ),
-                          Container(
-                            child: widget.getCommunityResponse!.site != null
-                                ? Column(
-                                    children: [
-                                      const SidebarSectionHeader(value: "Host Instance"),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: InstanceView(
-                                          site: widget.getCommunityResponse!.site!,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : null,
-                          ),
-                          const SizedBox(height: 256)
-                        ],
-                      ),
+        child: Sidebar(
+          onDismiss: widget.onDismiss,
+          children: [
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 100),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: communityView.blocked == false
+                  ? Padding(
+                      padding: const EdgeInsets.only(top: 10, left: 12, right: 12, bottom: 4),
+                      child: CommunityActions(isUserLoggedIn: isUserLoggedIn, getCommunityResponse: widget.getCommunityResponse!),
                     )
-                  ],
-                ),
-              ),
+                  : null,
             ),
-          ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 150),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: communityView.subscribed != SubscribedType.subscribed && communityView.subscribed != SubscribedType.pending
+                  ? BlockCommunityButton(communityView: communityView, isUserLoggedIn: isUserLoggedIn)
+                  : null,
+            ),
+            const SizedBox(height: 10.0),
+            const Divider(height: 1, thickness: 2),
+            Container(
+              alignment: Alignment.topCenter,
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              height: MediaQuery.of(context).size.height - 200,
+              child: ListView(
+                shrinkWrap: true,
+                children: [
+                  CommonMarkdownBody(body: communityView.community.description ?? ''),
+                  const SidebarSectionHeader(value: "Stats"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CommunityStatsList(communityView: communityView),
+                  ),
+                  const SidebarSectionHeader(value: "Moderators"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CommunityModeratorList(communityModeratorViewList: widget.getCommunityResponse?.moderators ?? []),
+                  ),
+                  Container(
+                    child: widget.getCommunityResponse!.site != null
+                        ? Column(
+                            children: [
+                              const SidebarSectionHeader(value: "Host Instance"),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: InstanceView(
+                                  site: widget.getCommunityResponse!.site!,
+                                ),
+                              ),
+                            ],
+                          )
+                        : null,
+                  ),
+                  const SizedBox(height: 256)
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -200,63 +183,6 @@ class CommunityStatsList extends StatelessWidget {
           icon: Icons.calendar_view_day_rounded,
           value: '${NumberFormat("#,###,###,###").format(communityView.counts.usersActiveDay)} users/day',
         ),
-      ],
-    );
-  }
-}
-
-class CommunityModeratorList extends StatelessWidget {
-  const CommunityModeratorList({super.key, required this.getCommunityResponse});
-
-  final GetCommunityResponse getCommunityResponse;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Column(
-      children: [
-        for (CommunityModeratorView mods in getCommunityResponse.moderators)
-          GestureDetector(
-            onTap: () {
-              navigateToFeedPage(context, feedType: FeedType.user, userId: mods.moderator.id);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  UserAvatar(
-                    person: mods.moderator,
-                    radius: 20.0,
-                  ),
-                  const SizedBox(width: 16.0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        mods.moderator!.displayName ?? mods.moderator!.name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      Text(
-                        '${mods.moderator!.name} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: theme.colorScheme.onBackground.withOpacity(0.6),
-                          fontSize: 13,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
       ],
     );
   }
@@ -444,61 +370,6 @@ class CommunityActions extends StatelessWidget {
               ],
             ),
           ),
-        ),
-      ],
-    );
-  }
-}
-
-class SidebarSectionHeader extends StatelessWidget {
-  const SidebarSectionHeader({
-    super.key,
-    required this.value,
-  });
-
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 12.0, bottom: 4),
-      child: Row(
-        children: [
-          Text(value),
-          const Expanded(child: Divider(height: 5, thickness: 2, indent: 15)),
-        ],
-      ),
-    );
-  }
-}
-
-class SidebarStat extends StatelessWidget {
-  const SidebarStat({
-    super.key,
-    required this.icon,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 8, top: 2, bottom: 2),
-          child: Icon(
-            icon,
-            size: 18,
-            color: theme.colorScheme.onBackground.withOpacity(0.65),
-          ),
-        ),
-        Text(
-          value,
-          style: TextStyle(color: theme.textTheme.titleSmall?.color?.withOpacity(0.65)),
         ),
       ],
     );

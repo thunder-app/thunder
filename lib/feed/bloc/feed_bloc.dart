@@ -315,6 +315,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       );
 
       // Extract information from the response
+      GetPersonDetailsResponse? getPersonDetailsResponse = postViewMediaResult['getPersonDetailsResponse'];
+
       List<PostViewMedia> postViewMedias = postViewMediaResult['postViewMedias'];
       bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
       int currentPage = postViewMediaResult['currentPage'];
@@ -327,6 +329,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         postListingType: event.postListingType,
         sortType: event.sortType,
         fullCommunityView: fullCommunityView,
+        getPersonDetailsResponse: getPersonDetailsResponse,
         communityId: event.communityId,
         communityName: event.communityName,
         userId: event.userId,

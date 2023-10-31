@@ -28,6 +28,8 @@ import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/widgets/user_header.dart';
+import 'package:thunder/user/widgets/user_sidebar.dart';
 import 'package:thunder/utils/cache.dart';
 
 enum FeedType { community, user, general }
@@ -147,8 +149,8 @@ class _FeedViewState extends State<FeedView> {
   /// Boolean which indicates whether the title on the app bar should be shown
   bool showAppBarTitle = false;
 
-  /// Boolean which indicates whether the community sidebar should be shown
-  bool showCommunitySidebar = false;
+  /// Boolean which indicates whether the community/user sidebar should be shown
+  bool showSidebar = false;
 
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
@@ -263,7 +265,7 @@ class _FeedViewState extends State<FeedView> {
               child: Stack(
                 children: [
                   CustomScrollView(
-                    physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
+                    physics: showSidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community/user sidebar is open
                     controller: _scrollController,
                     slivers: <Widget>[
                       FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
@@ -287,11 +289,26 @@ class _FeedViewState extends State<FeedView> {
                               visible: state.feedType == FeedType.community,
                               child: CommunityHeader(
                                 getCommunityResponse: state.fullCommunityView!,
-                                showCommunitySidebar: showCommunitySidebar,
+                                showCommunitySidebar: showSidebar,
                                 onToggle: (bool toggled) {
                                   // Scroll to top first before showing the sidebar
                                   _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
-                                  setState(() => showCommunitySidebar = toggled);
+                                  setState(() => showSidebar = toggled);
+                                },
+                              ),
+                            ),
+                          ),
+                        if (state.getPersonDetailsResponse != null)
+                          SliverToBoxAdapter(
+                            child: Visibility(
+                              visible: state.feedType == FeedType.user,
+                              child: UserHeader(
+                                personView: state.getPersonDetailsResponse!.personView,
+                                showUserSidebar: showSidebar,
+                                onToggle: (bool toggled) {
+                                  // Scroll to top first before showing the sidebar
+                                  _scrollController.animateTo(0, duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+                                  setState(() => showSidebar = toggled);
                                 },
                               ),
                             ),
@@ -362,9 +379,9 @@ class _FeedViewState extends State<FeedView> {
                                   );
                                 },
                                 duration: const Duration(milliseconds: 300),
-                                child: showCommunitySidebar
+                                child: showSidebar
                                     ? GestureDetector(
-                                        onTap: () => setState(() => showCommunitySidebar = !showCommunitySidebar),
+                                        onTap: () => setState(() => showSidebar = !showSidebar),
                                         child: Container(
                                           height: MediaQuery.of(context).size.height,
                                           width: MediaQuery.of(context).size.width,
@@ -386,10 +403,30 @@ class _FeedViewState extends State<FeedView> {
                                   );
                                 },
                                 duration: const Duration(milliseconds: 300),
-                                child: showCommunitySidebar
+                                child: showSidebar && state.feedType == FeedType.community
                                     ? CommunitySidebar(
                                         getCommunityResponse: state.fullCommunityView,
-                                        onDismiss: () => setState(() => showCommunitySidebar = false),
+                                        onDismiss: () => setState(() => showSidebar = false),
+                                      )
+                                    : Container(),
+                              ),
+                            ),
+                            // Contains the widget for the user sidebar
+                            SliverToBoxAdapter(
+                              child: AnimatedSwitcher(
+                                switchInCurve: Curves.easeOut,
+                                switchOutCurve: Curves.easeOut,
+                                transitionBuilder: (child, animation) {
+                                  return SlideTransition(
+                                    position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
+                                    child: child,
+                                  );
+                                },
+                                duration: const Duration(milliseconds: 300),
+                                child: showSidebar && state.feedType == FeedType.user
+                                    ? UserSidebar(
+                                        getPersonDetailsResponse: state.getPersonDetailsResponse!,
+                                        onDismiss: () => setState(() => showSidebar = false),
                                       )
                                     : Container(),
                               ),

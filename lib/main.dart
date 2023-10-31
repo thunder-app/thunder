@@ -27,6 +27,7 @@ import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 
 void main() async {
@@ -77,6 +78,9 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => AnonymousSubscriptionsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => UserBloc(),
         ),
         BlocProvider(
           create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
