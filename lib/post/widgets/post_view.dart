@@ -357,8 +357,7 @@ class PostSubview extends StatelessWidget {
                                         //communityView: postViewMedia.postView.community, // TODO
                                         previousDraftPost: previousDraftPost,
                                         onUpdateDraft: (p) => newDraftPost = p,
-                                        isEdit: true,
-                                        postView: postViewMedia.postView,
+                                        postViewBeingEdited: postViewMedia.postView,
                                       ),
                                     );
                                   },

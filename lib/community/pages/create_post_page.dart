@@ -37,8 +37,7 @@ class CreatePostPage extends StatefulWidget {
   final String? url;
 
   final bool? prePopulated;
-  final bool isEdit;
-  final PostView? postView;
+  final PostView? postViewBeingEdited;
 
   const CreatePostPage({
     super.key,
@@ -50,11 +49,8 @@ class CreatePostPage extends StatefulWidget {
     this.text,
     this.url,
     this.prePopulated = false,
-    this.isEdit = false,
-    this.postView,
-  }) :
-        // If we're editing, we need a post to edit
-        assert(!isEdit || postView != null);
+    this.postViewBeingEdited,
+  });
 
   @override
   State<CreatePostPage> createState() => _CreatePostPageState();
@@ -131,11 +127,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         await Future.delayed(const Duration(milliseconds: 300));
         if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
       });
-    } else if (widget.isEdit && widget.postView != null) {
-      _titleTextController.text = widget.postView!.post.name;
-      _urlTextController.text = widget.postView!.post.url ?? '';
-      _bodyTextController.text = widget.postView!.post.body ?? '';
-      isNSFW = widget.postView!.post.nsfw;
+    } else if (widget.postViewBeingEdited != null) {
+      _titleTextController.text = widget.postViewBeingEdited!.post.name;
+      _urlTextController.text = widget.postViewBeingEdited!.post.url ?? '';
+      _bodyTextController.text = widget.postViewBeingEdited!.post.body ?? '';
+      isNSFW = widget.postViewBeingEdited!.post.nsfw;
     }
   }
 
@@ -180,7 +176,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.isEdit ? 'Edit Post' : l10n.createPost), // TODO
+          title: Text(widget.postViewBeingEdited != null ? 'Edit Post' : l10n.createPost), // TODO
           toolbarHeight: 70.0,
           actions: [
             IconButton(
@@ -195,8 +191,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 name: _titleTextController.text,
                                 body: _bodyTextController.text,
                                 nsfw: isNSFW,
-                                isEdit: widget.isEdit,
-                                postId: widget.postView?.post.id,
+                                isEdit: widget.postViewBeingEdited != null,
+                                postId: widget.postViewBeingEdited?.post.id,
                                 url: url,
                               ))
                           : context.read<FeedBloc>().add(CreatePostEvent(
@@ -204,8 +200,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 name: _titleTextController.text,
                                 body: _bodyTextController.text,
                                 nsfw: isNSFW,
-                                isEdit: widget.isEdit,
-                                postId: widget.postView?.post.id,
+                                isEdit: widget.postViewBeingEdited != null,
+                                postId: widget.postViewBeingEdited?.post.id,
                               ));
 
                       Navigator.of(context).pop();
@@ -255,7 +251,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         Transform.translate(
                           offset: const Offset(-8, 0),
                           child: InkWell(
-                            onTap: widget.isEdit
+                            onTap: widget.postViewBeingEdited != null
                                 ? null
                                 : () {
                                     showCommunityInputDialog(
