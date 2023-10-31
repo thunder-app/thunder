@@ -191,8 +191,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 name: _titleTextController.text,
                                 body: _bodyTextController.text,
                                 nsfw: isNSFW,
-                                isEdit: widget.postViewBeingEdited != null,
-                                postId: widget.postViewBeingEdited?.post.id,
+                                postIdBeingEdited: widget.postViewBeingEdited?.post.id,
                                 url: url,
                               ))
                           : context.read<FeedBloc>().add(CreatePostEvent(
@@ -200,8 +199,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 name: _titleTextController.text,
                                 body: _bodyTextController.text,
                                 nsfw: isNSFW,
-                                isEdit: widget.postViewBeingEdited != null,
-                                postId: widget.postViewBeingEdited?.post.id,
+                                postIdBeingEdited: widget.postViewBeingEdited?.post.id,
                               ));
 
                       Navigator.of(context).pop();
