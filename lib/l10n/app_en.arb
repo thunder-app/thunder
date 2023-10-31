@@ -199,6 +199,7 @@
   "@sortOptions": {},
   "createPost": "Create Post",
   "@createPost": {},
+  "editPost": "Edit Post",
   "noPosts": "No posts found",
   "@noPosts": {},
   "dismissRead": "Dismiss Read",

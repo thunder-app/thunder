@@ -176,7 +176,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.postViewBeingEdited != null ? 'Edit Post' : l10n.createPost), // TODO
+          title: Text(widget.postViewBeingEdited != null ? l10n.editPost : l10n.createPost),
           toolbarHeight: 70.0,
           actions: [
             IconButton(
