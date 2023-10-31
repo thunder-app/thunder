@@ -148,6 +148,7 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                             ],
                             child: CreateCommentPage(
                               commentView: commentView,
+                              comment: commentView.comment,
                               isEdit: isEdit,
                               previousDraftComment: previousDraftComment,
                               onUpdateDraft: (c) => newDraftComment = c,

@@ -13,9 +13,12 @@ import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
+import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 
 // Internal Packages
 import 'package:thunder/routes.dart';
@@ -69,7 +72,18 @@ class ThunderApp extends StatelessWidget {
         BlocProvider(
           create: (context) => DeepLinksCubit(),
         ),
-        BlocProvider(create: (context) => ThunderBloc()),
+        BlocProvider(
+          create: (context) => ThunderBloc(),
+        ),
+        BlocProvider(
+          create: (context) => AnonymousSubscriptionsBloc(),
+        ),
+        BlocProvider(
+          create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance),
+        ),
+        BlocProvider(
+          create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
+        ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {

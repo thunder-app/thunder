@@ -9,6 +9,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -19,6 +20,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  InstanceBloc instanceBloc = context.read<InstanceBloc>();
 
   CommunityBloc? communityBloc;
   try {
@@ -60,6 +62,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
             BlocProvider.value(value: accountBloc),
             BlocProvider.value(value: authBloc),
             BlocProvider.value(value: thunderBloc),
+            BlocProvider.value(value: instanceBloc),
             BlocProvider(create: (context) => post_bloc.PostBloc()),
             if (communityBloc != null) BlocProvider.value(value: communityBloc),
             if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
