@@ -441,7 +441,7 @@ class PostSubview extends StatelessWidget {
                   icon: postView.post.locked
                       ? Icon(Icons.lock, semanticLabel: AppLocalizations.of(context)!.postLocked, color: Colors.red)
                       : isOwnPost
-                          ? const Icon(Icons.edit_rounded)
+                          ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
                           : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
                 ),
               ),
