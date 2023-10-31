@@ -17,6 +17,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
@@ -36,6 +37,7 @@ class PostPage extends StatefulWidget {
   final int? selectedCommentId;
 
   final Function(PostViewMedia) onPostUpdated;
+  final FeedBloc? feedBloc;
 
   const PostPage({
     super.key,
@@ -44,6 +46,7 @@ class PostPage extends StatefulWidget {
     this.selectedCommentPath,
     this.selectedCommentId,
     required this.onPostUpdated,
+    required this.feedBloc,
   });
 
   @override
@@ -401,6 +404,7 @@ class _PostPageState extends State<PostPage> {
                                 itemPositionsListener: _itemPositionsListener,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
+                                feedBloc: widget.feedBloc,
                               ),
                             );
                           }

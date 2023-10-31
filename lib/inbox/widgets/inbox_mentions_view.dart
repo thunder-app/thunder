@@ -71,10 +71,12 @@ class InboxMentionsView extends StatelessWidget {
                       BlocProvider(create: (context) => PostBloc()),
                     ],
                     child: PostPage(
-                        selectedCommentPath: mentions[index].comment.path,
-                        selectedCommentId: mentions[index].comment.id,
-                        postId: mentions[index].post.id,
-                        onPostUpdated: (PostViewMedia postViewMedia) => {}),
+                      selectedCommentPath: mentions[index].comment.path,
+                      selectedCommentId: mentions[index].comment.id,
+                      postId: mentions[index].post.id,
+                      onPostUpdated: (PostViewMedia postViewMedia) => {},
+                      feedBloc: null, // TOOD: Populate this once the inbox uses FeedBloc
+                    ),
                   ),
                 ),
               );

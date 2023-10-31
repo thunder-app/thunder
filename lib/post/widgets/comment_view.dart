@@ -6,6 +6,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
@@ -37,6 +38,7 @@ class CommentSubview extends StatefulWidget {
   final DateTime now;
 
   final List<CommunityModeratorView>? moderators;
+  final FeedBloc? feedBloc;
 
   const CommentSubview({
     super.key,
@@ -58,6 +60,7 @@ class CommentSubview extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.moderators,
+    required this.feedBloc,
   });
 
   @override
@@ -135,6 +138,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               useDisplayNames: state.useDisplayNames,
               postViewMedia: widget.postViewMedia!,
               moderators: widget.moderators,
+              feedBloc: widget.feedBloc,
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {

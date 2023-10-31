@@ -36,6 +36,7 @@ Future<void> navigateToComment(BuildContext context, CommentView commentView) as
           selectedCommentPath: commentView.comment.path,
           postId: commentView.post.id,
           onPostUpdated: (PostViewMedia postViewMedia) => {},
+          feedBloc: null,
         ),
       ),
     ),

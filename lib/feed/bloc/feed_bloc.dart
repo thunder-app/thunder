@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -400,7 +401,17 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       // Add the post to the state
       List<PostViewMedia> updatedPostViewMedias = List.from(state.postViewMedias);
-      updatedPostViewMedias.insert(0, formattedPost[0]);
+
+      // If it's an edit, we want to replace
+      final PostViewMedia? existingPostViewMedia = updatedPostViewMedias.firstWhereOrNull((pvm) => pvm.postView.post.id == event.postIdBeingEdited);
+      if (existingPostViewMedia != null) {
+        final int index = updatedPostViewMedias.indexOf(existingPostViewMedia);
+        updatedPostViewMedias.insert(index, formattedPost[0]);
+        updatedPostViewMedias.remove(existingPostViewMedia);
+      } else {
+        // Otherwise, add the new post at the beginning
+        updatedPostViewMedias.insert(0, formattedPost[0]);
+      }
 
       emit(state.copyWith(status: FeedStatus.success, postViewMedias: updatedPostViewMedias));
     } catch (e) {

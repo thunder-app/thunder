@@ -58,7 +58,19 @@ class CommentCard extends StatelessWidget {
                   BlocProvider.value(value: thunderBloc),
                   BlocProvider(create: (context) => PostBloc()),
                 ],
-                child: PostPage(postId: comment.post.id, selectedCommentPath: comment.comment.path, selectedCommentId: comment.comment.id, onPostUpdated: (PostViewMedia postViewMedia) => {}),
+                child: PostPage(
+                  postId: comment.post.id,
+                  selectedCommentPath: comment.comment.path,
+                  selectedCommentId: comment.comment.id,
+                  onPostUpdated: (PostViewMedia postViewMedia) => {},
+                  feedBloc: () {
+                    try {
+                      return context.read<FeedBloc>();
+                    } catch (e) {
+                      return null;
+                    }
+                  }(),
+                ),
               ),
             ),
           );

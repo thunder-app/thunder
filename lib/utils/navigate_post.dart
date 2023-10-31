@@ -79,6 +79,13 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
               } catch (e) {}
               feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
             },
+            feedBloc: () {
+              try {
+                return context.read<FeedBloc>();
+              } catch (e) {
+                return null;
+              }
+            }(),
           ),
         );
       },

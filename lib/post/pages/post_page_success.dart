@@ -14,6 +14,7 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/post/widgets/comment_view.dart';
@@ -38,6 +39,7 @@ class PostPageSuccess extends StatefulWidget {
   final bool viewFullCommentsRefreshing;
 
   final List<CommunityModeratorView>? moderators;
+  final FeedBloc? feedBloc;
 
   const PostPageSuccess({
     super.key,
@@ -52,6 +54,7 @@ class PostPageSuccess extends StatefulWidget {
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
     required this.moderators,
+    required this.feedBloc,
   });
 
   @override
@@ -160,6 +163,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               });
             },
             moderators: widget.moderators,
+            feedBloc: widget.feedBloc,
           ),
         ),
       ],
