@@ -74,11 +74,13 @@ class _UserSidebarState extends State<UserSidebar> {
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: UserActivityList(personView: personView),
               ),
-              const SidebarSectionHeader(value: "Moderators"),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: CommunityModeratorList(communityModeratorViewList: widget.getPersonDetailsResponse!.moderates),
-              ),
+              if (widget.getPersonDetailsResponse!.moderates.isNotEmpty) ...[
+                const SidebarSectionHeader(value: "Moderates"),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: CommunityModeratorList(communityModeratorViewList: widget.getPersonDetailsResponse!.moderates),
+                ),
+              ],
               const SizedBox(height: 256)
             ],
           ),

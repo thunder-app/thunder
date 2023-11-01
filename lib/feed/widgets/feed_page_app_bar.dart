@@ -36,20 +36,22 @@ class FeedPageAppBar extends StatelessWidget {
       centerTitle: false,
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
-      leading: IconButton(
-        icon: Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community
-            ? (Platform.isIOS
-                ? Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                  )
-                : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-            : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-        onPressed: () {
-          HapticFeedback.mediumImpact();
-          (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
-        },
-      ),
+      leading: feedState.status != FeedStatus.initial
+          ? IconButton(
+              icon: Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general
+                  ? (Platform.isIOS
+                      ? Icon(
+                          Icons.arrow_back_ios_new_rounded,
+                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                        )
+                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                (Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
+              },
+            )
+          : Container(),
       actions: [
         if (feedState.feedType == FeedType.community)
           BlocListener<CommunityBloc, CommunityState>(
@@ -127,7 +129,7 @@ class FeedAppBarTitle extends StatelessWidget {
       opacity: visible ? 1.0 : 0.0,
       child: ListTile(
         title: Text(
-          getCommunityName(feedBloc.state),
+          feedBloc.state.feedType == FeedType.user ? getUserName(feedBloc.state) : getCommunityName(feedBloc.state),
           style: theme.textTheme.titleLarge,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,

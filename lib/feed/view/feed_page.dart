@@ -391,7 +391,7 @@ class _FeedViewState extends State<FeedView> {
                                     : null,
                               ),
                             ),
-                            // Contains the widget for the community sidebar
+                            // Contains the widget for the community/user sidebar
                             SliverToBoxAdapter(
                               child: AnimatedSwitcher(
                                 switchInCurve: Curves.easeOut,
@@ -408,27 +408,12 @@ class _FeedViewState extends State<FeedView> {
                                         getCommunityResponse: state.fullCommunityView,
                                         onDismiss: () => setState(() => showSidebar = false),
                                       )
-                                    : Container(),
-                              ),
-                            ),
-                            // Contains the widget for the user sidebar
-                            SliverToBoxAdapter(
-                              child: AnimatedSwitcher(
-                                switchInCurve: Curves.easeOut,
-                                switchOutCurve: Curves.easeOut,
-                                transitionBuilder: (child, animation) {
-                                  return SlideTransition(
-                                    position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                    child: child,
-                                  );
-                                },
-                                duration: const Duration(milliseconds: 300),
-                                child: showSidebar && state.feedType == FeedType.user
-                                    ? UserSidebar(
-                                        getPersonDetailsResponse: state.getPersonDetailsResponse!,
-                                        onDismiss: () => setState(() => showSidebar = false),
-                                      )
-                                    : Container(),
+                                    : showSidebar && state.feedType == FeedType.user
+                                        ? UserSidebar(
+                                            getPersonDetailsResponse: state.getPersonDetailsResponse!,
+                                            onDismiss: () => setState(() => showSidebar = false),
+                                          )
+                                        : Container(),
                               ),
                             ),
                           ],

@@ -14,6 +14,18 @@ import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/swipe.dart';
 
+String getUserName(FeedState state) {
+  if (state.status == FeedStatus.initial) {
+    return '';
+  }
+
+  if (state.userId != null || state.username != null) {
+    return (state.getPersonDetailsResponse?.personView.person.displayName ?? state.getPersonDetailsResponse?.personView.person.name) ?? '';
+  }
+
+  return '';
+}
+
 String getCommunityName(FeedState state) {
   if (state.status == FeedStatus.initial) {
     return '';
