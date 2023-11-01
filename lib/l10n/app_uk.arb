@@ -170,5 +170,7 @@
   "subscriptions": "Підписки",
   "@subscriptions": {},
   "tapToExit": "Натисніть двічі кнопку Назад для виходу",
-  "@tapToExit": {}
+  "@tapToExit": {},
+  "countSubscribers": "Підписників: {count}",
+  "@countSubscribers": {}
 }
