@@ -3,6 +3,7 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+import 'package:thunder/core/models/comment_view_tree.dart';
 
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -304,38 +305,74 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           break;
       }
 
-      Map<String, dynamic> postViewMediaResult = await fetchPosts(
-        page: 1,
-        postListingType: event.postListingType,
-        sortType: event.sortType,
-        communityId: event.communityId,
-        communityName: event.communityName,
-        userId: event.userId,
-        username: event.username,
-      );
+      switch (event.feedType) {
+        case FeedType.user:
+          Map<String, dynamic> commentViewTreeListResult = await fetchUserInformation(
+            page: 1,
+            postListingType: event.postListingType,
+            sortType: event.sortType,
+            userId: event.userId,
+            username: event.username,
+          );
 
-      // Extract information from the response
-      GetPersonDetailsResponse? getPersonDetailsResponse = postViewMediaResult['getPersonDetailsResponse'];
+          // Extract information from the response
+          GetPersonDetailsResponse? getPersonDetailsResponse = commentViewTreeListResult['getPersonDetailsResponse'];
 
-      List<PostViewMedia> postViewMedias = postViewMediaResult['postViewMedias'];
-      bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
-      int currentPage = postViewMediaResult['currentPage'];
+          List<PostViewMedia> postViewMedias = commentViewTreeListResult['postViewMedias'];
+          List<CommentViewTree> commentViewTrees = commentViewTreeListResult['commentViewTreeList'];
+          bool hasReachedEnd = commentViewTreeListResult['hasReachedEnd'];
+          int currentPage = commentViewTreeListResult['currentPage'];
 
-      return emit(state.copyWith(
-        status: FeedStatus.success,
-        postViewMedias: postViewMedias,
-        hasReachedEnd: hasReachedEnd,
-        feedType: event.feedType,
-        postListingType: event.postListingType,
-        sortType: event.sortType,
-        fullCommunityView: fullCommunityView,
-        getPersonDetailsResponse: getPersonDetailsResponse,
-        communityId: event.communityId,
-        communityName: event.communityName,
-        userId: event.userId,
-        username: event.username,
-        currentPage: currentPage,
-      ));
+          return emit(state.copyWith(
+            status: FeedStatus.success,
+            postViewMedias: postViewMedias,
+            commentViewTrees: commentViewTrees,
+            hasReachedEnd: hasReachedEnd,
+            feedType: event.feedType,
+            postListingType: event.postListingType,
+            sortType: event.sortType,
+            fullCommunityView: fullCommunityView,
+            getPersonDetailsResponse: getPersonDetailsResponse,
+            communityId: event.communityId,
+            communityName: event.communityName,
+            userId: event.userId,
+            username: event.username,
+            currentPage: currentPage,
+          ));
+        default:
+          Map<String, dynamic> postViewMediaResult = await fetchPosts(
+            page: 1,
+            postListingType: event.postListingType,
+            sortType: event.sortType,
+            communityId: event.communityId,
+            communityName: event.communityName,
+            userId: event.userId,
+            username: event.username,
+          );
+
+          // Extract information from the response
+          GetPersonDetailsResponse? getPersonDetailsResponse = postViewMediaResult['getPersonDetailsResponse'];
+
+          List<PostViewMedia> postViewMedias = postViewMediaResult['postViewMedias'];
+          bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
+          int currentPage = postViewMediaResult['currentPage'];
+
+          return emit(state.copyWith(
+            status: FeedStatus.success,
+            postViewMedias: postViewMedias,
+            hasReachedEnd: hasReachedEnd,
+            feedType: event.feedType,
+            postListingType: event.postListingType,
+            sortType: event.sortType,
+            fullCommunityView: fullCommunityView,
+            getPersonDetailsResponse: getPersonDetailsResponse,
+            communityId: event.communityId,
+            communityName: event.communityName,
+            userId: event.userId,
+            username: event.username,
+            currentPage: currentPage,
+          ));
+      }
     }
 
     // If the feed is already being fetched but it is not a reset, then just wait
@@ -344,44 +381,75 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     // Handle fetching the next page of the feed
     emit(state.copyWith(status: FeedStatus.fetching));
 
-    List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+    switch (state.feedType) {
+      case FeedType.user:
+        List<CommentViewTree> commentViewTrees = List.from(state.commentViewTrees);
+        List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
 
-    Map<String, dynamic> postViewMediaResult = await fetchPosts(
-      page: state.currentPage,
-      postListingType: state.postListingType,
-      sortType: state.sortType,
-      communityId: state.communityId,
-      communityName: state.communityName,
-      userId: state.userId,
-      username: state.username,
-    );
+        Map<String, dynamic> commentViewTreeListResult = await fetchUserInformation(
+          page: state.currentPage,
+          postListingType: state.postListingType,
+          sortType: state.sortType,
+          userId: state.userId,
+          username: state.username,
+        );
 
-    // Extract information from the response
-    List<PostViewMedia> newPostViewMedias = postViewMediaResult['postViewMedias'];
-    bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
-    int currentPage = postViewMediaResult['currentPage'];
+        // Extract information from the response
+        List<PostViewMedia> newPostViewMedias = commentViewTreeListResult['postViewMedias'];
+        List<CommentViewTree> newCommentViewTrees = commentViewTreeListResult['commentViewTreeList'];
+        bool hasReachedEnd = commentViewTreeListResult['hasReachedEnd'];
+        int currentPage = commentViewTreeListResult['currentPage'];
 
-    Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
-    List<PostViewMedia> filteredPostViewMedias = [];
+        commentViewTrees.addAll(newCommentViewTrees);
+        postViewMedias.addAll(newPostViewMedias);
 
-    // Ensure we don't add existing posts to view
-    for (PostViewMedia postViewMedia in newPostViewMedias) {
-      int id = postViewMedia.postView.post.id;
-      if (!newInsertedPostIds.contains(id)) {
-        newInsertedPostIds.add(id);
-        filteredPostViewMedias.add(postViewMedia);
-      }
+        return emit(state.copyWith(
+          status: FeedStatus.success,
+          postViewMedias: postViewMedias,
+          commentViewTrees: commentViewTrees,
+          hasReachedEnd: hasReachedEnd,
+          currentPage: currentPage,
+        ));
+      default:
+        List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
+
+        Map<String, dynamic> postViewMediaResult = await fetchPosts(
+          page: state.currentPage,
+          postListingType: state.postListingType,
+          sortType: state.sortType,
+          communityId: state.communityId,
+          communityName: state.communityName,
+          userId: state.userId,
+          username: state.username,
+        );
+
+        // Extract information from the response
+        List<PostViewMedia> newPostViewMedias = postViewMediaResult['postViewMedias'];
+        bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
+        int currentPage = postViewMediaResult['currentPage'];
+
+        Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
+        List<PostViewMedia> filteredPostViewMedias = [];
+
+        // Ensure we don't add existing posts to view
+        for (PostViewMedia postViewMedia in newPostViewMedias) {
+          int id = postViewMedia.postView.post.id;
+          if (!newInsertedPostIds.contains(id)) {
+            newInsertedPostIds.add(id);
+            filteredPostViewMedias.add(postViewMedia);
+          }
+        }
+
+        postViewMedias.addAll(filteredPostViewMedias);
+
+        return emit(state.copyWith(
+          status: FeedStatus.success,
+          insertedPostIds: newInsertedPostIds.toList(),
+          postViewMedias: postViewMedias,
+          hasReachedEnd: hasReachedEnd,
+          currentPage: currentPage,
+        ));
     }
-
-    postViewMedias.addAll(filteredPostViewMedias);
-
-    return emit(state.copyWith(
-      status: FeedStatus.success,
-      insertedPostIds: newInsertedPostIds.toList(),
-      postViewMedias: postViewMedias,
-      hasReachedEnd: hasReachedEnd,
-      currentPage: currentPage,
-    ));
   }
 
   /// This function is used to create a post. We can pass in a communityId directly to determine the community to post to.

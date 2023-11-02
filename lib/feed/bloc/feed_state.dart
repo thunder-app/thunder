@@ -6,6 +6,7 @@ final class FeedState extends Equatable {
   const FeedState({
     this.status = FeedStatus.initial,
     this.postViewMedias = const <PostViewMedia>[],
+    this.commentViewTrees = const <CommentViewTree>[],
     this.hasReachedEnd = false,
     this.feedType = FeedType.general,
     this.fullCommunityView,
@@ -28,6 +29,9 @@ final class FeedState extends Equatable {
 
   /// The posts to display on the feed
   final List<PostViewMedia> postViewMedias;
+
+  /// The comments to display on the feed
+  final List<CommentViewTree> commentViewTrees;
 
   /// Determines if we have reached the end of the feed
   final bool hasReachedEnd;
@@ -77,6 +81,7 @@ final class FeedState extends Equatable {
   FeedState copyWith({
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
+    List<CommentViewTree>? commentViewTrees,
     bool? hasReachedEnd,
     FeedType? feedType,
     ListingType? postListingType,
@@ -96,6 +101,7 @@ final class FeedState extends Equatable {
     return FeedState(
       status: status ?? this.status,
       postViewMedias: postViewMedias ?? this.postViewMedias,
+      commentViewTrees: commentViewTrees ?? this.commentViewTrees,
       hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
@@ -125,6 +131,7 @@ final class FeedState extends Equatable {
         fullCommunityView,
         getPersonDetailsResponse,
         postViewMedias,
+        commentViewTrees,
         hasReachedEnd,
         feedType,
         postListingType,

@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
+import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
@@ -16,26 +17,42 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/widgets/user_header.dart';
 
 class FeedPageAppBar extends StatelessWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true});
+  const FeedPageAppBar({
+    super.key,
+    required this.tabController,
+    this.showAppBarTitle = true,
+    this.showSidebar = false,
+    this.onHeaderTapped,
+    required this.innerBoxIsScrolled,
+  });
+
+  final TabController tabController;
 
   final bool showAppBarTitle;
+  final bool showSidebar;
+  final bool innerBoxIsScrolled;
+  final Function(bool)? onHeaderTapped;
 
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
 
     final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-    final FeedBloc feedBloc = context.read<FeedBloc>();
+    final FeedBloc feedBloc = context.watch<FeedBloc>();
     final FeedState feedState = feedBloc.state;
 
+    final List<String> tabs = <String>['Posts', 'Comments'];
+
     return SliverAppBar(
+      title: FeedAppBarTitle(visible: showAppBarTitle),
       pinned: true,
-      floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      title: FeedAppBarTitle(visible: showAppBarTitle),
+      expandedHeight: feedState.feedType != FeedType.general ? (240.0 - (feedState.feedType == FeedType.community ? kTextTabBarHeight : 0)) : null,
+      forceElevated: innerBoxIsScrolled,
       leading: feedState.status != FeedStatus.initial
           ? IconButton(
               icon: Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general
@@ -110,6 +127,39 @@ class FeedPageAppBar extends StatelessWidget {
           ),
         ),
       ],
+      flexibleSpace: FlexibleSpaceBar(
+        expandedTitleScale: 1,
+        collapseMode: CollapseMode.none,
+        background: (feedState.getPersonDetailsResponse != null || feedState.fullCommunityView != null)
+            ? Padding(
+                padding: EdgeInsets.only(top: 110.0, bottom: feedState.feedType == FeedType.user ? kTextTabBarHeight : 0),
+                child: AnimatedOpacity(
+                  opacity: showAppBarTitle ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 100),
+                  child: Visibility(
+                    visible: feedState.feedType == FeedType.user || feedState.feedType == FeedType.community,
+                    child: feedState.getPersonDetailsResponse != null
+                        ? UserHeader(
+                            personView: feedState.getPersonDetailsResponse!.personView,
+                            showUserSidebar: showSidebar,
+                            onToggle: (bool toggled) => onHeaderTapped?.call(toggled),
+                          )
+                        : CommunityHeader(
+                            getCommunityResponse: feedState.fullCommunityView!,
+                            showCommunitySidebar: showSidebar,
+                            onToggle: (bool toggled) => onHeaderTapped?.call(toggled),
+                          ),
+                  ),
+                ),
+              )
+            : null,
+      ),
+      bottom: (feedState.feedType == FeedType.user)
+          ? TabBar(
+              controller: tabController,
+              tabs: tabs.map((String name) => Tab(text: name)).toList(),
+            )
+          : null,
     );
   }
 }
