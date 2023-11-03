@@ -9,6 +9,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
   final void Function(ListPickerItem<T>) onSelect;
   final T? previouslySelected;
   final bool closeOnSelect;
+  final Widget? heading;
 
   const BottomSheetListPicker({
     super.key,
@@ -17,6 +18,7 @@ class BottomSheetListPicker<T> extends StatefulWidget {
     required this.onSelect,
     this.previouslySelected,
     this.closeOnSelect = true,
+    this.heading,
   });
 
   @override
@@ -49,6 +51,11 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                     ),
                   ),
                 ),
+                if (widget.heading != null)
+                  Padding(
+                    padding: const EdgeInsets.only(left: 24, right: 24, bottom: 10),
+                    child: widget.heading!,
+                  ),
                 ListView(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),

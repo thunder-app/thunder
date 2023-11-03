@@ -259,6 +259,8 @@
   "@editComment": {},
   "comment": "Comment",
   "@comment": {},
+  "linkActions": "Link Actions",
+  "copy": "Copy",
   "comments": "Comments",
   "@comments": {},
   "visitInstance": "Visit Instance",
