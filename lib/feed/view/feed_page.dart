@@ -6,7 +6,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -14,23 +13,20 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
-import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/cache.dart';
-import 'package:thunder/utils/constants.dart';
 
 enum FeedType { community, user, general }
 
@@ -301,54 +297,10 @@ class _FeedViewState extends State<FeedView> {
                         SliverStack(
                           children: [
                             // Widget representing the list of posts on the feed
-                            SliverMasonryGrid.count(
-                              crossAxisCount: tabletMode ? 2 : 1,
-                              crossAxisSpacing: 40,
-                              mainAxisSpacing: 0,
-                              itemBuilder: (BuildContext context, int index) {
-                                return AnimatedSwitcher(
-                                  switchOutCurve: Curves.ease,
-                                  duration: const Duration(milliseconds: 0),
-                                  reverseDuration: const Duration(milliseconds: 400),
-                                  transitionBuilder: (child, animation) {
-                                    return FadeTransition(
-                                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                        CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-                                      ),
-                                      child: SlideTransition(
-                                        position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                        child: SizeTransition(
-                                          sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                            CurvedAnimation(
-                                              parent: animation,
-                                              curve: const Interval(0.0, 0.25),
-                                            ),
-                                          ),
-                                          child: child,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
-                                      ? PostCard(
-                                          postViewMedia: postViewMedias[index],
-                                          communityMode: state.feedType == FeedType.community,
-                                          onVoteAction: (int voteType) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                                          },
-                                          onSaveAction: (bool saved) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                                          },
-                                          onReadAction: (bool read) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                                          },
-                                          listingType: state.postListingType,
-                                          indicateRead: true,
-                                        )
-                                      : null,
-                                );
-                              },
-                              childCount: postViewMedias.length,
+                            FeedWidget(
+                              postViewMedias: postViewMedias,
+                              tabletMode: tabletMode,
+                              queuedForRemoval: queuedForRemoval,
                             ),
                             // Widgets to display on the feed when feedType == FeedType.community
                             SliverToBoxAdapter(
