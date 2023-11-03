@@ -57,7 +57,7 @@ class PostSubview extends StatelessWidget {
     final PostView postView = postViewMedia.postView;
     final Post post = postView.post;
 
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
