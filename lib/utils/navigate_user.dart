@@ -12,6 +12,7 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
@@ -43,6 +44,7 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
   AccountBloc accountBloc = context.read<AccountBloc>();
   AuthBloc authBloc = context.read<AuthBloc>();
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
+  InstanceBloc instanceBloc = context.read<InstanceBloc>();
   AnonymousSubscriptionsBloc? anonymousSubscriptionsBloc;
   try {
     anonymousSubscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
@@ -61,6 +63,7 @@ Future<void> navigateToUserPage(BuildContext context, {String? username, int? us
           BlocProvider.value(value: accountBloc),
           BlocProvider.value(value: authBloc),
           BlocProvider.value(value: thunderBloc),
+          BlocProvider.value(value: instanceBloc),
           if (anonymousSubscriptionsBloc != null) BlocProvider.value(value: anonymousSubscriptionsBloc),
           BlocProvider<FeedBloc>(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
           BlocProvider<CommunityBloc>(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),

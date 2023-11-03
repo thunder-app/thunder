@@ -16,6 +16,8 @@
 - Support new scaled and controversial sort types - contribution from @micahmo
 - Added support to open Lemmy links in app. Android only.  - contribution from @ggichure
 - Added support for receiving share intents. Android only. - contribution from @ggichure
+- Added ability to block instances from long-press menu and user settings
+- Add more search options - contribution from @micahmo
 - Added support for display cross-posts - contribution from @micahmo
 
 ### Changed
@@ -33,6 +35,7 @@
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 - Remove non-functional message user action on use sidebar
 - Fixed issue where post titles were not properly escaped in feed and post page
+- Fixed issue where replying from the inbox was not working properly
 
 ## 0.2.4 - 2023-09-20
 ### Added

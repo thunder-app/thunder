@@ -26,8 +26,10 @@ class CommunityIcon extends StatelessWidget {
               )
             : null);
 
+    if (community?.icon?.isNotEmpty != true) return placeholderIcon;
+
     return CachedNetworkImage(
-      imageUrl: community?.icon ?? "",
+      imageUrl: community!.icon!,
       imageBuilder: (context, imageProvider) {
         return CircleAvatar(
           backgroundColor: Colors.transparent,

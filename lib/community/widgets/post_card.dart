@@ -241,6 +241,7 @@ class _PostCardState extends State<PostCard> {
                 actionsToInclude: [
                   PostCardAction.visitInstance,
                   PostCardAction.visitProfile,
+                  PostCardAction.blockInstance,
                   PostCardAction.visitCommunity,
                   PostCardAction.blockCommunity,
                 ],

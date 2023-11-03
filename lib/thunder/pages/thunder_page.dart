@@ -3,6 +3,7 @@ import 'dart:io';
 
 // Flutter
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -15,7 +16,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/account/utils/profiles.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -32,9 +32,9 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
+import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -51,6 +51,8 @@ import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/navigate_user.dart';
+
+String? currentIntent;
 
 class Thunder extends StatefulWidget {
   const Thunder({super.key});
@@ -80,6 +82,17 @@ class _ThunderState extends State<Thunder> {
   @override
   void initState() {
     super.initState();
+
+    // Listen for callbacks from Android native code
+    if (Platform.isAndroid) {
+      const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
+        if (call.method == 'set_intent') {
+          currentIntent = call.arguments;
+        }
+        return Future.value(null);
+      });
+    }
+
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       handleSharedFilesAndText();
       BlocProvider.of<DeepLinksCubit>(context).handleIncomingLinks();
@@ -108,26 +121,28 @@ class _ThunderState extends State<Thunder> {
   void handleSharedImages() async {
     // For sharing images from outside the app while the app is closed
     final initialMedia = await ReceiveSharingIntent.getInitialMedia();
-    if (initialMedia.isNotEmpty) {
-      if (context.mounted) navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
+    if (initialMedia.isNotEmpty && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
+      navigateToCreatePostPage(context, image: File(initialMedia.first.path), prePopulated: true);
     }
     // For sharing images while the app is in the memory
     mediaIntentDataStreamSubscription = ReceiveSharingIntent.getMediaStream().listen((
       List<SharedMediaFile> value,
     ) {
-      if (context.mounted) navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
+      if (context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
+        navigateToCreatePostPage(context, image: File(value.first.path), prePopulated: true);
+      }
     });
   }
 
   void handleSharedText() async {
     // For sharing URLs/text from outside the app while the app is closed
     final initialText = await ReceiveSharingIntent.getInitialText();
-    if (initialText?.isNotEmpty ?? false) {
+    if ((initialText?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
       final uri = Uri.tryParse(initialText!);
       if (uri?.isAbsolute == true) {
-        if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+        navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
       } else {
-        if (context.mounted) navigateToCreatePostPage(context, text: initialText, prePopulated: true);
+        navigateToCreatePostPage(context, text: initialText, prePopulated: true);
       }
     }
 
@@ -135,12 +150,12 @@ class _ThunderState extends State<Thunder> {
     textIntentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen((
       String? value,
     ) {
-      if (value?.isNotEmpty ?? false) {
+      if ((value?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
         final uri = Uri.tryParse(value!);
         if (uri?.isAbsolute == true) {
-          if (context.mounted) navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
+          navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
         } else {
-          if (context.mounted) navigateToCreatePostPage(context, text: value, prePopulated: true);
+          navigateToCreatePostPage(context, text: value, prePopulated: true);
         }
       }
     });
@@ -315,9 +330,7 @@ class _ThunderState extends State<Thunder> {
       providers: [
         BlocProvider(create: (context) => InboxBloc()),
         BlocProvider(create: (context) => SearchBloc()),
-        BlocProvider(create: (context) => AnonymousSubscriptionsBloc()),
         BlocProvider(create: (context) => FeedBloc(lemmyClient: LemmyClient.instance)),
-        BlocProvider(create: (context) => CommunityBloc(lemmyClient: LemmyClient.instance)),
       ],
       child: WillPopScope(
         onWillPop: () async => _handleBackButtonPress(),

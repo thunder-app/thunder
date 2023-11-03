@@ -13,6 +13,13 @@ class GetUserBlocksEvent extends UserSettingsEvent {
   const GetUserBlocksEvent({this.userId});
 }
 
+class UnblockInstanceEvent extends UserSettingsEvent {
+  final int instanceId;
+  final bool unblock;
+
+  const UnblockInstanceEvent({required this.instanceId, this.unblock = true});
+}
+
 class UnblockCommunityEvent extends UserSettingsEvent {
   final int communityId;
   final bool unblock;

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
@@ -139,15 +140,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
     super.dispose();
   }
 
-  Future<void> _getDataFromLink() async {
-    if (widget.url?.isNotEmpty == true) {
-      final WebInfo info = await LinkPreview.scrapeFromURL(widget.url!);
-      _titleTextController.text = info.title;
+  Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
+    link ??= widget.url;
+    if (link?.isNotEmpty == true) {
+      try {
+        final WebInfo info = await LinkPreview.scrapeFromURL(link!);
+        if (updateTitleField) {
+          _titleTextController.text = info.title;
+        }
+        return info.title;
+      } catch (e) {
+        // It's ok if we can't scrape. The user will just have to supply the title themselves.
+      }
     }
+    return null;
   }
 
   @override
   Widget build(BuildContext context) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final AccountState accountState = context.read<AccountBloc>().state;
 
@@ -158,7 +169,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text(AppLocalizations.of(context)!.createPost),
+          title: Text(l10n.createPost),
           toolbarHeight: 70.0,
           actions: [
             IconButton(
@@ -173,7 +184,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     },
               icon: Icon(
                 Icons.send_rounded,
-                semanticLabel: AppLocalizations.of(context)!.createPost,
+                semanticLabel: l10n.createPost,
               ),
             ),
           ],
@@ -196,7 +207,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
               setState(() => postImageUploading = true);
             }
             if (state.status == ImageStatus.failure) {
-              showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
               setState(() {
                 imageUploading = false;
                 postImageUploading = false;
@@ -219,7 +230,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             onTap: () {
                               showCommunityInputDialog(
                                 context,
-                                title: AppLocalizations.of(context)!.community,
+                                title: l10n.community,
                                 onCommunitySelected: (cv) {
                                   setState(() {
                                     communityId = cv.community.id;
@@ -246,7 +257,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                           style: theme.textTheme.titleSmall,
                                         )
                                       : Text(
-                                          AppLocalizations.of(context)!.selectCommunity,
+                                          l10n.selectCommunity,
                                           style: theme.textTheme.bodyMedium?.copyWith(
                                             fontStyle: FontStyle.italic,
                                             color: theme.colorScheme.error,
@@ -259,11 +270,34 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         ),
                         const UserIndicator(),
                         const SizedBox(height: 12.0),
-                        TextFormField(
-                          controller: _titleTextController,
-                          decoration: InputDecoration(
-                            hintText: AppLocalizations.of(context)!.postTitle,
+                        TypeAheadField<String>(
+                          suggestionsCallback: (String pattern) async {
+                            if (pattern.isEmpty) {
+                              String? linkTitle = await _getDataFromLink(link: _urlTextController.text, updateTitleField: false);
+                              if (linkTitle?.isNotEmpty == true) {
+                                return [linkTitle!];
+                              }
+                            }
+                            return const Iterable.empty();
+                          },
+                          itemBuilder: (BuildContext context, String itemData) {
+                            return Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Text(l10n.useSuggestedTitle(itemData)),
+                            );
+                          },
+                          onSuggestionSelected: (String suggestion) {
+                            _titleTextController.text = suggestion;
+                          },
+                          textFieldConfiguration: TextFieldConfiguration(
+                            controller: _titleTextController,
+                            decoration: InputDecoration(
+                              hintText: l10n.postTitle,
+                            ),
                           ),
+                          hideOnEmpty: true,
+                          hideOnLoading: true,
+                          hideOnError: true,
                         ),
                         const SizedBox(
                           height: 20,
@@ -271,7 +305,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         TextFormField(
                           controller: _urlTextController,
                           decoration: InputDecoration(
-                              hintText: AppLocalizations.of(context)!.postURL,
+                              hintText: l10n.postURL,
                               errorText: urlError,
                               suffixIcon: IconButton(
                                   onPressed: () {
@@ -289,7 +323,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                             height: 18,
                                             child: CircularProgressIndicator(),
                                           )))
-                                      : Icon(Icons.image, semanticLabel: AppLocalizations.of(context)!.uploadImage))),
+                                      : Icon(Icons.image, semanticLabel: l10n.uploadImage))),
                         ),
                         const SizedBox(
                           height: 10,
@@ -315,7 +349,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                           height: 10,
                         ),
                         Row(children: <Widget>[
-                          Expanded(child: Text(AppLocalizations.of(context)!.postNSFW)),
+                          Expanded(child: Text(l10n.postNSFW)),
                           Switch(
                               value: isNSFW,
                               onChanged: (bool value) {
@@ -342,7 +376,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             : MarkdownTextInputField(
                                 controller: _bodyTextController,
                                 focusNode: _bodyFocusNode,
-                                label: AppLocalizations.of(context)!.postBody,
+                                label: l10n.postBody,
                                 minLines: 8,
                                 maxLines: null,
                                 textStyle: theme.textTheme.bodyLarge,
@@ -373,13 +407,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             ],
                             customTapActions: {
                               MarkdownType.username: () {
-                                showUserInputDialog(context, title: AppLocalizations.of(context)!.username, onUserSelected: (person) {
+                                showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
                                   _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
                                       '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
                                 });
                               },
                               MarkdownType.community: () {
-                                showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (community) {
+                                showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
                                   _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
                                       '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
                                 });
@@ -401,7 +435,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             icon: Icon(
                               showPreview ? Icons.visibility_outlined : Icons.visibility,
                               color: theme.colorScheme.onSecondary,
-                              semanticLabel: AppLocalizations.of(context)!.postTogglePreview,
+                              semanticLabel: l10n.postTogglePreview,
                             ),
                             visualDensity: const VisualDensity(horizontal: 1.0, vertical: 1.0),
                             style: ElevatedButton.styleFrom(backgroundColor: theme.colorScheme.secondary)),
