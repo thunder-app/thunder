@@ -37,3 +37,17 @@ class ContinueSearchEvent extends SearchEvent {
 class FocusSearchEvent extends SearchEvent {}
 
 class GetTrendingCommunitiesEvent extends SearchEvent {}
+
+class VoteCommentEvent extends SearchEvent {
+  final int commentId;
+  final int score;
+
+  const VoteCommentEvent({required this.commentId, required this.score});
+}
+
+class SaveCommentEvent extends SearchEvent {
+  final int commentId;
+  final bool save;
+
+  const SaveCommentEvent({required this.commentId, required this.save});
+}
