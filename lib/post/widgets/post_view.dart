@@ -59,21 +59,6 @@ class PostSubview extends StatefulWidget {
 }
 
 class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
-  bool _areCrossPostsExpanded = false;
-
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
-
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -96,9 +81,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool isOwnComment = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
-
-    final TextStyle? crossPostTextStyle = theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic);
-    final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(color: Colors.blue);
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -129,153 +111,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 body: post.body ?? '',
               ),
             ),
-          if (showCrossPosts && sortedCrossPosts.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: theme.dividerColor.withOpacity(0.25),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    InkWell(
-                      onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
-                      borderRadius: BorderRadius.circular(10),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Stack(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  // The rich text handles overflow across multiple sections (TextSpan) of text
-                                  child: RichText(
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    text: TextSpan(
-                                      children: [
-                                        TextSpan(
-                                          text: l10n.crossPostedTo,
-                                          style: crossPostTextStyle,
-                                        ),
-                                        TextSpan(
-                                          text: ' ${sortedCrossPosts[0].community.name}@${fetchInstanceNameFromUrl(sortedCrossPosts[0].community.actorId)} ',
-                                          style: crossPostLinkTextStyle,
-                                          // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
-                                        ),
-                                        if (sortedCrossPosts.length > 1)
-                                          TextSpan(
-                                            text: l10n.andXMore(sortedCrossPosts.length - 1),
-                                            style: crossPostTextStyle,
-                                          ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                _areCrossPostsExpanded ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
-                              ],
-                            ),
-                            // This Row widget exists purely so that we can get an InkWell on the community link.
-                            // However, the text is insvisible because we actually want the RichText to manage the text,
-                            // including overflow.
-                            Padding(
-                              padding: const EdgeInsets.only(top: 5),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    l10n.crossPostedTo,
-                                    style: crossPostTextStyle?.copyWith(color: Colors.transparent),
-                                  ),
-                                  InkWell(
-                                    borderRadius: BorderRadius.circular(5),
-                                    onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([sortedCrossPosts[0]])).first),
-                                    child: Text(
-                                      ' ${sortedCrossPosts[0].community.name}@${fetchInstanceNameFromUrl(sortedCrossPosts[0].community.actorId)} ',
-                                      style: crossPostLinkTextStyle?.copyWith(color: Colors.transparent),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 200),
-                      switchInCurve: Curves.easeInOut,
-                      switchOutCurve: Curves.easeInOut,
-                      transitionBuilder: (Widget child, Animation<double> animation) {
-                        return SizeTransition(
-                          sizeFactor: animation,
-                          child: SlideTransition(position: _offsetAnimation, child: child),
-                        );
-                      },
-                      child: _areCrossPostsExpanded
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemBuilder: (context, index) {
-                                    return Padding(
-                                      padding: const EdgeInsets.only(left: 5),
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            ' • ',
-                                            style: crossPostTextStyle,
-                                          ),
-                                          InkWell(
-                                            onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([sortedCrossPosts[index + 1]])).first),
-                                            borderRadius: BorderRadius.circular(5),
-                                            child: Text(
-                                              '${sortedCrossPosts[index + 1].community.name}@${fetchInstanceNameFromUrl(sortedCrossPosts[index + 1].community.actorId)}',
-                                              style: crossPostLinkTextStyle,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                  itemCount: sortedCrossPosts.length - 1,
-                                ),
-                                InkWell(
-                                  onTap: () async {
-                                    await navigateToCreatePostPage(
-                                      context,
-                                      title: widget.postViewMedia.postView.post.name,
-                                      url: widget.postViewMedia.postView.post.url,
-                                      prePopulated: true,
-                                    );
-                                  },
-                                  borderRadius: BorderRadius.circular(10),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(5),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          l10n.createNewCrossPost,
-                                          style: crossPostTextStyle,
-                                        ),
-                                        const Icon(Icons.arrow_right_rounded)
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            )
-                          : Container(),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
           Padding(
             padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
             child: Row(
@@ -515,39 +351,43 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             }
                           });
 
-                          Navigator.of(context)
-                              .push(
-                            SwipeablePageRoute(
-                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canOnlySwipeFromEdge: true,
-                              backGestureDetectionWidth: 45,
-                              builder: (context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider<PostBloc>.value(value: postBloc),
-                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
-                                  ],
-                                  child: CreateCommentPage(
-                                    postView: widget.postViewMedia,
-                                    previousDraftComment: previousDraftComment,
-                                    onUpdateDraft: (c) => newDraftComment = c,
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                              .whenComplete(() async {
-                            timer.cancel();
+                          if (context.mounted) {
+                            Navigator.of(context)
+                                .push(
+                              SwipeablePageRoute(
+                                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                canOnlySwipeFromEdge: true,
+                                backGestureDetectionWidth: 45,
+                                builder: (context) {
+                                  return MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                      BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
+                                    ],
+                                    child: CreateCommentPage(
+                                      postView: widget.postViewMedia,
+                                      previousDraftComment: previousDraftComment,
+                                      onUpdateDraft: (c) => newDraftComment = c,
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                                .whenComplete(() async {
+                              timer.cancel();
 
-                            if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                              await Future.delayed(const Duration(milliseconds: 300));
-                              showSnackbar(context, l10n.commentSavedAsDraft);
-                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                            } else {
-                              prefs.remove(draftId);
-                            }
-                          });
+                              if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
+                                await Future.delayed(const Duration(milliseconds: 300));
+                                if (context.mounted) {
+                                  showSnackbar(context, l10n.commentSavedAsDraft);
+                                }
+                                prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                              } else {
+                                prefs.remove(draftId);
+                              }
+                            });
+                          }
                         }
                       : null,
                   icon: postView.post.locked ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red) : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
@@ -571,6 +411,188 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class CrossPosts extends StatefulWidget {
+  final List<PostView> crossPosts;
+  final PostViewMedia originalPost;
+
+  const CrossPosts({super.key, required this.crossPosts, required this.originalPost});
+
+  @override
+  State<CrossPosts> createState() => _CrossPostsState();
+}
+
+class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateMixin {
+  bool _areCrossPostsExpanded = false;
+
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(milliseconds: 100),
+    vsync: this,
+  );
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(1.5, 0.0),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
+  @override
+  Widget build(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final TextStyle? crossPostTextStyle = theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic);
+    final TextStyle? crossPostLinkTextStyle = crossPostTextStyle?.copyWith(color: Colors.blue);
+
+    return Padding(
+      padding: const EdgeInsets.only(top: 10),
+      child: Container(
+        decoration: BoxDecoration(
+          color: theme.dividerColor.withOpacity(0.25),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            InkWell(
+              onTap: () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+              borderRadius: BorderRadius.circular(10),
+              child: Padding(
+                padding: const EdgeInsets.all(5),
+                child: Stack(
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          // The rich text handles overflow across multiple sections (TextSpan) of text
+                          child: RichText(
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                            text: TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: l10n.crossPostedTo,
+                                  style: crossPostTextStyle,
+                                ),
+                                TextSpan(
+                                  text: ' ${widget.crossPosts[0].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId)} ',
+                                  style: crossPostLinkTextStyle,
+                                  // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
+                                ),
+                                if (widget.crossPosts.length > 1)
+                                  TextSpan(
+                                    text: l10n.andXMore(widget.crossPosts.length - 1),
+                                    style: crossPostTextStyle,
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        _areCrossPostsExpanded ? const Icon(Icons.arrow_drop_up_rounded) : const Icon(Icons.arrow_drop_down_rounded),
+                      ],
+                    ),
+                    // This Row widget exists purely so that we can get an InkWell on the community link.
+                    // However, the text is insvisible because we actually want the RichText to manage the text,
+                    // including overflow.
+                    Padding(
+                      padding: const EdgeInsets.only(top: 5),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            l10n.crossPostedTo,
+                            style: crossPostTextStyle?.copyWith(color: Colors.transparent),
+                          ),
+                          InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[0]])).first),
+                            child: Text(
+                              ' ${widget.crossPosts[0].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId)} ',
+                              style: crossPostLinkTextStyle?.copyWith(color: Colors.transparent),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            AnimatedSwitcher(
+              duration: const Duration(milliseconds: 200),
+              switchInCurve: Curves.easeInOut,
+              switchOutCurve: Curves.easeInOut,
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SizeTransition(
+                  sizeFactor: animation,
+                  child: SlideTransition(position: _offsetAnimation, child: child),
+                );
+              },
+              child: _areCrossPostsExpanded
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(left: 5),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    ' • ',
+                                    style: crossPostTextStyle,
+                                  ),
+                                  InkWell(
+                                    onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
+                                    borderRadius: BorderRadius.circular(5),
+                                    child: Text(
+                                      '${widget.crossPosts[index + 1].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId)}',
+                                      style: crossPostLinkTextStyle,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                          itemCount: widget.crossPosts.length - 1,
+                        ),
+                        InkWell(
+                          onTap: () async {
+                            await navigateToCreatePostPage(
+                              context,
+                              title: widget.originalPost.postView.post.name,
+                              url: widget.originalPost.postView.post.url,
+                              prePopulated: true,
+                            );
+                          },
+                          borderRadius: BorderRadius.circular(10),
+                          child: Padding(
+                            padding: const EdgeInsets.all(5),
+                            child: Row(
+                              children: [
+                                Text(
+                                  l10n.createNewCrossPost,
+                                  style: crossPostTextStyle,
+                                ),
+                                const Icon(Icons.arrow_right_rounded)
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Container(),
+            ),
+          ],
+        ),
       ),
     );
   }
