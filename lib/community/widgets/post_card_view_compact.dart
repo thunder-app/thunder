@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:lemmy_api_client/v3.dart';
+import 'package:html_unescape/html_unescape_small.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
@@ -22,8 +23,8 @@ class PostCardViewCompact extends StatelessWidget {
   final bool communityMode;
   final bool markPostReadOnMediaView;
   final bool isUserLoggedIn;
-  final PostListingType? listingType;
-  final void Function()? navigateToPost;
+  final ListingType? listingType;
+  final void Function({PostViewMedia? postViewMedia})? navigateToPost;
   final bool indicateRead;
 
   const PostCardViewCompact({
@@ -46,7 +47,7 @@ class PostCardViewCompact extends StatelessWidget {
     final theme = Theme.of(context);
     final ThunderState state = context.read<ThunderBloc>().state;
 
-    final showCommunitySubscription = (listingType == PostListingType.all || listingType == PostListingType.local) &&
+    final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
         context.read<AccountBloc>().state.subsciptions.map((subscription) => subscription.community.actorId).contains(postViewMedia.postView.community.actorId);
 
@@ -137,7 +138,7 @@ class PostCardViewCompact extends StatelessWidget {
                           ),
                         ),
                       TextSpan(
-                        text: postViewMedia.postView.post.name,
+                        text: HtmlUnescape().convert(postViewMedia.postView.post.name),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: postViewMedia.postView.post.featuredCommunity
@@ -163,7 +164,7 @@ class PostCardViewCompact extends StatelessWidget {
                 PostCardMetaData(
                   readColor: readColor,
                   score: postViewMedia.postView.counts.score,
-                  voteType: postViewMedia.postView.myVote ?? VoteType.none,
+                  voteType: postViewMedia.postView.myVote ?? 0,
                   comments: postViewMedia.postView.counts.comments,
                   unreadComments: postViewMedia.postView.unreadComments,
                   hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,

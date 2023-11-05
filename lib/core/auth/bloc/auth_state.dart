@@ -1,6 +1,6 @@
 part of 'auth_bloc.dart';
 
-enum AuthStatus { initial, loading, success, failure }
+enum AuthStatus { initial, loading, success, failure, failureCheckingInstance }
 
 class AuthState extends Equatable {
   const AuthState({
@@ -9,6 +9,7 @@ class AuthState extends Equatable {
     this.errorMessage,
     this.account,
     this.downvotesEnabled = true,
+    this.getSiteResponse,
   });
 
   final AuthStatus status;
@@ -16,6 +17,7 @@ class AuthState extends Equatable {
   final String? errorMessage;
   final Account? account;
   final bool downvotesEnabled;
+  final GetSiteResponse? getSiteResponse;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -23,6 +25,7 @@ class AuthState extends Equatable {
     String? errorMessage,
     Account? account,
     bool? downvotesEnabled,
+    GetSiteResponse? getSiteResponse,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -30,9 +33,10 @@ class AuthState extends Equatable {
       errorMessage: errorMessage,
       account: account,
       downvotesEnabled: downvotesEnabled ?? this.downvotesEnabled,
+      getSiteResponse: getSiteResponse ?? this.getSiteResponse,
     );
   }
 
   @override
-  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled];
+  List<Object?> get props => [status, isLoggedIn, errorMessage, account, downvotesEnabled, getSiteResponse];
 }

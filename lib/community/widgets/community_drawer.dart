@@ -2,29 +2,30 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 
 class Destination {
   const Destination(this.label, this.listingType, this.icon);
 
   final String label;
-  final PostListingType listingType;
+  final ListingType listingType;
   final IconData icon;
 }
 
 const List<Destination> destinations = <Destination>[
-  Destination('Subscriptions', PostListingType.subscribed, Icons.view_list_rounded),
-  Destination('Local Posts', PostListingType.local, Icons.home_rounded),
-  Destination('All Posts', PostListingType.all, Icons.grid_view_rounded),
+  Destination('Subscriptions', ListingType.subscribed, Icons.view_list_rounded),
+  Destination('Local Posts', ListingType.local, Icons.home_rounded),
+  Destination('All Posts', ListingType.all, Icons.grid_view_rounded),
 ];
 
 class DrawerItem extends StatelessWidget {
@@ -84,15 +85,17 @@ class DrawerItem extends StatelessWidget {
 }
 
 class CommunityDrawer extends StatefulWidget {
-  final PostListingType? currentPostListingType;
+  final ListingType? currentListingType;
   final int? communityId;
   final String? communityName;
+  final void Function()? navigateToAccount;
 
   const CommunityDrawer({
     super.key,
-    required this.currentPostListingType,
+    this.currentListingType,
     this.communityId,
     this.communityName,
+    this.navigateToAccount,
   });
 
   @override
@@ -116,11 +119,16 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    bool isLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    bool isLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
+    ThunderState thunderState = context.read<ThunderBloc>().state;
+    String anonymousInstance = context.watch<ThunderBloc>().state.currentAnonymousInstance;
 
-    AccountStatus status = context.read<AccountBloc>().state.status;
+    AccountStatus status = context.watch<AccountBloc>().state.status;
     AnonymousSubscriptionsBloc subscriptionsBloc = context.read<AnonymousSubscriptionsBloc>();
     subscriptionsBloc.add(GetSubscribedCommunitiesEvent());
+
+    FeedBloc feedBloc = context.watch<FeedBloc>();
+
     return BlocConsumer<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(
         listener: (c, s) {},
         builder: (context, state) {
@@ -132,25 +140,76 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
-                    child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
+                    padding: const EdgeInsets.fromLTRB(13, 16, 16, 0),
+                    child: TextButton(
+                      style: TextButton.styleFrom(
+                        alignment: Alignment.centerLeft,
+                        minimumSize: const Size.fromHeight(50),
+                      ),
+                      onPressed: () => widget.navigateToAccount?.call(),
+                      child: Row(
+                        children: [
+                          UserAvatar(
+                            person: isLoggedIn ? context.read<AccountBloc>().state.personView?.person : null,
+                            radius: 16.0,
+                          ),
+                          const SizedBox(width: 16.0),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  if (!isLoggedIn) ...[
+                                    Icon(
+                                      Icons.person_off_rounded,
+                                      color: theme.textTheme.bodyMedium?.color,
+                                      size: 15,
+                                    ),
+                                    const SizedBox(width: 5),
+                                  ],
+                                  Text(
+                                    isLoggedIn ? context.read<AccountBloc>().state.personView?.person.name ?? '' : AppLocalizations.of(context)!.anonymous,
+                                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ],
+                              ),
+                              Text(
+                                isLoggedIn ? context.read<AuthBloc>().state.account?.instance ?? '' : anonymousInstance,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
+                          ),
+                          Expanded(
+                            child: Container(),
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.more_vert_outlined,
+                              color: theme.textTheme.bodyMedium?.color,
+                              semanticLabel: AppLocalizations.of(context)!.openAccountSwitcher,
+                            ),
+                            onPressed: () => showProfileModalSheet(context),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-                    child: Text(LemmyClient.instance.lemmyApiV3.host, style: Theme.of(context).textTheme.bodyMedium),
+                    padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
+                    child: Text('Feeds', style: Theme.of(context).textTheme.titleSmall),
                   ),
                   Column(
                     children: destinations.map((Destination destination) {
                       return DrawerItem(
-                        disabled: destination.listingType == PostListingType.subscribed && isLoggedIn == false,
-                        isSelected: destination.listingType == widget.currentPostListingType && widget.communityId == null && widget.communityName == null,
+                        disabled: destination.listingType == ListingType.subscribed && isLoggedIn == false,
+                        isSelected: destination.listingType == feedBloc.state.postListingType,
                         onTap: () {
-                          context.read<CommunityBloc>().add(GetCommunityPostsEvent(
-                                reset: true,
-                                listingType: destination.listingType,
-                                communityId: null,
-                              ));
                           Navigator.of(context).pop();
+                          navigateToFeedPage(context, feedType: FeedType.general, postListingType: destination.listingType, sortType: thunderState.defaultSortType);
                         },
                         label: destination.label,
                         icon: destination.icon,
@@ -161,16 +220,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                     padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
                     child: Text(AppLocalizations.of(context)!.subscriptions, style: Theme.of(context).textTheme.titleSmall),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(28, 0, 16, 10),
-                    child: context.read<AuthBloc>().state.account != null ? Text(context.read<AuthBloc>().state.account!.username ?? "-", style: Theme.of(context).textTheme.bodyMedium) : Container(),
-                  ),
                   (status != AccountStatus.success && status != AccountStatus.failure)
                       ? const Padding(
                           padding: EdgeInsets.all(16.0),
                           child: Center(child: CircularProgressIndicator()),
                         )
-                      : (context.read<AccountBloc>().state.subsciptions.isNotEmpty || subscriptionsBloc.state.subscriptions.isNotEmpty)
+                      : ((isLoggedIn && context.read<AccountBloc>().state.subsciptions.isNotEmpty) || subscriptionsBloc.state.subscriptions.isNotEmpty)
                           ? (Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 14.0),
@@ -183,10 +238,10 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                         physics: const NeverScrollableScrollPhysics(),
                                         itemCount: _getSubscriptions(context).length,
                                         itemBuilder: (context, index) {
-                                          CommunitySafe community = _getSubscriptions(context)[index];
+                                          Community community = _getSubscriptions(context)[index];
 
-                                          final bool isCommunitySelected =
-                                              (widget.communityId != null && community.id == widget.communityId) || (widget.communityName != null && community.name == widget.communityName);
+                                          final bool isCommunitySelected = feedBloc.state.communityId == community.id;
+
                                           return TextButton(
                                             style: TextButton.styleFrom(
                                               alignment: Alignment.centerLeft,
@@ -194,14 +249,15 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                               backgroundColor: isCommunitySelected ? theme.colorScheme.primaryContainer.withOpacity(0.25) : Colors.transparent,
                                             ),
                                             onPressed: () {
-                                              context.read<CommunityBloc>().add(
-                                                    GetCommunityPostsEvent(
-                                                      reset: true,
+                                              Navigator.of(context).pop();
+                                              context.read<FeedBloc>().add(
+                                                    FeedFetchedEvent(
+                                                      feedType: FeedType.community,
+                                                      sortType: thunderState.defaultSortType,
                                                       communityId: community.id,
+                                                      reset: true,
                                                     ),
                                                   );
-
-                                              Navigator.of(context).pop();
                                             },
                                             child: Row(
                                               children: [
@@ -252,7 +308,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
         });
   }
 
-  List<CommunitySafe> _getSubscriptions(BuildContext context) {
+  List<Community> _getSubscriptions(BuildContext context) {
     if (context.read<AuthBloc>().state.isLoggedIn) {
       return context.read<AccountBloc>().state.subsciptions.map((e) => e.community).toList();
     }

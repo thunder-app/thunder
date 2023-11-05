@@ -57,7 +57,8 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
       width: width,
       fit: widget.viewMode == ViewMode.compact ? BoxFit.cover : BoxFit.fitWidth,
       cache: true,
-      clearMemoryCacheWhenDispose: true,
+      clearMemoryCacheWhenDispose: false,
+      cacheMaxAge: const Duration(minutes: 1),
       cacheWidth: widget.viewMode == ViewMode.compact ? (75 * View.of(context).devicePixelRatio.ceil()) : ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
       loadStateChanged: (ExtendedImageState state) {
         switch (state.extendedImageLoadState) {

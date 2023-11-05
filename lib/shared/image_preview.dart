@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:extended_image/extended_image.dart';
@@ -6,7 +7,8 @@ import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/utils/image.dart';
 
 class ImagePreview extends StatefulWidget {
-  final String url;
+  final String? url;
+  final Uint8List? bytes;
   final bool nsfw;
   final double? height;
   final double? width;
@@ -20,7 +22,8 @@ class ImagePreview extends StatefulWidget {
 
   const ImagePreview({
     super.key,
-    required this.url,
+    this.url,
+    this.bytes,
     this.height,
     this.width,
     this.nsfw = false,
@@ -31,7 +34,7 @@ class ImagePreview extends StatefulWidget {
     this.navigateToPost,
     this.isComment,
     this.read,
-  });
+  }) : assert(url != null || bytes != null);
 
   @override
   State<ImagePreview> createState() => _ImagePreviewState();
@@ -57,6 +60,7 @@ class _ImagePreviewState extends State<ImagePreview> {
         pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
           return ImageViewer(
             url: widget.url,
+            bytes: widget.bytes,
             postId: widget.postId,
             navigateToPost: widget.navigateToPost,
           );
@@ -99,29 +103,53 @@ class _ImagePreviewState extends State<ImagePreview> {
         children: [
           // This is used for link posts where the preview comes from Lemmy
           // in both compact and comfortable view
-          ExtendedImage.network(
-            color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
-            colorBlendMode: widget.read == true ? BlendMode.modulate : null,
-            constraints: widget.isComment == true
-                ? BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.width * 0.55,
-                    maxWidth: MediaQuery.of(context).size.width * 0.60,
-                  )
-                : null,
-            alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
-            widget.url,
-            height: widget.height,
-            width: widget.width ?? MediaQuery.of(context).size.width - 24,
-            fit: BoxFit.cover,
-            cache: true,
-            clearMemoryCacheWhenDispose: true,
-            cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
-            loadStateChanged: (state) {
-              if (state.extendedImageLoadState == LoadState.loading) {
-                return Container();
-              }
-            },
-          ),
+          widget.url != null
+              ? ExtendedImage.network(
+                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  constraints: widget.isComment == true
+                      ? BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.width * 0.55,
+                          maxWidth: MediaQuery.of(context).size.width * 0.60,
+                        )
+                      : null,
+                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  widget.url!,
+                  height: widget.height,
+                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  fit: BoxFit.cover,
+                  cache: true,
+                  clearMemoryCacheWhenDispose: false,
+                  cacheMaxAge: const Duration(minutes: 1),
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  loadStateChanged: (state) {
+                    if (state.extendedImageLoadState == LoadState.loading) {
+                      return Container();
+                    }
+                  },
+                )
+              : ExtendedImage.memory(
+                  color: widget.read == true ? const Color.fromRGBO(255, 255, 255, 0.55) : null,
+                  colorBlendMode: widget.read == true ? BlendMode.modulate : null,
+                  constraints: widget.isComment == true
+                      ? BoxConstraints(
+                          maxHeight: MediaQuery.of(context).size.width * 0.55,
+                          maxWidth: MediaQuery.of(context).size.width * 0.60,
+                        )
+                      : null,
+                  alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
+                  widget.bytes!,
+                  height: widget.height,
+                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  fit: BoxFit.cover,
+                  clearMemoryCacheWhenDispose: true,
+                  cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
+                  loadStateChanged: (state) {
+                    if (state.extendedImageLoadState == LoadState.loading) {
+                      return Container();
+                    }
+                  },
+                ),
           TweenAnimationBuilder<double>(
             tween: Tween<double>(begin: blur ? startBlur : endBlur, end: blur ? endBlur : startBlur),
             duration: Duration(milliseconds: widget.nsfw ? 250 : 0),

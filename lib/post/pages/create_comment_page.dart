@@ -14,11 +14,13 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/image.dart';
+import 'package:thunder/utils/instance.dart';
 
 class CreateCommentPage extends StatefulWidget {
   final PostViewMedia? postView;
@@ -64,7 +66,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   String? replyingToAuthor;
   String? replyingToContent;
-  PersonSafe? person;
+  Person? person;
 
   final TextEditingController _bodyTextController = TextEditingController();
   final FocusNode _bodyFocusNode = FocusNode();
@@ -72,9 +74,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   DraftComment newDraftComment = DraftComment();
 
+  bool isInInbox = false;
+
   @override
   void initState() {
     super.initState();
+
+    try {
+      BlocProvider.of<InboxBloc>(context); // Attempt to get inbox bloc
+      isInInbox = true;
+    } catch (e) {
+      isInInbox = false;
+    }
 
     _bodyFocusNode.requestFocus();
 
@@ -95,7 +106,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     } else if (widget.commentView != null) {
       replyingToAuthor = widget.commentView?.creator.name;
       replyingToContent = widget.commentView?.comment.content;
-    } else if (widget.comment != null) {
+    } else if (isInInbox) {
       replyingToAuthor = widget.parentCommentAuthor;
       replyingToContent = widget.comment?.content;
     }
@@ -157,7 +168,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             }
           },
         ),
-        if (widget.comment != null)
+        if (isInInbox)
           BlocListener<InboxBloc, InboxState>(
             listenWhen: (previous, current) {
               return previous.status != current.status;
@@ -217,7 +228,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                           return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                         }
 
-                        if (widget.comment != null) {
+                        if (isInInbox) {
                           context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                         } else {
                           context.read<PostBloc>().add(CreateCommentEvent(
@@ -227,7 +238,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                               selectedCommentPath: widget.selectedCommentPath));
                         }
                       },
-                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Icon(Icons.send_rounded, semanticLabel: AppLocalizations.of(context)!.reply),
+                icon: isLoading ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator()) : Icon(Icons.send_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
               ),
             ],
           ),
@@ -336,7 +347,23 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                 MarkdownType.list,
                                 MarkdownType.separator,
                                 MarkdownType.code,
+                                MarkdownType.username,
+                                MarkdownType.community,
                               ],
+                              customTapActions: {
+                                MarkdownType.username: () {
+                                  showUserInputDialog(context, title: AppLocalizations.of(context)!.username, onUserSelected: (person) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                  });
+                                },
+                                MarkdownType.community: () {
+                                  showCommunityInputDialog(context, title: AppLocalizations.of(context)!.community, onCommunitySelected: (community) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                  });
+                                },
+                              },
                               imageIsLoading: imageUploading,
                               customImageButtonAction: () => uploadImage(context, imageBloc))),
                       Padding(

@@ -16,7 +16,7 @@ class UserIndicator extends StatefulWidget {
 
 class _UserIndicatorState extends State<UserIndicator> {
   bool accountError = false;
-  PersonSafe? person;
+  Person? person;
 
   @override
   void initState() {

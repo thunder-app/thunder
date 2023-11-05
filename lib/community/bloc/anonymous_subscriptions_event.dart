@@ -10,7 +10,7 @@ abstract class AnonymousSubscriptionsEvent extends Equatable {
 class GetSubscribedCommunitiesEvent extends AnonymousSubscriptionsEvent {}
 
 class AddSubscriptionsEvent extends AnonymousSubscriptionsEvent {
-  final Set<CommunitySafe> communities;
+  final Set<Community> communities;
 
   const AddSubscriptionsEvent({required this.communities});
 }

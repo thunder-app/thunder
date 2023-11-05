@@ -1,12 +1,12 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../thunder/bloc/thunder_bloc.dart';
 
-@immutable
 class GestureFab extends StatefulWidget {
   const GestureFab({
     super.key,
@@ -20,6 +20,7 @@ class GestureFab extends StatefulWidget {
     this.onPressed,
     this.onLongPress,
     this.centered = false,
+    this.heroTag,
   });
 
   final bool? initialOpen;
@@ -32,6 +33,7 @@ class GestureFab extends StatefulWidget {
   final Function? onPressed;
   final Function? onLongPress;
   final bool centered;
+  final String? heroTag;
 
   @override
   State<GestureFab> createState() => _GestureFabState();
@@ -41,18 +43,20 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   late final AnimationController _controller;
   late final Animation<double> _expandAnimation;
   late final Function(String val)? toggle;
-  bool _previousIsFabOpen = false;
   bool isFabOpen = false;
 
   @override
   void initState() {
     super.initState();
+
     isFabOpen = widget.initialOpen ?? false;
+
     _controller = AnimationController(
       value: isFabOpen ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 250),
       vsync: this,
     );
+
     _expandAnimation = CurvedAnimation(
       curve: Curves.fastOutSlowIn,
       reverseCurve: Curves.easeOutQuad,
@@ -68,27 +72,32 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final ThunderState state = context.watch<ThunderBloc>().state;
-    if (state.isFabOpen != _previousIsFabOpen) {
-      isFabOpen = state.isFabOpen;
-      _previousIsFabOpen = isFabOpen;
-      if (isFabOpen) {
-        _controller.forward();
-      } else {
-        _controller.reverse();
-      }
-    }
+    return BlocConsumer<ThunderBloc, ThunderState>(
+      listenWhen: (previous, current) => previous.isFabOpen != current.isFabOpen,
+      listener: (context, state) {
+        if (state.isFabOpen) {
+          _controller.forward();
+        } else {
+          _controller.reverse();
+        }
 
-    return SizedBox.expand(
-      child: Stack(
-        alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
-        clipBehavior: Clip.none,
-        children: [
-          _buildTapToCloseFab(),
-          ..._buildExpandingActionButtons(),
-          _buildTapToOpenFab(),
-        ],
-      ),
+        if (isFabOpen != state.isFabOpen) {
+          setState(() => isFabOpen = state.isFabOpen);
+        }
+      },
+      builder: (context, state) {
+        return SizedBox.expand(
+          child: Stack(
+            alignment: widget.centered ? Alignment.bottomCenter : Alignment.bottomRight,
+            clipBehavior: Clip.none,
+            children: [
+              _buildTapToCloseFab(),
+              ..._buildExpandingActionButtons(),
+              _buildTapToOpenFab(),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -116,7 +125,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                   child: Icon(
                     Icons.close,
                     size: widget.centered ? 20 : 25,
-                    color: Theme.of(context).primaryColor,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                     semanticLabel: AppLocalizations.of(context)!.close,
                   ),
                 ),
@@ -169,13 +178,16 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                 context.read<ThunderBloc>().add(const OnFabToggle(true));
               }
               if (details.delta.dy > 5) {
-                context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
+                // Only allow hiding fab when on the main feed, and not when opening a community on a new page
+                if (Navigator.of(context).canPop() == false) context.read<ThunderBloc>().add(const OnFabSummonToggle(false));
               }
             },
             onHorizontalDragStart: null,
             onLongPress: () {
+              HapticFeedback.heavyImpact();
               widget.onLongPress?.call();
             },
+            onTapDown: (details) => HapticFeedback.mediumImpact(),
             child: widget.centered
                 ? SizedBox(
                     width: 45,
@@ -186,7 +198,10 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                       color: Colors.transparent,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(50),
-                        onTap: () => widget.onPressed?.call(),
+                        onTap: () {
+                          HapticFeedback.mediumImpact();
+                          widget.onPressed?.call();
+                        },
                         child: Icon(
                           widget.icon.icon,
                           size: 20,
@@ -196,6 +211,7 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
                     ),
                   )
                 : FloatingActionButton(
+                    heroTag: widget.heroTag,
                     onPressed: () {
                       widget.onPressed?.call();
                     },
@@ -208,7 +224,6 @@ class _GestureFabState extends State<GestureFab> with SingleTickerProviderStateM
   }
 }
 
-@immutable
 class ActionButton extends StatelessWidget {
   ActionButton({
     super.key,

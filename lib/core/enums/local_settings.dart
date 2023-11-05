@@ -14,6 +14,7 @@ enum LocalSettings {
   // General Settings
   scrapeMissingPreviews(name: 'setting_general_scrape_missing_previews', label: 'Scrape Missing External Link Previews'),
   openLinksInExternalBrowser(name: 'setting_links_open_in_external_browser', label: 'Open Links in External Browser'),
+  openLinksInReaderMode(name: 'setting_links_open_in_reader_mode', label: 'Open Links in Reader Mode when available'),
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
@@ -36,6 +37,8 @@ enum LocalSettings {
   showPostTextContentPreview(name: 'setting_general_show_text_content', label: 'Show Text Content'),
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
   dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
+  useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
+  showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
@@ -79,6 +82,8 @@ enum LocalSettings {
   commentGestureRightPrimary(name: 'setting_gesture_comment_right_primary_gesture', label: 'Right Short Swipe'),
   commentGestureRightSecondary(name: 'setting_gesture_comment_right_secondary_gesture', label: 'Right Long Swipe'),
 
+  enableFullScreenSwipeNavigationGesture(name: 'setting_gesture_enable_fullscreen_navigation_gesture', label: 'Enable Fullscreen Swipe Navigation'),
+
   /// -------------------------- FAB Related Settings --------------------------
   enableFeedsFab(name: 'setting_enable_feed_fab', label: 'Enable Floating Button on Feeds'),
   enablePostsFab(name: 'setting_enable_post_fab', label: 'Enable Floating Button on Posts'),
@@ -100,6 +105,11 @@ enum LocalSettings {
   combineNavAndFab(name: 'setting_combine_nav_and_fab', label: 'Combine FAB and Navigation Buttons'),
 
   draftsCache(name: 'drafts_cache', label: ''),
+
+  anonymousInstances(name: 'setting_anonymous_instances', label: ''),
+  currentAnonymousInstance(name: 'setting_current_anonymous_instance', label: ''),
+
+  advancedShareOptions(name: 'advanced_share_options', label: ''),
   ;
 
   const LocalSettings({
@@ -114,5 +124,10 @@ enum LocalSettings {
   final String label;
 
   /// Defines the settings that are excluded from import/export
-  static List<LocalSettings> importExportExcludedSettings = [LocalSettings.draftsCache];
+  static List<LocalSettings> importExportExcludedSettings = [
+    LocalSettings.draftsCache,
+    LocalSettings.anonymousInstances,
+    LocalSettings.currentAnonymousInstance,
+    LocalSettings.advancedShareOptions,
+  ];
 }

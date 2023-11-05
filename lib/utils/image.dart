@@ -20,7 +20,12 @@ String generateRandomHeroString({int? len}) {
 bool isImageUrl(String url) {
   final imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.bmp', '.svg', '.webp'];
 
-  final uri = Uri.parse(url);
+  Uri uri;
+  try {
+    uri = Uri.parse(url);
+  } catch (e) {
+    return false;
+  }
   final path = uri.path.toLowerCase();
 
   for (final extension in imageExtensions) {
@@ -129,12 +134,18 @@ Size getWEBPImageDimensions(Uint8List bytes) {
   return Size(width.toDouble(), height.toDouble());
 }
 
-void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false}) async {
+void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
   final ImagePicker picker = ImagePicker();
-  XFile? file = await picker.pickImage(source: ImageSource.gallery);
+  String path;
+  if (imagePath?.isEmpty ?? false) {
+    XFile? file = await picker.pickImage(source: ImageSource.gallery);
+    path = file!.path;
+  } else {
+    path = imagePath!;
+  }
+
   try {
     Account? account = await fetchActiveProfileAccount();
-    String path = file!.path;
     imageBloc.add(ImageUploadEvent(imageFile: path, instance: account!.instance!, jwt: account.jwt!, postImage: postImage));
   } catch (e) {
     showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);

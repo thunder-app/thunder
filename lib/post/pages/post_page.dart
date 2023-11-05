@@ -11,11 +11,11 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page_success.dart';
@@ -35,7 +35,7 @@ class PostPage extends StatefulWidget {
   final String? selectedCommentPath;
   final int? selectedCommentId;
 
-  final VoidCallback onPostUpdated;
+  final Function(PostViewMedia) onPostUpdated;
 
   const PostPage({
     super.key,
@@ -122,7 +122,8 @@ class _PostPageState extends State<PostPage> {
           if (previousState.sortType != currentState.sortType) {
             setState(() {
               sortType = currentState.sortType;
-              final sortTypeItem = commentSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
+              final sortTypeItem = CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
+                  .firstWhere((sortTypeItem) => sortTypeItem.payload == currentState.sortType);
               sortTypeIcon = sortTypeItem.icon;
               sortTypeLabel = sortTypeItem.label;
             });
@@ -352,9 +353,8 @@ class _PostPageState extends State<PostPage> {
                       return true;
                     },
                     listener: (context, state) {
-                      if (state.status == PostStatus.success && widget.postView != null) {
-                        // Update the community's post
-                        context.read<CommunityBloc>().add(UpdatePostEvent(postViewMedia: state.postView!));
+                      if (state.status == PostStatus.success && widget.postView != null && state.postView != null) {
+                        widget.onPostUpdated(state.postView!);
                       }
                     },
                     builder: (context, state) {
@@ -401,6 +401,7 @@ class _PostPageState extends State<PostPage> {
                                 itemPositionsListener: _itemPositionsListener,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
+                                crossPosts: state.crossPosts,
                               ),
                             );
                           }

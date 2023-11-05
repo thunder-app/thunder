@@ -14,6 +14,7 @@ import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
 import 'package:thunder/user/pages/user_page.dart';
 import 'package:thunder/utils/swipe.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../core/auth/bloc/auth_bloc.dart';
 import '../utils/date_time.dart';
@@ -43,7 +44,7 @@ class CommentHeader extends StatelessWidget {
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
-    VoteType? myVote = comment.myVote;
+    int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
     int upvotes = comment.counts.upvotes ?? 0;
@@ -71,9 +72,11 @@ class CommentHeader extends StatelessWidget {
                         borderRadius: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                         child: InkWell(
                           borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-                          onTap: () {
-                            navigateToUserPage(context, userId: comment.creator.id);
-                          },
+                          onTap: isHidden && collapseParentCommentOnGesture
+                              ? null
+                              : () {
+                                  navigateToUserPage(context, userId: comment.creator.id);
+                                },
                           child: Padding(
                             padding: const EdgeInsets.only(left: 5, right: 5),
                             child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
@@ -163,31 +166,31 @@ class CommentHeader extends StatelessWidget {
                 Icon(
                   Icons.north_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                  color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
                 ),
                 const SizedBox(width: 2.0),
                 Text(
                   formatNumberToK(upvotes),
-                  semanticsLabel: '${formatNumberToK(upvotes)} upvotes',
+                  semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == VoteType.up ? Colors.orange : theme.colorScheme.onBackground,
+                    color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
                   ),
                 ),
                 const SizedBox(width: 10.0),
                 Icon(
                   Icons.south_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                  color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
                 const SizedBox(width: 2.0),
                 if (downvotes != 0)
                   Text(
                     formatNumberToK(downvotes),
                     textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                    semanticsLabel: '${formatNumberToK(downvotes)} downvotes',
+                    semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: downvotes != 0 ? (myVote == VoteType.down ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                      color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                     ),
                   ),
               ],

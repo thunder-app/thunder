@@ -4,29 +4,27 @@ import 'package:intl/intl.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_sidebar_activity.dart';
 import 'package:thunder/user/widgets/user_sidebar_stats.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:thunder/utils/navigate_community.dart';
 
-import '../../community/pages/community_page.dart';
 import '../../shared/common_markdown_body.dart';
 import '../../thunder/bloc/thunder_bloc.dart';
 import '../../utils/date_time.dart';
 import '../bloc/user_bloc.dart';
 
 class UserSidebar extends StatefulWidget {
-  final PersonViewSafe? userInfo;
+  final PersonView? userInfo;
   final List<CommunityModeratorView>? moderates;
   final bool isAccountUser;
   final List<PersonBlockView>? personBlocks;
-  final BlockedPerson? blockedPerson;
+  final BlockPersonResponse? blockedPerson;
 
   const UserSidebar({
     super.key,
@@ -155,32 +153,6 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ),
                                 child: Row(
                                   children: [
-                                    Expanded(
-                                      child: ElevatedButton(
-                                        onPressed: null,
-                                        style: TextButton.styleFrom(
-                                          fixedSize: const Size.fromHeight(40),
-                                          padding: EdgeInsets.zero,
-                                        ),
-                                        child: const Row(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.mail_outline_rounded,
-                                              semanticLabel: 'Message User',
-                                            ),
-                                            SizedBox(width: 4.0),
-                                            Text(
-                                              'Message User',
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                      height: 8,
-                                    ),
                                     Expanded(
                                       child: ElevatedButton(
                                         onPressed: isLoggedIn
@@ -379,7 +351,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                 for (var mods in widget.moderates!)
                                                   GestureDetector(
                                                     onTap: () {
-                                                      navigateToCommunityPage(context, communityId: mods.community.id);
+                                                      navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id);
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets.only(bottom: 8.0),
