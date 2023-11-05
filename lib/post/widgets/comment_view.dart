@@ -37,6 +37,7 @@ class CommentSubview extends StatefulWidget {
   final DateTime now;
 
   final List<CommunityModeratorView>? moderators;
+  final List<PostView>? crossPosts;
 
   const CommentSubview({
     super.key,
@@ -58,6 +59,7 @@ class CommentSubview extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.moderators,
+    required this.crossPosts,
   });
 
   @override
@@ -135,6 +137,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               useDisplayNames: state.useDisplayNames,
               postViewMedia: widget.postViewMedia!,
               moderators: widget.moderators,
+              crossPosts: widget.crossPosts,
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {

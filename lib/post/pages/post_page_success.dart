@@ -38,6 +38,7 @@ class PostPageSuccess extends StatefulWidget {
   final bool viewFullCommentsRefreshing;
 
   final List<CommunityModeratorView>? moderators;
+  final List<PostView>? crossPosts;
 
   const PostPageSuccess({
     super.key,
@@ -52,6 +53,7 @@ class PostPageSuccess extends StatefulWidget {
     this.moddingCommentId,
     this.viewFullCommentsRefreshing = false,
     required this.moderators,
+    required this.crossPosts,
   });
 
   @override
@@ -160,6 +162,7 @@ class _PostPageSuccessState extends State<PostPageSuccess> {
               });
             },
             moderators: widget.moderators,
+            crossPosts: widget.crossPosts,
           ),
         ),
       ],

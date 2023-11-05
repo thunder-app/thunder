@@ -401,6 +401,7 @@ class _PostPageState extends State<PostPage> {
                                 itemPositionsListener: _itemPositionsListener,
                                 hasReachedCommentEnd: state.hasReachedCommentEnd,
                                 moderators: state.moderators,
+                                crossPosts: state.crossPosts,
                               ),
                             );
                           }
