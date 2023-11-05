@@ -28,11 +28,15 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     );
     on<MarkReplyAsReadEvent>(
       _markReplyAsReadEvent,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
     on<MarkMentionAsReadEvent>(
       _markMentionAsReadEvent,
-      transformer: throttleDroppable(throttleDuration),
+      // Do not throttle mark as read because it's something
+      // a user might try to do in quick succession to multiple messages
+      transformer: throttleDroppable(Duration.zero),
     );
     on<CreateInboxCommentReplyEvent>(
       _createCommentEvent,
