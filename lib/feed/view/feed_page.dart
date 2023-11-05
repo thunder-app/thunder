@@ -34,6 +34,8 @@ import 'package:thunder/utils/cache.dart';
 
 enum FeedType { community, user, general }
 
+enum FeedViewType { post, comment }
+
 /// Creates a [FeedPage] which holds a list of posts for a given user, community, or custom feed.
 ///
 /// A [FeedType] must be provided which indicates the type of feed to display.
@@ -113,7 +115,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: const FeedView(),
+        child: FeedView(feedType: widget.feedType),
       );
     }
 
@@ -129,21 +131,24 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           username: widget.username,
           reset: true,
         )),
-      child: const FeedView(),
+      child: FeedView(feedType: widget.feedType),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key});
+  final FeedType? feedType;
+
+  const FeedView({super.key, this.feedType});
 
   @override
   State<FeedView> createState() => _FeedViewState();
 }
 
 class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin {
+  final GlobalKey<NestedScrollViewState> globalKey = GlobalKey();
+
   final ScrollController _scrollController = ScrollController();
-  late TabController _tabController;
 
   /// Boolean which indicates whether the title on the app bar should be shown
   bool showAppBarTitle = false;
@@ -154,22 +159,28 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
   /// List of post ids to queue for removal. The ids in this list allow us to remove posts in a staggered method
   List<int> queuedForRemoval = [];
 
+  FeedViewType feedViewType = FeedViewType.post;
+
   @override
   void initState() {
     super.initState();
 
-    _tabController = TabController(vsync: this, length: 2);
+    // Fetches new posts when the user has scrolled past 70% list
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      globalKey.currentState!.innerController.addListener(() {
+        ScrollController scrollController = globalKey.currentState!.innerController;
+        if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
+          context.read<FeedBloc>().add(const FeedFetchedEvent());
+        }
+      });
+    });
+
     _scrollController.addListener(() {
       // Updates the [showAppBarTitle] value when the user has scrolled past a given threshold
       if (_scrollController.position.pixels > 100.0 && showAppBarTitle == false) {
         setState(() => showAppBarTitle = true);
       } else if (_scrollController.position.pixels < 100.0 && showAppBarTitle == true) {
         setState(() => showAppBarTitle = false);
-      }
-
-      // Fetches new posts when the user has scrolled past 70% list
-      if (_scrollController.position.pixels > _scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
-        context.read<FeedBloc>().add(const FeedFetchedEvent());
       }
     });
 
@@ -178,7 +189,6 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
-    _tabController.dispose();
     _scrollController.dispose();
     BackButtonInterceptor.remove(_handleBack);
     super.dispose();
@@ -215,16 +225,12 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
       listeners: [
         BlocListener<CommunityBloc, CommunityState>(
           listener: (context, state) {
-            if (state.message != null) {
-              showSnackbar(context, state.message!);
-            }
+            if (state.message != null) showSnackbar(context, state.message!);
           },
         ),
         BlocListener<InstanceBloc, InstanceState>(
           listener: (context, state) {
-            if (state.message != null) {
-              showSnackbar(context, state.message!);
-            }
+            if (state.message != null) showSnackbar(context, state.message!);
           },
         ),
       ],
@@ -238,8 +244,10 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
         listener: (context, state) {
           // Continue to fetch more posts as long as the device view is not scrollable.
           // This is to avoid cases where more posts cannot be fetched because the conditions are not met
-          if (state.status == FeedStatus.success && state.hasReachedEnd == false) {
-            bool isScrollable = _scrollController.position.maxScrollExtent > _scrollController.position.viewportDimension;
+          ScrollController scrollController = globalKey.currentState!.innerController;
+
+          if (state.status == FeedStatus.success && state.hasReachedPostEnd == false) {
+            bool isScrollable = scrollController.position.maxScrollExtent > scrollController.position.viewportDimension;
             if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
           }
 
@@ -248,11 +256,12 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
             context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
           }
         },
-        builder: (context, state) {
-          final theme = Theme.of(context);
-          ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+        builder: (feedBlocContext, state) {
+          final theme = Theme.of(feedBlocContext);
+          ThunderBloc thunderBloc = feedBlocContext.watch<ThunderBloc>();
 
           return NestedScrollView(
+            key: globalKey,
             controller: _scrollController,
             physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
             headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
@@ -260,117 +269,114 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                 SliverOverlapAbsorber(
                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                   sliver: FeedPageAppBar(
-                    tabController: _tabController,
                     innerBoxIsScrolled: innerBoxIsScrolled,
                     showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
                     showSidebar: showSidebar,
                     onHeaderTapped: (value) {
                       setState(() => showSidebar = value);
                     },
+                    onSelectViewType: (FeedViewType viewType) {
+                      setState(() => feedViewType = viewType);
+                    },
+                    onShowSaved: (bool showSaved) {},
                   ),
                 ),
               ];
             },
-            body: TabBarView(
-              controller: _tabController,
-              children: [
-                // Post tab view
-                Stack(
-                  children: [
-                    SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: Builder(
-                        builder: (BuildContext context) {
-                          return CustomScrollView(
-                            key: const PageStorageKey<String>('posts'),
-                            slivers: <Widget>[
-                              SliverOverlapInjector(
-                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                              ),
-                              FeedPostBody(
-                                showSidebar: showSidebar,
-                                queuedForRemoval: queuedForRemoval,
-                                onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
-                              ),
-                              // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                              SliverToBoxAdapter(
-                                child: state.hasReachedEnd
-                                    ? const FeedReachedEnd()
-                                    : Container(
-                                        height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                        child: const CircularProgressIndicator(),
-                                      ),
-                              ),
-                            ],
-                          );
-                        },
-                      ),
-                    ),
-                    // Widget to host the feed FAB when navigating to new page
-                    AnimatedOpacity(
-                      opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                      duration: const Duration(milliseconds: 150),
-                      child: thunderBloc.state.isFabOpen
-                          ? ModalBarrier(
-                              color: theme.colorScheme.background.withOpacity(0.95),
-                              dismissible: true,
-                              onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                            )
-                          : null,
-                    ),
-                    if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
-                      AnimatedOpacity(
-                        opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 150),
-                        curve: Curves.easeIn,
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
-                          child: FeedFAB(heroTag: state.communityName),
+            body: feedViewType == FeedViewType.post
+                ? Stack(
+                    children: [
+                      SafeArea(
+                        top: false,
+                        bottom: false,
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            return CustomScrollView(
+                              key: const PageStorageKey<String>('posts'),
+                              slivers: <Widget>[
+                                SliverOverlapInjector(
+                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                ),
+                                FeedPostBody(
+                                  showSidebar: showSidebar,
+                                  queuedForRemoval: queuedForRemoval,
+                                  onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
+                                ),
+                                // Widget representing the bottom of the feed (reached end or loading more posts indicators)
+                                SliverToBoxAdapter(
+                                  child: state.hasReachedPostEnd
+                                      ? const FeedReachedEnd()
+                                      : Container(
+                                          height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: const CircularProgressIndicator(),
+                                        ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
-                  ],
-                ),
-                // Comment tab view
-                Stack(
-                  children: [
-                    SafeArea(
-                      top: false,
-                      bottom: false,
-                      child: Builder(
-                        builder: (BuildContext context) {
-                          return CustomScrollView(
-                            key: const PageStorageKey<String>('comments'),
-                            slivers: <Widget>[
-                              SliverOverlapInjector(
-                                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                              ),
-                              FeedCommentBody(
-                                showSidebar: showSidebar,
-                                onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
-                              ),
-                              // Widget representing the bottom of the feed (reached end or loading more comments indicators)
-                              SliverToBoxAdapter(
-                                child: state.hasReachedEnd
-                                    ? const FeedReachedEnd()
-                                    : Container(
-                                        height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                        alignment: Alignment.center,
-                                        padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                        child: const CircularProgressIndicator(),
-                                      ),
-                              ),
-                            ],
-                          );
-                        },
+                      // Widget to host the feed FAB when navigating to new page
+                      AnimatedOpacity(
+                        opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                        duration: const Duration(milliseconds: 150),
+                        child: thunderBloc.state.isFabOpen
+                            ? ModalBarrier(
+                                color: theme.colorScheme.background.withOpacity(0.95),
+                                dismissible: true,
+                                onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                              )
+                            : null,
                       ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
+                      if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
+                        AnimatedOpacity(
+                          opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 150),
+                          curve: Curves.easeIn,
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
+                            child: FeedFAB(heroTag: state.communityName),
+                          ),
+                        ),
+                    ],
+                  )
+                : Stack(
+                    children: [
+                      SafeArea(
+                        top: false,
+                        bottom: false,
+                        child: Builder(
+                          builder: (BuildContext context) {
+                            return CustomScrollView(
+                              key: const PageStorageKey<String>('comments'),
+                              slivers: <Widget>[
+                                SliverOverlapInjector(
+                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                ),
+                                FeedCommentBody(
+                                  showSidebar: showSidebar,
+                                  onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
+                                ),
+                                // Widget representing the bottom of the feed (reached end or loading more comments indicators)
+                                SliverToBoxAdapter(
+                                  child: state.hasReachedCommentEnd
+                                      ? const FeedReachedEnd()
+                                      : Container(
+                                          height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                          child: const CircularProgressIndicator(),
+                                        ),
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
           );
         },
       ),

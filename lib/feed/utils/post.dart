@@ -16,13 +16,11 @@ Future<Map<String, dynamic>> fetchPosts({
   SortType? sortType,
   int? communityId,
   String? communityName,
-  int? userId,
-  String? username,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  bool hasReachedEnd = false;
+  bool hasReachedPostEnd = false;
 
   List<PostViewMedia> postViewMedias = [];
 
@@ -48,13 +46,14 @@ Future<Map<String, dynamic>> fetchPosts({
     List<PostViewMedia> formattedPosts = await parsePostViews(postViews);
     postViewMedias.addAll(formattedPosts);
 
-    if (postViews.isEmpty) hasReachedEnd = true;
+    if (postViews.isEmpty) hasReachedPostEnd = true;
     currentPage++;
-  } while (!hasReachedEnd && postViewMedias.length < limit);
+    print('Fetching posts: currentPage: $currentPage');
+  } while (!hasReachedPostEnd && postViewMedias.length < limit);
 
   return {
     'postViewMedias': postViewMedias,
-    'hasReachedEnd': hasReachedEnd,
+    'hasReachedPostEnd': hasReachedPostEnd,
     'currentPage': currentPage,
   };
 }
@@ -71,7 +70,8 @@ Future<Map<String, dynamic>> fetchUserInformation({
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
-  bool hasReachedEnd = false;
+  bool hasReachedPostEnd = false;
+  bool hasReachedCommentEnd = false;
 
   // User information if present
   GetPersonDetailsResponse? getPersonDetailsResponse;
@@ -109,14 +109,17 @@ Future<Map<String, dynamic>> fetchUserInformation({
     List<PostViewMedia> formattedPosts = await parsePostViews(postViews);
     postViewMedias.addAll(formattedPosts);
 
-    if (commentTree.isEmpty && postViews.isEmpty) hasReachedEnd = true;
+    if (postViews.isEmpty) hasReachedPostEnd = true;
+    if (commentTree.isEmpty) hasReachedCommentEnd = true;
     currentPage++;
-  } while (!hasReachedEnd && (commentViewTreeList.length + postViewMedias.length) < limit);
+    print('fetchUserInformation: currentPage: $currentPage');
+  } while (!(hasReachedPostEnd && hasReachedCommentEnd) && (commentViewTreeList.length + postViewMedias.length) < limit);
 
   return {
     'postViewMedias': postViewMedias,
     'commentViewTreeList': commentViewTreeList,
-    'hasReachedEnd': hasReachedEnd,
+    'hasReachedPostEnd': hasReachedPostEnd,
+    'hasReachedCommentEnd': hasReachedCommentEnd,
     'currentPage': currentPage,
     'getPersonDetailsResponse': getPersonDetailsResponse,
   };

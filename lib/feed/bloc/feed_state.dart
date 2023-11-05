@@ -7,14 +7,15 @@ final class FeedState extends Equatable {
     this.status = FeedStatus.initial,
     this.postViewMedias = const <PostViewMedia>[],
     this.commentViewTrees = const <CommentViewTree>[],
-    this.hasReachedEnd = false,
+    this.hasReachedPostEnd = false,
+    this.hasReachedCommentEnd = false,
     this.feedType = FeedType.general,
-    this.fullCommunityView,
-    this.getPersonDetailsResponse,
     this.postListingType,
     this.sortType,
+    this.fullCommunityView,
     this.communityId,
     this.communityName,
+    this.getPersonDetailsResponse,
     this.userId,
     this.username,
     this.currentPage = 1,
@@ -33,8 +34,11 @@ final class FeedState extends Equatable {
   /// The comments to display on the feed
   final List<CommentViewTree> commentViewTrees;
 
-  /// Determines if we have reached the end of the feed
-  final bool hasReachedEnd;
+  /// Determines if we have reached the end of the feed (for posts)
+  final bool hasReachedPostEnd;
+
+  /// Determines if we have reached the end of the feed (for comments)
+  final bool hasReachedCommentEnd;
 
   /// The type of feed to display.
   final FeedType? feedType;
@@ -48,14 +52,14 @@ final class FeedState extends Equatable {
   /// The community information if applicable
   final GetCommunityResponse? fullCommunityView;
 
-  /// The person information if applicable
-  final GetPersonDetailsResponse? getPersonDetailsResponse;
-
   /// The id of the community to display posts for.
   final int? communityId;
 
   /// The name of the community to display posts for.
   final String? communityName;
+
+  /// The person information if applicable
+  final GetPersonDetailsResponse? getPersonDetailsResponse;
 
   /// The id of the user to display posts for.
   final int? userId;
@@ -82,14 +86,15 @@ final class FeedState extends Equatable {
     FeedStatus? status,
     List<PostViewMedia>? postViewMedias,
     List<CommentViewTree>? commentViewTrees,
-    bool? hasReachedEnd,
+    bool? hasReachedPostEnd,
+    bool? hasReachedCommentEnd,
     FeedType? feedType,
     ListingType? postListingType,
     SortType? sortType,
     GetCommunityResponse? fullCommunityView,
-    GetPersonDetailsResponse? getPersonDetailsResponse,
     int? communityId,
     String? communityName,
+    GetPersonDetailsResponse? getPersonDetailsResponse,
     int? userId,
     String? username,
     int? currentPage,
@@ -102,14 +107,15 @@ final class FeedState extends Equatable {
       status: status ?? this.status,
       postViewMedias: postViewMedias ?? this.postViewMedias,
       commentViewTrees: commentViewTrees ?? this.commentViewTrees,
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      hasReachedPostEnd: hasReachedPostEnd ?? this.hasReachedPostEnd,
+      hasReachedCommentEnd: hasReachedCommentEnd ?? this.hasReachedCommentEnd,
       feedType: feedType ?? this.feedType,
       postListingType: postListingType ?? this.postListingType,
       sortType: sortType ?? this.sortType,
       fullCommunityView: fullCommunityView ?? this.fullCommunityView,
-      getPersonDetailsResponse: getPersonDetailsResponse ?? this.getPersonDetailsResponse,
       communityId: communityId ?? this.communityId,
       communityName: communityName ?? this.communityName,
+      getPersonDetailsResponse: getPersonDetailsResponse ?? this.getPersonDetailsResponse,
       userId: userId ?? this.userId,
       username: username ?? this.username,
       currentPage: currentPage ?? this.currentPage,
@@ -122,22 +128,23 @@ final class FeedState extends Equatable {
 
   @override
   String toString() {
-    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, hasReachedEnd: $hasReachedEnd }''';
+    return '''FeedState { status: $status, postViewMedias: ${postViewMedias.length}, commentViewTrees: ${commentViewTrees.length}, hasReachedEnd: $hasReachedPostEnd }''';
   }
 
   @override
   List<dynamic> get props => [
         status,
-        fullCommunityView,
-        getPersonDetailsResponse,
         postViewMedias,
         commentViewTrees,
-        hasReachedEnd,
+        hasReachedPostEnd,
+        hasReachedCommentEnd,
         feedType,
         postListingType,
         sortType,
+        fullCommunityView,
         communityId,
         communityName,
+        getPersonDetailsResponse,
         userId,
         username,
         currentPage,

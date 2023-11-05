@@ -18,24 +18,32 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_header.dart';
+import 'package:thunder/utils/global_context.dart';
 
-class FeedPageAppBar extends StatelessWidget {
+class FeedPageAppBar extends StatefulWidget {
   const FeedPageAppBar({
     super.key,
-    required this.tabController,
     this.showAppBarTitle = true,
     this.showSidebar = false,
     this.onHeaderTapped,
+    this.onSelectViewType,
+    this.onShowSaved,
     required this.innerBoxIsScrolled,
   });
-
-  final TabController tabController;
 
   final bool showAppBarTitle;
   final bool showSidebar;
   final bool innerBoxIsScrolled;
-  final Function(bool)? onHeaderTapped;
 
+  final Function(bool)? onHeaderTapped;
+  final Function(FeedViewType)? onSelectViewType;
+  final Function(bool)? onShowSaved;
+
+  @override
+  State<FeedPageAppBar> createState() => _FeedPageAppBarState();
+}
+
+class _FeedPageAppBarState extends State<FeedPageAppBar> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
@@ -44,15 +52,13 @@ class FeedPageAppBar extends StatelessWidget {
     final FeedBloc feedBloc = context.watch<FeedBloc>();
     final FeedState feedState = feedBloc.state;
 
-    final List<String> tabs = <String>['Posts', 'Comments'];
-
     return SliverAppBar(
-      title: FeedAppBarTitle(visible: showAppBarTitle),
+      title: FeedAppBarTitle(visible: widget.showAppBarTitle),
       pinned: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      expandedHeight: feedState.feedType != FeedType.general ? (240.0 - (feedState.feedType == FeedType.community ? kTextTabBarHeight : 0)) : null,
-      forceElevated: innerBoxIsScrolled,
+      expandedHeight: feedState.feedType != FeedType.general ? (255.0 - (feedState.feedType == FeedType.community ? kTextTabBarHeight : 0)) : null,
+      forceElevated: widget.innerBoxIsScrolled,
       leading: feedState.status != FeedStatus.initial
           ? IconButton(
               icon: Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general
@@ -129,35 +135,38 @@ class FeedPageAppBar extends StatelessWidget {
       ],
       flexibleSpace: FlexibleSpaceBar(
         expandedTitleScale: 1,
-        collapseMode: CollapseMode.none,
+        collapseMode: CollapseMode.pin,
         background: (feedState.getPersonDetailsResponse != null || feedState.fullCommunityView != null)
             ? Padding(
-                padding: EdgeInsets.only(top: 110.0, bottom: feedState.feedType == FeedType.user ? kTextTabBarHeight : 0),
+                padding: const EdgeInsets.symmetric(vertical: kToolbarHeight + 10),
                 child: AnimatedOpacity(
-                  opacity: showAppBarTitle ? 0.0 : 1.0,
+                  opacity: widget.showAppBarTitle ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 100),
                   child: Visibility(
                     visible: feedState.feedType == FeedType.user || feedState.feedType == FeedType.community,
                     child: feedState.getPersonDetailsResponse != null
                         ? UserHeader(
                             personView: feedState.getPersonDetailsResponse!.personView,
-                            showUserSidebar: showSidebar,
-                            onToggle: (bool toggled) => onHeaderTapped?.call(toggled),
+                            showUserSidebar: widget.showSidebar,
+                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
                           )
                         : CommunityHeader(
                             getCommunityResponse: feedState.fullCommunityView!,
-                            showCommunitySidebar: showSidebar,
-                            onToggle: (bool toggled) => onHeaderTapped?.call(toggled),
+                            showCommunitySidebar: widget.showSidebar,
+                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
                           ),
                   ),
                 ),
               )
             : null,
       ),
-      bottom: (feedState.feedType == FeedType.user)
-          ? TabBar(
-              controller: tabController,
-              tabs: tabs.map((String name) => Tab(text: name)).toList(),
+      bottom: feedState.feedType == FeedType.user
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(65),
+              child: FeedAppBarTypeSelector(
+                onSelectViewType: widget.onSelectViewType,
+                onShowSaved: widget.onShowSaved,
+              ),
             )
           : null,
     );
@@ -192,6 +201,151 @@ class FeedAppBarTitle extends StatelessWidget {
           ],
         ),
         contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+      ),
+    );
+  }
+}
+
+class FeedAppBarTypeSelector extends StatefulWidget {
+  const FeedAppBarTypeSelector({
+    super.key,
+    this.onSelectViewType,
+    this.onShowSaved,
+  });
+
+  final Function(FeedViewType)? onSelectViewType;
+  final Function(bool)? onShowSaved;
+
+  @override
+  State<FeedAppBarTypeSelector> createState() => _FeedAppBarTypeSelectorState();
+}
+
+class _FeedAppBarTypeSelectorState extends State<FeedAppBarTypeSelector> {
+  List<Widget> userOptionTypes = <Widget>[
+    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.posts)),
+    Padding(padding: const EdgeInsets.all(8.0), child: Text(AppLocalizations.of(GlobalContext.context)!.comments)),
+  ];
+
+  int selectedUserOption = 0;
+  List<bool> _selectedUserOption = <bool>[true, false];
+  bool showSavedItems = false;
+
+  @override
+  Widget build(BuildContext context) {
+    AuthBloc authBloc = context.watch<AuthBloc>();
+
+    bool isAccountUser = authBloc.state.isLoggedIn && (authBloc.state.account?.userId == context.read<FeedBloc>().state.getPersonDetailsResponse?.personView.person.id);
+
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 16.0),
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          AnimatedSwitcher(
+            switchOutCurve: Curves.easeInOut,
+            switchInCurve: Curves.easeInOut,
+            duration: const Duration(milliseconds: 250),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return SizeTransition(
+                axis: Axis.horizontal,
+                sizeFactor: animation,
+                child: FadeTransition(opacity: animation, child: child),
+              );
+            },
+            child: !showSavedItems
+                ? ToggleButtons(
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    direction: Axis.horizontal,
+                    onPressed: (int index) {
+                      setState(() {
+                        // The button that is tapped is set to true, and the others to false.
+                        for (int i = 0; i < _selectedUserOption.length; i++) {
+                          _selectedUserOption[i] = i == index;
+                        }
+                        selectedUserOption = index;
+                      });
+
+                      widget.onSelectViewType?.call(index == 0 ? FeedViewType.post : FeedViewType.comment);
+                    },
+                    borderRadius: const BorderRadius.all(Radius.circular(8)),
+                    constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (isAccountUser ? 0.8 : 0.1))) - 12.0),
+                    isSelected: _selectedUserOption,
+                    children: userOptionTypes,
+                  )
+                : null,
+          ),
+          if (isAccountUser)
+            Expanded(
+              child: Padding(
+                padding: showSavedItems ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
+                child: TextButton(
+                  onPressed: () {
+                    setState(() => showSavedItems = !showSavedItems);
+                    widget.onShowSaved?.call(showSavedItems);
+                  },
+                  style: TextButton.styleFrom(
+                    fixedSize: const Size.fromHeight(35),
+                    padding: EdgeInsets.zero,
+                  ),
+                  child: !showSavedItems
+                      ? Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const SizedBox(width: 8.0),
+                            Text(AppLocalizations.of(context)!.saved),
+                            const Icon(Icons.chevron_right),
+                          ],
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(Icons.chevron_left),
+                            Text(
+                              AppLocalizations.of(context)!.overview,
+                              semanticsLabel: '${AppLocalizations.of(context)!.overview}, ${AppLocalizations.of(context)!.back}',
+                            ),
+                            const SizedBox(width: 8.0),
+                          ],
+                        ),
+                ),
+              ),
+            ),
+          if (isAccountUser)
+            AnimatedSwitcher(
+              switchOutCurve: Curves.easeInOut,
+              switchInCurve: Curves.easeInOut,
+              duration: const Duration(milliseconds: 250),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return SizeTransition(
+                  axis: Axis.horizontal,
+                  sizeFactor: animation,
+                  child: FadeTransition(opacity: animation, child: child),
+                );
+              },
+              child: showSavedItems
+                  ? ToggleButtons(
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      direction: Axis.horizontal,
+                      onPressed: (int index) {
+                        setState(() {
+                          // The button that is tapped is set to true, and the others to false.
+                          for (int i = 0; i < _selectedUserOption.length; i++) {
+                            _selectedUserOption[i] = i == index;
+                          }
+
+                          selectedUserOption = index;
+                        });
+                      },
+                      borderRadius: const BorderRadius.all(Radius.circular(8)),
+                      constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (isAccountUser ? 0.8 : 0))) - 12.0),
+                      isSelected: _selectedUserOption,
+                      children: userOptionTypes,
+                    )
+                  : null,
+            ),
+        ],
       ),
     );
   }

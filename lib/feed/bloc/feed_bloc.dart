@@ -250,16 +250,23 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(const FeedState(
       status: FeedStatus.initial,
       postViewMedias: <PostViewMedia>[],
-      hasReachedEnd: false,
+      commentViewTrees: <CommentViewTree>[],
+      hasReachedPostEnd: false,
+      hasReachedCommentEnd: false,
       feedType: FeedType.general,
       postListingType: null,
       sortType: null,
       fullCommunityView: null,
       communityId: null,
       communityName: null,
+      getPersonDetailsResponse: null,
       userId: null,
       username: null,
       currentPage: 1,
+      message: null,
+      scrollId: 0,
+      dismissReadId: 0,
+      insertedPostIds: [],
     ));
   }
 
@@ -293,13 +300,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       switch (event.feedType) {
         case FeedType.community:
-          // Fetch community information
           fullCommunityView = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
-          break;
-        case FeedType.user:
-          // Fetch user information
-          break;
-        case FeedType.general:
           break;
         default:
           break;
@@ -307,7 +308,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
       switch (event.feedType) {
         case FeedType.user:
-          Map<String, dynamic> commentViewTreeListResult = await fetchUserInformation(
+          Map<String, dynamic> userInformation = await fetchUserInformation(
             page: 1,
             postListingType: event.postListingType,
             sortType: event.sortType,
@@ -316,25 +317,26 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           );
 
           // Extract information from the response
-          GetPersonDetailsResponse? getPersonDetailsResponse = commentViewTreeListResult['getPersonDetailsResponse'];
+          GetPersonDetailsResponse? getPersonDetailsResponse = userInformation['getPersonDetailsResponse'];
 
-          List<PostViewMedia> postViewMedias = commentViewTreeListResult['postViewMedias'];
-          List<CommentViewTree> commentViewTrees = commentViewTreeListResult['commentViewTreeList'];
-          bool hasReachedEnd = commentViewTreeListResult['hasReachedEnd'];
-          int currentPage = commentViewTreeListResult['currentPage'];
+          List<PostViewMedia> postViewMedias = userInformation['postViewMedias'];
+          List<CommentViewTree> commentViewTrees = userInformation['commentViewTreeList'];
+
+          bool hasReachedPostEnd = userInformation['hasReachedPostEnd'];
+          bool hasReachedCommentEnd = userInformation['hasReachedCommentEnd'];
+
+          int currentPage = userInformation['currentPage'];
 
           return emit(state.copyWith(
             status: FeedStatus.success,
             postViewMedias: postViewMedias,
             commentViewTrees: commentViewTrees,
-            hasReachedEnd: hasReachedEnd,
+            hasReachedPostEnd: hasReachedPostEnd,
+            hasReachedCommentEnd: hasReachedCommentEnd,
             feedType: event.feedType,
             postListingType: event.postListingType,
             sortType: event.sortType,
-            fullCommunityView: fullCommunityView,
             getPersonDetailsResponse: getPersonDetailsResponse,
-            communityId: event.communityId,
-            communityName: event.communityName,
             userId: event.userId,
             username: event.username,
             currentPage: currentPage,
@@ -346,30 +348,23 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             sortType: event.sortType,
             communityId: event.communityId,
             communityName: event.communityName,
-            userId: event.userId,
-            username: event.username,
           );
 
           // Extract information from the response
-          GetPersonDetailsResponse? getPersonDetailsResponse = postViewMediaResult['getPersonDetailsResponse'];
-
           List<PostViewMedia> postViewMedias = postViewMediaResult['postViewMedias'];
-          bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
+          bool hasReachedPostEnd = postViewMediaResult['hasReachedPostEnd'];
           int currentPage = postViewMediaResult['currentPage'];
 
           return emit(state.copyWith(
             status: FeedStatus.success,
             postViewMedias: postViewMedias,
-            hasReachedEnd: hasReachedEnd,
+            hasReachedPostEnd: hasReachedPostEnd,
             feedType: event.feedType,
             postListingType: event.postListingType,
             sortType: event.sortType,
             fullCommunityView: fullCommunityView,
-            getPersonDetailsResponse: getPersonDetailsResponse,
             communityId: event.communityId,
             communityName: event.communityName,
-            userId: event.userId,
-            username: event.username,
             currentPage: currentPage,
           ));
       }
@@ -386,7 +381,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         List<CommentViewTree> commentViewTrees = List.from(state.commentViewTrees);
         List<PostViewMedia> postViewMedias = List.from(state.postViewMedias);
 
-        Map<String, dynamic> commentViewTreeListResult = await fetchUserInformation(
+        Map<String, dynamic> userInformation = await fetchUserInformation(
           page: state.currentPage,
           postListingType: state.postListingType,
           sortType: state.sortType,
@@ -395,10 +390,13 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
         );
 
         // Extract information from the response
-        List<PostViewMedia> newPostViewMedias = commentViewTreeListResult['postViewMedias'];
-        List<CommentViewTree> newCommentViewTrees = commentViewTreeListResult['commentViewTreeList'];
-        bool hasReachedEnd = commentViewTreeListResult['hasReachedEnd'];
-        int currentPage = commentViewTreeListResult['currentPage'];
+        List<PostViewMedia> newPostViewMedias = userInformation['postViewMedias'];
+        List<CommentViewTree> newCommentViewTrees = userInformation['commentViewTreeList'];
+
+        bool hasReachedPostEnd = userInformation['hasReachedPostEnd'];
+        bool hasReachedCommentEnd = userInformation['hasReachedCommentEnd'];
+
+        int currentPage = userInformation['currentPage'];
 
         commentViewTrees.addAll(newCommentViewTrees);
         postViewMedias.addAll(newPostViewMedias);
@@ -407,7 +405,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           status: FeedStatus.success,
           postViewMedias: postViewMedias,
           commentViewTrees: commentViewTrees,
-          hasReachedEnd: hasReachedEnd,
+          hasReachedPostEnd: hasReachedPostEnd,
+          hasReachedCommentEnd: hasReachedCommentEnd,
           currentPage: currentPage,
         ));
       default:
@@ -419,13 +418,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           sortType: state.sortType,
           communityId: state.communityId,
           communityName: state.communityName,
-          userId: state.userId,
-          username: state.username,
         );
 
         // Extract information from the response
         List<PostViewMedia> newPostViewMedias = postViewMediaResult['postViewMedias'];
-        bool hasReachedEnd = postViewMediaResult['hasReachedEnd'];
+        bool hasReachedPostEnd = postViewMediaResult['hasReachedPostEnd'];
         int currentPage = postViewMediaResult['currentPage'];
 
         Set<int> newInsertedPostIds = Set.from(state.insertedPostIds);
@@ -446,7 +443,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           status: FeedStatus.success,
           insertedPostIds: newInsertedPostIds.toList(),
           postViewMedias: postViewMedias,
-          hasReachedEnd: hasReachedEnd,
+          hasReachedPostEnd: hasReachedPostEnd,
           currentPage: currentPage,
         ));
     }
