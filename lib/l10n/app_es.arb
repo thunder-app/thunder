@@ -570,5 +570,11 @@
   "communities": "Comunidades",
   "@communities": {},
   "linkActions": "Acciones del enlace",
-  "@linkActions": {}
+  "@linkActions": {},
+  "andXMore": "y {count} más",
+  "@andXMore": {},
+  "createNewCrossPost": "Crear un nuevo mensaje cruzado",
+  "@createNewCrossPost": {},
+  "crossPostedTo": "Trasladado a",
+  "@crossPostedTo": {}
 }
