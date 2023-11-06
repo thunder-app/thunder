@@ -169,7 +169,7 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
       globalKey.currentState!.innerController.addListener(() {
         ScrollController scrollController = globalKey.currentState!.innerController;
-        if (scrollController.position.pixels > scrollController.position.maxScrollExtent * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
+        if (scrollController.position.pixels > scrollController.position.extentTotal * 0.7 && context.read<FeedBloc>().state.status != FeedStatus.fetching) {
           context.read<FeedBloc>().add(const FeedFetchedEvent());
         }
       });
@@ -246,8 +246,9 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
           // This is to avoid cases where more posts cannot be fetched because the conditions are not met
           ScrollController scrollController = globalKey.currentState!.innerController;
 
-          if (state.status == FeedStatus.success && state.hasReachedPostEnd == false) {
-            bool isScrollable = scrollController.position.maxScrollExtent > scrollController.position.viewportDimension;
+          if (state.status == FeedStatus.success &&
+              ((state.hasReachedPostEnd == false && feedViewType == FeedViewType.post) || (state.hasReachedCommentEnd == false && feedViewType == FeedViewType.comment))) {
+            bool isScrollable = scrollController.position.extentTotal > scrollController.position.viewportDimension;
             if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
           }
 

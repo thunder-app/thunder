@@ -48,7 +48,6 @@ Future<Map<String, dynamic>> fetchPosts({
 
     if (postViews.isEmpty) hasReachedPostEnd = true;
     currentPage++;
-    print('Fetching posts: currentPage: $currentPage');
   } while (!hasReachedPostEnd && postViewMedias.length < limit);
 
   return {
@@ -112,7 +111,6 @@ Future<Map<String, dynamic>> fetchUserInformation({
     if (postViews.isEmpty) hasReachedPostEnd = true;
     if (commentTree.isEmpty) hasReachedCommentEnd = true;
     currentPage++;
-    print('fetchUserInformation: currentPage: $currentPage');
   } while (!(hasReachedPostEnd && hasReachedCommentEnd) && (commentViewTreeList.length + postViewMedias.length) < limit);
 
   return {

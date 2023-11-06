@@ -111,6 +111,7 @@ class _UserHeaderState extends State<UserHeader> {
                               ),
                               Text(
                                 '${widget.personView?.person.name ?? '-'}@${fetchInstanceNameFromUrl(widget.personView?.person.actorId) ?? '-'}',
+                                maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 8.0),

@@ -52,12 +52,32 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
     final FeedBloc feedBloc = context.watch<FeedBloc>();
     final FeedState feedState = feedBloc.state;
 
+    double? getExpandedHeight(FeedType? feedType) {
+      switch (feedType) {
+        case FeedType.community:
+          return 200;
+        case FeedType.user:
+          return 255;
+        default:
+          return null;
+      }
+    }
+
+    double? getFlexibleHeight(FeedType? feedType) {
+      switch (feedType) {
+        case FeedType.user:
+          return 60;
+        default:
+          return 0;
+      }
+    }
+
     return SliverAppBar(
       title: FeedAppBarTitle(visible: widget.showAppBarTitle),
       pinned: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      expandedHeight: feedState.feedType != FeedType.general ? (255.0 - (feedState.feedType == FeedType.community ? kTextTabBarHeight : 0)) : null,
+      expandedHeight: getExpandedHeight(feedState.feedType),
       forceElevated: widget.innerBoxIsScrolled,
       leading: feedState.status != FeedStatus.initial
           ? IconButton(
@@ -138,7 +158,7 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
         collapseMode: CollapseMode.pin,
         background: (feedState.getPersonDetailsResponse != null || feedState.fullCommunityView != null)
             ? Padding(
-                padding: const EdgeInsets.symmetric(vertical: kToolbarHeight + 10),
+                padding: EdgeInsets.only(top: 70.0 + MediaQuery.of(context).viewPadding.top, bottom: getFlexibleHeight(feedState.feedType) ?? 0.0),
                 child: AnimatedOpacity(
                   opacity: widget.showAppBarTitle ? 0.0 : 1.0,
                   duration: const Duration(milliseconds: 100),

@@ -103,8 +103,14 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                 Text(
                                   widget.getCommunityResponse.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
                                 ),
-                                Text('${widget.getCommunityResponse.communityView.community.name}@${fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A'}'),
+                                Text(
+                                  '${widget.getCommunityResponse.communityView.community.name}@${fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A'}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [
