@@ -297,7 +297,7 @@ class _FeedViewState extends State<FeedView> {
                         SliverStack(
                           children: [
                             // Widget representing the list of posts on the feed
-                            FeedWidget(
+                            FeedPostList(
                               postViewMedias: postViewMedias,
                               tabletMode: tabletMode,
                               queuedForRemoval: queuedForRemoval,

@@ -7,12 +7,12 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 
-class FeedWidget extends StatelessWidget {
+class FeedPostList extends StatelessWidget {
   final bool tabletMode;
   final List<int>? queuedForRemoval;
   final List<PostViewMedia> postViewMedias;
 
-  const FeedWidget({
+  const FeedPostList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
