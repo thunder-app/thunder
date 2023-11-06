@@ -11,12 +11,16 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/view_mode.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/link_preview_card.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
@@ -65,9 +69,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
   String url = "";
   String? urlError;
   DraftPost newDraftPost = DraftPost();
-
   int? communityId;
   CommunityView? communityView;
+  List<PostView>? crossPosts;
 
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
@@ -345,6 +349,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             isUserLoggedIn: true,
                           ),
                         ),
+                        if (crossPosts?.isNotEmpty == true)
+                          Visibility(
+                            visible: url.isNotEmpty,
+                            child: CrossPosts(
+                              crossPosts: crossPosts!,
+                              newPost: true,
+                            ),
+                          ),
                         const SizedBox(
                           height: 10,
                         ),
@@ -451,9 +463,24 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 
-  void _updatePreview(String text) {
+  void _updatePreview(String text) async {
     if (url == text) {
       setState(() {});
+
+      // Fetch cross-posts
+      final Account? account = await fetchActiveProfileAccount();
+      final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+        q: url,
+        type: SearchType.url,
+        sort: SortType.topAll,
+        listingType: ListingType.all,
+        limit: 20,
+        auth: account?.jwt,
+      ));
+
+      setState(() {
+        crossPosts = searchResponse.posts;
+      });
     }
   }
 

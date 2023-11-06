@@ -169,6 +169,7 @@
   "@search": {},
   "account": "Account",
   "crossPostedTo": "Cross-posted to",
+  "alreadyPostedTo": "Already posted to",
   "andXMore": "and {count} more",
   "createNewCrossPost": "Create new cross-post",
   "@account": {},
