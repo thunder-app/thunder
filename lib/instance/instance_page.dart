@@ -35,7 +35,7 @@ class _InstancePageState extends State<InstancePage> {
               actions: [
                 IconButton(
                   tooltip: l10n.openInBrowser,
-                  onPressed: () => openLink(context, url: widget.site.actorId),
+                  onPressed: () => handleLink(context, url: widget.site.actorId),
                   icon: Icon(
                     Icons.open_in_browser_rounded,
                     semanticLabel: l10n.openInBrowser,
