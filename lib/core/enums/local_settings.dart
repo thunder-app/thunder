@@ -38,6 +38,7 @@ enum LocalSettings {
   showPostAuthor(name: 'setting_general_show_post_author', label: 'Show Post Author'),
   dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
   useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
+  showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings

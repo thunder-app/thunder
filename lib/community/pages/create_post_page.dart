@@ -32,6 +32,7 @@ class CreatePostPage extends StatefulWidget {
   final DraftPost? previousDraftPost;
 
   // used create post from action sheet
+  final String? title;
   final String? text;
   final File? image;
   final String? url;
@@ -45,6 +46,7 @@ class CreatePostPage extends StatefulWidget {
     this.previousDraftPost,
     this.onUpdateDraft,
     this.image,
+    this.title,
     this.text,
     this.url,
     this.prePopulated = false,
@@ -100,6 +102,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
 
     if (widget.prePopulated == true) {
+      _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
       _getDataFromLink();

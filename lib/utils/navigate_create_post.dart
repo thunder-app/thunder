@@ -13,6 +13,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> navigateToCreatePostPage(
   BuildContext context, {
+  String? title,
   String? text,
   File? image,
   String? url,
@@ -34,6 +35,7 @@ Future<void> navigateToCreatePostPage(
             BlocProvider<AccountBloc>.value(value: accountBloc),
           ],
           child: CreatePostPage(
+            title: title,
             text: text,
             image: image,
             url: url,
