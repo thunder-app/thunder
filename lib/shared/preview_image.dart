@@ -46,8 +46,6 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
     final ThunderState state = context.read<ThunderBloc>().state;
     final useDarkTheme = state.themeType == 'dark';
 
-    final openInExternalBrowser = state.openInExternalBrowser;
-
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - 24;
 
@@ -120,7 +118,7 @@ class _PreviewImageState extends State<PreviewImage> with SingleTickerProviderSt
                     ),
                   ),
                   onTap: () {
-                    openLink(context, url: widget.mediaUrl, openInExternalBrowser: openInExternalBrowser);
+                    handleLink(context, url: widget.mediaUrl);
                   },
                 ),
               ),
