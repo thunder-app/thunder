@@ -10,8 +10,8 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
 
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/feed/feed.dart';
@@ -38,6 +38,7 @@ class CreatePostPage extends StatefulWidget {
   final String? url;
 
   final bool? prePopulated;
+  final PostView? postViewBeingEdited;
 
   const CreatePostPage({
     super.key,
@@ -50,6 +51,7 @@ class CreatePostPage extends StatefulWidget {
     this.text,
     this.url,
     this.prePopulated = false,
+    this.postViewBeingEdited,
   });
 
   @override
@@ -116,7 +118,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
           );
         });
       }
-    } else if (widget.previousDraftPost != null) {
+    } else if (widget.previousDraftPost != null &&
+        (_titleTextController.text != (widget.previousDraftPost!.title ?? '') ||
+            _urlTextController.text != (widget.previousDraftPost!.url ?? '') ||
+            _bodyTextController.text != (widget.previousDraftPost!.text ?? ''))) {
       _titleTextController.text = widget.previousDraftPost!.title ?? '';
       _urlTextController.text = widget.previousDraftPost!.url ?? '';
       _bodyTextController.text = widget.previousDraftPost!.text ?? '';
@@ -125,6 +130,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
         await Future.delayed(const Duration(milliseconds: 300));
         if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
       });
+    } else if (widget.postViewBeingEdited != null) {
+      _titleTextController.text = widget.postViewBeingEdited!.post.name;
+      _urlTextController.text = widget.postViewBeingEdited!.post.url ?? '';
+      _bodyTextController.text = widget.postViewBeingEdited!.post.body ?? '';
+      isNSFW = widget.postViewBeingEdited!.post.nsfw;
     }
   }
 
@@ -158,9 +168,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final AccountState accountState = context.read<AccountBloc>().state;
 
     return GestureDetector(
       onTap: () {
@@ -224,49 +233,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
                   Expanded(
                     child: SingleChildScrollView(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                        Transform.translate(
-                          offset: const Offset(-8, 0),
-                          child: InkWell(
-                            onTap: () {
-                              showCommunityInputDialog(
-                                context,
-                                title: l10n.community,
-                                onCommunitySelected: (cv) {
-                                  setState(() {
-                                    communityId = cv.community.id;
-                                    communityView = cv;
-                                  });
-                                  _validateSubmission();
-                                },
-                                emptySuggestions: accountState.subsciptions,
-                              );
-                            },
-                            borderRadius: const BorderRadius.all(Radius.circular(50)),
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-                              child: Row(
-                                children: [
-                                  CommunityIcon(community: communityView?.community, radius: 16),
-                                  const SizedBox(
-                                    width: 12,
-                                  ),
-                                  communityId != null
-                                      ? Text(
-                                          '${communityView?.community.name} '
-                                          '· ${fetchInstanceNameFromUrl(communityView?.community.actorId)}',
-                                          style: theme.textTheme.titleSmall,
-                                        )
-                                      : Text(
-                                          l10n.selectCommunity,
-                                          style: theme.textTheme.bodyMedium?.copyWith(
-                                            fontStyle: FontStyle.italic,
-                                            color: theme.colorScheme.error,
-                                          ),
-                                        ),
-                                ],
-                              ),
-                            ),
-                          ),
+                        CommunitySelector(
+                          communityId: communityId,
+                          communityView: communityView,
+                          onCommunitySelected: (CommunityView cv) {
+                            setState(() {
+                              communityId = cv.community.id;
+                              communityView = cv;
+                            });
+
+                            _validateSubmission();
+                          },
                         ),
                         const UserIndicator(),
                         const SizedBox(height: 12.0),
@@ -358,9 +335,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 });
                               }),
                         ]),
-                        const SizedBox(
-                          height: 10,
-                        ),
+                        const SizedBox(height: 10),
                         showPreview
                             ? Container(
                                 constraints: const BoxConstraints(minWidth: double.infinity),
@@ -480,6 +455,95 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 }
 
+/// Creates a widget which displays a preview of a pre-selected community, with the ability to change the selected community
+///
+/// Passing in either [communityId] or [communityView] will set the initial state of the widget to display that given community.
+/// A callback function [onCommunitySelected] will be triggered whenever a new community is selected from the dropdown.
+class CommunitySelector extends StatefulWidget {
+  const CommunitySelector({
+    super.key,
+    this.communityId,
+    this.communityView,
+    required this.onCommunitySelected,
+  });
+
+  /// The initial community id to be passed in
+  final int? communityId;
+
+  /// The initial [CommunityView] to be passed in
+  final CommunityView? communityView;
+
+  /// A callback function to trigger whenever a community is selected from the dropdown
+  final Function(CommunityView) onCommunitySelected;
+
+  @override
+  State<CommunitySelector> createState() => _CommunitySelectorState();
+}
+
+class _CommunitySelectorState extends State<CommunitySelector> {
+  int? _communityId;
+  CommunityView? _communityView;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _communityId = widget.communityId;
+    _communityView = widget.communityView;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+    final accountState = context.read<AccountBloc>().state;
+
+    return Transform.translate(
+      offset: const Offset(-8, 0),
+      child: InkWell(
+        onTap: () {
+          showCommunityInputDialog(
+            context,
+            title: l10n.community,
+            onCommunitySelected: (cv) {
+              setState(() {
+                _communityId = cv.community.id;
+                _communityView = cv;
+              });
+
+              widget.onCommunitySelected(cv);
+            },
+            emptySuggestions: accountState.subsciptions,
+          );
+        },
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          child: Row(
+            children: [
+              CommunityIcon(community: _communityView?.community, radius: 16),
+              const SizedBox(width: 12),
+              _communityId != null
+                  ? Text(
+                      '${_communityView?.community.name} '
+                      '· ${fetchInstanceNameFromUrl(_communityView?.community.actorId)}',
+                      style: theme.textTheme.titleSmall,
+                    )
+                  : Text(
+                      l10n.selectCommunity,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        fontStyle: FontStyle.italic,
+                        color: theme.colorScheme.error,
+                      ),
+                    ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class DraftPost {
   String? title;
   String? url;
@@ -488,17 +552,9 @@ class DraftPost {
 
   DraftPost({this.title, this.url, this.text});
 
-  Map<String, dynamic> toJson() => {
-        'title': title,
-        'url': url,
-        'text': text,
-      };
+  Map<String, dynamic> toJson() => {'title': title, 'url': url, 'text': text};
 
-  static fromJson(Map<String, dynamic> json) => DraftPost(
-        title: json['title'],
-        url: json['url'],
-        text: json['text'],
-      );
+  static fromJson(Map<String, dynamic> json) => DraftPost(title: json['title'], url: json['url'], text: json['text']);
 
   bool get isNotEmpty => title?.isNotEmpty == true || url?.isNotEmpty == true || text?.isNotEmpty == true;
 }
