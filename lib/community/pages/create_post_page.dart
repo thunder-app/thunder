@@ -71,7 +71,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   DraftPost newDraftPost = DraftPost();
   int? communityId;
   CommunityView? communityView;
-  List<PostView>? crossPosts;
+  List<PostView> crossPosts = [];
 
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
@@ -349,11 +349,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             isUserLoggedIn: true,
                           ),
                         ),
-                        if (crossPosts?.isNotEmpty == true)
+                        if (crossPosts.isNotEmpty)
                           Visibility(
                             visible: url.isNotEmpty,
                             child: CrossPosts(
-                              crossPosts: crossPosts!,
+                              crossPosts: crossPosts,
                               isNewPost: true,
                             ),
                           ),
@@ -479,7 +479,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         ));
       } finally {
         setState(() {
-          crossPosts = searchResponse?.posts;
+          crossPosts = searchResponse?.posts ?? [];
         });
       }
     }
