@@ -12,9 +12,9 @@ import 'package:thunder/utils/navigate_post.dart';
 class CrossPosts extends StatefulWidget {
   final List<PostView> crossPosts;
   final PostViewMedia? originalPost;
-  final bool? newPost;
+  final bool? isNewPost;
 
-  const CrossPosts({super.key, required this.crossPosts, this.originalPost, this.newPost}) : assert(originalPost != null || newPost == true);
+  const CrossPosts({super.key, required this.crossPosts, this.originalPost, this.isNewPost}) : assert(originalPost != null || isNewPost == true);
 
   @override
   State<CrossPosts> createState() => _CrossPostsState();
@@ -55,7 +55,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             InkWell(
-              onTap: (widget.newPost == true && widget.crossPosts.length == 1) ? null : () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
+              onTap: (widget.isNewPost == true && widget.crossPosts.length == 1) ? null : () => setState(() => _areCrossPostsExpanded = !_areCrossPostsExpanded),
               borderRadius: BorderRadius.circular(10),
               child: Padding(
                 padding: const EdgeInsets.all(5),
@@ -71,7 +71,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: widget.newPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
+                                  text: widget.isNewPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
                                   style: crossPostTextStyle,
                                 ),
                                 TextSpan(
@@ -88,7 +88,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                             ),
                           ),
                         ),
-                        (widget.newPost == true && widget.crossPosts.length == 1)
+                        (widget.isNewPost == true && widget.crossPosts.length == 1)
                             ? const Icon(null)
                             : _areCrossPostsExpanded
                                 ? const Icon(Icons.arrow_drop_up_rounded)
@@ -104,7 +104,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
                           Text(
-                            widget.newPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
+                            widget.isNewPost == true ? l10n.alreadyPostedTo : l10n.crossPostedTo,
                             style: crossPostTextStyle?.copyWith(color: Colors.transparent),
                           ),
                           InkWell(
@@ -162,7 +162,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                           },
                           itemCount: widget.crossPosts.length - 1,
                         ),
-                        widget.newPost != true
+                        widget.isNewPost != true
                             ? InkWell(
                                 onTap: () async {
                                   await navigateToCreatePostPage(

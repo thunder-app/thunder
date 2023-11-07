@@ -354,7 +354,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             visible: url.isNotEmpty,
                             child: CrossPosts(
                               crossPosts: crossPosts!,
-                              newPost: true,
+                              isNewPost: true,
                             ),
                           ),
                         const SizedBox(
