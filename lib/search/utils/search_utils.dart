@@ -15,7 +15,7 @@ bool searchIsEmpty(SearchType searchType, {SearchState? searchState, SearchRespo
     SearchType.users => users?.isNotEmpty != true,
     SearchType.comments => comments?.isNotEmpty != true,
     SearchType.posts => posts?.isNotEmpty != true,
-    //SearchType.url => TODO
+    SearchType.url => posts?.isNotEmpty != true,
     _ => false,
   };
 }
