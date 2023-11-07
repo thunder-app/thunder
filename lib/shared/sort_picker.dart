@@ -65,6 +65,11 @@ class SortPicker extends BottomSheetListPicker<SortType> {
           icon: Icons.rocket_launch_rounded,
           label: AppLocalizations.of(GlobalContext.context)!.active,
         ),
+        ListPickerItem(
+          payload: SortType.new_,
+          icon: Icons.auto_awesome_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.new_,
+        ),
         if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
             (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.sortTypeScaled)))
           ListPickerItem(

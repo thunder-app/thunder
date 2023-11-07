@@ -9,8 +9,10 @@ import 'package:collection/collection.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/utils/comment.dart';
 import 'package:thunder/utils/global_context.dart';
@@ -129,7 +131,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         }
       }
 
-      return emit(state.copyWith(status: SearchStatus.success, communities: searchResponse.communities, users: searchResponse.users, comments: searchResponse.comments, page: 2));
+      return emit(state.copyWith(
+        status: SearchStatus.success,
+        communities: searchResponse.communities,
+        users: searchResponse.users,
+        comments: searchResponse.comments,
+        posts: await parsePostViews(searchResponse.posts),
+        page: 2,
+      ));
     } catch (e) {
       return emit(state.copyWith(status: SearchStatus.failure, errorMessage: e.toString()));
     }
@@ -143,7 +152,13 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       while (attemptCount < 2) {
         try {
-          emit(state.copyWith(status: SearchStatus.refreshing, communities: state.communities, users: state.users, comments: state.comments));
+          emit(state.copyWith(
+            status: SearchStatus.refreshing,
+            communities: state.communities,
+            users: state.users,
+            comments: state.comments,
+            posts: state.posts,
+          ));
 
           Account? account = await fetchActiveProfileAccount();
           LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -154,6 +169,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             page: state.page,
             limit: 15,
             sort: event.sortType,
+            listingType: event.listingType,
+            type: event.searchType,
           ));
 
           if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
@@ -164,8 +181,16 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
           state.communities = [...state.communities ?? [], ...searchResponse.communities];
           state.users = [...state.users ?? [], ...searchResponse.users];
           state.comments = [...state.comments ?? [], ...searchResponse.comments];
+          state.posts = [...state.posts ?? [], ...await parsePostViews(searchResponse.posts)];
 
-          return emit(state.copyWith(status: SearchStatus.success, communities: state.communities, users: state.users, comments: state.comments, page: state.page + 1));
+          return emit(state.copyWith(
+            status: SearchStatus.success,
+            communities: state.communities,
+            users: state.users,
+            comments: state.comments,
+            posts: state.posts,
+            page: state.page + 1,
+          ));
         } catch (e) {
           exception = e;
           attemptCount++;

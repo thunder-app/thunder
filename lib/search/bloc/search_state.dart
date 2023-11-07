@@ -9,6 +9,7 @@ class SearchState extends Equatable {
     this.trendingCommunities,
     this.users,
     this.comments,
+    this.posts,
     this.errorMessage,
     this.page = 1,
     this.sortType,
@@ -20,6 +21,7 @@ class SearchState extends Equatable {
   List<CommunityView>? trendingCommunities;
   List<PersonView>? users;
   List<CommentView>? comments;
+  List<PostViewMedia>? posts;
 
   final String? errorMessage;
 
@@ -34,6 +36,7 @@ class SearchState extends Equatable {
     List<CommunityView>? trendingCommunities,
     List<PersonView>? users,
     List<CommentView>? comments,
+    List<PostViewMedia>? posts,
     String? errorMessage,
     int? page,
     SortType? sortType,
@@ -45,6 +48,7 @@ class SearchState extends Equatable {
       trendingCommunities: trendingCommunities ?? this.trendingCommunities,
       users: users ?? this.users,
       comments: comments ?? this.comments,
+      posts: posts ?? this.posts,
       errorMessage: errorMessage,
       page: page ?? this.page,
       sortType: sortType ?? this.sortType,

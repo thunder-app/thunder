@@ -91,6 +91,11 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       _onCreatePost,
       transformer: throttleDroppable(Duration.zero),
     );
+
+    on<PopulatePostsEvent>(
+      _onPopulatePosts,
+      transformer: throttleDroppable(Duration.zero),
+    );
   }
 
   /// Handles hiding posts from the feed. This will remove any posts from the feed for the given post ids
@@ -405,5 +410,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     } catch (e) {
       return emit(state.copyWith(status: FeedStatus.failure, message: e.toString()));
     }
+  }
+
+  Future<void> _onPopulatePosts(PopulatePostsEvent event, Emitter<FeedState> emit) async {
+    emit(state.copyWith(postViewMedias: event.posts));
   }
 }

@@ -308,18 +308,14 @@ class _ThunderState extends State<Thunder> {
   }
 
   void _showLinkProcessingError(BuildContext context, String error, String link) {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool openInExternalBrowser = state.openInExternalBrowser;
-
-    showSnackbar(context, error,
-        trailingIcon: Icons.open_in_browser_rounded,
-        duration: const Duration(seconds: 10),
-        clearSnackBars: false,
-        trailingAction: () => openLink(
-              context,
-              url: link,
-              openInExternalBrowser: openInExternalBrowser,
-            ));
+    showSnackbar(
+      context,
+      error,
+      trailingIcon: Icons.open_in_browser_rounded,
+      duration: const Duration(seconds: 10),
+      clearSnackBars: false,
+      trailingAction: () => handleLink(context, url: link),
+    );
   }
 
   @override
@@ -501,9 +497,6 @@ class _ThunderState extends State<Thunder> {
   void showUpdateNotification(BuildContext context, Version? version) {
     final theme = Theme.of(context);
 
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final bool openInExternalBrowser = state.openInExternalBrowser;
-
     showSimpleNotification(
       GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -521,7 +514,7 @@ class _ThunderState extends State<Thunder> {
           ],
         ),
         onTap: () {
-          openLink(context, url: version?.latestVersionUrl ?? 'https://github.com/thunder-app/thunder/releases', openInExternalBrowser: openInExternalBrowser);
+          handleLink(context, url: version?.latestVersionUrl ?? 'https://github.com/thunder-app/thunder/releases');
         },
       ),
       background: theme.cardColor,

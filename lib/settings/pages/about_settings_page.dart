@@ -16,7 +16,6 @@ class AboutSettingsPage extends StatelessWidget {
     final ThemeData theme = Theme.of(context);
 
     final ThunderState state = context.read<ThunderBloc>().state;
-    final openInExternalBrowser = state.openInExternalBrowser;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),
@@ -50,7 +49,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('github.com/thunder-app/thunder'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    openLink(context, url: 'https://github.com/thunder-app/thunder', openInExternalBrowser: openInExternalBrowser);
+                    handleLink(context, url: 'https://github.com/thunder-app/thunder');
                   },
                 ),
                 ListTile(
@@ -72,7 +71,7 @@ class AboutSettingsPage extends StatelessWidget {
                   subtitle: const Text('matrix.to/#/#thunderapp:matrix.org'),
                   trailing: const Icon(Icons.chevron_right_rounded),
                   onTap: () {
-                    openLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org', openInExternalBrowser: openInExternalBrowser);
+                    handleLink(context, url: 'https://matrix.to/#/#thunderapp:matrix.org');
                   },
                 ),
                 ListTile(
