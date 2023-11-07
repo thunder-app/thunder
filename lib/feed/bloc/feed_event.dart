@@ -104,3 +104,9 @@ final class CreatePostEvent extends FeedEvent {
 
   const CreatePostEvent({required this.communityId, required this.name, this.body, this.url, this.nsfw});
 }
+
+final class PopulatePostsEvent extends FeedEvent {
+  final List<PostViewMedia> posts;
+
+  const PopulatePostsEvent(this.posts);
+}
