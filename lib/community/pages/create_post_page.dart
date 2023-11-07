@@ -465,22 +465,23 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   void _updatePreview(String text) async {
     if (url == text) {
-      setState(() {});
-
-      // Fetch cross-posts
-      final Account? account = await fetchActiveProfileAccount();
-      final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
-        q: url,
-        type: SearchType.url,
-        sort: SortType.topAll,
-        listingType: ListingType.all,
-        limit: 20,
-        auth: account?.jwt,
-      ));
-
-      setState(() {
-        crossPosts = searchResponse.posts;
-      });
+      SearchResponse? searchResponse;
+      try {
+        // Fetch cross-posts
+        final Account? account = await fetchActiveProfileAccount();
+        searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
+          q: url,
+          type: SearchType.url,
+          sort: SortType.topAll,
+          listingType: ListingType.all,
+          limit: 20,
+          auth: account?.jwt,
+        ));
+      } finally {
+        setState(() {
+          crossPosts = searchResponse?.posts;
+        });
+      }
     }
   }
 
