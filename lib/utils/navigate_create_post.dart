@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
+import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -42,6 +43,11 @@ Future<void> navigateToCreatePostPage(
             prePopulated: prePopulated,
             onUpdateDraft: (p) => {},
             communityId: null,
+            onPostSuccess: (PostViewMedia postViewMedia) {
+              try {
+                context.read<FeedBloc>().add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
+              } catch (e) {}
+            },
           ),
         );
       },

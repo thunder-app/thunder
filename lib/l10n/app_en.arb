@@ -137,6 +137,7 @@
   "@removeAccount": {},
   "anonymous": "Anonymous",
   "@anonymous": {},
+  "editPost": "Edit Post",
   "removeInstance": "Remove instance",
   "@removeInstance": {},
   "searchCommunitiesFederatedWith": "Search for communities federated with {instance}",
