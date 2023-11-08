@@ -41,7 +41,6 @@ Future<void> navigateToCreatePostPage(
             image: image,
             url: url,
             prePopulated: prePopulated,
-            onUpdateDraft: (p) => {},
             communityId: null,
             onPostSuccess: (PostViewMedia postViewMedia) {
               try {

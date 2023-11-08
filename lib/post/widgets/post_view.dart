@@ -355,23 +355,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               id: postViewMedia!.postView.community.id,
                             ));
 
-                            SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                            DraftPost? newDraftPost;
-                            DraftPost? previousDraftPost;
-                            String draftId = '${LocalSettings.draftsCache.name}-post-edit-${postViewMedia!.postView.post.id}';
-                            String? draftPostJson = prefs.getString(draftId);
-                            if (draftPostJson != null) {
-                              previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-                            }
-                            Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                              if (newDraftPost?.isNotEmpty == true) {
-                                prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                              }
-                            });
-
                             if (context.mounted) {
-                              Navigator.of(context)
-                                  .push(
+                              Navigator.of(context).push(
                                 SwipeablePageRoute(
                                   transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
                                   canOnlySwipeFromEdge: true,
@@ -385,8 +370,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                       child: CreatePostPage(
                                         communityId: postViewMedia!.postView.community.id,
                                         communityView: getCommunityResponse.communityView,
-                                        previousDraftPost: previousDraftPost,
-                                        onUpdateDraft: (p) => newDraftPost = p,
                                         postView: postViewMedia!.postView,
                                         onPostSuccess: (PostViewMedia pvm) {
                                           setState(() => postViewMedia = pvm);
@@ -395,22 +378,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                     );
                                   },
                                 ),
-                              )
-                                  .whenComplete(() async {
-                                timer.cancel();
-
-                                if (newDraftPost?.saveAsDraft == true &&
-                                    newDraftPost?.isNotEmpty == true &&
-                                    (newDraftPost?.title != postViewMedia!.postView.post.name ||
-                                        newDraftPost?.text != postViewMedia!.postView.post.body ||
-                                        newDraftPost?.url != postViewMedia!.postView.post.url)) {
-                                  await Future.delayed(const Duration(milliseconds: 300));
-                                  if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
-                                  prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                                } else {
-                                  prefs.remove(draftId);
-                                }
-                              });
+                              );
                             }
                             return;
                           }

@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -10,14 +12,17 @@ import 'package:markdown_editable_textinput/format_markdown.dart';
 import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/cubit/create_post_cubit.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -33,26 +38,32 @@ import 'package:thunder/utils/instance.dart';
 class CreatePostPage extends StatefulWidget {
   final int? communityId;
   final CommunityView? communityView;
-  final void Function(DraftPost? draftPost)? onUpdateDraft;
-  final DraftPost? previousDraftPost;
 
-  // used create post from action sheet
+  /// Whether or not to pre-populate the post with the [title], [text], [image] and/or [url]
+  final bool? prePopulated;
+
+  /// Used to pre-populate the post title
   final String? title;
+
+  /// Used to pre-populate the post body
   final String? text;
+
+  /// Used to pre-populate the image of the post
   final File? image;
+
+  /// Used to pre-populate the shared link for the post
   final String? url;
 
-  final bool? prePopulated;
+  /// [postView] is passed in when editing an existing post
   final PostView? postView;
 
+  /// Callback function that is triggered whenever the post is successfully created or updated
   final Function(PostViewMedia postViewMedia)? onPostSuccess;
 
   const CreatePostPage({
     super.key,
     required this.communityId,
     this.communityView,
-    this.previousDraftPost,
-    this.onUpdateDraft,
     this.image,
     this.title,
     this.text,
@@ -67,7 +78,17 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
+  String draftId = '';
+
+  /// Holds the current draft for the post.
+  DraftPost draftPost = DraftPost();
+
+  /// Timer for saving the current draft to local storage
+  late Timer _draftTimer;
+
+  /// Whether or not to show the preview for the post from the raw markdown
   bool showPreview = false;
+
   bool isSubmitButtonDisabled = true;
   bool isNSFW = false;
   bool imageUploading = false;
@@ -79,9 +100,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
   CommunityView? communityView;
   List<PostView> crossPosts = [];
 
+  /// The corresponding controllers for the title, body and url text fields
   final TextEditingController _bodyTextController = TextEditingController();
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
+
   final FocusNode _bodyFocusNode = FocusNode();
   final imageBloc = ImageBloc();
 
@@ -92,30 +115,31 @@ class _CreatePostPageState extends State<CreatePostPage> {
     communityId = widget.communityId;
     communityView = widget.communityView;
 
+    // Set up any text controller listeners
     _titleTextController.addListener(() {
       _validateSubmission();
-
-      widget.onUpdateDraft?.call(newDraftPost..title = _titleTextController.text);
+      draftPost.title = _titleTextController.text;
     });
 
     _urlTextController.addListener(() {
       _validateSubmission();
-
       url = _urlTextController.text;
-      debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
+      draftPost.url = _urlTextController.text;
 
-      widget.onUpdateDraft?.call(newDraftPost..url = _urlTextController.text);
+      debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
     });
 
     _bodyTextController.addListener(() {
-      widget.onUpdateDraft?.call(newDraftPost..text = _bodyTextController.text);
+      draftPost.text = _bodyTextController.text;
     });
 
+    // Logic for pre-populating the post with the given fields
     if (widget.prePopulated == true) {
       _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
       _getDataFromLink();
+
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
           uploadImage(
@@ -126,34 +150,80 @@ class _CreatePostPageState extends State<CreatePostPage> {
           );
         });
       }
-    } else if (widget.previousDraftPost != null &&
-        (_titleTextController.text != (widget.previousDraftPost!.title ?? '') ||
-            _urlTextController.text != (widget.previousDraftPost!.url ?? '') ||
-            _bodyTextController.text != (widget.previousDraftPost!.text ?? ''))) {
-      _titleTextController.text = widget.previousDraftPost!.title ?? '';
-      _urlTextController.text = widget.previousDraftPost!.url ?? '';
-      _bodyTextController.text = widget.previousDraftPost!.text ?? '';
 
-      WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-        await Future.delayed(const Duration(milliseconds: 300));
-        if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
-      });
-    } else if (widget.postView != null) {
+      return;
+    }
+
+    // Logic for pre-populating the post with the [postView] for edits
+    if (widget.postView != null) {
       _titleTextController.text = widget.postView!.post.name;
       _urlTextController.text = widget.postView!.post.url ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
+
+      return;
     }
+
+    // Finally, if there is no pre-populated fields, then we retrieve the most recent draft
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      _restoreExistingDraft();
+    });
+  }
+
+  /// Attempts to restore an existing draft of a post
+  void _restoreExistingDraft() async {
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    if (widget.postView != null) {
+      draftId = '${LocalSettings.draftsCache.name}-post-edit-${widget.postView!.post.id}';
+    } else if (widget.communityId != null) {
+      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityId}';
+    } else if (widget.communityView != null) {
+      draftId = '${LocalSettings.draftsCache.name}-post-create-${widget.communityView!.community.id}';
+    } else {
+      draftId = '${LocalSettings.draftsCache.name}-post-create-general';
+    }
+
+    String? draftPostJson = prefs.getString(draftId);
+
+    if (draftPostJson != null) {
+      draftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
+
+      _titleTextController.text = draftPost.title ?? '';
+      _urlTextController.text = draftPost.url ?? '';
+      _bodyTextController.text = draftPost.text ?? '';
+    }
+
+    _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
+      if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
+        prefs.setString(draftId, jsonEncode(draftPost.toJson()));
+      } else {
+        prefs.remove(draftId);
+      }
+    });
+
+    if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
     _bodyFocusNode.dispose();
 
     FocusManager.instance.primaryFocus?.unfocus();
+
+    _draftTimer.cancel();
+
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
+      prefs.setString(draftId, jsonEncode(draftPost.toJson()));
+      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+    } else {
+      prefs.remove(draftId);
+    }
 
     super.dispose();
   }
