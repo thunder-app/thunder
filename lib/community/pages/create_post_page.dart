@@ -78,6 +78,11 @@ class CreatePostPage extends StatefulWidget {
 }
 
 class _CreatePostPageState extends State<CreatePostPage> {
+  /// Holds the draft id associated with the post. This id is determined by the input parameters passed in.
+  /// If [postView] is passed in, the id will be in the form 'drafts_cache-post-edit-{postView.post.id}'
+  /// If [communityId] is passed in, the id will be in the form 'drafts_cache-post-create-{communityId}'
+  /// If [communityView] is passed in, the id will be in the form 'drafts_cache-post-create-{communityView.community.id}'
+  /// If none of these are passed in, the id will be in the form 'drafts_cache-post-create-general'
   String draftId = '';
 
   /// Holds the current draft for the post.
@@ -89,10 +94,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// Whether or not to show the preview for the post from the raw markdown
   bool showPreview = false;
 
+  /// Status of image upload when uploading to the post body
+  bool imageUploading = false;
+
+  /// Status of image upload when uploading to the post URL
+  bool postImageUploading = false;
+
   bool isSubmitButtonDisabled = true;
   bool isNSFW = false;
-  bool imageUploading = false;
-  bool postImageUploading = false;
   String url = "";
   String? urlError;
   DraftPost newDraftPost = DraftPost();
@@ -170,6 +179,29 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
+  @override
+  void dispose() async {
+    _bodyTextController.dispose();
+    _titleTextController.dispose();
+    _urlTextController.dispose();
+    _bodyFocusNode.dispose();
+
+    FocusManager.instance.primaryFocus?.unfocus();
+
+    _draftTimer.cancel();
+
+    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+
+    if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
+      prefs.setString(draftId, jsonEncode(draftPost.toJson()));
+      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
+    } else {
+      prefs.remove(draftId);
+    }
+
+    super.dispose();
+  }
+
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
     SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
@@ -202,30 +234,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
       }
     });
 
-    if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.restoredPostFromDraft);
-  }
-
-  @override
-  void dispose() async {
-    _bodyTextController.dispose();
-    _titleTextController.dispose();
-    _urlTextController.dispose();
-    _bodyFocusNode.dispose();
-
-    FocusManager.instance.primaryFocus?.unfocus();
-
-    _draftTimer.cancel();
-
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-
-    if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-      prefs.setString(draftId, jsonEncode(draftPost.toJson()));
-      if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
-    } else {
-      prefs.remove(draftId);
+    if (context.mounted && draftPost.isNotEmpty) {
+      showSnackbar(
+        context,
+        AppLocalizations.of(context)!.restoredPostFromDraft,
+        trailingIcon: Icons.delete_forever_rounded,
+        trailingIconColor: Theme.of(context).colorScheme.error,
+        trailingAction: () {
+          prefs.remove(draftId);
+          _titleTextController.clear();
+          _urlTextController.clear();
+          _bodyTextController.clear();
+        },
+      );
     }
-
-    super.dispose();
   }
 
   Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
@@ -246,9 +268,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final AccountState accountState = context.read<AccountBloc>().state;
 
     return BlocProvider(
       create: (context) => CreatePostCubit(),
@@ -258,27 +279,32 @@ class _CreatePostPageState extends State<CreatePostPage> {
             widget.onPostSuccess?.call(state.postViewMedia!);
             Navigator.of(context).pop();
           }
-          //  if (state.status == ImageStatus.success) {
-          //           _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
-          //           setState(() => imageUploading = false);
-          //         }
-          //         if (state.status == ImageStatus.successPostImage) {
-          //           _urlTextController.text = state.imageUrl;
-          //           setState(() => postImageUploading = false);
-          //         }
-          //         if (state.status == ImageStatus.uploading) {
-          //           setState(() => imageUploading = true);
-          //         }
-          //         if (state.status == ImageStatus.uploadingPostImage) {
-          //           setState(() => postImageUploading = true);
-          //         }
-          //         if (state.status == ImageStatus.failure) {
-          //           showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
-          //           setState(() {
-          //             imageUploading = false;
-          //             postImageUploading = false;
-          //           });
-          //         }
+
+          switch (state.status) {
+            case CreatePostStatus.imageUploadSuccess:
+              _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
+              setState(() => imageUploading = false);
+              break;
+            case CreatePostStatus.postImageUploadSuccess:
+              _urlTextController.text = state.imageUrl ?? '';
+              setState(() => postImageUploading = false);
+              break;
+            case CreatePostStatus.imageUploadInProgress:
+              setState(() => imageUploading = true);
+              break;
+            case CreatePostStatus.postImageUploadInProgress:
+              setState(() => postImageUploading = true);
+              break;
+            case CreatePostStatus.imageUploadFailure:
+            case CreatePostStatus.postImageUploadFailure:
+              showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
+              setState(() {
+                imageUploading = false;
+                postImageUploading = false;
+              });
+            default:
+              break;
+          }
         },
         builder: (context, state) {
           return GestureDetector(
@@ -322,51 +348,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                       Expanded(
                         child: SingleChildScrollView(
                           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                            Transform.translate(
-                              offset: const Offset(-8, 0),
-                              child: InkWell(
-                                onTap: widget.postView != null
-                                    ? null
-                                    : () {
-                                        showCommunityInputDialog(
-                                          context,
-                                          title: l10n.community,
-                                          onCommunitySelected: (cv) {
-                                            setState(() {
-                                              communityId = cv.community.id;
-                                              communityView = cv;
-                                            });
-                                            _validateSubmission();
-                                          },
-                                          emptySuggestions: accountState.subsciptions,
-                                        );
-                                      },
-                                borderRadius: const BorderRadius.all(Radius.circular(50)),
-                                child: Padding(
-                                  padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-                                  child: Row(
-                                    children: [
-                                      CommunityIcon(community: communityView?.community, radius: 16),
-                                      const SizedBox(
-                                        width: 12,
-                                      ),
-                                      communityId != null
-                                          ? Text(
-                                              '${communityView?.community.name} '
-                                              '· ${fetchInstanceNameFromUrl(communityView?.community.actorId)}',
-                                              style: theme.textTheme.titleSmall,
-                                            )
-                                          : Text(
-                                              l10n.selectCommunity,
-                                              style: theme.textTheme.bodyMedium?.copyWith(
-                                                fontStyle: FontStyle.italic,
-                                                color: theme.colorScheme.error,
-                                              ),
-                                            ),
-                                    ],
-                                  ),
-                                ),
-                              ),
+                            CommunitySelector(
+                              communityId: communityId,
+                              communityView: communityView,
+                              onCommunitySelected: (CommunityView cv) {
+                                setState(() {
+                                  communityId = cv.community.id;
+                                  communityView = cv;
+                                });
+                                _validateSubmission();
+                              },
                             ),
                             const UserIndicator(),
                             const SizedBox(height: 12.0),
@@ -408,26 +399,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   hintText: l10n.postURL,
                                   errorText: urlError,
                                   suffixIcon: IconButton(
-                                      onPressed: () {
-                                        if (!postImageUploading) {
-                                          uploadImage(context, imageBloc, postImage: true);
-                                        }
+                                      onPressed: () async {
+                                        if (postImageUploading) return;
+
+                                        String imagePath = await selectImageToUpload();
+                                        if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
                                       },
                                       icon: postImageUploading
                                           ? const SizedBox(
                                               width: 20,
                                               height: 20,
                                               child: Center(
-                                                  child: SizedBox(
-                                                width: 18,
-                                                height: 18,
-                                                child: CircularProgressIndicator(),
-                                              )))
+                                                child: SizedBox(
+                                                  width: 18,
+                                                  height: 18,
+                                                  child: CircularProgressIndicator(),
+                                                ),
+                                              ),
+                                            )
                                           : Icon(Icons.image, semanticLabel: l10n.uploadImage))),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             Visibility(
                               visible: url.isNotEmpty,
                               child: LinkPreviewCard(
@@ -466,9 +458,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                     });
                                   }),
                             ]),
-                            const SizedBox(
-                              height: 10,
-                            ),
+                            const SizedBox(height: 10),
                             showPreview
                                 ? Container(
                                     constraints: const BoxConstraints(minWidth: double.infinity),
@@ -497,38 +487,44 @@ class _CreatePostPageState extends State<CreatePostPage> {
                         children: [
                           Expanded(
                             child: MarkdownButtons(
-                                controller: _bodyTextController,
-                                focusNode: _bodyFocusNode,
-                                actions: const [
-                                  MarkdownType.image,
-                                  MarkdownType.link,
-                                  MarkdownType.bold,
-                                  MarkdownType.italic,
-                                  MarkdownType.blockquote,
-                                  MarkdownType.strikethrough,
-                                  MarkdownType.title,
-                                  MarkdownType.list,
-                                  MarkdownType.separator,
-                                  MarkdownType.code,
-                                  MarkdownType.username,
-                                  MarkdownType.community,
-                                ],
-                                customTapActions: {
-                                  MarkdownType.username: () {
-                                    showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
-                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                          '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
-                                    });
-                                  },
-                                  MarkdownType.community: () {
-                                    showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
-                                      _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
-                                          '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
-                                    });
-                                  },
+                              controller: _bodyTextController,
+                              focusNode: _bodyFocusNode,
+                              actions: const [
+                                MarkdownType.image,
+                                MarkdownType.link,
+                                MarkdownType.bold,
+                                MarkdownType.italic,
+                                MarkdownType.blockquote,
+                                MarkdownType.strikethrough,
+                                MarkdownType.title,
+                                MarkdownType.list,
+                                MarkdownType.separator,
+                                MarkdownType.code,
+                                MarkdownType.username,
+                                MarkdownType.community,
+                              ],
+                              customTapActions: {
+                                MarkdownType.username: () {
+                                  showUserInputDialog(context, title: l10n.username, onUserSelected: (person) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${person.person.name}@${fetchInstanceNameFromUrl(person.person.actorId)}](${person.person.actorId})');
+                                  });
                                 },
-                                imageIsLoading: imageUploading,
-                                customImageButtonAction: () => uploadImage(context, imageBloc)),
+                                MarkdownType.community: () {
+                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (community) {
+                                    _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end,
+                                        '[@${community.community.title}@${fetchInstanceNameFromUrl(community.community.actorId)}](${community.community.actorId})');
+                                  });
+                                },
+                              },
+                              imageIsLoading: imageUploading,
+                              customImageButtonAction: () async {
+                                if (imageUploading) return;
+
+                                String imagePath = await selectImageToUpload();
+                                if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
+                              },
+                            ),
                           ),
                           Padding(
                             padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),

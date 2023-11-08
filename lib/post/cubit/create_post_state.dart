@@ -1,6 +1,18 @@
 part of 'create_post_cubit.dart';
 
-enum CreatePostStatus { initial, loading, error, success, imageUploadInProgress, imageUploadSuccess, imageUploadFailure, unknown }
+enum CreatePostStatus {
+  initial,
+  loading,
+  error,
+  success,
+  postImageUploadInProgress,
+  postImageUploadSuccess,
+  postImageUploadFailure,
+  imageUploadInProgress,
+  imageUploadSuccess,
+  imageUploadFailure,
+  unknown,
+}
 
 class CreatePostState extends Equatable {
   const CreatePostState({

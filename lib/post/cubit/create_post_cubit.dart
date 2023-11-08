@@ -18,21 +18,23 @@ class CreatePostCubit extends Cubit<CreatePostState> {
     emit(state.copyWith(status: state.status, message: null));
   }
 
-  Future<void> uploadImage(String imageFile) async {
+  Future<void> uploadImage(String imageFile, {bool isPostImage = false}) async {
     Account? account = await fetchActiveProfileAccount();
     if (account == null) return;
 
     PictrsApi pictrs = PictrsApi(account.instance!);
 
-    emit(state.copyWith(status: CreatePostStatus.imageUploadInProgress));
+    isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadInProgress)) : emit(state.copyWith(status: CreatePostStatus.imageUploadInProgress));
 
     try {
       PictrsUpload result = await pictrs.upload(filePath: imageFile, auth: account.jwt);
       String url = "https://${account.instance!}/pictrs/image/${result.files[0].file}";
 
-      emit(state.copyWith(status: CreatePostStatus.imageUploadSuccess, imageUrl: url));
+      isPostImage ? emit(state.copyWith(status: CreatePostStatus.postImageUploadSuccess, imageUrl: url)) : emit(state.copyWith(status: CreatePostStatus.imageUploadSuccess, imageUrl: url));
     } catch (e) {
-      emit(state.copyWith(status: CreatePostStatus.imageUploadFailure, message: e.toString()));
+      isPostImage
+          ? emit(state.copyWith(status: CreatePostStatus.postImageUploadFailure, message: e.toString()))
+          : emit(state.copyWith(status: CreatePostStatus.imageUploadFailure, message: e.toString()));
     }
   }
 

@@ -151,3 +151,10 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
     showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }
 }
+
+Future<String> selectImageToUpload() async {
+  final ImagePicker picker = ImagePicker();
+
+  XFile? file = await picker.pickImage(source: ImageSource.gallery);
+  return file!.path;
+}
