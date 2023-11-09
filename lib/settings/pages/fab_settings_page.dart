@@ -37,6 +37,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool postFabEnableChangeSort = true;
   bool postFabEnableReplyToPost = true;
   bool postFabEnableRefresh = true;
+  bool postFabEnableSearch = true;
 
   FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
   FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
@@ -109,6 +110,10 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.postFabEnableRefresh.name, value);
         setState(() => postFabEnableRefresh = value);
         break;
+      case LocalSettings.postFabEnableSearch:
+        await prefs.setBool(LocalSettings.postFabEnableSearch.name, value);
+        setState(() => postFabEnableSearch = value);
+        break;
       case LocalSettings.feedFabSinglePressAction:
         await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
@@ -150,6 +155,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
       postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
+      postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
 
       feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
       feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
@@ -587,6 +593,27 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                             ),
                                         ],
                                         onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
+                                      ),
+                                      ToggleOption(
+                                        description: LocalSettings.postFabEnableSearch.label,
+                                        value: postFabEnableSearch,
+                                        semanticLabel: """${LocalSettings.postFabEnableSearch.label}
+                                            ${postFabSinglePressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentLongPress : ''}""",
+                                        iconEnabled: Icons.search_rounded,
+                                        iconDisabled: Icons.search_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableSearch, value),
+                                        additionalWidgets: [
+                                          if (postFabSinglePressAction == PostFabAction.search)
+                                            const Icon(
+                                              Icons.touch_app_outlined,
+                                            ),
+                                          if (postFabLongPressAction == PostFabAction.search)
+                                            const Icon(
+                                              Icons.touch_app_rounded,
+                                            ),
+                                        ],
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.search),
                                       ),
                                     ],
                                   ),

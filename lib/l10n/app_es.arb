@@ -389,8 +389,6 @@
   "@noComments": {},
   "reachedTheBottom": "Hmmm. It seems like you've reached the bottom.",
   "@reachedTheBottom": {},
-  "viewAllComments": "View all comments.",
-  "@viewAllComments": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
   "reportComment": "Report Comment",

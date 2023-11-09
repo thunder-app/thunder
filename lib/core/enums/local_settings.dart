@@ -97,6 +97,7 @@ enum LocalSettings {
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
   postFabEnableRefresh(name: 'setting_post_fab_enable_refresh', label: 'Refresh'),
+  postFabEnableSearch(name: 'setting_post_fab_enable_search', label: 'Search'),
   feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
   feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),

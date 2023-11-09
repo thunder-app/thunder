@@ -88,6 +88,20 @@ class NavigateCommentEvent extends PostEvent {
   const NavigateCommentEvent({required this.targetIndex, required this.direction});
 }
 
+class StartCommentSearchEvent extends PostEvent {
+  final List<Comment> commentMatches;
+
+  const StartCommentSearchEvent({required this.commentMatches});
+}
+
+class ContinueCommentSearchEvent extends PostEvent {
+  const ContinueCommentSearchEvent();
+}
+
+class EndCommentSearchEvent extends PostEvent {
+  const EndCommentSearchEvent();
+}
+
 class ReportCommentEvent extends PostEvent {
   final int commentId;
   final String message;
