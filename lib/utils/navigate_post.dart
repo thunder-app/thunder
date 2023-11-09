@@ -77,7 +77,8 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
               try {
                 feedBloc = context.read<FeedBloc>();
               } catch (e) {}
-              feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: postViewMedia));
+              // Manually marking the read attribute as true when navigating to post since there is a case where the API call to mark the post as read from the feed page is not completed in time
+              feedBloc?.add(FeedItemUpdatedEvent(postViewMedia: PostViewMedia(postView: postViewMedia.postView.copyWith(read: true), media: postViewMedia.media)));
             },
           ),
         );
