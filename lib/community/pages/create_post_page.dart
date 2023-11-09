@@ -382,42 +382,40 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               },
                               textFieldConfiguration: TextFieldConfiguration(
                                 controller: _titleTextController,
-                                decoration: InputDecoration(
-                                  hintText: l10n.postTitle,
-                                ),
+                                decoration: InputDecoration(hintText: l10n.postTitle),
                               ),
                               hideOnEmpty: true,
                               hideOnLoading: true,
                               hideOnError: true,
                             ),
-                            const SizedBox(
-                              height: 20,
-                            ),
+                            const SizedBox(height: 20),
                             TextFormField(
                               controller: _urlTextController,
                               decoration: InputDecoration(
-                                  hintText: l10n.postURL,
-                                  errorText: urlError,
-                                  suffixIcon: IconButton(
-                                      onPressed: () async {
-                                        if (postImageUploading) return;
+                                hintText: l10n.postURL,
+                                errorText: urlError,
+                                suffixIcon: IconButton(
+                                  onPressed: () async {
+                                    if (postImageUploading) return;
 
-                                        String imagePath = await selectImageToUpload();
-                                        if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
-                                      },
-                                      icon: postImageUploading
-                                          ? const SizedBox(
-                                              width: 20,
-                                              height: 20,
-                                              child: Center(
-                                                child: SizedBox(
-                                                  width: 18,
-                                                  height: 18,
-                                                  child: CircularProgressIndicator(),
-                                                ),
-                                              ),
-                                            )
-                                          : Icon(Icons.image, semanticLabel: l10n.uploadImage))),
+                                    String imagePath = await selectImageToUpload();
+                                    if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
+                                  },
+                                  icon: postImageUploading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 18,
+                                              height: 18,
+                                              child: CircularProgressIndicator(),
+                                            ),
+                                          ),
+                                        )
+                                      : Icon(Icons.image, semanticLabel: l10n.uploadImage),
+                                ),
+                              ),
                             ),
                             const SizedBox(height: 10),
                             Visibility(
@@ -437,7 +435,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 isUserLoggedIn: true,
                               ),
                             ),
-                            if (crossPosts.isNotEmpty)
+                            if (crossPosts.isNotEmpty && widget.postView == null)
                               Visibility(
                                 visible: url.isNotEmpty,
                                 child: CrossPosts(
@@ -445,19 +443,16 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   isNewPost: true,
                                 ),
                               ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            Row(children: <Widget>[
-                              Expanded(child: Text(l10n.postNSFW)),
-                              Switch(
+                            const SizedBox(height: 10),
+                            Row(
+                              children: <Widget>[
+                                Expanded(child: Text(l10n.postNSFW)),
+                                Switch(
                                   value: isNSFW,
-                                  onChanged: (bool value) {
-                                    setState(() {
-                                      isNSFW = value;
-                                    });
-                                  }),
-                            ]),
+                                  onChanged: (bool value) => setState(() => isNSFW = value),
+                                ),
+                              ],
+                            ),
                             const SizedBox(height: 10),
                             showPreview
                                 ? Container(
