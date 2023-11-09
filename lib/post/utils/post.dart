@@ -36,8 +36,7 @@ Future<bool> markPostAsRead(int postId, bool read) async {
     read: read,
   ));
 
-  if (markPostAsReadResponse.isSuccess()) return true;
-  return false;
+  return markPostAsReadResponse.isSuccess();
 }
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
