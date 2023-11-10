@@ -371,6 +371,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 _validateSubmission();
                               },
                             ),
+                            const SizedBox(height: 4.0),
                             const UserIndicator(),
                             const SizedBox(height: 12.0),
                             TypeAheadField<String>(
@@ -774,10 +775,20 @@ class _CommunitySelectorState extends State<CommunitySelector> {
               CommunityIcon(community: _communityView?.community, radius: 16),
               const SizedBox(width: 12),
               _communityId != null
-                  ? Text(
-                      '${_communityView?.community.name} '
-                      '· ${fetchInstanceNameFromUrl(_communityView?.community.actorId)}',
-                      style: theme.textTheme.titleSmall,
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${_communityView?.community.title} '),
+                        FutureBuilder(
+                          future: getLemmyCommunity(_communityView?.community.actorId ?? ''),
+                          builder: (context, snapshot) {
+                            return Text(
+                              snapshot.data ?? '',
+                              style: theme.textTheme.bodySmall,
+                            );
+                          },
+                        ),
+                      ],
                     )
                   : Text(
                       l10n.selectCommunity,
