@@ -196,10 +196,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           emit(state.copyWith(status: FeedStatus.success));
           emit(state.copyWith(status: FeedStatus.fetching));
 
-          PostView postView = await markPostAsRead(originalPostView.post.id, event.value);
-          state.postViewMedias[existingPostViewMediaIndex].postView = postView;
+          bool success = await markPostAsRead(originalPostView.post.id, event.value);
+          if (success) return emit(state.copyWith(status: FeedStatus.success));
 
-          emit(state.copyWith(status: FeedStatus.success));
+          // Restore the original post contents if not successful
+          state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;
+          return emit(state.copyWith(status: FeedStatus.failure));
         } catch (e) {
           // Restore the original post contents
           state.postViewMedias[existingPostViewMediaIndex].postView = originalPostView;

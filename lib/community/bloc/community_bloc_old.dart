@@ -96,11 +96,11 @@ class CommunityBloc extends Bloc<CommunityEvent, CommunityState> {
     try {
       emit(state.copyWith(status: CommunityStatus.refreshing, communityId: state.communityId, listingType: state.listingType));
 
-      PostView postView = await markPostAsRead(event.postId, event.read);
+      bool success = await markPostAsRead(event.postId, event.read);
 
       // Find the specific post to update
       int existingPostViewIndex = state.postViews!.indexWhere((postViewMedia) => postViewMedia.postView.post.id == event.postId);
-      state.postViews![existingPostViewIndex].postView = postView;
+      if (success) state.postViews![existingPostViewIndex].postView = state.postViews![existingPostViewIndex].postView.copyWith(read: event.read);
 
       return emit(state.copyWith(status: CommunityStatus.success, communityId: state.communityId, listingType: state.listingType));
     } catch (e) {
