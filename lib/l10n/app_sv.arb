@@ -118,5 +118,13 @@
   "manageAccounts": "Hantera Konton",
   "@manageAccounts": {},
   "blockUser": "Blockera användare",
-  "@blockUser": {}
+  "@blockUser": {},
+  "onlyModsCanPostInCommunity": "Endast moderatorer kan skapa inlägg i detta community",
+  "@onlyModsCanPostInCommunity": {},
+  "blockCommunity": "Blockera community",
+  "@blockCommunity": {},
+  "noCommunityBlocks": "Inga blockerade communities.",
+  "@noCommunityBlocks": {},
+  "community": "Community",
+  "@community": {}
 }
