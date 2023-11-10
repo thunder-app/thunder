@@ -29,9 +29,10 @@ class ResetSearch extends SearchEvent {}
 class ContinueSearchEvent extends SearchEvent {
   final String query;
   final SortType sortType;
+  final ListingType listingType;
   final SearchType searchType;
 
-  const ContinueSearchEvent({required this.query, required this.sortType, required this.searchType});
+  const ContinueSearchEvent({required this.query, required this.sortType, required this.listingType, required this.searchType});
 }
 
 class FocusSearchEvent extends SearchEvent {}

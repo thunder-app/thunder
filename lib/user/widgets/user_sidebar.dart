@@ -60,7 +60,7 @@ class _UserSidebarState extends State<UserSidebar> {
 
     //custom stats
     final totalContributions = (widget.userInfo!.counts.postCount + widget.userInfo!.counts.commentCount);
-    final totalScore = (widget.userInfo!.counts.postScore + widget.userInfo!.counts.commentScore);
+    final totalScore = ((widget.userInfo!.counts.postScore?.toInt() ?? 0) + (widget.userInfo!.counts.commentScore?.toInt() ?? 0));
     Duration accountAge = DateTime.now().difference(widget.userInfo!.person.published);
     final accountAgeMonths = ((accountAge.inDays) / 30).toDouble();
     final num postsPerMonth;
@@ -273,24 +273,24 @@ class _UserSidebarState extends State<UserSidebar> {
                                     icon: Icons.wysiwyg_rounded,
                                     label: ' Posts',
                                     metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postCount),
-                                    scoreLabel: ' Score',
-                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
+                                    scoreLabel: widget.userInfo!.counts.postScore == null ? 'No score available' : ' Score',
+                                    scoreMetric: widget.userInfo!.counts.postScore == null ? '' : NumberFormat("#,###,###,###").format(widget.userInfo!.counts.postScore),
                                   ),
                                   const SizedBox(height: 3.0),
                                   UserSidebarStats(
                                     icon: Icons.chat_rounded,
                                     label: ' Comments',
                                     metric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentCount),
-                                    scoreLabel: ' Score',
-                                    scoreMetric: NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
+                                    scoreLabel: widget.userInfo!.counts.commentScore == null ? 'No score available' : ' Score',
+                                    scoreMetric: widget.userInfo!.counts.commentScore == null ? '' : NumberFormat("#,###,###,###").format(widget.userInfo!.counts.commentScore),
                                   ),
                                   const SizedBox(height: 3.0),
                                   Visibility(
                                       visible: scoreCounters,
                                       child: UserSidebarActivity(
                                         icon: Icons.celebration_rounded,
-                                        scoreLabel: ' Total Score',
-                                        scoreMetric: NumberFormat("#,###,###,###").format(totalScore),
+                                        scoreLabel: totalScore == 0 ? 'Score not available' : ' Total Score',
+                                        scoreMetric: totalScore == 0 ? '' : NumberFormat("#,###,###,###").format(totalScore),
                                       )),
                                 ],
                               ),

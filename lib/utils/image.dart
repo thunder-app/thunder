@@ -136,11 +136,11 @@ Size getWEBPImageDimensions(Uint8List bytes) {
 void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
   final ImagePicker picker = ImagePicker();
   String path;
-  if (imagePath?.isEmpty ?? false) {
+  if (imagePath == null || imagePath.isEmpty) {
     XFile? file = await picker.pickImage(source: ImageSource.gallery);
     path = file!.path;
   } else {
-    path = imagePath!;
+    path = imagePath;
   }
 
   try {

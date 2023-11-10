@@ -17,9 +17,12 @@ import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
@@ -68,6 +71,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.allPosts;
+  bool _searchByUrl = false;
+  String _searchUrlLabel = AppLocalizations.of(GlobalContext.context)!.text;
 
   @override
   void initState() {
@@ -105,7 +110,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
-        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, searchType: _currentSearchType));
+        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
       }
     }
   }
@@ -116,7 +121,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   _onChange(BuildContext context, String value) {
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType));
+    if (_currentSearchType == SearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
+      setState(() {
+        _searchByUrl = true;
+        _searchUrlLabel = AppLocalizations.of(context)!.url;
+      });
+    }
+
+    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
   }
 
   @override
@@ -132,218 +144,268 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     final String? accountInstance = context.read<AuthBloc>().state.account?.instance;
     final String currentAnonymousInstance = context.read<ThunderBloc>().state.currentAnonymousInstance;
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
-        BlocListener<SearchBloc, SearchState>(listener: (context, state) {}),
-        BlocListener<AccountBloc, AccountState>(listener: (context, state) async {
-          final Account? activeProfile = await fetchActiveProfileAccount();
+    return BlocProvider(
+      create: (context) => FeedBloc(lemmyClient: LemmyClient.instance),
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<FeedBloc, FeedState>(listener: (context, state) => setState(() {})),
+          BlocListener<AnonymousSubscriptionsBloc, AnonymousSubscriptionsState>(listener: (context, state) {}),
+          BlocListener<SearchBloc, SearchState>(listener: (context, state) {
+            context.read<FeedBloc>().add(PopulatePostsEvent(state.posts ?? []));
+          }),
+          BlocListener<AccountBloc, AccountState>(listener: (context, state) async {
+            final Account? activeProfile = await fetchActiveProfileAccount();
 
-          // When account changes, that means our instance most likely changed, so reset search.
-          if (state.status == AccountStatus.success &&
-              ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id)) {
-            _controller.clear();
-            context.read<SearchBloc>().add(ResetSearch());
-            setState(() {});
-            _previousUserId = activeProfile?.userId;
-          }
-        }),
-        BlocListener<ThunderBloc, ThunderState>(
-          listener: (context, state) {
-            _controller.clear();
-            context.read<SearchBloc>().add(ResetSearch());
-            setState(() {});
-            _previousUserId = null;
-          },
-        ),
-      ],
-      child: BlocBuilder<SearchBloc, SearchState>(
-        builder: (context, state) {
-          if (state.focusSearchId > _previousFocusSearchId) {
-            searchTextFieldFocus.requestFocus();
-            _previousFocusSearchId = state.focusSearchId;
-          }
+            // When account changes, that means our instance most likely changed, so reset search.
+            if (state.status == AccountStatus.success &&
+                ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id)) {
+              _controller.clear();
+              context.read<SearchBloc>().add(ResetSearch());
+              setState(() {});
+              _previousUserId = activeProfile?.userId;
+            }
+          }),
+          BlocListener<ThunderBloc, ThunderState>(
+            listener: (context, state) {
+              _controller.clear();
+              context.read<SearchBloc>().add(ResetSearch());
+              setState(() {});
+              _previousUserId = null;
+            },
+          ),
+        ],
+        child: BlocBuilder<SearchBloc, SearchState>(
+          builder: (context, state) {
+            if (state.focusSearchId > _previousFocusSearchId) {
+              searchTextFieldFocus.requestFocus();
+              _previousFocusSearchId = state.focusSearchId;
+            }
 
-          return Scaffold(
-            appBar: AppBar(
-                toolbarHeight: 90.0,
-                scrolledUnderElevation: 0.0,
-                title: Material(
-                  color: Colors.transparent,
-                  borderRadius: BorderRadius.circular(50),
-                  elevation: 8,
-                  child: Stack(
-                    children: [
-                      TextField(
-                        keyboardType: TextInputType.url,
-                        focusNode: searchTextFieldFocus,
-                        onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
-                        controller: _controller,
-                        onTap: () {
-                          HapticFeedback.selectionClick();
-                        },
-                        decoration: InputDecoration(
-                          fillColor: Theme.of(context).searchViewTheme.backgroundColor,
-                          hintText: l10n.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(50),
-                            borderSide: const BorderSide(
-                              width: 0,
-                              style: BorderStyle.none,
+            return Scaffold(
+              appBar: AppBar(
+                  toolbarHeight: 90.0,
+                  scrolledUnderElevation: 0.0,
+                  title: Material(
+                    color: Colors.transparent,
+                    borderRadius: BorderRadius.circular(50),
+                    elevation: 8,
+                    child: Stack(
+                      children: [
+                        TextField(
+                          keyboardType: TextInputType.url,
+                          focusNode: searchTextFieldFocus,
+                          onChanged: (value) => debounce(const Duration(milliseconds: 300), _onChange, [context, value]),
+                          controller: _controller,
+                          onTap: () {
+                            HapticFeedback.selectionClick();
+                          },
+                          decoration: InputDecoration(
+                            fillColor: Theme.of(context).searchViewTheme.backgroundColor,
+                            hintText: l10n.searchInstance((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                            filled: true,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(50),
+                              borderSide: const BorderSide(
+                                width: 0,
+                                style: BorderStyle.none,
+                              ),
                             ),
-                          ),
-                          suffixIcon: _controller.text.isNotEmpty
-                              ? SizedBox(
-                                  width: 50,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      IconButton(
-                                        icon: Icon(
-                                          Icons.close,
-                                          semanticLabel: l10n.clearSearch,
+                            suffixIcon: _controller.text.isNotEmpty
+                                ? SizedBox(
+                                    width: 50,
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.start,
+                                      children: [
+                                        IconButton(
+                                          icon: Icon(
+                                            Icons.close,
+                                            semanticLabel: l10n.clearSearch,
+                                          ),
+                                          onPressed: () {
+                                            resetTextField();
+                                            context.read<SearchBloc>().add(ResetSearch());
+                                          },
                                         ),
-                                        onPressed: () {
-                                          resetTextField();
-                                          context.read<SearchBloc>().add(ResetSearch());
-                                        },
-                                      ),
+                                      ],
+                                    ),
+                                  )
+                                : null,
+                            prefixIcon: const Icon(Icons.search_rounded),
+                          ),
+                        ),
+                      ],
+                    ),
+                  )),
+              body: Stack(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, top: 10, right: 15),
+                    child: FadingEdgeScrollView.fromSingleChildScrollView(
+                      gradientFractionOnStart: 0.1,
+                      gradientFractionOnEnd: 0.1,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        controller: _searchFiltersScrollController,
+                        child: Row(
+                          children: [
+                            ActionChip(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: theme.dividerColor),
+                              label: SizedBox(
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    Text(_currentSearchType.name.capitalize),
+                                    const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  showDragHandle: true,
+                                  builder: (ctx) => BottomSheetListPicker(
+                                    title: l10n.selectSearchType,
+                                    items: [
+                                      ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
+                                      ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
+                                      ListPickerItem(label: l10n.posts, payload: SearchType.posts, icon: Icons.wysiwyg_rounded),
+                                      ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
+                                    ],
+                                    onSelect: (value) {
+                                      setState(() => _currentSearchType = value.payload);
+                                      if (_controller.text.isNotEmpty) {
+                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: value.payload));
+                                      }
+                                    },
+                                    previouslySelected: _currentSearchType,
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            if (_currentSearchType == SearchType.posts) ...[
+                              ActionChip(
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                side: BorderSide(color: theme.dividerColor),
+                                label: SizedBox(
+                                  height: 20,
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.link_rounded, size: 15),
+                                      const SizedBox(width: 5),
+                                      Text(_searchUrlLabel),
+                                      const Icon(Icons.arrow_drop_down_rounded, size: 20),
                                     ],
                                   ),
-                                )
-                              : null,
-                          prefixIcon: const Icon(Icons.search_rounded),
-                        ),
-                      ),
-                    ],
-                  ),
-                )),
-            body: Stack(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 15, top: 10, right: 15),
-                  child: FadingEdgeScrollView.fromSingleChildScrollView(
-                    gradientFractionOnStart: 0.1,
-                    gradientFractionOnEnd: 0.1,
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      controller: _searchFiltersScrollController,
-                      child: Row(
-                        children: [
-                          ActionChip(
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            side: BorderSide(color: theme.dividerColor),
-                            label: SizedBox(
-                              height: 20,
-                              child: Row(
-                                children: [
-                                  Text(_currentSearchType.name.capitalize),
-                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                ],
-                              ),
-                            ),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                showDragHandle: true,
-                                builder: (ctx) => BottomSheetListPicker(
-                                  title: l10n.selectSearchType,
-                                  items: [
-                                    ListPickerItem(label: l10n.communities, payload: SearchType.communities, icon: Icons.people_rounded),
-                                    ListPickerItem(label: l10n.users, payload: SearchType.users, icon: Icons.person_rounded),
-                                    ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
-                                  ],
-                                  onSelect: (value) {
-                                    setState(() => _currentSearchType = value.payload);
-                                    if (_controller.text.isNotEmpty) {
-                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: value.payload));
-                                    }
-                                  },
-                                  previouslySelected: _currentSearchType,
                                 ),
-                              );
-                            },
-                          ),
-                          const SizedBox(width: 10),
-                          ActionChip(
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            side: BorderSide(color: theme.dividerColor),
-                            label: SizedBox(
-                              height: 20,
-                              child: Row(
-                                children: [
-                                  Icon(sortTypeIcon, size: 15),
-                                  const SizedBox(width: 5),
-                                  Text(sortTypeLabel ?? l10n.sortBy),
-                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                ],
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    showDragHandle: true,
+                                    builder: (ctx) => BottomSheetListPicker(
+                                      title: l10n.searchPostSearchType,
+                                      items: [
+                                        ListPickerItem(label: l10n.searchByText, payload: 'text', icon: Icons.wysiwyg_rounded),
+                                        ListPickerItem(label: l10n.searchByUrl, payload: 'url', icon: Icons.link_rounded),
+                                      ],
+                                      onSelect: (value) {
+                                        setState(() {
+                                          _searchByUrl = value.payload == 'url';
+                                          _searchUrlLabel = value.payload == 'url' ? l10n.url : l10n.text;
+                                        });
+                                        if (_controller.text.isNotEmpty) {
+                                          context
+                                              .read<SearchBloc>()
+                                              .add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
+                                        }
+                                      },
+                                      previouslySelected: _searchByUrl ? 'url' : 'text',
+                                    ),
+                                  );
+                                },
                               ),
-                            ),
-                            onPressed: () => showSortBottomSheet(context),
-                          ),
-                          const SizedBox(width: 10),
-                          ActionChip(
-                            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                            side: BorderSide(color: theme.dividerColor),
-                            label: SizedBox(
-                              height: 20,
-                              child: Row(
-                                children: [
-                                  Icon(_feedTypeIcon, size: 15),
-                                  const SizedBox(width: 5),
-                                  Text(_feedTypeLabel ?? l10n.feed),
-                                  const Icon(Icons.arrow_drop_down_rounded, size: 20),
-                                ],
-                              ),
-                            ),
-                            onPressed: () {
-                              showModalBottomSheet(
-                                context: context,
-                                showDragHandle: true,
-                                builder: (ctx) => BottomSheetListPicker(
-                                  title: l10n.selectFeedType,
-                                  items: [
-                                    ListPickerItem(label: l10n.subscriptions, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
-                                    ListPickerItem(label: l10n.localPosts, payload: ListingType.local, icon: Icons.home_rounded),
-                                    ListPickerItem(label: l10n.allPosts, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                              const SizedBox(width: 10),
+                            ],
+                            ActionChip(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: theme.dividerColor),
+                              label: SizedBox(
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    Icon(sortTypeIcon, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(sortTypeLabel ?? l10n.sortBy),
+                                    const Icon(Icons.arrow_drop_down_rounded, size: 20),
                                   ],
-                                  onSelect: (value) {
-                                    setState(() {
-                                      if (value.payload == ListingType.subscribed) {
-                                        _feedTypeLabel = l10n.subscriptions;
-                                        _feedTypeIcon = Icons.view_list_rounded;
-                                      } else if (value.payload == ListingType.local) {
-                                        _feedTypeLabel = l10n.localPosts;
-                                        _feedTypeIcon = Icons.home_rounded;
-                                      } else if (value.payload == ListingType.all) {
-                                        _feedTypeLabel = l10n.allPosts;
-                                        _feedTypeIcon = Icons.grid_view_rounded;
+                                ),
+                              ),
+                              onPressed: () => showSortBottomSheet(context),
+                            ),
+                            const SizedBox(width: 10),
+                            ActionChip(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: theme.dividerColor),
+                              label: SizedBox(
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    Icon(_feedTypeIcon, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(_feedTypeLabel ?? l10n.feed),
+                                    const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {
+                                showModalBottomSheet(
+                                  context: context,
+                                  showDragHandle: true,
+                                  builder: (ctx) => BottomSheetListPicker(
+                                    title: l10n.selectFeedType,
+                                    items: [
+                                      ListPickerItem(label: l10n.subscriptions, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
+                                      ListPickerItem(label: l10n.localPosts, payload: ListingType.local, icon: Icons.home_rounded),
+                                      ListPickerItem(label: l10n.allPosts, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                                    ],
+                                    onSelect: (value) {
+                                      setState(() {
+                                        if (value.payload == ListingType.subscribed) {
+                                          _feedTypeLabel = l10n.subscriptions;
+                                          _feedTypeIcon = Icons.view_list_rounded;
+                                        } else if (value.payload == ListingType.local) {
+                                          _feedTypeLabel = l10n.localPosts;
+                                          _feedTypeIcon = Icons.home_rounded;
+                                        } else if (value.payload == ListingType.all) {
+                                          _feedTypeLabel = l10n.allPosts;
+                                          _feedTypeIcon = Icons.grid_view_rounded;
+                                        }
+                                        _currentFeedType = value.payload;
+                                      });
+                                      if (_controller.text.isNotEmpty) {
+                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _getSearchTypeToUse()));
                                       }
-                                      _currentFeedType = value.payload;
-                                    });
-                                    if (_controller.text.isNotEmpty) {
-                                      context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _currentSearchType));
-                                    }
-                                  },
-                                  previouslySelected: _currentFeedType,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                                    },
+                                    previouslySelected: _currentFeedType,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 60),
-                  child: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
-                ),
-              ],
-            ),
-          );
-        },
+                  Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: _getSearchBody(context, state, isUserLoggedIn, accountInstance, currentAnonymousInstance),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }
@@ -351,6 +413,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   Widget _getSearchBody(BuildContext context, SearchState state, bool isUserLoggedIn, String? accountInstance, String currentAnonymousInstance) {
     final ThemeData theme = Theme.of(context);
     final AppLocalizations l10n = AppLocalizations.of(context)!;
+    final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+    final bool tabletMode = thunderBloc.state.tabletMode;
 
     switch (state.status) {
       case SearchStatus.initial:
@@ -371,6 +435,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                     SearchType.communities => l10n.searchCommunitiesFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                     SearchType.users => l10n.searchUsersFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                     SearchType.comments => l10n.searchCommentsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
+                    SearchType.posts => l10n.searchPostsFederatedWith((isUserLoggedIn ? accountInstance : currentAnonymousInstance) ?? ''),
                     _ => '',
                   },
                   textAlign: TextAlign.center,
@@ -418,6 +483,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                 SearchType.communities => l10n.noCommunitiesFound,
                 SearchType.users => l10n.noUsersFound,
                 SearchType.comments => l10n.noCommentsFound,
+                SearchType.posts => l10n.noPostsFound,
                 _ => '',
               },
               textAlign: TextAlign.center,
@@ -508,6 +574,25 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               },
             ),
           );
+        } else if (_currentSearchType == SearchType.posts) {
+          return FadingEdgeScrollView.fromScrollView(
+            gradientFractionOnEnd: 0,
+            child: CustomScrollView(
+              controller: _scrollController,
+              slivers: [
+                FeedPostList(postViewMedias: state.posts ?? [], tabletMode: tabletMode),
+                if (state.status == SearchStatus.refreshing)
+                  const SliverToBoxAdapter(
+                    child: Center(
+                      child: Padding(
+                        padding: EdgeInsets.only(bottom: 10),
+                        child: CircularProgressIndicator(),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          );
         } else {
           return Container();
         }
@@ -516,7 +601,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType))},
+          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()))},
           actionText: l10n.retry,
         );
     }
@@ -701,7 +786,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
           if (_controller.text.isNotEmpty) {
             context.read<SearchBloc>().add(
-                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType),
+                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()),
                 );
           }
         },
@@ -750,5 +835,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     if (removedSubs.isNotEmpty) {
       context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: removedSubs));
     }
+  }
+
+  SearchType _getSearchTypeToUse() {
+    if (_currentSearchType == SearchType.posts && _searchByUrl) {
+      return SearchType.url;
+    }
+    return _currentSearchType;
   }
 }

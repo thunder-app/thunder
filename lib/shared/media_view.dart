@@ -212,9 +212,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
-
-    final openInExternalBrowser = state.openInExternalBrowser;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
@@ -288,7 +285,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       InkWell(
                         onTap: () {
                           if (widget.post?.url != null) {
-                            openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                            handleLink(context, url: widget.post!.url!);
                           }
                         },
                       ),
