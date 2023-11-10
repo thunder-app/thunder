@@ -274,5 +274,9 @@
   "unsubscribe": "Säg Upp",
   "@unsubscribe": {},
   "postTogglePreview": "Förhandsvisning",
-  "@postTogglePreview": {}
+  "@postTogglePreview": {},
+  "top": "Bästa",
+  "@top": {},
+  "timeoutErrorMessage": "Förfrågan nådde maxtiden.",
+  "@timeoutErrorMessage": {}
 }
