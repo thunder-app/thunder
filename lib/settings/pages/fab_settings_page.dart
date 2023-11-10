@@ -511,6 +511,27 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                         onTap: () => showPostFabActionPicker(PostFabAction.openFab),
                                       ),
                                       ToggleOption(
+                                        description: LocalSettings.postFabEnableSearch.label,
+                                        value: postFabEnableSearch,
+                                        semanticLabel: """${LocalSettings.postFabEnableSearch.label}
+                                            ${postFabSinglePressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentSinglePress : ''}
+                                            ${postFabLongPressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentLongPress : ''}""",
+                                        iconEnabled: Icons.search_rounded,
+                                        iconDisabled: Icons.search_rounded,
+                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableSearch, value),
+                                        additionalWidgets: [
+                                          if (postFabSinglePressAction == PostFabAction.search)
+                                            const Icon(
+                                              Icons.touch_app_outlined,
+                                            ),
+                                          if (postFabLongPressAction == PostFabAction.search)
+                                            const Icon(
+                                              Icons.touch_app_rounded,
+                                            ),
+                                        ],
+                                        onLongPress: () => showPostFabActionPicker(PostFabAction.search),
+                                      ),
+                                      ToggleOption(
                                         description: LocalSettings.postFabEnableBackToTop.label,
                                         value: postFabEnableBackToTop,
                                         semanticLabel: """${LocalSettings.postFabEnableBackToTop.label}
@@ -593,27 +614,6 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
                                             ),
                                         ],
                                         onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableSearch.label,
-                                        value: postFabEnableSearch,
-                                        semanticLabel: """${LocalSettings.postFabEnableSearch.label}
-                                            ${postFabSinglePressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.search_rounded,
-                                        iconDisabled: Icons.search_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableSearch, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.search)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.search)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.search),
                                       ),
                                     ],
                                   ),
