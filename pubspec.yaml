@@ -102,6 +102,7 @@ dependencies:
       url: https://github.com/AyushmanG26/receive_sharing_intent.git
   collection: ^1.17.0
   fading_edge_scrollview: ^3.0.0
+  flutter_keyboard_visibility: ^5.4.1
 
 dev_dependencies:
   build_runner: ^2.4.6

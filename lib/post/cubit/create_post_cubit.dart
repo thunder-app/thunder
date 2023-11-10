@@ -15,7 +15,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   CreatePostCubit() : super(const CreatePostState(status: CreatePostStatus.initial));
 
   Future<void> clearMessage() async {
-    emit(state.copyWith(status: state.status, message: null));
+    emit(state.copyWith(status: CreatePostStatus.initial, message: null));
   }
 
   Future<void> uploadImage(String imageFile, {bool isPostImage = false}) async {
@@ -39,7 +39,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
   }
 
   /// Creates or edits a post. When successful, it returns the newly created/updated post in the form of a [PostViewMedia]
-  Future<void> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited}) async {
+  Future<void> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
     emit(state.copyWith(status: CreatePostStatus.loading));
 
     try {
@@ -50,6 +50,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
         url: url,
         nsfw: nsfw,
         postIdBeingEdited: postIdBeingEdited,
+        languageId: languageId,
       );
 
       // Parse the newly created post

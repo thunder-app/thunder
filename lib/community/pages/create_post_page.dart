@@ -2,8 +2,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
 import 'package:lemmy_api_client/v3.dart';
@@ -17,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/view_mode.dart';
@@ -89,24 +92,35 @@ class _CreatePostPageState extends State<CreatePostPage> {
   DraftPost draftPost = DraftPost();
 
   /// Timer for saving the current draft to local storage
-  late Timer _draftTimer;
+  Timer? _draftTimer;
 
   /// Whether or not to show the preview for the post from the raw markdown
   bool showPreview = false;
 
-  /// Status of image upload when uploading to the post body
-  bool imageUploading = false;
+  /// Keeps the last known state of the keyboard. This is used to re-open the keyboard when the preview is dismissed
+  bool wasKeyboardVisible = false;
 
-  /// Status of image upload when uploading to the post URL
-  bool postImageUploading = false;
-
+  /// Whether or not the submit button is disabled
   bool isSubmitButtonDisabled = true;
+
+  /// Whether or not the post is marked as NSFW
   bool isNSFW = false;
+
+  /// The shared link for the post. This is used to determine any cross posts
   String url = "";
+
+  /// The error message for the shared link if available
   String? urlError;
-  DraftPost newDraftPost = DraftPost();
+
+  /// The id of the community that the post will be created in
   int? communityId;
+
+  int languageId = 0;
+
+  /// The [CommunityView] associated with the post. This is used to display the community information
   CommunityView? communityView;
+
+  /// A list of cross posts for the given post. This is determined by the URL parameter
   List<PostView> crossPosts = [];
 
   /// The corresponding controllers for the title, body and url text fields
@@ -114,7 +128,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
   final TextEditingController _titleTextController = TextEditingController();
   final TextEditingController _urlTextController = TextEditingController();
 
+  /// The focus node for the body. This is used to keep track of the position of the cursor when toggling preview
   final FocusNode _bodyFocusNode = FocusNode();
+
+  /// The keyboard visibility controller used to determine if the keyboard is visible at a given time
+  final keyboardVisibilityController = KeyboardVisibilityController();
+
+  /// Used for restoring and saving drafts
+  SharedPreferences? sharedPreferences;
+
   final imageBloc = ImageBloc();
 
   @override
@@ -126,15 +148,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     // Set up any text controller listeners
     _titleTextController.addListener(() {
-      _validateSubmission();
       draftPost.title = _titleTextController.text;
+      _validateSubmission();
     });
 
     _urlTextController.addListener(() {
-      _validateSubmission();
       url = _urlTextController.text;
       draftPost.url = _urlTextController.text;
 
+      _validateSubmission();
       debounce(const Duration(milliseconds: 1000), _updatePreview, [url]);
     });
 
@@ -169,6 +191,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _urlTextController.text = widget.postView!.post.url ?? '';
       _bodyTextController.text = widget.postView!.post.body ?? '';
       isNSFW = widget.postView!.post.nsfw;
+      languageId = widget.postView!.post.languageId;
 
       return;
     }
@@ -180,7 +203,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   @override
-  void dispose() async {
+  void dispose() {
     _bodyTextController.dispose();
     _titleTextController.dispose();
     _urlTextController.dispose();
@@ -188,15 +211,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     FocusManager.instance.primaryFocus?.unfocus();
 
-    _draftTimer.cancel();
-
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    _draftTimer?.cancel();
 
     if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-      prefs.setString(draftId, jsonEncode(draftPost.toJson()));
+      sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
       if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
     } else {
-      prefs.remove(draftId);
+      sharedPreferences?.remove(draftId);
     }
 
     super.dispose();
@@ -204,7 +225,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   /// Attempts to restore an existing draft of a post
   void _restoreExistingDraft() async {
-    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+    sharedPreferences = (await UserPreferences.instance).sharedPreferences;
 
     if (widget.postView != null) {
       draftId = '${LocalSettings.draftsCache.name}-post-edit-${widget.postView!.post.id}';
@@ -216,7 +237,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       draftId = '${LocalSettings.draftsCache.name}-post-create-general';
     }
 
-    String? draftPostJson = prefs.getString(draftId);
+    String? draftPostJson = sharedPreferences?.getString(draftId);
 
     if (draftPostJson != null) {
       draftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
@@ -228,9 +249,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     _draftTimer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
       if (draftPost.isNotEmpty && draftPost.saveAsDraft) {
-        prefs.setString(draftId, jsonEncode(draftPost.toJson()));
+        sharedPreferences?.setString(draftId, jsonEncode(draftPost.toJson()));
       } else {
-        prefs.remove(draftId);
+        sharedPreferences?.remove(draftId);
       }
     });
 
@@ -241,7 +262,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         trailingIcon: Icons.delete_forever_rounded,
         trailingIconColor: Theme.of(context).colorScheme.error,
         trailingAction: () {
-          prefs.remove(draftId);
+          sharedPreferences?.remove(draftId);
           _titleTextController.clear();
           _urlTextController.clear();
           _bodyTextController.clear();
@@ -250,19 +271,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
     }
   }
 
+  /// Attempts to get the suggested title for a given link
   Future<String?> _getDataFromLink({String? link, bool updateTitleField = true}) async {
     link ??= widget.url;
+
     if (link?.isNotEmpty == true) {
       try {
         final WebInfo info = await LinkPreview.scrapeFromURL(link!);
-        if (updateTitleField) {
-          _titleTextController.text = info.title;
-        }
+        if (updateTitleField) _titleTextController.text = info.title;
         return info.title;
       } catch (e) {
         // It's ok if we can't scrape. The user will just have to supply the title themselves.
       }
     }
+
     return null;
   }
 
@@ -280,38 +302,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
             Navigator.of(context).pop();
           }
 
+          if (state.status == CreatePostStatus.error && state.message != null) {
+            showSnackbar(context, state.message!);
+            context.read<CreatePostCubit>().clearMessage();
+          }
+
           switch (state.status) {
             case CreatePostStatus.imageUploadSuccess:
               _bodyTextController.text = _bodyTextController.text.replaceRange(_bodyTextController.selection.end, _bodyTextController.selection.end, "![](${state.imageUrl})");
-              setState(() => imageUploading = false);
               break;
             case CreatePostStatus.postImageUploadSuccess:
               _urlTextController.text = state.imageUrl ?? '';
-              setState(() => postImageUploading = false);
-              break;
-            case CreatePostStatus.imageUploadInProgress:
-              setState(() => imageUploading = true);
-              break;
-            case CreatePostStatus.postImageUploadInProgress:
-              setState(() => postImageUploading = true);
               break;
             case CreatePostStatus.imageUploadFailure:
             case CreatePostStatus.postImageUploadFailure:
               showSnackbar(context, l10n.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: theme.colorScheme.errorContainer);
-              setState(() {
-                imageUploading = false;
-                postImageUploading = false;
-              });
             default:
               break;
           }
         },
         builder: (context, state) {
-          return GestureDetector(
-            onTap: () {
-              // Dismiss keyboard when we go tap anywhere on the screen
-              FocusManager.instance.primaryFocus?.unfocus();
-            },
+          return KeyboardDismissOnTap(
             child: Scaffold(
               appBar: AppBar(
                 title: Text(widget.postView != null ? l10n.editPost : l10n.createPost),
@@ -322,7 +333,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
                     onPressed: isSubmitButtonDisabled
                         ? null
                         : () {
-                            newDraftPost.saveAsDraft = false;
+                            draftPost.saveAsDraft = false;
                             context.read<CreatePostCubit>().createOrEditPost(
                                   communityId: communityId!,
                                   name: _titleTextController.text,
@@ -330,11 +341,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   nsfw: isNSFW,
                                   url: url,
                                   postIdBeingEdited: widget.postView?.post.id,
+                                  languageId: languageId,
                                 );
                           },
                     icon: Icon(
-                      Icons.send_rounded,
-                      semanticLabel: l10n.createPost,
+                      widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                      semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
                     ),
                   ),
                 ],
@@ -396,12 +408,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 errorText: urlError,
                                 suffixIcon: IconButton(
                                   onPressed: () async {
-                                    if (postImageUploading) return;
+                                    if (state.status == CreatePostStatus.postImageUploadInProgress) return;
 
                                     String imagePath = await selectImageToUpload();
                                     if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: true);
                                   },
-                                  icon: postImageUploading
+                                  icon: state.status == CreatePostStatus.postImageUploadInProgress
                                       ? const SizedBox(
                                           width: 20,
                                           height: 20,
@@ -445,11 +457,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
                               ),
                             const SizedBox(height: 10),
                             Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: <Widget>[
-                                Expanded(child: Text(l10n.postNSFW)),
-                                Switch(
-                                  value: isNSFW,
-                                  onChanged: (bool value) => setState(() => isNSFW = value),
+                                Expanded(
+                                  child: LanguageSelector(
+                                    languageId: languageId,
+                                    onLanguageSelected: (Language language) {
+                                      setState(() => languageId = language.id);
+                                    },
+                                  ),
+                                ),
+                                Row(
+                                  children: [
+                                    Text(l10n.postNSFW),
+                                    const SizedBox(width: 10),
+                                    Switch(
+                                      value: isNSFW,
+                                      onChanged: (bool value) => setState(() => isNSFW = value),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -512,9 +538,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                   });
                                 },
                               },
-                              imageIsLoading: imageUploading,
+                              imageIsLoading: state.status == CreatePostStatus.imageUploadInProgress,
                               customImageButtonAction: () async {
-                                if (imageUploading) return;
+                                if (state.status == CreatePostStatus.imageUploadInProgress) return;
 
                                 String imagePath = await selectImageToUpload();
                                 if (context.mounted) context.read<CreatePostCubit>().uploadImage(imagePath, isPostImage: false);
@@ -525,11 +551,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
                             padding: const EdgeInsets.only(bottom: 8.0, left: 8.0, right: 8.0),
                             child: IconButton(
                               onPressed: () {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                setState(() => showPreview = !showPreview);
                                 if (!showPreview) {
-                                  _bodyFocusNode.requestFocus();
+                                  setState(() => wasKeyboardVisible = keyboardVisibilityController.isVisible);
+                                  FocusManager.instance.primaryFocus?.unfocus();
                                 }
+
+                                setState(() => showPreview = !showPreview);
+                                if (!showPreview && wasKeyboardVisible) _bodyFocusNode.requestFocus();
                               },
                               icon: Icon(
                                 showPreview ? Icons.visibility_outlined : Icons.visibility,
@@ -595,6 +623,85 @@ class _CreatePostPageState extends State<CreatePostPage> {
         });
       }
     }
+  }
+}
+
+/// Creates a widget which displays a preview of a pre-selected language, with the ability to change the selected language
+///
+/// Passing in [languageId] will set the initial state of the widget to display that given language.
+/// A callback function [onLanguageSelected] will be triggered whenever a new language is selected from the dropdown.
+class LanguageSelector extends StatefulWidget {
+  const LanguageSelector({
+    super.key,
+    required this.languageId,
+    required this.onLanguageSelected,
+  });
+
+  /// The initial language id to be passed in
+  final int languageId;
+
+  /// A callback function to trigger whenever a language is selected from the dropdown
+  final Function(Language) onLanguageSelected;
+
+  @override
+  State<LanguageSelector> createState() => _LanguageSelectorState();
+}
+
+class _LanguageSelectorState extends State<LanguageSelector> {
+  late int _languageId;
+  late Language _language;
+
+  @override
+  void initState() {
+    super.initState();
+    _languageId = widget.languageId;
+
+    // Determine the language from the languageId
+    List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
+    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId) ?? languages.first;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    return Transform.translate(
+      offset: const Offset(-8, 0),
+      child: InkWell(
+        onTap: () {
+          showLanguageInputDialog(
+            context,
+            title: l10n.language,
+            onLanguageSelected: (language) {
+              setState(() {
+                _languageId = language.id;
+                _language = language;
+              });
+
+              widget.onLanguageSelected(language);
+            },
+          );
+        },
+        borderRadius: const BorderRadius.all(Radius.circular(50)),
+        child: Padding(
+          padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                l10n.language,
+                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              Text(
+                _language.name,
+                style: theme.textTheme.bodyMedium,
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 

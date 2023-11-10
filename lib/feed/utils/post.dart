@@ -51,7 +51,7 @@ Future<Map<String, dynamic>> fetchPosts({
 }
 
 /// Logic to create a post
-Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited}) async {
+Future<PostView> createPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
@@ -63,9 +63,10 @@ Future<PostView> createPost({required int communityId, required String name, Str
       auth: account!.jwt!,
       name: name,
       body: body,
-      url: url,
+      url: url?.isEmpty == true ? null : url,
       nsfw: nsfw,
       postId: postIdBeingEdited,
+      languageId: languageId ?? 0,
     ));
   } else {
     postResponse = await lemmy.run(CreatePost(
@@ -73,8 +74,9 @@ Future<PostView> createPost({required int communityId, required String name, Str
       communityId: communityId,
       name: name,
       body: body,
-      url: url,
+      url: url?.isEmpty == true ? null : url,
       nsfw: nsfw,
+      languageId: languageId ?? 0,
     ));
   }
 
