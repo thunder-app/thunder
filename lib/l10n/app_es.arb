@@ -576,5 +576,21 @@
   "createNewCrossPost": "Crear un nuevo mensaje cruzado",
   "@createNewCrossPost": {},
   "crossPostedTo": "Trasladado a",
-  "@crossPostedTo": {}
+  "@crossPostedTo": {},
+  "searchPostsFederatedWith": "Buscar los puestos federados con {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchByText": "Buscar por el texto",
+  "@searchByText": {},
+  "searchPostSearchType": "Seleccionar el tipo de la búsqueda",
+  "@searchPostSearchType": {},
+  "alreadyPostedTo": "Ya se ha publicado en",
+  "@alreadyPostedTo": {},
+  "url": "Dirección URL",
+  "@url": {},
+  "noPostsFound": "No se ha encontrado ningún tema",
+  "@noPostsFound": {},
+  "searchByUrl": "Buscar por dirección URL",
+  "@searchByUrl": {},
+  "text": "Texto",
+  "@text": {}
 }
