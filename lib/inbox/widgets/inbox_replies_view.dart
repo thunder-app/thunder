@@ -63,10 +63,14 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
   @override
   Widget build(BuildContext context) {
     final DateTime now = DateTime.now().toUtc();
-    final theme = Theme.of(context);
-
+    final l10n = AppLocalizations.of(context)!;
     if (widget.replies.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No replies'));
+      return Align(
+          alignment: Alignment.topCenter,
+          heightFactor: (MediaQuery.of(context).size.height / 27),
+          child: Text(
+            l10n.noReplies,
+          ));
     }
 
     return BlocListener<InboxBloc, InboxState>(

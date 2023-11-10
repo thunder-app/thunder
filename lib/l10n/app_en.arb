@@ -558,5 +558,22 @@
   "importSettings": "Import Settings",
   "@importSettings": {
     "description": "Action to import application settings."
+  },
+  "noMessages":"No Messages.",
+  "@noMessages":{
+    "description":"Message displayed when user has no messages."
+  },
+  "noMentions":"No Mentions",
+  "@noMentions":{
+    "description":"Message displayed when user has no Mentions."
+  },
+  "noReplies":"No Replies.",
+  "@noReplies":{
+    "description":"Message displayed when user has no Replies."
+  },
+  "markAsRead":"Mark as Read",
+  "@markAsRead":{
+    "description":"Message displayed to mark all inbox as read."
   }
+
 }

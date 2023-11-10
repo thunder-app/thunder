@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -6,7 +7,8 @@ import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/global_context.dart';
 import '../../utils/comment.dart';
 
 part 'inbox_event.dart';
@@ -100,7 +102,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             return emit(
               state.copyWith(
                 status: InboxStatus.success,
-                privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages),
+                privateMessages: cleanDeletedMessages(privateMessagesResponse.privateMessages, account.userId!),
                 mentions: cleanDeletedMentions(getPersonMentionsResponse.mentions),
                 replies: cleanDeletedReplies(getRepliesResponse.replies),
                 showUnreadOnly: !event.showAll,
@@ -149,14 +151,20 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
             ),
           );
 
+          List<PrivateMessageView> convertedList = [];
+
+          for (var value in state.privateMessages!.values) {
+            convertedList.addAll(value);
+          }
+
           List<CommentReplyView> replies = List.from(state.replies)..addAll(getRepliesResponse.replies);
           List<PersonMentionView> mentions = List.from(state.mentions)..addAll(getPersonMentionsResponse.mentions);
-          List<PrivateMessageView> privateMessages = List.from(state.privateMessages)..addAll(privateMessagesResponse.privateMessages);
+          List<PrivateMessageView> privateMessages = List.from(convertedList)..addAll(privateMessagesResponse.privateMessages);
 
           return emit(
             state.copyWith(
               status: InboxStatus.success,
-              privateMessages: cleanDeletedMessages(privateMessages),
+              privateMessages: cleanDeletedMessages(privateMessages, account.userId!),
               mentions: cleanDeletedMentions(mentions),
               replies: cleanDeletedReplies(replies),
               showUnreadOnly: state.showUnreadOnly,
@@ -207,8 +215,12 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       } else {
         replies.removeWhere(matchMarkedComment);
       }
+      List<PrivateMessageView> convertedList = [];
 
-      int totalUnreadCount = getUnreadCount(state.privateMessages, state.mentions, replies);
+      for (var value in state.privateMessages!.values) {
+        convertedList.addAll(value);
+      }
+      int totalUnreadCount = getUnreadCount(convertedList, state.mentions, replies);
 
       emit(state.copyWith(
         status: InboxStatus.success,
@@ -256,7 +268,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
       LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
       if (account?.jwt == null) {
-        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
+        return emit(state.copyWith(status: InboxStatus.failure, errorMessage: AppLocalizations.of(GlobalContext.context)!.mustBeLoggedInComment));
       }
 
       CommentResponse commentResponse = await lemmy.run(CreateComment(
@@ -297,14 +309,17 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
     }
   }
 
-  List<PrivateMessageView> cleanDeletedMessages(List<PrivateMessageView> messages) {
+  Map<int, List<PrivateMessageView>> cleanDeletedMessages(List<PrivateMessageView> messages, int userId) {
     List<PrivateMessageView> cleanMessages = [];
 
     for (PrivateMessageView message in messages) {
       cleanMessages.add(cleanDeletedPrivateMessage(message));
     }
-
-    return cleanMessages;
+    final Map<int, List<PrivateMessageView>> mapMessages = groupBy(
+      cleanMessages,
+      (PrivateMessageView messages) => messages.privateMessage.recipientId == userId ? messages.privateMessage.recipientId : messages.privateMessage.creatorId,
+    );
+    return mapMessages;
   }
 
   List<PersonMentionView> cleanDeletedMentions(List<PersonMentionView> mentions) {

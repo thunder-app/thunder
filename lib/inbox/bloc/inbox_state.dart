@@ -6,7 +6,7 @@ class InboxState extends Equatable {
   const InboxState({
     this.status = InboxStatus.initial,
     this.errorMessage,
-    this.privateMessages = const [],
+    this.privateMessages = const {},
     this.mentions = const [],
     this.replies = const [],
     this.showUnreadOnly = false,
@@ -22,7 +22,7 @@ class InboxState extends Equatable {
   final InboxStatus status;
   final String? errorMessage;
 
-  final List<PrivateMessageView> privateMessages;
+  final Map<int, List<PrivateMessageView>>? privateMessages;
   final List<PersonMentionView> mentions;
   final List<CommentReplyView> replies;
 
@@ -41,7 +41,7 @@ class InboxState extends Equatable {
   InboxState copyWith({
     required InboxStatus status,
     String? errorMessage,
-    List<PrivateMessageView>? privateMessages,
+    Map<int, List<PrivateMessageView>>? privateMessages,
     List<PersonMentionView>? mentions,
     List<CommentReplyView>? replies,
     bool? showUnreadOnly,
