@@ -385,9 +385,9 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 return const Iterable.empty();
                               },
                               itemBuilder: (BuildContext context, String itemData) {
-                                return Padding(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Text(l10n.useSuggestedTitle(itemData)),
+                                return ListTile(
+                                  title: Text(itemData),
+                                  subtitle: Text(l10n.suggestedTitle),
                                 );
                               },
                               onSuggestionSelected: (String suggestion) {
@@ -687,18 +687,9 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         borderRadius: const BorderRadius.all(Radius.circular(50)),
         child: Padding(
           padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                l10n.language,
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              Text(
-                _language.name,
-                style: theme.textTheme.bodyMedium,
-              ),
-            ],
+          child: Text(
+            '${l10n.language}: ${_language.name}',
+            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),
       ),
