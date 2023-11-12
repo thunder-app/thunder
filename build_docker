@@ -1,0 +1,2 @@
+flutter clean
+docker build -f docker/DockerfileWeb .
