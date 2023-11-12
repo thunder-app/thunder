@@ -71,6 +71,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.allPosts;
+  bool _searchByUrl = false;
+  String _searchUrlLabel = AppLocalizations.of(GlobalContext.context)!.text;
 
   @override
   void initState() {
@@ -108,7 +110,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
-        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType));
+        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
       }
     }
   }
@@ -119,7 +121,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   _onChange(BuildContext context, String value) {
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType));
+    if (_currentSearchType == SearchType.posts && Uri.tryParse(value)?.isAbsolute == true) {
+      setState(() {
+        _searchByUrl = true;
+        _searchUrlLabel = AppLocalizations.of(context)!.url;
+      });
+    }
+
+    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
   }
 
   @override
@@ -275,6 +284,49 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                               },
                             ),
                             const SizedBox(width: 10),
+                            if (_currentSearchType == SearchType.posts) ...[
+                              ActionChip(
+                                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                                side: BorderSide(color: theme.dividerColor),
+                                label: SizedBox(
+                                  height: 20,
+                                  child: Row(
+                                    children: [
+                                      const Icon(Icons.link_rounded, size: 15),
+                                      const SizedBox(width: 5),
+                                      Text(_searchUrlLabel),
+                                      const Icon(Icons.arrow_drop_down_rounded, size: 20),
+                                    ],
+                                  ),
+                                ),
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                    context: context,
+                                    showDragHandle: true,
+                                    builder: (ctx) => BottomSheetListPicker(
+                                      title: l10n.searchPostSearchType,
+                                      items: [
+                                        ListPickerItem(label: l10n.searchByText, payload: 'text', icon: Icons.wysiwyg_rounded),
+                                        ListPickerItem(label: l10n.searchByUrl, payload: 'url', icon: Icons.link_rounded),
+                                      ],
+                                      onSelect: (value) {
+                                        setState(() {
+                                          _searchByUrl = value.payload == 'url';
+                                          _searchUrlLabel = value.payload == 'url' ? l10n.url : l10n.text;
+                                        });
+                                        if (_controller.text.isNotEmpty) {
+                                          context
+                                              .read<SearchBloc>()
+                                              .add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
+                                        }
+                                      },
+                                      previouslySelected: _searchByUrl ? 'url' : 'text',
+                                    ),
+                                  );
+                                },
+                              ),
+                              const SizedBox(width: 10),
+                            ],
                             ActionChip(
                               materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                               side: BorderSide(color: theme.dividerColor),
@@ -332,7 +384,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                         _currentFeedType = value.payload;
                                       });
                                       if (_controller.text.isNotEmpty) {
-                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _currentSearchType));
+                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _getSearchTypeToUse()));
                                       }
                                     },
                                     previouslySelected: _currentFeedType,
@@ -549,7 +601,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType))},
+          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()))},
           actionText: l10n.retry,
         );
     }
@@ -734,7 +786,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
           if (_controller.text.isNotEmpty) {
             context.read<SearchBloc>().add(
-                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _currentSearchType),
+                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()),
                 );
           }
         },
@@ -783,5 +835,12 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     if (removedSubs.isNotEmpty) {
       context.read<AnonymousSubscriptionsBloc>().add(DeleteSubscriptionsEvent(ids: removedSubs));
     }
+  }
+
+  SearchType _getSearchTypeToUse() {
+    if (_currentSearchType == SearchType.posts && _searchByUrl) {
+      return SearchType.url;
+    }
+    return _currentSearchType;
   }
 }
