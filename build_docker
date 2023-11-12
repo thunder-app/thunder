@@ -1,2 +1,2 @@
 flutter clean
-docker build -f docker/DockerfileWeb .
+docker build -t thunder -f docker/DockerfileWeb .
