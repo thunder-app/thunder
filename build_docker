@@ -1,2 +1,3 @@
+# Build the docker web image.
 flutter clean
 docker build -t thunder -f docker/DockerfileWeb .
