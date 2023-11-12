@@ -83,8 +83,6 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
 
     final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
 
-    print(expandableController.expanded);
-
     return ExpandableNotifier(
       controller: expandableController,
       child: Padding(
@@ -106,7 +104,10 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                   IconButton(
                     visualDensity: VisualDensity.compact,
-                    icon: Icon(expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded),
+                    icon: Icon(
+                      expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                      semanticLabel: expandableController.expanded ? l10n.collapsePost : l10n.expandPost,
+                    ),
                     onPressed: () {
                       expandableController.toggle();
                       setState(() {}); // Update the state to trigger the collapse/expand
@@ -130,7 +131,11 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
             if (widget.postViewMedia.postView.post.body != null)
               Expandable(
                 controller: expandableController,
-                collapsed: PostBodyPreview(post: post),
+                collapsed: PostBodyPreview(
+                  post: post,
+                  expandableController: expandableController,
+                  onTapped: () => setState(() {}),
+                ),
                 expanded: Padding(
                   padding: const EdgeInsets.only(top: 8.0),
                   child: CommonMarkdownBody(
@@ -449,45 +454,62 @@ class PostBodyPreview extends StatelessWidget {
   const PostBodyPreview({
     super.key,
     required this.post,
+    required this.expandableController,
+    required this.onTapped,
   });
 
+  /// The post to display the preview of
   final Post post;
+
+  /// The expandable controller used to toggle the expanded/collapsed state of the post
+  final ExpandableController expandableController;
+
+  /// Callback function which triggers when the post preview is tapped
+  final Function() onTapped;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return LimitedBox(
       maxHeight: 80.0,
-      child: Stack(
-        children: [
-          Wrap(
-            direction: Axis.horizontal,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 8.0),
-                child: CommonMarkdownBody(body: post.body ?? ''),
-              ),
-            ],
-          ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 70,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  stops: const [0.0, 1.0],
-                  colors: [
-                    Theme.of(context).scaffoldBackgroundColor.withOpacity(0.0),
-                    Theme.of(context).scaffoldBackgroundColor,
-                  ],
+      child: GestureDetector(
+        onTap: () {
+          expandableController.toggle();
+          onTapped();
+        },
+        child: Stack(
+          children: [
+            Wrap(
+              direction: Axis.horizontal,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 8.0),
+                  child: CommonMarkdownBody(body: post.body ?? ''),
+                ),
+              ],
+            ),
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: 70,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    stops: const [0.0, 1.0],
+                    colors: [
+                      theme.scaffoldBackgroundColor.withOpacity(0.0),
+                      theme.scaffoldBackgroundColor,
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
