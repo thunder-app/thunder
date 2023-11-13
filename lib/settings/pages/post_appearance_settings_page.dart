@@ -180,6 +180,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       communityName: 'Thunder',
       postBody: 'Thunder is an open source, cross platform app for interacting, and exploring Lemmy communities.',
       read: dimReadPosts,
+      scoreCount: 50,
+      commentCount: 4,
     );
 
     PostViewMedia postViewMediaImage = await createExamplePost(
@@ -189,7 +191,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       communityName: 'Thunder',
       postUrl: 'https://lemmy.ml/pictrs/image/4ff0a2f3-970c-4493-b143-a6d46d378c95.jpeg',
       nsfw: true,
-      read: dimReadPosts,
+      read: false,
+      scoreCount: 102,
+      commentCount: 4230,
     );
 
     PostViewMedia postViewMediaLink = await createExamplePost(
@@ -198,7 +202,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       personDisplayName: 'User',
       communityName: 'Thunder',
       postUrl: 'https://github.com/thunder-app/thunder',
-      read: dimReadPosts,
+      read: false,
+      scoreCount: 1210,
+      commentCount: 543,
     );
 
     return [postViewMediaText, postViewMediaLink, postViewMediaImage];
