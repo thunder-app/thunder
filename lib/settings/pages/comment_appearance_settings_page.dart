@@ -26,18 +26,38 @@ class CommentAppearanceSettingsPage extends StatefulWidget {
 }
 
 class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSettingsPage> with SingleTickerProviderStateMixin {
-  /// -------------------------- Feed Related Settings --------------------------
+  /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
+
+  /// Indicates the style of the nested comment indicator
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
+
+  /// Indicates the color of the nested comment indicator
   NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
 
+  /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
 
+  Future<CommentViewTree>? exampleCommentViewTree;
+
+  /// Initialize the settings from the user's shared preferences
+  Future<void> initPreferences() async {
+    final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    setState(() {
+      showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
+      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
+    });
+
+    getExampleComment();
+  }
+
+  /// Given an attribute and the associated value, update the setting in the shared preferences
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      /// -------------------------- Feed Related Settings --------------------------
       case LocalSettings.showCommentActionButtons:
         await prefs.setBool(LocalSettings.showCommentActionButtons.name, value);
         setState(() => showCommentButtonActions = value);
@@ -57,18 +77,27 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     }
   }
 
-  void _initPreferences() async {
+  /// Reset the comment preferences to their defaults
+  void resetCommentPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
-    setState(() {
-      showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
-      nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
-      nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
-    });
+    await prefs.remove(LocalSettings.showCommentActionButtons.name);
+    await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
+    await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
+
+    await initPreferences();
+
+    if (context.mounted) {
+      context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+    }
   }
 
-  Future<CommentViewTree> getExampleComment() {
+  /// Generates an example comment to show in the comment preview
+  void getExampleComment() {
     CommentView commentView = createExampleComment(
+      id: 1,
+      commentCreatorId: 1,
+      path: '0.1',
       personName: 'Thunder',
       commentPublished: DateTime.now().subtract(const Duration(minutes: 30)),
       commentUpvotes: 1100,
@@ -78,10 +107,11 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
     CommentView replyCommentViewFirst = createExampleComment(
       id: 3,
+      commentCreatorId: 3,
       path: '0.1.3',
       personName: 'Cloud',
       commentPublished: DateTime.now().subtract(const Duration(minutes: 15)),
-      commentCreatorId: 3,
+      commentUpvotes: 1,
       commentDownvotes: 0,
       commentContent: 'Available on Android and iOS platforms.',
       isPersonAdmin: true,
@@ -89,22 +119,27 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
     CommentView replyCommentViewSecond = createExampleComment(
       id: 2,
+      commentCreatorId: 2,
       path: '0.1.2',
       personName: 'Lightning',
-      commentCreatorId: 2,
-      isBotAccount: true,
       commentContent: 'Check out [GitHub](https://github.com/thunder-app/thunder) for more details.',
       commentChildCount: 20,
+      isBotAccount: true,
     );
 
     List<CommentViewTree> commentViewTrees = buildCommentViewTree([commentView, replyCommentViewFirst, replyCommentViewSecond]);
-    return Future.delayed(Duration.zero, () => commentViewTrees.first);
+
+    if (context.mounted) {
+      setState(() {
+        exampleCommentViewTree = Future.value(commentViewTrees.first);
+      });
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) => initPreferences());
   }
 
   @override
@@ -113,130 +148,167 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.comments), centerTitle: false),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar.medium(
+            title: Text(l10n.comments),
+            centerTitle: false,
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.restart_alt_rounded),
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: Text(l10n.resetPreferences),
+                      content: Text(l10n.confirmResetCommentPreferences),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text(l10n.cancel),
+                        ),
+                        TextButton(
+                          onPressed: () {
+                            resetCommentPreferences();
+                            Navigator.of(context).pop();
+                          },
+                          child: Text(l10n.reset),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          // Comment Preview
+          SliverToBoxAdapter(
+            child: ExpandableNotifier(
+              controller: expandableController,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ExpandableNotifier(
-                    controller: expandableController,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 8.0),
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  'Preview',
-                                  style: theme.textTheme.titleLarge?.copyWith(
-                                    fontSize: theme.textTheme.titleLarge!.fontSize! - 3.0,
-                                  ),
-                                ),
-                              ),
-                              IconButton(
-                                icon: Icon(
-                                  expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                                  semanticLabel: expandableController.expanded ? l10n.collapsePostPreview : l10n.expandPostPreview,
-                                ),
-                                onPressed: () {
-                                  expandableController.toggle();
-                                  setState(() {});
-                                },
-                              )
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                        Expanded(
                           child: Text(
-                            'Show a preview of the comments with the given settings',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
-                            ),
+                            l10n.preview,
+                            style: theme.textTheme.titleMedium,
                           ),
                         ),
-                        Expandable(
-                          controller: expandableController,
-                          collapsed: Container(),
-                          expanded: FutureBuilder<CommentViewTree>(
-                            future: getExampleComment(),
-                            builder: (context, snapshot) {
-                              if (snapshot.data == null) return Container();
-
-                              return BlocProvider(
-                                create: (context) => PostBloc(),
-                                child: IgnorePointer(
-                                  child: ListView(
-                                    shrinkWrap: true,
-                                    physics: const NeverScrollableScrollPhysics(),
-                                    children: [
-                                      CommentCard(
-                                        now: DateTime.now(),
-                                        commentViewTree: snapshot.data!,
-                                        onSaveAction: (int commentId, bool save) => {},
-                                        onVoteAction: (int commentId, int voteType) => {},
-                                        onCollapseCommentChange: (int commentId, bool collapsed) => {},
-                                        onDeleteAction: (int commentId, bool deleted) => {},
-                                        onReportAction: (int commentId) => {},
-                                        onReplyEditAction: (CommentView commentView, bool isEdit) => {},
-                                        moderators: [],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
+                        IconButton(
+                          icon: Icon(
+                            expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                            semanticLabel: expandableController.expanded ? l10n.collapseCommentPreview : l10n.expandCommentPreview,
                           ),
-                        ),
+                          onPressed: () {
+                            expandableController.toggle();
+                            setState(() {});
+                          },
+                        )
                       ],
                     ),
                   ),
-                  const SizedBox(height: 16.0),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 8.0),
-                    child: Text('General Settings', style: theme.textTheme.titleMedium),
+                    padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+                    child: Text(
+                      l10n.commentPreview,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                      ),
+                    ),
                   ),
-                  ToggleOption(
-                    description: LocalSettings.showCommentActionButtons.label,
-                    value: showCommentButtonActions,
-                    iconEnabled: Icons.mode_comment_rounded,
-                    iconDisabled: Icons.mode_comment_outlined,
-                    onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-                  ),
-                  ListOption(
-                    description: LocalSettings.nestedCommentIndicatorStyle.label,
-                    value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
-                    options: [
-                      ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                      ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
-                    ],
-                    icon: Icons.format_list_bulleted_rounded,
-                    onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-                  ),
-                  ListOption(
-                    description: LocalSettings.nestedCommentIndicatorColor.label,
-                    value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
-                    options: [
-                      ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                      ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
-                    ],
-                    icon: Icons.color_lens_outlined,
-                    onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+                  Expandable(
+                    controller: expandableController,
+                    collapsed: Container(),
+                    expanded: FutureBuilder<CommentViewTree>(
+                      future: exampleCommentViewTree,
+                      builder: (context, snapshot) {
+                        if (snapshot.data == null) return Container();
+
+                        return BlocProvider(
+                          create: (context) => PostBloc(),
+                          child: IgnorePointer(
+                            child: ListView(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              children: [
+                                CommentCard(
+                                  now: DateTime.now(),
+                                  commentViewTree: snapshot.data!,
+                                  onSaveAction: (int commentId, bool save) => {},
+                                  onVoteAction: (int commentId, int voteType) => {},
+                                  onCollapseCommentChange: (int commentId, bool collapsed) => {},
+                                  onDeleteAction: (int commentId, bool deleted) => {},
+                                  onReportAction: (int commentId) => {},
+                                  onReplyEditAction: (CommentView commentView, bool isEdit) => {},
+                                  moderators: const [],
+                                ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 120),
-          ],
-        ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.generalSettings, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          // Comment Settings
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: LocalSettings.showCommentActionButtons.label,
+                value: showCommentButtonActions,
+                iconEnabled: Icons.mode_comment_rounded,
+                iconDisabled: Icons.mode_comment_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: LocalSettings.nestedCommentIndicatorStyle.label,
+                value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
+                options: [
+                  ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
+                  ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
+                ],
+                icon: Icons.format_list_bulleted_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: LocalSettings.nestedCommentIndicatorColor.label,
+                value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
+                options: [
+                  ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
+                  ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
+                ],
+                icon: Icons.color_lens_outlined,
+                onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -33,6 +33,14 @@ class ToggleOption extends StatelessWidget {
     this.onLongPress,
   });
 
+  void onTapInkWell() {
+    if (onTap == null && value != null) {
+      onToggle?.call(!value!);
+    }
+
+    onTap?.call();
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -41,15 +49,7 @@ class ToggleOption extends StatelessWidget {
       label: semanticLabel ?? description,
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: onToggle == null
-            ? null
-            : onTap == null
-                ? value == null
-                    ? null
-                    : () {
-                        onToggle?.call(!value!);
-                      }
-                : () => onTap!.call(),
+        onTap: onToggle == null ? null : onTapInkWell,
         onLongPress: onToggle == null ? null : () => onLongPress?.call(),
         child: Padding(
           padding: const EdgeInsets.only(left: 4.0),
