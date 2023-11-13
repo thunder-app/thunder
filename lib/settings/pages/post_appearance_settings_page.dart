@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
-
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/post.dart';
@@ -16,7 +14,6 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:thunder/utils/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class PostAppearanceSettingsPage extends StatefulWidget {

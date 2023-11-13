@@ -38,7 +38,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   // NSFW Settings
   bool hideNsfwPosts = false;
-  bool hideNsfwPreviews = true;
 
   // Tablet Settings
   bool tabletMode = false;
@@ -47,37 +46,26 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   bool scrapeMissingPreviews = false;
   bool openInExternalBrowser = false;
   bool openInReaderMode = false;
-  bool useDisplayNames = true;
   bool markPostReadOnMediaView = false;
   bool showInAppUpdateNotification = false;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
-  bool useCompactView = false;
-  bool showTitleFirst = false;
-  bool showThumbnailPreviewOnRight = false;
-  bool showTextPostIndicator = false;
   bool tappableAuthorCommunity = false;
 
   // General Settings
-  bool showVoteActions = true;
-  bool showSaveAction = true;
-  bool showCommunityIcons = false;
-  bool showFullHeightImages = false;
-  bool showEdgeToEdgeImages = false;
-  bool showTextContent = false;
-  bool showPostAuthor = false;
   bool scoreCounters = false;
-  bool dimReadPosts = true;
   bool useAdvancedShareSheet = true;
   bool showCrossPosts = true;
 
   // Comment Related Settings
   SortType defaultSortType = DEFAULT_SORT_TYPE;
   bool collapseParentCommentOnGesture = true;
+
   bool showCommentButtonActions = false;
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
   NestedCommentIndicatorColor nestedIndicatorColor = DEFAULT_NESTED_COMMENT_INDICATOR_COLOR;
+
   bool enableCommentNavigation = true;
   bool combineNavAndFab = true;
 
@@ -105,10 +93,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.hideNsfwPosts.name, value);
         setState(() => hideNsfwPosts = value);
         break;
-      case LocalSettings.hideNsfwPreviews:
-        await prefs.setBool(LocalSettings.hideNsfwPreviews.name, value);
-        setState(() => hideNsfwPreviews = value);
-        break;
 
       // Tablet Settings
       case LocalSettings.useTabletMode:
@@ -128,10 +112,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.openLinksInReaderMode.name, value);
         setState(() => openInReaderMode = value);
         break;
-      case LocalSettings.useDisplayNamesForUsers:
-        await prefs.setBool(LocalSettings.useDisplayNamesForUsers.name, value);
-        setState(() => useDisplayNames = value);
-        break;
+
       case LocalSettings.markPostAsReadOnMediaView:
         await prefs.setBool(LocalSettings.markPostAsReadOnMediaView.name, value);
         setState(() => markPostReadOnMediaView = value);
@@ -147,60 +128,14 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
-      case LocalSettings.useCompactView:
-        await prefs.setBool(LocalSettings.useCompactView.name, value);
-        setState(() => useCompactView = value);
-        break;
-      case LocalSettings.showPostTitleFirst:
-        await prefs.setBool(LocalSettings.showPostTitleFirst.name, value);
-        setState(() => showTitleFirst = value);
-        break;
-      case LocalSettings.showThumbnailPreviewOnRight:
-        await prefs.setBool(LocalSettings.showThumbnailPreviewOnRight.name, value);
-        setState(() => showThumbnailPreviewOnRight = value);
-        break;
-      case LocalSettings.showTextPostIndicator:
-        await prefs.setBool(LocalSettings.showTextPostIndicator.name, value);
-        setState(() => showTextPostIndicator = value);
-        break;
+
       case LocalSettings.tappableAuthorCommunity:
         await prefs.setBool(LocalSettings.tappableAuthorCommunity.name, value);
         setState(() => tappableAuthorCommunity = value);
         break;
 
       // General Settings
-      case LocalSettings.showPostVoteActions:
-        await prefs.setBool(LocalSettings.showPostVoteActions.name, value);
-        setState(() => showVoteActions = value);
-        break;
-      case LocalSettings.showPostSaveAction:
-        await prefs.setBool(LocalSettings.showPostSaveAction.name, value);
-        setState(() => showSaveAction = value);
-        break;
-      case LocalSettings.showPostCommunityIcons:
-        await prefs.setBool(LocalSettings.showPostCommunityIcons.name, value);
-        setState(() => showCommunityIcons = value);
-        break;
-      case LocalSettings.showPostFullHeightImages:
-        await prefs.setBool(LocalSettings.showPostFullHeightImages.name, value);
-        setState(() => showFullHeightImages = value);
-        break;
-      case LocalSettings.showPostEdgeToEdgeImages:
-        await prefs.setBool(LocalSettings.showPostEdgeToEdgeImages.name, value);
-        setState(() => showEdgeToEdgeImages = value);
-        break;
-      case LocalSettings.showPostTextContentPreview:
-        await prefs.setBool(LocalSettings.showPostTextContentPreview.name, value);
-        setState(() => showTextContent = value);
-        break;
-      case LocalSettings.showPostAuthor:
-        await prefs.setBool(LocalSettings.showPostAuthor.name, value);
-        setState(() => showPostAuthor = value);
-        break;
-      case LocalSettings.dimReadPosts:
-        await prefs.setBool(LocalSettings.dimReadPosts.name, value);
-        setState(() => dimReadPosts = value);
-        break;
+
       case LocalSettings.useAdvancedShareSheet:
         await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
         setState(() => useAdvancedShareSheet = value);
@@ -253,9 +188,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       // Feed Settings
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
       markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
-      hideNsfwPreviews = prefs.getBool(LocalSettings.hideNsfwPreviews.name) ?? true;
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
-      useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       scoreCounters = prefs.getBool(LocalSettings.scoreCounters.name) ?? false;
 
       try {
@@ -267,19 +200,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       }
 
       // Post Settings
-      useCompactView = prefs.getBool(LocalSettings.useCompactView.name) ?? false;
-      showTitleFirst = prefs.getBool(LocalSettings.showPostTitleFirst.name) ?? false;
-      showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
-      showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
+
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
-      showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
-      showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
-      showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
-      showFullHeightImages = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
-      showEdgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
-      showTextContent = prefs.getBool(LocalSettings.showPostTextContentPreview.name) ?? false;
-      showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
-      dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
+
       useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
 
@@ -479,13 +402,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.comment_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.collapseParentCommentBodyOnGesture, value),
                         ),
-                        ToggleOption(
-                          description: LocalSettings.showCommentActionButtons.label,
-                          value: showCommentButtonActions,
-                          iconEnabled: Icons.mode_comment_rounded,
-                          iconDisabled: Icons.mode_comment_outlined,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
-                        ),
                         ListOption(
                           description: LocalSettings.defaultCommentSortType.label,
                           value: ListPickerItem(label: defaultCommentSortType.value, icon: Icons.local_fire_department_rounded, payload: defaultCommentSortType),
@@ -516,26 +432,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               ),
                             ],
                           ),
-                        ),
-                        ListOption(
-                          description: LocalSettings.nestedCommentIndicatorStyle.label,
-                          value: ListPickerItem(label: nestedIndicatorStyle.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorStyle),
-                          options: [
-                            ListPickerItem(icon: Icons.view_list_rounded, label: NestedCommentIndicatorStyle.thick.value, payload: NestedCommentIndicatorStyle.thick),
-                            ListPickerItem(icon: Icons.format_list_bulleted_rounded, label: NestedCommentIndicatorStyle.thin.value, payload: NestedCommentIndicatorStyle.thin),
-                          ],
-                          icon: Icons.format_list_bulleted_rounded,
-                          onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorStyle, value.payload.name),
-                        ),
-                        ListOption(
-                          description: LocalSettings.nestedCommentIndicatorColor.label,
-                          value: ListPickerItem(label: nestedIndicatorColor.value, icon: Icons.local_fire_department_rounded, payload: nestedIndicatorColor),
-                          options: [
-                            ListPickerItem(icon: Icons.invert_colors_on_rounded, label: NestedCommentIndicatorColor.colorful.value, payload: NestedCommentIndicatorColor.colorful),
-                            ListPickerItem(icon: Icons.invert_colors_off_rounded, label: NestedCommentIndicatorColor.monochrome.value, payload: NestedCommentIndicatorColor.monochrome),
-                          ],
-                          icon: Icons.color_lens_outlined,
-                          onChanged: (value) => setPreferences(LocalSettings.nestedCommentIndicatorColor, value.payload.name),
                         ),
                         ToggleOption(
                           description: LocalSettings.enableCommentNavigation.label,
