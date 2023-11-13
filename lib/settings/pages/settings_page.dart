@@ -22,7 +22,7 @@ class SettingsPage extends StatelessWidget {
 
   final List<SettingTopic> topics = [
     SettingTopic(title: 'General', icon: Icons.settings, path: '/settings/general'),
-    SettingTopic(title: 'Theming', icon: Icons.text_fields, path: '/settings/themes'),
+    SettingTopic(title: 'Appearance', icon: Icons.color_lens_rounded, path: '/settings/appearance'),
     SettingTopic(title: 'Gestures', icon: Icons.swipe, path: '/settings/gestures'),
     SettingTopic(title: 'Floating Action Button', icon: Icons.settings_applications_rounded, path: '/settings/fab'),
     SettingTopic(title: 'Accessibility', icon: Icons.accessibility, path: '/settings/accessibility'),

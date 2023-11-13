@@ -8,10 +8,12 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/settings/pages/about_settings_page.dart';
 import 'package:thunder/settings/pages/accessibility_settings_page.dart';
+import 'package:thunder/settings/pages/appearance_settings_page.dart';
 import 'package:thunder/settings/pages/debug_settings_page.dart';
 import 'package:thunder/settings/pages/fab_settings_page.dart';
 import 'package:thunder/settings/pages/general_settings_page.dart';
 import 'package:thunder/settings/pages/gesture_settings_page.dart';
+import 'package:thunder/settings/pages/post_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/settings.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -42,14 +44,36 @@ final GoRouter router = GoRouter(
           },
         ),
         GoRoute(
-          name: 'themes',
-          path: 'themes',
+          name: 'appearance',
+          path: 'appearance',
           builder: (context, state) {
             return BlocProvider.value(
               value: state.extra! as ThunderBloc,
-              child: const ThemeSettingsPage(),
+              child: const AppearanceSettingsPage(),
             );
           },
+          routes: [
+            GoRoute(
+              name: 'themes',
+              path: 'themes',
+              builder: (context, state) {
+                return BlocProvider.value(
+                  value: state.extra! as ThunderBloc,
+                  child: const ThemeSettingsPage(),
+                );
+              },
+            ),
+            GoRoute(
+              name: 'posts',
+              path: 'posts',
+              builder: (context, state) {
+                return BlocProvider.value(
+                  value: state.extra! as ThunderBloc,
+                  child: const PostAppearanceSettingsPage(),
+                );
+              },
+            ),
+          ],
         ),
         GoRoute(
           name: 'gestures',

@@ -13,7 +13,7 @@ class ToggleOption extends StatelessWidget {
   final bool? value;
 
   // Callback
-  final Function(bool) onToggle;
+  final Function(bool)? onToggle;
   final Function()? onTap;
   final Function()? onLongPress;
 
@@ -27,7 +27,7 @@ class ToggleOption extends StatelessWidget {
     required this.value,
     this.iconEnabled,
     this.iconDisabled,
-    required this.onToggle,
+    this.onToggle,
     this.additionalWidgets,
     this.onTap,
     this.onLongPress,
@@ -41,14 +41,16 @@ class ToggleOption extends StatelessWidget {
       label: semanticLabel ?? description,
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: onTap == null
-            ? value == null
-                ? null
-                : () {
-                    onToggle(!value!);
-                  }
-            : () => onTap!.call(),
-        onLongPress: () => onLongPress?.call(),
+        onTap: onToggle == null
+            ? null
+            : onTap == null
+                ? value == null
+                    ? null
+                    : () {
+                        onToggle?.call(!value!);
+                      }
+                : () => onTap!.call(),
+        onLongPress: onToggle == null ? null : () => onLongPress?.call(),
         child: Padding(
           padding: const EdgeInsets.only(left: 4.0),
           child: Row(
@@ -94,10 +96,12 @@ class ToggleOption extends StatelessWidget {
               if (value != null)
                 Switch(
                   value: value!,
-                  onChanged: (bool value) {
-                    HapticFeedback.lightImpact();
-                    onToggle(value);
-                  },
+                  onChanged: onToggle == null
+                      ? null
+                      : (bool value) {
+                          HapticFeedback.lightImpact();
+                          onToggle?.call(value);
+                        },
                 ),
               if (value == null)
                 const SizedBox(

@@ -372,43 +372,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           iconDisabled: Icons.no_adult_content,
                           onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPosts, value),
                         ),
-                        AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 250),
-                            switchInCurve: Curves.easeInOut,
-                            switchOutCurve: Curves.easeInOut,
-                            transitionBuilder: (Widget child, Animation<double> animation) {
-                              return SizeTransition(
-                                sizeFactor: animation,
-                                child: SlideTransition(position: _offsetAnimation, child: child),
-                              );
-                            },
-                            child: !hideNsfwPosts
-                                ? Padding(
-                                    padding: const EdgeInsets.only(left: 16.0),
-                                    key: ValueKey(useCompactView),
-                                    child: Column(children: [
-                                      ToggleOption(
-                                        description: LocalSettings.hideNsfwPreviews.label,
-                                        value: hideNsfwPreviews,
-                                        iconEnabled: Icons.no_adult_content,
-                                        iconDisabled: Icons.no_adult_content,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.hideNsfwPreviews, value),
-                                      )
-                                    ]))
-                                : Container()),
                         ToggleOption(
                           description: LocalSettings.markPostAsReadOnMediaView.label,
                           value: markPostReadOnMediaView,
                           iconEnabled: Icons.visibility,
                           iconDisabled: Icons.remove_red_eye_outlined,
                           onToggle: (bool value) => setPreferences(LocalSettings.markPostAsReadOnMediaView, value),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.useDisplayNamesForUsers.label,
-                          value: useDisplayNames,
-                          iconEnabled: Icons.person_rounded,
-                          iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useDisplayNamesForUsers, value),
                         ),
                         ListOption(
                           description: LocalSettings.defaultFeedListingType.label,
@@ -472,130 +441,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             ),
                           ),
                         ),
-                        const SizedBox(
-                          height: 8,
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.useCompactView.label,
-                          subtitle: l10n.useCompactView,
-                          value: useCompactView,
-                          iconEnabled: Icons.crop_16_9_rounded,
-                          iconDisabled: Icons.crop_din_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.useCompactView, value),
-                        ),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 250),
-                          switchInCurve: Curves.easeInOut,
-                          switchOutCurve: Curves.easeInOut,
-                          transitionBuilder: (Widget child, Animation<double> animation) {
-                            return SizeTransition(
-                              sizeFactor: animation,
-                              child: SlideTransition(position: _offsetAnimation, child: child),
-                            );
-                          },
-                          child: useCompactView
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  key: ValueKey(useCompactView),
-                                  child: Column(
-                                    children: [
-                                      ToggleOption(
-                                        description: LocalSettings.showThumbnailPreviewOnRight.label,
-                                        value: showThumbnailPreviewOnRight,
-                                        iconEnabled: Icons.switch_left_rounded,
-                                        iconDisabled: Icons.switch_right_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showThumbnailPreviewOnRight, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showTextPostIndicator.label,
-                                        value: showTextPostIndicator,
-                                        iconEnabled: Icons.article,
-                                        iconDisabled: Icons.article_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showTextPostIndicator, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.tappableAuthorCommunity.label,
-                                        value: tappableAuthorCommunity,
-                                        iconEnabled: Icons.touch_app_rounded,
-                                        iconDisabled: Icons.touch_app_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.tappableAuthorCommunity, value),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  key: ValueKey(useCompactView),
-                                  child: Column(
-                                    children: [
-                                      ToggleOption(
-                                        description: LocalSettings.showPostTitleFirst.label,
-                                        value: showTitleFirst,
-                                        iconEnabled: Icons.vertical_align_top_rounded,
-                                        iconDisabled: Icons.vertical_align_bottom_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostTitleFirst, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostFullHeightImages.label,
-                                        value: showFullHeightImages,
-                                        iconEnabled: Icons.image_rounded,
-                                        iconDisabled: Icons.image_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostFullHeightImages, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostEdgeToEdgeImages.label,
-                                        value: showEdgeToEdgeImages,
-                                        iconEnabled: Icons.fit_screen_rounded,
-                                        iconDisabled: Icons.fit_screen_outlined,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostEdgeToEdgeImages, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostTextContentPreview.label,
-                                        value: showTextContent,
-                                        iconEnabled: Icons.notes_rounded,
-                                        iconDisabled: Icons.notes_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostTextContentPreview, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostVoteActions.label,
-                                        value: showVoteActions,
-                                        iconEnabled: Icons.import_export_rounded,
-                                        iconDisabled: Icons.import_export_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostVoteActions, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostSaveAction.label,
-                                        value: showSaveAction,
-                                        iconEnabled: Icons.star_rounded,
-                                        iconDisabled: Icons.star_border_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostSaveAction, value),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.showPostCommunityIcons.label,
-                                        value: showCommunityIcons,
-                                        iconEnabled: Icons.groups,
-                                        iconDisabled: Icons.groups,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.showPostAuthor.label,
-                          value: showPostAuthor,
-                          iconEnabled: Icons.person_rounded,
-                          iconDisabled: Icons.person_off_rounded,
-                          onToggle: (bool value) => setPreferences(LocalSettings.showPostAuthor, value),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.dimReadPosts.label,
-                          subtitle: l10n.dimReadPosts,
-                          value: dimReadPosts,
-                          iconEnabled: Icons.chrome_reader_mode,
-                          iconDisabled: Icons.chrome_reader_mode_outlined,
-                          onToggle: (bool value) => setPreferences(LocalSettings.dimReadPosts, value),
-                        ),
+                        const SizedBox(height: 8),
                         ToggleOption(
                           description: LocalSettings.useAdvancedShareSheet.label,
                           value: useAdvancedShareSheet,
@@ -899,9 +745,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       ],
                     ),
                   ),
-                  const SizedBox(
-                    height: 120,
-                  ),
+                  const SizedBox(height: 120),
                 ],
               ),
             ),
