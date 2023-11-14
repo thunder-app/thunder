@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -24,7 +23,6 @@ import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -54,6 +52,7 @@ class FeedPage extends StatefulWidget {
     this.communityName,
     this.userId,
     this.username,
+    this.isAccountPage = false,
   });
 
   /// The type of feed to display.
@@ -82,6 +81,10 @@ class FeedPage extends StatefulWidget {
   ///
   /// This is useful if we want to keep the user on the "same" page
   final bool useGlobalFeedBloc;
+
+  /// Boolean which indicates whether the account page is being displayed.
+  /// When displayed, the actions on the app bar will be different
+  final bool isAccountPage;
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -115,7 +118,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: FeedView(feedType: widget.feedType),
+        child: FeedView(feedType: widget.feedType, isAccountPage: widget.isAccountPage),
       );
     }
 
@@ -131,15 +134,16 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           username: widget.username,
           reset: true,
         )),
-      child: FeedView(feedType: widget.feedType),
+      child: FeedView(feedType: widget.feedType, isAccountPage: widget.isAccountPage),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
   final FeedType? feedType;
+  final bool isAccountPage;
 
-  const FeedView({super.key, this.feedType});
+  const FeedView({super.key, this.feedType, this.isAccountPage = false});
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -273,6 +277,7 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                     innerBoxIsScrolled: innerBoxIsScrolled,
                     showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
                     showSidebar: showSidebar,
+                    isAccountPage: widget.isAccountPage,
                     onHeaderTapped: (value) {
                       setState(() => showSidebar = value);
                     },

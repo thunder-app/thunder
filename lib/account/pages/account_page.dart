@@ -31,6 +31,7 @@ class _AccountPageState extends State<AccountPage> {
             feedType: FeedType.user,
             userId: accountState.personView!.person.id,
             sortType: thunderState.defaultSortType,
+            isAccountPage: true,
           )
         : Center(
             child: Padding(

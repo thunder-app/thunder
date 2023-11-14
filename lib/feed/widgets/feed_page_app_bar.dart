@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lemmy_api_client/v3.dart';
+import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/utils/profiles.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -17,6 +20,8 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/pages/user_settings_page.dart';
+import 'package:thunder/user/utils/logout_dialog.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/utils/global_context.dart';
 
@@ -25,18 +30,33 @@ class FeedPageAppBar extends StatefulWidget {
     super.key,
     this.showAppBarTitle = true,
     this.showSidebar = false,
+    this.innerBoxIsScrolled = false,
+    this.isAccountPage = false,
     this.onHeaderTapped,
     this.onSelectViewType,
     this.onShowSaved,
-    required this.innerBoxIsScrolled,
   });
 
+  /// Boolean which indicates whether the title on the app bar should be shown
   final bool showAppBarTitle;
+
+  /// Boolean which indicates whether the community/user sidebar should be shown
   final bool showSidebar;
+
+  /// Boolean which indicates whether the feed body has been scrolled
   final bool innerBoxIsScrolled;
 
+  /// Boolean which indicates whether the account page is being displayed.
+  /// When displayed, the actions on the app bar will be different
+  final bool isAccountPage;
+
+  /// Callback function which is triggered when the header is tapped
   final Function(bool)? onHeaderTapped;
+
+  /// Callback function which is triggered when the feed view type (posts/comments) is selected
   final Function(FeedViewType)? onSelectViewType;
+
+  /// Callback function which is triggered when the saved items should be shown
   final Function(bool)? onShowSaved;
 
   @override
@@ -46,11 +66,7 @@ class FeedPageAppBar extends StatefulWidget {
 class _FeedPageAppBarState extends State<FeedPageAppBar> {
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
     final FeedBloc feedBloc = context.watch<FeedBloc>();
-    final FeedState feedState = feedBloc.state;
 
     double? getExpandedHeight(FeedType? feedType) {
       switch (feedType) {
@@ -77,64 +93,124 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
       pinned: true,
       centerTitle: false,
       toolbarHeight: 70.0,
-      expandedHeight: getExpandedHeight(feedState.feedType),
+      expandedHeight: getExpandedHeight(feedBloc.state.feedType),
       forceElevated: widget.innerBoxIsScrolled,
-      leading: feedState.status != FeedStatus.initial
-          ? IconButton(
-              icon: Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general
-                  ? (Platform.isIOS
-                      ? Icon(
-                          Icons.arrow_back_ios_new_rounded,
-                          semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
-                        )
-                      : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
-                  : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                (Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
-              },
+      leading: FeedAppBarLeadingActions(isAccountPage: widget.isAccountPage),
+      actions: [FeedAppBarTrailingActions(isAccountPage: widget.isAccountPage)],
+      flexibleSpace: FlexibleSpaceBar(
+        expandedTitleScale: 1,
+        collapseMode: CollapseMode.pin,
+        background: (feedBloc.state.getPersonDetailsResponse != null || feedBloc.state.fullCommunityView != null)
+            ? Padding(
+                padding: EdgeInsets.only(top: 70.0 + MediaQuery.of(context).viewPadding.top, bottom: getFlexibleHeight(feedBloc.state.feedType) ?? 0.0),
+                child: AnimatedOpacity(
+                  opacity: widget.showAppBarTitle ? 0.0 : 1.0,
+                  duration: const Duration(milliseconds: 100),
+                  child: Visibility(
+                    visible: feedBloc.state.feedType == FeedType.user || feedBloc.state.feedType == FeedType.community,
+                    child: feedBloc.state.getPersonDetailsResponse != null
+                        ? UserHeader(
+                            personView: feedBloc.state.getPersonDetailsResponse!.personView,
+                            showUserSidebar: widget.showSidebar,
+                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
+                          )
+                        : CommunityHeader(
+                            getCommunityResponse: feedBloc.state.fullCommunityView!,
+                            showCommunitySidebar: widget.showSidebar,
+                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
+                          ),
+                  ),
+                ),
+              )
+            : null,
+      ),
+      bottom: feedBloc.state.feedType == FeedType.user
+          ? PreferredSize(
+              preferredSize: const Size.fromHeight(65),
+              child: FeedAppBarTypeSelector(
+                onSelectViewType: widget.onSelectViewType,
+                onShowSaved: widget.onShowSaved,
+              ),
             )
-          : Container(),
-      actions: [
-        if (feedState.feedType == FeedType.community)
-          BlocListener<CommunityBloc, CommunityState>(
-            listener: (context, state) {
-              if (state.status == CommunityStatus.success && state.communityView != null) {
-                feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
-              }
-            },
-            child: IconButton(
-              icon: Icon(
-                  switch (_getSubscriptionStatus(context)) {
-                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                    SubscribedType.pending => Icons.pending_outlined,
-                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                    _ => Icons.add_circle_outline_rounded,
-                  },
-                  semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? AppLocalizations.of(context)!.subscribe : AppLocalizations.of(context)!.unsubscribe),
-              tooltip: switch (_getSubscriptionStatus(context)) {
-                SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
-                SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
-                SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
-                _ => null,
-              },
-              onPressed: () {
-                if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
+          : null,
+    );
+  }
+}
 
-                HapticFeedback.mediumImpact();
-                _onSubscribeIconPressed(context);
-              },
-            ),
-          ),
-        IconButton(
+/// Holds the leading actions on the app bar. The actions will be different depending on where the feed page is shown.
+///
+/// When the feed page is shown in the account page, the main action will be logout.
+/// Otherwise, it will show either the drawer menu or the back button.
+class FeedAppBarLeadingActions extends StatelessWidget {
+  const FeedAppBarLeadingActions({super.key, this.isAccountPage = false});
+
+  /// Boolean which indicates whether the account page is being displayed.
+  final bool isAccountPage;
+
+  @override
+  Widget build(BuildContext context) {
+    final FeedBloc feedBloc = context.watch<FeedBloc>();
+
+    if (isAccountPage) {
+      return IconButton(
+        onPressed: () => showLogOutDialog(context),
+        icon: Icon(
+          Icons.logout,
+          semanticLabel: AppLocalizations.of(context)!.logOut,
+        ),
+        tooltip: AppLocalizations.of(context)!.logOut,
+      );
+    }
+
+    if (feedBloc.state.status != FeedStatus.initial) {
+      return IconButton(
+        icon: Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general
+            ? (Platform.isIOS
+                ? Icon(
+                    Icons.arrow_back_ios_new_rounded,
+                    semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
+                  )
+                : Icon(Icons.arrow_back_rounded, semanticLabel: MaterialLocalizations.of(context).backButtonTooltip))
+            : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
+        onPressed: () {
+          HapticFeedback.mediumImpact();
+          (Navigator.of(context).canPop() && feedBloc.state.feedType != FeedType.general) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
+        },
+      );
+    }
+
+    return Container();
+  }
+}
+
+/// Holds the trailing actions on the app bar. The actions will be different depending on where the feed page is shown.
+///
+/// When the feed page is shown in the account page, additional actions will be shown.
+/// Otherwise, it will show either the refresh and sort actions.
+class FeedAppBarTrailingActions extends StatelessWidget {
+  const FeedAppBarTrailingActions({super.key, this.isAccountPage = false});
+
+  /// Boolean which indicates whether the account page is being displayed.
+  final bool isAccountPage;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
+    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+    final FeedBloc feedBloc = context.watch<FeedBloc>();
+
+    if (isAccountPage) {
+      return Row(
+        children: [
+          IconButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
               triggerRefresh(context);
             },
-            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
-        Container(
-          margin: const EdgeInsets.only(right: 8.0),
-          child: IconButton(
+            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+          ),
+          IconButton(
             icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
             onPressed: () {
               HapticFeedback.mediumImpact();
@@ -151,45 +227,109 @@ class _FeedPageAppBarState extends State<FeedPageAppBar> {
               );
             },
           ),
-        ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        expandedTitleScale: 1,
-        collapseMode: CollapseMode.pin,
-        background: (feedState.getPersonDetailsResponse != null || feedState.fullCommunityView != null)
-            ? Padding(
-                padding: EdgeInsets.only(top: 70.0 + MediaQuery.of(context).viewPadding.top, bottom: getFlexibleHeight(feedState.feedType) ?? 0.0),
-                child: AnimatedOpacity(
-                  opacity: widget.showAppBarTitle ? 0.0 : 1.0,
-                  duration: const Duration(milliseconds: 100),
-                  child: Visibility(
-                    visible: feedState.feedType == FeedType.user || feedState.feedType == FeedType.community,
-                    child: feedState.getPersonDetailsResponse != null
-                        ? UserHeader(
-                            personView: feedState.getPersonDetailsResponse!.personView,
-                            showUserSidebar: widget.showSidebar,
-                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
-                          )
-                        : CommunityHeader(
-                            getCommunityResponse: feedState.fullCommunityView!,
-                            showCommunitySidebar: widget.showSidebar,
-                            onToggle: (bool toggled) => widget.onHeaderTapped?.call(toggled),
-                          ),
+          IconButton(
+            onPressed: () {
+              final AccountBloc accountBloc = context.read<AccountBloc>();
+              final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+              Navigator.of(context).push(
+                SwipeablePageRoute(
+                  transitionDuration: thunderBloc.state.reduceAnimations ? const Duration(milliseconds: 100) : null,
+                  canOnlySwipeFromEdge: !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
+                  builder: (context) => MultiBlocProvider(
+                    providers: [
+                      BlocProvider.value(value: accountBloc),
+                      BlocProvider.value(value: thunderBloc),
+                    ],
+                    child: UserSettingsPage(accountBloc.state.personView!.person.id),
                   ),
                 ),
-              )
-            : null,
-      ),
-      bottom: feedState.feedType == FeedType.user
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(65),
-              child: FeedAppBarTypeSelector(
-                onSelectViewType: widget.onSelectViewType,
-                onShowSaved: widget.onShowSaved,
+              );
+            },
+            icon: Icon(
+              Icons.settings_rounded,
+              semanticLabel: AppLocalizations.of(context)!.accountSettings,
+            ),
+            tooltip: AppLocalizations.of(context)!.accountSettings,
+          ),
+          IconButton(
+            onPressed: () => showProfileModalSheet(context),
+            icon: Icon(
+              Icons.people_alt_rounded,
+              semanticLabel: AppLocalizations.of(context)!.profiles,
+            ),
+            tooltip: AppLocalizations.of(context)!.profiles,
+          ),
+          const SizedBox(width: 8.0),
+        ],
+      );
+    }
+
+    if (feedBloc.state.status != FeedStatus.initial) {
+      return Row(
+        children: [
+          if (feedBloc.state.feedType == FeedType.community)
+            BlocListener<CommunityBloc, CommunityState>(
+              listener: (context, state) {
+                if (state.status == CommunityStatus.success && state.communityView != null) {
+                  feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+                }
+              },
+              child: IconButton(
+                icon: Icon(
+                    switch (_getSubscriptionStatus(context)) {
+                      SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                      SubscribedType.pending => Icons.pending_outlined,
+                      SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                      _ => Icons.add_circle_outline_rounded,
+                    },
+                    semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? AppLocalizations.of(context)!.subscribe : AppLocalizations.of(context)!.unsubscribe),
+                tooltip: switch (_getSubscriptionStatus(context)) {
+                  SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
+                  SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
+                  SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
+                  _ => null,
+                },
+                onPressed: () {
+                  if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
+
+                  HapticFeedback.mediumImpact();
+                  _onSubscribeIconPressed(context);
+                },
               ),
-            )
-          : null,
-    );
+            ),
+          IconButton(
+            onPressed: () {
+              HapticFeedback.mediumImpact();
+              triggerRefresh(context);
+            },
+            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh),
+          ),
+          Container(
+            margin: const EdgeInsets.only(right: 8.0),
+            child: IconButton(
+              icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+
+                showModalBottomSheet<void>(
+                  showDragHandle: true,
+                  context: context,
+                  isScrollControlled: true,
+                  builder: (builderContext) => SortPicker(
+                    title: l10n.sortOptions,
+                    onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                    previouslySelected: feedBloc.state.sortType,
+                  ),
+                );
+              },
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Container();
   }
 }
 
@@ -389,14 +529,12 @@ void _onSubscribeIconPressed(BuildContext context) {
   final AuthBloc authBloc = context.read<AuthBloc>();
   final FeedBloc feedBloc = context.read<FeedBloc>();
 
-  final FeedState feedState = feedBloc.state;
-
   if (authBloc.state.isLoggedIn) {
     context.read<CommunityBloc>().add(
           CommunityActionEvent(
             communityId: feedBloc.state.fullCommunityView!.communityView.community.id,
             communityAction: CommunityAction.follow,
-            value: (feedState.fullCommunityView?.communityView.subscribed == SubscribedType.notSubscribed ? true : false),
+            value: (feedBloc.state.fullCommunityView?.communityView.subscribed == SubscribedType.notSubscribed ? true : false),
           ),
         );
     return;
