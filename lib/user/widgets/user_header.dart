@@ -32,7 +32,6 @@ class _UserHeaderState extends State<UserHeader> {
     PersonView? personView = widget.personView;
 
     return Material(
-      elevation: widget.showUserSidebar ? 5.0 : 0,
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxHeight: 20.0),
         child: GestureDetector(

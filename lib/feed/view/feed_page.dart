@@ -312,6 +312,7 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                           builder: (BuildContext context) {
                             return CustomScrollView(
                               key: const PageStorageKey<String>('posts'),
+                              physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
                               slivers: <Widget>[
                                 SliverOverlapInjector(
                                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
@@ -371,6 +372,7 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                           builder: (BuildContext context) {
                             return CustomScrollView(
                               key: const PageStorageKey<String>('comments'),
+                              physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
                               slivers: <Widget>[
                                 SliverOverlapInjector(
                                   handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
