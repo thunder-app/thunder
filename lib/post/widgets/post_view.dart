@@ -22,6 +22,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -34,11 +35,12 @@ import 'package:thunder/utils/numbers.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 
-class PostSubview extends StatelessWidget {
+class PostSubview extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool useDisplayNames;
   final int? selectedCommentId;
   final List<CommunityModeratorView>? moderators;
+  final List<PostView>? crossPosts;
 
   const PostSubview({
     super.key,
@@ -46,17 +48,26 @@ class PostSubview extends StatelessWidget {
     required this.useDisplayNames,
     required this.postViewMedia,
     required this.moderators,
+    required this.crossPosts,
   });
 
   @override
+  State<PostSubview> createState() => _PostSubviewState();
+}
+
+class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-    final PostView postView = postViewMedia.postView;
+    final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
+    final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
+
+    final PostView postView = widget.postViewMedia.postView;
     final Post post = postView.post;
 
-    final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
+    final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
 
@@ -65,6 +76,8 @@ class PostSubview extends StatelessWidget {
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
     final bool isOwnComment = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+
+    final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
 
     return Padding(
       padding: const EdgeInsets.only(left: 12.0, right: 12.0, bottom: 8.0),
@@ -83,32 +96,34 @@ class PostSubview extends StatelessWidget {
           MediaView(
             scrapeMissingPreviews: scrapeMissingPreviews,
             post: post,
-            postView: postViewMedia,
+            postView: widget.postViewMedia,
             hideNsfwPreviews: hideNsfwPreviews,
             markPostReadOnMediaView: markPostReadOnMediaView,
             isUserLoggedIn: isUserLoggedIn,
           ),
-          if (postViewMedia.postView.post.body != null)
+          if (widget.postViewMedia.postView.post.body != null)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              padding: const EdgeInsets.only(top: 8.0),
               child: CommonMarkdownBody(
                 body: post.body ?? '',
               ),
             ),
+          if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
           Padding(
-            padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
+            padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
             child: Row(
               // Row for post view: author, community, comment count and post time
               children: [
                 Tooltip(
                   excludeFromSemantics: true,
-                  message: '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, post, null, postView.creator, moderators)}',
+                  message:
+                      '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, post, null, postView.creator, widget.moderators)}',
                   preferBelow: false,
                   child: Material(
-                    color: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)
-                        ? fetchUsernameColor(context, isOwnComment, post, null, postView.creator, moderators) ?? theme.colorScheme.onBackground
+                    color: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)
+                        ? fetchUsernameColor(context, isOwnComment, post, null, postView.creator, widget.moderators) ?? theme.colorScheme.onBackground
                         : Colors.transparent,
-                    borderRadius: isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                    borderRadius: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(5),
                       onTap: () {
@@ -119,14 +134,14 @@ class PostSubview extends StatelessWidget {
                         child: Row(
                           children: [
                             Text(
-                              postView.creator.displayName != null && useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                              postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                               textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
                               style: theme.textTheme.bodyMedium?.copyWith(
-                                color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
+                                color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                     ?.withOpacity(0.75),
                               ),
                             ),
-                            if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 2.0),
+                            if (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
                             if (isOwnComment)
                               Padding(
                                 padding: const EdgeInsets.only(left: 1),
@@ -145,7 +160,7 @@ class PostSubview extends StatelessWidget {
                                   color: theme.colorScheme.onBackground,
                                 ),
                               ),
-                            if (isModerator(postView.creator, moderators))
+                            if (isModerator(postView.creator, widget.moderators))
                               Padding(
                                 padding: const EdgeInsets.only(left: 1),
                                 child: Icon(
@@ -169,7 +184,7 @@ class PostSubview extends StatelessWidget {
                     ),
                   ),
                 ),
-                if (isSpecialUser(context, isOwnComment, post, null, postView.creator, moderators)) const SizedBox(width: 8.0),
+                if (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)) const SizedBox(width: 8.0),
                 Text(
                   'to',
                   textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
@@ -202,9 +217,9 @@ class PostSubview extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 0.0),
                   child: PostViewMetaData(
-                    comments: postViewMedia.postView.counts.comments,
-                    unreadComments: postViewMedia.postView.unreadComments,
-                    hasBeenEdited: postViewMedia.postView.post.updated != null ? true : false,
+                    comments: widget.postViewMedia.postView.counts.comments,
+                    unreadComments: widget.postViewMedia.postView.unreadComments,
+                    hasBeenEdited: widget.postViewMedia.postView.post.updated != null ? true : false,
                     published: post.published,
                     saved: postView.saved,
                   ),
@@ -240,7 +255,7 @@ class PostSubview extends StatelessWidget {
                       ),
                       const SizedBox(width: 4.0),
                       Text(
-                        formatNumberToK(postViewMedia.postView.counts.upvotes),
+                        formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
                         style: TextStyle(
                           color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
@@ -274,7 +289,7 @@ class PostSubview extends StatelessWidget {
                         ),
                         const SizedBox(width: 4.0),
                         Text(
-                          formatNumberToK(postViewMedia.postView.counts.downvotes),
+                          formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
                           style: TextStyle(
                             color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                           ),
@@ -308,7 +323,7 @@ class PostSubview extends StatelessWidget {
                   onPressed: isUserLoggedIn
                       ? () async {
                           if (postView.post.locked) {
-                            showSnackbar(context, AppLocalizations.of(context)!.postLocked);
+                            showSnackbar(context, l10n.postLocked);
                             return;
                           }
 
@@ -322,7 +337,7 @@ class PostSubview extends StatelessWidget {
                           SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
                           DraftComment? newDraftComment;
                           DraftComment? previousDraftComment;
-                          String draftId = '${LocalSettings.draftsCache.name}-${postViewMedia.postView.post.id}';
+                          String draftId = '${LocalSettings.draftsCache.name}-${widget.postViewMedia.postView.post.id}';
                           String? draftCommentJson = prefs.getString(draftId);
                           if (draftCommentJson != null) {
                             previousDraftComment = DraftComment.fromJson(jsonDecode(draftCommentJson));
@@ -333,44 +348,46 @@ class PostSubview extends StatelessWidget {
                             }
                           });
 
-                          Navigator.of(context)
-                              .push(
-                            SwipeablePageRoute(
-                              transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                              canOnlySwipeFromEdge: true,
-                              backGestureDetectionWidth: 45,
-                              builder: (context) {
-                                return MultiBlocProvider(
-                                  providers: [
-                                    BlocProvider<PostBloc>.value(value: postBloc),
-                                    BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                                    BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
-                                  ],
-                                  child: CreateCommentPage(
-                                    postView: postViewMedia,
-                                    previousDraftComment: previousDraftComment,
-                                    onUpdateDraft: (c) => newDraftComment = c,
-                                  ),
-                                );
-                              },
-                            ),
-                          )
-                              .whenComplete(() async {
-                            timer.cancel();
+                          if (context.mounted) {
+                            Navigator.of(context)
+                                .push(
+                              SwipeablePageRoute(
+                                transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                canOnlySwipeFromEdge: true,
+                                backGestureDetectionWidth: 45,
+                                builder: (context) {
+                                  return MultiBlocProvider(
+                                    providers: [
+                                      BlocProvider<PostBloc>.value(value: postBloc),
+                                      BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                      BlocProvider<account_bloc.AccountBloc>.value(value: accountBloc),
+                                    ],
+                                    child: CreateCommentPage(
+                                      postView: widget.postViewMedia,
+                                      previousDraftComment: previousDraftComment,
+                                      onUpdateDraft: (c) => newDraftComment = c,
+                                    ),
+                                  );
+                                },
+                              ),
+                            )
+                                .whenComplete(() async {
+                              timer.cancel();
 
-                            if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
-                              await Future.delayed(const Duration(milliseconds: 300));
-                              showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
-                              prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
-                            } else {
-                              prefs.remove(draftId);
-                            }
-                          });
+                              if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true) {
+                                await Future.delayed(const Duration(milliseconds: 300));
+                                if (context.mounted) {
+                                  showSnackbar(context, l10n.commentSavedAsDraft);
+                                }
+                                prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
+                              } else {
+                                prefs.remove(draftId);
+                              }
+                            });
+                          }
                         }
                       : null,
-                  icon: postView.post.locked
-                      ? Icon(Icons.lock, semanticLabel: AppLocalizations.of(context)!.postLocked, color: Colors.red)
-                      : Icon(Icons.reply_rounded, semanticLabel: AppLocalizations.of(context)!.reply(0)),
+                  icon: postView.post.locked ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red) : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
                 ),
               ),
               Expanded(
@@ -378,12 +395,12 @@ class PostSubview extends StatelessWidget {
                 child: IconButton(
                   icon: const Icon(Icons.share_rounded, semanticLabel: 'Share'),
                   onPressed: useAdvancedShareSheet
-                      ? () => showAdvancedShareSheet(context, postViewMedia)
-                      : postViewMedia.media.isEmpty
+                      ? () => showAdvancedShareSheet(context, widget.postViewMedia)
+                      : widget.postViewMedia.media.isEmpty
                           ? () => Share.share(post.apId)
                           : () => showPostActionBottomModalSheet(
                                 context,
-                                postViewMedia,
+                                widget.postViewMedia,
                                 actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                               ),
                 ),

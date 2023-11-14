@@ -313,9 +313,15 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     try {
       emit(state.copyWith(status: UserStatus.refreshing, userId: state.userId));
 
-      PostView postView = await markPostAsRead(event.postId, event.read);
+      PostViewMedia? postViewMedia = _getPost(event.postId);
+      PostView? postView = postViewMedia?.postView;
 
-      _updatePosts(postView, event.postId);
+      bool success = await markPostAsRead(event.postId, event.read);
+
+      if (postView != null && success) {
+        postView = postView.copyWith(read: event.read);
+        _updatePosts(postView, event.postId);
+      }
 
       return emit(state.copyWith(status: UserStatus.success, userId: state.userId));
     } catch (e) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:html/parser.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 
 import 'package:markdown/markdown.dart' as md;
@@ -80,9 +81,6 @@ class CommonMarkdownBody extends StatelessWidget {
 }
 
 Future<void> _handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
-  LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
-  Account? account = await fetchActiveProfileAccount();
-
   Uri? parsedUri = Uri.tryParse(text);
 
   String parsedUrl = text;
@@ -99,71 +97,8 @@ Future<void> _handleLinkTap(BuildContext context, ThunderState state, String tex
     parsedUrl = parsedUrl.replaceFirst('mailto:', '');
   }
 
-  // Try navigating to community
-  String? communityName = await getLemmyCommunity(parsedUrl);
-  if (communityName != null) {
-    try {
-      if (context.mounted) {
-        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
-        return;
-      }
-    } catch (e) {
-      // Ignore exception, if it's not a valid community we'll perform the next fallback
-    }
-  }
-
-  // Try navigating to user
-  String? username = await getLemmyUser(parsedUrl);
-  if (username != null) {
-    try {
-      if (context.mounted) {
-        await navigateToFeedPage(context, feedType: FeedType.user, username: username);
-        return;
-      }
-    } catch (e) {
-      // Ignore exception, if it's not a valid user, we'll perform the next fallback
-    }
-  }
-
-  // Try navigating to post
-  int? postId = await getLemmyPostId(parsedUrl);
-  if (postId != null) {
-    try {
-      GetPostResponse post = await lemmy.run(GetPost(
-        id: postId,
-        auth: account?.jwt,
-      ));
-
-      if (context.mounted) {
-        navigateToPost(context, postViewMedia: (await parsePostViews([post.postView])).first);
-        return;
-      }
-    } catch (e) {
-      // Ignore exception, if it's not a valid post, we'll perform the next fallback
-    }
-  }
-
-  // Try navigating to comment
-  int? commentId = await getLemmyCommentId(parsedUrl);
-  if (commentId != null) {
-    try {
-      CommentResponse fullCommentView = await lemmy.run(GetComment(
-        id: commentId,
-        auth: account?.jwt,
-      ));
-
-      if (context.mounted) {
-        navigateToComment(context, fullCommentView.commentView);
-        return;
-      }
-    } catch (e) {
-      // Ignore exception, if it's not a valid comment, we'll perform the next fallback
-    }
-  }
-
-  // Fallback: open link in browser
-  if (url != null && context.mounted) {
-    openLink(context, url: parsedUrl, openInExternalBrowser: state.openInExternalBrowser);
+  if (context.mounted) {
+    handleLink(context, url: parsedUrl);
   }
 }
 

@@ -8,13 +8,14 @@ bool searchIsEmpty(SearchType searchType, {SearchState? searchState, SearchRespo
   final List<CommunityView>? communities = searchState?.communities ?? searchResponse?.communities;
   final List<PersonView>? users = searchState?.users ?? searchResponse?.users;
   final List<CommentView>? comments = searchState?.comments ?? searchResponse?.comments;
+  final List<PostView>? posts = searchState?.posts?.map((pvm) => pvm.postView).toList() ?? searchResponse?.posts;
 
   return switch (searchType) {
     SearchType.communities => communities?.isNotEmpty != true,
     SearchType.users => users?.isNotEmpty != true,
     SearchType.comments => comments?.isNotEmpty != true,
-    //SearchType.posts => TODO
-    //SearchType.url => TODO
+    SearchType.posts => posts?.isNotEmpty != true,
+    SearchType.url => posts?.isNotEmpty != true,
     _ => false,
   };
 }

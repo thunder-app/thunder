@@ -254,9 +254,6 @@ class LinkPreviewCard extends StatelessWidget {
   }
 
   void triggerOnTap(BuildContext context) async {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final openInExternalBrowser = state.openInExternalBrowser;
-
     if (isUserLoggedIn && markPostReadOnMediaView) {
       // Mark post as read when on the feed page
       try {
@@ -294,7 +291,9 @@ class LinkPreviewCard extends StatelessWidget {
         }
       }
 
-      openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
+      if (context.mounted) {
+        handleLink(context, url: originURL!);
+      }
     }
   }
 

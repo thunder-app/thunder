@@ -866,8 +866,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "4273e3b1726117a89612219aeacbcdb2973619ff"
-      resolved-ref: "4273e3b1726117a89612219aeacbcdb2973619ff"
+      ref: "67c33a2ddc08f8d99aabfce81bab1fde107bd0a7"
+      resolved-ref: "67c33a2ddc08f8d99aabfce81bab1fde107bd0a7"
       url: "https://github.com/thunder-app/lemmy_api_client.git"
     source: git
     version: "0.21.0"

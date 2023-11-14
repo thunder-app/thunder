@@ -99,7 +99,7 @@ class UserStatsList extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThunderState state = context.read<ThunderBloc>().state;
     bool scoreCounters = state.scoreCounters;
-    final totalScore = (personView.counts.postScore + personView.counts.commentScore);
+    final totalScore = personView.counts.postScore != null && personView.counts.commentScore != null ? (personView.counts.postScore!.toInt() + personView.counts.commentScore!.toInt()) : 0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -81,11 +81,14 @@ Widget buildUserSuggestionWidget(PersonView payload, {void Function(PersonView)?
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: TextScroll(
-          '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
-          delayBefore: const Duration(seconds: 2),
-          pauseBetween: const Duration(seconds: 3),
-          velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+        subtitle: Semantics(
+          excludeSemantics: true,
+          child: TextScroll(
+            '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
+            delayBefore: const Duration(seconds: 2),
+            pauseBetween: const Duration(seconds: 3),
+            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          ),
         ),
       ),
     ),
@@ -160,11 +163,14 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
-        subtitle: TextScroll(
-          '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-          delayBefore: const Duration(seconds: 2),
-          pauseBetween: const Duration(seconds: 3),
-          velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+        subtitle: Semantics(
+          excludeSemantics: true,
+          child: TextScroll(
+            '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+            delayBefore: const Duration(seconds: 2),
+            pauseBetween: const Duration(seconds: 3),
+            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          ),
         ),
       ),
     ),
