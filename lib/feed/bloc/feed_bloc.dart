@@ -299,6 +299,24 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     if (event.reset && event.feedType == FeedType.user) assert(!(event.userId != null && event.username != null));
     if (event.reset && event.feedType == FeedType.general) assert(event.postListingType != null);
 
+    // Soft-reset the state when switching to saved only items
+    if (event.savedOnly != null && event.savedOnly != state.showSavedItems) {
+      emit(state.copyWith(
+        status: FeedStatus.success,
+        postViewMedias: [],
+        commentViewTrees: [],
+        hasReachedPostEnd: false,
+        hasReachedCommentEnd: false,
+        feedType: event.feedType,
+        postListingType: event.postListingType,
+        sortType: event.sortType,
+        userId: event.userId,
+        username: event.username,
+        showSavedItems: event.savedOnly == true ? true : null,
+        currentPage: 1,
+      ));
+    }
+
     // Handle the initial fetch or reload of a feed
     if (event.reset) {
       if (state.status != FeedStatus.initial) add(ResetFeedEvent());
@@ -321,6 +339,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             sortType: event.sortType,
             userId: event.userId,
             username: event.username,
+            savedOnly: event.savedOnly,
           );
 
           // Extract information from the response
@@ -346,6 +365,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
             getPersonDetailsResponse: getPersonDetailsResponse,
             userId: event.userId,
             username: event.username,
+            showSavedItems: event.savedOnly,
             currentPage: currentPage,
           ));
         default:
@@ -394,6 +414,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           sortType: state.sortType,
           userId: state.userId,
           username: state.username,
+          savedOnly: state.showSavedItems,
         );
 
         // Extract information from the response

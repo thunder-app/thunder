@@ -65,6 +65,7 @@ Future<Map<String, dynamic>> fetchUserInformation({
   SortType? sortType,
   int? userId,
   String? username,
+  bool? savedOnly,
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
@@ -94,6 +95,7 @@ Future<Map<String, dynamic>> fetchUserInformation({
       sort: sortType,
       personId: userId,
       username: username,
+      savedOnly: savedOnly,
     ));
 
     // Remove deleted posts/comments

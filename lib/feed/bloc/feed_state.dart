@@ -18,6 +18,7 @@ final class FeedState extends Equatable {
     this.getPersonDetailsResponse,
     this.userId,
     this.username,
+    this.showSavedItems = false,
     this.currentPage = 1,
     this.message,
     this.scrollId = 0,
@@ -67,6 +68,9 @@ final class FeedState extends Equatable {
   /// The username of the user to display posts for.
   final String? username;
 
+  /// Whether the current feed should show saved items
+  final bool showSavedItems;
+
   /// The current page of the feed
   final int currentPage;
 
@@ -97,6 +101,7 @@ final class FeedState extends Equatable {
     GetPersonDetailsResponse? getPersonDetailsResponse,
     int? userId,
     String? username,
+    bool? showSavedItems,
     int? currentPage,
     String? message,
     int? scrollId,
@@ -118,6 +123,7 @@ final class FeedState extends Equatable {
       getPersonDetailsResponse: getPersonDetailsResponse ?? this.getPersonDetailsResponse,
       userId: userId ?? this.userId,
       username: username ?? this.username,
+      showSavedItems: showSavedItems ?? this.showSavedItems,
       currentPage: currentPage ?? this.currentPage,
       message: message,
       scrollId: scrollId ?? this.scrollId,
@@ -147,6 +153,7 @@ final class FeedState extends Equatable {
         getPersonDetailsResponse,
         userId,
         username,
+        showSavedItems,
         currentPage,
         message,
         scrollId,

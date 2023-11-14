@@ -497,6 +497,8 @@ class _FeedAppBarTypeSelectorState extends State<FeedAppBarTypeSelector> {
 
                           selectedUserOption = index;
                         });
+
+                        widget.onSelectViewType?.call(index == 0 ? FeedViewType.post : FeedViewType.comment);
                       },
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
                       constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (isAccountUser ? 0.8 : 0))) - 12.0),

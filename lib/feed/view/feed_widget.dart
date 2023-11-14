@@ -12,12 +12,14 @@ class FeedPostList extends StatelessWidget {
   final bool tabletMode;
   final List<int>? queuedForRemoval;
   final List<PostViewMedia> postViewMedias;
+  final bool isAccountPage;
 
   const FeedPostList({
     super.key,
     required this.postViewMedias,
     required this.tabletMode,
     this.queuedForRemoval,
+    this.isAccountPage = false,
   });
 
   @override
@@ -68,7 +70,7 @@ class FeedPostList extends StatelessWidget {
                     context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
                   },
                   listingType: state.postListingType,
-                  indicateRead: thunderState.dimReadPosts,
+                  indicateRead: isAccountPage ? false : thunderState.dimReadPosts,
                 )
               : null,
         );

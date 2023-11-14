@@ -284,7 +284,20 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                     onSelectViewType: (FeedViewType viewType) {
                       setState(() => feedViewType = viewType);
                     },
-                    onShowSaved: (bool showSaved) {},
+                    onShowSaved: (bool showSaved) {
+                      context.read<FeedBloc>().add(
+                            FeedFetchedEvent(
+                              feedType: state.feedType,
+                              postListingType: state.postListingType,
+                              sortType: state.sortType,
+                              communityId: state.communityId,
+                              communityName: state.communityName,
+                              userId: state.userId,
+                              username: state.username,
+                              savedOnly: showSaved,
+                            ),
+                          );
+                    },
                   ),
                 ),
               ];
@@ -307,6 +320,7 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
                                   showSidebar: showSidebar,
                                   queuedForRemoval: queuedForRemoval,
                                   onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
+                                  isAccountPage: widget.isAccountPage,
                                 ),
                                 // Widget representing the bottom of the feed (reached end or loading more posts indicators)
                                 SliverToBoxAdapter(
@@ -431,9 +445,12 @@ class FeedPostBody extends StatelessWidget {
     this.queuedForRemoval = const <int>[],
     this.showSidebar = false,
     required this.onToggleSidebar,
+    this.isAccountPage = false,
   });
 
   final List<int> queuedForRemoval;
+
+  final bool isAccountPage;
   final bool showSidebar;
 
   final void Function(bool) onToggleSidebar;
@@ -462,6 +479,7 @@ class FeedPostBody extends StatelessWidget {
               postViewMedias: postViewMedias,
               tabletMode: tabletMode,
               queuedForRemoval: queuedForRemoval,
+              isAccountPage: isAccountPage,
             ),
 
             // Contains the faded overlay when the sidebar is open

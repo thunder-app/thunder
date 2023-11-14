@@ -32,6 +32,10 @@ final class FeedFetchedEvent extends FeedEvent {
   /// Boolean which indicates whether or not to reset the feed
   final bool reset;
 
+  /// Boolean which indicates whether or not to display only saved posts and comments
+  /// This is only used for the account page
+  final bool? savedOnly;
+
   const FeedFetchedEvent({
     this.feedType,
     this.postListingType,
@@ -41,6 +45,7 @@ final class FeedFetchedEvent extends FeedEvent {
     this.userId,
     this.username,
     this.reset = false,
+    this.savedOnly,
   });
 }
 
