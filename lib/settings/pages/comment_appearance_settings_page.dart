@@ -38,6 +38,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
 
+  /// An example comment for use with comment preview
   Future<CommentViewTree>? exampleCommentViewTree;
 
   /// Initialize the settings from the user's shared preferences
