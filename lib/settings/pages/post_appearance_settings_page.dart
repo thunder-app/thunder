@@ -255,6 +255,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
           SliverAppBar.medium(
             title: Text(l10n.posts),
             centerTitle: false,
+            toolbarHeight: 70.0,
             actions: [
               IconButton(
                 icon: const Icon(Icons.restart_alt_rounded),
@@ -281,6 +282,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   );
                 },
               ),
+              const SizedBox(width: 8.0),
             ],
           ),
           SliverToBoxAdapter(
@@ -612,6 +614,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
       ),
     );

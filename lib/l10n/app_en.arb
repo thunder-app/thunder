@@ -48,9 +48,13 @@
   "remove": "Remove",
   "@remove": {},
   "appearance": "Appearance",
-  "@appearance": {},
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
   "theming": "Theming",
-  "@theming": {},
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
   "somethingWentWrong": "Oops, something went wrong!",
   "@somethingWentWrong": {},
   "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
@@ -294,15 +298,25 @@
   "fetchAccountError": "Could not determine account",
   "@fetchAccountError": {},
   "collapsePostPreview": "Collapse Post Preview",
-  "@collapsePostPreview": {},
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
   "expandPostPreview": "Expand Post Preview",
-  "@expandPostPreview": {},
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
   "collapseCommentPreview": "Collapse Comment Preview",
-  "@collapseCommentPreview": {},
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
   "expandCommentPreview": "Expand Comment Preview",
-  "@expandCommentPreview": {},
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
   "generalSettings": "General Settings",
-  "@generalSettings": {},
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
   "retry": "Retry",
   "@retry": {},
   "userNotLoggedIn": "User not logged in",
@@ -348,31 +362,81 @@
   "off": "off",
   "@off": {},
   "resetPreferences": "Reset Preferences",
-  "@resetCommentPreferences": {},
+  "@resetCommentPreferences": {
+    "description": "Title for reset preferences dialog in Setting -> Appearance -> Posts/Comments"
+  },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
-  "@confirmResetCommentPreferences": {},
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
   "confirmResetPostPreferences": "This will reset all post preferences. Are you sure you want to proceed?",
-  "@confirmResetPostPreferences": {},
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
   "reset": "Reset",
-  "@reset": {},
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
   "commentPreview": "Show a preview of the comments with the given settings",
-  "@commentPreview": {},
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
   "postPreview": "Show a preview of the post with the given settings",
-  "@postPreview": {},
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
   "postViewType": "Post View Type",
-  "@postViewType": {},
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
   "compactView": "Compact View",
-  "@compactView": {},
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
   "cardView": "Card View",
-  "@cardView": {},
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
   "compactViewSettings": "Compact View Settings",
-  "@compactViewSettings": {},
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
   "compactViewDescription": "Enable compact view to adjust settings",
-  "@compactViewDescription": {},
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
   "cardViewSettings": "Card View Settings",
-  "@cardViewSettings": {},
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
   "cardViewDescription": "Enable card view to adjust settings",
-  "@cardViewDescription": {},
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "feedTypeAndSorts": "Default Feed Type and Sorting",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "postBehaviourSettings": "Posts",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentBehaviourSettings": "Comments",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "linksBehaviourSettings": "Links",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "notificationsBehaviourSettings": "Notifications",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
   "addedCommunityToSubscriptions": "Added community to subscriptions",
   "@addedCommunityToSubscriptions": {},
   "removedCommunityFromSubscriptions": "Unsubscribed from community",

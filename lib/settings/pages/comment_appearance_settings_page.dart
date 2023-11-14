@@ -154,6 +154,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
           SliverAppBar.medium(
             title: Text(l10n.comments),
             centerTitle: false,
+            toolbarHeight: 70.0,
             actions: [
               IconButton(
                 icon: const Icon(Icons.restart_alt_rounded),
@@ -180,6 +181,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                   );
                 },
               ),
+              const SizedBox(width: 8.0),
             ],
           ),
           // Comment Preview
@@ -309,6 +311,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
               ),
             ),
           ),
+          const SliverToBoxAdapter(child: SizedBox(height: 128.0)),
         ],
       ),
     );

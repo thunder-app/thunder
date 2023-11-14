@@ -11,12 +11,18 @@ class AppearanceSettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: Text(l10n.appearance), centerTitle: false),
       body: CustomScrollView(
         slivers: [
+          SliverAppBar.medium(
+            title: Text(l10n.appearance),
+            centerTitle: false,
+            toolbarHeight: 70.0,
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverList(
             delegate: SliverChildListDelegate(
               [
@@ -32,7 +38,15 @@ class AppearanceSettingsPage extends StatelessWidget {
               ],
             ),
           ),
-          const SliverToBoxAdapter(child: Divider(indent: 16.0, height: 32.0, endIndent: 16.0)),
+          SliverToBoxAdapter(
+            child: Divider(
+              indent: 32.0,
+              height: 32.0,
+              endIndent: 32.0,
+              thickness: 2.0,
+              color: theme.dividerColor.withOpacity(0.6),
+            ),
+          ),
           SliverList(
             delegate: SliverChildListDelegate(
               [
