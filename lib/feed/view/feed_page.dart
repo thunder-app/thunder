@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
 
 import 'package:back_button_interceptor/back_button_interceptor.dart';
 import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -303,101 +305,115 @@ class _FeedViewState extends State<FeedView> with SingleTickerProviderStateMixin
               ];
             },
             body: feedViewType == FeedViewType.post
-                ? Stack(
-                    children: [
-                      SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: Builder(
-                          builder: (BuildContext context) {
-                            return CustomScrollView(
-                              key: const PageStorageKey<String>('posts'),
-                              physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
-                              slivers: <Widget>[
-                                SliverOverlapInjector(
-                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                                ),
-                                FeedPostBody(
-                                  showSidebar: showSidebar,
-                                  queuedForRemoval: queuedForRemoval,
-                                  onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
-                                  isAccountPage: widget.isAccountPage,
-                                ),
-                                // Widget representing the bottom of the feed (reached end or loading more posts indicators)
-                                SliverToBoxAdapter(
-                                  child: state.hasReachedPostEnd
-                                      ? const FeedReachedEnd()
-                                      : Container(
-                                          height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: const CircularProgressIndicator(),
-                                        ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ),
-                      // Widget to host the feed FAB when navigating to new page
-                      AnimatedOpacity(
-                        opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
-                        duration: const Duration(milliseconds: 150),
-                        child: thunderBloc.state.isFabOpen
-                            ? ModalBarrier(
-                                color: theme.colorScheme.background.withOpacity(0.95),
-                                dismissible: true,
-                                onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
-                              )
-                            : null,
-                      ),
-                      if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
-                        AnimatedOpacity(
-                          opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
-                          duration: const Duration(milliseconds: 150),
-                          curve: Curves.easeIn,
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
-                            child: FeedFAB(heroTag: state.communityName),
+                ? RefreshIndicator(
+                    onRefresh: () async {
+                      HapticFeedback.mediumImpact();
+                      triggerRefresh(context);
+                    },
+                    edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+                    child: Stack(
+                      children: [
+                        SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: Builder(
+                            builder: (BuildContext context) {
+                              return CustomScrollView(
+                                key: const PageStorageKey<String>('posts'),
+                                physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
+                                slivers: <Widget>[
+                                  SliverOverlapInjector(
+                                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                  ),
+                                  FeedPostBody(
+                                    showSidebar: showSidebar,
+                                    queuedForRemoval: queuedForRemoval,
+                                    onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
+                                    isAccountPage: widget.isAccountPage,
+                                  ),
+                                  // Widget representing the bottom of the feed (reached end or loading more posts indicators)
+                                  SliverToBoxAdapter(
+                                    child: state.hasReachedPostEnd
+                                        ? const FeedReachedEnd()
+                                        : Container(
+                                            height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                            child: const CircularProgressIndicator(),
+                                          ),
+                                  ),
+                                ],
+                              );
+                            },
                           ),
                         ),
-                    ],
-                  )
-                : Stack(
-                    children: [
-                      SafeArea(
-                        top: false,
-                        bottom: false,
-                        child: Builder(
-                          builder: (BuildContext context) {
-                            return CustomScrollView(
-                              key: const PageStorageKey<String>('comments'),
-                              physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
-                              slivers: <Widget>[
-                                SliverOverlapInjector(
-                                  handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                                ),
-                                FeedCommentBody(
-                                  showSidebar: showSidebar,
-                                  onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
-                                ),
-                                // Widget representing the bottom of the feed (reached end or loading more comments indicators)
-                                SliverToBoxAdapter(
-                                  child: state.hasReachedCommentEnd
-                                      ? const FeedReachedEnd()
-                                      : Container(
-                                          height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
-                                          alignment: Alignment.center,
-                                          padding: const EdgeInsets.symmetric(vertical: 16.0),
-                                          child: const CircularProgressIndicator(),
-                                        ),
-                                ),
-                              ],
-                            );
-                          },
+                        // Widget to host the feed FAB when navigating to new page
+                        AnimatedOpacity(
+                          opacity: thunderBloc.state.isFabOpen ? 1.0 : 0.0,
+                          duration: const Duration(milliseconds: 150),
+                          child: thunderBloc.state.isFabOpen
+                              ? ModalBarrier(
+                                  color: theme.colorScheme.background.withOpacity(0.95),
+                                  dismissible: true,
+                                  onDismiss: () => context.read<ThunderBloc>().add(const OnFabToggle(false)),
+                                )
+                              : null,
                         ),
-                      ),
-                    ],
+                        if (Navigator.of(context).canPop() && (state.communityId != null || state.communityName != null) && thunderBloc.state.enableFeedsFab)
+                          AnimatedOpacity(
+                            opacity: (thunderBloc.state.enableFeedsFab) ? 1.0 : 0.0,
+                            duration: const Duration(milliseconds: 150),
+                            curve: Curves.easeIn,
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 48),
+                              child: FeedFAB(heroTag: state.communityName),
+                            ),
+                          ),
+                      ],
+                    ),
+                  )
+                : RefreshIndicator(
+                    onRefresh: () async {
+                      HapticFeedback.mediumImpact();
+                      triggerRefresh(context);
+                    },
+                    edgeOffset: 95.0, // This offset is placed to allow the correct positioning of the refresh indicator
+                    child: Stack(
+                      children: [
+                        SafeArea(
+                          top: false,
+                          bottom: false,
+                          child: Builder(
+                            builder: (BuildContext context) {
+                              return CustomScrollView(
+                                key: const PageStorageKey<String>('comments'),
+                                physics: showSidebar ? const NeverScrollableScrollPhysics() : null,
+                                slivers: <Widget>[
+                                  SliverOverlapInjector(
+                                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                                  ),
+                                  FeedCommentBody(
+                                    showSidebar: showSidebar,
+                                    onToggleSidebar: (bool toggle) => setState(() => showSidebar = toggle),
+                                  ),
+                                  // Widget representing the bottom of the feed (reached end or loading more comments indicators)
+                                  SliverToBoxAdapter(
+                                    child: state.hasReachedCommentEnd
+                                        ? const FeedReachedEnd()
+                                        : Container(
+                                            height: state.status == FeedStatus.initial ? MediaQuery.of(context).size.height * 0.5 : null, // Might have to adjust this to be more robust
+                                            alignment: Alignment.center,
+                                            padding: const EdgeInsets.symmetric(vertical: 16.0),
+                                            child: const CircularProgressIndicator(),
+                                          ),
+                                  ),
+                                ],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
           );
         },
