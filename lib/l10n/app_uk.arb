@@ -172,5 +172,9 @@
   "tapToExit": "Натисніть двічі кнопку Назад для виходу",
   "@tapToExit": {},
   "countSubscribers": "Підписників: {count}",
-  "@countSubscribers": {}
+  "@countSubscribers": {},
+  "searchPostsFederatedWith": "Шукати публікації, які перебувають в федерації з {instance}",
+  "@searchPostsFederatedWith": {},
+  "searchCommentsFederatedWith": "Шукати коментарі, які перебувають в федерації з {instance}",
+  "@searchCommentsFederatedWith": {}
 }
