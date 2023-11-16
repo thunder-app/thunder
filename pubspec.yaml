@@ -102,6 +102,10 @@ dependencies:
       url: https://github.com/AyushmanG26/receive_sharing_intent.git
   collection: ^1.17.0
   fading_edge_scrollview: ^3.0.0
+  l10n_esperanto:
+    git:
+      url: https://github.com/deakjahn/l10n_esperanto.git
+      ref: 78e757337a1de881220086d26a083feeb780f609
 
 dev_dependencies:
   build_runner: ^2.4.6
