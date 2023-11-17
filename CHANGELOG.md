@@ -1,6 +1,7 @@
 ## Unreleased
 ### Fixed
 - Fixed rendering issues with markdown link parsing
+- Fixed issue where TOTP token was not sent properly
 
 ## 0.2.5+25 - 2023-11-15
 ### Added

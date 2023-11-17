@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.5+25
+version: 0.2.6-2+27
 
 environment:
   sdk: "^3.0.0"
@@ -29,7 +29,7 @@ dependencies:
   lemmy_api_client:
     git:
       url: https://github.com/thunder-app/lemmy_api_client.git
-      ref: 11893cac21d13e424f188420cbbdbf9164c28498
+      ref: 0e95e72a4f45132cdcee0a5de153a6653ee0b65e
   link_preview_generator:
     git:
       url: https://github.com/thunder-app/link_preview_generator.git
