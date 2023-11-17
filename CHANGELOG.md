@@ -1,4 +1,6 @@
 ## Unreleased
+
+## 0.2.5+25 - 2023-11-15
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo
