@@ -178,7 +178,12 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
 }
 
 /// Shows a dialog which allows typing/search for an instance
-void showInstanceInputDialog(BuildContext context, {required String title, required void Function(Instance) onInstanceSelected, Iterable<Instance>? emptySuggestions}) async {
+void showInstanceInputDialog(
+  BuildContext context, {
+  required String title,
+  required void Function(InstanceWithFederationState) onInstanceSelected,
+  Iterable<InstanceWithFederationState>? emptySuggestions,
+}) async {
   Account? account = await fetchActiveProfileAccount();
 
   GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
@@ -187,12 +192,12 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
     ),
   );
 
-  Future<String?> onSubmitted({Instance? payload, String? value}) async {
+  Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final Instance? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((Instance instance) => instance.domain == value);
+      final InstanceWithFederationState? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((InstanceWithFederationState instance) => instance.domain == value);
 
       if (instance != null) {
         onInstanceSelected(instance);
@@ -206,7 +211,7 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
   }
 
   if (context.mounted) {
-    showInputDialog<Instance>(
+    showInputDialog<InstanceWithFederationState>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance,
@@ -217,12 +222,12 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
   }
 }
 
-Future<Iterable<Instance>> getInstanceSuggestions(String query, Iterable<Instance>? emptySuggestions) async {
+Future<Iterable<InstanceWithFederationState>> getInstanceSuggestions(String query, Iterable<InstanceWithFederationState>? emptySuggestions) async {
   if (query.isEmpty) {
     return const Iterable.empty();
   }
 
-  Iterable<Instance> filteredInstances = emptySuggestions?.where((Instance instance) => instance.domain.contains(query)) ?? const Iterable.empty();
+  Iterable<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)) ?? const Iterable.empty();
   return filteredInstances;
 }
 
