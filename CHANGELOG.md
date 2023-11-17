@@ -1,4 +1,6 @@
 ## Unreleased
+### Fixed
+- Fixed rendering issues with markdown link parsing
 
 ## 0.2.5+25 - 2023-11-15
 ### Added
