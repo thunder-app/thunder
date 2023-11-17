@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:link_preview_generator/link_preview_generator.dart';
 
 import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:link_preview_generator/link_preview_generator.dart';
 
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
@@ -16,8 +16,14 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/markdown/extended_markdown.dart';
 
 class CommonMarkdownBody extends StatelessWidget {
+  /// The markdown content body
   final String body;
+
+  /// Whether the text is selectable - defaults to false
   final bool isSelectableText;
+
+  /// Indicates if the given markdown is a comment. Depending on the markdown content, different text scaling may be applied
+  /// TODO: This should be converted to an enum of possible markdown content (e.g., post, comment, general, metadata, etc.) to allow for more fined-tuned scaling of text
   final bool? isComment;
 
   const CommonMarkdownBody({
