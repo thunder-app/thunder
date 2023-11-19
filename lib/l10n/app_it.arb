@@ -410,5 +410,187 @@
   "unsubscribe": "Cancella iscrizione",
   "@unsubscribe": {},
   "postTogglePreview": "Aziona Anteprima",
-  "@postTogglePreview": {}
+  "@postTogglePreview": {},
+  "copyText": "Copia Testo",
+  "@copyText": {},
+  "couldntCreateReport": "Non è stato possibile inoltrare la tua segnalazione. Riprova più tardi per favore",
+  "@couldntCreateReport": {},
+  "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
+  "@reply": {},
+  "xUpvotes": "{x} voti in su",
+  "@xUpvotes": {},
+  "commentReported": "Il commento è stato segnalato per un controllo.",
+  "@commentReported": {},
+  "upvote": "Voto in su",
+  "@upvote": {},
+  "uriNotSupported": "Al momento questo tipo di link non è supportato.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "inReplyTo": "In risposta a {post} da {community}",
+  "@inReplyTo": {},
+  "navigation": "Navigazione",
+  "@navigation": {},
+  "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
+  "@message": {},
+  "importSettings": "Importa Impostazioni",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "reachedTheBottom": "Mmh. Sembra che hai raggiunto la fine.",
+  "@reachedTheBottom": {},
+  "serverErrorComments": "Si è verificato un errore del server durante il caricamento di ulteriori commenti: {message}",
+  "@serverErrorComments": {},
+  "accessibility": "Accessibilità",
+  "@accessibility": {},
+  "visitUserProfile": "Visita Profilo dell'Utente",
+  "@visitUserProfile": {},
+  "settingsFeedCards": "Queste impostazioni sono applicabili alle tessere della feed principale, ulteriori azioni sono disponibili una volta aperto il post.",
+  "@settingsFeedCards": {
+    "description": "Settings for controlling the display of cards in the main feed."
+  },
+  "sidebarBottomNavDoubleTapDescription": "Tocca 2 volte la barra inferiore per aprire la barra laterale",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "importExportSettings": "Importa/Esporta Impostazioni",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "malformedUri": "Il link che hai fornito era in un formato non supportato. Per favore assicurati che il link sia valido.",
+  "@malformedUri": {
+    "description": "Error related to unsupported link format."
+  },
+  "sidebarBottomNavSwipeDescription": "Scorri la barra inferiore per aprire la barra laterale",
+  "@sidebarBottomNavSwipeDescription": {},
+  "backButton": "Pulsante 'indietro'",
+  "@backButton": {},
+  "allowOpenSupportedLinks": "Permetti a questa app di aprire i link supportati.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "displayUserScore": "Visualizza i Punteggi degli Utenti (Karma).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "readAll": "Leggi Tutto",
+  "@readAll": {},
+  "xDownvotes": "{x} voti in giù",
+  "@xDownvotes": {},
+  "exceptionProcessingUri": "Si è verificato un errore durante il trattamento del link. Potrebbe non essere disponibile nella tua istanza.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "submit": "Invia",
+  "@submit": {},
+  "downvotesDisabled": "I voti in giù sono disabilitati in questa istanza.",
+  "@downvotesDisabled": {},
+  "animations": "Animazioni",
+  "@animations": {},
+  "sidebar": "Barra Laterale",
+  "@sidebar": {},
+  "couldNotDetermineCommentDelete": "È stato impossibile determinare il post da dove eliminare il commento.",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "È stato impossibile determinare il post nel cui lasciare il commento.",
+  "@couldNotDeterminePostComment": {},
+  "toggelRead": "Interruttore Lettura",
+  "@toggelRead": {},
+  "showAll": "Mostra Tutto",
+  "@showAll": {},
+  "notifications": "{count, plural, zero {Notification} one {Notifications} other {Notifications}}",
+  "@notifications": {
+    "description": "Message formatting for notifications count."
+  },
+  "commentSwipeGesturesHint": "Preferisci usare i pulsanti? Abilitali nella sezione 'commenti' delle impostazioni generali.",
+  "@commentSwipeGesturesHint": {},
+  "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
+  "@mention": {},
+  "visitCommunity": "Visita Comunità",
+  "@visitCommunity": {},
+  "report": "Segnala",
+  "@report": {},
+  "emptyInbox": "Svuota Inbox",
+  "@emptyInbox": {},
+  "scrapeMissingPreviews": "Questa abilitazione avrà un impatto sulla performance.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "sharePost": "Condividi Post",
+  "@sharePost": {},
+  "shareLink": "Condividi il Link",
+  "@shareLink": {},
+  "emptyUri": "Il link è vuoto. Per favore inserisci un link in formato valido per procedere.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "fullScreenNavigationSwipeDescription": "Scorri ovunque per tornare indietro quando le azioni da sinistra-a-destra sono disabilitate",
+  "@fullScreenNavigationSwipeDescription": {},
+  "commentSortType": "Tipo di Organizzazione dei Commenti",
+  "@commentSortType": {},
+  "unableToLoadReplies": "Impossibile caricare ulteriori commenti.",
+  "@unableToLoadReplies": {},
+  "saveSettings": "Salva le Impostazioni",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "general": "Generale",
+  "@general": {
+    "description": "General settings category."
+  },
+  "reportComment": "Segnala Commento",
+  "@reportComment": {},
+  "combineNavAndFab": "Il pulsante flessibile delle azioni è disponibile tra i pulsanti di navigazione.",
+  "@combineNavAndFab": {},
+  "timeoutSaveComment": "Errore: si è verificato un time out durante il salvataggio del commento",
+  "@timeoutSaveComment": {},
+  "cantBlockAdmin": "Non è permesso bloccare un amministratore di un'istanza.",
+  "@cantBlockAdmin": {},
+  "sortByTop": "Ordina dal Migliore",
+  "@sortByTop": {},
+  "dimReadPosts": "I post già letti saranno oscurati",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "timeoutSavingPost": "Errore: si è verificato un time out durante il salvataggio del post.",
+  "@timeoutSavingPost": {},
+  "viewAllComments": "Vedi tutti i commenti.",
+  "@viewAllComments": {},
+  "cannotReportOwnComment": "Non è possibile segnalare un proprio commento.",
+  "@cannotReportOwnComment": {},
+  "userProfiles": "Profili dell'Utente",
+  "@userProfiles": {
+    "description": "Settings related to user profiles."
+  },
+  "controversial": "Controverso",
+  "@controversial": {},
+  "shareMedia": "Condividi Materiale audio/video",
+  "@shareMedia": {},
+  "timeoutComments": "Errore: si è verificato un time out durante il caricamento dei commenti",
+  "@timeoutComments": {},
+  "scaled": "Scala",
+  "@scaled": {},
+  "openByDefault": "Apri per default",
+  "@openByDefault": {
+    "description": "Indicating the default behavior of opening links."
+  },
+  "postSwipeGesturesHint": "Preferisci usare i pulsanti? Cambia quali pulsanti compaiono nelle schermate dei post nelle impostazioni generali.",
+  "@postSwipeGesturesHint": {},
+  "useCompactView": "Abilita per post piccoli, disabilita per post più grandi.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "timeoutVotingPost": "Errore: si è verificato un time out durante il voto del post.",
+  "@timeoutVotingPost": {},
+  "gestures": "Movimenti",
+  "@gestures": {},
+  "share": "Condividi",
+  "@share": {},
+  "timeoutUpvoteComment": "Errore: si è verificato un time out durante il voto del commento",
+  "@timeoutUpvoteComment": {},
+  "loginToPerformAction": "Devi aver effettuato l'accesso per completare questa operazione.",
+  "@loginToPerformAction": {},
+  "downvote": "Voto in giù",
+  "@downvote": {},
+  "noComments": "Oh. Non ci sono commenti.",
+  "@noComments": {},
+  "loginToSeeInbox": "Effettua l'accesso per vedere il tuo Inbox",
+  "@loginToSeeInbox": {}
 }
