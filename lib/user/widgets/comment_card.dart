@@ -119,7 +119,7 @@ class CommentCard extends StatelessWidget {
                 onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: comment.community.id),
               ),
               const SizedBox(height: 10),
-              CommonMarkdownBody(body: comment.comment.content),
+              CommonMarkdownBody(body: comment.comment.content, isComment: true),
               const Divider(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.end,

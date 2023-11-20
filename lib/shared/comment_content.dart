@@ -99,7 +99,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
-                        child: CommonMarkdownBody(body: widget.comment.comment.content),
+                        child: CommonMarkdownBody(body: widget.comment.comment.content, isComment: true),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn)
                         Padding(
