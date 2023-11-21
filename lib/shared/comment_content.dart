@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 
 import 'comment_card_actions.dart';
 import 'comment_header.dart';
@@ -100,7 +99,7 @@ class _CommentContentState extends State<CommentContent> with SingleTickerProvid
                     children: [
                       Padding(
                         padding: EdgeInsets.only(top: 0, right: 8.0, left: 8.0, bottom: (state.showCommentButtonActions && widget.isUserLoggedIn) ? 0.0 : 8.0),
-                        child: CommonMarkdownBody(body: widget.comment.comment.content),
+                        child: CommonMarkdownBody(body: widget.comment.comment.content, isComment: true),
                       ),
                       if (state.showCommentButtonActions && widget.isUserLoggedIn)
                         Padding(

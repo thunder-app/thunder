@@ -7,9 +7,7 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -17,6 +15,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/image.dart';
@@ -274,9 +273,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: Text(
+                                        child: ScalableText(
                                           widget.postView?.postView.post.name ?? '',
-                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
+                                          fontScale: thunderState.titleFontSizeScale,
                                           style: theme.textTheme.titleMedium,
                                         ),
                                       ),

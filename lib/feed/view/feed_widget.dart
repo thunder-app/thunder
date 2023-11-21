@@ -6,6 +6,7 @@ import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedPostList extends StatelessWidget {
   final bool tabletMode;
@@ -21,6 +22,7 @@ class FeedPostList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
     final FeedState state = context.read<FeedBloc>().state;
 
     // Widget representing the list of posts on the feed
@@ -66,7 +68,7 @@ class FeedPostList extends StatelessWidget {
                     context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
                   },
                   listingType: state.postListingType,
-                  indicateRead: true,
+                  indicateRead: thunderState.dimReadPosts,
                 )
               : null,
         );
