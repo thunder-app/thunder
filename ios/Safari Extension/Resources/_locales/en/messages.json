@@ -1,0 +1,10 @@
+{
+    "extension_name": {
+        "message": "Open In Thunder",
+        "description": "The display name for the extension."
+    },
+    "extension_description": {
+        "message": "Opens Lemmy links in Thunder",
+        "description": "Description of what the extension does."
+    }
+}
