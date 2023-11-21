@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../thunder/bloc/thunder_bloc.dart';
 
 class UserSidebarActivity extends StatelessWidget {
   final IconData icon;

@@ -22,6 +22,7 @@ import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -88,9 +89,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Text(
+            child: ScalableText(
               HtmlUnescape().convert(post.name),
-              textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
+              fontScale: thunderState.titleFontSizeScale,
               style: theme.textTheme.titleMedium,
             ),
           ),
@@ -134,9 +135,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         padding: const EdgeInsets.only(left: 5, right: 5),
                         child: Row(
                           children: [
-                            Text(
+                            ScalableText(
                               postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                              textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
+                              fontScale: thunderState.metadataFontSizeScale,
                               style: theme.textTheme.bodyMedium?.copyWith(
                                 color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                     ?.withOpacity(0.75),
@@ -186,9 +187,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                   ),
                 ),
                 if (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)) const SizedBox(width: 8.0),
-                Text(
+                ScalableText(
                   'to',
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
+                  fontScale: thunderState.metadataFontSizeScale,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                   ),
@@ -204,9 +205,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                     preferBelow: false,
                     child: Padding(
                       padding: const EdgeInsets.only(left: 5, right: 5),
-                      child: Text(
+                      child: ScalableText(
                         postView.community.name,
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.metadataFontSizeScale.textScaleFactor,
+                        fontScale: thunderState.metadataFontSizeScale,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                         ),
