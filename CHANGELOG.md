@@ -1,4 +1,8 @@
 ## Unreleased
+
+## Added
+- Added ability to collapse post in post page
+
 ### Fixed
 - Fixed rendering issues with markdown link parsing
 - Fixed issue where TOTP token was not sent properly
@@ -24,7 +28,6 @@
 - Added ability to block instances from long-press menu and user settings
 - Add more search options - contribution from @micahmo
 - Added support for display cross-posts - contribution from @micahmo
-- Added ability to collapse post in post page
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
