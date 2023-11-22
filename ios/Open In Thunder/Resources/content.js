@@ -97,3 +97,4 @@ function openInThunder() {
 
 openInThunder();
 window.onload = observeUrlChange;
+

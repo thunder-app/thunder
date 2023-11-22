@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D46D58FB2B0CF2EF00F3A3A3"
-               BuildableName = "Safari Extension.appex"
-               BlueprintName = "Safari Extension"
+               BlueprintIdentifier = "D458C5662B0D6F7D0090D826"
+               BuildableName = "Open In Thunder.appex"
+               BlueprintName = "Open In Thunder"
                ReferencedContainer = "container:Runner.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>

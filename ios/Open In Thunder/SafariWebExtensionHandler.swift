@@ -15,3 +15,4 @@ class SafariWebExtensionHandler: NSObject, NSExtensionRequestHandling {
     }
 
 }
+
