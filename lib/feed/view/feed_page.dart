@@ -396,6 +396,12 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    // If the sidebar is open, close it
+    if (showCommunitySidebar) {
+      setState(() => showCommunitySidebar = false);
+      return true;
+    }
+
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
