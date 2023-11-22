@@ -423,7 +423,12 @@ class _ThunderState extends State<Thunder> {
                         switch (state.status) {
                           case AuthStatus.initial:
                             context.read<AuthBloc>().add(CheckAuth());
-                            return Container();
+                            return Scaffold(
+                              appBar: AppBar(),
+                              body: Center(
+                                child: Container(),
+                              ),
+                            );
                           case AuthStatus.success:
                             Version? version = thunderBlocState.version;
                             bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;
