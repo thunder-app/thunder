@@ -35,9 +35,14 @@ class InboxMentionsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    final l10n = AppLocalizations.of(context)!;
     if (mentions.isEmpty) {
-      return Align(alignment: Alignment.topCenter, heightFactor: (MediaQuery.of(context).size.height / 27), child: const Text('No mentions'));
+      return Align(
+          alignment: Alignment.topCenter,
+          heightFactor: (MediaQuery.of(context).size.height / 27),
+          child: Text(
+            l10n.noMentions,
+          ));
     }
 
     return ListView.builder(
@@ -114,9 +119,9 @@ class InboxMentionsView extends StatelessWidget {
                           onPressed: () {
                             context.read<InboxBloc>().add(MarkMentionAsReadEvent(personMentionId: mentions[index].personMention.id, read: true));
                           },
-                          icon: const Icon(
+                          icon: Icon(
                             Icons.check,
-                            semanticLabel: 'Mark as read',
+                            semanticLabel: l10n.markAsRead,
                           ),
                           visualDensity: VisualDensity.compact,
                         ),
