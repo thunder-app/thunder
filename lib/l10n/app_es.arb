@@ -592,5 +592,9 @@
   "searchByUrl": "Buscar por dirección URL",
   "@searchByUrl": {},
   "text": "Texto",
-  "@text": {}
+  "@text": {},
+  "expandPost": "Ampliar el tema",
+  "@expandPost": {},
+  "collapsePost": "Contraer el hilo",
+  "@collapsePost": {}
 }
