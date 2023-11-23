@@ -592,5 +592,9 @@
   "noComments": "Oh. Non ci sono commenti.",
   "@noComments": {},
   "loginToSeeInbox": "Effettua l'accesso per vedere il tuo Inbox",
-  "@loginToSeeInbox": {}
+  "@loginToSeeInbox": {},
+  "expandPost": "Espandi post",
+  "@expandPost": {},
+  "collapsePost": "Riduci post",
+  "@collapsePost": {}
 }
