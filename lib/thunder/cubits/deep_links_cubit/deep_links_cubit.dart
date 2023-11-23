@@ -37,6 +37,12 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
           link: link,
           linkType: LinkType.comment,
         ));
+      } else if (link.contains("/c/")) {
+        emit(state.copyWith(
+          deepLinkStatus: DeepLinkStatus.success,
+          link: link,
+          linkType: LinkType.community,
+        ));
       } else if (Uri.tryParse(link)?.pathSegments.isEmpty == true) {
         emit(state.copyWith(
           deepLinkStatus: DeepLinkStatus.success,

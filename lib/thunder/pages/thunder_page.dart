@@ -25,6 +25,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -218,6 +219,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToUser(link!);
       case LinkType.post:
         if (context.mounted) await _navigateToPost(link!);
+      case LinkType.community:
+        if (context.mounted) await _navigateToCommunity(link!);
       case LinkType.instance:
         if (context.mounted) await _navigateToInstance(link!);
       case LinkType.unknown:
@@ -258,6 +261,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // postId not found or could not resolve link.
+    // show a snackbar with option to open link
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+    }
+  }
+
+  Future<void> _navigateToCommunity(String link) async {
+    final String? communityName = await getLemmyCommunity(link);
+    if (context.mounted && communityName != null) {
+      try {
+        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
+        return;
+      } catch (e) {
+        // Ignore exception, if it's not a valid community, we'll perform the next fallback
+      }
+    }
+
+    // community not found or could not resolve link.
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
