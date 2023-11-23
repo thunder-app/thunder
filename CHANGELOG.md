@@ -1,3 +1,8 @@
+## Unreleased
+
+## Added
+- Added ability to collapse post in post page
+
 ## 0.2.6 - 2023-11-22
 ### Fixed
 - Fixed rendering issues with markdown link parsing

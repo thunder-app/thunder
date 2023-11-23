@@ -25,8 +25,6 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_post.dart';
 import 'package:thunder/utils/swipe.dart';
 
-import '../../user/bloc/user_bloc.dart';
-
 class PostCard extends StatefulWidget {
   final PostViewMedia postViewMedia;
   final bool communityMode;

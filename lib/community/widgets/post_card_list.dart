@@ -4,10 +4,10 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 
@@ -135,11 +135,11 @@ class _PostCardListState extends State<PostCardList> {
                     Container(
                       color: theme.dividerColor.withOpacity(0.1),
                       padding: const EdgeInsets.symmetric(vertical: 32.0),
-                      child: Text(
+                      child: ScalableText(
                         'Hmmm. It seems like you\'ve reached the bottom.',
                         textAlign: TextAlign.center,
                         style: theme.textTheme.titleSmall,
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                        fontScale: state.metadataFontSizeScale,
                       ),
                     ),
                     const SizedBox(

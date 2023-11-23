@@ -52,7 +52,7 @@ class TypeBadge extends StatelessWidget {
             left: 2.5,
             top: 2.5,
           ),
-          child: postViewMedia == null || postViewMedia.media.isEmpty
+          child: postViewMedia.media.isEmpty
               ? Material(
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(4),
