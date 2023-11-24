@@ -140,14 +140,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.posts);
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments, flatten: true);
 
           // Append the new comments
           List<CommentViewTree> commentViewTree = List.from(state.comments);
@@ -247,14 +247,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             throw Exception('Error: Timeout when attempting to fetch user saved content');
           });
 
-          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts ?? []);
+          List<PostViewMedia> posts = await parsePostViews(fullPersonView.posts);
 
           // Append the new posts
           List<PostViewMedia> postViewMedias = List.from(state.savedPosts);
           postViewMedias.addAll(posts);
 
           // Build the tree view from the flattened comments
-          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments ?? [], flatten: true);
+          List<CommentViewTree> commentTree = buildCommentViewTree(fullPersonView.comments, flatten: true);
 
           // Append the new comments
           List<CommentViewTree> commentViewTree = List.from(state.savedComments);
@@ -273,7 +273,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
           attemptCount++;
         }
       }
-    } catch (e, s) {
+    } catch (e) {
       emit(state.copyWith(status: UserStatus.failure, errorMessage: e.toString()));
     }
   }
@@ -485,7 +485,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         personView: state.personView,
         blockedPerson: blockedPerson,
       ));
-    } catch (e, s) {
+    } catch (e) {
       return emit(
         state.copyWith(
           status: UserStatus.failedToBlock,

@@ -13,8 +13,8 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
@@ -150,7 +150,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     ),
                   ],
                 ),
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                textScaler: TextScaler.linear(textScaleFactor),
               ),
             ),
           if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
@@ -211,17 +211,17 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                     ],
                   ),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                  textScaler: TextScaler.linear(textScaleFactor),
                 )),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
-              child: Text(
+              child: ScalableText(
                 textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * state.contentFontSizeScale.textScaleFactor,
+                fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: readColor,
                 ),

@@ -1,4 +1,14 @@
 ## Unreleased
+
+## Added
+- Added ability to collapse post in post page
+
+## 0.2.6 - 2023-11-22
+### Fixed
+- Fixed rendering issues with markdown link parsing
+- Fixed issue where TOTP token was not sent properly
+
+## 0.2.5 - 2023-11-15
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo
