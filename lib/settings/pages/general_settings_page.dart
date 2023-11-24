@@ -22,6 +22,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/language/language.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -31,6 +32,10 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
+  Iterable<Locale> get supportedLocales => AppLocalizations.supportedLocales;
+
+  late Locale currentLocale;
+
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
@@ -98,6 +103,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.defaultFeedSortType:
         await prefs.setString(LocalSettings.defaultFeedSortType.name, value);
         setState(() => defaultSortType = SortType.values.byName(value ?? DEFAULT_SORT_TYPE.name));
+        break;
+      case LocalSettings.appLanguageCode:
+        await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
+        setState(() => currentLocale = value);
         break;
 
       // NSFW Settings
@@ -282,6 +291,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
       useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      currentLocale = Localizations.localeOf(context);
 
       // Comment Settings
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
@@ -442,6 +452,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                               const SizedBox(width: 4),
                               Text(
                                 allSortTypeItems.firstWhere((sortTypeItem) => sortTypeItem.payload == defaultSortType).label,
+                                style: theme.textTheme.titleSmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                        ListOption(
+                          description: l10n.appLanguage,
+                          value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
+                          options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode), icon: Icons.language_rounded, payload: e)).toList(),
+                          icon: Icons.language_rounded,
+                          onChanged: (ListPickerItem<Locale> value) {
+                            setPreferences(LocalSettings.appLanguageCode, value.payload);
+                          },
+                          isBottomModalScrollControlled: true,
+                          valueDisplay: Row(
+                            children: [
+                              Text(
+                                LanguageLocal.getDisplayLanguage(currentLocale.languageCode),
                                 style: theme.textTheme.titleSmall,
                               ),
                             ],
