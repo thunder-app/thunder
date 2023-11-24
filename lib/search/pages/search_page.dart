@@ -70,7 +70,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   SearchType _currentSearchType = SearchType.communities;
   ListingType _currentFeedType = ListingType.all;
   IconData? _feedTypeIcon = Icons.grid_view_rounded;
-  String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.allPosts;
+  String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.all;
   bool _searchByUrl = false;
   String _searchUrlLabel = AppLocalizations.of(GlobalContext.context)!.text;
 
@@ -365,20 +365,20 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   builder: (ctx) => BottomSheetListPicker(
                                     title: l10n.selectFeedType,
                                     items: [
-                                      ListPickerItem(label: l10n.subscriptions, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
-                                      ListPickerItem(label: l10n.localPosts, payload: ListingType.local, icon: Icons.home_rounded),
-                                      ListPickerItem(label: l10n.allPosts, payload: ListingType.all, icon: Icons.grid_view_rounded)
+                                      ListPickerItem(label: l10n.subscribed, payload: ListingType.subscribed, icon: Icons.view_list_rounded),
+                                      ListPickerItem(label: l10n.local, payload: ListingType.local, icon: Icons.home_rounded),
+                                      ListPickerItem(label: l10n.all, payload: ListingType.all, icon: Icons.grid_view_rounded)
                                     ],
                                     onSelect: (value) {
                                       setState(() {
                                         if (value.payload == ListingType.subscribed) {
-                                          _feedTypeLabel = l10n.subscriptions;
+                                          _feedTypeLabel = l10n.subscribed;
                                           _feedTypeIcon = Icons.view_list_rounded;
                                         } else if (value.payload == ListingType.local) {
-                                          _feedTypeLabel = l10n.localPosts;
+                                          _feedTypeLabel = l10n.local;
                                           _feedTypeIcon = Icons.home_rounded;
                                         } else if (value.payload == ListingType.all) {
-                                          _feedTypeLabel = l10n.allPosts;
+                                          _feedTypeLabel = l10n.all;
                                           _feedTypeIcon = Icons.grid_view_rounded;
                                         }
                                         _currentFeedType = value.payload;
