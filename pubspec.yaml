@@ -103,6 +103,10 @@ dependencies:
   collection: ^1.17.0
   fading_edge_scrollview: ^3.0.0
   flutter_keyboard_visibility: ^5.4.1
+  l10n_esperanto:
+    git:
+      url: https://github.com/deakjahn/l10n_esperanto.git
+      ref: 78e757337a1de881220086d26a083feeb780f609
 
 dev_dependencies:
   build_runner: ^2.4.6
