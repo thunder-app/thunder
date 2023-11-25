@@ -585,7 +585,7 @@
   "@username": {},
   "users": "Usuarios",
   "@users": {},
-  "viewAllComments": "View all comments.",
+  "viewAllComments": "Ver todos los comentarios",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
@@ -596,5 +596,21 @@
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "appLanguage": "Idioma de la aplicación",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "endSearch": "Finalizar la búsqueda",
+  "@endSearch": {},
+  "all": "Todo",
+  "@all": {},
+  "searchTerm": "Buscar términos",
+  "@searchTerm": {},
+  "noResultsFound": "No se han encontrado resultados.",
+  "@noResultsFound": {},
+  "local": "Local",
+  "@local": {},
+  "searchComments": "Buscar comentarios",
+  "@searchComments": {}
 }
