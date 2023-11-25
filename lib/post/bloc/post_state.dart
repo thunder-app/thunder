@@ -1,6 +1,14 @@
 part of 'post_bloc.dart';
 
-enum PostStatus { initial, loading, refreshing, success, empty, failure }
+enum PostStatus {
+  initial,
+  loading,
+  refreshing,
+  success,
+  empty,
+  failure,
+  searchInProgress,
+}
 
 class PostState extends Equatable {
   const PostState({
@@ -25,6 +33,7 @@ class PostState extends Equatable {
     this.viewAllCommentsRefresh = false,
     this.navigateCommentIndex = 0,
     this.navigateCommentId = 0,
+    this.commentMatches,
   });
 
   final PostStatus status;
@@ -57,6 +66,7 @@ class PostState extends Equatable {
   final String? errorMessage;
 
   final int navigateCommentIndex;
+  final List<Comment>? commentMatches;
 
   // This exists purely for forcing the bloc to refire
   // even if the comment index doesn't change
@@ -84,6 +94,7 @@ class PostState extends Equatable {
     bool? viewAllCommentsRefresh = false,
     int? navigateCommentIndex,
     int? navigateCommentId,
+    List<Comment>? commentMatches,
   }) {
     return PostState(
       status: status,
@@ -107,6 +118,7 @@ class PostState extends Equatable {
       viewAllCommentsRefresh: viewAllCommentsRefresh ?? false,
       navigateCommentIndex: navigateCommentIndex ?? 0,
       navigateCommentId: navigateCommentId ?? 0,
+      commentMatches: commentMatches ?? this.commentMatches,
     );
   }
 
@@ -132,5 +144,6 @@ class PostState extends Equatable {
         moddingCommentId,
         navigateCommentIndex,
         navigateCommentId,
+        commentMatches,
       ];
 }
