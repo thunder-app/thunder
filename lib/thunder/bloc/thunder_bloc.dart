@@ -109,6 +109,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -229,6 +230,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,
+        appLanguageCode: appLanguageCode,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings

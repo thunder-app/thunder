@@ -51,6 +51,7 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
+    this.appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -149,6 +150,7 @@ class ThunderState extends Equatable {
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
+  final String? appLanguageCode;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -297,6 +299,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
+    String? appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -396,6 +399,7 @@ class ThunderState extends Equatable {
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
+      appLanguageCode: appLanguageCode ?? this.appLanguageCode,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -542,6 +546,7 @@ class ThunderState extends Equatable {
         dimReadPosts,
         useAdvancedShareSheet,
         showCrossPosts,
+        appLanguageCode,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,

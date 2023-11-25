@@ -19,6 +19,7 @@ enum LocalSettings {
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
   scoreCounters(name: 'setting_score_counters', label: "Display User Scores"),
+  appLanguageCode(name: 'setting_app_language_code', label: 'App Language'),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings

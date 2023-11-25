@@ -36,8 +36,6 @@ class CommonMarkdownBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
-
     final ThunderState state = context.watch<ThunderBloc>().state;
 
     return ExtendedMarkdownBody(
@@ -61,74 +59,8 @@ class CommonMarkdownBody extends StatelessWidget {
         );
       },
       selectable: isSelectableText,
-      onTapLink: (text, url, title) => _handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) {
-        HapticFeedback.mediumImpact();
-        showModalBottomSheet(
-          context: context,
-          showDragHandle: true,
-          isScrollControlled: true,
-          builder: (ctx) {
-            bool isValidUrl = url?.startsWith('http') ?? false;
-
-            return BottomSheetListPicker(
-              title: l10n.linkActions,
-              heading: Column(
-                children: [
-                  if (isValidUrl) ...[
-                    LinkPreviewGenerator(
-                      link: url!,
-                      placeholderWidget: const CircularProgressIndicator(),
-                      linkPreviewStyle: LinkPreviewStyle.large,
-                      cacheDuration: Duration.zero,
-                      onTap: () {},
-                      bodyTextOverflow: TextOverflow.fade,
-                      graphicFit: BoxFit.scaleDown,
-                      removeElevation: true,
-                      backgroundColor: theme.dividerColor.withOpacity(0.25),
-                      borderRadius: 10,
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: theme.dividerColor.withOpacity(0.25),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: Text(url!),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              items: [
-                ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
-                ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
-                ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
-              ],
-              onSelect: (value) {
-                switch (value.payload) {
-                  case 'open':
-                    _handleLinkTap(context, state, text, url);
-                    break;
-                  case 'copy':
-                    Clipboard.setData(ClipboardData(text: url));
-                    break;
-                  case 'share':
-                    Share.share(url);
-                    break;
-                }
-              },
-            );
-          },
-        );
-      },
+      onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
+      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
       styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
         textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
         p: theme.textTheme.bodyMedium,
@@ -138,28 +70,6 @@ class CommonMarkdownBody extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-Future<void> _handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
-  Uri? parsedUri = Uri.tryParse(text);
-
-  String parsedUrl = text;
-
-  if (parsedUri != null && parsedUri.host.isNotEmpty) {
-    parsedUrl = parsedUri.toString();
-  } else {
-    parsedUrl = url ?? '';
-  }
-
-  // The markdown link processor treats URLs with @ as emails and prepends "mailto:".
-  // If the URL contains that, but the text doesn't, we can remove it.
-  if (parsedUrl.startsWith('mailto:') && !text.startsWith('mailto:')) {
-    parsedUrl = parsedUrl.replaceFirst('mailto:', '');
-  }
-
-  if (context.mounted) {
-    handleLink(context, url: parsedUrl);
   }
 }
 

@@ -61,6 +61,7 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
       return Semantics(
@@ -138,6 +139,7 @@ class LinkPreviewCard extends StatelessWidget {
                   child: InkWell(
                     splashColor: theme.colorScheme.primary.withOpacity(0.4),
                     onTap: () => triggerOnTap(context),
+                    onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
                     borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
                   ),
                 ),
