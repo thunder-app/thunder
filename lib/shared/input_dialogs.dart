@@ -163,13 +163,7 @@ Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(Comm
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CommunityIcon(community: payload.community),
-            Text(formatNumberToK(payload.counts.subscribers)),
-          ],
-        ),
+        leading: CommunityIcon(community: payload.community),
         title: Text(
           payload.community.title,
           maxLines: 1,
@@ -177,24 +171,32 @@ Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(Comm
         ),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (payload.subscribed == SubscribedType.subscribed) ...[
-                Icon(
-                  Icons.playlist_add_check_rounded,
-                  semanticLabel: l10n.subscribed,
-                  size: 16.0,
-                ),
-                const SizedBox(width: 5),
-              ],
-              Expanded(
-                child: TextScroll(
-                  '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-                  delayBefore: const Duration(seconds: 2),
-                  pauseBetween: const Duration(seconds: 3),
-                  velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
-                ),
+              TextScroll(
+                '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+                delayBefore: const Duration(seconds: 2),
+                pauseBetween: const Duration(seconds: 3),
+                velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
               ),
+              Row(
+                children: [
+                  Text(formatNumberToK(payload.counts.subscribers)),
+                  const SizedBox(width: 5),
+                  const Icon(Icons.people_rounded, size: 16),
+                  const SizedBox(width: 5),
+                  if (payload.subscribed == SubscribedType.subscribed) ...[
+                    const Text(' · '),
+                    Icon(
+                      Icons.playlist_add_check_rounded,
+                      semanticLabel: l10n.subscribed,
+                      size: 16.0,
+                    ),
+                    const SizedBox(width: 5),
+                  ],
+                ],
+              )
             ],
           ),
         ),
