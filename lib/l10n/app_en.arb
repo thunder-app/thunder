@@ -331,6 +331,7 @@
   "@overview": {},
   "password": "Password",
   "@password": {},
+  "pending": "Pending",
   "postBody": "Post Body",
   "@postBody": {},
   "postLocked": "Post locked. No replies allowed.",

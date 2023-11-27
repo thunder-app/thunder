@@ -182,18 +182,15 @@ Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(Comm
               ),
               Row(
                 children: [
-                  Text(formatNumberToK(payload.counts.subscribers)),
-                  const SizedBox(width: 5),
                   const Icon(Icons.people_rounded, size: 16),
                   const SizedBox(width: 5),
-                  if (payload.subscribed == SubscribedType.subscribed) ...[
-                    const Text(' · '),
-                    Icon(
-                      Icons.playlist_add_check_rounded,
-                      semanticLabel: l10n.subscribed,
-                      size: 16.0,
-                    ),
-                    const SizedBox(width: 5),
+                  Text(formatNumberToK(payload.counts.subscribers)),
+                  if (payload.subscribed != SubscribedType.notSubscribed) ...[
+                    Text(' · ${switch (payload.subscribed) {
+                      SubscribedType.pending => l10n.pending,
+                      SubscribedType.subscribed => l10n.subscribed,
+                      _ => '',
+                    }}'),
                   ],
                 ],
               )
