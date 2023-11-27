@@ -12,7 +12,9 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/numbers.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
@@ -150,14 +152,22 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
   return searchResponse.communities;
 }
 
-Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? onSelected}) {
+Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(CommunityView)? onSelected}) {
+  final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+
   return Tooltip(
     message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
       child: ListTile(
-        leading: CommunityIcon(community: payload.community),
+        leading: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CommunityIcon(community: payload.community),
+            Text(formatNumberToK(payload.counts.subscribers)),
+          ],
+        ),
         title: Text(
           payload.community.title,
           maxLines: 1,
@@ -165,11 +175,25 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
         ),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: TextScroll(
-            '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          child: Row(
+            children: [
+              if (payload.subscribed == SubscribedType.subscribed) ...[
+                Icon(
+                  Icons.playlist_add_check_rounded,
+                  semanticLabel: l10n.subscribed,
+                  size: 16.0,
+                ),
+                const SizedBox(width: 5),
+              ],
+              Expanded(
+                child: TextScroll(
+                  '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+                  delayBefore: const Duration(seconds: 2),
+                  pauseBetween: const Duration(seconds: 3),
+                  velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+                ),
+              ),
+            ],
           ),
         ),
       ),
