@@ -1,3 +1,4 @@
+ani.social
 aussie.zone
 bakchodi.org
 beehaw.org
@@ -7,12 +8,10 @@ delraymisfitsboard.com
 discuss.tchncs.de
 exploding-heads.com
 feddit.ch
-feddit.cl
 feddit.de
 feddit.dk
 feddit.it
 feddit.nl
-feddit.nu
 feddit.uk
 geddit.social
 hexbear.net
