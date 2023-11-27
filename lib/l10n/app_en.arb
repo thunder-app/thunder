@@ -331,6 +331,10 @@
   "@overview": {},
   "password": "Password",
   "@password": {},
+  "pending": "Pending",
+  "@pending": { 
+    "description": "Describes the subscription status for 'Pending'" 
+  },
   "postBody": "Post Body",
   "@postBody": {},
   "postLocked": "Post locked. No replies allowed.",
