@@ -9,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 String generateRandomHeroString({int? len}) {
@@ -156,4 +157,30 @@ Future<String> selectImageToUpload() async {
 
   XFile? file = await picker.pickImage(source: ImageSource.gallery);
   return file!.path;
+}
+
+void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 100),
+      reverseTransitionDuration: const Duration(milliseconds: 50),
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return ImageViewer(
+          url: url,
+          bytes: bytes,
+          postId: postId,
+          navigateToPost: navigateToPost,
+        );
+      },
+      transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+        return Align(
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
+      },
+    ),
+  );
 }

@@ -9,6 +9,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/image.dart';
 import 'package:url_launcher/url_launcher.dart' hide launch;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -155,6 +156,16 @@ void handleLink(BuildContext context, {required String url}) async {
     } catch (e) {
       // Ignore exception, if it's not a valid comment, we'll perform the next fallback
     }
+  }
+
+  // Try opening it as an image
+  try {
+    if (isImageUrl(url) && context.mounted) {
+      showImageViewer(context, url: url);
+      return;
+    }
+  } catch (e) {
+    // Ignore the exception and fall back.
   }
 
   // Fallback: open link in browser

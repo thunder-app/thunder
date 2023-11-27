@@ -179,6 +179,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
                     } catch (e) {}
                   }
+                  // TODO: This could be refactored eventually
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
