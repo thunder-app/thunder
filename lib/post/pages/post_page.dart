@@ -154,12 +154,15 @@ class _PostPageState extends State<PostPage> {
                 ),
                 contentPadding: const EdgeInsets.symmetric(horizontal: 0),
               ),
-              flexibleSpace: GestureDetector(
-                onTap: () {
-                  if (context.read<ThunderBloc>().state.isFabOpen) {
-                    context.read<ThunderBloc>().add(const OnFabToggle(false));
-                  }
-                },
+              flexibleSpace: Semantics(
+                excludeSemantics: true,
+                child: GestureDetector(
+                  onTap: () {
+                    if (context.read<ThunderBloc>().state.isFabOpen) {
+                      context.read<ThunderBloc>().add(const OnFabToggle(false));
+                    }
+                  },
+                ),
               ),
               leading: IconButton(
                 icon: Icon(
