@@ -12,6 +12,7 @@ import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
+import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
@@ -93,10 +94,14 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  const Padding(
+                    padding: EdgeInsets.only(left: 16.0, bottom: 16.0),
+                    child: UserIndicator(),
+                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
                     child: Text(
-                      l10n.userSettingDescription(myUserInfo.localUserView.person.displayName ?? myUserInfo.localUserView.person.name),
+                      l10n.userSettingDescription,
                       style: theme.textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.w500,
                         color: theme.colorScheme.onBackground.withOpacity(0.75),
@@ -393,7 +398,7 @@ class UserSettingBlockList extends StatelessWidget {
         alignment: Alignment.centerLeft,
         child: items.isNotEmpty == true
             ? ListView.builder(
-                padding: const EdgeInsets.only(bottom: 50),
+                padding: const EdgeInsets.only(bottom: 20),
                 physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: items.length,
@@ -402,7 +407,7 @@ class UserSettingBlockList extends StatelessWidget {
                 },
               )
             : Padding(
-                padding: const EdgeInsets.only(left: 28, right: 20, bottom: 50),
+                padding: const EdgeInsets.only(left: 28, right: 20, bottom: 20),
                 child: Text(
                   emptyText ?? '',
                   style: TextStyle(color: theme.hintColor),

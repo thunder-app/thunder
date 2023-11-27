@@ -591,7 +591,7 @@
   "username": "Username",
   "@username": {},
   "users": "Users",
-  "userSettingDescription": "These settings sync with your Lemmy account and are only applied on a per-account basis.\n\nYou are currently viewing the settings for: {user}",
+  "userSettingDescription": "These settings sync with your Lemmy account and are only applied on a per-account basis.",
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
