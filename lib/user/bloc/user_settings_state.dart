@@ -1,6 +1,15 @@
 part of 'user_settings_bloc.dart';
 
-enum UserSettingsStatus { initial, blocking, success, failure, revert, failedRevert }
+enum UserSettingsStatus {
+  initial,
+  updating,
+  success,
+  blocking,
+  successBlock,
+  failure,
+  revert,
+  failedRevert,
+}
 
 class UserSettingsState extends Equatable {
   const UserSettingsState({
@@ -11,6 +20,7 @@ class UserSettingsState extends Equatable {
     this.personBeingBlocked = 0,
     this.communityBeingBlocked = 0,
     this.instanceBeingBlocked = 0,
+    this.getSiteResponse,
     this.errorMessage = '',
   });
 
@@ -24,6 +34,8 @@ class UserSettingsState extends Equatable {
   final int communityBeingBlocked;
   final int instanceBeingBlocked;
 
+  final GetSiteResponse? getSiteResponse;
+
   final String? errorMessage;
 
   UserSettingsState copyWith({
@@ -34,6 +46,7 @@ class UserSettingsState extends Equatable {
     int? personBeingBlocked,
     int? communityBeingBlocked,
     int? instanceBeingBlocked,
+    GetSiteResponse? getSiteResponse,
     String? errorMessage,
   }) {
     return UserSettingsState(
@@ -44,6 +57,7 @@ class UserSettingsState extends Equatable {
       personBeingBlocked: personBeingBlocked ?? this.personBeingBlocked,
       communityBeingBlocked: communityBeingBlocked ?? this.communityBeingBlocked,
       instanceBeingBlocked: instanceBeingBlocked ?? this.instanceBeingBlocked,
+      getSiteResponse: getSiteResponse ?? this.getSiteResponse,
       errorMessage: errorMessage ?? this.errorMessage,
     );
   }
@@ -57,6 +71,7 @@ class UserSettingsState extends Equatable {
         personBeingBlocked,
         communityBeingBlocked,
         instanceBeingBlocked,
+        getSiteResponse,
         errorMessage,
       ];
 }

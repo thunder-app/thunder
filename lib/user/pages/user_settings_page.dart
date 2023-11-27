@@ -2,15 +2,17 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
+import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/utils/instance.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
@@ -26,6 +28,7 @@ class UserSettingsPage extends StatefulWidget {
 class _UserSettingsPageState extends State<UserSettingsPage> {
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
@@ -36,7 +39,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         scrolledUnderElevation: 0.0,
       ),
       body: BlocProvider(
-        create: (context) => UserSettingsBloc(),
+        create: (context) => UserSettingsBloc()..add(const GetUserSettingsEvent()),
         child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
           listener: (context, state) {
             if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
@@ -49,7 +52,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               showSnackbar(context, l10n.failedToLoadBlocks(state.errorMessage ?? l10n.missingErrorMessage));
             }
 
-            if (state.status == UserSettingsStatus.success && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
+            if (state.status == UserSettingsStatus.successBlock && (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
               showSnackbar(
                 context,
                 l10n.successfullyUnblocked,
@@ -75,11 +78,49 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
               context.read<UserSettingsBloc>().add(GetUserBlocksEvent(userId: widget.userId));
             }
 
+            GetSiteResponse? getSiteResponse = state.getSiteResponse;
+            MyUserInfo? myUserInfo = getSiteResponse?.myUser;
+
+            LocalUser? localUser = myUserInfo?.localUserView.localUser;
+            bool showReadPosts = localUser?.showReadPosts ?? true;
+
+            if (state.getSiteResponse == null || myUserInfo == null) {
+              return const Center(child: CircularProgressIndicator());
+            }
+
             return SingleChildScrollView(
               child: Column(
-                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  Padding(
+                    padding: const EdgeInsets.only(top: 0, bottom: 8.0, left: 16.0, right: 16.0),
+                    child: Text(
+                      l10n.userSettingDescription(myUserInfo.localUserView.person.displayName ?? myUserInfo.localUserView.person.name),
+                      style: theme.textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onBackground.withOpacity(0.75),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Text(l10n.general, style: theme.textTheme.titleMedium),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ToggleOption(
+                      description: l10n.showReadPosts,
+                      value: showReadPosts,
+                      iconEnabled: Icons.fact_check_rounded,
+                      iconDisabled: Icons.fact_check_outlined,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                    child: Text(l10n.filters, style: theme.textTheme.titleMedium),
+                  ),
                   if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
                     UserSettingTopic(
                       title: l10n.blockedInstances,
