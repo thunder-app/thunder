@@ -3,6 +3,7 @@
 ## Added
 - Added ability to collapse post in post page
 - Added ability to change app language in settings
+- Added ability to show/hide read posts in user settings
 
 ## 0.2.6 - 2023-11-22
 ### Fixed
