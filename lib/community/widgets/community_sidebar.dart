@@ -341,55 +341,25 @@ class CommunityActions extends StatelessWidget {
                     final ThunderState state = context.read<ThunderBloc>().state;
                     final bool reduceAnimations = state.reduceAnimations;
 
-                    SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-                    DraftPost? newDraftPost;
-                    DraftPost? previousDraftPost;
-                    String draftId = '${LocalSettings.draftsCache.name}-${communityView.community.id}';
-                    String? draftPostJson = prefs.getString(draftId);
-                    if (draftPostJson != null) {
-                      previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-                    }
-                    Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-                      if (newDraftPost?.isNotEmpty == true) {
-                        prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                      }
-                    });
-
-                    Navigator.of(context)
-                        .push(
-                      SwipeablePageRoute(
-                        transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-                        canOnlySwipeFromEdge: true,
-                        backGestureDetectionWidth: 45,
-                        builder: (context) {
-                          return MultiBlocProvider(
-                            providers: [
-                              BlocProvider<CommunityBloc>.value(value: communityBloc),
-                              BlocProvider<AccountBloc>.value(value: accountBloc),
-                              BlocProvider<ThunderBloc>.value(value: thunderBloc),
-                              BlocProvider<FeedBloc>.value(value: feedBloc),
-                            ],
-                            child: CreatePostPage(
-                              communityId: communityView.community.id,
-                              communityView: getCommunityResponse.communityView,
-                              previousDraftPost: previousDraftPost,
-                              onUpdateDraft: (p) => newDraftPost = p,
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                        .whenComplete(() async {
-                      timer.cancel();
-
-                      if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
-                        await Future.delayed(const Duration(milliseconds: 300));
-                        showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
-                        prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-                      } else {
-                        prefs.remove(draftId);
-                      }
-                    });
+                    Navigator.of(context).push(SwipeablePageRoute(
+                      transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                      canOnlySwipeFromEdge: true,
+                      backGestureDetectionWidth: 45,
+                      builder: (context) {
+                        return MultiBlocProvider(
+                          providers: [
+                            BlocProvider<CommunityBloc>.value(value: communityBloc),
+                            BlocProvider<AccountBloc>.value(value: accountBloc),
+                            BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                            BlocProvider<FeedBloc>.value(value: feedBloc),
+                          ],
+                          child: CreatePostPage(
+                            communityId: communityView.community.id,
+                            communityView: getCommunityResponse.communityView,
+                          ),
+                        );
+                      },
+                    ));
                   }
                 : null,
             style: TextButton.styleFrom(

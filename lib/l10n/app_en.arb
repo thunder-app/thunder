@@ -149,6 +149,10 @@
   "@edit": {},
   "editComment": "Edit Comment",
   "@editComment": {},
+  "editPost": "Edit Post",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
   "empty": "Empty",
   "emptyInbox": "Empty Inbox",
   "@emptyInbox": {},
@@ -223,6 +227,10 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
+  "language": "Language",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
@@ -483,6 +491,10 @@
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Unblocked {communityName}",
   "@successfullyUnblockedCommunity": {},
+  "suggestedTitle": "Suggested title",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
   "tapToExit": "Press back twice to exit",
   "@tapToExit": {},
   "text": "Text",
@@ -526,6 +538,10 @@
   "@unableToFindCommunity": {},
   "unableToFindInstance": "Unable to find instance",
   "@unableToFindInstance": {},
+  "unableToFindLanguage": "Unable to find language",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
   "unableToLoadInstance": "Unable to load {instance}",

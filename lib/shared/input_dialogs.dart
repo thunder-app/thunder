@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
@@ -8,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -254,6 +256,68 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
         ),
         title: Text(
           payload.domain,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ),
+  );
+}
+
+/// Shows a dialog which allows typing/search for an language
+void showLanguageInputDialog(BuildContext context, {required String title, required void Function(Language) onLanguageSelected, Iterable<Language>? emptySuggestions}) async {
+  AuthState state = context.read<AuthBloc>().state;
+
+  List<Language> languages = state.getSiteResponse?.allLanguages ?? [];
+
+  Future<String?> onSubmitted({Language? payload, String? value}) async {
+    if (payload != null) {
+      onLanguageSelected(payload);
+      Navigator.of(context).pop();
+    } else if (value != null) {
+      final Language? language = languages.firstWhereOrNull((Language language) => language.name.toLowerCase().contains(value.toLowerCase()));
+
+      if (language != null) {
+        onLanguageSelected(language);
+        Navigator.of(context).pop();
+      } else {
+        return AppLocalizations.of(context)!.unableToFindLanguage;
+      }
+    }
+
+    return null;
+  }
+
+  if (context.mounted) {
+    showInputDialog<Language>(
+      context: context,
+      title: title,
+      inputLabel: AppLocalizations.of(context)!.language,
+      onSubmitted: onSubmitted,
+      getSuggestions: (query) => getLanguageSuggestions(query, languages),
+      suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
+    );
+  }
+}
+
+Future<Iterable<Language>> getLanguageSuggestions(String query, Iterable<Language>? emptySuggestions) async {
+  if (query.isEmpty) {
+    return emptySuggestions ?? [];
+  }
+
+  Iterable<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())) ?? const Iterable.empty();
+  return filteredLanguages;
+}
+
+Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelected, BuildContext? context}) {
+  return Tooltip(
+    message: '${payload.name}',
+    preferBelow: false,
+    child: InkWell(
+      onTap: onSelected == null ? null : () => onSelected(payload),
+      child: ListTile(
+        title: Text(
+          payload.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),
