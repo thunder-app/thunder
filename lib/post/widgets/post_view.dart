@@ -13,10 +13,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
+import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
+import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
+import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
@@ -60,6 +65,14 @@ class PostSubview extends StatefulWidget {
 
 class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStateMixin {
   final ExpandableController expandableController = ExpandableController(initialExpanded: true);
+  late PostViewMedia postViewMedia;
+
+  @override
+  void initState() {
+    super.initState();
+
+    postViewMedia = widget.postViewMedia;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,8 +82,8 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
     final bool showCrossPosts = context.read<ThunderBloc>().state.showCrossPosts;
 
-    final PostView postView = widget.postViewMedia.postView;
-    final Post post = postView.post;
+    PostView postView = postViewMedia.postView;
+    Post post = postView.post;
 
     final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
@@ -80,7 +93,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
     final bool markPostReadOnMediaView = thunderState.markPostReadOnMediaView;
 
-    final bool isOwnComment = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
+    final bool isOwnPost = postView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     final List<PostView> sortedCrossPosts = List.from(widget.crossPosts ?? [])..sort((a, b) => b.counts.upvotes.compareTo(a.counts.upvotes));
 
@@ -146,20 +159,20 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               ),
             if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
             Padding(
-              padding: EdgeInsets.only(left: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
+              padding: EdgeInsets.only(left: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
               child: Row(
                 // Row for post view: author, community, comment count and post time
                 children: [
                   Tooltip(
                     excludeFromSemantics: true,
                     message:
-                        '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, post, null, postView.creator, widget.moderators)}',
+                        '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, widget.moderators)}',
                     preferBelow: false,
                     child: Material(
-                      color: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)
-                          ? fetchUsernameColor(context, isOwnComment, post, null, postView.creator, widget.moderators) ?? theme.colorScheme.onBackground
+                      color: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)
+                          ? fetchUsernameColor(context, isOwnPost, post, null, postView.creator, widget.moderators) ?? theme.colorScheme.onBackground
                           : Colors.transparent,
-                      borderRadius: isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                      borderRadius: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
                       child: InkWell(
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
@@ -173,12 +186,12 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                 postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
                                 fontScale: thunderState.metadataFontSizeScale,
                                 style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
+                                  color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
                                       ?.withOpacity(0.75),
                                 ),
                               ),
-                              if (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
-                              if (isOwnComment)
+                              if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
+                              if (isOwnPost)
                                 Padding(
                                   padding: const EdgeInsets.only(left: 1),
                                   child: Icon(
@@ -220,7 +233,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       ),
                     ),
                   ),
-                  if (isSpecialUser(context, isOwnComment, post, null, postView.creator, widget.moderators)) const SizedBox(width: 8.0),
+                  if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 8.0),
                   ScalableText(
                     'to',
                     fontScale: thunderState.metadataFontSizeScale,
@@ -363,6 +376,47 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               return;
                             }
 
+                            if (isOwnPost) {
+                              ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                              AccountBloc accountBloc = context.read<AccountBloc>();
+
+                              final ThunderState thunderState = context.read<ThunderBloc>().state;
+                              final bool reduceAnimations = thunderState.reduceAnimations;
+
+                              final Account? account = await fetchActiveProfileAccount();
+                              final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
+                                auth: account?.jwt,
+                                id: postViewMedia!.postView.community.id,
+                              ));
+
+                              if (context.mounted) {
+                                Navigator.of(context).push(
+                                  SwipeablePageRoute(
+                                    transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
+                                    canOnlySwipeFromEdge: true,
+                                    backGestureDetectionWidth: 45,
+                                    builder: (context) {
+                                      return MultiBlocProvider(
+                                        providers: [
+                                          BlocProvider<ThunderBloc>.value(value: thunderBloc),
+                                          BlocProvider<AccountBloc>.value(value: accountBloc),
+                                        ],
+                                        child: CreatePostPage(
+                                          communityId: postViewMedia!.postView.community.id,
+                                          communityView: getCommunityResponse.communityView,
+                                          postView: postViewMedia!.postView,
+                                          onPostSuccess: (PostViewMedia pvm) {
+                                            setState(() => postViewMedia = pvm);
+                                          },
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                );
+                              }
+                              return;
+                            }
+
                             PostBloc postBloc = context.read<PostBloc>();
                             ThunderBloc thunderBloc = context.read<ThunderBloc>();
                             account_bloc.AccountBloc accountBloc = context.read<account_bloc.AccountBloc>();
@@ -423,7 +477,11 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             }
                           }
                         : null,
-                    icon: postView.post.locked ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red) : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
+                    icon: postView.post.locked
+                        ? Icon(Icons.lock, semanticLabel: l10n.postLocked, color: Colors.red)
+                        : isOwnPost
+                            ? Icon(Icons.edit_rounded, semanticLabel: AppLocalizations.of(context)!.edit)
+                            : Icon(Icons.reply_rounded, semanticLabel: l10n.reply(0)),
                   ),
                 ),
                 Expanded(
