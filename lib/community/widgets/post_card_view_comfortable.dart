@@ -143,6 +143,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       text: HtmlUnescape().convert(postViewMedia.postView.post.name),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
+                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                         color: postViewMedia.postView.post.featuredCommunity
                             ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                             : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
@@ -150,7 +151,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     ),
                   ],
                 ),
-                textScaler: TextScaler.linear(textScaleFactor),
+                textScaler: TextScaler.noScaling,
               ),
             ),
           if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
@@ -204,6 +205,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         text: postViewMedia.postView.post.name,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                           color: postViewMedia.postView.post.featuredCommunity
                               ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
@@ -211,7 +213,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                     ],
                   ),
-                  textScaler: TextScaler.linear(textScaleFactor),
+                  textScaler: TextScaler.noScaling,
                 )),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
