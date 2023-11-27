@@ -45,7 +45,7 @@ class PostCardViewCompact extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
+    final ThunderState state = context.watch<ThunderBloc>().state;
 
     final showCommunitySubscription = (listingType == ListingType.all || listingType == ListingType.local) &&
         isUserLoggedIn &&
@@ -141,6 +141,7 @@ class PostCardViewCompact extends StatelessWidget {
                         text: HtmlUnescape().convert(postViewMedia.postView.post.name),
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                           color: postViewMedia.postView.post.featuredCommunity
                               ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
@@ -148,7 +149,7 @@ class PostCardViewCompact extends StatelessWidget {
                       ),
                     ],
                   ),
-                  textScaler: TextScaler.linear(state.titleFontSizeScale.textScaleFactor),
+                  textScaler: TextScaler.noScaling,
                 ),
                 const SizedBox(height: 6.0),
                 PostCommunityAndAuthor(
