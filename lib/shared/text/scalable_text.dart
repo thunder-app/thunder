@@ -27,6 +27,7 @@ class ScalableText extends StatelessWidget {
       style: textStyle.copyWith(
         fontSize: MediaQuery.textScalerOf(context).scale((textStyle.fontSize ?? theme.textTheme.bodyMedium!.fontSize!) * (fontScale?.textScaleFactor ?? FontScale.base.textScaleFactor)),
       ),
+      textScaler: TextScaler.noScaling,
     );
   }
 }
