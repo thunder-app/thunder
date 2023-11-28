@@ -29,6 +29,7 @@ import 'package:thunder/search/bloc/search_bloc.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/error_message.dart';
+import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -73,6 +74,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   String? _feedTypeLabel = AppLocalizations.of(GlobalContext.context)!.all;
   bool _searchByUrl = false;
   String _searchUrlLabel = AppLocalizations.of(GlobalContext.context)!.text;
+  String? _currentCommunityFilterName;
+  int? _currentCommunityFilter;
+  String? _currentCreatorFilterName;
+  int? _currentCreatorFilter;
 
   @override
   void initState() {
@@ -110,7 +115,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   void _onScroll() {
     if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent * 0.8) {
       if (context.read<SearchBloc>().state.status != SearchStatus.done) {
-        context.read<SearchBloc>().add(ContinueSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
+        context.read<SearchBloc>().add(ContinueSearchEvent(
+              query: _controller.text,
+              sortType: sortType,
+              listingType: _currentFeedType,
+              searchType: _getSearchTypeToUse(),
+              communityId: _currentCommunityFilter,
+              creatorId: _currentCreatorFilter,
+            ));
       }
     }
   }
@@ -128,7 +140,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       });
     }
 
-    context.read<SearchBloc>().add(StartSearchEvent(query: value, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
+    _doSearch();
   }
 
   @override
@@ -274,9 +286,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                     ],
                                     onSelect: (value) {
                                       setState(() => _currentSearchType = value.payload);
-                                      if (_controller.text.isNotEmpty) {
-                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: value.payload));
-                                      }
+                                      _doSearch();
                                     },
                                     previouslySelected: _currentSearchType,
                                   ),
@@ -314,11 +324,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                           _searchByUrl = value.payload == 'url';
                                           _searchUrlLabel = value.payload == 'url' ? l10n.url : l10n.text;
                                         });
-                                        if (_controller.text.isNotEmpty) {
-                                          context
-                                              .read<SearchBloc>()
-                                              .add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()));
-                                        }
+                                        _doSearch();
                                       },
                                       previouslySelected: _searchByUrl ? 'url' : 'text',
                                     ),
@@ -383,13 +389,81 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                         }
                                         _currentFeedType = value.payload;
                                       });
-                                      if (_controller.text.isNotEmpty) {
-                                        context.read<SearchBloc>().add(StartSearchEvent(query: _controller.text, sortType: sortType, listingType: value.payload, searchType: _getSearchTypeToUse()));
-                                      }
+                                      _doSearch();
                                     },
                                     previouslySelected: _currentFeedType,
                                   ),
                                 );
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            ActionChip(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: theme.dividerColor),
+                              backgroundColor: _currentCommunityFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                              label: SizedBox(
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.people_rounded, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(_currentCommunityFilter == null ? l10n.community : l10n.filteringBy(_currentCommunityFilterName ?? '')),
+                                    if (_currentCommunityFilter != null) const SizedBox(width: 5),
+                                    Icon(_currentCommunityFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: 15),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {
+                                if (_currentCommunityFilter != null) {
+                                  setState(() {
+                                    _currentCommunityFilter = null;
+                                    _currentCommunityFilterName = null;
+                                  });
+                                  _doSearch();
+                                } else {
+                                  showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
+                                    setState(() {
+                                      _currentCommunityFilter = communityView.community.id;
+                                      _currentCommunityFilterName = '${communityView.community.name}@${fetchInstanceNameFromUrl(communityView.community.actorId)}';
+                                    });
+                                    _doSearch();
+                                  });
+                                }
+                              },
+                            ),
+                            const SizedBox(width: 10),
+                            ActionChip(
+                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                              side: BorderSide(color: theme.dividerColor),
+                              backgroundColor: _currentCreatorFilter == null ? null : theme.colorScheme.primaryContainer.withOpacity(0.25),
+                              label: SizedBox(
+                                height: 20,
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.person_rounded, size: 15),
+                                    const SizedBox(width: 5),
+                                    Text(_currentCreatorFilter == null ? l10n.creator : l10n.filteringBy(_currentCreatorFilterName ?? '')),
+                                    if (_currentCreatorFilter != null) const SizedBox(width: 5),
+                                    Icon(_currentCreatorFilter == null ? Icons.arrow_drop_down_rounded : Icons.close_rounded, size: 15),
+                                  ],
+                                ),
+                              ),
+                              onPressed: () {
+                                if (_currentCreatorFilter != null) {
+                                  setState(() {
+                                    _currentCreatorFilter = null;
+                                    _currentCreatorFilterName = null;
+                                  });
+                                  _doSearch();
+                                } else {
+                                  showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
+                                    setState(() {
+                                      _currentCreatorFilter = personView.person.id;
+                                      _currentCreatorFilterName = '${personView.person.name}@${fetchInstanceNameFromUrl(personView.person.actorId)}';
+                                    });
+                                    _doSearch();
+                                  });
+                                }
                               },
                             ),
                           ],
@@ -601,7 +675,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       case SearchStatus.failure:
         return ErrorMessage(
           message: state.errorMessage,
-          action: () => {context.read<SearchBloc>().add(StartSearchEvent(query: _controller.value.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()))},
+          action: _doSearch,
           actionText: l10n.retry,
         );
     }
@@ -784,11 +858,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
           prefs!.setString("search_default_sort_type", selected.payload.name);
 
-          if (_controller.text.isNotEmpty) {
-            context.read<SearchBloc>().add(
-                  StartSearchEvent(query: _controller.text, sortType: sortType, listingType: _currentFeedType, searchType: _getSearchTypeToUse()),
-                );
-          }
+          _doSearch();
         },
         previouslySelected: sortType,
       ),
@@ -842,5 +912,18 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
       return SearchType.url;
     }
     return _currentSearchType;
+  }
+
+  void _doSearch() {
+    if (_controller.text.isNotEmpty) {
+      context.read<SearchBloc>().add(StartSearchEvent(
+            query: _controller.text,
+            sortType: sortType,
+            listingType: _currentFeedType,
+            searchType: _getSearchTypeToUse(),
+            communityId: _currentCommunityFilter,
+            creatorId: _currentCreatorFilter,
+          ));
+    }
   }
 }

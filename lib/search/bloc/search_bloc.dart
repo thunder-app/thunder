@@ -88,6 +88,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
         sort: event.sortType,
         listingType: event.listingType,
         type: event.searchType,
+        communityId: event.communityId,
+        creatorId: event.creatorId,
       ));
 
       // If there are no search results, see if this is an exact search
@@ -171,6 +173,8 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
             sort: event.sortType,
             listingType: event.listingType,
             type: event.searchType,
+            communityId: event.communityId,
+            creatorId: event.creatorId,
           ));
 
           if (searchIsEmpty(event.searchType, searchResponse: searchResponse)) {
