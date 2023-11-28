@@ -632,5 +632,17 @@
   "pending": "Pendiente",
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
+  },
+  "userSettingDescription": "Estos ajustes se sincronizan con tu cuenta de Lemmy y sólo se aplican por cuenta.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "filters": "Filtros",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "showReadPosts": "Mostrar las publicaciones leídas",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
   }
 }
