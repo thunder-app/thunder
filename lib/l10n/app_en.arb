@@ -181,6 +181,10 @@
   "@feed": {},
   "fetchAccountError": "Could not determine account",
   "@fetchAccountError": {},
+  "filters": "Filters",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "general": "General",
@@ -465,6 +469,10 @@
   "@showMore": {},
   "showPassword": "Show Password",
   "@showPassword": {},
+  "showReadPosts": "Show Read Posts",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
   "sidebar": "Sidebar",
   "@sidebar": {},
   "sidebarBottomNavDoubleTapDescription": "Double-tap bottom nav to open sidebar",
@@ -587,6 +595,10 @@
   "username": "Username",
   "@username": {},
   "users": "Users",
+  "userSettingDescription": "These settings sync with your Lemmy account and are only applied on a per-account basis.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",

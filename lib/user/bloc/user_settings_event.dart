@@ -7,6 +7,16 @@ abstract class UserSettingsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class GetUserSettingsEvent extends UserSettingsEvent {
+  const GetUserSettingsEvent();
+}
+
+class UpdateUserSettingsEvent extends UserSettingsEvent {
+  final bool? showReadPosts;
+
+  const UpdateUserSettingsEvent({this.showReadPosts});
+}
+
 class GetUserBlocksEvent extends UserSettingsEvent {
   final int? userId;
 
