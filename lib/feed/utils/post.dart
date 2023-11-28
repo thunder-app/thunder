@@ -85,7 +85,7 @@ Future<PostView> createPost({required int communityId, required String name, Str
 
 /// Creates a placeholder post from the given parameters. This is mainly used to display a preview of the post
 /// with the applied settings on Settings -> Appearance -> Posts page.
-Future<PostViewMedia> createExamplePost({
+Future<PostViewMedia?> createExamplePost({
   String? postTitle,
   String? postUrl,
   String? postBody,
@@ -167,5 +167,5 @@ Future<PostViewMedia> createExamplePost({
 
   List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
 
-  return Future.value(postViewMedias.first);
+  return Future.value(postViewMedias.firstOrNull);
 }

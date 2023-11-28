@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:expandable/expandable.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -201,8 +202,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   }
 
   /// Generates an example post to show in the post preview
-  Future<List<PostViewMedia>> getExamplePosts() async {
-    PostViewMedia postViewMediaText = await createExamplePost(
+  Future<List<PostViewMedia?>> getExamplePosts() async {
+    PostViewMedia? postViewMediaText = await createExamplePost(
       postTitle: 'Example Text Post',
       personName: 'Lightning',
       communityName: 'Thunder',
@@ -212,7 +213,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4,
     );
 
-    PostViewMedia postViewMediaImage = await createExamplePost(
+    PostViewMedia? postViewMediaImage = await createExamplePost(
       postTitle: 'Example Image Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -224,7 +225,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 4230,
     );
 
-    PostViewMedia postViewMediaLink = await createExamplePost(
+    PostViewMedia? postViewMediaLink = await createExamplePost(
       postTitle: 'Example Link Post',
       personName: 'Lightning',
       personDisplayName: 'User',
@@ -235,7 +236,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       commentCount: 543,
     );
 
-    return [postViewMediaText, postViewMediaLink, postViewMediaImage];
+    return [postViewMediaText, postViewMediaLink, postViewMediaImage].whereNotNull().toList();
   }
 
   @override
@@ -328,12 +329,13 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   Expandable(
                     controller: expandableController,
                     collapsed: Container(),
-                    expanded: FutureBuilder<List<PostViewMedia>>(
+                    expanded: FutureBuilder<List<PostViewMedia?>>(
                       future: getExamplePosts(),
                       builder: (context, snapshot) {
                         if (snapshot.data == null) return Container();
 
                         return ListView.builder(
+                          padding: EdgeInsets.zero,
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
@@ -342,20 +344,21 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                                 (useCompactView)
                                     ? IgnorePointer(
                                         child: PostCardViewCompact(
-                                        postViewMedia: snapshot.data![index],
-                                        showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
-                                        showTextPostIndicator: showTextPostIndicator,
-                                        showPostAuthor: showPostAuthor,
-                                        hideNsfwPreviews: hideNsfwPreviews,
-                                        communityMode: false,
-                                        markPostReadOnMediaView: false,
-                                        isUserLoggedIn: true,
-                                        listingType: ListingType.all,
-                                        indicateRead: dimReadPosts,
-                                      ))
+                                          postViewMedia: snapshot.data![index]!,
+                                          showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
+                                          showTextPostIndicator: showTextPostIndicator,
+                                          showPostAuthor: showPostAuthor,
+                                          hideNsfwPreviews: hideNsfwPreviews,
+                                          communityMode: false,
+                                          markPostReadOnMediaView: false,
+                                          isUserLoggedIn: true,
+                                          listingType: ListingType.all,
+                                          indicateRead: dimReadPosts,
+                                        ),
+                                      )
                                     : IgnorePointer(
                                         child: PostCardViewComfortable(
-                                          postViewMedia: snapshot.data![index],
+                                          postViewMedia: snapshot.data![index]!,
                                           showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
                                           showPostAuthor: showPostAuthor,
                                           hideNsfwPreviews: hideNsfwPreviews,

@@ -237,6 +237,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                           create: (context) => PostBloc(),
                           child: IgnorePointer(
                             child: ListView(
+                              padding: EdgeInsets.zero,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
                               children: [
