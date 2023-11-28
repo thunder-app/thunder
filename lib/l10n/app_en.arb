@@ -91,6 +91,14 @@
   },
   "changeSort": "Change Sort",
   "@changeSort": {},
+  "clearDatabase": "Clear Database",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Clear Preferences",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
   "clearSearch": "Clear Search",
   "clearedDatabase": "Local database cleared. Restart Thunder to use new changes.",
   "@clearedDatabase": {},
@@ -187,8 +195,28 @@
   "@debug": {
     "description": "Debug settings category."
   },
+  "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
   "delete": "Delete",
   "@delete": {},
+  "deleteLocalDatabase": "Delete Local Database",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "This action will remove the local database and will log you out of all your accounts.\n\nDo you want to continue?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "Delete Local Preferences",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
   "dimReadPosts": "Read posts will be grayed out",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -504,6 +532,10 @@
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
   },
   "resetPreferences": "Reset Preferences",
+  "resetPreferencesAndData": "Reset Preferences and Data",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
   "restore": "Restore",
   "@restore": {},
   "restoredCommentFromDraft": "Restored comment from draft",
