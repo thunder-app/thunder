@@ -534,8 +534,20 @@
   "@topHour": {},
   "topMonth": "Top Month",
   "@topMonth": {},
+  "topNineMonths": "Top in Past 9 Months",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
   "topSixHour": "Top in Past 6 Hours",
   "@topSixHour": {},
+  "topSixMonths": "Top in Past 6 Months",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "topThreeMonths": "Top in Past 3 Months",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
   "topTwelveHour": "Top in Past 12 Hours",
   "@topTwelveHour": {},
   "topWeek": "Top Week",
