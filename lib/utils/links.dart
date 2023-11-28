@@ -1,12 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:html/parser.dart' as parser;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:link_preview_generator/link_preview_generator.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/image.dart';
 import 'package:url_launcher/url_launcher.dart' hide launch;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/account/models/account.dart';
@@ -152,8 +158,111 @@ void handleLink(BuildContext context, {required String url}) async {
     }
   }
 
+  // Try opening it as an image
+  try {
+    if (isImageUrl(url) && context.mounted) {
+      showImageViewer(context, url: url);
+      return;
+    }
+  } catch (e) {
+    // Ignore the exception and fall back.
+  }
+
   // Fallback: open link in browser
   if (context.mounted) {
     _openLink(context, url: url);
+  }
+}
+
+void handleLinkLongPress(BuildContext context, ThunderState state, String text, String? url) {
+  final theme = Theme.of(context);
+  final l10n = AppLocalizations.of(context)!;
+
+  HapticFeedback.mediumImpact();
+  showModalBottomSheet(
+    context: context,
+    showDragHandle: true,
+    isScrollControlled: true,
+    builder: (ctx) {
+      bool isValidUrl = url?.startsWith('http') ?? false;
+
+      return BottomSheetListPicker(
+        title: l10n.linkActions,
+        heading: Column(
+          children: [
+            if (isValidUrl) ...[
+              LinkPreviewGenerator(
+                link: url!,
+                placeholderWidget: const CircularProgressIndicator(),
+                linkPreviewStyle: LinkPreviewStyle.large,
+                cacheDuration: Duration.zero,
+                onTap: () {},
+                bodyTextOverflow: TextOverflow.fade,
+                graphicFit: BoxFit.scaleDown,
+                removeElevation: true,
+                backgroundColor: theme.dividerColor.withOpacity(0.25),
+                borderRadius: 10,
+              ),
+              const SizedBox(height: 10),
+            ],
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    color: theme.dividerColor.withOpacity(0.25),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5),
+                    child: Text(url!),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        items: [
+          ListPickerItem(label: l10n.open, payload: 'open', icon: Icons.language),
+          ListPickerItem(label: l10n.copy, payload: 'copy', icon: Icons.copy_rounded),
+          ListPickerItem(label: l10n.share, payload: 'share', icon: Icons.share_rounded),
+        ],
+        onSelect: (value) {
+          switch (value.payload) {
+            case 'open':
+              handleLinkTap(context, state, text, url);
+              break;
+            case 'copy':
+              Clipboard.setData(ClipboardData(text: url));
+              break;
+            case 'share':
+              Share.share(url);
+              break;
+          }
+        },
+      );
+    },
+  );
+}
+
+Future<void> handleLinkTap(BuildContext context, ThunderState state, String text, String? url) async {
+  Uri? parsedUri = Uri.tryParse(text);
+
+  String parsedUrl = text;
+
+  if (parsedUri != null && parsedUri.host.isNotEmpty) {
+    parsedUrl = parsedUri.toString();
+  } else {
+    parsedUrl = url ?? '';
+  }
+
+  // The markdown link processor treats URLs with @ as emails and prepends "mailto:".
+  // If the URL contains that, but the text doesn't, we can remove it.
+  if (parsedUrl.startsWith('mailto:') && !text.startsWith('mailto:')) {
+    parsedUrl = parsedUrl.replaceFirst('mailto:', '');
+  }
+
+  if (context.mounted) {
+    handleLink(context, url: parsedUrl);
   }
 }

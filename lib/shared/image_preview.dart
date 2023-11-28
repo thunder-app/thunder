@@ -51,32 +51,6 @@ class _ImagePreviewState extends State<ImagePreview> {
     setState(() => blur = widget.nsfw);
   }
 
-  void onImageTap(BuildContext context) {
-    Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: false,
-        transitionDuration: const Duration(milliseconds: 100),
-        reverseTransitionDuration: const Duration(milliseconds: 50),
-        pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
-          return ImageViewer(
-            url: widget.url,
-            bytes: widget.bytes,
-            postId: widget.postId,
-            navigateToPost: widget.navigateToPost,
-          );
-        },
-        transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
-          return Align(
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -87,7 +61,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                 if (widget.nsfw && blur) {
                   setState(() => blur = false);
                 } else {
-                  onImageTap(context);
+                  showImageViewer(
+                    context,
+                    url: widget.url,
+                    bytes: widget.bytes,
+                    postId: widget.postId,
+                    navigateToPost: widget.navigateToPost,
+                  );
                 }
               },
             )

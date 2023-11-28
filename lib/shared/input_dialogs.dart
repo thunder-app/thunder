@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
@@ -8,11 +9,14 @@ import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/numbers.dart';
 
 /// Shows a dialog which allows typing/search for a user
 void showUserInputDialog(BuildContext context, {required String title, required void Function(PersonView) onUserSelected}) async {
@@ -150,7 +154,9 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
   return searchResponse.communities;
 }
 
-Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? onSelected}) {
+Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(CommunityView)? onSelected}) {
+  final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
+
   return Tooltip(
     message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
     preferBelow: false,
@@ -165,11 +171,30 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
         ),
         subtitle: Semantics(
           excludeSemantics: true,
-          child: TextScroll(
-            '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
-            delayBefore: const Duration(seconds: 2),
-            pauseBetween: const Duration(seconds: 3),
-            velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextScroll(
+                '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+                delayBefore: const Duration(seconds: 2),
+                pauseBetween: const Duration(seconds: 3),
+                velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
+              ),
+              Row(
+                children: [
+                  const Icon(Icons.people_rounded, size: 16),
+                  const SizedBox(width: 5),
+                  Text(formatNumberToK(payload.counts.subscribers)),
+                  if (payload.subscribed != SubscribedType.notSubscribed) ...[
+                    Text(' · ${switch (payload.subscribed) {
+                      SubscribedType.pending => l10n.pending,
+                      SubscribedType.subscribed => l10n.subscribed,
+                      _ => '',
+                    }}'),
+                  ],
+                ],
+              )
+            ],
           ),
         ),
       ),
@@ -178,7 +203,12 @@ Widget buildCommunitySuggestionWidget(payload, {void Function(CommunityView)? on
 }
 
 /// Shows a dialog which allows typing/search for an instance
-void showInstanceInputDialog(BuildContext context, {required String title, required void Function(Instance) onInstanceSelected, Iterable<Instance>? emptySuggestions}) async {
+void showInstanceInputDialog(
+  BuildContext context, {
+  required String title,
+  required void Function(InstanceWithFederationState) onInstanceSelected,
+  Iterable<InstanceWithFederationState>? emptySuggestions,
+}) async {
   Account? account = await fetchActiveProfileAccount();
 
   GetFederatedInstancesResponse getFederatedInstancesResponse = await LemmyClient.instance.lemmyApiV3.run(
@@ -187,12 +217,12 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
     ),
   );
 
-  Future<String?> onSubmitted({Instance? payload, String? value}) async {
+  Future<String?> onSubmitted({InstanceWithFederationState? payload, String? value}) async {
     if (payload != null) {
       onInstanceSelected(payload);
       Navigator.of(context).pop();
     } else if (value != null) {
-      final Instance? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((Instance instance) => instance.domain == value);
+      final InstanceWithFederationState? instance = getFederatedInstancesResponse.federatedInstances?.linked.firstWhereOrNull((InstanceWithFederationState instance) => instance.domain == value);
 
       if (instance != null) {
         onInstanceSelected(instance);
@@ -206,7 +236,7 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
   }
 
   if (context.mounted) {
-    showInputDialog<Instance>(
+    showInputDialog<InstanceWithFederationState>(
       context: context,
       title: title,
       inputLabel: AppLocalizations.of(context)!.instance,
@@ -217,12 +247,12 @@ void showInstanceInputDialog(BuildContext context, {required String title, requi
   }
 }
 
-Future<Iterable<Instance>> getInstanceSuggestions(String query, Iterable<Instance>? emptySuggestions) async {
+Future<Iterable<InstanceWithFederationState>> getInstanceSuggestions(String query, Iterable<InstanceWithFederationState>? emptySuggestions) async {
   if (query.isEmpty) {
     return const Iterable.empty();
   }
 
-  Iterable<Instance> filteredInstances = emptySuggestions?.where((Instance instance) => instance.domain.contains(query)) ?? const Iterable.empty();
+  Iterable<InstanceWithFederationState> filteredInstances = emptySuggestions?.where((InstanceWithFederationState instance) => instance.domain.contains(query)) ?? const Iterable.empty();
   return filteredInstances;
 }
 
@@ -249,6 +279,68 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
         ),
         title: Text(
           payload.domain,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+        ),
+      ),
+    ),
+  );
+}
+
+/// Shows a dialog which allows typing/search for an language
+void showLanguageInputDialog(BuildContext context, {required String title, required void Function(Language) onLanguageSelected, Iterable<Language>? emptySuggestions}) async {
+  AuthState state = context.read<AuthBloc>().state;
+
+  List<Language> languages = state.getSiteResponse?.allLanguages ?? [];
+
+  Future<String?> onSubmitted({Language? payload, String? value}) async {
+    if (payload != null) {
+      onLanguageSelected(payload);
+      Navigator.of(context).pop();
+    } else if (value != null) {
+      final Language? language = languages.firstWhereOrNull((Language language) => language.name.toLowerCase().contains(value.toLowerCase()));
+
+      if (language != null) {
+        onLanguageSelected(language);
+        Navigator.of(context).pop();
+      } else {
+        return AppLocalizations.of(context)!.unableToFindLanguage;
+      }
+    }
+
+    return null;
+  }
+
+  if (context.mounted) {
+    showInputDialog<Language>(
+      context: context,
+      title: title,
+      inputLabel: AppLocalizations.of(context)!.language,
+      onSubmitted: onSubmitted,
+      getSuggestions: (query) => getLanguageSuggestions(query, languages),
+      suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
+    );
+  }
+}
+
+Future<Iterable<Language>> getLanguageSuggestions(String query, Iterable<Language>? emptySuggestions) async {
+  if (query.isEmpty) {
+    return emptySuggestions ?? [];
+  }
+
+  Iterable<Language> filteredLanguages = emptySuggestions?.where((Language language) => language.name.toLowerCase().contains(query.toLowerCase())) ?? const Iterable.empty();
+  return filteredLanguages;
+}
+
+Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelected, BuildContext? context}) {
+  return Tooltip(
+    message: '${payload.name}',
+    preferBelow: false,
+    child: InkWell(
+      onTap: onSelected == null ? null : () => onSelected(payload),
+      child: ListTile(
+        title: Text(
+          payload.name,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
         ),

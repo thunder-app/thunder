@@ -51,6 +51,7 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
+    this.appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -105,6 +106,7 @@ class ThunderState extends Equatable {
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
     this.postFabEnableRefresh = true,
+    this.postFabEnableSearch = true,
     this.feedFabSinglePressAction = FeedFabAction.dismissRead,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
@@ -148,6 +150,7 @@ class ThunderState extends Equatable {
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
+  final String? appLanguageCode;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -228,6 +231,7 @@ class ThunderState extends Equatable {
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
   final bool postFabEnableRefresh;
+  final bool postFabEnableSearch;
 
   final FeedFabAction feedFabSinglePressAction;
   final FeedFabAction feedFabLongPressAction;
@@ -295,6 +299,7 @@ class ThunderState extends Equatable {
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
+    String? appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -349,6 +354,7 @@ class ThunderState extends Equatable {
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
     bool? postFabEnableRefresh,
+    bool? postFabEnableSearch,
     FeedFabAction? feedFabSinglePressAction,
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
@@ -393,6 +399,7 @@ class ThunderState extends Equatable {
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
+      appLanguageCode: appLanguageCode ?? this.appLanguageCode,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -471,6 +478,7 @@ class ThunderState extends Equatable {
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
       postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
+      postFabEnableSearch: postFabEnableSearch ?? this.postFabEnableSearch,
       feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
       feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
@@ -538,6 +546,7 @@ class ThunderState extends Equatable {
         dimReadPosts,
         useAdvancedShareSheet,
         showCrossPosts,
+        appLanguageCode,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -594,6 +603,7 @@ class ThunderState extends Equatable {
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
         postFabEnableRefresh,
+        postFabEnableSearch,
         feedFabSinglePressAction,
         feedFabLongPressAction,
         postFabSinglePressAction,

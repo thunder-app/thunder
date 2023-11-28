@@ -19,6 +19,7 @@ enum LocalSettings {
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
   scoreCounters(name: 'setting_score_counters', label: "Display User Scores"),
+  appLanguageCode(name: 'setting_app_language_code', label: 'App Language'),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -97,6 +98,7 @@ enum LocalSettings {
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
   postFabEnableRefresh(name: 'setting_post_fab_enable_refresh', label: 'Refresh'),
+  postFabEnableSearch(name: 'setting_post_fab_enable_search', label: 'Search'),
   feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
   feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),

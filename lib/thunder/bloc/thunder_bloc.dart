@@ -109,6 +109,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -189,6 +190,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableChangeSort = prefs.getBool(LocalSettings.postFabEnableChangeSort.name) ?? true;
       bool postFabEnableReplyToPost = prefs.getBool(LocalSettings.postFabEnableReplyToPost.name) ?? true;
       bool postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
+      bool postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
 
       FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
       FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
@@ -228,6 +230,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         useDisplayNames: useDisplayNames,
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,
+        appLanguageCode: appLanguageCode,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -306,6 +309,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         postFabEnableChangeSort: postFabEnableChangeSort,
         postFabEnableReplyToPost: postFabEnableReplyToPost,
         postFabEnableRefresh: postFabEnableRefresh,
+        postFabEnableSearch: postFabEnableSearch,
 
         feedFabSinglePressAction: feedFabSinglePressAction,
         feedFabLongPressAction: feedFabLongPressAction,

@@ -60,7 +60,8 @@ enum PostFabAction {
   backToTop(),
   changeSort(),
   replyToPost(),
-  refresh();
+  refresh(),
+  search();
 
   IconData getIcon({IconData? override, bool postLocked = false}) {
     if (override != null) {
@@ -81,6 +82,8 @@ enum PostFabAction {
         return Icons.reply_rounded;
       case PostFabAction.refresh:
         return Icons.refresh_rounded;
+      case PostFabAction.search:
+        return Icons.search_rounded;
     }
   }
 
@@ -99,6 +102,8 @@ enum PostFabAction {
         return AppLocalizations.of(context)!.replyToPost;
       case PostFabAction.refresh:
         return AppLocalizations.of(context)!.refresh;
+      case PostFabAction.search:
+        return AppLocalizations.of(context)!.search;
     }
   }
 
@@ -121,6 +126,9 @@ enum PostFabAction {
         break;
       case PostFabAction.refresh:
         context?.read<PostBloc>().add(GetPostEvent(postView: postView, postId: postId, selectedCommentId: selectedCommentId, selectedCommentPath: selectedCommentPath));
+      case PostFabAction.search:
+        // Invoked via override
+        break;
     }
   }
 }

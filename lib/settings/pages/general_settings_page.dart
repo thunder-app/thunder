@@ -3,13 +3,11 @@ import 'package:flutter/material.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:dynamic_color/dynamic_color.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
-import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
@@ -20,6 +18,7 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
+import 'package:thunder/utils/language/language.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -29,6 +28,12 @@ class GeneralSettingsPage extends StatefulWidget {
 }
 
 class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTickerProviderStateMixin {
+  /// The list of supported locales determined by the l10n .arb files
+  Iterable<Locale> get supportedLocales => AppLocalizations.supportedLocales;
+
+  /// The current locale
+  late Locale currentLocale;
+
   /// Default listing type for posts on the feed (subscribed, all, local)
   ListingType defaultListingType = DEFAULT_LISTING_TYPE;
 
@@ -79,20 +84,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
-  late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: 100),
-    vsync: this,
-  );
-
-  // Animation for settings collapse
-  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
-    begin: Offset.zero,
-    end: const Offset(1.5, 0.0),
-  ).animate(CurvedAnimation(
-    parent: _controller,
-    curve: Curves.fastOutSlowIn,
-  ));
-
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
@@ -108,6 +99,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.defaultCommentSortType:
         await prefs.setString(LocalSettings.defaultCommentSortType.name, value);
         setState(() => defaultCommentSortType = CommentSortType.values.byName(value ?? DEFAULT_COMMENT_SORT_TYPE.name));
+        break;
+      case LocalSettings.appLanguageCode:
+        await prefs.setString(LocalSettings.appLanguageCode.name, value.languageCode);
+        setState(() => currentLocale = value);
         break;
 
       case LocalSettings.hideNsfwPosts:
@@ -186,6 +181,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       }
 
       defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
+      currentLocale = Localizations.localeOf(context);
 
       hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
@@ -211,12 +207,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
   }
 
   @override
@@ -314,6 +304,29 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                       CommentSortPicker.getCommentSortTypeItems(includeVersionSpecificFeature: IncludeVersionSpecificFeature.always)
                           .firstWhere((sortTypeItem) => sortTypeItem.payload == defaultCommentSortType)
                           .label,
+                      style: theme.textTheme.titleSmall,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: l10n.appLanguage,
+                value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
+                options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode), icon: Icons.language_rounded, payload: e)).toList(),
+                icon: Icons.language_rounded,
+                onChanged: (ListPickerItem<Locale> value) {
+                  setPreferences(LocalSettings.appLanguageCode, value.payload);
+                },
+                isBottomModalScrollControlled: true,
+                valueDisplay: Row(
+                  children: [
+                    Text(
+                      LanguageLocal.getDisplayLanguage(currentLocale.languageCode),
                       style: theme.textTheme.titleSmall,
                     ),
                   ],
