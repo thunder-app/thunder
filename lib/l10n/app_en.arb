@@ -1,4 +1,8 @@
 {
+  "about": "About",
+  "@about": {
+    "description": "About settings category."
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accomodate a particular accessibility requirement.",
@@ -179,6 +183,10 @@
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
   "@customizeSwipeActions": {},
+  "debug": "Debug",
+  "@debug": {
+    "description": "Debug settings category."
+  },
   "delete": "Delete",
   "@delete": {},
   "dimReadPosts": "Read posts will be grayed out",
@@ -252,6 +260,10 @@
   "filters": "Filters",
   "@filters": {
     "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "floatingActionButton": "Floating Action Button",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
   },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
