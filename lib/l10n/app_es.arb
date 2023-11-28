@@ -612,5 +612,25 @@
   "local": "Local",
   "@local": {},
   "searchComments": "Buscar comentarios",
-  "@searchComments": {}
+  "@searchComments": {},
+  "unableToFindLanguage": "No se encuentra el idioma",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "suggestedTitle": "Título sugerido",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "editPost": "Editar el mensaje",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "pending": "Pendiente",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  }
 }
