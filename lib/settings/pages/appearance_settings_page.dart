@@ -17,10 +17,11 @@ class AppearanceSettingsPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.medium(
+          SliverAppBar(
             title: Text(l10n.appearance),
             centerTitle: false,
             toolbarHeight: 70.0,
+            pinned: true,
           ),
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverList(

@@ -217,10 +217,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.medium(
+          SliverAppBar(
             title: Text(l10n.general),
             centerTitle: false,
             toolbarHeight: 70.0,
+            pinned: true,
           ),
           SliverToBoxAdapter(
             child: Padding(

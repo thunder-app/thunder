@@ -151,10 +151,11 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.medium(
+          SliverAppBar(
             title: Text(l10n.comments),
             centerTitle: false,
             toolbarHeight: 70.0,
+            pinned: true,
             actions: [
               IconButton(
                 icon: const Icon(Icons.restart_alt_rounded),

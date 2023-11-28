@@ -252,10 +252,11 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          SliverAppBar.medium(
+          SliverAppBar(
             title: Text(l10n.posts),
             centerTitle: false,
             toolbarHeight: 70.0,
+            pinned: true,
             actions: [
               IconButton(
                 icon: const Icon(Icons.restart_alt_rounded),
