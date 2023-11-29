@@ -6,6 +6,9 @@
 - Added ability to show/hide read posts in user settings
 - Added post and comment previews to settings, and reorganized settings page
 
+### Fixed
+- Fixed issue where custom tabs would not respect default browser when opening links
+
 ## 0.2.6 - 2023-11-22
 ### Fixed
 - Fixed rendering issues with markdown link parsing
