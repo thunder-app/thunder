@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -84,7 +85,7 @@ class _ThunderState extends State<Thunder> {
     super.initState();
 
     // Listen for callbacks from Android native code
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
         if (call.method == 'set_intent') {
           currentIntent = call.arguments;

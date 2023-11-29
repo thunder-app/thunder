@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:http/http.dart' as http;
@@ -51,7 +52,7 @@ Future<LinkInfo> getLinkInfo(String url) async {
 void openLink(BuildContext context, {required String url, bool openInExternalBrowser = false}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
-  if (openInExternalBrowser || (!Platform.isAndroid && !Platform.isIOS)) {
+  if (openInExternalBrowser || (!kIsWeb && !Platform.isAndroid && !Platform.isIOS)) {
     launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
   } else {
     launch(

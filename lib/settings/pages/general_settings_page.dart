@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -755,7 +756,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                           onToggle: (bool value) => setPreferences(LocalSettings.openLinksInExternalBrowser, value),
                         ),
 
-                        if (Platform.isIOS)
+                        if (!kIsWeb && Platform.isIOS)
                           ToggleOption(
                             description: LocalSettings.openLinksInReaderMode.label,
                             value: openInReaderMode,
@@ -764,7 +765,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                             onToggle: (bool value) => setPreferences(LocalSettings.openLinksInReaderMode, value),
                           ),
                         // TOOD:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
-                        if (Platform.isAndroid)
+                        if (!kIsWeb && Platform.isAndroid)
                           SettingsListTile(
                             icon: Icons.add_link,
                             widget: const SizedBox(
