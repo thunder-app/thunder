@@ -498,26 +498,42 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_custom_tabs
-      sha256: e90e5b7cad5648aeb0e1ed04aa3c0cada62d86f3b5d4aaef488ab7de61ec2a9f
+      sha256: "959f073869ece2d173170ed79daa9a122b6402c8a029203fa0f64b1a980b0df2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "2.0.0-beta.1"
+  flutter_custom_tabs_android:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_android
+      sha256: "8d64e58ed7ffa43f67837b9eb5eec9d03ad7bb67c890447d22040f7713ce33a4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0-beta.1"
+  flutter_custom_tabs_ios:
+    dependency: transitive
+    description:
+      name: flutter_custom_tabs_ios
+      sha256: "731771dbd376407b51a3035a879c9a553ece2025ef761b61a91761594fa9dbc4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0-beta"
   flutter_custom_tabs_platform_interface:
     dependency: transitive
     description:
       name: flutter_custom_tabs_platform_interface
-      sha256: "1d6b9eb6c5671b21511fdb47babf18aa65982784373986c003aaf67ca78798ad"
+      sha256: a8a06d25a91dea51489cbf56a10a3bd3c0563e74c30e5fd09c2e3ffe4f4e85ba
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.0"
+    version: "2.0.0-beta.1"
   flutter_custom_tabs_web:
     dependency: transitive
     description:
       name: flutter_custom_tabs_web
-      sha256: dbb5689a97c2398aa5dbcfc9cd59cffea5518ec815e9d23def448dc143cb02be
+      sha256: "644f5dcbe69c05ee989d8aa971eb2f913f64ab2a224863fce67111ea971b1e22"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.0"
+    version: "2.0.0-beta+1"
   flutter_dotenv:
     dependency: "direct main"
     description:
