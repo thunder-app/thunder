@@ -29,7 +29,6 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
-import 'dart:developer';
 import 'package:flutter/foundation.dart';
 
 void main() async {
@@ -44,12 +43,12 @@ void main() async {
 
   // Load up sqlite database
   await DB.instance.database;
-  log("HELLO!");
+
   // Register dart_ping on iOS
   if (!kIsWeb && Platform.isIOS) {
     DartPingIOS.register();
   }
-  log("BYE!");
+
   final String initialInstance = (await UserPreferences.instance).sharedPreferences.getString(LocalSettings.currentAnonymousInstance.name) ?? 'lemmy.ml';
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
