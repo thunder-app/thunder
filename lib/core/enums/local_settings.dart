@@ -2,7 +2,7 @@ enum LocalSettings {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   defaultFeedListingType(name: 'setting_general_default_listing_type', label: 'Default Feed Type'),
-  defaultFeedSortType(name: 'setting_general_default_sort_type', label: 'Default Sort Type'),
+  defaultFeedSortType(name: 'setting_general_default_sort_type', label: 'Default Feed Sort Type'),
 
   // NSFW Settings
   hideNsfwPosts(name: 'setting_general_hide_nsfw_posts', label: 'Hide NSFW Posts from Feed'),

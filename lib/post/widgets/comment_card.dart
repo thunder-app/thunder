@@ -446,6 +446,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           )
                         : ListView.builder(
                             // addSemanticIndexes: false,
+                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) => CommentCard(

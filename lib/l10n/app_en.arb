@@ -1,4 +1,8 @@
 {
+  "about": "About",
+  "@about": {
+    "description": "About settings category."
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accomodate a particular accessibility requirement.",
@@ -37,6 +41,10 @@
   "@appLanguage": {
     "description": "Language selection in settings."
   },
+  "appearance": "Appearance",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
@@ -69,8 +77,28 @@
   "@cantBlockAdmin": {},
   "cantBlockYourself": "You may not block yourself.",
   "@cantBlockYourself": {},
+  "cardView": "Card View",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "cardViewDescription": "Enable card view to adjust settings",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "cardViewSettings": "Card View Settings",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
   "changeSort": "Change Sort",
   "@changeSort": {},
+  "clearDatabase": "Clear Database",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "clearPreferences": "Clear Preferences",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
   "clearSearch": "Clear Search",
   "clearedDatabase": "Local database cleared. Restart Thunder to use new changes.",
   "@clearedDatabase": {},
@@ -78,12 +106,28 @@
   "@clearedUserPreferences": {},
   "close": "Close",
   "@close": {},
+  "collapseCommentPreview": "Collapse Comment Preview",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
   "collapsePost": "Collapse post",
   "@collapsePost": {},
+  "collapsePostPreview": "Collapse Post Preview",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
   "combineNavAndFab": "Floating Action Button will be shown between navigation buttons.",
   "@combineNavAndFab": {},
   "comment": "Comment",
   "@comment": {},
+  "commentBehaviourSettings": "Comments",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Show a preview of the comments with the given settings",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
   "commentReported": "The comment has been marked for review.",
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
@@ -97,8 +141,28 @@
   "communities": "Communities",
   "community": "Community",
   "@community": {},
+  "compactView": "Compact View",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewDescription": "Enable compact view to adjust settings",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Compact View Settings",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
   "confirmLogOut": "Log out?",
   "@confirmLogOut": {},
+  "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "This will reset all post preferences. Are you sure you want to proceed?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
   "controversial": "Controversial",
   "@controversial": {},
   "copiedToClipboard": "Copied to clipboard",
@@ -127,8 +191,32 @@
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
   "@customizeSwipeActions": {},
+  "debug": "Debug",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "debugDescription": "The following debug settings should only be used for troubleshooting purposes.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
   "delete": "Delete",
   "@delete": {},
+  "deleteLocalDatabase": "Delete Local Database",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "deleteLocalDatabaseDescription": "This action will remove the local database and will log you out of all your accounts.\n\nDo you want to continue?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "deleteLocalPreferences": "Delete Local Preferences",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "deleteLocalPreferencesDescription": "This will clear all your user preferences and settings in Thunder.\n\nDo you want to continue?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
   "dimReadPosts": "Read posts will be grayed out",
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
@@ -167,10 +255,18 @@
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
+  "expandCommentPreview": "Expand Comment Preview",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
   "expandOptions": "Expand options",
   "@expandOptions": {},
   "expandPost": "Expand post",
   "@expandPost": {},
+  "expandPostPreview": "Expand Post Preview",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
   "failedToBlock": "Failed to block: {errorMessage}",
   "@failedToBlock": {},
   "failedToLoadBlocks": "Could not load blocks: {errorMessage}",
@@ -179,17 +275,33 @@
   "@failedToUnblock": {},
   "feed": "Feed",
   "@feed": {},
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "feedTypeAndSorts": "Default Feed Type and Sorting",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
   "fetchAccountError": "Could not determine account",
   "@fetchAccountError": {},
   "filters": "Filters",
   "@filters": {
     "description": "Category to describe various filters (user, community, instance blocking)"
   },
+  "floatingActionButton": "Floating Action Button",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
   "general": "General",
   "@general": {
     "description": "General settings category."
+  },
+  "generalSettings": "General Settings",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
   },
   "gestures": "Gestures",
   "@gestures": {},
@@ -238,6 +350,10 @@
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
+  "linksBehaviourSettings": "Links",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
   "loadMorePlural": "Load {count} more replies…",
   "@loadMorePlural": {},
   "loadMoreSingular": "Load {count} more reply…",
@@ -309,6 +425,10 @@
   "@notifications": {
     "description": "Message formatting for notifications count."
   },
+  "notificationsBehaviourSettings": "Notifications",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
   "off": "off",
   "@off": {},
   "ok": "OK",
@@ -336,8 +456,12 @@
   "password": "Password",
   "@password": {},
   "pending": "Pending",
-  "@pending": { 
-    "description": "Describes the subscription status for 'Pending'" 
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "postBehaviourSettings": "Posts",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
   },
   "postBody": "Post Body",
   "@postBody": {},
@@ -345,6 +469,10 @@
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",
   "@postNSFW": {},
+  "postPreview": "Show a preview of the post with the given settings",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
   "postSavedAsDraft": "Post saved as draft",
   "@postSavedAsDraft": {},
   "postSwipeGesturesHint": "Looking to use buttons instead? Change what buttons appear on post cards in general settings.",
@@ -357,6 +485,10 @@
   "@postURL": {},
   "postUploadImageError": "Could not upload image",
   "@postUploadImageError": {},
+  "postViewType": "Post View Type",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
   "posts": "Posts",
   "@posts": {},
   "preview": "Preview",
@@ -395,6 +527,15 @@
   "@report": {},
   "reportComment": "Report Comment",
   "@reportComment": {},
+  "reset": "Reset",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetPreferences": "Reset Preferences",
+  "resetPreferencesAndData": "Reset Preferences and Data",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
   "restore": "Restore",
   "@restore": {},
   "restoredCommentFromDraft": "Restored comment from draft",
@@ -510,6 +651,10 @@
   "tapToExit": "Press back twice to exit",
   "@tapToExit": {},
   "text": "Text",
+  "theming": "Theming",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
   "timeoutComments": "Error: Timeout when attempting to fetch comments",
   "@timeoutComments": {},
   "timeoutErrorMessage": "There was a timeout waiting for a response.",
@@ -592,13 +737,13 @@
   "@userProfiles": {
     "description": "Settings related to user profiles."
   },
-  "username": "Username",
-  "@username": {},
-  "users": "Users",
   "userSettingDescription": "These settings sync with your Lemmy account and are only applied on a per-account basis.",
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
+  "username": "Username",
+  "@username": {},
+  "users": "Users",
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",

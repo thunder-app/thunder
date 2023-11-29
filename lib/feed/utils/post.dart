@@ -82,3 +82,90 @@ Future<PostView> createPost({required int communityId, required String name, Str
 
   return postResponse.postView;
 }
+
+/// Creates a placeholder post from the given parameters. This is mainly used to display a preview of the post
+/// with the applied settings on Settings -> Appearance -> Posts page.
+Future<PostViewMedia?> createExamplePost({
+  String? postTitle,
+  String? postUrl,
+  String? postBody,
+  String? postThumbnailUrl,
+  bool? locked,
+  bool? nsfw,
+  bool? pinned,
+  String? personName,
+  String? personDisplayName,
+  String? communityName,
+  String? instanceUrl,
+  int? commentCount,
+  int? scoreCount,
+  bool? saved,
+  bool? read,
+}) async {
+  PostView postView = PostView(
+    post: Post(
+      id: 1,
+      name: postTitle ?? 'Example Title',
+      url: postUrl,
+      body: postBody,
+      thumbnailUrl: postThumbnailUrl,
+      creatorId: 1,
+      communityId: 1,
+      removed: false,
+      locked: locked ?? false,
+      published: DateTime.now(),
+      deleted: false,
+      nsfw: nsfw ?? false,
+      apId: '',
+      local: false,
+      languageId: 0,
+      featuredCommunity: pinned ?? false,
+      featuredLocal: false,
+    ),
+    creator: Person(
+      id: 1,
+      name: personName ?? 'Example Username',
+      displayName: personDisplayName ?? 'Example Name',
+      banned: false,
+      published: DateTime.now(),
+      actorId: '',
+      local: false,
+      deleted: false,
+      botAccount: false,
+      instanceId: 1,
+    ),
+    community: Community(
+      id: 1,
+      name: communityName ?? 'Example Community',
+      title: '',
+      removed: false,
+      published: DateTime.now(),
+      deleted: false,
+      nsfw: false,
+      actorId: instanceUrl ?? 'https://thunder.lemmy',
+      local: false,
+      hidden: false,
+      postingRestrictedToMods: false,
+      instanceId: 1,
+    ),
+    creatorBannedFromCommunity: false,
+    counts: PostAggregates(
+      id: 1,
+      postId: 1,
+      comments: commentCount ?? 0,
+      score: scoreCount ?? 0,
+      upvotes: 0,
+      downvotes: 0,
+      published: DateTime.now(),
+    ),
+    subscribed: SubscribedType.notSubscribed,
+    saved: saved ?? false,
+    read: read ?? false,
+    creatorBlocked: false,
+    unreadComments: 0,
+  );
+
+  List<PostViewMedia> postViewMedias = await parsePostViews([postView]);
+
+  return Future.value(postViewMedias.firstOrNull);
+}
