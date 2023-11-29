@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+import 'package:sqflite_common_ffi_web/sqflite_ffi_web.dart';
+import 'package:flutter/foundation.dart';
 
 class DB {
   static final DB _db = DB._internal();
@@ -13,7 +15,11 @@ class DB {
 
   Future<Database?> get database async {
     if (_database != null) return _database;
-    if (Platform.isLinux || Platform.isWindows) {
+    if (kIsWeb) {
+      // Change default factory on the web
+      databaseFactory = databaseFactoryFfiWeb;
+      //path = 'my_web_web.db';
+    } else if (Platform.isLinux || Platform.isWindows) {
       sqfliteFfiInit();
       databaseFactory = databaseFactoryFfi;
     }
