@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +39,7 @@ class FeedPageAppBar extends StatelessWidget {
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         icon: Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community
-            ? (Platform.isIOS
+            ? (!kIsWeb && Platform.isIOS
                 ? Icon(
                     Icons.arrow_back_ios_new_rounded,
                     semanticLabel: MaterialLocalizations.of(context).backButtonTooltip,
