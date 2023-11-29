@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
@@ -486,7 +487,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
             ),
           ),
-          if (Platform.isIOS)
+          if (!kIsWeb && Platform.isIOS)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -500,7 +501,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
             ),
           // TODO:(open_lemmy_links_walkthrough) maybe have the open lemmy links walkthrough here
-          if (Platform.isAndroid)
+          if (!kIsWeb && Platform.isAndroid)
             SliverToBoxAdapter(
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
