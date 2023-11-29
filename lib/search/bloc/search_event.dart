@@ -12,8 +12,17 @@ class StartSearchEvent extends SearchEvent {
   final SortType sortType;
   final ListingType listingType;
   final SearchType searchType;
+  final int? communityId;
+  final int? creatorId;
 
-  const StartSearchEvent({required this.query, required this.sortType, required this.listingType, required this.searchType});
+  const StartSearchEvent({
+    required this.query,
+    required this.sortType,
+    required this.listingType,
+    required this.searchType,
+    this.communityId,
+    this.creatorId,
+  });
 }
 
 class ChangeCommunitySubsciptionStatusEvent extends SearchEvent {
@@ -31,8 +40,17 @@ class ContinueSearchEvent extends SearchEvent {
   final SortType sortType;
   final ListingType listingType;
   final SearchType searchType;
+  final int? communityId;
+  final int? creatorId;
 
-  const ContinueSearchEvent({required this.query, required this.sortType, required this.listingType, required this.searchType});
+  const ContinueSearchEvent({
+    required this.query,
+    required this.sortType,
+    required this.listingType,
+    required this.searchType,
+    this.communityId,
+    this.creatorId,
+  });
 }
 
 class FocusSearchEvent extends SearchEvent {}

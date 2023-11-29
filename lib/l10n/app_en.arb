@@ -184,6 +184,10 @@
   "createNewCrossPost": "Create new cross-post",
   "createPost": "Create Post",
   "@createPost": {},
+  "creator": "Creator",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
   "crossPostedTo": "Cross-posted to",
   "currentLongPress": "Currently set as long press",
   "@currentLongPress": {},
@@ -285,6 +289,10 @@
   },
   "fetchAccountError": "Could not determine account",
   "@fetchAccountError": {},
+  "filteringBy": "Filtering by {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
   "filters": "Filters",
   "@filters": {
     "description": "Category to describe various filters (user, community, instance blocking)"
