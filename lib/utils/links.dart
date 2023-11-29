@@ -10,7 +10,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/image.dart';
-import 'package:url_launcher/url_launcher.dart' hide launch;
+import 'package:url_launcher/url_launcher.dart' as url_launcher;
 import 'package:flutter_custom_tabs/flutter_custom_tabs.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -68,18 +68,25 @@ void _openLink(BuildContext context, {required String url}) async {
   ThunderState state = context.read<ThunderBloc>().state;
 
   if (state.openInExternalBrowser || (!Platform.isAndroid && !Platform.isIOS)) {
-    launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+    url_launcher.launchUrl(Uri.parse(url), mode: url_launcher.LaunchMode.externalApplication);
   } else {
-    launch(
-      url,
-      customTabsOption: CustomTabsOption(
-        toolbarColor: Theme.of(context).canvasColor,
-        enableUrlBarHiding: true,
-        showPageTitle: true,
-        enableDefaultShare: true,
-        enableInstantApps: true,
+    await launchUrl(
+      Uri.parse(url),
+      customTabsOptions: CustomTabsOptions(
+        browser: const CustomTabsBrowserConfiguration(
+          prefersDefaultBrowser: true,
+        ),
+        colorSchemes: CustomTabsColorSchemes(
+          defaultPrams: CustomTabsColorSchemeParams(
+            toolbarColor: Theme.of(context).canvasColor,
+          ),
+        ),
+        shareState: CustomTabsShareState.browserDefault,
+        urlBarHidingEnabled: true,
+        showTitle: true,
+        instantAppsEnabled: true,
       ),
-      safariVCOption: SafariViewControllerOption(
+      safariVCOptions: SafariViewControllerOptions(
         preferredBarTintColor: Theme.of(context).canvasColor,
         preferredControlTintColor: Theme.of(context).textTheme.titleLarge?.color ?? Theme.of(context).primaryColor,
         barCollapsingEnabled: true,

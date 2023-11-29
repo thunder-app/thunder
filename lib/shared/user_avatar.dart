@@ -18,7 +18,7 @@ class UserAvatar extends StatelessWidget {
         child: Text(
           person?.displayName?.isNotEmpty == true
               ? person!.displayName![0].toUpperCase()
-              : person!.name.isNotEmpty == true
+              : person?.name.isNotEmpty == true
                   ? person!.name[0].toUpperCase()
                   : '',
           semanticsLabel: '',
