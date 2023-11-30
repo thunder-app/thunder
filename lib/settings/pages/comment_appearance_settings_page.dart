@@ -158,7 +158,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             pinned: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.restart_alt_rounded),
+                icon: Icon(
+                  Icons.restart_alt_rounded,
+                  semanticLabel: l10n.resetCommentPreferences,
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,

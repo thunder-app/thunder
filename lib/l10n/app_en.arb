@@ -5,7 +5,7 @@
   },
   "accessibility": "Accessibility",
   "@accessibility": {},
-  "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accomodate a particular accessibility requirement.",
+  "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
   "account": "Account",
   "@account": {},
@@ -542,6 +542,14 @@
   "reset": "Reset",
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetCommentPreferences": "Reset comment preferences",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Reset post preferences",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
   },
   "resetPreferences": "Reset Preferences",
   "resetPreferencesAndData": "Reset Preferences and Data",
