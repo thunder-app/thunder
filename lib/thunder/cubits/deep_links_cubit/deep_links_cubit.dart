@@ -67,9 +67,14 @@ class DeepLinksCubit extends Cubit<DeepLinksState> {
     }
   }
 
+  /// Handle URI parsing
+  Future<void> handleURI(String uri) async {
+    emit(state.copyWith(deepLinkStatus: DeepLinkStatus.loading));
+    getLinkType(uri);
+  }
+
   /// Handle incoming links - the ones that the app will recieve from the OS
   /// while already started.
-
   Future<void> handleIncomingLinks() async {
     emit(state.copyWith(
       deepLinkStatus: DeepLinkStatus.loading,

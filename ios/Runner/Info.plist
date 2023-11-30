@@ -50,6 +50,20 @@
 		<key>UIStatusBarHidden</key>
 		<false/>
 
+		<key>AppGroupId</key>
+		<string>$(CUSTOM_GROUP_ID)</string>
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+				<key>CFBundleTypeRole</key>
+				<string>Editor</string>
+				<key>CFBundleURLSchemes</key>
+				<array>
+					<string>ShareMedia-$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+				</array>
+			</dict>
+		</array>
+
 		<!-- Permission options for the `photos` group -->
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>We need Photos access to allow you to save media.</string>

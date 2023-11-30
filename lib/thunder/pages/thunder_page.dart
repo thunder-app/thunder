@@ -28,6 +28,7 @@ import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/instances.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
@@ -153,6 +154,16 @@ class _ThunderState extends State<Thunder> {
     ) {
       if ((value?.isNotEmpty ?? false) && context.mounted && currentIntent != ANDROID_INTENT_ACTION_VIEW) {
         final uri = Uri.tryParse(value!);
+
+        if (Platform.isIOS) {
+          // When handling incoming lemmy links, open up the corresponding page on Thunder
+          // Check against a list of lemmy instances first. If none is found, fallback to creating a new post
+          if (uri?.host != null && instances.contains(uri?.host)) {
+            context.read<DeepLinksCubit>().handleURI(uri.toString());
+            return;
+          }
+        }
+
         if (uri?.isAbsolute == true) {
           navigateToCreatePostPage(context, url: uri.toString(), prePopulated: true);
         } else {
