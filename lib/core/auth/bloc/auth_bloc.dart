@@ -187,5 +187,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
     });
+
+    /// When any account setting synced with Lemmy is updated, re-fetch the instance information and preferences.
+    on<LemmyAccountSettingUpdated>((event, emit) async {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      // Check to see if there is an active, non-anonymous account
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      String? activeProfileId = prefs.getString('active_profile_id');
+      Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
+
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, getSiteResponse: getSiteResponse));
+    });
   }
 }

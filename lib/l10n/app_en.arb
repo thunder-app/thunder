@@ -632,6 +632,10 @@
   "@sharePost": {},
   "showAll": "Show All",
   "@showAll": {},
+  "showBotAccounts": "Show Bot Accounts",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
   "showLess": "Show less",
   "@showLess": {},
   "showMore": "Show more",
@@ -641,6 +645,10 @@
   "showReadPosts": "Show Read Posts",
   "@showReadPosts": {
     "description": "Setting to show read posts in feed."
+  },
+  "showScores": "Show Post/Comment Scores",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
   },
   "sidebar": "Sidebar",
   "@sidebar": {},

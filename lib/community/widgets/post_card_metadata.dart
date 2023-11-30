@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -40,6 +41,9 @@ class PostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthState authState = context.watch<AuthBloc>().state;
+    final showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
         return Row(
@@ -53,24 +57,26 @@ class PostCardMetaData extends StatelessWidget {
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      IconText(
-                        fontScale: state.metadataFontSizeScale,
-                        text: formatNumberToK(score),
-                        textColor: voteType == 1
-                            ? upVoteColor
-                            : voteType == -1
-                                ? downVoteColor
-                                : readColor,
-                        icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
-                            size: 20.0,
-                            color: voteType == 1
-                                ? upVoteColor
-                                : voteType == -1
-                                    ? downVoteColor
-                                    : readColor),
-                        padding: 2.0,
-                      ),
-                      const SizedBox(width: 10.0),
+                      if (showScores) ...[
+                        IconText(
+                          fontScale: state.metadataFontSizeScale,
+                          text: formatNumberToK(score),
+                          textColor: voteType == 1
+                              ? upVoteColor
+                              : voteType == -1
+                                  ? downVoteColor
+                                  : readColor,
+                          icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
+                              size: 20.0,
+                              color: voteType == 1
+                                  ? upVoteColor
+                                  : voteType == -1
+                                      ? downVoteColor
+                                      : readColor),
+                          padding: 2.0,
+                        ),
+                        const SizedBox(width: 10.0),
+                      ],
                       IconText(
                         fontScale: state.metadataFontSizeScale,
                         icon: Icon(
