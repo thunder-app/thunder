@@ -115,7 +115,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
   /// The id of the community that the post will be created in
   int? communityId;
 
-  int languageId = 0;
+  int? languageId;
 
   /// The [CommunityView] associated with the post. This is used to display the community information
   CommunityView? communityView;
@@ -463,8 +463,8 @@ class _CreatePostPageState extends State<CreatePostPage> {
                                 Expanded(
                                   child: LanguageSelector(
                                     languageId: languageId,
-                                    onLanguageSelected: (Language language) {
-                                      setState(() => languageId = language.id);
+                                    onLanguageSelected: (Language? language) {
+                                      setState(() => languageId = language?.id);
                                     },
                                   ),
                                 ),
@@ -639,18 +639,18 @@ class LanguageSelector extends StatefulWidget {
   });
 
   /// The initial language id to be passed in
-  final int languageId;
+  final int? languageId;
 
   /// A callback function to trigger whenever a language is selected from the dropdown
-  final Function(Language) onLanguageSelected;
+  final Function(Language?) onLanguageSelected;
 
   @override
   State<LanguageSelector> createState() => _LanguageSelectorState();
 }
 
 class _LanguageSelectorState extends State<LanguageSelector> {
-  late int _languageId;
-  late Language _language;
+  late int? _languageId;
+  late Language? _language;
 
   @override
   void initState() {
@@ -659,7 +659,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
 
     // Determine the language from the languageId
     List<Language> languages = context.read<AuthBloc>().state.getSiteResponse?.allLanguages ?? [];
-    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId) ?? languages.first;
+    _language = languages.firstWhereOrNull((Language language) => language.id == _languageId);
   }
 
   @override
@@ -675,12 +675,16 @@ class _LanguageSelectorState extends State<LanguageSelector> {
             context,
             title: l10n.language,
             onLanguageSelected: (language) {
-              setState(() {
-                _languageId = language.id;
-                _language = language;
-              });
-
-              widget.onLanguageSelected(language);
+              if (language.id == -1) {
+                setState(() => _languageId = _language = null);
+                widget.onLanguageSelected(null);
+              } else {
+                setState(() {
+                  _languageId = language.id;
+                  _language = language;
+                });
+                widget.onLanguageSelected(language);
+              }
             },
           );
         },
@@ -688,7 +692,7 @@ class _LanguageSelectorState extends State<LanguageSelector> {
         child: Padding(
           padding: const EdgeInsets.only(left: 8, top: 12, bottom: 12),
           child: Text(
-            '${l10n.language}: ${_language.name}',
+            '${l10n.language}: ${_language?.name ?? l10n.selectLanguage}',
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
           ),
         ),

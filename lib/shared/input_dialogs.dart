@@ -290,8 +290,9 @@ Widget buildInstanceSuggestionWidget(payload, {void Function(Instance)? onSelect
 /// Shows a dialog which allows typing/search for an language
 void showLanguageInputDialog(BuildContext context, {required String title, required void Function(Language) onLanguageSelected, Iterable<Language>? emptySuggestions}) async {
   AuthState state = context.read<AuthBloc>().state;
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
 
-  List<Language> languages = state.getSiteResponse?.allLanguages ?? [];
+  List<Language> languages = [Language(id: -1, code: '', name: l10n.noLanguage), ...(state.getSiteResponse?.allLanguages ?? [])];
 
   Future<String?> onSubmitted({Language? payload, String? value}) async {
     if (payload != null) {
