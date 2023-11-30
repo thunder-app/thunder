@@ -355,6 +355,10 @@
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
