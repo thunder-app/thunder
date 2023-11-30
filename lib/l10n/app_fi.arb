@@ -211,7 +211,7 @@
   "@tapToExit": {},
   "timeoutErrorMessage": "Latauksen aikana tapahtui aikakatkaisu.",
   "@timeoutErrorMessage": {},
-  "top": "Ylimmät",
+  "top": "Parhaat",
   "@top": {},
   "topAll": "Kaikkien Aikojen Ylimmät",
   "@topAll": {},
@@ -388,5 +388,165 @@
   "debugDescription": "Seuraavia vianmääritysasetuksia tulisi käyttää ainoastaan vianetsintätarkoituksiin.",
   "@debugDescription": {
     "description": "Explanation for debug settings page"
-  }
+  },
+  "compactView": "Kompakti näkymä",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "expandPostPreview": "Laajenna postauksen esikatselu",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "commentReported": "Kommentti merkitty tarkistusta varten.",
+  "@commentReported": {},
+  "expandOptions": "Laajenna asetukset",
+  "@expandOptions": {},
+  "failedToUnblock": "Eston poisto epäonnistui: {errorMessage}",
+  "@failedToUnblock": {},
+  "navigation": "Navigaatio",
+  "@navigation": {},
+  "expandCommentPreview": "Laajenna kommentin esikatselu",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "importSettings": "Tuo asetukset",
+  "@importSettings": {
+    "description": "Action to import application settings."
+  },
+  "compactViewDescription": "Ota kompakti näkymä käyttöön säätääksesi asetuksia",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "endSearch": "Lopeta haku",
+  "@endSearch": {},
+  "notificationsBehaviourSettings": "Ilmoitukset",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "cardViewSettings": "Korttinäkymän asetukset",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "serverErrorComments": "Tapahtui palvelinvirhe haettaessa lisää kommentteja: {message}",
+  "@serverErrorComments": {},
+  "searchByText": "Hae tekstillä",
+  "@searchByText": {},
+  "collapsePostPreview": "Lyyhistä postauksen esikatselu",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "importExportSettings": "Tuo/vie asetukset",
+  "@importExportSettings": {
+    "description": "Category for settings related to import and export."
+  },
+  "generalSettings": "Yleiset asetukset",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "displayUserScore": "Näytä käyttäjäpisteet (Karma).",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "restore": "Palauta",
+  "@restore": {},
+  "compactViewSettings": "Kompaktin näkymän asetukset",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "searchTerm": "Hakusana",
+  "@searchTerm": {},
+  "exceptionProcessingUri": "Linkin käsittelyssä tapahtui virhe. Se ei ehkä ole saatavilla instanssillasi.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "appearance": "Ulkoasu",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "createNewCrossPost": "Luo uusi ristiinjulkaisu",
+  "@createNewCrossPost": {},
+  "errorDownloadingMedia": "Mediatiedostoa ei voitu ladata jaettavaksi: {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "loadMoreSingular": "Lataa {count} vastausta lisää…",
+  "@loadMoreSingular": {},
+  "filters": "Suodattimet",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "failedToBlock": "Estäminen epäonnistui: {errorMessage}",
+  "@failedToBlock": {},
+  "postLocked": "Postaus lukittu. Vastauksia ei sallita.",
+  "@postLocked": {},
+  "nothingToShare": "Ei mitään jaettavaa",
+  "@nothingToShare": {},
+  "expandPost": "Laajenna postaus",
+  "@expandPost": {},
+  "mustBeLoggedInComment": "Sinun tulee olla kirjautunut kommentoidaksesi",
+  "@mustBeLoggedInComment": {},
+  "loginFailed": "Kirjautuminen epäonnistui. Ole hyvä ja yritä uudelleen: ({errorMessage})",
+  "@loginFailed": {},
+  "emptyInbox": "Tyhjä postilaatikko",
+  "@emptyInbox": {},
+  "cardView": "Korttinäkymä",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "scrapeMissingPreviews": "Tämän käyttöönotto vaikuttaa suorituskykyyn.",
+  "@scrapeMissingPreviews": {
+    "description": "Notice regarding potential performance impact when enabling link scrapping."
+  },
+  "createComment": "Luo kommentti",
+  "@createComment": {},
+  "feedBehaviourSettings": "Syöte",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentSortType": "Kommenttien lajittelun tyyppi",
+  "@commentSortType": {},
+  "language": "Kieli",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "dimReadPosts": "Luetut postaukset näkyvät tummennettuina",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "gettingStarted": "Aloitus",
+  "@gettingStarted": {},
+  "editPost": "Muokkaa postausta",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "crossPostedTo": "Ristiinjulkaistu yhteisöön",
+  "@crossPostedTo": {},
+  "searchByUrl": "Hae URL-osoitteella",
+  "@searchByUrl": {},
+  "scaled": "Skaalattu",
+  "@scaled": {},
+  "cardViewDescription": "Ota korttinäkymä käyttöön säätääksesi asetuksia",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "gestures": "Eleet",
+  "@gestures": {},
+  "postBehaviourSettings": "Postaukset",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "mustBeLoggedInPost": "Sinun tulee olla kirjautunut luodaksesi postauksen",
+  "@mustBeLoggedInPost": {},
+  "loginToPerformAction": "Sinun on kirjauduttava sisään suorittaaksesi tämän toiminnon.",
+  "@loginToPerformAction": {},
+  "downloadingMedia": "Ladataan mediaa jaettavaksi…",
+  "@downloadingMedia": {},
+  "noComments": "Höh. Ei yhtään kommenttia.",
+  "@noComments": {},
+  "linksBehaviourSettings": "Linkit",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "collapsePost": "Lyyhistä postaus",
+  "@collapsePost": {},
+  "loginToSeeInbox": "Kirjaudu nähdäksesi postilaatikkosi",
+  "@loginToSeeInbox": {}
 }
