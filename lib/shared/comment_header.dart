@@ -35,13 +35,16 @@ class CommentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final ThunderState state = context.read<ThunderBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+    bool combineCommentScores = state.combineCommentScores;
 
     int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
+    int score = comment.counts.score;
     int upvotes = comment.counts.upvotes;
     int downvotes = comment.counts.downvotes;
     bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
@@ -165,29 +168,31 @@ class CommentHeader extends StatelessWidget {
                 ),
                 const SizedBox(width: 2.0),
                 ScalableText(
-                  formatNumberToK(upvotes),
-                  semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
+                  combineCommentScores ? formatNumberToK(score) : formatNumberToK(upvotes),
+                  semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
                   fontScale: state.metadataFontSizeScale,
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
+                    color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
                   ),
                 ),
-                const SizedBox(width: 10.0),
+                SizedBox(width: combineCommentScores ? 2.0 : 10.0),
                 Icon(
                   Icons.south_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                  color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
-                const SizedBox(width: 2.0),
-                if (downvotes != 0)
-                  ScalableText(
-                    formatNumberToK(downvotes),
-                    fontScale: state.metadataFontSizeScale,
-                    semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                if (!combineCommentScores) ...[
+                  const SizedBox(width: 2.0),
+                  if (downvotes != 0)
+                    ScalableText(
+                      formatNumberToK(downvotes),
+                      fontScale: state.metadataFontSizeScale,
+                      semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                      ),
                     ),
-                  ),
+                ]
               ],
             ),
           ),
