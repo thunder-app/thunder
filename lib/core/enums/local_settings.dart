@@ -1,3 +1,7 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/utils/global_context.dart';
+
 enum LocalSettings {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
@@ -46,6 +50,7 @@ enum LocalSettings {
   defaultCommentSortType(name: 'setting_post_default_comment_sort_type', label: 'Default Comment Sort Type'),
   collapseParentCommentBodyOnGesture(name: 'setting_comments_collapse_parent_comment_on_gesture', label: 'Hide Parent Comment on Collapse'),
   showCommentActionButtons(name: 'setting_general_show_comment_button_actions', label: 'Show Comment Button Actions'),
+  combineCommentScores(name: 'setting_general_combine_comment_scores', label: ''),
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
 

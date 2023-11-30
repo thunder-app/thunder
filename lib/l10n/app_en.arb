@@ -116,6 +116,10 @@
   "@collapsePostPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
   },
+  "combineCommentScoresLabel": "Combine Comment Scores",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
   "combineNavAndFab": "Floating Action Button will be shown between navigation buttons.",
   "@combineNavAndFab": {},
   "comment": "Comment",
@@ -790,6 +794,10 @@
   "@visitUserProfile": {},
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
+  "xScore": "{x} score",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
   "xUpvotes": "{x} upvotes",
   "@xUpvotes": {}
 }
