@@ -318,5 +318,75 @@
   "text": "Teksti",
   "@text": {},
   "share": "Jaa",
-  "@share": {}
+  "@share": {},
+  "uriNotSupported": "Tämän tyyppistä linkkiä ei tueta tällä hetkellä.",
+  "@uriNotSupported": {
+    "description": "Unsupported link type at the present time."
+  },
+  "sidebarBottomNavDoubleTapDescription": "Kaksoisnapauta alanavigointia avataksesi sivupalkin",
+  "@sidebarBottomNavDoubleTapDescription": {},
+  "sidebarBottomNavSwipeDescription": "Avaa sivupalkki pyyhkäisemällä alanavigointia",
+  "@sidebarBottomNavSwipeDescription": {},
+  "alreadyPostedTo": "Postattu jo yhteisöön",
+  "@alreadyPostedTo": {},
+  "reducesAnimations": "Vähentää Thunderissa käytettyjä animaatioita",
+  "@reducesAnimations": {},
+  "submit": "Lähetä",
+  "@submit": {},
+  "topSixMonths": "Parhaat 6:n kuukauden ajalta",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "debug": "Virheenjäljitys",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "replyingTo": "Vastataan käyttäjälle {author}",
+  "@replyingTo": {},
+  "commentBehaviourSettings": "Kommentit",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "topNineMonths": "Parhaat 9:n kuukauden ajalta",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "about": "Tietoja",
+  "@about": {
+    "description": "About settings category."
+  },
+  "report": "Ilmianna",
+  "@report": {},
+  "sharePost": "Jaa postaus",
+  "@sharePost": {},
+  "clearDatabase": "Tyhjennä tietokanta",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "unableToLoadReplies": "Lisää vastauksia ei voitu ladata.",
+  "@unableToLoadReplies": {},
+  "saveSettings": "Tallenna asetukset",
+  "@saveSettings": {
+    "description": "Action to save the application settings."
+  },
+  "reportComment": "Ilmianna kommentti",
+  "@reportComment": {},
+  "showReadPosts": "Näytä luetut postaukset",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "cannotReportOwnComment": "Et voi ilmiantaa omaa kommenttiasi.",
+  "@cannotReportOwnComment": {},
+  "topThreeMonths": "Parhaat 3:n kuukauden ajalta",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "useCompactView": "Ota käyttöön pienille postauksille, poista käytöstä suuremmista.",
+  "@useCompactView": {
+    "description": "Option to enable or disable compact view for small posts."
+  },
+  "debugDescription": "Seuraavia vianmääritysasetuksia tulisi käyttää ainoastaan vianetsintätarkoituksiin.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  }
 }
