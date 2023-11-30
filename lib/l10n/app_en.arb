@@ -416,6 +416,10 @@
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noLanguage": "No language",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
   "noPosts": "No posts found",
   "@noPosts": {},
   "noPostsFound": "No posts found",
@@ -587,6 +591,10 @@
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
+  "selectLanguage": "Select language",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
   "selectSearchType": "Select Search Type",
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
