@@ -329,26 +329,34 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 toolbarHeight: 70.0,
                 centerTitle: false,
                 actions: [
-                  IconButton(
-                    onPressed: isSubmitButtonDisabled
-                        ? null
-                        : () {
-                            draftPost.saveAsDraft = false;
-                            context.read<CreatePostCubit>().createOrEditPost(
-                                  communityId: communityId!,
-                                  name: _titleTextController.text,
-                                  body: _bodyTextController.text,
-                                  nsfw: isNSFW,
-                                  url: url,
-                                  postIdBeingEdited: widget.postView?.post.id,
-                                  languageId: languageId,
-                                );
-                          },
-                    icon: Icon(
-                      widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
-                      semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
-                    ),
-                  ),
+                  state.status == CreatePostStatus.submitting
+                      ? const Padding(
+                          padding: EdgeInsets.only(right: 20.0),
+                          child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator()),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.only(right: 8.0),
+                          child: IconButton(
+                            onPressed: isSubmitButtonDisabled
+                                ? null
+                                : () {
+                                    draftPost.saveAsDraft = false;
+                                    context.read<CreatePostCubit>().createOrEditPost(
+                                          communityId: communityId!,
+                                          name: _titleTextController.text,
+                                          body: _bodyTextController.text,
+                                          nsfw: isNSFW,
+                                          url: url,
+                                          postIdBeingEdited: widget.postView?.post.id,
+                                          languageId: languageId,
+                                        );
+                                  },
+                            icon: Icon(
+                              widget.postView != null ? Icons.edit_rounded : Icons.send_rounded,
+                              semanticLabel: widget.postView != null ? l10n.editPost : l10n.createPost,
+                            ),
+                          ),
+                        ),
                 ],
               ),
               body: SafeArea(

@@ -40,7 +40,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
   /// Creates or edits a post. When successful, it returns the newly created/updated post in the form of a [PostViewMedia]
   Future<void> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
-    emit(state.copyWith(status: CreatePostStatus.loading));
+    emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
       PostView postView = await createPost(
