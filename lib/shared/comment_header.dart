@@ -179,7 +179,7 @@ class CommentHeader extends StatelessWidget {
                 Icon(
                   Icons.south_rounded,
                   size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+                  color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                 ),
                 if (!combineCommentScores) ...[
                   const SizedBox(width: 2.0),

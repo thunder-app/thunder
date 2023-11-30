@@ -112,6 +112,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentPublished: DateTime.now().subtract(const Duration(minutes: 30)),
       commentUpvotes: 1100,
       commentDownvotes: 0,
+      commentScore: 1100,
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
@@ -123,6 +124,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentPublished: DateTime.now().subtract(const Duration(minutes: 15)),
       commentUpvotes: 1,
       commentDownvotes: 0,
+      commentScore: 1,
       commentContent: 'Available on Android and iOS platforms.',
       isPersonAdmin: true,
     );
