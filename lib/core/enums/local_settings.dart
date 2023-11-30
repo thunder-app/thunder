@@ -1,7 +1,3 @@
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
-import 'package:thunder/utils/global_context.dart';
-
 enum LocalSettings {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings

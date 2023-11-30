@@ -169,7 +169,7 @@ class CommentHeader extends StatelessWidget {
                 const SizedBox(width: 2.0),
                 ScalableText(
                   combineCommentScores ? formatNumberToK(score) : formatNumberToK(upvotes),
-                  semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
+                  semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
                   fontScale: state.metadataFontSizeScale,
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
@@ -187,7 +187,7 @@ class CommentHeader extends StatelessWidget {
                     ScalableText(
                       formatNumberToK(downvotes),
                       fontScale: state.metadataFontSizeScale,
-                      semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
+                      semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
                       ),
