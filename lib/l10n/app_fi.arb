@@ -548,5 +548,11 @@
   "collapsePost": "Lyyhistä postaus",
   "@collapsePost": {},
   "loginToSeeInbox": "Kirjaudu nähdäksesi postilaatikkosi",
-  "@loginToSeeInbox": {}
+  "@loginToSeeInbox": {},
+  "collapseCommentPreview": "Lyyhistä kommentin esikatselu",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "fetchAccountError": "Tiliä ei voitu määritellä",
+  "@fetchAccountError": {}
 }
