@@ -431,14 +431,16 @@ class _ThunderState extends State<Thunder> {
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
                         Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                        context.read<FeedBloc>().add(
-                              FeedFetchedEvent(
-                                feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
-                                reset: true,
-                              ),
-                            );
+                        if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                          context.read<FeedBloc>().add(
+                                FeedFetchedEvent(
+                                  feedType: FeedType.general,
+                                  postListingType: thunderBlocState.defaultListingType,
+                                  sortType: thunderBlocState.defaultSortType,
+                                  reset: true,
+                                ),
+                              );
+                        }
                       },
                       builder: (context, state) {
                         switch (state.status) {
