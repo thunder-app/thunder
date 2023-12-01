@@ -6,6 +6,7 @@
 - Added ability to show/hide read posts in user settings
 - Added post and comment previews to settings, and reorganized settings page
 - Added setting to show comment score instead of upvote/downvote counts
+- Added the ability to render SVGs in markdown bodies - contribution from @micahmo
 
 ### Fixed
 - Fixed issue where custom tabs would not respect default browser when opening links

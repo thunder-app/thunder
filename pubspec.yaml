@@ -107,6 +107,7 @@ dependencies:
     git:
       url: https://github.com/deakjahn/l10n_esperanto.git
       ref: 78e757337a1de881220086d26a083feeb780f609
+  jovial_svg: ^1.1.19
 
 dev_dependencies:
   build_runner: ^2.4.6

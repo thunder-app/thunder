@@ -862,6 +862,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  jovial_misc:
+    dependency: transitive
+    description:
+      name: jovial_misc
+      sha256: f6e64f789ee311025bb367be9c9afe9759f76dd8209070b7f38e735b5f529eb1
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.8.5"
+  jovial_svg:
+    dependency: "direct main"
+    description:
+      name: jovial_svg
+      sha256: "917c63f774f3a9053777b55d824a60090ab87e65a7f6219ca1c478ccd0314f4a"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.19"
   js:
     dependency: transitive
     description:
