@@ -554,5 +554,17 @@
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
   },
   "fetchAccountError": "Tiliä ei voitu määritellä",
-  "@fetchAccountError": {}
+  "@fetchAccountError": {},
+  "suggestedTitle": "Otsikkoehdotus",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "selectLanguage": "Valitse kieli",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "shareMedia": "Jaa media",
+  "@shareMedia": {},
+  "searchComments": "Hae kommentteja",
+  "@searchComments": {}
 }
