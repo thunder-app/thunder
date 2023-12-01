@@ -88,6 +88,26 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   bool get wantKeepAlive => true;
 
   @override
+  void initState() {
+    super.initState();
+
+    FeedBloc bloc = context.read<FeedBloc>();
+
+    if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
+      bloc.add(FeedFetchedEvent(
+        feedType: widget.feedType,
+        postListingType: widget.postListingType,
+        sortType: widget.sortType,
+        communityId: widget.communityId,
+        communityName: widget.communityName,
+        userId: widget.userId,
+        username: widget.username,
+        reset: true,
+      ));
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     super.build(context);
 
@@ -95,19 +115,6 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
     /// This is to keep the events on the main page (rather than presenting a new page)
     if (widget.useGlobalFeedBloc) {
       FeedBloc bloc = context.read<FeedBloc>();
-
-      if (bloc.state.status == FeedStatus.initial) {
-        bloc.add(FeedFetchedEvent(
-          feedType: widget.feedType,
-          postListingType: widget.postListingType,
-          sortType: widget.sortType,
-          communityId: widget.communityId,
-          communityName: widget.communityName,
-          userId: widget.userId,
-          username: widget.username,
-          reset: true,
-        ));
-      }
 
       return BlocProvider.value(
         value: bloc,
