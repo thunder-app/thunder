@@ -810,5 +810,33 @@
   "linksBehaviourSettings": "Enlaces",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "noLanguage": "Ningún idioma",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "combineCommentScoresLabel": "Combinar las puntuaciones de los comentarios",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "resetPostPreferences": "Restablecer las preferencias de la publicación",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "xScore": "{x} puntuación",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "resetCommentPreferences": "Restablecer las preferencias de los comentarios",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "selectLanguage": "Selecciona el idioma",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "languageNotAllowed": "La comunidad en la que estás publicando no permite publicar en el idioma que has seleccionado. Prueba con otro idioma.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
   }
 }
