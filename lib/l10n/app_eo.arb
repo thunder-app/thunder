@@ -161,7 +161,7 @@
   },
   "errorDownloadingMedia": "Ne eblis elŝuti la amaskomunikilaron por kunhavigi: {errorMessage}",
   "@errorDownloadingMedia": {},
-  "exceptionProcessingUri": "Okazis eraro dum prilaborado de la ligo. Ĝi eble ne estas havebla en via instanco.",
+  "exceptionProcessingUri": "Okazis eraro dum prilaborado de la ligo. Ĝi eble ne estas disponebla en via instanco.",
   "@exceptionProcessingUri": {
     "description": "An unspecified error during link processing."
   },
@@ -221,7 +221,7 @@
   "@instance": {},
   "instanceHasAlreadyBenAdded": "{instance} jam estis aldonita.",
   "@instanceHasAlreadyBenAdded": {},
-  "internetOrInstanceIssues": "Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne haveblas.",
+  "internetOrInstanceIssues": "Vi eble ne estas konektita al la Interreto, aŭ via instanco eble nuntempe ne disponeblas.",
   "@internetOrInstanceIssues": {},
   "link": "{count, plural, zero {Ligilo} one {Ligilo} other {Ligiloj} } ",
   "@link": {},
@@ -255,7 +255,7 @@
   "@mention": {},
   "message": "{count, plural, zero {Mesaĝo} one {Mesaĝo} other {Mesaĝoj} }",
   "@message": {},
-  "missingErrorMessage": "Neniu erarmesaĝo havebla",
+  "missingErrorMessage": "Neniu erarmesaĝo disponeblas",
   "@missingErrorMessage": {},
   "mostComments": "Plej multaj Komentoj",
   "@mostComments": {},
@@ -443,7 +443,7 @@
   "@settingTypeNotSupported": {},
   "settings": "Agordoj",
   "@settings": {},
-  "settingsFeedCards": "Ĉi tiuj agordoj aplikas por la kartoj en la ĉefa fluo, agoj ĉiam estas havebla kiam efektive malfermas afiŝojn.",
+  "settingsFeedCards": "Ĉi tiuj agordoj aplikas por la kartoj en la ĉefa fluo, agoj ĉiam estas disponebla kiam efektive malfermas afiŝojn.",
   "@settingsFeedCards": {
     "description": "Settings for controlling the display of cards in the main feed."
   },
