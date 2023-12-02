@@ -6,7 +6,9 @@
 - Added ability to change app language in settings
 - Added ability to show/hide read posts in user settings
 - Added post and comment previews to settings, and reorganized settings page
+- Added setting to show comment score instead of upvote/downvote counts
 - Added support for displaying comment origin instance - contribution from @ggichure.
+
 
 ### Fixed
 

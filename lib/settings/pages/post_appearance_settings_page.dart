@@ -260,7 +260,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             pinned: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.restart_alt_rounded),
+                icon: Icon(
+                  Icons.restart_alt_rounded,
+                  semanticLabel: l10n.resetPostPreferences,
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,

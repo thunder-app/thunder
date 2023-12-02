@@ -5,7 +5,7 @@
   },
   "accessibility": "Accessibility",
   "@accessibility": {},
-  "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accomodate a particular accessibility requirement.",
+  "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
   "account": "Account",
   "@account": {},
@@ -115,6 +115,10 @@
   "collapsePostPreview": "Collapse Post Preview",
   "@collapsePostPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "combineCommentScoresLabel": "Combine Comment Scores",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
   },
   "combineNavAndFab": "Floating Action Button will be shown between navigation buttons.",
   "@combineNavAndFab": {},
@@ -355,6 +359,10 @@
   "@language": {
     "description": "Label when creating or editing a post."
   },
+  "languageNotAllowed": "The community you are posting to does not allow posts in the language that you have selected. Try another language.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
@@ -416,6 +424,10 @@
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noLanguage": "No language",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
   "noPosts": "No posts found",
   "@noPosts": {},
   "noPostsFound": "No posts found",
@@ -539,6 +551,14 @@
   "@reset": {
     "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
   },
+  "resetCommentPreferences": "Reset comment preferences",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "resetPostPreferences": "Reset post preferences",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
   "resetPreferences": "Reset Preferences",
   "resetPreferencesAndData": "Reset Preferences and Data",
   "@resetPreferencesAndData": {
@@ -587,6 +607,10 @@
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
+  "selectLanguage": "Select language",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
   "selectSearchType": "Select Search Type",
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
@@ -774,6 +798,10 @@
   "@visitUserProfile": {},
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
+  "xScore": "{x} score",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
   "xUpvotes": "{x} upvotes",
   "@xUpvotes": {}
 }

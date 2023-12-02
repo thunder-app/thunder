@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 void showSnackbar(
@@ -13,8 +15,9 @@ void showSnackbar(
   IconData? trailingIcon,
   void Function()? trailingAction,
 }) {
+  int wordCount = RegExp(r'[\w-]+').allMatches(text).length;
   SnackBar snackBar = SnackBar(
-    duration: duration ?? const Duration(milliseconds: 4000),
+    duration: duration ?? Duration(milliseconds: max(4000, 1000 * wordCount)), // Assuming 60 WPM or 1 WPS
     backgroundColor: backgroundColor,
     content: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,

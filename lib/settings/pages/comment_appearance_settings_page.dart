@@ -32,6 +32,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// when toogled on, comments will show intsnace of origin
   bool showOriginInstance = false;
 
+  /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
+  bool combineCommentScores = false;
+
   /// Indicates the style of the nested comment indicator
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
 
@@ -51,6 +54,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       showOriginInstance = prefs.getBool(LocalSettings.showOriginInstance.name) ?? false;
+      combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
@@ -70,6 +74,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       case LocalSettings.showOriginInstance:
         await prefs.setBool(LocalSettings.showOriginInstance.name, value);
         setState(() => showOriginInstance = value);
+      case LocalSettings.combineCommentScores:
+        await prefs.setBool(LocalSettings.combineCommentScores.name, value);
+        setState(() => combineCommentScores = value);
         break;
       case LocalSettings.nestedCommentIndicatorStyle:
         await prefs.setString(LocalSettings.nestedCommentIndicatorStyle.name, value);
@@ -91,6 +98,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     await prefs.remove(LocalSettings.showCommentActionButtons.name);
+    await prefs.remove(LocalSettings.combineCommentScores.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
     await prefs.remove(LocalSettings.showOriginInstance.name);
@@ -112,6 +120,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentPublished: DateTime.now().subtract(const Duration(minutes: 30)),
       commentUpvotes: 1100,
       commentDownvotes: 0,
+      commentScore: 1100,
       commentContent: 'Thunder is an **open source**, cross platform app for exploring Lemmy communities!',
     );
 
@@ -123,6 +132,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       commentPublished: DateTime.now().subtract(const Duration(minutes: 15)),
       commentUpvotes: 1,
       commentDownvotes: 0,
+      commentScore: 1,
       commentContent: 'Available on Android and iOS platforms.',
       isPersonAdmin: true,
     );
@@ -167,7 +177,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             pinned: true,
             actions: [
               IconButton(
-                icon: const Icon(Icons.restart_alt_rounded),
+                icon: Icon(
+                  Icons.restart_alt_rounded,
+                  semanticLabel: l10n.resetCommentPreferences,
+                ),
                 onPressed: () {
                   showDialog(
                     context: context,
@@ -289,6 +302,18 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 iconEnabled: Icons.mode_comment_rounded,
                 iconDisabled: Icons.mode_comment_outlined,
                 onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.combineCommentScoresLabel,
+                value: combineCommentScores,
+                iconEnabled: Icons.onetwothree_rounded,
+                iconDisabled: Icons.onetwothree_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
               ),
             ),
           ),

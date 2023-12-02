@@ -3,6 +3,7 @@ part of 'create_post_cubit.dart';
 enum CreatePostStatus {
   initial,
   loading,
+  submitting,
   error,
   success,
   postImageUploadInProgress,

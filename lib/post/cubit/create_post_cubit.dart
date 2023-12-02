@@ -8,6 +8,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/error_messages.dart';
 
 part 'create_post_state.dart';
 
@@ -40,7 +41,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
   /// Creates or edits a post. When successful, it returns the newly created/updated post in the form of a [PostViewMedia]
   Future<void> createOrEditPost({required int communityId, required String name, String? body, String? url, bool? nsfw, int? postIdBeingEdited, int? languageId}) async {
-    emit(state.copyWith(status: CreatePostStatus.loading));
+    emit(state.copyWith(status: CreatePostStatus.submitting));
 
     try {
       PostView postView = await createPost(
@@ -58,7 +59,7 @@ class CreatePostCubit extends Cubit<CreatePostState> {
 
       emit(state.copyWith(status: CreatePostStatus.success, postViewMedia: postViewMedias.firstOrNull));
     } catch (e) {
-      return emit(state.copyWith(status: CreatePostStatus.error, message: e.toString()));
+      return emit(state.copyWith(status: CreatePostStatus.error, message: getExceptionErrorMessage(e)));
     }
   }
 }

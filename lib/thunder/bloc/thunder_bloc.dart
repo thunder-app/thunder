@@ -138,6 +138,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
       bool showOriginInstance = prefs.getBool(LocalSettings.showOriginInstance.name) ?? false;
+      bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       NestedCommentIndicatorColor nestedCommentIndicatorColor =
@@ -260,6 +261,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
         showOriginInstance: showOriginInstance,
+        combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
 
