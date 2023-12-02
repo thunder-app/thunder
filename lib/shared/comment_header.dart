@@ -42,7 +42,6 @@ class CommentHeader extends StatelessWidget {
     bool showOriginInstance = state.showOriginInstance;
     bool combineCommentScores = state.combineCommentScores;
 
-
     int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;

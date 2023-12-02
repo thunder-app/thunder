@@ -61,9 +61,7 @@ class ThunderState extends Equatable {
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
     this.showOriginInstance = false,
-
     this.combineCommentScores = false,
-
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
