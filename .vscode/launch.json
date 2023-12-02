@@ -22,7 +22,7 @@
             "flutterMode": "release"
         },
         {
-            "name": "Flutter for web",
+            "name": "thunder (web)",
             "type": "dart",
             "request": "launch",
             "program": "lib/main.dart",
