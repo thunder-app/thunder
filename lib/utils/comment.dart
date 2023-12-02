@@ -259,7 +259,7 @@ CommentView createExampleComment({
       name: personName ?? 'Example Username',
       banned: false,
       published: DateTime.now(),
-      actorId: '',
+      actorId: 'https://lemmy.world/u/testuser',
       local: false,
       deleted: false,
       botAccount: isBotAccount ?? false,

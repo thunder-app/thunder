@@ -38,6 +38,7 @@ class CommentHeader extends StatelessWidget {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
+    bool showOriginInstance = state.showOriginInstance;
 
     int? myVote = comment.myVote;
     bool? saved = comment.saved;
@@ -73,85 +74,108 @@ class CommentHeader extends StatelessWidget {
                                   navigateToUserPage(context, userId: comment.creator.id);
                                 },
                           child: Padding(
-                            padding: const EdgeInsets.only(left: 5, right: 5),
-                            child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
-                                ? Row(
-                                    children: [
-                                      ScalableText(
-                                        comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                                        fontScale: state.metadataFontSizeScale,
-                                        style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
-                                      ),
-                                      const SizedBox(width: 2.0),
-                                      Container(
-                                        child: commentAuthorIsPostAuthor(comment.post, comment.comment)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.microphone_variant,
-                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isOwnComment
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Icons.person,
-                                                  size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ))
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isAdmin(comment.creator)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.shield_crown,
-                                                  size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isModerator(comment.creator, moderators)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1),
-                                                child: Icon(
-                                                  Thunder.shield,
-                                                  size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                      Container(
-                                        child: isBot(comment.creator)
-                                            ? Padding(
-                                                padding: const EdgeInsets.only(left: 1, right: 2),
-                                                child: Icon(
-                                                  Thunder.robot,
-                                                  size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
-                                                  color: theme.colorScheme.onBackground,
-                                                ),
-                                              )
-                                            : Container(),
-                                      ),
-                                    ],
-                                  )
-                                : ScalableText(
-                                    comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                                    fontScale: state.metadataFontSizeScale,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                          ),
+                              padding: const EdgeInsets.only(left: 5, right: 5),
+                              child: isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators)
+                                  ? Row(
+                                      children: [
+                                        ScalableText(
+                                          comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
+                                          fontScale: state.metadataFontSizeScale,
+                                          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
+                                        ),
+                                        if (showOriginInstance)
+                                          ScalableText(
+                                            '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
+                                            fontScale: state.metadataFontSizeScale,
+                                            style: theme.textTheme.bodyMedium?.copyWith(
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                        const SizedBox(width: 2.0),
+                                        Container(
+                                          child: commentAuthorIsPostAuthor(comment.post, comment.comment)
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 1),
+                                                  child: Icon(
+                                                    Thunder.microphone_variant,
+                                                    size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                    color: theme.colorScheme.onBackground,
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ),
+                                        Container(
+                                          child: isOwnComment
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 1),
+                                                  child: Icon(
+                                                    Icons.person,
+                                                    size: 15.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                    color: theme.colorScheme.onBackground,
+                                                  ))
+                                              : Container(),
+                                        ),
+                                        Container(
+                                          child: isAdmin(comment.creator)
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 1),
+                                                  child: Icon(
+                                                    Thunder.shield_crown,
+                                                    size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                    color: theme.colorScheme.onBackground,
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ),
+                                        Container(
+                                          child: isModerator(comment.creator, moderators)
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 1),
+                                                  child: Icon(
+                                                    Thunder.shield,
+                                                    size: 14.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                    color: theme.colorScheme.onBackground,
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ),
+                                        Container(
+                                          child: isBot(comment.creator)
+                                              ? Padding(
+                                                  padding: const EdgeInsets.only(left: 1, right: 2),
+                                                  child: Icon(
+                                                    Thunder.robot,
+                                                    size: 13.0 * state.metadataFontSizeScale.textScaleFactor,
+                                                    color: theme.colorScheme.onBackground,
+                                                  ),
+                                                )
+                                              : Container(),
+                                        ),
+                                      ],
+                                    )
+                                  : RichText(
+                                      text: TextSpan(
+                                          style: theme.textTheme.bodyMedium?.copyWith(
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          text: comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
+                                          children: [
+                                          if (showOriginInstance)
+                                            TextSpan(
+                                              text: '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
+                                              style: theme.textTheme.bodyMedium?.copyWith(
+                                                fontWeight: FontWeight.w300,
+                                              ),
+                                            )
+                                        ]))
+                              //  ScalableText(
+                              //     comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
+                              //     fontScale: state.metadataFontSizeScale,
+                              //     style: theme.textTheme.bodyMedium?.copyWith(
+                              //       fontWeight: FontWeight.w500,
+                              //     ),
+                              //   ),
+                              ),
                         ),
                       ),
                       const SizedBox(width: 8.0),

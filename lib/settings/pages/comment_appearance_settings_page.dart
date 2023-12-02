@@ -29,6 +29,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
 
+  /// when toogled on, comments will show intsnace of origin
+  bool showOriginInstance = false;
+
   /// Indicates the style of the nested comment indicator
   NestedCommentIndicatorStyle nestedIndicatorStyle = DEFAULT_NESTED_COMMENT_INDICATOR_STYLE;
 
@@ -47,6 +50,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      showOriginInstance = prefs.getBool(LocalSettings.showOriginInstance.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
     });
@@ -62,6 +66,10 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
       case LocalSettings.showCommentActionButtons:
         await prefs.setBool(LocalSettings.showCommentActionButtons.name, value);
         setState(() => showCommentButtonActions = value);
+        break;
+      case LocalSettings.showOriginInstance:
+        await prefs.setBool(LocalSettings.showOriginInstance.name, value);
+        setState(() => showOriginInstance = value);
         break;
       case LocalSettings.nestedCommentIndicatorStyle:
         await prefs.setString(LocalSettings.nestedCommentIndicatorStyle.name, value);
@@ -85,6 +93,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.showCommentActionButtons.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
+    await prefs.remove(LocalSettings.showOriginInstance.name);
 
     await initPreferences();
 
@@ -280,6 +289,18 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 iconEnabled: Icons.mode_comment_rounded,
                 iconDisabled: Icons.mode_comment_outlined,
                 onToggle: (bool value) => setPreferences(LocalSettings.showCommentActionButtons, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: LocalSettings.showOriginInstance.label,
+                value: showOriginInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.showOriginInstance, value),
               ),
             ),
           ),
