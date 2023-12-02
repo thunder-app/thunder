@@ -91,19 +91,23 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   void initState() {
     super.initState();
 
-    FeedBloc bloc = context.read<FeedBloc>();
+    try {
+      FeedBloc bloc = context.read<FeedBloc>();
 
-    if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
-      bloc.add(FeedFetchedEvent(
-        feedType: widget.feedType,
-        postListingType: widget.postListingType,
-        sortType: widget.sortType,
-        communityId: widget.communityId,
-        communityName: widget.communityName,
-        userId: widget.userId,
-        username: widget.username,
-        reset: true,
-      ));
+      if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
+        bloc.add(FeedFetchedEvent(
+          feedType: widget.feedType,
+          postListingType: widget.postListingType,
+          sortType: widget.sortType,
+          communityId: widget.communityId,
+          communityName: widget.communityName,
+          userId: widget.userId,
+          username: widget.username,
+          reset: true,
+        ));
+      }
+    } catch (e) {
+      // ignore and continue if we cannot fetch the feed bloc
     }
   }
 
