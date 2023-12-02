@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -48,7 +49,7 @@ class CommentCard extends StatelessWidget {
           await Navigator.of(context).push(
             SwipeablePageRoute(
               transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-              backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+              backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
               backGestureDetectionWidth: 45,
               canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
               builder: (context) => MultiBlocProvider(

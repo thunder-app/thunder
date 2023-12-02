@@ -73,7 +73,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 

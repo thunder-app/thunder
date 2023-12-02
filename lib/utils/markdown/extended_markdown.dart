@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
@@ -245,7 +246,7 @@ final MarkdownStyleSheet Function(BuildContext, MarkdownStyleSheetBaseTheme?)
   MarkdownStyleSheet result;
   switch (baseTheme) {
     case MarkdownStyleSheetBaseTheme.platform:
-      result = (Platform.isIOS || Platform.isMacOS) ? MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context)) : MarkdownStyleSheet.fromTheme(Theme.of(context));
+      result = (!kIsWeb && (Platform.isIOS || Platform.isMacOS)) ? MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context)) : MarkdownStyleSheet.fromTheme(Theme.of(context));
       break;
     case MarkdownStyleSheetBaseTheme.cupertino:
       result = MarkdownStyleSheet.fromCupertinoTheme(CupertinoTheme.of(context));
