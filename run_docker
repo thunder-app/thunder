@@ -1,2 +1,0 @@
-# This script can run the docker image after it is built.
-docker run -d -p 8080:80 --name thunder thunder
