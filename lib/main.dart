@@ -29,6 +29,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -44,7 +45,7 @@ void main() async {
   await DB.instance.database;
 
   // Register dart_ping on iOS
-  if (Platform.isIOS) {
+  if (!kIsWeb && Platform.isIOS) {
     DartPingIOS.register();
   }
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -221,7 +222,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           onChanged: (value) => setPreferences(LocalSettings.appThemeAccentColor, value.payload),
                           closeOnSelect: false,
                         ),
-                        if (Platform.isAndroid) ...[
+                        if (!kIsWeb && Platform.isAndroid) ...[
                           ToggleOption(
                             description: LocalSettings.useMaterialYouTheme.label,
                             subtitle: 'Overrides the selected custom theme',

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -85,7 +86,7 @@ class _ThunderState extends State<Thunder> {
     super.initState();
 
     // Listen for callbacks from Android native code
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
         if (call.method == 'set_intent') {
           currentIntent = call.arguments;
@@ -431,14 +432,16 @@ class _ThunderState extends State<Thunder> {
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
                         Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                        context.read<FeedBloc>().add(
-                              FeedFetchedEvent(
-                                feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
-                                reset: true,
-                              ),
-                            );
+                        if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                          context.read<FeedBloc>().add(
+                                FeedFetchedEvent(
+                                  feedType: FeedType.general,
+                                  postListingType: thunderBlocState.defaultListingType,
+                                  sortType: thunderBlocState.defaultSortType,
+                                  reset: true,
+                                ),
+                              );
+                        }
                       },
                       builder: (context, state) {
                         switch (state.status) {

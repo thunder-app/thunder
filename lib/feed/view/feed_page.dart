@@ -88,15 +88,13 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void initState() {
+    super.initState();
 
-    /// When this is true, we find the feed bloc already present in the widget tree
-    /// This is to keep the events on the main page (rather than presenting a new page)
-    if (widget.useGlobalFeedBloc) {
+    try {
       FeedBloc bloc = context.read<FeedBloc>();
 
-      if (bloc.state.status == FeedStatus.initial) {
+      if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
           postListingType: widget.postListingType,
@@ -108,6 +106,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
         ));
       }
+    } catch (e) {
+      // ignore and continue if we cannot fetch the feed bloc
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    /// When this is true, we find the feed bloc already present in the widget tree
+    /// This is to keep the events on the main page (rather than presenting a new page)
+    if (widget.useGlobalFeedBloc) {
+      FeedBloc bloc = context.read<FeedBloc>();
 
       return BlocProvider.value(
         value: bloc,

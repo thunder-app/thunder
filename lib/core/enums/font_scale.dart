@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
+
 enum FontScale {
   small,
   base,
@@ -11,16 +13,16 @@ extension FontScaleExtension on FontScale {
   double get textScaleFactor {
     switch (this) {
       case FontScale.small:
-        if (Platform.isIOS) return 0.9;
+        if (!kIsWeb && Platform.isIOS) return 0.9;
         return 0.9;
       case FontScale.base:
-        if (Platform.isIOS) return 1;
+        if (!kIsWeb && Platform.isIOS) return 1;
         return 0.95;
       case FontScale.large:
-        if (Platform.isIOS) return 1.15;
+        if (!kIsWeb && Platform.isIOS) return 1.15;
         return 1.2;
       case FontScale.extraLarge:
-        if (Platform.isIOS) return 1.35;
+        if (!kIsWeb && Platform.isIOS) return 1.35;
         return 1.4;
     }
   }
