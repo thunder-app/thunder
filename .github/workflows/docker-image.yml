@@ -1,0 +1,62 @@
+name: Publish Docker Image
+
+on:
+  release:
+    types: [published]
+  push:
+    branches: [ "prod" ]
+  create:
+    tags:
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push-image:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Grab git info and put it in outputs and files
+        id: git_info
+        run: |
+          BRANCH_NAME="$GITHUB_REF_NAME"
+          if [ ! -z "$GITHUB_BASE_REF" ]
+          then
+            BRANCH_NAME="$GITHUB_BASE_REF"
+          fi
+          echo "$BRANCH_NAME" > build-id
+          echo "::set-output name=branch::${BRANCH_NAME//\//-}"
+          GITHUB_SHA_SHORT="$(git rev-parse --short HEAD | tr -d "\r\n\t ")"
+          echo "$GITHUB_SHA_SHORT" > git-commit-id
+          echo -n "Build ID: "
+          cat build-id
+          echo -n "Git commit ID: "
+          cat git-commit-id
+          echo "::set-output name=sha_short::$GITHUB_SHA_SHORT"
+      - name: Build and push Docker image
+        uses: docker/build-push-action@f2a1d5e99d037542a71f64918e516c093c6f3fc4
+        with:
+          context: .
+          push: true
+          file: docker/DockerfileWeb
+          tags: |
+            ghcr.io/gwbischof/thunder:${{ steps.git_info.outputs.branch }}.${{ steps.git_info.outputs.sha_short }}
+            ghcr.io/gwbischof/thunder:${{ steps.git_info.outputs.branch }}
+          labels: ${{ steps.meta.outputs.labels }}
