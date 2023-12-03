@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
@@ -53,7 +54,7 @@ Future<void> navigateToPost(BuildContext context, {PostViewMedia? postViewMedia,
   await Navigator.of(context).push(
     SwipeablePageRoute(
       transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-      backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+      backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
       backGestureDetectionWidth: 45,
       canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !thunderBloc.state.enableFullScreenSwipeNavigationGesture,
       builder: (otherContext) {
