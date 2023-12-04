@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:jovial_svg/jovial_svg.dart';
 
 import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -11,6 +12,7 @@ import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/markdown/extended_markdown.dart';
@@ -43,19 +45,30 @@ class CommonMarkdownBody extends StatelessWidget {
       data: body,
       inlineSyntaxes: [LemmyLinkSyntax()],
       imageBuilder: (uri, title, alt) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              ImagePreview(
-                url: uri.toString(),
-                isExpandable: true,
-                isComment: isComment,
-                showFullHeightImages: true,
+        return FutureBuilder(
+          future: isImageUriSvg(uri),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  !snapshot.hasData
+                      ? Container()
+                      : snapshot.data == true
+                          ? ScalableImageWidget.fromSISource(
+                              si: ScalableImageSource.fromSvgHttpUrl(uri),
+                            )
+                          : ImagePreview(
+                              url: uri.toString(),
+                              isExpandable: true,
+                              isComment: isComment,
+                              showFullHeightImages: true,
+                            ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
       selectable: isSelectableText,

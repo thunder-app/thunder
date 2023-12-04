@@ -753,6 +753,14 @@
   },
   "unableToFindUser": "Unable to find user",
   "@unableToFindUser": {},
+  "unableToLoadImage": "Unable to load image",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "unableToLoadImageFrom": "Unable to load image from {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
   "unableToLoadInstance": "Unable to load {instance}",
   "@unableToLoadInstance": {},
   "unableToLoadPostsFrominstance": "Unable to load posts from {instance}",
