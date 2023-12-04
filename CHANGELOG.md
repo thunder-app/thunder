@@ -6,6 +6,8 @@
 - Added ability to show/hide read posts in user settings
 - Added post and comment previews to settings, and reorganized settings page
 - Added setting to show comment score instead of upvote/downvote counts
+- Added setting to show/hide post and comment scores
+- Added setting to show/hide bot content
 
 ### Fixed
 - Fixed issue where custom tabs would not respect default browser when opening links

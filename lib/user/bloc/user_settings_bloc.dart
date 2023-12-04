@@ -98,6 +98,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
       // Optimistically update settings
       LocalUser localUser = state.getSiteResponse!.myUser!.localUserView.localUser.copyWith(
         showReadPosts: event.showReadPosts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showReadPosts,
+        showScores: event.showScores ?? state.getSiteResponse!.myUser!.localUserView.localUser.showScores,
+        showBotAccounts: event.showBotAccounts ?? state.getSiteResponse!.myUser!.localUserView.localUser.showBotAccounts,
       );
 
       GetSiteResponse updatedGetSiteResponse = state.getSiteResponse!.copyWith(
@@ -117,6 +119,8 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
         // see: https://github.com/LemmyNet/lemmy/issues/3565#issuecomment-1628980050
         botAccount: state.getSiteResponse!.myUser!.localUserView.person.botAccount,
         showReadPosts: event.showReadPosts,
+        showScores: event.showScores,
+        showBotAccounts: event.showBotAccounts,
       ));
 
       return emit(state.copyWith(status: UserSettingsStatus.success));
