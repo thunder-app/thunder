@@ -46,10 +46,8 @@ class CommonMarkdownBody extends StatelessWidget {
       inlineSyntaxes: [LemmyLinkSyntax()],
       imageBuilder: (uri, title, alt) {
         return FutureBuilder(
-          future: () {
-            return isImageUriSvg(uri);
-          }(),
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          future: isImageUriSvg(uri),
+          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
@@ -57,7 +55,7 @@ class CommonMarkdownBody extends StatelessWidget {
                 children: [
                   !snapshot.hasData
                       ? Container()
-                      : snapshot.data
+                      : snapshot.data == true
                           ? ScalableImageWidget.fromSISource(
                               si: ScalableImageSource.fromSvgHttpUrl(uri),
                             )
