@@ -7,14 +7,14 @@ class IconText extends StatelessWidget {
   const IconText({
     super.key,
     required this.icon,
-    required this.text,
+    this.text,
     this.textColor,
     this.fontScale,
     this.padding = 3.0,
   });
 
   final Icon icon;
-  final String text;
+  final String? text;
   final Color? textColor;
   final FontScale? fontScale;
 
@@ -27,14 +27,16 @@ class IconText extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         icon,
-        SizedBox(width: padding),
-        ScalableText(
-          text,
-          fontScale: fontScale,
-          style: TextStyle(
-            color: textColor,
+        if (text != null) ...[
+          SizedBox(width: padding),
+          ScalableText(
+            text!,
+            fontScale: fontScale,
+            style: TextStyle(
+              color: textColor,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

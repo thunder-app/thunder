@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
@@ -11,6 +12,7 @@ import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/user_avatar.dart';
+import 'package:thunder/thunder/thunder_icons.dart';
 import 'package:thunder/user/bloc/user_settings_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/instance.dart';
@@ -43,6 +45,10 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
         create: (context) => UserSettingsBloc()..add(const GetUserSettingsEvent()),
         child: BlocConsumer<UserSettingsBloc, UserSettingsState>(
           listener: (context, state) {
+            if (state.status == UserSettingsStatus.success) {
+              context.read<AuthBloc>().add(LemmyAccountSettingUpdated());
+            }
+
             if ((state.status == UserSettingsStatus.failure || state.status == UserSettingsStatus.failedRevert) &&
                 (state.personBeingBlocked != 0 || state.communityBeingBlocked != 0 || state.instanceBeingBlocked != 0)) {
               showSnackbar(
@@ -84,6 +90,8 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
 
             LocalUser? localUser = myUserInfo?.localUserView.localUser;
             bool showReadPosts = localUser?.showReadPosts ?? true;
+            bool showBotAccounts = localUser?.showBotAccounts ?? true;
+            bool showScores = localUser?.showScores ?? true;
 
             if (state.getSiteResponse == null || myUserInfo == null) {
               return const Center(child: CircularProgressIndicator());
@@ -120,6 +128,29 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       iconEnabled: Icons.fact_check_rounded,
                       iconDisabled: Icons.fact_check_outlined,
                       onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showReadPosts: value))},
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ToggleOption(
+                      description: l10n.showScores,
+                      value: showScores,
+                      iconEnabled: Icons.onetwothree_rounded,
+                      iconDisabled: Icons.onetwothree_rounded,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showScores: value))},
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ToggleOption(
+                      description: l10n.showBotAccounts,
+                      value: showBotAccounts,
+                      iconEnabled: Thunder.robot,
+                      iconEnabledSize: 18.0,
+                      iconDisabled: Thunder.robot,
+                      iconDisabledSize: 18.0,
+                      iconSpacing: 14.0,
+                      onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
                     ),
                   ),
                   Padding(

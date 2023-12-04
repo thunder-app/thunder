@@ -88,6 +88,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
     final bool isUserLoggedIn = context.watch<AuthBloc>().state.isLoggedIn;
     final bool downvotesEnabled = context.read<AuthBloc>().state.downvotesEnabled;
     final ThunderState thunderState = context.read<ThunderBloc>().state;
+    final AuthState authState = context.watch<AuthBloc>().state;
+
+    final bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
 
     final bool scrapeMissingPreviews = thunderState.scrapeMissingPreviews;
     final bool hideNsfwPreviews = thunderState.hideNsfwPreviews;
@@ -302,13 +305,15 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                           semanticLabel: postView.myVote == 1 ? 'Upvoted' : 'Upvote',
                           color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
                         ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
-                          style: TextStyle(
-                            color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
+                        if (showScores) ...[
+                          const SizedBox(width: 4.0),
+                          Text(
+                            formatNumberToK(widget.postViewMedia.postView.counts.upvotes),
+                            style: TextStyle(
+                              color: isUserLoggedIn ? (postView.myVote == 1 ? Colors.orange : theme.textTheme.bodyMedium?.color) : null,
+                            ),
                           ),
-                        ),
+                        ]
                       ],
                     ),
                   ),
@@ -336,13 +341,15 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                             semanticLabel: postView.myVote == 1 ? 'Downvoted' : 'Downvote',
                             color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
                           ),
-                          const SizedBox(width: 4.0),
-                          Text(
-                            formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
-                            style: TextStyle(
-                              color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                          if (showScores) ...[
+                            const SizedBox(width: 4.0),
+                            Text(
+                              formatNumberToK(widget.postViewMedia.postView.counts.downvotes),
+                              style: TextStyle(
+                                color: isUserLoggedIn ? (postView.myVote == -1 ? Colors.blue : theme.textTheme.bodyMedium?.color) : null,
+                              ),
                             ),
-                          ),
+                          ],
                         ],
                       ),
                     ),

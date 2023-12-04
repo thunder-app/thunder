@@ -96,11 +96,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
-                      : null,
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.url!,
                   height: widget.height,
-                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  width: widget.width,
                   fit: BoxFit.cover,
                   cache: true,
                   clearMemoryCacheWhenDispose: false,
@@ -128,11 +130,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
-                      : null,
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.bytes!,
                   height: widget.height,
-                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  width: widget.width,
                   fit: BoxFit.cover,
                   clearMemoryCacheWhenDispose: true,
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
