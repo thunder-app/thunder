@@ -75,6 +75,12 @@ jobs:
                 safariContentInstances="$safariContentInstances,$'\n'    \"$instance\""
             fi
         done < lemmy-instances.txt
+
+        safariManifestInstances={echo -e "$safariManifestInstances"}
+        safariContentInstances={echo -e "$safariContentInstances"}
+
+        echo $safariManifestInstances
+        echo $safariContentInstances
         
         # Generates the new manifest.json with the updated instances
         inSection=false
@@ -119,13 +125,3 @@ jobs:
         echo "$line" >> "ios/Open In Thunder/Resources/content-new.js"
         done < "ios/Open In Thunder/Resources/content.js"
         mv "ios/Open In Thunder/Resources/content-new.js" "ios/Open In Thunder/Resources/content.js"
-
-    - name: Create Pull Request
-      uses: peter-evans/create-pull-request@v5.0.2
-      with:
-          commit-message: Update instances
-          title: Update instances
-          body: This PR is updating `lemmy-instances.txt`, `instances.dart`, `AndroidManifest.xml`, `manifest.json` and `content.js` with the latest list of instances retrieved from fediverse.observer.
-          branch: update-instances
-          delete-branch: true
-          author: GitHub <noreply@github.com>
