@@ -37,6 +37,28 @@ bool isImageUrl(String url) {
   return false;
 }
 
+Future<bool> isImageUrlSvg(String imageUrl) async {
+  return isImageUriSvg(Uri.tryParse(imageUrl));
+}
+
+Future<bool> isImageUriSvg(Uri? imageUri) async {
+  try {
+    final http.Response response = await http.get(
+      imageUri ?? Uri(),
+      // Get the headers and ask for 0 bytes of the body
+      // to make this a lightweight request
+      headers: {
+        'method': 'HEAD',
+        'Range': 'bytes=0-0',
+      },
+    );
+    return response.headers['content-type']?.toLowerCase().contains('svg') == true;
+  } catch (e) {
+    // If it fails for any reason, it's not an SVG!
+    return false;
+  }
+}
+
 Future<Size> retrieveImageDimensions(String imageUrl) async {
   try {
     bool isImage = isImageUrl(imageUrl);

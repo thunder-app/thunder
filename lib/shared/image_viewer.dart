@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -72,7 +73,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
@@ -88,7 +89,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
     }
 
-    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
     return hasPhotosPermission;
   }
 
@@ -398,13 +399,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         if (context.mounted) showPermissionDeniedDialog(context);
                                       }
 
-                                      if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
-                                        if (Platform.isAndroid) {
+                                      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS) && hasPermission) {
+                                        if (!kIsWeb && Platform.isAndroid) {
                                           // Save image to [internal storage]/Pictures/Thunder
                                           GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
                                             setState(() => downloaded = value as bool);
                                           });
-                                        } else if (Platform.isIOS) {
+                                        } else if (!kIsWeb && Platform.isIOS) {
                                           GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
                                             if (value == null || value == false) {
                                               // If the image cannot be saved to the Thunder album, then just save it to Photos
@@ -414,7 +415,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                             setState(() => downloaded = value ?? false);
                                           });
                                         }
-                                      } else if (Platform.isLinux || Platform.isWindows) {
+                                      } else if (!kIsWeb && Platform.isLinux || Platform.isWindows) {
                                         final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
                                         File(filePath)

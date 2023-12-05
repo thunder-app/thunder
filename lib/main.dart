@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -29,6 +28,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -37,14 +37,11 @@ void main() async {
   //Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Load up environment variables
-  await dotenv.load(fileName: ".env");
-
   // Load up sqlite database
   await DB.instance.database;
 
   // Register dart_ping on iOS
-  if (Platform.isIOS) {
+  if (!kIsWeb && Platform.isIOS) {
     DartPingIOS.register();
   }
 

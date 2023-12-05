@@ -70,3 +70,7 @@ class InstanceChanged extends AuthEvent {
 
   const InstanceChanged({required this.instance});
 }
+
+/// The [LemmyAccountSettingUpdated] event should be triggered whenever the any user Lemmy account setting is updated.
+/// This event should handle any logic related to refetching the updated user preferences.
+class LemmyAccountSettingUpdated extends AuthEvent {}

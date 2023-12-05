@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lemmy_api_client/v3.dart';
 
+import 'package:lemmy_api_client/v3.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -10,7 +13,6 @@ import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../utils/date_time.dart';
 
@@ -35,7 +37,6 @@ class CommentHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final l10n = AppLocalizations.of(context)!;
     final ThunderState state = context.read<ThunderBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
@@ -45,10 +46,8 @@ class CommentHeader extends StatelessWidget {
     int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
-    int score = comment.counts.score;
-    int upvotes = comment.counts.upvotes;
-    int downvotes = comment.counts.downvotes;
     bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
+    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
@@ -177,38 +176,7 @@ class CommentHeader extends StatelessWidget {
                     ],
                   ),
                 ),
-                Icon(
-                  Icons.north_rounded,
-                  size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
-                ),
-                const SizedBox(width: 2.0),
-                ScalableText(
-                  combineCommentScores ? formatNumberToK(score) : formatNumberToK(upvotes),
-                  semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
-                  fontScale: state.metadataFontSizeScale,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
-                  ),
-                ),
-                SizedBox(width: combineCommentScores ? 2.0 : 10.0),
-                Icon(
-                  Icons.south_rounded,
-                  size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
-                  color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
-                ),
-                if (!combineCommentScores) ...[
-                  const SizedBox(width: 2.0),
-                  if (downvotes != 0)
-                    ScalableText(
-                      formatNumberToK(downvotes),
-                      fontScale: state.metadataFontSizeScale,
-                      semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
-                      ),
-                    ),
-                ]
+                CommentHeaderScore(comment: comment),
               ],
             ),
           ),
@@ -286,6 +254,78 @@ class CommentHeader extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class CommentHeaderScore extends StatelessWidget {
+  final CommentView comment;
+
+  const CommentHeaderScore({super.key, required this.comment});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
+
+    final ThunderState state = context.read<ThunderBloc>().state;
+    final AuthState authState = context.watch<AuthBloc>().state;
+
+    bool showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+    bool combineCommentScores = state.combineCommentScores;
+
+    int? myVote = comment.myVote;
+
+    int score = comment.counts.score;
+    int upvotes = comment.counts.upvotes;
+    int downvotes = comment.counts.downvotes;
+
+    if (!showScores) {
+      if (myVote == null || myVote == 0) return Container();
+
+      return Icon(
+        myVote == 1 ? Icons.north_rounded : Icons.south_rounded,
+        size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
+        color: myVote == 1 ? Colors.orange : Colors.blue,
+      );
+    }
+
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Icon(
+          Icons.north_rounded,
+          size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
+          color: myVote == 1 ? Colors.orange : theme.colorScheme.onBackground,
+        ),
+        const SizedBox(width: 2.0),
+        ScalableText(
+          combineCommentScores ? formatNumberToK(score) : formatNumberToK(upvotes),
+          semanticsLabel: combineCommentScores ? l10n.xScore(formatNumberToK(score)) : l10n.xUpvotes(formatNumberToK(upvotes)),
+          fontScale: state.metadataFontSizeScale,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: myVote == 1 ? Colors.orange : (myVote == -1 && combineCommentScores ? Colors.blue : theme.colorScheme.onBackground),
+          ),
+        ),
+        SizedBox(width: combineCommentScores ? 2.0 : 10.0),
+        Icon(
+          Icons.south_rounded,
+          size: 12.0 * state.metadataFontSizeScale.textScaleFactor,
+          color: (downvotes != 0 || combineCommentScores) ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+        ),
+        if (!combineCommentScores) ...[
+          const SizedBox(width: 2.0),
+          if (downvotes != 0)
+            ScalableText(
+              formatNumberToK(downvotes),
+              fontScale: state.metadataFontSizeScale,
+              semanticsLabel: l10n.xDownvotes(formatNumberToK(downvotes)),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: downvotes != 0 ? (myVote == -1 ? Colors.blue : theme.colorScheme.onBackground) : Colors.transparent,
+              ),
+            ),
+        ],
+      ],
     );
   }
 }

@@ -5,6 +5,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/utils/image.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImagePreview extends StatefulWidget {
   final String? url;
@@ -76,6 +77,9 @@ class _ImagePreviewState extends State<ImagePreview> {
   }
 
   Widget imagePreview(BuildContext context) {
+    final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     return Container(
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
@@ -92,11 +96,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
-                      : null,
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.url!,
                   height: widget.height,
-                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  width: widget.width,
                   fit: BoxFit.cover,
                   cache: true,
                   clearMemoryCacheWhenDispose: false,
@@ -105,6 +111,14 @@ class _ImagePreviewState extends State<ImagePreview> {
                   loadStateChanged: (state) {
                     if (state.extendedImageLoadState == LoadState.loading) {
                       return Container();
+                    }
+                    if (state.extendedImageLoadState == LoadState.failed) {
+                      return Text(
+                        l10n.unableToLoadImageFrom(Uri.parse(widget.url!).host),
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        ),
+                      );
                     }
                   },
                 )
@@ -116,11 +130,13 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxHeight: MediaQuery.of(context).size.width * 0.55,
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
-                      : null,
+                      : BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 24,
+                        ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.bytes!,
                   height: widget.height,
-                  width: widget.width ?? MediaQuery.of(context).size.width - 24,
+                  width: widget.width,
                   fit: BoxFit.cover,
                   clearMemoryCacheWhenDispose: true,
                   cacheWidth: ((MediaQuery.of(context).size.width - 24) * View.of(context).devicePixelRatio.ceil()).toInt(),
@@ -128,6 +144,12 @@ class _ImagePreviewState extends State<ImagePreview> {
                     if (state.extendedImageLoadState == LoadState.loading) {
                       return Container();
                     }
+                    return Text(
+                      l10n.unableToLoadImage,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                      ),
+                    );
                   },
                 ),
           TweenAnimationBuilder<double>(

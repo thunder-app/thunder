@@ -13,8 +13,10 @@ class GetUserSettingsEvent extends UserSettingsEvent {
 
 class UpdateUserSettingsEvent extends UserSettingsEvent {
   final bool? showReadPosts;
+  final bool? showScores;
+  final bool? showBotAccounts;
 
-  const UpdateUserSettingsEvent({this.showReadPosts});
+  const UpdateUserSettingsEvent({this.showReadPosts, this.showScores, this.showBotAccounts});
 }
 
 class GetUserBlocksEvent extends UserSettingsEvent {

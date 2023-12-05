@@ -7,12 +7,16 @@
 - Added ability to show/hide read posts in user settings
 - Added post and comment previews to settings, and reorganized settings page
 - Added setting to show comment score instead of upvote/downvote counts
+- Added setting to show/hide post and comment scores
+- Added setting to show/hide bot content
+- Added the ability to render SVGs in markdown bodies - contribution from @micahmo
 - Added support for displaying comment origin instance - contribution from @ggichure.
 
 
 ### Fixed
 
 - Fixed issue where custom tabs would not respect default browser when opening links
+- Fixed issue where initial app startup takes a long time to load (503 errors)
 
 ## 0.2.6 - 2023-11-22
 
