@@ -58,6 +58,8 @@ jobs:
         mv android/app/src/main/AndroidManifest-new.xml android/app/src/main/AndroidManifest.xml
 
         # ---------- Safari Extension ----------
+        totalLines=$(wc -l < lemmy-instances.txt)
+        currentLine=0
 
         safariManifestInstances=""
         safariContentInstances=""
