@@ -58,18 +58,25 @@ jobs:
         mv android/app/src/main/AndroidManifest-new.xml android/app/src/main/AndroidManifest.xml
 
         # ---------- Safari Extension ----------
+        totalLines=$(wc -l < lemmy-instances.txt)
+        currentLine=0
 
         safariManifestInstances=""
         safariContentInstances=""
-        lastLine=true
         
         # Generate the Safari extension domains used in manifest.json and content.js
         # It ignores the last comma in the list to generate proper json
         while IFS= read -r instance; do
-            if [ "$lastLine" = true ]; then
+            currentLine=$((currentLine + 1))
+
+            if [ "$currentLine" -eq 1 ]; then
+                # First line
                 safariManifestInstances="                \"*://$instance/*\""
-                safariContentInstances="    \"$instance"\"
-                lastLine=false
+                safariContentInstances="    \"$instance\""
+            elif [ "$currentLine" -eq "$totalLines" ]; then
+                # Last line
+                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\"\n"
+                safariContentInstances="$safariContentInstances,\n    \"$instance\"\n"
             else
                 safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
                 safariContentInstances="$safariContentInstances,\n    \"$instance\""
@@ -84,7 +91,7 @@ jobs:
         fi
         
         if [[ $line == "            ]" ]]; then 
-            echo "$safariManifestInstances" >> "ios/Open In Thunder/Resources/manifest-new.json"
+            printf "$safariManifestInstances" >> "ios/Open In Thunder/Resources/manifest-new.json"
             inSection=false
         fi
         
@@ -106,7 +113,7 @@ jobs:
         fi
         
         if [[ $line == "];" ]]; then 
-            echo "$safariContentInstances" >> "ios/Open In Thunder/Resources/content-new.js"
+            printf "$safariContentInstances" >> "ios/Open In Thunder/Resources/content-new.js"
             inSection=false
         fi
         
