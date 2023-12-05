@@ -803,6 +803,10 @@
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Unable to load more replies.",
   "@unableToLoadReplies": {},
+  "unblockInstance": "Unblock Instance",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",

@@ -245,7 +245,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
             child: InkWell(
               borderRadius: BorderRadius.circular(50),
               onTap: () {
-                navigateToInstancePage(context, instanceHost: instance.domain);
+                navigateToInstancePage(context, instanceHost: instance.domain, instanceId: instance.id);
               },
               child: ListTile(
                 leading: CircleAvatar(

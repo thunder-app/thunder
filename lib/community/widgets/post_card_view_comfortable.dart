@@ -275,6 +275,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         actionsToInclude: [
                           PostCardAction.visitInstance,
                           PostCardAction.visitProfile,
+                          PostCardAction.blockUser,
                           PostCardAction.blockInstance,
                           PostCardAction.visitCommunity,
                           PostCardAction.blockCommunity,

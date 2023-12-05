@@ -11,6 +11,10 @@
 - Added the ability to render SVGs in markdown bodies - contribution from @micahmo
 - Added Safari extension to open Lemmy links in Thunder
 
+## Changed
+- Added new items to the Post and Comment actions sheet - contribution from @micahmo
+- Added ability to block instance from instance page - contribution from @micahmo
+
 ### Fixed
 - Fixed issue where custom tabs would not respect default browser when opening links
 - Fixed issue where initial app startup takes a long time to load (503 errors)
