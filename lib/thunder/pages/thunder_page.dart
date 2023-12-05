@@ -1,53 +1,47 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 // Flutter
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 // Packages
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:overlay_support/overlay_support.dart';
-
+import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thunder/account/account.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
-
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/widgets/community_drawer.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
-import 'package:collection/collection.dart';
-
+import 'package:thunder/core/models/version.dart';
 // Internal
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
+import 'package:thunder/inbox/bloc/inbox_bloc.dart';
+import 'package:thunder/inbox/inbox.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/search/bloc/search_bloc.dart';
+import 'package:thunder/search/pages/search_page.dart';
+import 'package:thunder/settings/pages/settings_page.dart';
+import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/cubits/deep_links_cubit/deep_links_cubit.dart';
 import 'package:thunder/thunder/enums/deep_link_enums.dart';
 import 'package:thunder/thunder/widgets/bottom_nav_bar.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/inbox/bloc/inbox_bloc.dart';
-import 'package:thunder/inbox/inbox.dart';
-import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/account/account.dart';
-import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/models/version.dart';
-import 'package:thunder/search/pages/search_page.dart';
-import 'package:thunder/settings/pages/settings_page.dart';
-import 'package:thunder/shared/error_message.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/navigate_comment.dart';
 import 'package:thunder/utils/navigate_create_post.dart';
 import 'package:thunder/utils/navigate_instance.dart';

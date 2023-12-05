@@ -425,7 +425,7 @@ class ThunderState extends Equatable {
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
 
       /// -------------------------- Post Page Related Settings --------------------------
-      disablePostFabs: disablePostFabs ?? this.disablePostFabs,
+      disablePostFabs: disablePostFabs ?? disablePostFabs,
 
       // Comment Related Settings
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,

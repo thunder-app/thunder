@@ -168,12 +168,12 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                   });
                 },
                 isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
-                child: widget.replies[index].commentReply?.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply?.id)
-                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
+                child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
+                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply.id
                         ? IconButton(
                             onPressed: () {
-                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
-                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true, showAll: widget.showAll));
+                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply.id);
+                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: true, showAll: widget.showAll));
                             },
                             icon: const Icon(
                               Icons.check,

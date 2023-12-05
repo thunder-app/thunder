@@ -393,7 +393,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               final Account? account = await fetchActiveProfileAccount();
                               final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                                 auth: account?.jwt,
-                                id: postViewMedia!.postView.community.id,
+                                id: postViewMedia.postView.community.id,
                               ));
 
                               if (context.mounted) {
@@ -409,9 +409,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
                                         ],
                                         child: CreatePostPage(
-                                          communityId: postViewMedia!.postView.community.id,
+                                          communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
-                                          postView: postViewMedia!.postView,
+                                          postView: postViewMedia.postView,
                                           onPostSuccess: (PostViewMedia pvm) {
                                             setState(() => postViewMedia = pvm);
                                           },

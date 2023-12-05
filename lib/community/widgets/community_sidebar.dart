@@ -211,7 +211,7 @@ class CommunityModeratorList extends StatelessWidget {
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
           GestureDetector(
             onTap: () {
-              navigateToUserPage(context, userId: mods.moderator!.id);
+              navigateToUserPage(context, userId: mods.moderator.id);
             },
             child: Padding(
               padding: const EdgeInsets.only(bottom: 8.0),
@@ -227,7 +227,7 @@ class CommunityModeratorList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        mods.moderator!.displayName ?? mods.moderator!.name,
+                        mods.moderator.displayName ?? mods.moderator.name,
                         overflow: TextOverflow.ellipsis,
                         maxLines: 1,
                         style: const TextStyle(
@@ -236,7 +236,7 @@ class CommunityModeratorList extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${mods.moderator!.name} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
+                        '${mods.moderator.name} · ${fetchInstanceNameFromUrl(mods.moderator.actorId)}',
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: theme.colorScheme.onBackground.withOpacity(0.6),
