@@ -71,8 +71,8 @@ jobs:
                 safariContentInstances="    \"$instance"\"
                 lastLine=false
             else
-                safariManifestInstances="$safariManifestInstances,\\n                \"*://$instance/*\""
-                safariContentInstances="$safariContentInstances,\\n    \"$instance\""
+                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
+                safariContentInstances="$safariContentInstances,\n    \"$instance\""
             fi
         done < lemmy-instances.txt
 
