@@ -1,9 +1,25 @@
 ## Unreleased
+
+## Added
+- Added ability to collapse post in post page
+- Added ability to change app language in settings
+- Added ability to show/hide read posts in user settings
+- Added post and comment previews to settings, and reorganized settings page
+- Added setting to show comment score instead of upvote/downvote counts
+- Added setting to show/hide post and comment scores
+- Added setting to show/hide bot content
+- Added the ability to render SVGs in markdown bodies - contribution from @micahmo
+
+### Fixed
+- Fixed issue where custom tabs would not respect default browser when opening links
+- Fixed issue where initial app startup takes a long time to load (503 errors)
+
+## 0.2.6 - 2023-11-22
 ### Fixed
 - Fixed rendering issues with markdown link parsing
 - Fixed issue where TOTP token was not sent properly
 
-## 0.2.5+25 - 2023-11-15
+## 0.2.5 - 2023-11-15
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo

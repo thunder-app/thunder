@@ -1,4 +1,5 @@
 const List<String> instances = [
+  'ani.social',
   'aussie.zone',
   'bakchodi.org',
   'beehaw.org',
@@ -8,12 +9,10 @@ const List<String> instances = [
   'discuss.tchncs.de',
   'exploding-heads.com',
   'feddit.ch',
-  'feddit.cl',
   'feddit.de',
   'feddit.dk',
   'feddit.it',
   'feddit.nl',
-  'feddit.nu',
   'feddit.uk',
   'geddit.social',
   'hexbear.net',

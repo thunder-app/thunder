@@ -6,8 +6,8 @@ import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
@@ -28,6 +28,7 @@ import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:flutter/foundation.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -36,14 +37,11 @@ void main() async {
   //Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
-  // Load up environment variables
-  await dotenv.load(fileName: ".env");
-
   // Load up sqlite database
   await DB.instance.database;
 
   // Register dart_ping on iOS
-  if (Platform.isIOS) {
+  if (!kIsWeb && Platform.isIOS) {
     DartPingIOS.register();
   }
 
@@ -87,6 +85,8 @@ class ThunderApp extends StatelessWidget {
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
+          final ThunderBloc thunderBloc = context.watch<ThunderBloc>();
+
           if (state.status == ThemeStatus.initial) {
             context.read<ThemeBloc>().add(ThemeChangeEvent());
           }
@@ -129,11 +129,21 @@ class ThunderApp extends StatelessWidget {
                 ),
               );
 
+              Locale? locale = AppLocalizations.supportedLocales.where((Locale locale) => locale.languageCode == thunderBloc.state.appLanguageCode).firstOrNull;
+
               return OverlaySupport.global(
                 child: MaterialApp.router(
                   title: 'Thunder',
-                  localizationsDelegates: AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
+                  locale: locale,
+                  localizationsDelegates: const [
+                    ...AppLocalizations.localizationsDelegates,
+                    MaterialLocalizationsEo.delegate,
+                    CupertinoLocalizationsEo.delegate,
+                  ],
+                  supportedLocales: const [
+                    ...AppLocalizations.supportedLocales,
+                    Locale('eo'), // Additional locale which is not officially supported: Esperanto
+                  ],
                   routerConfig: router,
                   themeMode: state.themeType == ThemeType.system ? ThemeMode.system : (state.themeType == ThemeType.light ? ThemeMode.light : ThemeMode.dark),
                   theme: theme,

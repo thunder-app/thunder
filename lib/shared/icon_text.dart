@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 
+import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
+
 class IconText extends StatelessWidget {
   const IconText({
     super.key,
     required this.icon,
-    required this.text,
+    this.text,
     this.textColor,
-    this.textScaleFactor = 1.0,
+    this.fontScale,
     this.padding = 3.0,
   });
 
   final Icon icon;
-  final String text;
+  final String? text;
   final Color? textColor;
-  final double textScaleFactor;
+  final FontScale? fontScale;
 
   final double padding;
 
@@ -24,14 +27,16 @@ class IconText extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         icon,
-        SizedBox(width: padding),
-        Text(
-          text,
-          textScaleFactor: textScaleFactor,
-          style: TextStyle(
-            color: textColor,
+        if (text != null) ...[
+          SizedBox(width: padding),
+          ScalableText(
+            text!,
+            fontScale: fontScale,
+            style: TextStyle(
+              color: textColor,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

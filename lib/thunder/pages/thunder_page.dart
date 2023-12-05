@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 // Flutter
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -25,6 +26,7 @@ import 'package:collection/collection.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/feed.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/post/utils/post.dart';
@@ -84,7 +86,7 @@ class _ThunderState extends State<Thunder> {
     super.initState();
 
     // Listen for callbacks from Android native code
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       const MethodChannel('com.hjiangsu.thunder/method_channel').setMethodCallHandler((MethodCall call) {
         if (call.method == 'set_intent') {
           currentIntent = call.arguments;
@@ -221,6 +223,8 @@ class _ThunderState extends State<Thunder> {
         if (context.mounted) await _navigateToUser(_link);
       case LinkType.post:
         if (context.mounted) await _navigateToPost(_link);
+      case LinkType.community:
+        if (context.mounted) await _navigateToCommunity(_link);
       case LinkType.instance:
         if (context.mounted) await _navigateToInstance(_link);
       case LinkType.unknown:
@@ -261,6 +265,24 @@ class _ThunderState extends State<Thunder> {
     }
 
     // postId not found or could not resolve link.
+    // show a snackbar with option to open link
+    if (context.mounted) {
+      _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
+    }
+  }
+
+  Future<void> _navigateToCommunity(String link) async {
+    final String? communityName = await getLemmyCommunity(link);
+    if (context.mounted && communityName != null) {
+      try {
+        await navigateToFeedPage(context, feedType: FeedType.community, communityName: communityName);
+        return;
+      } catch (e) {
+        // Ignore exception, if it's not a valid community, we'll perform the next fallback
+      }
+    }
+
+    // community not found or could not resolve link.
     // show a snackbar with option to open link
     if (context.mounted) {
       _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);
@@ -413,20 +435,27 @@ class _ThunderState extends State<Thunder> {
 
                         // Add a bit of artificial delay to allow preferences to set the proper active profile
                         Future.delayed(const Duration(milliseconds: 500), () => context.read<InboxBloc>().add(const GetInboxEvent(reset: true)));
-                        context.read<FeedBloc>().add(
-                              FeedFetchedEvent(
-                                feedType: FeedType.general,
-                                postListingType: thunderBlocState.defaultListingType,
-                                sortType: thunderBlocState.defaultSortType,
-                                reset: true,
-                              ),
-                            );
+                        if (context.read<FeedBloc>().state.status != FeedStatus.initial) {
+                          context.read<FeedBloc>().add(
+                                FeedFetchedEvent(
+                                  feedType: FeedType.general,
+                                  postListingType: thunderBlocState.defaultListingType,
+                                  sortType: thunderBlocState.defaultSortType,
+                                  reset: true,
+                                ),
+                              );
+                        }
                       },
                       builder: (context, state) {
                         switch (state.status) {
                           case AuthStatus.initial:
                             context.read<AuthBloc>().add(CheckAuth());
-                            return Container();
+                            return Scaffold(
+                              appBar: AppBar(),
+                              body: Center(
+                                child: Container(),
+                              ),
+                            );
                           case AuthStatus.success:
                             Version? version = thunderBlocState.version;
                             bool showInAppUpdateNotification = thunderBlocState.showInAppUpdateNotification;

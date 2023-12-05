@@ -14,7 +14,6 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
@@ -25,6 +24,7 @@ import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 
@@ -88,15 +88,13 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void initState() {
+    super.initState();
 
-    /// When this is true, we find the feed bloc already present in the widget tree
-    /// This is to keep the events on the main page (rather than presenting a new page)
-    if (widget.useGlobalFeedBloc) {
+    try {
       FeedBloc bloc = context.read<FeedBloc>();
 
-      if (bloc.state.status == FeedStatus.initial) {
+      if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
           postListingType: widget.postListingType,
@@ -108,6 +106,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
         ));
       }
+    } catch (e) {
+      // ignore and continue if we cannot fetch the feed bloc
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    /// When this is true, we find the feed bloc already present in the widget tree
+    /// This is to keep the events on the main page (rather than presenting a new page)
+    if (widget.useGlobalFeedBloc) {
+      FeedBloc bloc = context.read<FeedBloc>();
 
       return BlocProvider.value(
         value: bloc,
@@ -396,6 +407,12 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    // If the sidebar is open, close it
+    if (showCommunitySidebar) {
+      setState(() => showCommunitySidebar = false);
+      return true;
+    }
+
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -558,11 +575,11 @@ class FeedReachedEnd extends StatelessWidget {
         Container(
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: Text(
+          child: ScalableText(
             'Hmmm. It seems like you\'ve reached the bottom.',
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
-            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+            fontScale: state.metadataFontSizeScale,
           ),
         ),
         const SizedBox(height: 160)

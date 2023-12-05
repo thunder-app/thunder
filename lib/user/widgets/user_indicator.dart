@@ -21,7 +21,9 @@ class _UserIndicatorState extends State<UserIndicator> {
   @override
   void initState() {
     super.initState();
-    context.read<AccountBloc>().add(GetAccountInformation());
+
+    person = context.read<AccountBloc>().state.personView?.person;
+    if (person == null) context.read<AccountBloc>().add(GetAccountInformation());
   }
 
   @override

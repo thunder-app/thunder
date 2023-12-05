@@ -2,7 +2,7 @@ enum LocalSettings {
   /// -------------------------- Feed Related Settings --------------------------
   // Default Listing/Sort Settings
   defaultFeedListingType(name: 'setting_general_default_listing_type', label: 'Default Feed Type'),
-  defaultFeedSortType(name: 'setting_general_default_sort_type', label: 'Default Sort Type'),
+  defaultFeedSortType(name: 'setting_general_default_sort_type', label: 'Default Feed Sort Type'),
 
   // NSFW Settings
   hideNsfwPosts(name: 'setting_general_hide_nsfw_posts', label: 'Hide NSFW Posts from Feed'),
@@ -19,6 +19,7 @@ enum LocalSettings {
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
   scoreCounters(name: 'setting_score_counters', label: "Display User Scores"),
+  appLanguageCode(name: 'setting_app_language_code', label: 'App Language'),
 
   /// -------------------------- Feed Post Related Settings --------------------------
   // Compact Related Settings
@@ -45,6 +46,7 @@ enum LocalSettings {
   defaultCommentSortType(name: 'setting_post_default_comment_sort_type', label: 'Default Comment Sort Type'),
   collapseParentCommentBodyOnGesture(name: 'setting_comments_collapse_parent_comment_on_gesture', label: 'Hide Parent Comment on Collapse'),
   showCommentActionButtons(name: 'setting_general_show_comment_button_actions', label: 'Show Comment Button Actions'),
+  combineCommentScores(name: 'setting_general_combine_comment_scores', label: ''),
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),
 
@@ -97,6 +99,7 @@ enum LocalSettings {
   postFabEnableChangeSort(name: 'setting_post_fab_enable_change_sort', label: 'Change Sort'),
   postFabEnableReplyToPost(name: 'setting_post_fab_enable_reply_to_post', label: 'Reply to Post'),
   postFabEnableRefresh(name: 'setting_post_fab_enable_refresh', label: 'Refresh'),
+  postFabEnableSearch(name: 'setting_post_fab_enable_search', label: 'Search'),
   feedFabSinglePressAction(name: 'settings_feed_fab_single_press_action', label: ''),
   feedFabLongPressAction(name: 'settings_feed_fab_long_press_action', label: ''),
   postFabSinglePressAction(name: 'settings_post_fab_single_press_action', label: ''),

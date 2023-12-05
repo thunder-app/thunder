@@ -2,19 +2,44 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class ToggleOption extends StatelessWidget {
-  // Appearance
+  /// The icon to display when enabled
   final IconData? iconEnabled;
+
+  /// A custom icon size for the enabled icon if provided
+  final double? iconEnabledSize;
+
+  /// The icon to display when disabled
   final IconData? iconDisabled;
 
-  // General
+  /// A custom icon size for the disabled icon if provided
+  final double? iconDisabledSize;
+
+  /// The spacing between the icon and the label. Defaults to 8.0
+  final double? iconSpacing;
+
+  /// The main label for the ToggleOption
   final String description;
+
+  /// An optional subtitle shown below the description
   final String? subtitle;
+
+  /// A custom semantic label for the option
   final String? semanticLabel;
+
+  /// The value of the option.
+  /// When null, the [Switch] will be hidden and the [onToggle] callback will be ignored.
+  /// When null, the [onTap] and [onLongPress] callbacks are still available.
   final bool? value;
 
-  // Callback
-  final Function(bool) onToggle;
+  /// A callback function to perform when the option is toggled.
+  /// When null, the [ToggleOption] is non-interactable. No callback functions will be activated.
+  final Function(bool)? onToggle;
+
+  /// A callback function to perform when the option is tapped.
+  /// If null, tapping will toggle the [Switch] and trigger the [onToggle] callback.
   final Function()? onTap;
+
+  /// A callback function to perform when the option is long pressed
   final Function()? onLongPress;
 
   final List<Widget>? additionalWidgets;
@@ -26,12 +51,23 @@ class ToggleOption extends StatelessWidget {
     this.semanticLabel,
     required this.value,
     this.iconEnabled,
+    this.iconEnabledSize,
     this.iconDisabled,
-    required this.onToggle,
+    this.iconDisabledSize,
+    this.iconSpacing,
+    this.onToggle,
     this.additionalWidgets,
     this.onTap,
     this.onLongPress,
   });
+
+  void onTapInkWell() {
+    if (onTap == null && value != null) {
+      onToggle?.call(!value!);
+    }
+
+    onTap?.call();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +77,8 @@ class ToggleOption extends StatelessWidget {
       label: semanticLabel ?? description,
       child: InkWell(
         borderRadius: const BorderRadius.all(Radius.circular(50)),
-        onTap: onTap == null
-            ? value == null
-                ? null
-                : () {
-                    onToggle(!value!);
-                  }
-            : () => onTap!.call(),
-        onLongPress: () => onLongPress?.call(),
+        onTap: onToggle == null ? null : onTapInkWell,
+        onLongPress: onToggle == null ? null : () => onLongPress?.call(),
         child: Padding(
           padding: const EdgeInsets.only(left: 4.0),
           child: Row(
@@ -56,8 +86,8 @@ class ToggleOption extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  if (iconEnabled != null && iconDisabled != null) Icon(value == true ? iconEnabled : iconDisabled),
-                  if (iconEnabled != null && iconDisabled != null) const SizedBox(width: 8.0),
+                  if (iconEnabled != null && iconDisabled != null) Icon(value == true ? iconEnabled : iconDisabled, size: value == true ? iconEnabledSize : iconDisabledSize),
+                  if (iconEnabled != null && iconDisabled != null) SizedBox(width: iconSpacing ?? 8.0),
                   Column(
                     children: [
                       ConstrainedBox(
@@ -94,10 +124,12 @@ class ToggleOption extends StatelessWidget {
               if (value != null)
                 Switch(
                   value: value!,
-                  onChanged: (bool value) {
-                    HapticFeedback.lightImpact();
-                    onToggle(value);
-                  },
+                  onChanged: onToggle == null
+                      ? null
+                      : (bool value) {
+                          HapticFeedback.lightImpact();
+                          onToggle?.call(value);
+                        },
                 ),
               if (value == null)
                 const SizedBox(
