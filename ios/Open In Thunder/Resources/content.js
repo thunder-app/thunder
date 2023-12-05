@@ -1,4 +1,5 @@
 let instances = [
+    "ani.social",
     "aussie.zone",
     "bakchodi.org",
     "beehaw.org",
@@ -8,12 +9,10 @@ let instances = [
     "discuss.tchncs.de",
     "exploding-heads.com",
     "feddit.ch",
-    "feddit.cl",
     "feddit.de",
     "feddit.dk",
     "feddit.it",
     "feddit.nl",
-    "feddit.nu",
     "feddit.uk",
     "geddit.social",
     "hexbear.net",
@@ -35,6 +34,7 @@ let instances = [
     "lemmy.one",
     "lemmy.sdf.org",
     "lemmy.today",
+    "lemmy.whynotdrs.org",
     "lemmy.world",
     "lemmy.zip",
     "lemmygrad.ml",
@@ -42,7 +42,6 @@ let instances = [
     "mander.xyz",
     "midwest.social",
     "monero.town",
-    "monyet.cc",
     "pawb.social",
     "programming.dev",
     "reddthat.com",
@@ -56,7 +55,7 @@ let instances = [
     "vlemmy.net",
     "waveform.social",
     "www.hexbear.net",
-    "yiffit.net",
+    "yiffit.net"
 ];
 
 const observeUrlChange = () => {
