@@ -112,7 +112,7 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
   bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;
