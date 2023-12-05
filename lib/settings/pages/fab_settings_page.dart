@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/local_settings.dart';
-
-import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FabSettingsPage extends StatefulWidget {
   const FabSettingsPage({super.key});
@@ -19,47 +20,64 @@ class FabSettingsPage extends StatefulWidget {
 }
 
 class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMixin {
-  /// -------------------------- FAB Related Settings --------------------------
-  // FAB Settings
+  /// When enabled, the FAB for the feed/community will be shown
   bool enableFeedsFab = true;
+
+  /// When enabled, the FAB for the post will be shown
   bool enablePostsFab = true;
 
+  /// FAB action which scrolls the user to the top of the page
   bool enableBackToTop = true;
+
+  /// FAB action which opens the main sidebar
   bool enableSubscriptions = true;
+
+  /// FAB action to open the sort bottom sheet
   bool enableChangeSort = true;
+
+  /// FAB action which refreshes the current feed
   bool enableRefresh = true;
+
+  /// FAB action which dismisses currently read posts from the feed
   bool enableDismissRead = true;
+
+  /// FAB action which navigates to the create post page screen
   bool enableNewPost = true;
 
+  /// Post FAB action which scrolls the user to the top of the page
   bool postFabEnableBackToTop = true;
+
+  /// Post FAB action to open the sort bottom sheet
   bool postFabEnableChangeSort = true;
+
+  /// Post FAB action which opens the create comment page
   bool postFabEnableReplyToPost = true;
+
+  /// Post FAB action which refreshes the current post
   bool postFabEnableRefresh = true;
+
+  /// Post FAB action which opens the search dialog
   bool postFabEnableSearch = true;
 
+  /// The main single press action for the feed FAB
   FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
+
+  /// The secondary long press action for the feed FAB
   FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
+
+  /// The main single press action for the post FAB
   PostFabAction postFabSinglePressAction = PostFabAction.replyToPost;
+
+  /// The secondary long press action for the post FAB
   PostFabAction postFabLongPressAction = PostFabAction.openFab;
 
-  /// Loading
-  bool isLoading = true;
-
-  /// The available gesture options
-  List<ListPickerItem> postGestureOptions = [
-    ListPickerItem(icon: Icons.north_rounded, label: SwipeAction.upvote.label, payload: SwipeAction.upvote),
-    ListPickerItem(icon: Icons.south_rounded, label: SwipeAction.downvote.label, payload: SwipeAction.downvote),
-    ListPickerItem(icon: Icons.star_outline_rounded, label: SwipeAction.save.label, payload: SwipeAction.save),
-    ListPickerItem(icon: Icons.markunread_outlined, label: SwipeAction.toggleRead.label, payload: SwipeAction.toggleRead),
-    ListPickerItem(icon: Icons.not_interested_rounded, label: SwipeAction.none.label, payload: SwipeAction.none),
-  ];
+  /// Controller to manage expandable state for FAB information
+  ExpandableController expandableController = ExpandableController(initialExpanded: true);
 
   void setPreferences(attribute, value) async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
     switch (attribute) {
-      /// -------------------------- Gesture Related Settings --------------------------
-      // Sidebar Gesture Settings
       case LocalSettings.enableFeedsFab:
         await prefs.setBool(LocalSettings.enableFeedsFab.name, value);
         setState(() => enableFeedsFab = value);
@@ -68,6 +86,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.enablePostsFab.name, value);
         setState(() => enablePostsFab = value);
         break;
+
       case LocalSettings.enableBackToTop:
         await prefs.setBool(LocalSettings.enableBackToTop.name, value);
         setState(() => enableBackToTop = value);
@@ -92,6 +111,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.enableNewPost.name, value);
         setState(() => enableNewPost = value);
         break;
+
       case LocalSettings.postFabEnableBackToTop:
         await prefs.setBool(LocalSettings.postFabEnableBackToTop.name, value);
         setState(() => postFabEnableBackToTop = value);
@@ -112,6 +132,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
         await prefs.setBool(LocalSettings.postFabEnableSearch.name, value);
         setState(() => postFabEnableSearch = value);
         break;
+
       case LocalSettings.feedFabSinglePressAction:
         await prefs.setString(LocalSettings.feedFabSinglePressAction.name, (value as FeedFabAction).name);
         setState(() => feedFabSinglePressAction = value);
@@ -159,8 +180,6 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
       postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
       postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
-
-      isLoading = false;
     });
   }
 
@@ -169,7 +188,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
     vsync: this,
   );
 
-  // Animation for comment collapse
+  /// Animation for collapsing content
   late final Animation<Offset> _offsetAnimation = Tween<Offset>(
     begin: Offset.zero,
     end: const Offset(1.5, 0.0),
@@ -180,465 +199,382 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
 
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
   }
 
   @override
   Widget build(BuildContext context) {
-    final ThemeData theme = Theme.of(context);
+    final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Floating Action Button'), centerTitle: false),
-      body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : SingleChildScrollView(
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            title: Text(l10n.floatingActionButton),
+            centerTitle: false,
+            toolbarHeight: 70.0,
+            pinned: true,
+          ),
+          SliverToBoxAdapter(
+            child: ExpandableNotifier(
+              controller: expandableController,
               child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 16.0, right: 8.0),
+                    child: Row(
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-                          child: Text(
-                            'Feeds',
-                            style: theme.textTheme.titleLarge,
+                        Expanded(child: Text(l10n.information, style: theme.textTheme.titleMedium)),
+                        IconButton(
+                          icon: Icon(
+                            expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                            semanticLabel: expandableController.expanded ? l10n.collapseInformation : l10n.expandInformation,
                           ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(6.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          onPressed: () {
+                            expandableController.toggle();
+                            setState(() {});
+                          },
+                        )
+                      ],
+                    ),
+                  ),
+                  Expandable(
+                    controller: expandableController,
+                    collapsed: Container(),
+                    expanded: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          CommonMarkdownBody(body: l10n.floatingActionButtonInformation),
+                          const SizedBox(height: 8.0),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Text(
-                                'The FAB in Thunder can be used for many things, and supports a couple gestures:',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                ),
+                              const Padding(
+                                padding: EdgeInsets.only(left: 16.0, bottom: 4.0),
+                                child: Icon(Icons.touch_app_outlined, size: 20),
                               ),
-                              Text(
-                                '- Swipe up to open a menu with additional actions',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                ),
-                              ),
-                              Text(
-                                '- Swipe down to hide the FAB',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                ),
-                              ),
-                              Text(
-                                '- Swipe up from lower right corner to bring it back',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Long-press actions to set them as the FAB\'s single-press or long-press action.',
-                                style: TextStyle(
-                                  color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                ),
-                              ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.touch_app_outlined,
-                                    size: 20,
-                                  ),
-                                  Text(
-                                    'denotes the FAB\'s single-press action.',
-                                    style: TextStyle(
-                                      color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Icon(
-                                    Icons.touch_app_rounded,
-                                    size: 20,
-                                  ),
-                                  Text(
-                                    'denotes the FAB\'s long-press action.',
-                                    style: TextStyle(
-                                      color: theme.colorScheme.onBackground.withOpacity(0.75),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              CommonMarkdownBody(body: l10n.floatingActionButtonSinglePressDescription),
                             ],
                           ),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.enableFeedsFab.label,
-                          value: enableFeedsFab,
-                          onToggle: (bool value) => setPreferences(LocalSettings.enableFeedsFab, value),
-                        ),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 250),
-                          switchInCurve: Curves.easeInOut,
-                          switchOutCurve: Curves.easeInOut,
-                          transitionBuilder: (Widget child, Animation<double> animation) {
-                            return SizeTransition(
-                              sizeFactor: animation,
-                              child: SlideTransition(position: _offsetAnimation, child: child),
-                            );
-                          },
-                          child: enableFeedsFab
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    children: [
-                                      ToggleOption(
-                                        description: AppLocalizations.of(context)!.expandOptions,
-                                        value: null,
-                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
-                                            ${feedFabSinglePressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.more_horiz_rounded,
-                                        iconDisabled: Icons.more_horiz_rounded,
-                                        onToggle: (_) {},
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.openFab)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.openFab)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.openFab),
-                                        onTap: () => showFeedFabActionPicker(FeedFabAction.openFab),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableBackToTop.label,
-                                        value: enableBackToTop,
-                                        semanticLabel: """${LocalSettings.enableBackToTop.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.arrow_upward,
-                                        iconDisabled: Icons.arrow_upward,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableBackToTop, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.backToTop)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.backToTop)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.backToTop),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableSubscriptions.label,
-                                        value: enableSubscriptions,
-                                        semanticLabel: """${LocalSettings.enableSubscriptions.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.subscriptions ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.people_rounded,
-                                        iconDisabled: Icons.people_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableSubscriptions, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.subscriptions)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.subscriptions)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.subscriptions),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableChangeSort.label,
-                                        value: enableChangeSort,
-                                        semanticLabel: """${LocalSettings.enableChangeSort.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.sort_rounded,
-                                        iconDisabled: Icons.sort_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableChangeSort, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.changeSort)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.changeSort)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.changeSort),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableRefresh.label,
-                                        value: enableRefresh,
-                                        semanticLabel: """${LocalSettings.enableRefresh.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.refresh_rounded,
-                                        iconDisabled: Icons.refresh_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableRefresh, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.refresh)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.refresh)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.refresh),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableDismissRead.label,
-                                        value: enableDismissRead,
-                                        semanticLabel: """${LocalSettings.enableDismissRead.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.dismissRead ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.clear_all_rounded,
-                                        iconDisabled: Icons.clear_all_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableDismissRead, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.dismissRead)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.dismissRead)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.dismissRead),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.enableNewPost.label,
-                                        value: enableNewPost,
-                                        semanticLabel: """${LocalSettings.enableNewPost.label}
-                                            ${feedFabSinglePressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${feedFabLongPressAction == FeedFabAction.newPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.add_rounded,
-                                        iconDisabled: Icons.add_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.enableNewPost, value),
-                                        additionalWidgets: [
-                                          if (feedFabSinglePressAction == FeedFabAction.newPost)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (feedFabLongPressAction == FeedFabAction.newPost)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showFeedFabActionPicker(FeedFabAction.newPost),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : null,
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    padding: const EdgeInsets.fromLTRB(12.0, 8.0, 16.0, 8.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
-                          child: Text(
-                            'Posts',
-                            style: theme.textTheme.titleLarge,
+                          Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.only(left: 16.0),
+                                child: Icon(Icons.touch_app_rounded, size: 20),
+                              ),
+                              CommonMarkdownBody(body: l10n.floatingActionButtonLongPressDescription),
+                            ],
                           ),
-                        ),
-                        ToggleOption(
-                          description: LocalSettings.enablePostsFab.label,
-                          value: enablePostsFab,
-                          onToggle: (bool value) => setPreferences(LocalSettings.enablePostsFab, value),
-                        ),
-                        AnimatedSwitcher(
-                          duration: const Duration(milliseconds: 250),
-                          switchInCurve: Curves.easeInOut,
-                          switchOutCurve: Curves.easeInOut,
-                          transitionBuilder: (Widget child, Animation<double> animation) {
-                            return SizeTransition(
-                              sizeFactor: animation,
-                              child: SlideTransition(position: _offsetAnimation, child: child),
-                            );
-                          },
-                          child: enablePostsFab
-                              ? Padding(
-                                  padding: const EdgeInsets.only(left: 16.0),
-                                  child: Column(
-                                    children: [
-                                      ToggleOption(
-                                        description: AppLocalizations.of(context)!.expandOptions,
-                                        value: null,
-                                        semanticLabel: """${AppLocalizations.of(context)!.expandOptions}
-                                            ${postFabSinglePressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.openFab ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.more_horiz_rounded,
-                                        iconDisabled: Icons.more_horiz_rounded,
-                                        onToggle: (_) {},
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.openFab)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.openFab)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.openFab),
-                                        onTap: () => showPostFabActionPicker(PostFabAction.openFab),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableSearch.label,
-                                        value: postFabEnableSearch,
-                                        semanticLabel: """${LocalSettings.postFabEnableSearch.label}
-                                            ${postFabSinglePressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.search ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.search_rounded,
-                                        iconDisabled: Icons.search_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableSearch, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.search)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.search)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.search),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableBackToTop.label,
-                                        value: postFabEnableBackToTop,
-                                        semanticLabel: """${LocalSettings.postFabEnableBackToTop.label}
-                                            ${postFabSinglePressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.backToTop ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.arrow_upward,
-                                        iconDisabled: Icons.arrow_upward,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableBackToTop, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.backToTop)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.backToTop)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.backToTop),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableChangeSort.label,
-                                        value: postFabEnableChangeSort,
-                                        semanticLabel: """${LocalSettings.postFabEnableChangeSort.label}
-                                            ${postFabSinglePressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.changeSort ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.sort_rounded,
-                                        iconDisabled: Icons.sort_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableChangeSort, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.changeSort)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.changeSort)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.changeSort),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableReplyToPost.label,
-                                        value: postFabEnableReplyToPost,
-                                        semanticLabel: """${LocalSettings.postFabEnableReplyToPost.label}
-                                            ${postFabSinglePressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.replyToPost ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.reply_rounded,
-                                        iconDisabled: Icons.reply_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableReplyToPost, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.replyToPost)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.replyToPost)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.replyToPost),
-                                      ),
-                                      ToggleOption(
-                                        description: LocalSettings.postFabEnableRefresh.label,
-                                        value: postFabEnableRefresh,
-                                        semanticLabel: """${LocalSettings.postFabEnableRefresh.label}
-                                            ${postFabSinglePressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentSinglePress : ''}
-                                            ${postFabLongPressAction == PostFabAction.refresh ? AppLocalizations.of(context)!.currentLongPress : ''}""",
-                                        iconEnabled: Icons.refresh_rounded,
-                                        iconDisabled: Icons.refresh_rounded,
-                                        onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableRefresh, value),
-                                        additionalWidgets: [
-                                          if (postFabSinglePressAction == PostFabAction.refresh)
-                                            const Icon(
-                                              Icons.touch_app_outlined,
-                                            ),
-                                          if (postFabLongPressAction == PostFabAction.refresh)
-                                            const Icon(
-                                              Icons.touch_app_rounded,
-                                            ),
-                                        ],
-                                        onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              : null,
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    height: 120,
                   ),
                 ],
               ),
             ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Text(l10n.feed, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12.0, right: 16.0),
+              child: ToggleOption(
+                description: l10n.enableFeedFab,
+                value: enableFeedsFab,
+                onToggle: (bool value) => setPreferences(LocalSettings.enableFeedsFab, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: SlideTransition(position: _offsetAnimation, child: child),
+                  );
+                },
+                child: enableFeedsFab
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Column(
+                          children: [
+                            ToggleOption(
+                              description: l10n.expandOptions,
+                              value: null,
+                              semanticLabel: """${l10n.expandOptions}
+                                                ${feedFabSinglePressAction == FeedFabAction.openFab ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.openFab ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.more_horiz_rounded,
+                              iconDisabled: Icons.more_horiz_rounded,
+                              onToggle: (_) {},
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.openFab) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.openFab) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.openFab),
+                              onTap: () => showFeedFabActionPicker(FeedFabAction.openFab),
+                            ),
+                            ToggleOption(
+                              description: l10n.backToTop,
+                              value: enableBackToTop,
+                              semanticLabel: """${l10n.backToTop}
+                                                ${feedFabSinglePressAction == FeedFabAction.backToTop ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.backToTop ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.arrow_upward,
+                              iconDisabled: Icons.arrow_upward,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableBackToTop, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.backToTop) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.backToTop) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.backToTop),
+                            ),
+                            ToggleOption(
+                              description: l10n.subscriptions,
+                              value: enableSubscriptions,
+                              semanticLabel: """${l10n.subscriptions}
+                                                ${feedFabSinglePressAction == FeedFabAction.subscriptions ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.subscriptions ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.people_rounded,
+                              iconDisabled: Icons.people_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableSubscriptions, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.subscriptions) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.subscriptions) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.subscriptions),
+                            ),
+                            ToggleOption(
+                              description: l10n.changeSort,
+                              value: enableChangeSort,
+                              semanticLabel: """${l10n.changeSort}
+                                                ${feedFabSinglePressAction == FeedFabAction.changeSort ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.changeSort ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.sort_rounded,
+                              iconDisabled: Icons.sort_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableChangeSort, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.changeSort) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.changeSort) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.changeSort),
+                            ),
+                            ToggleOption(
+                              description: l10n.refresh,
+                              value: enableRefresh,
+                              semanticLabel: """${l10n.refresh}
+                                                ${feedFabSinglePressAction == FeedFabAction.refresh ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.refresh ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.refresh_rounded,
+                              iconDisabled: Icons.refresh_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableRefresh, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.refresh) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.refresh) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.refresh),
+                            ),
+                            ToggleOption(
+                              description: l10n.dismissRead,
+                              value: enableDismissRead,
+                              semanticLabel: """${l10n.dismissRead}
+                                                ${feedFabSinglePressAction == FeedFabAction.dismissRead ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.dismissRead ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.clear_all_rounded,
+                              iconDisabled: Icons.clear_all_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableDismissRead, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.dismissRead) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.dismissRead) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.dismissRead),
+                            ),
+                            ToggleOption(
+                              description: l10n.createPost,
+                              value: enableNewPost,
+                              semanticLabel: """${l10n.createPost}
+                                                ${feedFabSinglePressAction == FeedFabAction.newPost ? l10n.currentSinglePress : ''}
+                                                ${feedFabLongPressAction == FeedFabAction.newPost ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.add_rounded,
+                              iconDisabled: Icons.add_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.enableNewPost, value),
+                              additionalWidgets: [
+                                if (feedFabSinglePressAction == FeedFabAction.newPost) const Icon(Icons.touch_app_outlined),
+                                if (feedFabLongPressAction == FeedFabAction.newPost) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showFeedFabActionPicker(FeedFabAction.newPost),
+                            ),
+                          ],
+                        ),
+                      )
+                    : null,
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 16.0),
+              child: Text(l10n.posts, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.enablePostFab,
+                value: enablePostsFab,
+                onToggle: (bool value) => setPreferences(LocalSettings.enablePostsFab, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 250),
+                switchInCurve: Curves.easeInOut,
+                switchOutCurve: Curves.easeInOut,
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return SizeTransition(
+                    sizeFactor: animation,
+                    child: SlideTransition(position: _offsetAnimation, child: child),
+                  );
+                },
+                child: enablePostsFab
+                    ? Padding(
+                        padding: const EdgeInsets.only(left: 8.0),
+                        child: Column(
+                          children: [
+                            ToggleOption(
+                              description: l10n.expandOptions,
+                              value: null,
+                              semanticLabel: """${l10n.expandOptions}
+                                                ${postFabSinglePressAction == PostFabAction.openFab ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.openFab ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.more_horiz_rounded,
+                              iconDisabled: Icons.more_horiz_rounded,
+                              onToggle: (_) {},
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.openFab) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.openFab) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.openFab),
+                              onTap: () => showPostFabActionPicker(PostFabAction.openFab),
+                            ),
+                            ToggleOption(
+                              description: l10n.search,
+                              value: postFabEnableSearch,
+                              semanticLabel: """${l10n.search}
+                                                ${postFabSinglePressAction == PostFabAction.search ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.search ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.search_rounded,
+                              iconDisabled: Icons.search_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableSearch, value),
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.search) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.search) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.search),
+                            ),
+                            ToggleOption(
+                              description: l10n.backToTop,
+                              value: postFabEnableBackToTop,
+                              semanticLabel: """${l10n.backToTop}
+                                                ${postFabSinglePressAction == PostFabAction.backToTop ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.backToTop ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.arrow_upward,
+                              iconDisabled: Icons.arrow_upward,
+                              onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableBackToTop, value),
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.backToTop) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.backToTop) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.backToTop),
+                            ),
+                            ToggleOption(
+                              description: l10n.changeSort,
+                              value: postFabEnableChangeSort,
+                              semanticLabel: """${l10n.changeSort}
+                                                ${postFabSinglePressAction == PostFabAction.changeSort ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.changeSort ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.sort_rounded,
+                              iconDisabled: Icons.sort_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableChangeSort, value),
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.changeSort) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.changeSort) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.changeSort),
+                            ),
+                            ToggleOption(
+                              description: l10n.replyToPost,
+                              value: postFabEnableReplyToPost,
+                              semanticLabel: """${l10n.replyToPost}
+                                                ${postFabSinglePressAction == PostFabAction.replyToPost ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.replyToPost ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.reply_rounded,
+                              iconDisabled: Icons.reply_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableReplyToPost, value),
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.replyToPost) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.replyToPost) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.replyToPost),
+                            ),
+                            ToggleOption(
+                              description: l10n.refresh,
+                              value: postFabEnableRefresh,
+                              semanticLabel: """${l10n.refresh}
+                                                ${postFabSinglePressAction == PostFabAction.refresh ? l10n.currentSinglePress : ''}
+                                                ${postFabLongPressAction == PostFabAction.refresh ? l10n.currentLongPress : ''}""",
+                              iconEnabled: Icons.refresh_rounded,
+                              iconDisabled: Icons.refresh_rounded,
+                              onToggle: (bool value) => setPreferences(LocalSettings.postFabEnableRefresh, value),
+                              additionalWidgets: [
+                                if (postFabSinglePressAction == PostFabAction.refresh) const Icon(Icons.touch_app_outlined),
+                                if (postFabLongPressAction == PostFabAction.refresh) const Icon(Icons.touch_app_rounded),
+                              ],
+                              onLongPress: () => showPostFabActionPicker(PostFabAction.refresh),
+                            ),
+                          ],
+                        ),
+                      )
+                    : null,
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 80))
+        ],
+      ),
     );
   }
 
   void showFeedFabActionPicker(FeedFabAction action) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
-        title: 'Set Press Action',
+        title: l10n.setAction,
         items: [
-          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
+          ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
@@ -653,14 +589,16 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   }
 
   void showPostFabActionPicker(PostFabAction action) {
+    final l10n = AppLocalizations.of(context)!;
+
     showModalBottomSheet(
       context: context,
       showDragHandle: true,
       builder: (context) => BottomSheetListPicker(
-        title: 'Set Press Action',
+        title: l10n.setAction,
         items: [
-          ListPickerItem(label: AppLocalizations.of(context)!.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
-          ListPickerItem(label: AppLocalizations.of(context)!.setLongPress, payload: 'long', icon: Icons.touch_app_rounded)
+          ListPickerItem(label: l10n.setShortPress, payload: 'short', icon: Icons.touch_app_outlined),
+          ListPickerItem(label: l10n.setLongPress, payload: 'long', icon: Icons.touch_app_rounded),
         ],
         onSelect: (value) {
           if (value.payload == 'short') {
