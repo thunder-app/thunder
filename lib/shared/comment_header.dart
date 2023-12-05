@@ -170,15 +170,7 @@ class CommentHeader extends StatelessWidget {
                                                 fontWeight: FontWeight.w300,
                                               ),
                                             )
-                                        ]))
-                              //  ScalableText(
-                              //     comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
-                              //     fontScale: state.metadataFontSizeScale,
-                              //     style: theme.textTheme.bodyMedium?.copyWith(
-                              //       fontWeight: FontWeight.w500,
-                              //     ),
-                              //   ),
-                              ),
+                                        ]))),
                         ),
                       ),
                       const SizedBox(width: 8.0),
