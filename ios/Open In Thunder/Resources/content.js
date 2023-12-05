@@ -61,7 +61,7 @@ let instances = [
 
 const observeUrlChange = () => {
     let oldHref = document.location.href;
-    
+
     const body = document.querySelector("body");
     const observer = new MutationObserver((mutations) => {
         if (oldHref !== document.location.href) {
@@ -69,27 +69,27 @@ const observeUrlChange = () => {
             openInThunder();
         }
     });
-    
+
     observer.observe(body, { childList: true, subtree: true });
 };
 
 
 function isLemmyInstance(arr) {
     const currentHost = new URL(document.location.href).host;
-    
+
     for (let i = 0; i < instances.length; i++) {
         if (currentHost.includes(instances[i])) {
             return true;
         }
     }
-    
+
     return false;
 }
 
 function openInThunder() {
     const shouldOpen = isLemmyInstance();
     if (!shouldOpen) return;
-    
+
     let url = new URL(document.location.href);
     url.protocol = "thunder:";
     window.location.href = url;
@@ -97,4 +97,3 @@ function openInThunder() {
 
 openInThunder();
 window.onload = observeUrlChange;
-
