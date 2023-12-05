@@ -1,20 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:jovial_svg/jovial_svg.dart';
-
-import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:link_preview_generator/link_preview_generator.dart';
-
+import 'package:jovial_svg/jovial_svg.dart';
+import 'package:markdown/markdown.dart' as md;
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/shared/image_preview.dart';
-import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/markdown/extended_markdown.dart';
 
 class CommonMarkdownBody extends StatelessWidget {

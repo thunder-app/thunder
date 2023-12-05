@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 import 'package:thunder/account/models/account.dart';
@@ -10,7 +10,6 @@ import 'package:thunder/core/singletons/lemmy_client.dart';
 import '../../utils/comment.dart';
 
 part 'inbox_event.dart';
-
 part 'inbox_state.dart';
 
 const throttleDuration = Duration(seconds: 1);

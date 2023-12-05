@@ -1,14 +1,12 @@
 import 'package:bloc/bloc.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
