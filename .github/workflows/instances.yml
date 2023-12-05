@@ -58,25 +58,18 @@ jobs:
         mv android/app/src/main/AndroidManifest-new.xml android/app/src/main/AndroidManifest.xml
 
         # ---------- Safari Extension ----------
-        totalLines=$(wc -l < lemmy-instances.txt)
-        currentLine=0
-        
+
         safariManifestInstances=""
         safariContentInstances=""
+        lastLine=true
         
         # Generate the Safari extension domains used in manifest.json and content.js
         # It ignores the last comma in the list to generate proper json
         while IFS= read -r instance; do
-            ((currentLine++))
-            
-            if [ "$currentLine" -eq 1 ]; then
-                # First line
+            if [ "$lastLine" = true ]; then
                 safariManifestInstances="                \"*://$instance/*\""
-                safariContentInstances="    \"$instance\""
-            elif [ "$currentLine" -eq "$totalLines" ]; then
-                # Last line
-                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\"\n"
-                safariContentInstances="$safariContentInstances,\n    \"$instance\"\n"
+                safariContentInstances="    \"$instance"\"
+                lastLine=false
             else
                 safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
                 safariContentInstances="$safariContentInstances,\n    \"$instance\""
@@ -127,14 +120,12 @@ jobs:
         done < "ios/Open In Thunder/Resources/content.js"
         mv "ios/Open In Thunder/Resources/content-new.js" "ios/Open In Thunder/Resources/content.js"
 
-        echo $?
-
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5.0.2
       with:
           commit-message: Update instances
-          title: Experimental - Update instances
+          title: Update instances
           body: This PR is updating `lemmy-instances.txt`, `instances.dart`, `AndroidManifest.xml`, `manifest.json` and `content.js` with the latest list of instances retrieved from fediverse.observer.
-          branch: test-update-instances
+          branch: update-instances
           delete-branch: true
           author: GitHub <noreply@github.com>
