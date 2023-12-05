@@ -61,8 +61,6 @@ jobs:
         totalLines=$(wc -l < lemmy-instances.txt)
         currentLine=0
         
-        echo $totalLines
-        
         safariManifestInstances=""
         safariContentInstances=""
         
