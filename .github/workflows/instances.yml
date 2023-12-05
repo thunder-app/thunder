@@ -68,6 +68,10 @@ jobs:
         # Generate the Safari extension domains used in manifest.json and content.js
         # It ignores the last comma in the list to generate proper json
         while IFS= read -r instance; do
+            currentLine=$((currentLine + 1))
+
+            echo currentLine: $currentLine of $totalLines
+
             if [ "$lastLine" = true ]; then
                 safariManifestInstances="                \"*://$instance/*\""
                 safariContentInstances="    \"$instance"\"
