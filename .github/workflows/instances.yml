@@ -72,10 +72,14 @@ jobs:
 
             echo currentLine: $currentLine of $totalLines
 
-            if [ "$lastLine" = true ]; then
+            if [ "$currentLine" -eq 1 ]; then
+                # First line
                 safariManifestInstances="                \"*://$instance/*\""
-                safariContentInstances="    \"$instance"\"
-                lastLine=false
+                safariContentInstances="    \"$instance\""
+            elif [ "$currentLine" -eq "$totalLines" ]; then
+                # Last line
+                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\"\n"
+                safariContentInstances="$safariContentInstances,\n    \"$instance\"\n"
             else
                 safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
                 safariContentInstances="$safariContentInstances,\n    \"$instance\""
