@@ -59,27 +59,23 @@ jobs:
 
         # ---------- Safari Extension ----------
 
-        safariManifestInstances=$(awk 'BEGIN {lastLine=1} {
-            if (lastLine) {
-                print "                \"*://"$0"/*\""
-                lastLine=0
-            } else {
-                print ",\n                \"*://"$0"/*\""
-            }
-        }' lemmy-instances.txt)
+        safariManifestInstances=""
+        safariContentInstances=""
+        lastLine=true
         
-        safariContentInstances=$(awk 'BEGIN {lastLine=1} {
-            if (lastLine) {
-                print "    \""$0"\""
-                lastLine=0
-            } else {
-                print ",\n    \""$0"\""
-            }
-        }' lemmy-instances.txt)
-
-        echo "safariManifestInstances: $safariManifestInstances"
-        echo "safariContentInstances: $safariContentInstances"
-
+        # Generate the Safari extension domains used in manifest.json and content.js
+        # It ignores the last comma in the list to generate proper json
+        while IFS= read -r instance; do
+            if [ "$lastLine" = true ]; then
+                safariManifestInstances="                \"*://$instance/*"\\n"
+                safariContentInstances="    \"$instance\"\n"
+                lastLine=false
+            else
+                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
+                safariContentInstances="$safariContentInstances,\n    \"$instance\""
+            fi
+        done < lemmy-instances.txt
+        
         # Generates the new manifest.json with the updated instances
         inSection=false
         while IFS= read -r line; do
@@ -88,7 +84,7 @@ jobs:
         fi
         
         if [[ $line == "            ]" ]]; then 
-            echo $safariManifestInstances >> "ios/Open In Thunder/Resources/manifest-new.json"
+            printf "$safariManifestInstances" >> "ios/Open In Thunder/Resources/manifest-new.json"
             inSection=false
         fi
         
@@ -110,7 +106,7 @@ jobs:
         fi
         
         if [[ $line == "];" ]]; then 
-            echo $safariContentInstances >> "ios/Open In Thunder/Resources/content-new.js"
+            printf "$safariContentInstances" >> "ios/Open In Thunder/Resources/content-new.js"
             inSection=false
         fi
         
@@ -123,3 +119,13 @@ jobs:
         echo "$line" >> "ios/Open In Thunder/Resources/content-new.js"
         done < "ios/Open In Thunder/Resources/content.js"
         mv "ios/Open In Thunder/Resources/content-new.js" "ios/Open In Thunder/Resources/content.js"
+
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5.0.2
+      with:
+          commit-message: Update instances
+          title: Experimental - Update instances
+          body: This PR is updating `lemmy-instances.txt`, `instances.dart`, `AndroidManifest.xml`, `manifest.json` and `content.js` with the latest list of instances retrieved from fediverse.observer.
+          branch: test-update-instances
+          delete-branch: true
+          author: GitHub <noreply@github.com>
