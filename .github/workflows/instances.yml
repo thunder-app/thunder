@@ -59,33 +59,26 @@ jobs:
 
         # ---------- Safari Extension ----------
 
-        safariManifestInstances=""
-        safariContentInstances=""
-        lastLine=true
+        safariManifestInstances=$(awk 'BEGIN {lastLine=1} {
+            if (lastLine) {
+                print "                \"*://"$0"/*\""
+                lastLine=0
+            } else {
+                print ",\n                \"*://"$0"/*\""
+            }
+        }' lemmy-instances.txt)
         
-        # Generate the Safari extension domains used in manifest.json and content.js
-        # It ignores the last comma in the list to generate proper json
-        while IFS= read -r instance; do
-            if [ "$lastLine" = true ]; then
-                safariManifestInstances="                \"*://$instance/*\""
-                safariContentInstances="    \"$instance"\"
-                lastLine=false
-            else
-                safariManifestInstances="$safariManifestInstances,\n                \"*://$instance/*\""
-                safariContentInstances="$safariContentInstances,\n    \"$instance\""
-            fi
-        done < lemmy-instances.txt
+        safariContentInstances=$(awk 'BEGIN {lastLine=1} {
+            if (lastLine) {
+                print "    \""$0"\""
+                lastLine=0
+            } else {
+                print ",\n    \""$0"\""
+            }
+        }' lemmy-instances.txt)
 
-        echo "safariManifestInstances<<EOF" >> $GITHUB_ENV
-        echo "$safariManifestInstances" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-        
-        echo "safariContentInstances<<EOF" >> $GITHUB_ENV
-        echo "$safariContentInstances" >> $GITHUB_ENV
-        echo "EOF" >> $GITHUB_ENV
-
-        echo "The string is: ${{ env.safariManifestInstances }}"
-        echo "The string is: ${{ env.safariContentInstances }}"
+        echo "safariManifestInstances: $safariManifestInstances"
+        echo "safariContentInstances: $safariContentInstances"
 
         # Generates the new manifest.json with the updated instances
         inSection=false
@@ -95,7 +88,7 @@ jobs:
         fi
         
         if [[ $line == "            ]" ]]; then 
-            echo ${{ env.safariManifestInstances }} >> "ios/Open In Thunder/Resources/manifest-new.json"
+            echo $safariManifestInstances >> "ios/Open In Thunder/Resources/manifest-new.json"
             inSection=false
         fi
         
@@ -117,7 +110,7 @@ jobs:
         fi
         
         if [[ $line == "];" ]]; then 
-            echo ${{ env.safariContentInstances }} >> "ios/Open In Thunder/Resources/content-new.js"
+            echo $safariContentInstances >> "ios/Open In Thunder/Resources/content-new.js"
             inSection=false
         fi
         
