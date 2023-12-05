@@ -6,7 +6,6 @@ import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -37,9 +36,6 @@ void main() async {
 
   //Setting SystemUIMode
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-
-  // Load up environment variables
-  await dotenv.load(fileName: ".env");
 
   // Load up sqlite database
   await DB.instance.database;
