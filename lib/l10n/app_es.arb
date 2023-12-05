@@ -842,5 +842,53 @@
   "collapseInformation": "Contraer información",
   "@collapseInformation": {
     "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "unableToLoadImage": "No es posible cargar la imagen",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "showScores": "Mostrar las puntuaciones de publicaciones/comentarios",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "information": "Información",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "showBotAccounts": "Mostrar las cuentas de los bots",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "floatingActionButtonInformation": "Thunder tiene una experiencia FAB totalmente personalizable que admite algunos gestos.\n- Desliza el dedo hacia arriba para ver acciones FAB adicionales\n- Desliza hacia abajo/arriba para ocultar o mostrar el FAB\n\nPara personalizar las acciones principales y secundarias del FAB, mantén pulsada una de las acciones que aparecen a continuación.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "setAction": "Establecer acción",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "expandInformation": "Ampliar la información",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "floatingActionButtonLongPressDescription": "indica la acción de la pulsación larga del FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "enablePostFab": "Habilitar botón flotante en los mensajes",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "unableToLoadImageFrom": "No se ha podido cargar la imagen de {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "enableFeedFab": "Activar el botón flotante en los feeds",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "floatingActionButtonSinglePressDescription": "denota la acción de pulsación única del FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
   }
 }
