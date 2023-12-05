@@ -76,9 +76,17 @@ jobs:
             fi
         done < lemmy-instances.txt
 
-        echo $safariManifestInstances
-        echo $safariContentInstances
+        echo "safariManifestInstances<<EOF" >> $GITHUB_ENV
+        echo "$safariManifestInstances" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
         
+        echo "safariContentInstances<<EOF" >> $GITHUB_ENV
+        echo "$safariContentInstances" >> $GITHUB_ENV
+        echo "EOF" >> $GITHUB_ENV
+
+        echo "The string is: ${{ env.safariManifestInstances }}"
+        echo "The string is: ${{ env.safariContentInstances }}"
+
         # Generates the new manifest.json with the updated instances
         inSection=false
         while IFS= read -r line; do
@@ -87,7 +95,7 @@ jobs:
         fi
         
         if [[ $line == "            ]" ]]; then 
-            echo "$safariManifestInstances" >> "ios/Open In Thunder/Resources/manifest-new.json"
+            echo ${{ env.safariManifestInstances }} >> "ios/Open In Thunder/Resources/manifest-new.json"
             inSection=false
         fi
         
@@ -109,7 +117,7 @@ jobs:
         fi
         
         if [[ $line == "];" ]]; then 
-            echo "$safariContentInstances" >> "ios/Open In Thunder/Resources/content-new.js"
+            echo ${{ env.safariContentInstances }} >> "ios/Open In Thunder/Resources/content-new.js"
             inSection=false
         fi
         
