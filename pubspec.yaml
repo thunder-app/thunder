@@ -35,7 +35,7 @@ dependencies:
   link_preview_generator:
     git:
       url: https://github.com/thunder-app/link_preview_generator.git
-      ref: 2e8391f301d420f07f10e1882ac5ef4d926cc27c
+      ref: 77a00003216591c32194c2af3c4fc1cf64797e53
   extended_image: ^8.2.0
   cupertino_icons: ^1.0.2
   bloc: ^8.1.2
