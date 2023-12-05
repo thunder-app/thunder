@@ -213,20 +213,23 @@ class _ThunderState extends State<Thunder> {
       LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
     }
 
+    // If the incoming link is a custom URL, replace it back with https://
+    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(link!);
+        if (context.mounted) await _navigateToComment(_link);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(link!);
+        if (context.mounted) await _navigateToUser(_link);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(link!);
+        if (context.mounted) await _navigateToPost(_link);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(link!);
+        if (context.mounted) await _navigateToCommunity(_link);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(link!);
+        if (context.mounted) await _navigateToInstance(_link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link!);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
         }
     }
   }
