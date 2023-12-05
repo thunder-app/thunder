@@ -33,6 +33,7 @@ lemmy.nz
 lemmy.one
 lemmy.sdf.org
 lemmy.today
+lemmy.whynotdrs.org
 lemmy.world
 lemmy.zip
 lemmygrad.ml
@@ -40,7 +41,6 @@ lemmynsfw.com
 mander.xyz
 midwest.social
 monero.town
-monyet.cc
 pawb.social
 programming.dev
 reddthat.com
