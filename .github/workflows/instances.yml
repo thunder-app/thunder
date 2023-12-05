@@ -118,7 +118,7 @@ jobs:
         
         echo "$line" >> "ios/Open In Thunder/Resources/content-new.js"
         done < "ios/Open In Thunder/Resources/content.js"
-        mv "ios/Open In Thunder/Resources/content-new.json" "ios/Open In Thunder/Resources/content.json"
+        mv "ios/Open In Thunder/Resources/content-new.js" "ios/Open In Thunder/Resources/content.js"
 
     - name: Create Pull Request
       uses: peter-evans/create-pull-request@v5.0.2
