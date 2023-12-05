@@ -9,6 +9,7 @@
 - Added setting to show/hide post and comment scores
 - Added setting to show/hide bot content
 - Added the ability to render SVGs in markdown bodies - contribution from @micahmo
+- Added Safari extension to open Lemmy links in Thunder
 
 ### Fixed
 - Fixed issue where custom tabs would not respect default browser when opening links
