@@ -838,5 +838,9 @@
   "languageNotAllowed": "La comunidad en la que estás publicando no permite publicar en el idioma que has seleccionado. Prueba con otro idioma.",
   "@languageNotAllowed": {
     "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "collapseInformation": "Contraer información",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
   }
 }
