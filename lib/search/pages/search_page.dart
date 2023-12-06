@@ -285,7 +285,15 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                       ListPickerItem(label: l10n.comments, payload: SearchType.comments, icon: Icons.chat_rounded),
                                     ],
                                     onSelect: (value) {
-                                      setState(() => _currentSearchType = value.payload);
+                                      setState(() {
+                                        _currentSearchType = value.payload;
+
+                                        if (_currentSearchType == SearchType.posts && Uri.tryParse(_controller.text)?.isAbsolute == true) {
+                                          _searchByUrl = true;
+                                          _searchUrlLabel = AppLocalizations.of(context)!.url;
+                                        }
+                                      });
+
                                       _doSearch();
                                     },
                                     previouslySelected: _currentSearchType,
