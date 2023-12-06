@@ -1,4 +1,3 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
@@ -43,7 +42,10 @@ class CommonMarkdownBody extends StatelessWidget {
     return ExtendedMarkdownBody(
       data: body,
       extensionSet: customExtensionSet,
-      inlineSyntaxes: [LemmyLinkSyntax()],
+      inlineSyntaxes: [LemmyLinkSyntax(), SpoilerInlineSyntax()],
+      builders: {
+        'spoiler': SpoilerElementBuilder(),
+      },
       imageBuilder: (uri, title, alt) {
         return FutureBuilder(
           future: isImageUriSvg(uri),
@@ -106,6 +108,47 @@ class LemmyLinkSyntax extends md.InlineSyntax {
   }
 }
 
+/// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.InlineSyntax]
+/// to allow for inline parsing of text for a given spoiler tag.
+///
+/// It parses the following syntax for a spoiler:
+///
+/// ```
+/// :::spoiler spoiler_body:::
+/// :::spoiler spoiler_body :::
+/// ::: spoiler spoiler_body :::
+/// ```
+///
+/// It does not capture this syntax properly:
+/// ```
+/// ::: spoiler spoiler_body:::
+/// ```
+class SpoilerInlineSyntax extends md.InlineSyntax {
+  static const String _pattern = r'(:::\s?spoiler\s(.*?)\s?:::)';
+
+  SpoilerInlineSyntax() : super(_pattern);
+
+  @override
+  bool onMatch(md.InlineParser parser, Match match) {
+    final body = match[2]!;
+
+    // Create a custom Node which will be used to render the spoiler in [SpoilerElementBuilder]
+    final md.Node spoiler = md.Element('span', [
+      /// This is a workaround to allow us to parse the spoiler title and body within the [SpoilerElementBuilder]
+      ///
+      /// If the title and body are passed as separate elements into the [spoiler] tag, it causes
+      /// the resulting [SpoilerWidget] to always show the second element. To work around this, the title and
+      /// body are placed together into a single node, separated by a ::: to distinguish the sections.
+      md.Element('spoiler', [
+        md.UnparsedContent('_inline:::$body'),
+      ]),
+    ]);
+
+    parser.addNode(spoiler);
+    return true;
+  }
+}
+
 /// A Markdown Extension to handle spoiler tags on Lemmy. This extends the [md.BlockSyntax]
 /// to allow for multi-line parsing of text for a given spoiler tag.
 ///
@@ -157,7 +200,7 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
       /// the resulting [SpoilerWidget] to always show the second element. To work around this, the title and
       /// body are placed together into a single node, separated by a ::: to distinguish the sections.
       md.Element('spoiler', [
-        md.UnparsedContent('${title ?? 'spoiler'}:::${body.join('\n')}'),
+        md.UnparsedContent('${title ?? '_block'}:::${body.join('\n')}'),
       ]),
     ]);
 
@@ -185,10 +228,7 @@ class SpoilerElementBuilder extends MarkdownElementBuilder {
   }
 }
 
-/// Creates a widget that toggles the visibility of the given [body].
-/// It displays the [title] of the spoiler by default unless tapped.
-///
-/// If no [title] is given, it will display "spoiler" as the default text.
+/// Creates a widget that toggles the visibility of the given [body]
 class SpoilerWidget extends StatefulWidget {
   final String? title;
   final String? body;
@@ -208,17 +248,22 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
 
     if (isShown) {
       return GestureDetector(
+        behavior: HitTestBehavior.opaque,
         child: CommonMarkdownBody(body: widget.body ?? ''),
         onTap: () => setState(() => isShown = false),
       );
     }
 
-    return RichText(
-      text: TextSpan(
-        text: widget.title ?? 'spoiler',
-        recognizer: TapGestureRecognizer()..onTap = () => setState(() => isShown = true),
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.secondary,
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => setState(() => isShown = true),
+      child: Container(
+        color: theme.colorScheme.primary,
+        child: Text(
+          widget.body ?? 'help',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: Colors.transparent,
+          ),
         ),
       ),
     );
