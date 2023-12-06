@@ -65,7 +65,7 @@ class CommonMarkdownBody extends StatelessWidget {
       h6Padding: EdgeInsets.zero,
       em: const TextStyle(fontStyle: FontStyle.italic, color: Colors.transparent),
       strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.transparent),
-      del: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.transparent),
+      del: const TextStyle(decoration: TextDecoration.none, color: Colors.transparent),
       blockquote: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       img: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
       checkbox: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
