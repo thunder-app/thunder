@@ -39,7 +39,7 @@ Future<void> navigateToInstancePage(BuildContext context, {required String insta
             BlocProvider.value(value: thunderBloc),
           ],
           child: InstancePage(
-            site: getSiteResponse!.siteView.site,
+            getSiteResponse: getSiteResponse!,
             isBlocked: isBlocked,
             instanceId: instanceId,
           ),
