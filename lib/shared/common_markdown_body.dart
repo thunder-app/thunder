@@ -260,10 +260,8 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
       child: Container(
         color: theme.colorScheme.primary,
         child: Text(
-          widget.body ?? 'help',
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: Colors.transparent,
-          ),
+          widget.body ?? '',
+          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.transparent),
         ),
       ),
     );
