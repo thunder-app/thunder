@@ -80,6 +80,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.blockUser,
     icon: Icons.block,
     label: AppLocalizations.of(GlobalContext.context)!.blockUser,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
