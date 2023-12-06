@@ -236,7 +236,13 @@ class _ThunderState extends State<Thunder> {
 
   Future<void> _navigateToInstance(String link) async {
     try {
-      await navigateToInstancePage(context, instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''));
+      await navigateToInstancePage(
+        context,
+        instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''),
+        // We have no context here to determine what the id of this instance would be on our server.
+        // It just means we can't block through this flow, which is ok.
+        instanceId: null,
+      );
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);

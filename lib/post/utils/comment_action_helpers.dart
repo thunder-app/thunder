@@ -3,13 +3,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/report_comment_dialog.dart';
 import 'package:thunder/shared/multi_picker_item.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/utils/instance.dart';
+import 'package:thunder/utils/navigate_instance.dart';
+import 'package:thunder/utils/navigate_user.dart';
 
 import '../../core/auth/bloc/auth_bloc.dart';
 
@@ -23,6 +30,10 @@ enum CommentCardAction {
   reply,
   edit,
   report,
+  visitProfile,
+  blockUser,
+  visitInstance,
+  blockInstance,
 }
 
 class ExtendedCommentCardActions {
@@ -49,14 +60,31 @@ class ExtendedCommentCardActions {
 
 final List<ExtendedCommentCardActions> commentCardDefaultActionItems = [
   ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.visitProfile,
+    icon: Icons.person_search_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.blockUser,
+    icon: Icons.block,
+    label: AppLocalizations.of(GlobalContext.context)!.blockUser,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.visitInstance,
+    icon: Icons.language,
+    label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
+  ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.blockInstance,
+    icon: Icons.block_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.copyText,
     icon: Icons.copy_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.copyText,
-  ),
-  ExtendedCommentCardActions(
-    commentCardAction: CommentCardAction.shareLink,
-    icon: Icons.share_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.shareLink,
   ),
   ExtendedCommentCardActions(
     commentCardAction: CommentCardAction.report,
@@ -106,6 +134,11 @@ final List<ExtendedCommentCardActions> commentCardDefaultMultiActionItems = [
     shouldShow: (context, commentView) => commentView.creator.id == context.read<AuthBloc>().state.account?.userId,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
+  ExtendedCommentCardActions(
+    commentCardAction: CommentCardAction.shareLink,
+    icon: Icons.share_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.shareLink,
+  ),
 ];
 
 void showCommentActionBottomModalSheet(
@@ -113,6 +146,10 @@ void showCommentActionBottomModalSheet(
   final theme = Theme.of(context);
   final bool isUserLoggedIn = context.read<AuthBloc>().state.isLoggedIn;
   List<ExtendedCommentCardActions> commentCardActionItems = _updateDefaultCommentActionItems(context, commentView);
+
+  if (commentCardActionItems.any((c) => c.commentCardAction == CommentCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    commentCardActionItems.removeWhere((c) => c.commentCardAction == CommentCardAction.blockInstance);
+  }
 
   showModalBottomSheet<void>(
     showDragHandle: true,
@@ -231,6 +268,23 @@ void onSelected(
       break;
     case CommentCardAction.report:
       onReportAction(commentView.comment.id);
+      break;
+    case CommentCardAction.visitProfile:
+      navigateToUserPage(context, userId: commentView.creator.id);
+      break;
+    case CommentCardAction.blockUser:
+      context.read<UserBloc>().add(BlockUserEvent(personId: commentView.creator.id, blocked: true));
+      break;
+    case CommentCardAction.visitInstance:
+      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(commentView.creator.actorId)!, instanceId: commentView.community.instanceId);
+      break;
+    case CommentCardAction.blockInstance:
+      context.read<InstanceBloc>().add(InstanceActionEvent(
+            instanceAction: InstanceAction.block,
+            instanceId: commentView.creator.instanceId,
+            domain: fetchInstanceNameFromUrl(commentView.creator.actorId),
+            value: true,
+          ));
       break;
   }
 }
