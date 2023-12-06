@@ -38,6 +38,21 @@ List<ListPickerItem<SortType>> topSortTypeItems = [
     label: AppLocalizations.of(GlobalContext.context)!.topMonth,
   ),
   ListPickerItem(
+    payload: SortType.topThreeMonths,
+    icon: Icons.calendar_month_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topThreeMonths,
+  ),
+  ListPickerItem(
+    payload: SortType.topSixMonths,
+    icon: Icons.calendar_today_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topSixMonths,
+  ),
+  ListPickerItem(
+    payload: SortType.topNineMonths,
+    icon: Icons.calendar_view_day_outlined,
+    label: AppLocalizations.of(GlobalContext.context)!.topNineMonths,
+  ),
+  ListPickerItem(
     payload: SortType.topYear,
     icon: Icons.calendar_today,
     label: AppLocalizations.of(GlobalContext.context)!.topYear,
@@ -79,6 +94,16 @@ class SortPicker extends BottomSheetListPicker<SortType> {
             icon: Icons.warning_rounded,
             label: AppLocalizations.of(GlobalContext.context)!.controversial,
           ),
+        ListPickerItem(
+          payload: SortType.new_,
+          icon: Icons.auto_awesome_rounded,
+          label: AppLocalizations.of(GlobalContext.context)!.new_,
+        ),
+        ListPickerItem(
+          payload: SortType.old,
+          icon: Icons.access_time_outlined,
+          label: AppLocalizations.of(GlobalContext.context)!.old,
+        ),
         ListPickerItem(
           payload: SortType.mostComments,
           icon: Icons.comment_bank_rounded,

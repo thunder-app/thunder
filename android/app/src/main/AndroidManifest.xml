@@ -54,9 +54,8 @@
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
               <data android:scheme="https"/>
-               <!-- TODO(lemmy_server_domain_finder): Setup a script to update available lemmy domains  -->
-              <!-- Obtained from github.com/dessalines/jerboa/blob/main/app/src/main/AndroidManifest.xml-->
               <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
+              <data android:host="ani.social" />
               <data android:host="aussie.zone" />
               <data android:host="bakchodi.org" />
               <data android:host="beehaw.org" />
@@ -66,7 +65,6 @@
               <data android:host="discuss.tchncs.de" />
               <data android:host="exploding-heads.com" />
               <data android:host="feddit.ch" />
-              <data android:host="feddit.cl" />
               <data android:host="feddit.de" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
@@ -92,7 +90,6 @@
               <data android:host="lemmy.one" />
               <data android:host="lemmy.sdf.org" />
               <data android:host="lemmy.today" />
-              <data android:host="lemmy.whynotdrs.org" />
               <data android:host="lemmy.world" />
               <data android:host="lemmy.zip" />
               <data android:host="lemmygrad.ml" />

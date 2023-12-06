@@ -17,21 +17,26 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 
+extension on MarkPostAsReadResponse {
+  bool isSuccess() {
+    return postView != null || success == true;
+  }
+}
+
 /// Logic to mark post as read
-Future<PostView> markPostAsRead(int postId, bool read) async {
+Future<bool> markPostAsRead(int postId, bool read) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
 
   if (account?.jwt == null) throw Exception('User not logged in');
 
-  PostResponse postResponse = await lemmy.run(MarkPostAsRead(
+  MarkPostAsReadResponse markPostAsReadResponse = await lemmy.run(MarkPostAsRead(
     auth: account!.jwt!,
     postId: postId,
     read: read,
   ));
 
-  PostView updatedPostView = postResponse.postView;
-  return updatedPostView;
+  return markPostAsReadResponse.isSuccess();
 }
 
 // Optimistically updates a post. This changes the value of the post locally, without sending the network request
@@ -107,7 +112,7 @@ Future<PostView> savePost(int postId, bool save) async {
 Future<List<PostViewMedia>> parsePostViews(List<PostView> postViews) async {
   SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
 
-  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) ?? false;
+  bool fetchImageDimensions = prefs.getBool(LocalSettings.showPostFullHeightImages.name) == true && prefs.getBool(LocalSettings.useCompactView.name) != true;
   bool edgeToEdgeImages = prefs.getBool(LocalSettings.showPostEdgeToEdgeImages.name) ?? false;
   bool tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
   bool hideNsfwPosts = prefs.getBool(LocalSettings.hideNsfwPosts.name) ?? false;

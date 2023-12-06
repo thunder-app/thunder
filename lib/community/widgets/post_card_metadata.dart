@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
@@ -41,86 +41,69 @@ class PostCardMetaData extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final AuthState authState = context.watch<AuthBloc>().state;
+    final showScores = authState.getSiteResponse?.myUser?.localUserView.localUser.showScores ?? true;
+
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        return Wrap(
           children: [
-            Flexible(
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                runSpacing: 2,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        text: formatNumberToK(score),
-                        textColor: voteType == 1
-                            ? upVoteColor
-                            : voteType == -1
-                                ? downVoteColor
-                                : readColor,
-                        icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
-                            size: 20.0,
-                            color: voteType == 1
-                                ? upVoteColor
-                                : voteType == -1
-                                    ? downVoteColor
-                                    : readColor),
-                        padding: 2.0,
-                      ),
-                      const SizedBox(width: 10.0),
-                      IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        icon: Icon(
-                          /*unreadComments != 0 && unreadComments != comments ? Icons.mark_unread_chat_alt_rounded  :*/ Icons.chat,
-                          size: 15.0,
-                          color: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                              readColor,
-                        ),
-                        text: /*unreadComments != 0 && unreadComments != comments ? '+${formatNumberToK(unreadComments)}' :*/
-                            formatNumberToK(comments),
-                        textColor: /*unreadComments != 0 && unreadComments != comments ? theme.primaryColor :*/
-                            readColor,
-                        padding: 5.0,
-                      ),
-                      const SizedBox(width: 10.0),
-                      IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        icon: Icon(
-                          hasBeenEdited ? Icons.edit : Icons.history_rounded,
-                          size: 15.0,
-                          color: readColor,
-                        ),
-                        text: formatTimeToString(dateTime: published.toIso8601String()),
-                        textColor: readColor,
-                      ),
-                      const SizedBox(width: 8.0),
-                    ],
-                  ),
-                  if (hostURL != null)
-                    Padding(
-                      padding: const EdgeInsets.only(left: 2.0),
-                      child: Tooltip(
-                        message: hostURL,
-                        preferBelow: false,
-                        child: IconText(
-                          textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                          icon: Icon(
-                            Icons.public,
-                            size: 15.0,
-                            color: readColor,
-                          ),
-                          text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
-                          textColor: readColor,
-                        ),
-                      ),
-                    ),
-                ],
-              ),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              text: showScores ? formatNumberToK(score) : null,
+              textColor: voteType == 1
+                  ? upVoteColor
+                  : voteType == -1
+                      ? downVoteColor
+                      : readColor,
+              icon: Icon(voteType == 1 ? Icons.arrow_upward : (voteType == -1 ? Icons.arrow_downward : (score < 0 ? Icons.arrow_downward : Icons.arrow_upward)),
+                  size: 20.0,
+                  color: voteType == 1
+                      ? upVoteColor
+                      : voteType == -1
+                          ? downVoteColor
+                          : readColor),
+              padding: 2.0,
             ),
+            const SizedBox(width: 8.0),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                Icons.chat,
+                size: 18.0,
+                color: readColor,
+              ),
+              text: formatNumberToK(comments),
+              textColor: readColor,
+              padding: 5.0,
+            ),
+            const SizedBox(width: 8.0),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                hasBeenEdited ? Icons.edit : Icons.history_rounded,
+                size: 18.0,
+                color: readColor,
+              ),
+              text: formatTimeToString(dateTime: published.toIso8601String()),
+              textColor: readColor,
+            ),
+            const SizedBox(width: 8.0),
+            if (hostURL != null)
+              Tooltip(
+                message: hostURL,
+                preferBelow: false,
+                child: IconText(
+                  fontScale: state.metadataFontSizeScale,
+                  icon: Icon(
+                    Icons.public,
+                    size: 17.0,
+                    color: readColor,
+                  ),
+                  text: Uri.parse(hostURL!).host.replaceFirst('www.', ''),
+                  textColor: readColor,
+                ),
+              ),
           ],
         );
       },
@@ -160,26 +143,8 @@ class PostViewMetaData extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                /*Container(
-                  child: unreadComments != 0 && unreadComments != comments ? Row(
-                    children: [
-                      IconText(
-                        textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
-                        icon: Icon(
-                          Icons.mark_unread_chat_alt_rounded,
-                          size: 17.0,
-                          color: theme.primaryColor,
-                        ),
-                        text: '+${formatNumberToK(unreadComments)}',
-                        textColor: theme.primaryColor,
-                        padding: 5.0,
-                      ),
-                      const SizedBox(width: 10.0),
-                    ],
-                  ) : null,
-                ),*/
                 IconText(
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                  fontScale: state.metadataFontSizeScale,
                   icon: Icon(
                     Icons.chat,
                     size: 17.0,
@@ -191,7 +156,7 @@ class PostViewMetaData extends StatelessWidget {
                 ),
                 const SizedBox(width: 10.0),
                 IconText(
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                  fontScale: state.metadataFontSizeScale,
                   icon: Icon(
                     hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
                     size: 19.0,
@@ -261,11 +226,15 @@ class PostCommunityAndAuthor extends StatelessWidget {
                         InkWell(
                             borderRadius: BorderRadius.circular(6),
                             onTap: (compactMode && !state.tappableAuthorCommunity) ? null : () => navigateToUserPage(context, userId: postView.creator.id),
-                            child: Text('$creatorName', textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor, style: textStyleAuthor)),
+                            child: ScalableText(
+                              '$creatorName',
+                              fontScale: state.metadataFontSizeScale,
+                              style: textStyleAuthor,
+                            )),
                         if (!communityMode)
-                          Text(
+                          ScalableText(
                             ' to ',
-                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            fontScale: state.metadataFontSizeScale,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
                             ),
@@ -279,9 +248,9 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         if (!communityMode)
-                          Text(
+                          ScalableText(
                             '${postView.community.name} · ${fetchInstanceNameFromUrl(postView.community.actorId)}',
-                            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                            fontScale: state.metadataFontSizeScale,
                             style: textStyleCommunity,
                           ),
                         if (showCommunitySubscription)

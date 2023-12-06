@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -9,10 +10,10 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
-import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
@@ -30,8 +31,8 @@ class CommentCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    int upvotes = comment.counts.upvotes ?? 0;
-    int downvotes = comment.counts.downvotes ?? 0;
+    int upvotes = comment.counts.upvotes;
+    int downvotes = comment.counts.downvotes;
 
     final ThunderState state = context.read<ThunderBloc>().state;
     final bool reduceAnimations = state.reduceAnimations;
@@ -48,7 +49,7 @@ class CommentCard extends StatelessWidget {
           await Navigator.of(context).push(
             SwipeablePageRoute(
               transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
-              backGestureDetectionStartOffset: Platform.isAndroid ? 45 : 0,
+              backGestureDetectionStartOffset: !kIsWeb && Platform.isAndroid ? 45 : 0,
               backGestureDetectionWidth: 45,
               canOnlySwipeFromEdge: disableFullPageSwipe(isUserLoggedIn: authBloc.state.isLoggedIn, state: thunderBloc.state, isPostPage: true) || !state.enableFullScreenSwipeNavigationGesture,
               builder: (context) => MultiBlocProvider(
@@ -82,10 +83,10 @@ class CommentCard extends StatelessWidget {
                     color: theme.colorScheme.onBackground,
                   ),
                   const SizedBox(width: 2.0),
-                  Text(
+                  ScalableText(
                     formatNumberToK(upvotes),
                     semanticsLabel: AppLocalizations.of(context)!.xUpvotes(formatNumberToK(upvotes)),
-                    textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                    fontScale: state.metadataFontSizeScale,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onBackground,
                     ),
@@ -98,10 +99,10 @@ class CommentCard extends StatelessWidget {
                   ),
                   const SizedBox(width: 2.0),
                   if (downvotes != 0)
-                    Text(
+                    ScalableText(
                       formatNumberToK(downvotes),
                       semanticsLabel: AppLocalizations.of(context)!.xDownvotes(formatNumberToK(downvotes)),
-                      textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                      fontScale: state.metadataFontSizeScale,
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: downvotes != 0 ? theme.colorScheme.onBackground : Colors.transparent,
                       ),
@@ -119,7 +120,7 @@ class CommentCard extends StatelessWidget {
                 onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: comment.community.id),
               ),
               const SizedBox(height: 10),
-              CommonMarkdownBody(body: comment.comment.content),
+              CommonMarkdownBody(body: comment.comment.content, isComment: true),
               const Divider(height: 20),
               const Row(
                 mainAxisAlignment: MainAxisAlignment.end,

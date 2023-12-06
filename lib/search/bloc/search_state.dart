@@ -1,6 +1,6 @@
 part of 'search_bloc.dart';
 
-enum SearchStatus { initial, trending, loading, refreshing, success, empty, failure, done }
+enum SearchStatus { initial, trending, loading, refreshing, success, empty, failure, done, performingCommentAction }
 
 class SearchState extends Equatable {
   SearchState({
@@ -8,6 +8,8 @@ class SearchState extends Equatable {
     this.communities,
     this.trendingCommunities,
     this.users,
+    this.comments,
+    this.posts,
     this.errorMessage,
     this.page = 1,
     this.sortType,
@@ -18,6 +20,8 @@ class SearchState extends Equatable {
   List<CommunityView>? communities;
   List<CommunityView>? trendingCommunities;
   List<PersonView>? users;
+  List<CommentView>? comments;
+  List<PostViewMedia>? posts;
 
   final String? errorMessage;
 
@@ -31,6 +35,8 @@ class SearchState extends Equatable {
     List<CommunityView>? communities,
     List<CommunityView>? trendingCommunities,
     List<PersonView>? users,
+    List<CommentView>? comments,
+    List<PostViewMedia>? posts,
     String? errorMessage,
     int? page,
     SortType? sortType,
@@ -41,6 +47,8 @@ class SearchState extends Equatable {
       communities: communities ?? this.communities,
       trendingCommunities: trendingCommunities ?? this.trendingCommunities,
       users: users ?? this.users,
+      comments: comments ?? this.comments,
+      posts: posts ?? this.posts,
       errorMessage: errorMessage,
       page: page ?? this.page,
       sortType: sortType ?? this.sortType,

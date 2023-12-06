@@ -4,11 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/post/widgets/post_view.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -37,6 +37,7 @@ class CommentSubview extends StatefulWidget {
   final DateTime now;
 
   final List<CommunityModeratorView>? moderators;
+  final List<PostView>? crossPosts;
 
   const CommentSubview({
     super.key,
@@ -58,6 +59,7 @@ class CommentSubview extends StatefulWidget {
     this.viewFullCommentsRefreshing = false,
     required this.now,
     required this.moderators,
+    required this.crossPosts,
   });
 
   @override
@@ -135,6 +137,7 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
               useDisplayNames: state.useDisplayNames,
               postViewMedia: widget.postViewMedia!,
               moderators: widget.moderators,
+              crossPosts: widget.crossPosts,
             );
           }
           if (widget.hasReachedCommentEnd == false && widget.comments.isEmpty) {
@@ -207,9 +210,9 @@ class _CommentSubviewState extends State<CommentSubview> with SingleTickerProvid
                           Container(
                             color: theme.dividerColor.withOpacity(0.1),
                             padding: const EdgeInsets.symmetric(vertical: 32.0),
-                            child: Text(
+                            child: ScalableText(
                               widget.comments.isEmpty ? AppLocalizations.of(context)!.noComments : AppLocalizations.of(context)!.reachedTheBottom,
-                              textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+                              fontScale: state.metadataFontSizeScale,
                               textAlign: TextAlign.center,
                               style: theme.textTheme.titleSmall,
                             ),

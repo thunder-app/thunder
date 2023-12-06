@@ -21,6 +21,7 @@ import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
@@ -44,6 +45,7 @@ enum PostCardAction {
   save,
   toggleRead,
   share,
+  blockUser,
 }
 
 class ExtendedPostCardActions {
@@ -73,6 +75,12 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     postCardAction: PostCardAction.visitProfile,
     icon: Icons.person_search_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockUser,
+    icon: Icons.block,
+    label: AppLocalizations.of(GlobalContext.context)!.blockUser,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
@@ -253,7 +261,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
       break;
     case PostCardAction.visitInstance:
-      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!);
+      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!, instanceId: postViewMedia.postView.community.instanceId);
       break;
     case PostCardAction.sharePost:
       Share.share(postViewMedia.postView.post.apId);
@@ -320,6 +328,9 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
                   postViewMedia,
                   actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                 );
+      break;
+    case PostCardAction.blockUser:
+      context.read<UserBloc>().add(BlockUserEvent(personId: postViewMedia.postView.creator.id, blocked: true));
       break;
   }
 }

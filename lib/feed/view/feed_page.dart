@@ -6,7 +6,6 @@ import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -14,23 +13,21 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/widgets/community_header.dart';
 import 'package:thunder/community/widgets/community_sidebar.dart';
-import 'package:thunder/community/widgets/post_card.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
+import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/feed/widgets/feed_fab.dart';
 import 'package:thunder/feed/widgets/feed_page_app_bar.dart';
 import 'package:thunder/instance/bloc/instance_bloc.dart';
-import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
-import 'package:thunder/utils/constants.dart';
 
 enum FeedType { community, user, general }
 
@@ -92,15 +89,13 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(BuildContext context) {
-    super.build(context);
+  void initState() {
+    super.initState();
 
-    /// When this is true, we find the feed bloc already present in the widget tree
-    /// This is to keep the events on the main page (rather than presenting a new page)
-    if (widget.useGlobalFeedBloc) {
+    try {
       FeedBloc bloc = context.read<FeedBloc>();
 
-      if (bloc.state.status == FeedStatus.initial) {
+      if (widget.useGlobalFeedBloc && bloc.state.status == FeedStatus.initial) {
         bloc.add(FeedFetchedEvent(
           feedType: widget.feedType,
           postListingType: widget.postListingType,
@@ -112,6 +107,19 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           reset: true,
         ));
       }
+    } catch (e) {
+      // ignore and continue if we cannot fetch the feed bloc
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+
+    /// When this is true, we find the feed bloc already present in the widget tree
+    /// This is to keep the events on the main page (rather than presenting a new page)
+    if (widget.useGlobalFeedBloc) {
+      FeedBloc bloc = context.read<FeedBloc>();
 
       return BlocProvider.value(
         value: bloc,
@@ -212,6 +220,7 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
     bool tabletMode = thunderBloc.state.tabletMode;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return MultiBlocListener(
       listeners: [
@@ -219,6 +228,15 @@ class _FeedViewState extends State<FeedView> {
           listener: (context, state) {
             if (state.message != null) {
               showSnackbar(context, state.message!);
+            }
+          },
+        ),
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if ((state.status == UserStatus.failure || state.status == UserStatus.failedToBlock) && state.errorMessage != null) {
+              showSnackbar(context, state.errorMessage!);
+            } else if (state.status == UserStatus.success && state.blockedPerson != null) {
+              showSnackbar(context, l10n.successfullyBlocked);
             }
           },
         ),
@@ -301,54 +319,10 @@ class _FeedViewState extends State<FeedView> {
                         SliverStack(
                           children: [
                             // Widget representing the list of posts on the feed
-                            SliverMasonryGrid.count(
-                              crossAxisCount: tabletMode ? 2 : 1,
-                              crossAxisSpacing: 40,
-                              mainAxisSpacing: 0,
-                              itemBuilder: (BuildContext context, int index) {
-                                return AnimatedSwitcher(
-                                  switchOutCurve: Curves.ease,
-                                  duration: const Duration(milliseconds: 0),
-                                  reverseDuration: const Duration(milliseconds: 400),
-                                  transitionBuilder: (child, animation) {
-                                    return FadeTransition(
-                                      opacity: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                        CurvedAnimation(parent: animation, curve: const Interval(0.5, 1.0)),
-                                      ),
-                                      child: SlideTransition(
-                                        position: Tween<Offset>(begin: const Offset(1.2, 0), end: const Offset(0, 0)).animate(animation),
-                                        child: SizeTransition(
-                                          sizeFactor: Tween<double>(begin: 0.0, end: 1.0).animate(
-                                            CurvedAnimation(
-                                              parent: animation,
-                                              curve: const Interval(0.0, 0.25),
-                                            ),
-                                          ),
-                                          child: child,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                  child: !queuedForRemoval.contains(postViewMedias[index].postView.post.id)
-                                      ? PostCard(
-                                          postViewMedia: postViewMedias[index],
-                                          communityMode: state.feedType == FeedType.community,
-                                          onVoteAction: (int voteType) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.vote, value: voteType));
-                                          },
-                                          onSaveAction: (bool saved) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.save, value: saved));
-                                          },
-                                          onReadAction: (bool read) {
-                                            context.read<FeedBloc>().add(FeedItemActionedEvent(postId: postViewMedias[index].postView.post.id, postAction: PostAction.read, value: read));
-                                          },
-                                          listingType: state.postListingType,
-                                          indicateRead: true,
-                                        )
-                                      : null,
-                                );
-                              },
-                              childCount: postViewMedias.length,
+                            FeedPostList(
+                              postViewMedias: postViewMedias,
+                              tabletMode: tabletMode,
+                              queuedForRemoval: queuedForRemoval,
                             ),
                             // Widgets to display on the feed when feedType == FeedType.community
                             SliverToBoxAdapter(
@@ -444,6 +418,12 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    // If the sidebar is open, close it
+    if (showCommunitySidebar) {
+      setState(() => showCommunitySidebar = false);
+      return true;
+    }
+
     FeedBloc feedBloc = context.read<FeedBloc>();
     ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
@@ -606,11 +586,11 @@ class FeedReachedEnd extends StatelessWidget {
         Container(
           color: theme.dividerColor.withOpacity(0.1),
           padding: const EdgeInsets.symmetric(vertical: 32.0),
-          child: Text(
+          child: ScalableText(
             'Hmmm. It seems like you\'ve reached the bottom.',
             textAlign: TextAlign.center,
             style: theme.textTheme.titleSmall,
-            textScaleFactor: MediaQuery.of(context).textScaleFactor * state.metadataFontSizeScale.textScaleFactor,
+            fontScale: state.metadataFontSizeScale,
           ),
         ),
         const SizedBox(height: 160)

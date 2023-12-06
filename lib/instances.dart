@@ -1,4 +1,5 @@
 const List<String> instances = [
+  'ani.social',
   'aussie.zone',
   'bakchodi.org',
   'beehaw.org',
@@ -8,7 +9,6 @@ const List<String> instances = [
   'discuss.tchncs.de',
   'exploding-heads.com',
   'feddit.ch',
-  'feddit.cl',
   'feddit.de',
   'feddit.dk',
   'feddit.it',
@@ -34,7 +34,6 @@ const List<String> instances = [
   'lemmy.one',
   'lemmy.sdf.org',
   'lemmy.today',
-  'lemmy.whynotdrs.org',
   'lemmy.world',
   'lemmy.zip',
   'lemmygrad.ml',

@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 import 'dart:math';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 String generateRandomHeroString({int? len}) {
@@ -35,6 +35,28 @@ bool isImageUrl(String url) {
   }
 
   return false;
+}
+
+Future<bool> isImageUrlSvg(String imageUrl) async {
+  return isImageUriSvg(Uri.tryParse(imageUrl));
+}
+
+Future<bool> isImageUriSvg(Uri? imageUri) async {
+  try {
+    final http.Response response = await http.get(
+      imageUri ?? Uri(),
+      // Get the headers and ask for 0 bytes of the body
+      // to make this a lightweight request
+      headers: {
+        'method': 'HEAD',
+        'Range': 'bytes=0-0',
+      },
+    );
+    return response.headers['content-type']?.toLowerCase().contains('svg') == true;
+  } catch (e) {
+    // If it fails for any reason, it's not an SVG!
+    return false;
+  }
 }
 
 Future<Size> retrieveImageDimensions(String imageUrl) async {
@@ -137,11 +159,11 @@ Size getWEBPImageDimensions(Uint8List bytes) {
 void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = false, String? imagePath}) async {
   final ImagePicker picker = ImagePicker();
   String path;
-  if (imagePath?.isEmpty ?? false) {
+  if (imagePath == null || imagePath.isEmpty) {
     XFile? file = await picker.pickImage(source: ImageSource.gallery);
     path = file!.path;
   } else {
-    path = imagePath!;
+    path = imagePath;
   }
 
   try {
@@ -150,4 +172,37 @@ void uploadImage(BuildContext context, ImageBloc imageBloc, {bool postImage = fa
   } catch (e) {
     showSnackbar(context, AppLocalizations.of(context)!.postUploadImageError, leadingIcon: Icons.warning_rounded, leadingIconColor: Theme.of(context).colorScheme.errorContainer);
   }
+}
+
+Future<String> selectImageToUpload() async {
+  final ImagePicker picker = ImagePicker();
+
+  XFile? file = await picker.pickImage(source: ImageSource.gallery);
+  return file!.path;
+}
+
+void showImageViewer(BuildContext context, {String? url, Uint8List? bytes, int? postId, void Function()? navigateToPost}) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      opaque: false,
+      transitionDuration: const Duration(milliseconds: 100),
+      reverseTransitionDuration: const Duration(milliseconds: 50),
+      pageBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {
+        return ImageViewer(
+          url: url,
+          bytes: bytes,
+          postId: postId,
+          navigateToPost: navigateToPost,
+        );
+      },
+      transitionsBuilder: (BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
+        return Align(
+          child: FadeTransition(
+            opacity: animation,
+            child: child,
+          ),
+        );
+      },
+    ),
+  );
 }

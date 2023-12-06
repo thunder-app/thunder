@@ -1,4 +1,31 @@
 ## Unreleased
+
+## Added
+- Added ability to collapse post in post page
+- Added ability to change app language in settings
+- Added ability to show/hide read posts in user settings
+- Added post and comment previews to settings, and reorganized settings page
+- Added setting to show comment score instead of upvote/downvote counts
+- Added setting to show/hide post and comment scores
+- Added setting to show/hide bot content
+- Added the ability to render SVGs in markdown bodies - contribution from @micahmo
+- Added Safari extension to open Lemmy links in Thunder
+
+## Changed
+- Added new items to the Post and Comment actions sheet - contribution from @micahmo
+- Added ability to block instance from instance page - contribution from @micahmo
+
+### Fixed
+- Fixed issue where custom tabs would not respect default browser when opening links
+- Fixed issue where initial app startup takes a long time to load (503 errors)
+- Fixed issue where image dimensions were being fetched regardless of post view types (card/compact)
+
+## 0.2.6 - 2023-11-22
+### Fixed
+- Fixed rendering issues with markdown link parsing
+- Fixed issue where TOTP token was not sent properly
+
+## 0.2.5 - 2023-11-15
 ### Added
 - Improved account switching logic - contribution from @micahmo
 - Added anonymous browsing mode for any instance - contribution from @micahmo
@@ -18,6 +45,7 @@
 - Added support for receiving share intents. Android only. - contribution from @ggichure
 - Added ability to block instances from long-press menu and user settings
 - Add more search options - contribution from @micahmo
+- Added support for display cross-posts - contribution from @micahmo
 
 ### Changed
 - Collapsed comments are easier to expand - contribution from @micahmo
@@ -34,6 +62,7 @@
 - Fix issue with search page occasionally clearing results and query - contribution from @micahmo
 - Remove non-functional message user action on use sidebar
 - Fixed issue where post titles were not properly escaped in feed and post page
+- Fixed issue where replying from the inbox was not working properly
 
 ## 0.2.4 - 2023-09-20
 ### Added

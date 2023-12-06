@@ -16,7 +16,11 @@ class UserAvatar extends StatelessWidget {
         backgroundColor: theme.colorScheme.secondaryContainer,
         maxRadius: radius,
         child: Text(
-          (person?.displayName ?? person?.name)?[0].toUpperCase() ?? '',
+          person?.displayName?.isNotEmpty == true
+              ? person!.displayName![0].toUpperCase()
+              : person?.name.isNotEmpty == true
+                  ? person!.name[0].toUpperCase()
+                  : '',
           semanticsLabel: '',
           style: TextStyle(
             fontWeight: FontWeight.bold,

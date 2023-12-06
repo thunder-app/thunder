@@ -193,7 +193,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             text: AppLocalizations.of(context)!.gettingStarted,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                openLink(context, url: 'https://join-lemmy.org/');
+                                handleLink(context, url: 'https://join-lemmy.org/');
                               },
                           ),
                         ),
@@ -209,7 +209,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                             text: AppLocalizations.of(context)!.openInstance,
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
-                                openLink(context, url: 'https://${_instanceTextEditingController.text}');
+                                handleLink(context, url: 'https://${_instanceTextEditingController.text}');
                               },
                           ),
                         ),
@@ -226,7 +226,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
                               text: AppLocalizations.of(context)!.createAccount,
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  openLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
+                                  handleLink(context, url: 'https://${_instanceTextEditingController.text}/signup');
                                 },
                             ),
                           ),
@@ -398,7 +398,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
           instanceError = AppLocalizations.of(context)!.instanceHasAlreadyBenAdded(currentInstance ?? '');
         });
       } else {
-        context.read<AuthBloc>().add(LogOutOfAllAccounts());
+        context.read<AuthBloc>().add(const LogOutOfAllAccounts());
         context.read<ThunderBloc>().add(OnAddAnonymousInstance(_instanceTextEditingController.text));
         context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(_instanceTextEditingController.text));
         widget.popRegister();

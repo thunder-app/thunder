@@ -11,14 +11,14 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
 
   static List<ListPickerItem<CommentSortType>> getCommentSortTypeItems({IncludeVersionSpecificFeature includeVersionSpecificFeature = IncludeVersionSpecificFeature.ifSupported}) => [
         ListPickerItem(
+          payload: CommentSortType.hot,
+          icon: Icons.local_fire_department,
+          label: AppLocalizations.of(GlobalContext.context)!.hot,
+        ),
+        ListPickerItem(
           payload: CommentSortType.top,
           icon: Icons.military_tech,
           label: AppLocalizations.of(GlobalContext.context)!.top,
-        ),
-        ListPickerItem(
-          payload: CommentSortType.old,
-          icon: Icons.access_time_outlined,
-          label: AppLocalizations.of(GlobalContext.context)!.old,
         ),
         if (includeVersionSpecificFeature == IncludeVersionSpecificFeature.always ||
             (includeVersionSpecificFeature == IncludeVersionSpecificFeature.ifSupported && LemmyClient.instance.supportsFeature(LemmyFeature.commentSortTypeControversial)))
@@ -33,9 +33,9 @@ class CommentSortPicker extends BottomSheetListPicker<CommentSortType> {
           label: AppLocalizations.of(GlobalContext.context)!.new_,
         ),
         ListPickerItem(
-          payload: CommentSortType.hot,
-          icon: Icons.local_fire_department,
-          label: AppLocalizations.of(GlobalContext.context)!.hot,
+          payload: CommentSortType.old,
+          icon: Icons.access_time_outlined,
+          label: AppLocalizations.of(GlobalContext.context)!.old,
         ),
         //
         // ListPickerItem(
