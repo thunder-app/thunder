@@ -108,6 +108,8 @@ class CommonMarkdownBody extends StatelessWidget {
         'spoiler': SpoilerElementBuilder(),
       },
       imageBuilder: (uri, title, alt) {
+        if (hideContent) return Container();
+
         return FutureBuilder(
           future: isImageUriSvg(uri),
           builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
@@ -315,14 +317,16 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
         onTap: () => setState(() => isShown = false),
       );
     } else {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => setState(() => isShown = true),
-        child: Container(
-          color: theme.colorScheme.primary,
-          child: CommonMarkdownBody(
-            body: widget.body ?? '',
-            hideContent: true,
+      return Container(
+        color: theme.colorScheme.primary,
+        child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: () => setState(() => isShown = true),
+          child: IgnorePointer(
+            child: CommonMarkdownBody(
+              body: widget.body ?? '',
+              hideContent: true,
+            ),
           ),
         ),
       );
