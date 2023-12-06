@@ -11,7 +11,7 @@ import 'package:thunder/utils/links.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class InstancePage extends StatefulWidget {
-  final Site site;
+  final GetSiteResponse getSiteResponse;
   final bool? isBlocked;
 
   // This is needed (in addition to Site) specifically for blocking.
@@ -21,7 +21,7 @@ class InstancePage extends StatefulWidget {
 
   const InstancePage({
     super.key,
-    required this.site,
+    required this.getSiteResponse,
     required this.isBlocked,
     required this.instanceId,
   });
@@ -66,7 +66,14 @@ class _InstancePageState extends State<InstancePage> {
                 slivers: <Widget>[
                   SliverAppBar(
                     pinned: true,
-                    title: Text(fetchInstanceNameFromUrl(widget.site.actorId) ?? ''),
+                    title: ListTile(
+                      title: Text(
+                        fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
+                        style: theme.textTheme.titleLarge,
+                      ),
+                      subtitle: Text("v${widget.getSiteResponse.version}"),
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 0),
+                    ),
                     actions: [
                       if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance) && widget.instanceId != null)
                         IconButton(
@@ -76,7 +83,7 @@ class _InstancePageState extends State<InstancePage> {
                             context.read<InstanceBloc>().add(InstanceActionEvent(
                                   instanceAction: InstanceAction.block,
                                   instanceId: widget.instanceId!,
-                                  domain: fetchInstanceNameFromUrl(widget.site.actorId),
+                                  domain: fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId),
                                   value: !isBlocked!,
                                 ));
                           },
@@ -87,7 +94,7 @@ class _InstancePageState extends State<InstancePage> {
                         ),
                       IconButton(
                         tooltip: l10n.openInBrowser,
-                        onPressed: () => handleLink(context, url: widget.site.actorId),
+                        onPressed: () => handleLink(context, url: widget.getSiteResponse.siteView.site.actorId),
                         icon: Icon(
                           Icons.open_in_browser_rounded,
                           semanticLabel: l10n.openInBrowser,
@@ -99,7 +106,7 @@ class _InstancePageState extends State<InstancePage> {
                     child: Padding(
                       padding: const EdgeInsets.all(20),
                       child: Material(
-                        child: InstanceView(site: widget.site),
+                        child: InstanceView(site: widget.getSiteResponse.siteView.site),
                       ),
                     ),
                   ),
