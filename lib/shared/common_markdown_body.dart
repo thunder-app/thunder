@@ -16,6 +16,9 @@ class CommonMarkdownBody extends StatelessWidget {
   /// The markdown content body
   final String body;
 
+  /// Whether to hide the markdown content. This is mainly used for spoiler markdown
+  final bool hideContent;
+
   /// Whether the text is selectable - defaults to false
   final bool isSelectableText;
 
@@ -26,6 +29,7 @@ class CommonMarkdownBody extends StatelessWidget {
   const CommonMarkdownBody({
     super.key,
     required this.body,
+    this.hideContent = false,
     this.isSelectableText = false,
     this.isComment,
   });
@@ -34,6 +38,63 @@ class CommonMarkdownBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final ThunderState state = context.watch<ThunderBloc>().state;
+
+    /// This is the stylesheet used for any markdown with [hideContent] set to true
+    /// It tries to remove all content from the markdown while retaining the general size dimensions
+    MarkdownStyleSheet spoilerMarkdownStyleSheet = MarkdownStyleSheet(
+      a: const TextStyle(color: Colors.transparent),
+      p: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      pPadding: EdgeInsets.zero,
+      code: theme.textTheme.bodyMedium!.copyWith(
+        backgroundColor: Colors.transparent,
+        fontFamily: 'monospace',
+        fontSize: theme.textTheme.bodyMedium!.fontSize! * 0.85,
+        color: Colors.transparent,
+      ),
+      h1: theme.textTheme.headlineSmall!.copyWith(color: Colors.transparent),
+      h1Padding: EdgeInsets.zero,
+      h2: theme.textTheme.titleLarge!.copyWith(color: Colors.transparent),
+      h2Padding: EdgeInsets.zero,
+      h3: theme.textTheme.titleMedium!.copyWith(color: Colors.transparent),
+      h3Padding: EdgeInsets.zero,
+      h4: theme.textTheme.bodyLarge!.copyWith(color: Colors.transparent),
+      h4Padding: EdgeInsets.zero,
+      h5: theme.textTheme.bodyLarge!.copyWith(color: Colors.transparent),
+      h5Padding: EdgeInsets.zero,
+      h6: theme.textTheme.bodyLarge!.copyWith(color: Colors.transparent),
+      h6Padding: EdgeInsets.zero,
+      em: const TextStyle(fontStyle: FontStyle.italic, color: Colors.transparent),
+      strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.transparent),
+      del: const TextStyle(decoration: TextDecoration.lineThrough, color: Colors.transparent),
+      blockquote: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      img: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      checkbox: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      blockSpacing: 8.0,
+      listIndent: 24.0,
+      listBullet: theme.textTheme.bodyMedium!.copyWith(color: Colors.transparent),
+      listBulletPadding: const EdgeInsets.only(right: 4),
+      tableHead: const TextStyle(fontWeight: FontWeight.w600, color: Colors.transparent),
+      tableBody: theme.textTheme.bodyMedium?.copyWith(color: Colors.transparent),
+      tableHeadAlign: TextAlign.center,
+      tableBorder: TableBorder.all(color: Colors.transparent),
+      tableColumnWidth: const FlexColumnWidth(),
+      tableCellsPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+      tableCellsDecoration: const BoxDecoration(color: Colors.transparent),
+      blockquotePadding: const EdgeInsets.all(8.0),
+      blockquoteDecoration: const BoxDecoration(
+        color: Colors.transparent,
+        border: Border(left: BorderSide(color: Colors.transparent, width: 4)),
+      ),
+      codeblockPadding: const EdgeInsets.all(8.0),
+      codeblockDecoration: BoxDecoration(
+        color: Colors.transparent,
+        borderRadius: BorderRadius.circular(2.0),
+      ),
+      horizontalRuleDecoration: BoxDecoration(
+        border: Border(top: BorderSide(width: theme.textTheme.bodyMedium!.fontSize!, color: Colors.transparent)),
+      ),
+      textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+    );
 
     // Custom extension set
     md.ExtensionSet customExtensionSet = md.ExtensionSet.gitHubFlavored;
@@ -76,14 +137,15 @@ class CommonMarkdownBody extends StatelessWidget {
       selectable: isSelectableText,
       onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
       onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
-      styleSheet: MarkdownStyleSheet.fromTheme(theme).copyWith(
-        textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
-        p: theme.textTheme.bodyMedium,
-        blockquoteDecoration: const BoxDecoration(
-          color: Colors.transparent,
-          border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-        ),
-      ),
+      styleSheet: hideContent
+          ? spoilerMarkdownStyleSheet
+          : MarkdownStyleSheet.fromTheme(theme).copyWith(
+              textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+              blockquoteDecoration: const BoxDecoration(
+                color: Colors.transparent,
+                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+              ),
+            ),
     );
   }
 }
@@ -161,11 +223,11 @@ class SpoilerInlineSyntax extends md.InlineSyntax {
 /// ```
 class SpoilerBlockSyntax extends md.BlockSyntax {
   /// The pattern to match the end of a spoiler
-  static final RegExp _spoilerBlockEnd = RegExp(r'^(?:::)$');
+  static final RegExp _spoilerBlockEnd = RegExp(r'^:::');
 
   /// The pattern to match the beginning of a spoiler
   @override
-  RegExp get pattern => RegExp(r'^:::\s+spoiler\s+(.+)\s*$');
+  RegExp get pattern => RegExp(r'^::: spoiler\s+(.*)$');
 
   @override
   bool canParse(md.BlockParser parser) {
@@ -200,7 +262,7 @@ class SpoilerBlockSyntax extends md.BlockSyntax {
       /// the resulting [SpoilerWidget] to always show the second element. To work around this, the title and
       /// body are placed together into a single node, separated by a ::: to distinguish the sections.
       md.Element('spoiler', [
-        md.UnparsedContent('${title ?? '_block'}:::${body.join('\n')}'),
+        md.Text('${title ?? '_block'}:::${body.join('\n')}'),
       ]),
     ]);
 
@@ -252,18 +314,18 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
         child: CommonMarkdownBody(body: widget.body ?? ''),
         onTap: () => setState(() => isShown = false),
       );
-    }
-
-    return GestureDetector(
-      behavior: HitTestBehavior.opaque,
-      onTap: () => setState(() => isShown = true),
-      child: Container(
-        color: theme.colorScheme.primary,
-        child: Text(
-          widget.body ?? '',
-          style: theme.textTheme.bodyMedium?.copyWith(color: Colors.transparent),
+    } else {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => setState(() => isShown = true),
+        child: Container(
+          color: theme.colorScheme.primary,
+          child: CommonMarkdownBody(
+            body: widget.body ?? '',
+            hideContent: true,
+          ),
         ),
-      ),
-    );
+      );
+    }
   }
 }
