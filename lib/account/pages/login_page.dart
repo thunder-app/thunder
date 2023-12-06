@@ -90,7 +90,7 @@ class _LoginPageState extends State<LoginPage> with SingleTickerProviderStateMix
         instanceTextDebounceTimer!.cancel();
       }
       instanceTextDebounceTimer = Timer(const Duration(milliseconds: 500), () async {
-        await getInstanceIcon(_instanceTextEditingController.text).then((value) {
+        await getInstanceInfo(_instanceTextEditingController.text).then((value) {
           // Make sure the icon we looked up still matches the text
           if (currentInstance == _instanceTextEditingController.text) {
             setState(() => instanceIcon = value.icon);
