@@ -318,6 +318,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
                 description: l10n.appLanguage,
+                bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
                 value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
                 options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode), icon: Icons.language_rounded, payload: e)).toList(),
                 icon: Icons.language_rounded,
