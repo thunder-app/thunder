@@ -71,16 +71,14 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = true;
 
-  int selectedUserOption = 0;
-  List<bool> _selectedUserOption = <bool>[true, false];
-  bool savedToggle = false;
+  // Keep these values static so that they persist between refreshes, tab changes, account changes, etc.
+  static int selectedUserOption = 0;
+  static List<bool> _selectedUserOption = <bool>[true, false];
+  static bool savedToggle = false;
 
   @override
   void initState() {
     _scrollController.addListener(_onScroll);
-    setState(() {
-      _selectedUserOption = <bool>[true, false];
-    });
     BackButtonInterceptor.add(_handleBack);
     super.initState();
   }
@@ -170,6 +168,8 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
+                                  selectedUserOption = 0;
+                                  _selectedUserOption = <bool>[true, false];
                                   savedToggle = !savedToggle;
                                 });
                                 if (savedToggle) {
@@ -536,8 +536,12 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
-    if (savedToggle) {
+    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+
+    if (topOfNavigationStack && savedToggle) {
       setState(() {
+        selectedUserOption = 0;
+        _selectedUserOption = <bool>[true, false];
         savedToggle = false;
       });
       return true;
