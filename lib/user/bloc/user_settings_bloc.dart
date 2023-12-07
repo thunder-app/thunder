@@ -24,6 +24,10 @@ EventTransformer<E> throttleDroppable<E>(Duration duration) {
 
 class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   UserSettingsBloc() : super(const UserSettingsState()) {
+    on<ResetUserSettingsEvent>(
+      _resetUserSettingsEvent,
+      transformer: throttleDroppable(throttleDuration),
+    );
     on<GetUserSettingsEvent>(
       _getUserSettingsEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -50,6 +54,10 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     );
   }
 
+  Future<void> _resetUserSettingsEvent(ResetUserSettingsEvent event, emit) async {
+    return emit(state.copyWith(status: UserSettingsStatus.initial));
+  }
+
   Future<void> _getUserSettingsEvent(GetUserSettingsEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
@@ -57,10 +65,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     if (account == null) {
-      return emit(state.copyWith(
-        status: UserSettingsStatus.failure,
-        errorMessage: l10n.userNotLoggedIn,
-      ));
+      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
     }
 
     try {
@@ -86,10 +91,7 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     if (account == null) {
-      return emit(state.copyWith(
-        status: UserSettingsStatus.failure,
-        errorMessage: l10n.userNotLoggedIn,
-      ));
+      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
     }
 
     GetSiteResponse originalGetSiteResponse = state.getSiteResponse!;
@@ -137,25 +139,27 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
+    if (account == null) {
+      return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
+    }
+
     try {
-      if (account != null) {
-        GetSiteResponse getSiteResponse = await lemmy.run(
-          GetSite(auth: account.jwt),
-        );
+      GetSiteResponse getSiteResponse = await lemmy.run(
+        GetSite(auth: account.jwt),
+      );
 
-        final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
-        final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
-        final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
+      final personBlocks = getSiteResponse.myUser!.personBlocks.map((personBlockView) => personBlockView.target).toList()..sort((a, b) => a.name.compareTo(b.name));
+      final communityBlocks = getSiteResponse.myUser!.communityBlocks.map((communityBlockView) => communityBlockView.community).toList()..sort((a, b) => a.name.compareTo(b.name));
+      final instanceBlocks = getSiteResponse.myUser!.instanceBlocks?.map((instanceBlockView) => instanceBlockView.instance).toList()?..sort((a, b) => a.domain.compareTo(b.domain));
 
-        return emit(state.copyWith(
-          status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
-              ? UserSettingsStatus.revert
-              : UserSettingsStatus.success,
-          personBlocks: personBlocks,
-          communityBlocks: communityBlocks,
-          instanceBlocks: instanceBlocks,
-        ));
-      }
+      return emit(state.copyWith(
+        status: (state.instanceBeingBlocked != 0 && (instanceBlocks?.any((Instance instance) => instance.id == state.instanceBeingBlocked) ?? false))
+            ? UserSettingsStatus.revert
+            : UserSettingsStatus.success,
+        personBlocks: personBlocks,
+        communityBlocks: communityBlocks,
+        instanceBlocks: instanceBlocks,
+      ));
     } catch (e) {
       return emit(state.copyWith(status: UserSettingsStatus.failure, errorMessage: e is LemmyApiException ? getErrorMessage(GlobalContext.context, e.message) : e.toString()));
     }

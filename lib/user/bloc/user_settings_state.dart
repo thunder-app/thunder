@@ -9,6 +9,7 @@ enum UserSettingsStatus {
   failure,
   revert,
   failedRevert,
+  notLoggedIn,
 }
 
 class UserSettingsState extends Equatable {

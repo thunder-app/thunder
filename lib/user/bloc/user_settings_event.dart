@@ -7,6 +7,10 @@ abstract class UserSettingsEvent extends Equatable {
   List<Object> get props => [];
 }
 
+class ResetUserSettingsEvent extends UserSettingsEvent {
+  const ResetUserSettingsEvent();
+}
+
 class GetUserSettingsEvent extends UserSettingsEvent {
   const GetUserSettingsEvent();
 }
@@ -20,9 +24,7 @@ class UpdateUserSettingsEvent extends UserSettingsEvent {
 }
 
 class GetUserBlocksEvent extends UserSettingsEvent {
-  final int? userId;
-
-  const GetUserBlocksEvent({this.userId});
+  const GetUserBlocksEvent();
 }
 
 class UnblockInstanceEvent extends UserSettingsEvent {
