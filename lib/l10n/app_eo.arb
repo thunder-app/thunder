@@ -838,5 +838,61 @@
     "description": "Subcategory in Setting -> General"
   },
   "collapsePost": "Maletendi Afiŝon",
-  "@collapsePost": {}
+  "@collapsePost": {},
+  "unableToLoadImage": "Ne eblas ŝargi bildon",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "showScores": "Montri Afiŝajn/Komentajn Poentojn",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "unblockInstance": "Malbloki Instancon",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "information": "Informoj",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "showBotAccounts": "Montri Robotajn kontojn",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "floatingActionButtonInformation": "Thunder havas plene agordeblan FAB-sperton, kiu subtenas kelkajn gestojn.\n- Ŝovumu supren por malkaŝi pliajn agojn de FAB\n- Ŝovumu malsupren/supren por kaŝi aŭ malkaŝi la FAB\n\nPor personecigi la ĉefajn kaj duarangajn agojn por la FAB, longe premu unu el la subaj agoj.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "setAction": "Agordi Agon",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "expandInformation": "Etendi Informojn",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "floatingActionButtonLongPressDescription": "indikas la longa-preman agon de la FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "enablePostFab": "Ebligi Flosantan Butonon sur Afiŝoj",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "collapseInformation": "Maletendi Informojn",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "unableToLoadImageFrom": "Ne eblas ŝargi bildon de {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "enableFeedFab": "Ebligi Flosantan Butonon sur Fluoj",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "floatingActionButtonSinglePressDescription": "indikas la unu-preman agon de la FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  }
 }
