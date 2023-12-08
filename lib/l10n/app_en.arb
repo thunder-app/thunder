@@ -859,5 +859,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "commentShowUserInstance":"Show User Instance",
+  "@commentShowUserInstance":{
+    "description":"Settings toggle to display user instance alongside their display name in comments"
+  }
 }

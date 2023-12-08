@@ -321,7 +321,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ToggleOption(
-                description: LocalSettings.commentShowUserInstance.label,
+                description: l10n.commentShowUserInstance,
                 value: commentShowUserInstance,
                 iconEnabled: Icons.dns_sharp,
                 iconDisabled: Icons.dns_outlined,
