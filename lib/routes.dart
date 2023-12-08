@@ -16,8 +16,8 @@ import 'package:thunder/settings/pages/gesture_settings_page.dart';
 import 'package:thunder/settings/pages/post_appearance_settings_page.dart';
 import 'package:thunder/settings/pages/theme_settings_page.dart';
 import 'package:thunder/settings/settings.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/user/pages/user_settings_page.dart';
 
 final GoRouter router = GoRouter(
   debugLogDiagnostics: true,
@@ -112,6 +112,16 @@ final GoRouter router = GoRouter(
             return BlocProvider.value(
               value: state.extra! as ThunderBloc,
               child: const AccessibilitySettingsPage(),
+            );
+          },
+        ),
+        GoRoute(
+          name: 'account',
+          path: 'account',
+          builder: (context, state) {
+            return BlocProvider.value(
+              value: state.extra! as ThunderBloc,
+              child: const UserSettingsPage(),
             );
           },
         ),

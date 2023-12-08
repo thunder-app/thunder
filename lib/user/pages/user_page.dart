@@ -73,7 +73,7 @@ class _UserPageState extends State<UserPage> {
                           BlocProvider.value(value: accountBloc),
                           BlocProvider.value(value: thunderBloc),
                         ],
-                        child: UserSettingsPage(widget.userId),
+                        child: const UserSettingsPage(),
                       ),
                     ),
                   );
