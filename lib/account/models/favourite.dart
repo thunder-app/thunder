@@ -43,9 +43,9 @@ class Favorite {
 
       return List.generate(maps.length, (i) {
         return Favorite(
-          id: maps[i]['id'],
+          id: maps[i]['id'].toString(),
           communityId: maps[i]['communityId'],
-          accountId: maps[i]['accountId'],
+          accountId: maps[i]['accountId'].toString(),
         );
       });
     } catch (e) {
