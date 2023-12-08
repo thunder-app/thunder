@@ -777,6 +777,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "translationsMayNotBeComplete": "Please note that the translations may not be complete",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
   "trendingCommunities": "Trending Communities",
   "@trendingCommunities": {},
   "unableToFindCommunity": "Unable to find community",
