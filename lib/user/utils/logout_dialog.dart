@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/dialogs.dart';
 
 Future<bool> showLogOutDialog(BuildContext context) async {
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
+
   bool result = false;
   await showThunderDialog<bool>(
     context: context,
@@ -13,21 +14,21 @@ Future<bool> showLogOutDialog(BuildContext context) async {
       value: context.read<AuthBloc>(),
       child: alertDialog,
     ),
-    title: AppLocalizations.of(context)!.confirmLogOutTitle,
-    contentText: AppLocalizations.of(context)!.confirmLogOutBody,
+    title: l10n.confirmLogOutTitle,
+    contentText: l10n.confirmLogOutBody,
     onSecondaryButtonPressed: (dialogContext) {
       result = false;
-      dialogContext.pop();
+      Navigator.of(dialogContext).pop();
     },
-    secondaryButtonText: AppLocalizations.of(context)!.cancel,
+    secondaryButtonText: l10n.cancel,
     onPrimaryButtonPressed: (dialogContext, _) {
       result = true;
       dialogContext.read<AuthBloc>().add(RemoveAccount(
             accountId: dialogContext.read<AuthBloc>().state.account!.id,
           ));
-      dialogContext.pop();
+      Navigator.of(dialogContext).pop();
     },
-    primaryButtonText: AppLocalizations.of(context)!.logOut,
+    primaryButtonText: l10n.logOut,
   );
 
   return result;
