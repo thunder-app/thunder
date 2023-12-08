@@ -60,7 +60,7 @@ class ThunderState extends Equatable {
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
-    this.showOriginInstance = false,
+    this.commentShowUserInstance = false,
     this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
@@ -182,7 +182,7 @@ class ThunderState extends Equatable {
   final CommentSortType defaultCommentSortType;
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
-  final bool showOriginInstance;
+  final bool commentShowUserInstance;
   final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
@@ -310,7 +310,7 @@ class ThunderState extends Equatable {
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
-    bool? showOriginInstance,
+    bool? commentShowUserInstance,
     bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
@@ -434,7 +434,7 @@ class ThunderState extends Equatable {
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
-      showOriginInstance: showOriginInstance ?? this.showOriginInstance,
+      commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
@@ -563,7 +563,7 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showCommentButtonActions,
-        showOriginInstance,
+        commentShowUserInstance,
         combineCommentScores,
 
         nestedCommentIndicatorStyle,

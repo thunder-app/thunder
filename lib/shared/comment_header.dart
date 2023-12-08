@@ -40,14 +40,11 @@ class CommentHeader extends StatelessWidget {
     final ThunderState state = context.read<ThunderBloc>().state;
 
     bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
-    bool showOriginInstance = state.showOriginInstance;
-    bool combineCommentScores = state.combineCommentScores;
+    bool commentShowUserInstance = state.commentShowUserInstance;
 
-    int? myVote = comment.myVote;
     bool? saved = comment.saved;
     bool? hasBeenEdited = comment.comment.updated != null ? true : false;
     bool? isCommentNew = now.difference(comment.comment.published).inMinutes < 15;
-    bool collapseParentCommentOnGesture = state.collapseParentCommentOnGesture;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(isSpecialUser(context, isOwnComment, comment.post, comment.comment, comment.creator, moderators) ? 8.0 : 3.0, 10.0, 8.0, 10.0),
@@ -85,7 +82,7 @@ class CommentHeader extends StatelessWidget {
                                           fontScale: state.metadataFontSizeScale,
                                           style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500, color: theme.colorScheme.onBackground),
                                         ),
-                                        if (showOriginInstance)
+                                        if (commentShowUserInstance)
                                           ScalableText(
                                             '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
                                             fontScale: state.metadataFontSizeScale,
@@ -155,21 +152,25 @@ class CommentHeader extends StatelessWidget {
                                         ),
                                       ],
                                     )
-                                  : RichText(
-                                      text: TextSpan(
+                                  : Text.rich(
+                                      TextSpan(
                                           style: theme.textTheme.bodyMedium?.copyWith(
                                             fontWeight: FontWeight.w500,
+                                            fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                                           ),
                                           text: comment.creator.displayName != null && state.useDisplayNames ? comment.creator.displayName! : comment.creator.name,
                                           children: [
-                                          if (showOriginInstance)
-                                            TextSpan(
-                                              text: '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
-                                              style: theme.textTheme.bodyMedium?.copyWith(
-                                                fontWeight: FontWeight.w300,
-                                              ),
-                                            )
-                                        ]))),
+                                            if (commentShowUserInstance)
+                                              TextSpan(
+                                                text: '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
+                                                style: theme.textTheme.bodyMedium?.copyWith(
+                                                  fontWeight: FontWeight.w300,
+                                                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
+                                                ),
+                                              )
+                                          ]),
+                                      textScaler: TextScaler.noScaling,
+                                    )),
                         ),
                       ),
                       const SizedBox(width: 8.0),
