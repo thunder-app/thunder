@@ -10,13 +10,18 @@
 - Added setting to show/hide post and comment scores
 - Added setting to show/hide bot content
 - Added the ability to render SVGs in markdown bodies - contribution from @micahmo
+- Added Safari extension to open Lemmy links in Thunder
 - Added support for displaying comment origin instance - contribution from @ggichure.
 
+## Changed
+- Added new items to the Post and Comment actions sheet - contribution from @micahmo
+- Added ability to block instance from instance page - contribution from @micahmo
 
 ### Fixed
 
 - Fixed issue where custom tabs would not respect default browser when opening links
 - Fixed issue where initial app startup takes a long time to load (503 errors)
+- Fixed issue where image dimensions were being fetched regardless of post view types (card/compact)
 
 ## 0.2.6 - 2023-11-22
 

@@ -213,27 +213,36 @@ class _ThunderState extends State<Thunder> {
       LemmyClient.instance.changeBaseUrl(activeAccount!.instance!.replaceAll('https://', ''));
     }
 
+    // If the incoming link is a custom URL, replace it back with https://
+    String _link = link?.replaceAll('thunder://', 'https://') ?? "";
+
     switch (linkType) {
       case LinkType.comment:
-        if (context.mounted) await _navigateToComment(link!);
+        if (context.mounted) await _navigateToComment(_link);
       case LinkType.user:
-        if (context.mounted) await _navigateToUser(link!);
+        if (context.mounted) await _navigateToUser(_link);
       case LinkType.post:
-        if (context.mounted) await _navigateToPost(link!);
+        if (context.mounted) await _navigateToPost(_link);
       case LinkType.community:
-        if (context.mounted) await _navigateToCommunity(link!);
+        if (context.mounted) await _navigateToCommunity(_link);
       case LinkType.instance:
-        if (context.mounted) await _navigateToInstance(link!);
+        if (context.mounted) await _navigateToInstance(_link);
       case LinkType.unknown:
         if (context.mounted) {
-          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, link!);
+          _showLinkProcessingError(context, AppLocalizations.of(context)!.uriNotSupported, _link);
         }
     }
   }
 
   Future<void> _navigateToInstance(String link) async {
     try {
-      await navigateToInstancePage(context, instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''));
+      await navigateToInstancePage(
+        context,
+        instanceHost: link.replaceAll(RegExp(r'https?:\/\/'), '').replaceAll('/', ''),
+        // We have no context here to determine what the id of this instance would be on our server.
+        // It just means we can't block through this flow, which is ok.
+        instanceId: null,
+      );
     } catch (e) {
       if (context.mounted) {
         _showLinkProcessingError(context, AppLocalizations.of(context)!.exceptionProcessingUri, link);

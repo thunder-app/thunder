@@ -27,6 +27,7 @@ import 'package:thunder/core/singletons/database.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/thunder/thunder.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:flutter/foundation.dart';
 
@@ -81,6 +82,10 @@ class ThunderApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => InstanceBloc(lemmyClient: LemmyClient.instance),
+        ),
+        // Used for global user events like block/unblock
+        BlocProvider(
+          create: (context) => UserBloc(),
         ),
       ],
       child: BlocBuilder<ThemeBloc, ThemeState>(

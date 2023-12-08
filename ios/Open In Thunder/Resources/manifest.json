@@ -1,0 +1,93 @@
+{
+    "manifest_version": 3,
+    "default_locale": "en",
+    "name": "__MSG_extension_name__",
+    "description": "__MSG_extension_description__",
+    "version": "1.0",
+    "icons": {
+        "48": "images/icon-48.png",
+        "96": "images/icon-96.png",
+        "128": "images/icon-128.png",
+        "256": "images/icon-256.png",
+        "512": "images/icon-512.png"
+    },
+    "content_scripts": [
+        {
+            "js": [
+                "content.js"
+            ],
+            "matches": [
+                "*://aussie.zone/*",
+                "*://bakchodi.org/*",
+                "*://beehaw.org/*",
+                "*://burggit.moe/*",
+                "*://dataterm.digital/*",
+                "*://delraymisfitsboard.com/*",
+                "*://discuss.tchncs.de/*",
+                "*://exploding-heads.com/*",
+                "*://feddit.ch/*",
+                "*://feddit.cl/*",
+                "*://feddit.de/*",
+                "*://feddit.dk/*",
+                "*://feddit.it/*",
+                "*://feddit.nl/*",
+                "*://feddit.nu/*",
+                "*://feddit.uk/*",
+                "*://geddit.social/*",
+                "*://hexbear.net/*",
+                "*://infosec.pub/*",
+                "*://iusearchlinux.fyi/*",
+                "*://jlai.lu/*",
+                "*://lemdro.id/*",
+                "*://lemm.ee/*",
+                "*://lemmings.world/*",
+                "*://lemmus.org/*",
+                "*://lemmy.blahaj.zone/*",
+                "*://lemmy.ca/*",
+                "*://lemmy.dbzer0.com/*",
+                "*://lemmy.eco.br/*",
+                "*://lemmy.fmhy.ml/*",
+                "*://lemmy.kya.moe/*",
+                "*://lemmy.ml/*",
+                "*://lemmy.nz/*",
+                "*://lemmy.one/*",
+                "*://lemmy.sdf.org/*",
+                "*://lemmy.today/*",
+                "*://lemmy.world/*",
+                "*://lemmy.zip/*",
+                "*://lemmygrad.ml/*",
+                "*://lemmynsfw.com/*",
+                "*://mander.xyz/*",
+                "*://midwest.social/*",
+                "*://monero.town/*",
+                "*://monyet.cc/*",
+                "*://pawb.social/*",
+                "*://programming.dev/*",
+                "*://reddthat.com/*",
+                "*://sh.itjust.works/*",
+                "*://slrpnk.net/*",
+                "*://social.fossware.space/*",
+                "*://sopuli.xyz/*",
+                "*://startrek.website/*",
+                "*://szmer.info/*",
+                "*://ttrpg.network/*",
+                "*://vlemmy.net/*",
+                "*://waveform.social/*",
+                "*://www.hexbear.net/*",
+                "*://yiffit.net/*"
+            ]
+        }
+    ],
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "images/toolbar-icon-16.png",
+            "19": "images/toolbar-icon-19.png",
+            "32": "images/toolbar-icon-32.png",
+            "38": "images/toolbar-icon-38.png",
+            "48": "images/toolbar-icon-48.png",
+            "72": "images/toolbar-icon-72.png"
+        }
+    },
+    "permissions": []
+}

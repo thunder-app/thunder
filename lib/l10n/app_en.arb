@@ -110,6 +110,10 @@
   "@collapseCommentPreview": {
     "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
   },
+  "collapseInformation": "Collapse Information",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
   "collapsePost": "Collapse post",
   "@collapsePost": {},
   "collapsePostPreview": "Collapse Post Preview",
@@ -256,6 +260,14 @@
   "@emptyUri": {
     "description": "Error message for empty link."
   },
+  "enableFeedFab": "Enable Floating Button on Feeds",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "enablePostFab": "Enable Floating Button on Posts",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
   "endSearch": "End Search",
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
@@ -266,6 +278,10 @@
   "expandCommentPreview": "Expand Comment Preview",
   "@expandCommentPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expandInformation": "Expand Information",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
   },
   "expandOptions": "Expand options",
   "@expandOptions": {},
@@ -304,6 +320,18 @@
   "floatingActionButton": "Floating Action Button",
   "@floatingActionButton": {
     "description": "Floating Action Button settings category."
+  },
+  "floatingActionButtonInformation": "Thunder has a fully customizable FAB experience that supports a few gestures.\n- Swipe up to reveal additional FAB actions\n- Swipe down/up to hide or reveal the FAB\n\nTo customize the main and secondary actions for the FAB, long press on one of the actions below.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "floatingActionButtonLongPressDescription": "denotes the FAB's long-press action.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "floatingActionButtonSinglePressDescription": "denotes the FAB's single-press action.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
   },
   "fullScreenNavigationSwipeDescription": "Swipe anywhere to go back when left-to-right gestures are disabled",
   "@fullScreenNavigationSwipeDescription": {},
@@ -349,6 +377,10 @@
   "@includeText": {},
   "includeTitle": "Include Title",
   "@includeTitle": {},
+  "information": "Information",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
   "instance": "Instance",
   "@instance": {},
   "instanceHasAlreadyBenAdded": "{instance} has already been added.",
@@ -614,6 +646,10 @@
   "selectSearchType": "Select Search Type",
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
+  "setAction": "Set Action",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
   "setLongPress": "Set as long-press action",
   "@setLongPress": {},
   "setShortPress": "Set as short-press action",
@@ -767,6 +803,10 @@
   "@unableToLoadPostsFrominstance": {},
   "unableToLoadReplies": "Unable to load more replies.",
   "@unableToLoadReplies": {},
+  "unblockInstance": "Unblock Instance",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",

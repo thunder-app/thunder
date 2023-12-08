@@ -793,11 +793,17 @@ class _CommunitySelectorState extends State<CommunitySelector> {
                         ),
                       ],
                     )
-                  : Text(
-                      l10n.selectCommunity,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        fontStyle: FontStyle.italic,
-                        color: theme.colorScheme.error,
+                  : SizedBox(
+                      height: 36,
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: Text(
+                          l10n.selectCommunity,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: theme.colorScheme.error,
+                          ),
+                        ),
                       ),
                     ),
             ],

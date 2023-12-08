@@ -26,6 +26,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/cache.dart';
 
 enum FeedType { community, user, general }
@@ -219,6 +220,7 @@ class _FeedViewState extends State<FeedView> {
   Widget build(BuildContext context) {
     ThunderBloc thunderBloc = context.watch<ThunderBloc>();
     bool tabletMode = thunderBloc.state.tabletMode;
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return MultiBlocListener(
       listeners: [
@@ -226,6 +228,15 @@ class _FeedViewState extends State<FeedView> {
           listener: (context, state) {
             if (state.message != null) {
               showSnackbar(context, state.message!);
+            }
+          },
+        ),
+        BlocListener<UserBloc, UserState>(
+          listener: (context, state) {
+            if ((state.status == UserStatus.failure || state.status == UserStatus.failedToBlock) && state.errorMessage != null) {
+              showSnackbar(context, state.errorMessage!);
+            } else if (state.status == UserStatus.success && state.blockedPerson != null) {
+              showSnackbar(context, l10n.successfullyBlocked);
             }
           },
         ),
