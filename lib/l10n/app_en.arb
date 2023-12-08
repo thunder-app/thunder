@@ -297,6 +297,10 @@
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
@@ -454,6 +458,10 @@
   "noCommunitiesFound": "No communities found",
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "No favorited communities",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
   "noLanguage": "No language",
@@ -464,6 +472,10 @@
   "@noPosts": {},
   "noPostsFound": "No posts found",
   "noResultsFound": "No results found.",
+  "noSubscriptions": "No Subscriptions",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
   "noUsersFound": "No users found",
