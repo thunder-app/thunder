@@ -13,6 +13,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/comment.dart';
@@ -174,25 +175,17 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                   semanticLabel: l10n.resetCommentPreferences,
                 ),
                 onPressed: () {
-                  showDialog(
+                  showThunderDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l10n.resetPreferences),
-                      content: Text(l10n.confirmResetCommentPreferences),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            resetCommentPreferences();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(l10n.reset),
-                        ),
-                      ],
-                    ),
+                    title: l10n.resetPreferences,
+                    contentText: l10n.confirmResetCommentPreferences,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    secondaryButtonText: l10n.cancel,
+                    onPrimaryButtonPressed: (dialogContext, _) {
+                      resetCommentPreferences();
+                      Navigator.of(dialogContext).pop();
+                    },
+                    primaryButtonText: l10n.reset,
                   );
                 },
               ),
