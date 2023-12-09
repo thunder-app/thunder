@@ -5,6 +5,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/pages/user_page_success.dart';
@@ -17,8 +18,17 @@ class UserPage extends StatefulWidget {
   final int? userId;
   final bool isAccountUser;
   final String? username;
+  final List<bool>? selectedUserOption;
+  final PrimitiveWrapper<bool>? savedToggle;
 
-  const UserPage({super.key, this.userId, this.isAccountUser = false, this.username});
+  const UserPage({
+    super.key,
+    this.userId,
+    this.isAccountUser = false,
+    this.username,
+    this.selectedUserOption,
+    this.savedToggle,
+  });
 
   @override
   State<UserPage> createState() => _UserPageState();
@@ -130,6 +140,8 @@ class _UserPageState extends State<UserPage> {
                 hasReachedPostEnd: state.hasReachedPostEnd,
                 hasReachedSavedPostEnd: state.hasReachedSavedPostEnd,
                 blockedPerson: state.blockedPerson,
+                selectedUserOption: widget.selectedUserOption,
+                savedToggle: widget.savedToggle,
               );
             case UserStatus.empty:
               return Container();

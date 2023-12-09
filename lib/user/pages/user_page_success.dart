@@ -15,6 +15,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/post/utils/comment_action_helpers.dart';
 import 'package:thunder/shared/comment_reference.dart';
+import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/user/widgets/user_header.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
@@ -47,6 +48,9 @@ class UserPageSuccess extends StatefulWidget {
   final bool hasReachedPostEnd;
   final bool hasReachedSavedPostEnd;
 
+  final List<bool>? selectedUserOption;
+  final PrimitiveWrapper<bool>? savedToggle;
+
   const UserPageSuccess({
     super.key,
     required this.userId,
@@ -60,6 +64,8 @@ class UserPageSuccess extends StatefulWidget {
     required this.hasReachedPostEnd,
     required this.hasReachedSavedPostEnd,
     this.blockedPerson,
+    this.selectedUserOption,
+    this.savedToggle,
   });
 
   @override
@@ -71,10 +77,11 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   final _scrollController = ScrollController(initialScrollOffset: 0);
   bool hasScrolledToBottom = true;
 
-  // Keep these values static so that they persist between refreshes, tab changes, account changes, etc.
-  static int selectedUserOption = 0;
-  static List<bool> _selectedUserOption = <bool>[true, false];
-  static bool savedToggle = false;
+  int? selectedUserOption;
+  // Do not change the object reference of either of these.
+  // Only change members.
+  List<bool>? _selectedUserOption;
+  PrimitiveWrapper<bool>? savedToggle;
 
   @override
   void initState() {
@@ -98,6 +105,10 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
 
   @override
   Widget build(BuildContext context) {
+    selectedUserOption ??= widget.selectedUserOption?.indexOf(true) ?? 0;
+    _selectedUserOption ??= widget.selectedUserOption ?? [true, false];
+    savedToggle ??= widget.savedToggle ?? PrimitiveWrapper<bool>(false);
+
     final theme = Theme.of(context);
     final DateTime now = DateTime.now().toUtc();
     final int? currentUserId = context.read<AuthBloc>().state.account?.userId;
@@ -141,22 +152,22 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             child: FadeTransition(opacity: animation, child: child),
                           );
                         },
-                        child: !savedToggle
+                        child: !savedToggle!.value
                             ? ToggleButtons(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 direction: Axis.horizontal,
                                 onPressed: (int index) {
                                   setState(() {
                                     // The button that is tapped is set to true, and the others to false.
-                                    for (int i = 0; i < _selectedUserOption.length; i++) {
-                                      _selectedUserOption[i] = i == index;
+                                    for (int i = 0; i < _selectedUserOption!.length; i++) {
+                                      _selectedUserOption![i] = i == index;
                                     }
                                     selectedUserOption = index;
                                   });
                                 },
                                 borderRadius: const BorderRadius.all(Radius.circular(8)),
                                 constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0.1))) - 12.0),
-                                isSelected: _selectedUserOption,
+                                isSelected: _selectedUserOption!,
                                 children: userOptionTypes,
                               )
                             : null,
@@ -164,15 +175,16 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       if (widget.isAccountUser)
                         Expanded(
                           child: Padding(
-                            padding: savedToggle ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
+                            padding: savedToggle!.value ? const EdgeInsets.only(right: 8.0) : const EdgeInsets.only(left: 8.0),
                             child: TextButton(
                               onPressed: () {
                                 setState(() {
                                   selectedUserOption = 0;
-                                  _selectedUserOption = <bool>[true, false];
-                                  savedToggle = !savedToggle;
+                                  _selectedUserOption![0] = true;
+                                  _selectedUserOption![1] = false;
+                                  savedToggle!.value = !savedToggle!.value;
                                 });
-                                if (savedToggle) {
+                                if (savedToggle!.value) {
                                   context.read<UserBloc>().add(GetUserSavedEvent(userId: widget.userId, reset: false));
                                 }
                               },
@@ -180,7 +192,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 fixedSize: const Size.fromHeight(35),
                                 padding: EdgeInsets.zero,
                               ),
-                              child: !savedToggle
+                              child: !savedToggle!.value
                                   ? Row(
                                       mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
@@ -214,15 +226,15 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                             child: FadeTransition(opacity: animation, child: child),
                           );
                         },
-                        child: savedToggle
+                        child: savedToggle!.value
                             ? ToggleButtons(
                                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                                 direction: Axis.horizontal,
                                 onPressed: (int index) {
                                   setState(() {
                                     // The button that is tapped is set to true, and the others to false.
-                                    for (int i = 0; i < _selectedUserOption.length; i++) {
-                                      _selectedUserOption[i] = i == index;
+                                    for (int i = 0; i < _selectedUserOption!.length; i++) {
+                                      _selectedUserOption![i] = i == index;
                                     }
 
                                     selectedUserOption = index;
@@ -233,7 +245,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                                 },
                                 borderRadius: const BorderRadius.all(Radius.circular(8)),
                                 constraints: BoxConstraints.expand(width: (MediaQuery.of(context).size.width / (userOptionTypes.length + (widget.isAccountUser ? 0.8 : 0))) - 12.0),
-                                isSelected: _selectedUserOption,
+                                isSelected: _selectedUserOption!,
                                 children: userOptionTypes,
                               )
                             : null,
@@ -241,7 +253,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                     ],
                   ),
                 ),
-                if (!savedToggle && selectedUserOption == 0)
+                if (!savedToggle!.value && selectedUserOption == 0)
                   Expanded(
                     child: PostCardList(
                       postViews: widget.postViews,
@@ -254,7 +266,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       indicateRead: !widget.isAccountUser,
                     ),
                   ),
-                if (!savedToggle && selectedUserOption == 1)
+                if (!savedToggle!.value && selectedUserOption == 1)
                   Expanded(
                     child: ListView.builder(
                       controller: _scrollController,
@@ -350,7 +362,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       ),
                     ),
                   ),
-                if (savedToggle && selectedUserOption == 0)
+                if (savedToggle!.value && selectedUserOption == 0)
                   Expanded(
                     child: PostCardList(
                       postViews: widget.savedPostViews,
@@ -363,7 +375,7 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
                       indicateRead: !widget.isAccountUser,
                     ),
                   ),
-                if (savedToggle && selectedUserOption == 1)
+                if (savedToggle!.value && selectedUserOption == 1)
                   Expanded(
                     child: ListView.builder(
                       controller: _scrollController,
@@ -538,11 +550,12 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
-    if (topOfNavigationStack && savedToggle) {
+    if (topOfNavigationStack && savedToggle!.value) {
       setState(() {
         selectedUserOption = 0;
-        _selectedUserOption = <bool>[true, false];
-        savedToggle = false;
+        _selectedUserOption![0] = true;
+        _selectedUserOption![1] = false;
+        savedToggle!.value = false;
       });
       return true;
     }
