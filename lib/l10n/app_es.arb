@@ -898,5 +898,9 @@
   "unblockInstance": "Desbloquear la instancia",
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
+  },
+  "commentShowUserInstance": "Mostrar instancia de usuario",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
   }
 }
