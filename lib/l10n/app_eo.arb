@@ -15,7 +15,7 @@
   "@add": {},
   "addAccount": "Aldoni Konton",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Aldonu konton por vidi vian profilon.",
+  "addAccountToSeeProfile": "Ensalutu por vidi vian konton.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Aldoni Anonima Instancon",
   "@addAnonymousInstance": {},
@@ -894,5 +894,9 @@
   "floatingActionButtonSinglePressDescription": "indikas la unu-preman agon de la FAB.",
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
+  },
+  "translationsMayNotBeComplete": "Bonvolu noti, ke la tradukoj eble ne estas kompletaj",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
   }
 }
