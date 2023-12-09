@@ -108,7 +108,7 @@ class ThunderState extends Equatable {
     this.postFabEnableReplyToPost = true,
     this.postFabEnableRefresh = true,
     this.postFabEnableSearch = true,
-    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.feedFabSinglePressAction = FeedFabAction.newPost,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
