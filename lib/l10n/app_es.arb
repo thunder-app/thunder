@@ -15,7 +15,7 @@
   "@add": {},
   "addAccount": "Add Account",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Add an account to see your profile.",
+  "addAccountToSeeProfile": "Inicia sesión para ver tu cuenta.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
@@ -890,5 +890,13 @@
   "floatingActionButtonSinglePressDescription": "denota la acción de pulsación única del FAB.",
   "@floatingActionButtonSinglePressDescription": {
     "description": "Description of the FAB's single-press action"
+  },
+  "translationsMayNotBeComplete": "Por favor, tenga en cuenta que las traducciones pueden no estar completas",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "unblockInstance": "Desbloquear la instancia",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
   }
 }
