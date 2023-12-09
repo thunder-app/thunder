@@ -29,6 +29,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
 
+  /// When toggled on, user intance is displayed alongside the display name/username
+  bool commentShowUserInstance = false;
+
   /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
   bool combineCommentScores = false;
 
@@ -50,6 +53,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
@@ -67,6 +71,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         await prefs.setBool(LocalSettings.showCommentActionButtons.name, value);
         setState(() => showCommentButtonActions = value);
         break;
+      case LocalSettings.commentShowUserInstance:
+        await prefs.setBool(LocalSettings.commentShowUserInstance.name, value);
+        setState(() => commentShowUserInstance = value);
       case LocalSettings.combineCommentScores:
         await prefs.setBool(LocalSettings.combineCommentScores.name, value);
         setState(() => combineCommentScores = value);
@@ -94,6 +101,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.combineCommentScores.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
+    await prefs.remove(LocalSettings.commentShowUserInstance.name);
 
     await initPreferences();
 
@@ -306,6 +314,18 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 iconEnabled: Icons.onetwothree_rounded,
                 iconDisabled: Icons.onetwothree_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.commentShowUserInstance,
+                value: commentShowUserInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
               ),
             ),
           ),
