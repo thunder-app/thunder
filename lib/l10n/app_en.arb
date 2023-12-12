@@ -3,6 +3,14 @@
   "@about": {
     "description": "About settings category."
   },
+  "keywordFilters": "Keyword Filters",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "addKeywordFilter": "Add Keyword",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",

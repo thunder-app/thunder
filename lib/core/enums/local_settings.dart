@@ -40,6 +40,7 @@ enum LocalSettings {
   dimReadPosts(name: 'setting_dim_read_posts', label: 'Dim Read Posts'),
   useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
   showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
+  keywordFilters(name: 'setting_general_keyword_filters', label: ''),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings

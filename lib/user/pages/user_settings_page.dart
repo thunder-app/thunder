@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -163,25 +163,28 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         onToggle: (bool value) => {context.read<UserSettingsBloc>().add(UpdateUserSettingsEvent(showBotAccounts: value))},
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                      child: Text(l10n.filters, style: theme.textTheme.titleMedium),
-                    ),
                     if (LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) ...[
-                      UserSettingTopic(
-                        title: l10n.blockedInstances,
-                        trailing: IconButton(
-                          icon: Icon(
-                            Icons.add_rounded,
-                            semanticLabel: l10n.add,
-                          ),
-                          onPressed: () => showInstanceInputDialog(
-                            context,
-                            title: l10n.blockInstance,
-                            onInstanceSelected: (instance) {
-                              context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
-                            },
-                          ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(l10n.blockedInstances, style: theme.textTheme.titleMedium),
+                            IconButton(
+                              visualDensity: VisualDensity.compact,
+                              icon: Icon(
+                                Icons.add_rounded,
+                                semanticLabel: l10n.add,
+                              ),
+                              onPressed: () => showInstanceInputDialog(
+                                context,
+                                title: l10n.blockInstance,
+                                onInstanceSelected: (instance) {
+                                  context.read<UserSettingsBloc>().add(UnblockInstanceEvent(instanceId: instance.id, unblock: false));
+                                },
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       UserSettingBlockList(
@@ -190,20 +193,27 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         items: getInstanceBlocks(context, state, state.instanceBlocks),
                       ),
                     ],
-                    UserSettingTopic(
-                      title: l10n.blockedUsers,
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.add_rounded,
-                          semanticLabel: l10n.add,
-                        ),
-                        onPressed: () => showUserInputDialog(
-                          context,
-                          title: l10n.blockUser,
-                          onUserSelected: (personViewSafe) {
-                            context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
-                          },
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(l10n.blockedUsers, style: theme.textTheme.titleMedium),
+                          IconButton(
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(
+                              Icons.add_rounded,
+                              semanticLabel: l10n.add,
+                            ),
+                            onPressed: () => showUserInputDialog(
+                              context,
+                              title: l10n.blockUser,
+                              onUserSelected: (personViewSafe) {
+                                context.read<UserSettingsBloc>().add(UnblockPersonEvent(personId: personViewSafe.person.id, unblock: false));
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     UserSettingBlockList(
@@ -211,20 +221,27 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                       emptyText: l10n.noUserBlocks,
                       items: getPersonBlocks(context, state, state.personBlocks),
                     ),
-                    UserSettingTopic(
-                      title: l10n.blockedCommunities,
-                      trailing: IconButton(
-                        icon: Icon(
-                          Icons.add_rounded,
-                          semanticLabel: l10n.add,
-                        ),
-                        onPressed: () => showCommunityInputDialog(
-                          context,
-                          title: l10n.blockCommunity,
-                          onCommunitySelected: (communityView) {
-                            context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
-                          },
-                        ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(l10n.blockedCommunities, style: theme.textTheme.titleMedium),
+                          IconButton(
+                            visualDensity: VisualDensity.compact,
+                            icon: Icon(
+                              Icons.add_rounded,
+                              semanticLabel: l10n.add,
+                            ),
+                            onPressed: () => showCommunityInputDialog(
+                              context,
+                              title: l10n.blockCommunity,
+                              onCommunitySelected: (communityView) {
+                                context.read<UserSettingsBloc>().add(UnblockCommunityEvent(communityId: communityView.community.id, unblock: false));
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     UserSettingBlockList(
@@ -455,44 +472,6 @@ class UserSettingBlockList extends StatelessWidget {
                   style: TextStyle(color: theme.hintColor),
                 ),
               ),
-      ),
-    );
-  }
-}
-
-/// This class creates a widget for the title of a given [UserSettingTopic] (e.g., blocked users, communities, instances).
-///
-/// It takes in an icon, a title, and an optional [trailing] widget.
-class UserSettingTopic extends StatelessWidget {
-  const UserSettingTopic({
-    super.key,
-    this.icon,
-    required this.title,
-    this.trailing,
-  });
-
-  final IconData? icon;
-  final String title;
-  final Widget? trailing;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 10, right: 10),
-      child: ListTile(
-        leading: icon != null
-            ? CircleAvatar(
-                radius: 16.0,
-                backgroundColor: Colors.transparent,
-                child: Icon(icon),
-              )
-            : null,
-        title: Text(
-          title,
-          style: const TextStyle(fontWeight: FontWeight.w500),
-        ),
-        contentPadding: const EdgeInsetsDirectional.only(start: 16.0, end: 12.0),
-        trailing: trailing,
       ),
     );
   }
