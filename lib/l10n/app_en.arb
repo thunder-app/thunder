@@ -23,6 +23,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addToFavorites": "Add to favorites",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
   "addedCommunityToSubscriptions": "Added community to subscriptions",
   "@addedCommunityToSubscriptions": {},
   "all": "All",
@@ -140,6 +144,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Show User Instance",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
   "commentSortType": "Comment Sort Type",
   "@commentSortType": {},
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
@@ -161,13 +169,13 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirmLogOutTitle": "Confirm Log Out",
-  "@confirmLogOutTitle": {
-    "description": "The title of the confirm logout dialog"
-  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Confirm Log Out",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
   },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
   "@confirmResetCommentPreferences": {
@@ -593,6 +601,10 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
+  "removeFromFavorites": "Remove from favorites",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
   "removeInstance": "Remove instance",
   "@removeInstance": {},
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
@@ -893,9 +905,5 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {},
-  "commentShowUserInstance":"Show User Instance",
-  "@commentShowUserInstance":{
-    "description":"Settings toggle to display user instance alongside their display name in comments"
-  }
+  "@xUpvotes": {}
 }

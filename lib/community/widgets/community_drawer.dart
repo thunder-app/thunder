@@ -398,6 +398,7 @@ class CommunityItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     return Row(
@@ -450,7 +451,10 @@ class CommunityItem extends StatelessWidget {
                   await Favorite.insertFavorite(favorite);
                   if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
                 },
-                icon: Icon(isFavorite ? Icons.star_rounded : Icons.star_border_rounded),
+                icon: Icon(
+                  isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
+                  semanticLabel: isFavorite ? l10n.addToFavorites : l10n.removeFromFavorites,
+                ),
               )
             : Container(),
       ],
