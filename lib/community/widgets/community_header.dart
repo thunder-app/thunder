@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
@@ -104,7 +105,8 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   widget.getCommunityResponse.communityView.community.title,
                                   style: theme.textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w600),
                                 ),
-                                Text('${widget.getCommunityResponse.communityView.community.name}@${fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A'}'),
+                                Text(generateCommunityFullName(
+                                    context, widget.getCommunityResponse.communityView.community.name, fetchInstanceNameFromUrl(widget.getCommunityResponse.communityView.community.actorId) ?? 'N/A')),
                                 const SizedBox(height: 8.0),
                                 Row(
                                   children: [

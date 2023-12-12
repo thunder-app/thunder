@@ -10,6 +10,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -96,7 +97,7 @@ class InboxMentionsView extends StatelessWidget {
                   ),
                   GestureDetector(
                     child: Text(
-                      '${mentions[index].community.name}${' · ${fetchInstanceNameFromUrl(mentions[index].community.actorId)}'}',
+                      generateCommunityFullName(context, mentions[index].community.name, fetchInstanceNameFromUrl(mentions[index].community.actorId)),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                       ),

@@ -19,6 +19,7 @@ import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 
 class CommunityDrawer extends StatefulWidget {
   const CommunityDrawer({super.key, this.navigateToAccount});
@@ -408,7 +409,7 @@ class CommunityItem extends StatelessWidget {
         Expanded(
           child: Tooltip(
             excludeFromSemantics: true,
-            message: '${community.title}\n${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+            message: '${community.title}\n${generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId))}',
             preferBelow: false,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
