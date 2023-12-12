@@ -39,13 +39,12 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             UserDrawerItem(navigateToAccount: widget.navigateToAccount),
-            const FeedDrawerItems(),
-            const SizedBox(height: 16.0),
             const Expanded(
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    FeedDrawerItems(),
                     FavoriteCommunities(),
                     SubscribedCommunities(),
                   ],
@@ -152,7 +151,7 @@ class FeedDrawerItems extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
+          padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
           child: Text(l10n.feed, style: theme.textTheme.titleSmall),
         ),
         Column(
@@ -196,7 +195,7 @@ class FavoriteCommunities extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
+          padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
           child: Text(l10n.favorites, style: theme.textTheme.titleSmall),
         ),
         Padding(
@@ -268,7 +267,7 @@ class SubscribedCommunities extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(28, 16, 16, 0),
+          padding: const EdgeInsets.fromLTRB(28, 16, 16, 8.0),
           child: Text(l10n.subscriptions, style: theme.textTheme.titleSmall),
         ),
         if (subscriptions.isNotEmpty) ...[
