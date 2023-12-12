@@ -13,36 +13,24 @@ enum FullNameSeparator {
 
 String generateUserFullName(BuildContext context, name, instance) {
   final ThunderState thunderState = context.read<ThunderBloc>().state;
-  if (thunderState.userSeparator == FullNameSeparator.dot) {
-    return '$name · $instance';
-  } else if (thunderState.userSeparator == FullNameSeparator.at) {
-    return '$name@$instance';
-  }
-
-  // Default format in case the setting isn't set
-  return '$name@$instance';
+  return switch (thunderState.userSeparator) {
+    FullNameSeparator.dot => '$name · $instance',
+    FullNameSeparator.at => '$name@$instance',
+  };
 }
 
 String generateUserFullNameSuffix(BuildContext context, instance) {
   final ThunderState thunderState = context.read<ThunderBloc>().state;
-  if (thunderState.userSeparator == FullNameSeparator.dot) {
-    return ' · $instance';
-  } else if (thunderState.userSeparator == FullNameSeparator.at) {
-    return '@$instance';
-  }
-
-  // Default format in case the setting isn't set
-  return '@$instance';
+  return switch (thunderState.userSeparator) {
+    FullNameSeparator.dot => ' · $instance',
+    FullNameSeparator.at => '@$instance',
+  };
 }
 
 String generateCommunityFullName(BuildContext context, name, instance) {
   final ThunderState thunderState = context.read<ThunderBloc>().state;
-  if (thunderState.communitySeparator == FullNameSeparator.dot) {
-    return '$name · $instance';
-  } else if (thunderState.communitySeparator == FullNameSeparator.at) {
-    return '$name@$instance';
-  }
-
-  // Default format in case the setting isn't set
-  return '$name · $instance';
+  return switch (thunderState.communitySeparator) {
+    FullNameSeparator.dot => '$name · $instance',
+    FullNameSeparator.at => '$name@$instance',
+  };
 }
