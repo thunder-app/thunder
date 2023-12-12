@@ -20,6 +20,7 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -174,7 +175,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       Tooltip(
                         excludeFromSemantics: true,
                         message:
-                            '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, widget.moderators)}',
+                            '${generateUserFullName(context, postView.creator.name, fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-')}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, widget.moderators)}',
                         preferBelow: false,
                         child: Material(
                           color: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)
@@ -258,7 +259,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                         },
                         child: Tooltip(
                           excludeFromSemantics: true,
-                          message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
+                          message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
                           preferBelow: false,
                           child: ScalableText(
                             postView.community.name,

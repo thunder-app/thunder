@@ -82,9 +82,11 @@ class ListOption<T> extends StatelessWidget {
               children: [
                 valueDisplay ??
                     Text(
-                      value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                        return ' ${match.group(0)}';
-                      }),
+                      value.capitalizeLabel
+                          ? value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                              return ' ${match.group(0)}';
+                            })
+                          : value.label,
                       style: theme.textTheme.titleSmall?.copyWith(
                         color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
                       ),

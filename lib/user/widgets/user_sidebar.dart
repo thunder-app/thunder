@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/community_icon.dart';
@@ -374,7 +375,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                                                   ),
                                                                 ),
                                                                 Text(
-                                                                  '${mods.community.name} · ${fetchInstanceNameFromUrl(mods.community.actorId)}',
+                                                                  generateCommunityFullName(context, mods.community.name, fetchInstanceNameFromUrl(mods.community.actorId)),
                                                                   overflow: TextOverflow.ellipsis,
                                                                   style: TextStyle(
                                                                     color: theme.colorScheme.onBackground.withOpacity(0.6),

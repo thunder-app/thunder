@@ -41,6 +41,10 @@ enum LocalSettings {
   useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
   showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
 
+  // Advanced Settings
+  userFormat(name: 'user_format', label: 'User Format'),
+  communityFormat(name: 'community_format', label: 'Community Format'),
+
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
   defaultCommentSortType(name: 'setting_post_default_comment_sort_type', label: 'Default Comment Sort Type'),
