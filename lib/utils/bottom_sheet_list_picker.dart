@@ -62,7 +62,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                   children: widget.items
                       .map(
                         (item) => PickerItem(
-                          label: item.label.capitalize,
+                          label: item.capitalizeLabel ? item.label.capitalize : item.label,
                           icon: item.icon,
                           onSelected: () {
                             if (widget.closeOnSelect) {
@@ -153,11 +153,13 @@ class ListPickerItem<T> {
   final List<Color>? colors;
   final String label;
   final T payload;
+  final bool capitalizeLabel;
 
   const ListPickerItem({
     this.icon,
     this.colors,
     required this.label,
     required this.payload,
+    this.capitalizeLabel = true,
   });
 }

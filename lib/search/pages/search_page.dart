@@ -16,6 +16,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -432,7 +433,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   showCommunityInputDialog(context, title: l10n.community, onCommunitySelected: (communityView) {
                                     setState(() {
                                       _currentCommunityFilter = communityView.community.id;
-                                      _currentCommunityFilterName = '${communityView.community.name}@${fetchInstanceNameFromUrl(communityView.community.actorId)}';
+                                      _currentCommunityFilterName = generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId));
                                     });
                                     _doSearch();
                                   });
@@ -467,7 +468,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                                   showUserInputDialog(context, title: l10n.creator, onUserSelected: (personView) {
                                     setState(() {
                                       _currentCreatorFilter = personView.person.id;
-                                      _currentCreatorFilterName = '${personView.person.name}@${fetchInstanceNameFromUrl(personView.person.actorId)}';
+                                      _currentCreatorFilterName = generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId));
                                     });
                                     _doSearch();
                                   });
@@ -694,7 +695,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${communityView.community.title}\n${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+      message: '${communityView.community.title}\n${generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId))}',
       preferBelow: false,
       child: ListTile(
         leading: CommunityIcon(community: communityView.community, radius: 25),
@@ -705,7 +706,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         subtitle: Row(children: [
           Flexible(
             child: Text(
-              '${communityView.community.name} · ${fetchInstanceNameFromUrl(communityView.community.actorId)}',
+              generateCommunityFullName(context, communityView.community.name, fetchInstanceNameFromUrl(communityView.community.actorId)),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -747,7 +748,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   Widget _buildUserEntry(PersonView personView) {
     return Tooltip(
       excludeFromSemantics: true,
-      message: '${personView.person.displayName ?? personView.person.name}\n${personView.person.name} · ${fetchInstanceNameFromUrl(personView.person.actorId)}',
+      message: '${personView.person.displayName ?? personView.person.name}\n${generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId))}',
       preferBelow: false,
       child: ListTile(
         leading: UserAvatar(person: personView.person, radius: 25),
@@ -758,7 +759,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         subtitle: Row(children: [
           Flexible(
             child: Text(
-              '${personView.person.name} · ${fetchInstanceNameFromUrl(personView.person.actorId)}',
+              generateUserFullName(context, personView.person.name, fetchInstanceNameFromUrl(personView.person.actorId)),
               overflow: TextOverflow.ellipsis,
             ),
           ),

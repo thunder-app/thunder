@@ -13,6 +13,7 @@ import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/widgets/comment_card.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/comment.dart';
@@ -28,6 +29,9 @@ class CommentAppearanceSettingsPage extends StatefulWidget {
 class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSettingsPage> with SingleTickerProviderStateMixin {
   /// When toggled on, comments will show a row of actions to perform
   bool showCommentButtonActions = false;
+
+  /// When toggled on, user intance is displayed alongside the display name/username
+  bool commentShowUserInstance = false;
 
   /// When toggled on, comment scores will be combined instead of having separate upvotes and downvotes
   bool combineCommentScores = false;
@@ -50,6 +54,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
 
     setState(() {
       showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       nestedIndicatorStyle = NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
       nestedIndicatorColor = NestedCommentIndicatorColor.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorColor.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_COLOR.name);
@@ -67,6 +72,9 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
         await prefs.setBool(LocalSettings.showCommentActionButtons.name, value);
         setState(() => showCommentButtonActions = value);
         break;
+      case LocalSettings.commentShowUserInstance:
+        await prefs.setBool(LocalSettings.commentShowUserInstance.name, value);
+        setState(() => commentShowUserInstance = value);
       case LocalSettings.combineCommentScores:
         await prefs.setBool(LocalSettings.combineCommentScores.name, value);
         setState(() => combineCommentScores = value);
@@ -94,6 +102,7 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
     await prefs.remove(LocalSettings.combineCommentScores.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorStyle.name);
     await prefs.remove(LocalSettings.nestedCommentIndicatorColor.name);
+    await prefs.remove(LocalSettings.commentShowUserInstance.name);
 
     await initPreferences();
 
@@ -174,25 +183,17 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                   semanticLabel: l10n.resetCommentPreferences,
                 ),
                 onPressed: () {
-                  showDialog(
+                  showThunderDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l10n.resetPreferences),
-                      content: Text(l10n.confirmResetCommentPreferences),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            resetCommentPreferences();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(l10n.reset),
-                        ),
-                      ],
-                    ),
+                    title: l10n.resetPreferences,
+                    contentText: l10n.confirmResetCommentPreferences,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    secondaryButtonText: l10n.cancel,
+                    onPrimaryButtonPressed: (dialogContext, _) {
+                      resetCommentPreferences();
+                      Navigator.of(dialogContext).pop();
+                    },
+                    primaryButtonText: l10n.reset,
                   );
                 },
               ),
@@ -306,6 +307,18 @@ class _CommentAppearanceSettingsPageState extends State<CommentAppearanceSetting
                 iconEnabled: Icons.onetwothree_rounded,
                 iconDisabled: Icons.onetwothree_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.combineCommentScores, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.commentShowUserInstance,
+                value: commentShowUserInstance,
+                iconEnabled: Icons.dns_sharp,
+                iconDisabled: Icons.dns_outlined,
+                onToggle: (bool value) => setPreferences(LocalSettings.commentShowUserInstance, value),
               ),
             ),
           ),

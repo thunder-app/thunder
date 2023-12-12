@@ -19,12 +19,16 @@
   "@add": {},
   "addAccount": "Add Account",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Add an account to see your profile.",
+  "addAccountToSeeProfile": "Log in to see your account.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
   "addedCommunityToSubscriptions": "Added community to subscriptions",
   "@addedCommunityToSubscriptions": {},
+  "advanced": "Advanced",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
   "all": "All",
   "allPosts": "All Posts",
   "allowOpenSupportedLinks": "Allow app to open supported links.",
@@ -149,6 +153,10 @@
   "communities": "Communities",
   "community": "Community",
   "@community": {},
+  "communityFormat": "Community Format",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
   "compactView": "Compact View",
   "@compactView": {
     "description": "Label for the compact view option in Setting -> Appearance -> Posts"
@@ -161,8 +169,14 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirmLogOut": "Log out?",
-  "@confirmLogOut": {},
+  "confirmLogOutTitle": "Confirm Log Out",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmLogOutBody": "Are you sure you want to log out?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
   "@confirmResetCommentPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
@@ -503,6 +517,10 @@
   "@openInBrowser": {},
   "openInstance": "Open Instance",
   "@openInstance": {},
+  "openSettings": "Open Settings",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
   "overview": "Overview",
   "@overview": {},
   "password": "Password",
@@ -510,6 +528,14 @@
   "pending": "Pending",
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Permission Denied",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Thunder requires some permissions in order to save this image which have been denied.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
   },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
@@ -777,6 +803,10 @@
   "@topYear": {},
   "totp": "TOTP (optional)",
   "@totp": {},
+  "translationsMayNotBeComplete": "Please note that the translations may not be complete",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
   "trendingCommunities": "Trending Communities",
   "@trendingCommunities": {},
   "unableToFindCommunity": "Unable to find community",
@@ -831,6 +861,10 @@
     "description": "Option to enable or disable compact view for small posts."
   },
   "useSuggestedTitle": "Use suggested title: {title}",
+  "userFormat": "User Format",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},
   "userProfiles": "User Profiles",
@@ -859,5 +893,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "commentShowUserInstance":"Show User Instance",
+  "@commentShowUserInstance":{
+    "description":"Settings toggle to display user instance alongside their display name in comments"
+  }
 }

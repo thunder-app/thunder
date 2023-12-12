@@ -17,6 +17,7 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -246,7 +247,7 @@ class CommunityModeratorList extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        '${mods.moderator!.name} · ${fetchInstanceNameFromUrl(mods.moderator!.actorId)}',
+                        generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: theme.colorScheme.onBackground.withOpacity(0.6),

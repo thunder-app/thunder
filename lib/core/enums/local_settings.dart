@@ -41,11 +41,16 @@ enum LocalSettings {
   useAdvancedShareSheet(name: 'setting_use_advanced_share_sheet', label: 'Use Advanced Share Sheet'),
   showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
 
+  // Advanced Settings
+  userFormat(name: 'user_format', label: ''),
+  communityFormat(name: 'community_format', label: ''),
+
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
   defaultCommentSortType(name: 'setting_post_default_comment_sort_type', label: 'Default Comment Sort Type'),
   collapseParentCommentBodyOnGesture(name: 'setting_comments_collapse_parent_comment_on_gesture', label: 'Hide Parent Comment on Collapse'),
   showCommentActionButtons(name: 'setting_general_show_comment_button_actions', label: 'Show Comment Button Actions'),
+  commentShowUserInstance(name: 'settings_comment_show_user_instance', label: 'Show User Instance'),
   combineCommentScores(name: 'setting_general_combine_comment_scores', label: ''),
   nestedCommentIndicatorStyle(name: 'setting_general_nested_comment_indicator_style', label: 'Nested Comment Indicator Style'),
   nestedCommentIndicatorColor(name: 'setting_general_nested_comment_indicator_color', label: 'Nested Comment Indicator Color'),

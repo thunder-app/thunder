@@ -1,5 +1,7 @@
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
+
+import 'package:flex_color_scheme/flex_color_scheme.dart';
+
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
 class ListOption<T> extends StatelessWidget {
@@ -8,6 +10,7 @@ class ListOption<T> extends StatelessWidget {
 
   // General
   final String description;
+  final Widget? bottomSheetHeading;
   final ListPickerItem<T> value;
   final List<ListPickerItem<T>> options;
 
@@ -24,6 +27,7 @@ class ListOption<T> extends StatelessWidget {
   const ListOption({
     super.key,
     required this.description,
+    this.bottomSheetHeading,
     required this.value,
     required this.options,
     required this.icon,
@@ -52,6 +56,7 @@ class ListOption<T> extends StatelessWidget {
                     customListPicker ??
                     BottomSheetListPicker(
                       title: description,
+                      heading: bottomSheetHeading,
                       items: options,
                       onSelect: (value) {
                         onChanged(value);
@@ -77,9 +82,11 @@ class ListOption<T> extends StatelessWidget {
               children: [
                 valueDisplay ??
                     Text(
-                      value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
-                        return ' ${match.group(0)}';
-                      }),
+                      value.capitalizeLabel
+                          ? value.label.capitalize.replaceAll('_', '').replaceAll(' ', '').replaceAllMapped(RegExp(r'([A-Z])'), (match) {
+                              return ' ${match.group(0)}';
+                            })
+                          : value.label,
                       style: theme.textTheme.titleSmall?.copyWith(
                         color: disabled ? theme.colorScheme.onSurface.withOpacity(0.5) : theme.colorScheme.onSurface,
                       ),

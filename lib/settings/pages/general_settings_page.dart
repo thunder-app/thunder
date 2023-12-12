@@ -7,6 +7,7 @@ import 'package:android_intent_plus/android_intent.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
@@ -82,6 +83,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// When enabled, the post FAB and comment navigation buttons will be combined
   bool combineNavAndFab = true;
+
+  /// Defines the separator used to denote full usernames
+  FullNameSeparator userSeparator = FullNameSeparator.at;
+
+  /// Defines the separator used to denote full commuity names
+  FullNameSeparator communitySeparator = FullNameSeparator.dot;
 
   SortType defaultSortType = DEFAULT_SORT_TYPE;
 
@@ -161,6 +168,15 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
+
+      case LocalSettings.userFormat:
+        await prefs.setString(LocalSettings.userFormat.name, value);
+        setState(() => userSeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.at));
+        break;
+      case LocalSettings.communityFormat:
+        await prefs.setString(LocalSettings.communityFormat.name, value);
+        setState(() => communitySeparator = FullNameSeparator.values.byName(value ?? FullNameSeparator.dot));
+        break;
     }
 
     if (context.mounted) {
@@ -199,6 +215,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       openInExternalBrowser = prefs.getBool(LocalSettings.openLinksInExternalBrowser.name) ?? false;
       openInReaderMode = prefs.getBool(LocalSettings.openLinksInReaderMode.name) ?? false;
       scrapeMissingPreviews = prefs.getBool(LocalSettings.scrapeMissingPreviews.name) ?? false;
+
+      userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
     });
@@ -318,6 +337,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
                 description: l10n.appLanguage,
+                bottomSheetHeading: Align(alignment: Alignment.centerLeft, child: Text(l10n.translationsMayNotBeComplete)),
                 value: ListPickerItem(label: currentLocale.languageCode, icon: Icons.language_rounded, payload: currentLocale),
                 options: supportedLocales.map((e) => ListPickerItem(label: LanguageLocal.getDisplayLanguage(e.languageCode), icon: Icons.language_rounded, payload: e)).toList(),
                 icon: Icons.language_rounded,
@@ -539,6 +559,44 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 iconEnabled: Icons.image_search_rounded,
                 iconDisabled: Icons.link_off_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.scrapeMissingPreviews, value),
+              ),
+            ),
+          ),
+
+          const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Text(l10n.advanced, style: theme.textTheme.titleMedium),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: l10n.userFormat,
+                value: ListPickerItem(label: userSeparator.label, icon: Icons.person_rounded, payload: userSeparator, capitalizeLabel: false),
+                options: [
+                  ListPickerItem(icon: const IconData(0x2022), label: FullNameSeparator.dot.label, payload: FullNameSeparator.dot, capitalizeLabel: false),
+                  ListPickerItem(icon: Icons.alternate_email_rounded, label: FullNameSeparator.at.label, payload: FullNameSeparator.at, capitalizeLabel: false),
+                ],
+                icon: Icons.person_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.userFormat, value.payload.name),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: l10n.communityFormat,
+                value: ListPickerItem(label: communitySeparator.label, icon: Icons.person_rounded, payload: communitySeparator, capitalizeLabel: false),
+                options: [
+                  ListPickerItem(icon: const IconData(0x2022), label: FullNameSeparator.dot.label, payload: FullNameSeparator.dot, capitalizeLabel: false),
+                  ListPickerItem(icon: Icons.alternate_email_rounded, label: FullNameSeparator.at.label, payload: FullNameSeparator.at, capitalizeLabel: false),
+                ],
+                icon: Icons.people_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.communityFormat, value.payload.name),
               ),
             ),
           ),

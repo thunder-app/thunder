@@ -8,6 +8,7 @@ import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -112,7 +113,7 @@ class CommentCard extends StatelessWidget {
               ),
               GestureDetector(
                 child: Text(
-                  '${comment.community.name}${' · ${fetchInstanceNameFromUrl(comment.community.actorId)}'}',
+                  generateCommunityFullName(context, comment.community.name, fetchInstanceNameFromUrl(comment.community.actorId)),
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
                   ),

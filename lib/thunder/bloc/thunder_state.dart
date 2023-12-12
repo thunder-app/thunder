@@ -31,6 +31,8 @@ class ThunderState extends Equatable {
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
+    this.userSeparator = FullNameSeparator.at,
+    this.communitySeparator = FullNameSeparator.dot,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -60,6 +62,7 @@ class ThunderState extends Equatable {
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
+    this.commentShowUserInstance = false,
     this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
@@ -108,7 +111,7 @@ class ThunderState extends Equatable {
     this.postFabEnableReplyToPost = true,
     this.postFabEnableRefresh = true,
     this.postFabEnableSearch = true,
-    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.feedFabSinglePressAction = FeedFabAction.newPost,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
@@ -152,6 +155,8 @@ class ThunderState extends Equatable {
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final String? appLanguageCode;
+  final FullNameSeparator userSeparator;
+  final FullNameSeparator communitySeparator;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -181,6 +186,7 @@ class ThunderState extends Equatable {
   final CommentSortType defaultCommentSortType;
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
+  final bool commentShowUserInstance;
   final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
@@ -281,6 +287,8 @@ class ThunderState extends Equatable {
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
     bool? scoreCounters,
+    FullNameSeparator? userSeparator,
+    FullNameSeparator? communitySeparator,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -308,6 +316,7 @@ class ThunderState extends Equatable {
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
+    bool? commentShowUserInstance,
     bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
@@ -403,6 +412,8 @@ class ThunderState extends Equatable {
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
+      userSeparator: userSeparator ?? this.userSeparator,
+      communitySeparator: communitySeparator ?? this.communitySeparator,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -431,6 +442,7 @@ class ThunderState extends Equatable {
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+      commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
       combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
@@ -530,6 +542,8 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         disableFeedFab,
         showInAppUpdateNotification,
+        userSeparator,
+        communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings
@@ -559,7 +573,9 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showCommentButtonActions,
+        commentShowUserInstance,
         combineCommentScores,
+
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
 

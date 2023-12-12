@@ -20,6 +20,7 @@ import 'package:thunder/community/utils/post_card_action_helpers.dart';
 import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -161,120 +162,123 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ),
               ),
             if (showCrossPosts && sortedCrossPosts.isNotEmpty) CrossPosts(crossPosts: sortedCrossPosts, originalPost: widget.postViewMedia),
-            Padding(
-              padding: EdgeInsets.only(left: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? 8.0 : 3.0, right: 8.0, top: 16.0),
-              child: Row(
-                // Row for post view: author, community, comment count and post time
+            const SizedBox(height: 16.0),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                runSpacing: 8.0,
                 children: [
-                  Tooltip(
-                    excludeFromSemantics: true,
-                    message:
-                        '${postView.creator.name}@${fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, widget.moderators)}',
-                    preferBelow: false,
-                    child: Material(
-                      color: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)
-                          ? fetchUsernameColor(context, isOwnPost, post, null, postView.creator, widget.moderators) ?? theme.colorScheme.onBackground
-                          : Colors.transparent,
-                      borderRadius: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
-                      child: InkWell(
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Tooltip(
+                        excludeFromSemantics: true,
+                        message:
+                            '${generateUserFullName(context, postView.creator.name, fetchInstanceNameFromUrl(postView.creator.actorId) ?? '-')}${fetchUsernameDescriptor(isOwnPost, post, null, postView.creator, widget.moderators)}',
+                        preferBelow: false,
+                        child: Material(
+                          color: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)
+                              ? fetchUsernameColor(context, isOwnPost, post, null, postView.creator, widget.moderators) ?? theme.colorScheme.onBackground
+                              : Colors.transparent,
+                          borderRadius: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const BorderRadius.all(Radius.elliptical(5, 5)) : null,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(5),
+                            onTap: () {
+                              navigateToUserPage(context, userId: postView.creator.id);
+                            },
+                            child: Padding(
+                              padding: isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? const EdgeInsets.symmetric(horizontal: 5.0) : EdgeInsets.zero,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  ScalableText(
+                                    postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
+                                    fontScale: thunderState.metadataFontSizeScale,
+                                    style: theme.textTheme.bodyMedium?.copyWith(
+                                      color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
+                                          ?.withOpacity(0.75),
+                                    ),
+                                  ),
+                                  if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
+                                  if (isOwnPost)
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 1),
+                                      child: Icon(
+                                        Icons.person,
+                                        size: 15.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                        color: theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                  if (isAdmin(postView.creator))
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 1),
+                                      child: Icon(
+                                        Thunder.shield_crown,
+                                        size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                        color: theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                  if (isModerator(postView.creator, widget.moderators))
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 1),
+                                      child: Icon(
+                                        Thunder.shield,
+                                        size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                        color: theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                  if (isBot(postView.creator))
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 1, right: 2),
+                                      child: Icon(
+                                        Thunder.robot,
+                                        size: 13.0 * thunderState.metadataFontSizeScale.textScaleFactor,
+                                        color: theme.colorScheme.onBackground,
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 6.0),
+                      ScalableText(
+                        'to',
+                        fontScale: thunderState.metadataFontSizeScale,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
+                        ),
+                      ),
+                      const SizedBox(width: 6.0),
+                      InkWell(
                         borderRadius: BorderRadius.circular(5),
                         onTap: () {
-                          navigateToUserPage(context, userId: postView.creator.id);
+                          navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id);
                         },
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5, right: 5),
-                          child: Row(
-                            children: [
-                              ScalableText(
-                                postView.creator.displayName != null && widget.useDisplayNames ? postView.creator.displayName! : postView.creator.name,
-                                fontScale: thunderState.metadataFontSizeScale,
-                                style: theme.textTheme.bodyMedium?.copyWith(
-                                  color: (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators) ? theme.colorScheme.onBackground : theme.textTheme.bodyMedium?.color)
-                                      ?.withOpacity(0.75),
-                                ),
-                              ),
-                              if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 2.0),
-                              if (isOwnPost)
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 1),
-                                  child: Icon(
-                                    Icons.person,
-                                    size: 15.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                    color: theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                              if (isAdmin(postView.creator))
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 1),
-                                  child: Icon(
-                                    Thunder.shield_crown,
-                                    size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                    color: theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                              if (isModerator(postView.creator, widget.moderators))
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 1),
-                                  child: Icon(
-                                    Thunder.shield,
-                                    size: 14.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                    color: theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                              if (isBot(postView.creator))
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 1, right: 2),
-                                  child: Icon(
-                                    Thunder.robot,
-                                    size: 13.0 * thunderState.metadataFontSizeScale.textScaleFactor,
-                                    color: theme.colorScheme.onBackground,
-                                  ),
-                                ),
-                            ],
+                        child: Tooltip(
+                          excludeFromSemantics: true,
+                          message: generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'),
+                          preferBelow: false,
+                          child: ScalableText(
+                            postView.community.name,
+                            fontScale: thunderState.metadataFontSizeScale,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
+                            ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  if (isSpecialUser(context, isOwnPost, post, null, postView.creator, widget.moderators)) const SizedBox(width: 8.0),
-                  ScalableText(
-                    'to',
-                    fontScale: thunderState.metadataFontSizeScale,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.4),
-                    ),
-                  ),
-                  InkWell(
-                    borderRadius: BorderRadius.circular(5),
-                    onTap: () {
-                      navigateToFeedPage(context, feedType: FeedType.community, communityId: postView.community.id);
-                    },
-                    child: Tooltip(
-                      excludeFromSemantics: true,
-                      message: '${postView.community.name}@${fetchInstanceNameFromUrl(postView.community.actorId) ?? 'N/A'}',
-                      preferBelow: false,
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 5, right: 5),
-                        child: ScalableText(
-                          postView.community.name,
-                          fontScale: thunderState.metadataFontSizeScale,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const Spacer(), // use Spacer
-                  Padding(
-                    padding: const EdgeInsets.only(right: 0.0),
-                    child: PostViewMetaData(
-                      comments: widget.postViewMedia.postView.counts.comments,
-                      unreadComments: widget.postViewMedia.postView.unreadComments,
-                      hasBeenEdited: widget.postViewMedia.postView.post.updated != null ? true : false,
-                      published: post.published,
-                      saved: postView.saved,
-                    ),
+                  const SizedBox(width: 6.0),
+                  PostViewMetaData(
+                    comments: widget.postViewMedia.postView.counts.comments,
+                    unreadComments: widget.postViewMedia.postView.unreadComments,
+                    hasBeenEdited: widget.postViewMedia.postView.post.updated != null ? true : false,
+                    published: post.published,
+                    saved: postView.saved,
                   ),
                 ],
               ),

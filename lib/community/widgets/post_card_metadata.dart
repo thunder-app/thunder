@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
@@ -138,34 +139,29 @@ class PostViewMetaData extends StatelessWidget {
     return BlocBuilder<ThunderBloc, ThunderState>(
       builder: (context, state) {
         return Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                IconText(
-                  fontScale: state.metadataFontSizeScale,
-                  icon: Icon(
-                    Icons.chat,
-                    size: 17.0,
-                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                  ),
-                  text: formatNumberToK(comments),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                  padding: 5.0,
-                ),
-                const SizedBox(width: 10.0),
-                IconText(
-                  fontScale: state.metadataFontSizeScale,
-                  icon: Icon(
-                    hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
-                    size: 19.0,
-                    color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
-                  ),
-                  text: formatTimeToString(dateTime: published.toIso8601String()),
-                  textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
-                ),
-              ],
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                Icons.chat,
+                size: 17.0,
+                color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+              ),
+              text: formatNumberToK(comments),
+              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
+              padding: 5.0,
+            ),
+            const SizedBox(width: 10.0),
+            IconText(
+              fontScale: state.metadataFontSizeScale,
+              icon: Icon(
+                hasBeenEdited ? Icons.refresh_rounded : Icons.history_rounded,
+                size: 19.0,
+                color: theme.textTheme.titleSmall?.color?.withOpacity(0.75),
+              ),
+              text: formatTimeToString(dateTime: published.toIso8601String()),
+              textColor: theme.textTheme.titleSmall?.color?.withOpacity(0.9),
             ),
           ],
         );
@@ -249,7 +245,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         if (!communityMode)
                           ScalableText(
-                            '${postView.community.name} · ${fetchInstanceNameFromUrl(postView.community.actorId)}',
+                            generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
                             fontScale: state.metadataFontSizeScale,
                             style: textStyleCommunity,
                           ),

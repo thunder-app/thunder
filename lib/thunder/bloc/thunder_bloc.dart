@@ -10,6 +10,7 @@ import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/fab_action.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
@@ -110,6 +111,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       bool showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
+      FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+      FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -137,6 +140,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
       bool collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
       bool showCommentButtonActions = prefs.getBool(LocalSettings.showCommentActionButtons.name) ?? false;
+      bool commentShowUserInstance = prefs.getBool(LocalSettings.commentShowUserInstance.name) ?? false;
       bool combineCommentScores = prefs.getBool(LocalSettings.combineCommentScores.name) ?? false;
       NestedCommentIndicatorStyle nestedCommentIndicatorStyle =
           NestedCommentIndicatorStyle.values.byName(prefs.getString(LocalSettings.nestedCommentIndicatorStyle.name) ?? DEFAULT_NESTED_COMMENT_INDICATOR_STYLE.name);
@@ -193,7 +197,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
       bool postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
 
-      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      FeedFabAction feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.newPost.name);
       FeedFabAction feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
       PostFabAction postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
       PostFabAction postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);
@@ -232,6 +236,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         markPostReadOnMediaView: markPostReadOnMediaView,
         showInAppUpdateNotification: showInAppUpdateNotification,
         appLanguageCode: appLanguageCode,
+        userSeparator: userSeparator,
+        communitySeparator: communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings
@@ -259,6 +265,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         defaultCommentSortType: defaultCommentSortType,
         collapseParentCommentOnGesture: collapseParentCommentOnGesture,
         showCommentButtonActions: showCommentButtonActions,
+        commentShowUserInstance: commentShowUserInstance,
         combineCommentScores: combineCommentScores,
         nestedCommentIndicatorStyle: nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor: nestedCommentIndicatorColor,
