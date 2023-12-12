@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:jovial_svg/jovial_svg.dart';
+import 'package:expandable/expandable.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 
 import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
@@ -304,32 +307,49 @@ class SpoilerWidget extends StatefulWidget {
 }
 
 class _SpoilerWidgetState extends State<SpoilerWidget> {
-  bool isShown = false;
+  /// Whether the spoiler is expanded
+  final ExpandableController expandableController = ExpandableController(initialExpanded: false);
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
-    if (isShown) {
-      return GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        child: CommonMarkdownBody(body: widget.body ?? ''),
-        onTap: () => setState(() => isShown = false),
-      );
-    } else {
-      return Container(
-        color: theme.colorScheme.primary,
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          onTap: () => setState(() => isShown = true),
-          child: IgnorePointer(
-            child: CommonMarkdownBody(
-              body: widget.body ?? '',
-              hideContent: true,
-            ),
+    final state = context.read<ThunderBloc>().state;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: ScalableText(
+                  widget.title ?? l10n.spoiler,
+                  fontScale: state.contentFontSizeScale,
+                ),
+              ),
+              IconButton(
+                visualDensity: VisualDensity.compact,
+                icon: Icon(
+                  expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                  semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                ),
+                onPressed: () {
+                  expandableController.toggle();
+                  setState(() {}); // Update the state to trigger the collapse/expand
+                },
+              ),
+            ],
           ),
         ),
-      );
-    }
+        Expandable(
+          controller: expandableController,
+          collapsed: Container(),
+          expanded: CommonMarkdownBody(body: widget.body ?? ''),
+        ),
+      ],
+    );
   }
 }

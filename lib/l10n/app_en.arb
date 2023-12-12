@@ -416,6 +416,18 @@
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
   },
+  "collapseSpoiler": "Collapse Spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "expandSpoiler": "Expand Spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
   "loadMorePlural": "Load {count} more replies…",
   "@loadMorePlural": {},
   "loadMoreSingular": "Load {count} more reply…",
