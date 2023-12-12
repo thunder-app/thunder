@@ -5,6 +5,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/pages/post_page.dart';
@@ -140,7 +141,7 @@ class _CommentReferenceState extends State<CommentReference> {
                               ),
                               ExcludeSemantics(
                                 child: ScalableText(
-                                  '${widget.comment.community.name}${' · ${fetchInstanceNameFromUrl(widget.comment.community.actorId)}'}',
+                                  generateCommunityFullName(context, widget.comment.community.name, fetchInstanceNameFromUrl(widget.comment.community.actorId)),
                                   fontScale: state.contentFontSizeScale,
                                   style: theme.textTheme.bodyMedium?.copyWith(
                                     color: theme.textTheme.bodyMedium?.color?.withOpacity(0.75),

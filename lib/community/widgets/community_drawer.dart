@@ -8,6 +8,7 @@ import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -266,7 +267,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                                 Expanded(
                                                   child: Tooltip(
                                                     excludeFromSemantics: true,
-                                                    message: '${community.title}\n${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                                    message: '${community.title}\n${generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId))}',
                                                     preferBelow: false,
                                                     child: Column(
                                                       mainAxisAlignment: MainAxisAlignment.start,
@@ -278,7 +279,7 @@ class _CommunityDrawerState extends State<CommunityDrawer> {
                                                           maxLines: 1,
                                                         ),
                                                         Text(
-                                                          '${community.name} · ${fetchInstanceNameFromUrl(community.actorId)}',
+                                                          generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId)),
                                                           style: theme.textTheme.bodyMedium,
                                                           overflow: TextOverflow.ellipsis,
                                                         ),

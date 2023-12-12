@@ -6,6 +6,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/font_scale.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/thunder/thunder_icons.dart';
@@ -56,7 +57,7 @@ class CommentHeader extends StatelessWidget {
                 Tooltip(
                   excludeFromSemantics: true,
                   message:
-                      '${comment.creator.name}@${fetchInstanceNameFromUrl(comment.creator.actorId) ?? '-'}${fetchUsernameDescriptor(isOwnComment, comment.post, comment.comment, comment.creator, moderators)}',
+                      '${generateUserFullName(context, comment.creator.name, fetchInstanceNameFromUrl(comment.creator.actorId) ?? '-')}${fetchUsernameDescriptor(isOwnComment, comment.post, comment.comment, comment.creator, moderators)}',
                   preferBelow: false,
                   child: Row(
                     children: [
@@ -84,7 +85,7 @@ class CommentHeader extends StatelessWidget {
                                         ),
                                         if (commentShowUserInstance)
                                           ScalableText(
-                                            '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
+                                            generateUserFullNameSuffix(context, fetchInstanceNameFromUrl(comment.creator.actorId)),
                                             fontScale: state.metadataFontSizeScale,
                                             style: theme.textTheme.bodyMedium?.copyWith(
                                               fontWeight: FontWeight.w300,
@@ -162,7 +163,7 @@ class CommentHeader extends StatelessWidget {
                                           children: [
                                             if (commentShowUserInstance)
                                               TextSpan(
-                                                text: '@${fetchInstanceNameFromUrl(comment.creator.actorId)}',
+                                                text: generateUserFullNameSuffix(context, fetchInstanceNameFromUrl(comment.creator.actorId)),
                                                 style: theme.textTheme.bodyMedium?.copyWith(
                                                   fontWeight: FontWeight.w300,
                                                   fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),

@@ -7,6 +7,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/widgets/account_placeholder.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -327,7 +328,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Tooltip(
-          message: '${community.name}@${fetchInstanceNameFromUrl(community.actorId) ?? '-'}',
+          message: generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
             child: InkWell(
@@ -343,7 +344,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  '${community.name}@${fetchInstanceNameFromUrl(community.actorId) ?? '-'}',
+                  generateCommunityFullName(context, community.name, fetchInstanceNameFromUrl(community.actorId) ?? '-'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -381,7 +382,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
       return Padding(
         padding: const EdgeInsets.only(left: 10, right: 10),
         child: Tooltip(
-          message: '${person.name}@${fetchInstanceNameFromUrl(person.actorId) ?? '-'}',
+          message: generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
           preferBelow: false,
           child: Material(
             child: InkWell(
@@ -397,7 +398,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(
-                  '${person.name}@${fetchInstanceNameFromUrl(person.actorId) ?? '-'}',
+                  generateUserFullName(context, person.name, fetchInstanceNameFromUrl(person.actorId) ?? '-'),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),

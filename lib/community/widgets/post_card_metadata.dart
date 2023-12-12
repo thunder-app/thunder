@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
@@ -244,7 +245,7 @@ class PostCommunityAndAuthor extends StatelessWidget {
                       children: [
                         if (!communityMode)
                           ScalableText(
-                            '${postView.community.name} · ${fetchInstanceNameFromUrl(postView.community.actorId)}',
+                            generateCommunityFullName(context, postView.community.name, fetchInstanceNameFromUrl(postView.community.actorId)),
                             fontScale: state.metadataFontSizeScale,
                             style: textStyleCommunity,
                           ),

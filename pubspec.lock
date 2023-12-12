@@ -905,12 +905,11 @@ packages:
   l10n_esperanto:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "78e757337a1de881220086d26a083feeb780f609"
-      resolved-ref: "78e757337a1de881220086d26a083feeb780f609"
-      url: "https://github.com/deakjahn/l10n_esperanto.git"
-    source: git
-    version: "2.0.6"
+      name: l10n_esperanto
+      sha256: d39eee827977f55d1d46078aea08e5f1c1101d91bc13a3f7d37c3b2016c17a81
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.8"
   lemmy_api_client:
     dependency: "direct main"
     description:

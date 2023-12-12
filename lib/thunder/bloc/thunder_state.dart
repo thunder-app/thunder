@@ -31,6 +31,8 @@ class ThunderState extends Equatable {
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
+    this.userSeparator = FullNameSeparator.at,
+    this.communitySeparator = FullNameSeparator.dot,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -154,6 +156,8 @@ class ThunderState extends Equatable {
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
   final String? appLanguageCode;
+  final FullNameSeparator userSeparator;
+  final FullNameSeparator communitySeparator;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -285,6 +289,8 @@ class ThunderState extends Equatable {
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
     bool? scoreCounters,
+    FullNameSeparator? userSeparator,
+    FullNameSeparator? communitySeparator,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -409,6 +415,8 @@ class ThunderState extends Equatable {
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
+      userSeparator: userSeparator ?? this.userSeparator,
+      communitySeparator: communitySeparator ?? this.communitySeparator,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -538,6 +546,8 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         disableFeedFab,
         showInAppUpdateNotification,
+        userSeparator,
+        communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings

@@ -29,6 +29,10 @@
   },
   "addedCommunityToSubscriptions": "Added community to subscriptions",
   "@addedCommunityToSubscriptions": {},
+  "advanced": "Advanced",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
   "all": "All",
   "allPosts": "All Posts",
   "allowOpenSupportedLinks": "Allow app to open supported links.",
@@ -157,6 +161,10 @@
   "communities": "Communities",
   "community": "Community",
   "@community": {},
+  "communityFormat": "Community Format",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
   "compactView": "Compact View",
   "@compactView": {
     "description": "Label for the compact view option in Setting -> Appearance -> Posts"
@@ -881,6 +889,10 @@
     "description": "Option to enable or disable compact view for small posts."
   },
   "useSuggestedTitle": "Use suggested title: {title}",
+  "userFormat": "User Format",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
   "userNotLoggedIn": "User not logged in",
   "@userNotLoggedIn": {},
   "userProfiles": "User Profiles",
