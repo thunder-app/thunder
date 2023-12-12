@@ -18,7 +18,7 @@ class FilterSettingsPage extends StatefulWidget {
 }
 
 class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTickerProviderStateMixin {
-  TextEditingController keywordFilterController = TextEditingController();
+  /// The list of keyword filters to apply for posts
   List<String> keywordFilters = [];
 
   void setPreferences(attribute, value) async {
@@ -120,10 +120,7 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                         itemBuilder: (context, index) {
                           return SettingsListTile(
                             description: keywordFilters[index],
-                            widget: const SizedBox(
-                              height: 42.0,
-                              child: Icon(Icons.chevron_right_rounded),
-                            ),
+                            widget: const SizedBox(height: 42.0, child: Icon(Icons.chevron_right_rounded)),
                             onTap: () async {
                               showThunderDialog(
                                 context: context,
