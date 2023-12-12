@@ -352,9 +352,8 @@ Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelect
 }
 
 /// Shows a dialog which allows typing/search for a keyword
-void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected, Iterable<Language>? emptySuggestions}) async {
-  AuthState state = context.read<AuthBloc>().state;
-  final AppLocalizations l10n = AppLocalizations.of(context)!;
+void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
+  final l10n = AppLocalizations.of(context)!;
 
   Future<String?> onSubmitted({String? payload, String? value}) async {
     if (payload != null) {
@@ -374,35 +373,10 @@ void showKeywordInputDialog(BuildContext context, {required String title, requir
       title: title,
       inputLabel: l10n.addKeywordFilter,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getKeywordSuggestions(query, []),
-      suggestionBuilder: (payload) => buildKeywordSuggestionWidget(payload, context: context),
+      getSuggestions: (query) => [] as Future<Iterable<String>>,
+      suggestionBuilder: (payload) => Container(),
     );
   }
-}
-
-Future<Iterable<String>> getKeywordSuggestions(String query, Iterable<String>? emptySuggestions) async {
-  if (query.isEmpty) {
-    return emptySuggestions ?? [];
-  }
-
-  return [];
-}
-
-Widget buildKeywordSuggestionWidget(payload, {void Function(String)? onSelected, BuildContext? context}) {
-  return Tooltip(
-    message: '${payload.name}',
-    preferBelow: false,
-    child: InkWell(
-      onTap: onSelected == null ? null : () => onSelected(payload),
-      child: ListTile(
-        title: Text(
-          payload.name,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-    ),
-  );
 }
 
 /// Shows a dialog which takes input and offers suggestions
