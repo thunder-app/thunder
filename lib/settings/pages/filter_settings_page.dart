@@ -5,9 +5,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
-import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
-import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
@@ -92,27 +91,56 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
           ),
           SliverToBoxAdapter(
             child: Padding(
+              padding: const EdgeInsets.only(left: 16.0, bottom: 8.0),
+              child: Text(
+                l10n.keywordFilterDescription,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                ),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.only(left: 16.0, right: 16.0),
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: ListView.builder(
-                  padding: const EdgeInsets.only(bottom: 20),
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemCount: keywordFilters.length,
-                  itemBuilder: (context, index) {
-                    return SettingsListTile(
-                      description: keywordFilters[index],
-                      widget: const SizedBox(
-                        height: 42.0,
-                        child: Icon(Icons.chevron_right_rounded),
+                child: keywordFilters.isEmpty
+                    ? Text(
+                        l10n.noKeywordFilters,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.only(bottom: 20),
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: keywordFilters.length,
+                        itemBuilder: (context, index) {
+                          return SettingsListTile(
+                            description: keywordFilters[index],
+                            widget: const SizedBox(
+                              height: 42.0,
+                              child: Icon(Icons.chevron_right_rounded),
+                            ),
+                            onTap: () async {
+                              showThunderDialog(
+                                context: context,
+                                title: l10n.removeKeywordFilter,
+                                contentText: l10n.removeKeyword(keywordFilters[index]),
+                                primaryButtonText: l10n.remove,
+                                onPrimaryButtonPressed: (context, setPrimaryButtonEnabled) {
+                                  setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
+                                  Navigator.of(context).pop();
+                                },
+                                secondaryButtonText: l10n.cancel,
+                                onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
+                              );
+                            },
+                          );
+                        },
                       ),
-                      onTap: () async {
-                        setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
-                      },
-                    );
-                  },
-                ),
               ),
             ),
           ),

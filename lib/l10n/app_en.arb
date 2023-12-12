@@ -3,14 +3,6 @@
   "@about": {
     "description": "About settings category."
   },
-  "keywordFilters": "Keyword Filters",
-  "@keywordFilters": {
-    "description": "Subcategory in Setting -> General"
-  },
-  "addKeywordFilter": "Add Keyword",
-  "@addKeywordFilter": {
-    "description": "Hint for text field to add keyword"
-  },
   "accessibility": "Accessibility",
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
@@ -31,6 +23,10 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
+  "addKeywordFilter": "Add Keyword",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
   "addedCommunityToSubscriptions": "Added community to subscriptions",
   "@addedCommunityToSubscriptions": {},
   "all": "All",
@@ -148,6 +144,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Show User Instance",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
   "commentSortType": "Comment Sort Type",
   "@commentSortType": {},
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
@@ -169,13 +169,13 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirmLogOutTitle": "Confirm Log Out",
-  "@confirmLogOutTitle": {
-    "description": "The title of the confirm logout dialog"
-  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Confirm Log Out",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
   },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
   "@confirmResetCommentPreferences": {
@@ -401,6 +401,14 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Keyword Filters",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
@@ -470,6 +478,10 @@
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noKeywordFilters": "No keyword filters added",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
   "noLanguage": "No language",
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
@@ -591,6 +603,14 @@
   "@removeAccount": {},
   "removeInstance": "Remove instance",
   "@removeInstance": {},
+  "removeKeyword": "Remove \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Remove Keyword",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
@@ -889,9 +909,5 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {},
-  "commentShowUserInstance":"Show User Instance",
-  "@commentShowUserInstance":{
-    "description":"Settings toggle to display user instance alongside their display name in comments"
-  }
+  "@xUpvotes": {}
 }

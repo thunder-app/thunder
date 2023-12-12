@@ -1,8 +1,11 @@
 import 'package:lemmy_api_client/v3.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/post/utils/post.dart';
 
 /// Helper function which handles the logic of fetching posts from the API
@@ -18,6 +21,9 @@ Future<Map<String, dynamic>> fetchPosts({
 }) async {
   Account? account = await fetchActiveProfileAccount();
   LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+  SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
 
   bool hasReachedEnd = false;
 
@@ -38,6 +44,16 @@ Future<Map<String, dynamic>> fetchPosts({
 
     // Remove deleted posts
     getPostsResponse = getPostsResponse.copyWith(posts: getPostsResponse.posts.where((PostView postView) => postView.post.deleted == false).toList());
+
+    // Remove posts that contain any of the keywords in the title or body
+    getPostsResponse = getPostsResponse.copyWith(
+      posts: getPostsResponse.posts.where((postView) {
+        final title = postView.post.name.toLowerCase();
+        final body = postView.post.body?.toLowerCase() ?? '';
+
+        return !keywordFilters.any((keyword) => title.contains(keyword.toLowerCase()) || body.contains(keyword.toLowerCase()));
+      }).toList(),
+    );
 
     // Parse the posts and add in media information which is used elsewhere in the app
     List<PostViewMedia> formattedPosts = await parsePostViews(getPostsResponse.posts);
