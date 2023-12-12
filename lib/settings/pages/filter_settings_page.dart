@@ -127,12 +127,12 @@ class _FilterSettingsPageState extends State<FilterSettingsPage> with SingleTick
                                 title: l10n.removeKeywordFilter,
                                 contentText: l10n.removeKeyword(keywordFilters[index]),
                                 primaryButtonText: l10n.remove,
-                                onPrimaryButtonPressed: (context, setPrimaryButtonEnabled) {
+                                onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) {
                                   setPreferences(LocalSettings.keywordFilters, keywordFilters.where((element) => element != keywordFilters[index]).toList());
-                                  Navigator.of(context).pop();
+                                  Navigator.of(dialogContext).pop();
                                 },
                                 secondaryButtonText: l10n.cancel,
-                                onSecondaryButtonPressed: (context) => Navigator.of(context).pop(),
+                                onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
                               );
                             },
                           );
