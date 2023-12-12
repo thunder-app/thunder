@@ -11,6 +11,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/dialogs.dart';
@@ -55,7 +56,7 @@ void showUserInputDialog(BuildContext context, {required String title, required 
     inputLabel: AppLocalizations.of(context)!.username,
     onSubmitted: onSubmitted,
     getSuggestions: getUserSuggestions,
-    suggestionBuilder: (payload) => buildUserSuggestionWidget(payload),
+    suggestionBuilder: (payload) => buildUserSuggestionWidget(context, payload),
   );
 }
 
@@ -73,9 +74,9 @@ Future<Iterable<PersonView>> getUserSuggestions(String query) async {
   return searchResponse.users;
 }
 
-Widget buildUserSuggestionWidget(PersonView payload, {void Function(PersonView)? onSelected}) {
+Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void Function(PersonView)? onSelected}) {
   return Tooltip(
-    message: '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
+    message: generateUserFullName(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -89,7 +90,7 @@ Widget buildUserSuggestionWidget(PersonView payload, {void Function(PersonView)?
         subtitle: Semantics(
           excludeSemantics: true,
           child: TextScroll(
-            '${payload.person.name}@${fetchInstanceNameFromUrl(payload.person.actorId)}',
+            generateUserFullName(context, payload.person.name, fetchInstanceNameFromUrl(payload.person.actorId)),
             delayBefore: const Duration(seconds: 2),
             pauseBetween: const Duration(seconds: 3),
             velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),
@@ -136,7 +137,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
     getSuggestions: (query) => getCommunitySuggestions(query, emptySuggestions),
-    suggestionBuilder: buildCommunitySuggestionWidget,
+    suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
   );
 }
 
@@ -155,11 +156,11 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
   return searchResponse.communities;
 }
 
-Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(CommunityView)? onSelected}) {
+Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
   final AppLocalizations l10n = AppLocalizations.of(GlobalContext.context)!;
 
   return Tooltip(
-    message: '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+    message: generateCommunityFullName(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
     preferBelow: false,
     child: InkWell(
       onTap: onSelected == null ? null : () => onSelected(payload),
@@ -176,7 +177,7 @@ Widget buildCommunitySuggestionWidget(CommunityView payload, {void Function(Comm
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextScroll(
-                '${payload.community.name}@${fetchInstanceNameFromUrl(payload.community.actorId)}',
+                generateCommunityFullName(context, payload.community.name, fetchInstanceNameFromUrl(payload.community.actorId)),
                 delayBefore: const Duration(seconds: 2),
                 pauseBetween: const Duration(seconds: 3),
                 velocity: const Velocity(pixelsPerSecond: Offset(50, 0)),

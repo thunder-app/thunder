@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -75,7 +76,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                   style: crossPostTextStyle,
                                 ),
                                 TextSpan(
-                                  text: ' ${widget.crossPosts[0].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId)} ',
+                                  text: ' ${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
                                   style: crossPostLinkTextStyle,
                                   // This text is not tappable; there is an invisible widget above this that handles the InkWell and the tap gesture
                                 ),
@@ -111,7 +112,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                             borderRadius: BorderRadius.circular(5),
                             onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[0]])).first),
                             child: Text(
-                              ' ${widget.crossPosts[0].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId)} ',
+                              ' ${generateCommunityFullName(context, widget.crossPosts[0].community.name, fetchInstanceNameFromUrl(widget.crossPosts[0].community.actorId))} ',
                               style: crossPostLinkTextStyle?.copyWith(color: Colors.transparent),
                             ),
                           ),
@@ -152,7 +153,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                                     onTap: () async => navigateToPost(context, postViewMedia: (await parsePostViews([widget.crossPosts[index + 1]])).first),
                                     borderRadius: BorderRadius.circular(5),
                                     child: Text(
-                                      '${widget.crossPosts[index + 1].community.name}@${fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId)}',
+                                      generateCommunityFullName(context, widget.crossPosts[index + 1].community.name, fetchInstanceNameFromUrl(widget.crossPosts[index + 1].community.actorId)),
                                       style: crossPostLinkTextStyle,
                                     ),
                                   ),
