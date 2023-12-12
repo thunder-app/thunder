@@ -41,8 +41,6 @@
   "@communities": {},
   "community": "Спільнота",
   "@community": {},
-  "confirmLogOut": "Вийти?",
-  "@confirmLogOut": {},
   "countSubscribers": "Підписників: {count}",
   "@countSubscribers": {},
   "createAccount": "Створити обліковий запис",

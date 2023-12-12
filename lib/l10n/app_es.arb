@@ -15,7 +15,7 @@
   "@add": {},
   "addAccount": "Add Account",
   "@addAccount": {},
-  "addAccountToSeeProfile": "Add an account to see your profile.",
+  "addAccountToSeeProfile": "Inicia sesión para ver tu cuenta.",
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
@@ -97,8 +97,6 @@
   "@communities": {},
   "community": "Comunidad",
   "@community": {},
-  "confirmLogOut": "¿Cerrar la sesión?",
-  "@confirmLogOut": {},
   "controversial": "Polémico",
   "@controversial": {},
   "copiedToClipboard": "Copiado al portapapeles",
@@ -585,7 +583,7 @@
   "@username": {},
   "users": "Usuarios",
   "@users": {},
-  "viewAllComments": "View all comments.",
+  "viewAllComments": "Ver todos los comentarios",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",
   "@visitCommunity": {},
@@ -596,5 +594,311 @@
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "appLanguage": "Idioma de la aplicación",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "endSearch": "Finalizar la búsqueda",
+  "@endSearch": {},
+  "all": "Todo",
+  "@all": {},
+  "searchTerm": "Buscar términos",
+  "@searchTerm": {},
+  "noResultsFound": "No se han encontrado resultados.",
+  "@noResultsFound": {},
+  "local": "Local",
+  "@local": {},
+  "searchComments": "Buscar comentarios",
+  "@searchComments": {},
+  "unableToFindLanguage": "No se encuentra el idioma",
+  "@unableToFindLanguage": {
+    "description": "Error message when language cannot be found."
+  },
+  "suggestedTitle": "Título sugerido",
+  "@suggestedTitle": {
+    "description": "Suggested title for the post."
+  },
+  "language": "Idioma",
+  "@language": {
+    "description": "Label when creating or editing a post."
+  },
+  "editPost": "Editar el mensaje",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "pending": "Pendiente",
+  "@pending": {
+    "description": "Describes the subscription status for 'Pending'"
+  },
+  "userSettingDescription": "Estos ajustes se sincronizan con tu cuenta de Lemmy y sólo se aplican por cuenta.",
+  "@userSettingDescription": {
+    "description": "Description which explains that the settings are applied globally to the current user."
+  },
+  "filters": "Filtros",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "showReadPosts": "Mostrar las publicaciones leídas",
+  "@showReadPosts": {
+    "description": "Setting to show read posts in feed."
+  },
+  "clearPreferences": "Borrar los ajustes",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "compactView": "Vista compacta",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "expandPostPreview": "Expandir la vista previa del tema",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "confirmResetCommentPreferences": "Esto restablecerá todas las preferencias de los comentarios. ¿Seguro que quieres proceder?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "reset": "Restablecer",
+  "@reset": {
+    "description": "Label for the reset button in Setting -> Appearance -> Posts/Comments"
+  },
+  "resetPreferences": "Restablecer los ajustes",
+  "@resetPreferences": {},
+  "creator": "Creador",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "expandCommentPreview": "Expandir la vista previa de los comentarios",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "compactViewDescription": "Habilitar la vista compacta para ajustar la configuración",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "postViewType": "Tipo de vista del tema",
+  "@postViewType": {
+    "description": "Label for the post view type (compact/card) in Setting -> Appearance -> Posts"
+  },
+  "notificationsBehaviourSettings": "Notificaciones",
+  "@notificationsBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "cardViewSettings": "Configuración de la vista de tarjeta",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "deleteLocalPreferencesDescription": "Esto borrará todas sus preferencias y configuraciones en Thunder.\n\n¿Quieres continuar?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "resetPreferencesAndData": "Restablecer los ajustes y los datos",
+  "@resetPreferencesAndData": {
+    "description": "Debug setting header for resetting all user preferences and data."
+  },
+  "floatingActionButton": "Botón de acción flotante",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "collapsePostPreview": "Contraer la vista previa de la publicación",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "feedTypeAndSorts": "Tipo de Feed predeterminado y de clasificación",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "generalSettings": "Ajustes generales",
+  "@generalSettings": {
+    "description": "Subcategory in Settings"
+  },
+  "compactViewSettings": "Configuración de la vista compacta",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "deleteLocalDatabaseDescription": "Esta acción eliminará la base de datos local y lo desconectará de todas sus cuentas.\n\n¿Quieres continuar?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "appearance": "Apariencia",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "confirmResetPostPreferences": "Esto restablecerá todas las preferencias de la publicación. ¿Seguro que quieres proceder?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "collapseCommentPreview": "Contraer la vista previa de los comentarios",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "topSixMonths": "Lo mejor en los últimos 6 meses",
+  "@topSixMonths": {
+    "description": "Sort mode for top in past 6 months"
+  },
+  "deleteLocalPreferences": "Borrar las preferencias locales",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "debug": "Depurar",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "commentBehaviourSettings": "Comentarios",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "topNineMonths": "Lo mejor en los últimos 9 meses",
+  "@topNineMonths": {
+    "description": "Sort mode for top in past 9 months"
+  },
+  "about": "Acerca de",
+  "@about": {
+    "description": "About settings category."
+  },
+  "postPreview": "Mostrar una vista previa del mensaje con la configuración",
+  "@postPreview": {
+    "description": "Description for the post preview in Setting -> Appearance -> Posts"
+  },
+  "cardView": "Vista de tarjeta",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "clearDatabase": "Borrar la base de datos",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentPreview": "Mostrar una vista previa de los comentarios con la configuración",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "theming": "Temática",
+  "@theming": {
+    "description": "Title of Theming in Settings -> Appearance -> Theming"
+  },
+  "filteringBy": "Filtrar por {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "deleteLocalDatabase": "Borrar la base de datos local",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "topThreeMonths": "Lo mejor en los últimos 3 meses",
+  "@topThreeMonths": {
+    "description": "Sort mode for top in past 3 months"
+  },
+  "cardViewDescription": "Habilitar la vista de tarjeta para ajustar la configuración",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "postBehaviourSettings": "Temas",
+  "@postBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "debugDescription": "Las siguientes configuraciones de depuración solo deben usarse para solucionar problemas.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "linksBehaviourSettings": "Enlaces",
+  "@linksBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "noLanguage": "Ningún idioma",
+  "@noLanguage": {
+    "description": "The entry for no language when selecting a post language"
+  },
+  "combineCommentScoresLabel": "Combinar las puntuaciones de los comentarios",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "resetPostPreferences": "Restablecer las preferencias de la publicación",
+  "@resetPostPreferences": {
+    "description": "Semantic label for button in post appearance settings."
+  },
+  "xScore": "{x} puntuación",
+  "@xScore": {
+    "description": "The total score of post or comment"
+  },
+  "resetCommentPreferences": "Restablecer las preferencias de los comentarios",
+  "@resetCommentPreferences": {
+    "description": "Semantic label for button in comment appearance settings."
+  },
+  "selectLanguage": "Selecciona el idioma",
+  "@selectLanguage": {
+    "description": "The prompt to select a language in the post creation page"
+  },
+  "languageNotAllowed": "La comunidad en la que estás publicando no permite publicar en el idioma que has seleccionado. Prueba con otro idioma.",
+  "@languageNotAllowed": {
+    "description": "The error message for the language_not_allowed Lemmy exception"
+  },
+  "collapseInformation": "Contraer información",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "unableToLoadImage": "No es posible cargar la imagen",
+  "@unableToLoadImage": {
+    "description": "Placeholder for when we are unable to load a binary image"
+  },
+  "showScores": "Mostrar las puntuaciones de publicaciones/comentarios",
+  "@showScores": {
+    "description": "Option to show scores on posts and comments."
+  },
+  "information": "Información",
+  "@information": {
+    "description": "Information heading - used in the FAB settings page"
+  },
+  "showBotAccounts": "Mostrar las cuentas de los bots",
+  "@showBotAccounts": {
+    "description": "Option to show bot accounts."
+  },
+  "floatingActionButtonInformation": "Thunder tiene una experiencia FAB totalmente personalizable que admite algunos gestos.\n- Desliza el dedo hacia arriba para ver acciones FAB adicionales\n- Desliza hacia abajo/arriba para ocultar o mostrar el FAB\n\nPara personalizar las acciones principales y secundarias del FAB, mantén pulsada una de las acciones que aparecen a continuación.",
+  "@floatingActionButtonInformation": {
+    "description": "Description of the FAB in the settings page"
+  },
+  "setAction": "Establecer acción",
+  "@setAction": {
+    "description": "Label for the action to set (short-press, long-press)"
+  },
+  "expandInformation": "Ampliar la información",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "floatingActionButtonLongPressDescription": "indica la acción de la pulsación larga del FAB.",
+  "@floatingActionButtonLongPressDescription": {
+    "description": "Description of the FAB's long-press action"
+  },
+  "enablePostFab": "Habilitar botón flotante en los mensajes",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "unableToLoadImageFrom": "No se ha podido cargar la imagen de {domain}",
+  "@unableToLoadImageFrom": {
+    "description": "Placeholder for when we are unable to load an image from a URL"
+  },
+  "enableFeedFab": "Activar el botón flotante en los feeds",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "floatingActionButtonSinglePressDescription": "denota la acción de pulsación única del FAB.",
+  "@floatingActionButtonSinglePressDescription": {
+    "description": "Description of the FAB's single-press action"
+  },
+  "translationsMayNotBeComplete": "Por favor, tenga en cuenta que las traducciones pueden no estar completas",
+  "@translationsMayNotBeComplete": {
+    "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "unblockInstance": "Desbloquear la instancia",
+  "@unblockInstance": {
+    "description": "Tooltip for unblocking an instance"
+  },
+  "commentShowUserInstance": "Mostrar instancia de usuario",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  }
 }
