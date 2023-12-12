@@ -356,11 +356,14 @@ void showKeywordInputDialog(BuildContext context, {required String title, requir
   final l10n = AppLocalizations.of(context)!;
 
   Future<String?> onSubmitted({String? payload, String? value}) async {
-    if (payload != null) {
-      onKeywordSelected(payload);
+    String? formattedPayload = payload?.trim();
+    String? formattedValue = value?.trim();
+
+    if (formattedPayload != null && formattedPayload.isNotEmpty) {
+      onKeywordSelected(formattedPayload);
       Navigator.of(context).pop();
-    } else if (value != null) {
-      onKeywordSelected(value);
+    } else if (formattedValue != null && formattedValue.isNotEmpty) {
+      onKeywordSelected(formattedValue);
       Navigator.of(context).pop();
     }
 
@@ -417,7 +420,7 @@ void showInputDialog<T>({
               textFieldConfiguration: TextFieldConfiguration(
                 controller: textController,
                 onChanged: (value) {
-                  setPrimaryButtonEnabled(value.isNotEmpty);
+                  setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
                 },
                 autofocus: true,
