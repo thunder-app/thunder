@@ -13,6 +13,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/shared/community_icon.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/user_avatar.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
@@ -414,79 +415,64 @@ void showInputDialog<T>({
   required Widget Function(T payload) suggestionBuilder,
 }) async {
   final textController = TextEditingController();
+  // Capture our content widget's setState function so we can call it outside the widget
+  StateSetter? contentWidgetSetState;
+  String? contentWidgetError;
 
-  await showDialog(
+  await showThunderDialog(
     context: context,
-    builder: (context) {
-      bool okEnabled = false;
-      String? error;
-      return StatefulBuilder(
-        builder: (context, setState) {
-          return AlertDialog(
-            title: Text(title),
-            content: SizedBox(
-              width: min(MediaQuery.of(context).size.width, 700),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  TypeAheadField<T>(
-                    textFieldConfiguration: TextFieldConfiguration(
-                      controller: textController,
-                      onChanged: (value) => setState(() {
-                        okEnabled = value.isNotEmpty;
-                        error = null;
-                      }),
-                      autofocus: true,
-                      decoration: InputDecoration(
-                        isDense: true,
-                        border: const OutlineInputBorder(),
-                        labelText: inputLabel,
-                        errorText: error,
-                      ),
-                      onSubmitted: (text) async {
-                        setState(() => okEnabled = false);
-                        final String? submitError = await onSubmitted(value: text);
-                        setState(() => error = submitError);
-                      },
-                    ),
-                    suggestionsCallback: getSuggestions,
-                    itemBuilder: (context, payload) => suggestionBuilder(payload),
-                    onSuggestionSelected: (payload) async {
-                      setState(() => okEnabled = false);
-                      final String? submitError = await onSubmitted(payload: payload);
-                      setState(() => error = submitError);
-                    },
-                    hideOnEmpty: true,
-                    hideOnLoading: true,
-                    hideOnError: true,
-                  ),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      TextButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text(AppLocalizations.of(context)!.cancel),
-                      ),
-                      const SizedBox(width: 5),
-                      FilledButton(
-                        onPressed: okEnabled
-                            ? () async {
-                                setState(() => okEnabled = false);
-                                final String? submitError = await onSubmitted(value: textController.text);
-                                setState(() => error = submitError);
-                              }
-                            : null,
-                        child: Text(AppLocalizations.of(context)!.ok),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
-        },
-      );
+    title: title,
+    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+    secondaryButtonText: AppLocalizations.of(context)!.cancel,
+    primaryButtonInitialEnabled: false,
+    onPrimaryButtonPressed: (dialogContext, setPrimaryButtonEnabled) async {
+      setPrimaryButtonEnabled(false);
+      final String? submitError = await onSubmitted(value: textController.text);
+      contentWidgetSetState?.call(() => contentWidgetError = submitError);
     },
+    primaryButtonText: AppLocalizations.of(context)!.ok,
+    // Use a stateful widget for the content so we can update the error message
+    contentWidgetBuilder: (setPrimaryButtonEnabled) => StatefulBuilder(builder: (context, setState) {
+      contentWidgetSetState = setState;
+      return SizedBox(
+        width: min(MediaQuery.of(context).size.width, 700),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TypeAheadField<T>(
+              textFieldConfiguration: TextFieldConfiguration(
+                controller: textController,
+                onChanged: (value) {
+                  setPrimaryButtonEnabled(value.isNotEmpty);
+                  setState(() => contentWidgetError = null);
+                },
+                autofocus: true,
+                decoration: InputDecoration(
+                  isDense: true,
+                  border: const OutlineInputBorder(),
+                  labelText: inputLabel,
+                  errorText: contentWidgetError,
+                ),
+                onSubmitted: (text) async {
+                  setPrimaryButtonEnabled(false);
+                  final String? submitError = await onSubmitted(value: text);
+                  setState(() => contentWidgetError = submitError);
+                },
+              ),
+              suggestionsCallback: getSuggestions,
+              itemBuilder: (context, payload) => suggestionBuilder(payload),
+              onSuggestionSelected: (payload) async {
+                setPrimaryButtonEnabled(false);
+                final String? submitError = await onSubmitted(payload: payload);
+                setState(() => contentWidgetError = submitError);
+              },
+              hideOnEmpty: true,
+              hideOnLoading: true,
+              hideOnError: true,
+            ),
+          ],
+        ),
+      );
+    }),
   );
 }

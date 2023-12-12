@@ -14,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:thunder/shared/dialogs.dart';
 
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -95,22 +96,16 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
 
   /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
   void showPermissionDeniedDialog(BuildContext context) {
-    showDialog(
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    showThunderDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Permission Denied'),
-          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                openAppSettings();
-              },
-              child: const Text('Open Settings'),
-            )
-          ],
-        );
+      title: l10n.permissionDenied,
+      contentText: l10n.permissionDeniedMessage,
+      onPrimaryButtonPressed: (_, __) {
+        openAppSettings();
       },
+      primaryButtonText: l10n.openSettings,
     );
   }
 
