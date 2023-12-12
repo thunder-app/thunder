@@ -42,8 +42,8 @@ enum LocalSettings {
   showCrossPosts(name: 'setting_show_cross_posts', label: 'Show Cross-Posts'),
 
   // Advanced Settings
-  userFormat(name: 'user_format', label: 'User Format'),
-  communityFormat(name: 'community_format', label: 'Community Format'),
+  userFormat(name: 'user_format', label: ''),
+  communityFormat(name: 'community_format', label: ''),
 
   /// -------------------------- Post Page Related Settings --------------------------
   // Comment Related Settings
