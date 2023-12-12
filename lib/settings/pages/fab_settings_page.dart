@@ -60,7 +60,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
   bool postFabEnableSearch = true;
 
   /// The main single press action for the feed FAB
-  FeedFabAction feedFabSinglePressAction = FeedFabAction.dismissRead;
+  FeedFabAction feedFabSinglePressAction = FeedFabAction.newPost;
 
   /// The secondary long press action for the feed FAB
   FeedFabAction feedFabLongPressAction = FeedFabAction.openFab;
@@ -176,7 +176,7 @@ class _FabSettingsPage extends State<FabSettingsPage> with TickerProviderStateMi
       postFabEnableRefresh = prefs.getBool(LocalSettings.postFabEnableRefresh.name) ?? true;
       postFabEnableSearch = prefs.getBool(LocalSettings.postFabEnableSearch.name) ?? true;
 
-      feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.dismissRead.name);
+      feedFabSinglePressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabSinglePressAction.name) ?? FeedFabAction.newPost.name);
       feedFabLongPressAction = FeedFabAction.values.byName(prefs.getString(LocalSettings.feedFabLongPressAction.name) ?? FeedFabAction.openFab.name);
       postFabSinglePressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabSinglePressAction.name) ?? PostFabAction.replyToPost.name);
       postFabLongPressAction = PostFabAction.values.byName(prefs.getString(LocalSettings.postFabLongPressAction.name) ?? PostFabAction.openFab.name);

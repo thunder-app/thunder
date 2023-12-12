@@ -161,8 +161,14 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirmLogOut": "Log out?",
-  "@confirmLogOut": {},
+  "confirmLogOutTitle": "Confirm Log Out",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmLogOutBody": "Are you sure you want to log out?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
   "@confirmResetCommentPreferences": {
     "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
@@ -515,6 +521,10 @@
   "@openInBrowser": {},
   "openInstance": "Open Instance",
   "@openInstance": {},
+  "openSettings": "Open Settings",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
   "overview": "Overview",
   "@overview": {},
   "password": "Password",
@@ -522,6 +532,14 @@
   "pending": "Pending",
   "@pending": {
     "description": "Describes the subscription status for 'Pending'"
+  },
+  "permissionDenied": "Permission Denied",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "permissionDeniedMessage": "Thunder requires some permissions in order to save this image which have been denied.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
   },
   "postBehaviourSettings": "Posts",
   "@postBehaviourSettings": {
@@ -875,5 +893,9 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "commentShowUserInstance":"Show User Instance",
+  "@commentShowUserInstance":{
+    "description":"Settings toggle to display user instance alongside their display name in comments"
+  }
 }

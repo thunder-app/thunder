@@ -14,6 +14,7 @@ import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 
@@ -265,25 +266,17 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                   semanticLabel: l10n.resetPostPreferences,
                 ),
                 onPressed: () {
-                  showDialog(
+                  showThunderDialog(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l10n.resetPreferences),
-                      content: Text(l10n.confirmResetPostPreferences),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                        TextButton(
-                          onPressed: () {
-                            resetPostPreferences();
-                            Navigator.of(context).pop();
-                          },
-                          child: Text(l10n.reset),
-                        ),
-                      ],
-                    ),
+                    title: l10n.resetPreferences,
+                    contentText: l10n.confirmResetPostPreferences,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    secondaryButtonText: l10n.cancel,
+                    onPrimaryButtonPressed: (dialogContext, _) {
+                      resetPostPreferences();
+                      Navigator.of(dialogContext).pop();
+                    },
+                    primaryButtonText: l10n.reset,
                   );
                 },
               ),

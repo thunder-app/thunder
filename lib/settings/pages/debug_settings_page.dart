@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/shared/dialogs.dart';
 
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -56,34 +57,25 @@ class DebugSettingsPage extends StatelessWidget {
                   child: Icon(Icons.chevron_right_rounded),
                 ),
                 onTap: () async {
-                  showDialog<void>(
+                  showThunderDialog<void>(
                     context: context,
-                    builder: (dialogContext) => AlertDialog(
-                      title: Text(l10n.deleteLocalPreferences),
-                      content: Text(l10n.deleteLocalPreferencesDescription),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(dialogContext).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                        const SizedBox(width: 12),
-                        FilledButton(
-                          onPressed: () {
-                            SharedPreferences.getInstance().then((prefs) async {
-                              await prefs.clear();
+                    title: l10n.deleteLocalPreferences,
+                    contentText: l10n.deleteLocalPreferencesDescription,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    secondaryButtonText: l10n.cancel,
+                    onPrimaryButtonPressed: (dialogContext, _) {
+                      SharedPreferences.getInstance().then((prefs) async {
+                        await prefs.clear();
 
-                              if (context.mounted) {
-                                context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
-                                showSnackbar(context, AppLocalizations.of(context)!.clearedUserPreferences);
-                              }
-                            });
+                        if (context.mounted) {
+                          context.read<ThunderBloc>().add(UserPreferencesChangeEvent());
+                          showSnackbar(context, AppLocalizations.of(context)!.clearedUserPreferences);
+                        }
+                      });
 
-                            Navigator.of(dialogContext).pop();
-                          },
-                          child: Text(l10n.clearPreferences),
-                        ),
-                      ],
-                    ),
+                      Navigator.of(dialogContext).pop();
+                    },
+                    primaryButtonText: l10n.clearPreferences,
                   );
                 },
               ),
@@ -101,31 +93,22 @@ class DebugSettingsPage extends StatelessWidget {
                   child: Icon(Icons.chevron_right_rounded),
                 ),
                 onTap: () async {
-                  showDialog<void>(
+                  showThunderDialog<void>(
                     context: context,
-                    builder: (context) => AlertDialog(
-                      title: Text(l10n.deleteLocalDatabase),
-                      content: Text(l10n.deleteLocalDatabaseDescription),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: Text(l10n.cancel),
-                        ),
-                        const SizedBox(width: 12),
-                        FilledButton(
-                          onPressed: () async {
-                            String path = join(await getDatabasesPath(), 'thunder.db');
-                            await databaseFactory.deleteDatabase(path);
+                    title: l10n.deleteLocalDatabase,
+                    contentText: l10n.deleteLocalDatabaseDescription,
+                    onSecondaryButtonPressed: (dialogContext) => Navigator.of(dialogContext).pop(),
+                    secondaryButtonText: l10n.cancel,
+                    onPrimaryButtonPressed: (dialogContext, _) async {
+                      String path = join(await getDatabasesPath(), 'thunder.db');
+                      await databaseFactory.deleteDatabase(path);
 
-                            if (context.mounted) {
-                              showSnackbar(context, AppLocalizations.of(context)!.clearedDatabase);
-                              Navigator.of(context).pop();
-                            }
-                          },
-                          child: Text(l10n.clearDatabase),
-                        ),
-                      ],
-                    ),
+                      if (context.mounted) {
+                        showSnackbar(context, AppLocalizations.of(context)!.clearedDatabase);
+                        Navigator.of(context).pop();
+                      }
+                    },
+                    primaryButtonText: l10n.clearDatabase,
                   );
                 },
               ),
