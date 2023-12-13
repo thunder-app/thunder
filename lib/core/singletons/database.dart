@@ -55,11 +55,7 @@ class DB {
   }
 
   void _updateTableV4toV5(Batch batch) {
-    try {
-      batch.execute(_createTableFavoritesRawString());
-    } catch (e) {
-      debugPrint('Error updating to V5: $e');
-    }
+    batch.execute(_createTableFavoritesRawString());
   }
 
   String _createTableFavoritesRawString() {
@@ -82,7 +78,7 @@ class DB {
           batch.execute(_getAnonymousSubscriptionsTableRawString());
           batch.execute(_createTableFavoritesRawString());
           batch.commit();
-        } catch (e) {
+        } on DatabaseException catch (e) {
           debugPrint('Error creating database: $e');
         }
       },
@@ -105,7 +101,11 @@ class DB {
           _updateTableV4toV5(batch);
         }
 
-        await batch.commit();
+        try {
+          await batch.commit();
+        } on DatabaseException catch (e) {
+          debugPrint('Error upgrading database: $e');
+        }
       },
     );
   }
