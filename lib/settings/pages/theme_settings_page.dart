@@ -16,6 +16,7 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ThemeSettingsPage extends StatefulWidget {
   const ThemeSettingsPage({super.key});
@@ -155,6 +156,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Theming'), centerTitle: false),
@@ -256,10 +258,10 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           ),
                         ),
                         ListOption(
-                          description: 'App Font', // TODO
-                          value: ListPickerItem(label: appFontFamily.isEmpty ? 'System' : appFontFamily, /* TODO */ icon: Icons.font_download_rounded, payload: appFontFamily),
+                          description: l10n.appFont,
+                          value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
                           options: [
-                            const ListPickerItem(icon: Icons.font_download_rounded, label: 'System', payload: ''),
+                            ListPickerItem(icon: Icons.font_download_rounded, label: l10n.system, payload: ''),
                             const ListPickerItem(icon: Icons.font_download_rounded, label: 'Poppins', payload: 'Poppins'),
                           ],
                           icon: Icons.font_download_rounded,

@@ -53,6 +53,10 @@
   "@appearance": {
     "description": "Title of Appearance in Settings -> Appearance"
   },
+  "appFont": "App Font",
+  "@appFont": {
+    "description": "Setting to change the app's font"
+  },
   "applied": "Applied",
   "@applied": {},
   "apply": "Apply",
@@ -777,6 +781,10 @@
   "suggestedTitle": "Suggested title",
   "@suggestedTitle": {
     "description": "Suggested title for the post."
+  },
+  "system": "System",
+  "@system": {
+    "description": "Describes the system font"
   },
   "tapToExit": "Press back twice to exit",
   "@tapToExit": {},
