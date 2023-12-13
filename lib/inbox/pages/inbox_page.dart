@@ -10,6 +10,7 @@ import 'package:thunder/inbox/widgets/inbox_mentions_view.dart';
 import 'package:thunder/inbox/widgets/inbox_private_messages_view.dart';
 import 'package:thunder/inbox/widgets/inbox_replies_view.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -48,26 +49,46 @@ class _InboxPageState extends State<InboxPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 80.0,
         centerTitle: false,
-        title: AutoSizeText(AppLocalizations.of(context)!.inbox, style: theme.textTheme.titleLarge),
+        title: AutoSizeText(l10n.inbox, style: theme.textTheme.titleLarge),
         actions: [
           IconButton(
             icon: Icon(
               Icons.checklist,
-              semanticLabel: AppLocalizations.of(context)!.readAll,
+              semanticLabel: l10n.readAll,
             ),
-            onPressed: () {
-              context.read<InboxBloc>().add(MarkAllAsReadEvent());
+            onPressed: () async {
+              bool result = false;
+              await showThunderDialog<bool>(
+                context: context,
+                title: l10n.confirmMarkAllAsReadTitle,
+                contentText: l10n.confirmMarkAllAsReadBody,
+                onSecondaryButtonPressed: (dialogContext) {
+                  result = false;
+                  Navigator.of(dialogContext).pop();
+                },
+                secondaryButtonText: l10n.cancel,
+                onPrimaryButtonPressed: (dialogContext, _) {
+                  result = true;
+                  Navigator.of(dialogContext).pop();
+                },
+                primaryButtonText: l10n.markAllAsRead,
+              );
+
+              if (result && context.mounted) {
+                context.read<InboxBloc>().add(MarkAllAsReadEvent());
+              }
             },
           ),
           IconButton(
             icon: Icon(
               Icons.refresh_rounded,
-              semanticLabel: AppLocalizations.of(context)!.refresh,
+              semanticLabel: l10n.refresh,
             ),
             onPressed: () {
               context.read<InboxBloc>().add(GetInboxEvent(reset: true, showAll: showAll));
@@ -76,7 +97,7 @@ class _InboxPageState extends State<InboxPage> {
           FilterChip(
             shape: const StadiumBorder(),
             visualDensity: VisualDensity.compact,
-            label: Text(AppLocalizations.of(context)!.showAll),
+            label: Text(l10n.showAll),
             selected: showAll,
             onSelected: (bool selected) {
               setState(() => showAll = !showAll);
@@ -118,7 +139,7 @@ class _InboxPageState extends State<InboxPage> {
                 BlocBuilder<InboxBloc, InboxState>(
                   builder: (context, InboxState state) {
                     if (context.read<AuthBloc>().state.isLoggedIn == false) {
-                      return Align(alignment: Alignment.topCenter, child: Text(AppLocalizations.of(context)!.loginToSeeInbox, style: theme.textTheme.titleMedium));
+                      return Align(alignment: Alignment.topCenter, child: Text(l10n.loginToSeeInbox, style: theme.textTheme.titleMedium));
                     }
 
                     switch (state.status) {
@@ -142,11 +163,11 @@ class _InboxPageState extends State<InboxPage> {
                         if (inboxType == InboxType.messages) return InboxPrivateMessagesView(privateMessages: state.privateMessages);
                         if (inboxType == InboxType.replies) return InboxRepliesView(replies: state.replies, showAll: showAll);
                       case InboxStatus.empty:
-                        return Center(child: Text(AppLocalizations.of(context)!.emptyInbox));
+                        return Center(child: Text(l10n.emptyInbox));
                       case InboxStatus.failure:
                         return ErrorMessage(
                           message: state.errorMessage,
-                          actionText: AppLocalizations.of(context)!.refreshContent,
+                          actionText: l10n.refreshContent,
                           action: () => context.read<InboxBloc>().add(const GetInboxEvent()),
                         );
                     }
