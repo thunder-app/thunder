@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -261,8 +262,24 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                           description: l10n.appFont,
                           value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
                           options: [
-                            ListPickerItem(icon: Icons.font_download_rounded, label: l10n.system, payload: ''),
-                            const ListPickerItem(icon: Icons.font_download_rounded, label: 'Poppins', payload: 'Poppins'),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: l10n.system,
+                              payload: '',
+                              textTheme: theme.textTheme.apply(fontFamily: ''),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Poppins',
+                              payload: 'Poppins',
+                              textTheme: GoogleFonts.poppinsTextTheme(theme.textTheme),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Slab',
+                              payload: 'RobotoSlab',
+                              textTheme: GoogleFonts.robotoSlabTextTheme(theme.textTheme),
+                            ),
                           ],
                           icon: Icons.font_download_rounded,
                           onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),

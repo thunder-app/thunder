@@ -55,6 +55,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
       String appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
       TextTheme? setTextTheme(TextTheme startingTextTheme) => switch (appFontFamily) {
             'Poppins' => GoogleFonts.poppinsTextTheme(startingTextTheme),
+            'RobotoSlab' => GoogleFonts.robotoSlabTextTheme(startingTextTheme),
             _ => null,
           };
 
