@@ -550,14 +550,21 @@ class _UserPageSuccessState extends State<UserPageSuccess> with TickerProviderSt
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
     final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
 
-    if (topOfNavigationStack && savedToggle!.value) {
-      setState(() {
-        selectedUserOption = 0;
-        _selectedUserOption![0] = true;
-        _selectedUserOption![1] = false;
-        savedToggle!.value = false;
-      });
-      return true;
+    if (topOfNavigationStack) {
+      if (_displaySidebar) {
+        setState(() {
+          _displaySidebar = false;
+        });
+        return true;
+      } else if (savedToggle!.value) {
+        setState(() {
+          selectedUserOption = 0;
+          _selectedUserOption![0] = true;
+          _selectedUserOption![1] = false;
+          savedToggle!.value = false;
+        });
+        return true;
+      }
     }
 
     return false;
