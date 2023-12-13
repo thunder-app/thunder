@@ -135,6 +135,8 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
       bool showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
 
+      List<String> keywordFilters = prefs.getStringList(LocalSettings.keywordFilters.name) ?? [];
+
       /// -------------------------- Post Page Related Settings --------------------------
       // Comment Related Settings
       CommentSortType defaultCommentSortType = CommentSortType.values.byName(prefs.getString(LocalSettings.defaultCommentSortType.name) ?? DEFAULT_COMMENT_SORT_TYPE.name);
@@ -259,6 +261,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         dimReadPosts: dimReadPosts,
         useAdvancedShareSheet: useAdvancedShareSheet,
         showCrossPosts: showCrossPosts,
+        keywordFilters: keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         // Comment Related Settings

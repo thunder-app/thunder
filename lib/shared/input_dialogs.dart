@@ -352,6 +352,37 @@ Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelect
   );
 }
 
+/// Shows a dialog which allows typing/search for a keyword
+void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
+  final l10n = AppLocalizations.of(context)!;
+
+  Future<String?> onSubmitted({String? payload, String? value}) async {
+    String? formattedPayload = payload?.trim();
+    String? formattedValue = value?.trim();
+
+    if (formattedPayload != null && formattedPayload.isNotEmpty) {
+      onKeywordSelected(formattedPayload);
+      Navigator.of(context).pop();
+    } else if (formattedValue != null && formattedValue.isNotEmpty) {
+      onKeywordSelected(formattedValue);
+      Navigator.of(context).pop();
+    }
+
+    return null;
+  }
+
+  if (context.mounted) {
+    showInputDialog<String>(
+      context: context,
+      title: title,
+      inputLabel: l10n.addKeywordFilter,
+      onSubmitted: onSubmitted,
+      getSuggestions: (query) => [] as Future<Iterable<String>>,
+      suggestionBuilder: (payload) => Container(),
+    );
+  }
+}
+
 /// Shows a dialog which takes input and offers suggestions
 void showInputDialog<T>({
   required BuildContext context,
@@ -390,7 +421,7 @@ void showInputDialog<T>({
               textFieldConfiguration: TextFieldConfiguration(
                 controller: textController,
                 onChanged: (value) {
-                  setPrimaryButtonEnabled(value.isNotEmpty);
+                  setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
                 },
                 autofocus: true,
