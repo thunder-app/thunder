@@ -345,17 +345,15 @@ class _UserSidebarState extends State<UserSidebar> {
                                               ),
                                             ]),
                                           ),
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                            child: Column(
-                                              children: [
-                                                for (var mods in widget.moderates!)
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id);
-                                                    },
+                                          Column(
+                                            children: [
+                                              for (var mods in widget.moderates!)
+                                                Material(
+                                                  child: InkWell(
+                                                    borderRadius: BorderRadius.circular(50),
+                                                    onTap: () => navigateToFeedPage(context, feedType: FeedType.community, communityId: mods.community.id),
                                                     child: Padding(
-                                                      padding: const EdgeInsets.only(bottom: 8.0),
+                                                      padding: const EdgeInsets.all(8.0),
                                                       child: Row(
                                                         children: [
                                                           CommunityIcon(community: mods.community, radius: 20.0),
@@ -389,8 +387,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                                       ),
                                                     ),
                                                   ),
-                                              ],
-                                            ),
+                                                ),
+                                            ],
                                           ),
                                         ],
                                       )
