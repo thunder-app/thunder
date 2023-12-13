@@ -128,7 +128,7 @@ class _PostCardListState extends State<PostCardList> {
               : 1,
           itemBuilder: (context, index) {
             if (index == ((widget.communityId != null || widget.communityName != null || widget.tagline.isNotEmpty) ? widget.postViews!.length + 1 : widget.postViews!.length)) {
-              if (widget.hasReachedEnd == true) {
+              if (widget.hasReachedEnd == true || widget.postViews?.isEmpty == true) {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
