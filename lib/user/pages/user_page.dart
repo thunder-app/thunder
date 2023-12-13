@@ -4,7 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -47,7 +49,33 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () => showLogOutDialog(context),
+                onPressed: () async {
+                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+                  final AuthBloc authBloc = context.read<AuthBloc>();
+
+                  final String? currentAccountId = authBloc.state.account?.id;
+
+                  if (await showLogOutDialog(context) && context.mounted) {
+                    final List<String> anonymousInstances = thunderBloc.state.anonymousInstances;
+                    final List<Account> accounts = (await Account.accounts()).where((account) => account.id != currentAccountId).toList();
+
+                    await Future.delayed(const Duration(milliseconds: 1000), () async {
+                      if (anonymousInstances.isNotEmpty) {
+                        // Switch to an anonymous instance
+                        thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances.last));
+                        authBloc.add(InstanceChanged(instance: anonymousInstances.last));
+                      } else if (accounts.isNotEmpty) {
+                        // Switch to an account
+                        authBloc.add(SwitchAccount(accountId: accounts.last.id));
+                      } else {
+                        // No accounts and no anonymous instances left. Create a new one.
+                        authBloc.add(const LogOutOfAllAccounts());
+                        thunderBloc.add(const OnAddAnonymousInstance('lemmy.ml'));
+                        thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
+                      }
+                    });
+                  }
+                },
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
