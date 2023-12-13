@@ -4,6 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stream_transform/stream_transform.dart';
@@ -50,6 +51,13 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
         useDarkTheme = brightness == Brightness.dark;
       }
 
+      // Get the text theme
+      String appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
+      TextTheme? setTextTheme(TextTheme startingTextTheme) => switch (appFontFamily) {
+            'Poppins' => GoogleFonts.poppinsTextTheme(startingTextTheme),
+            _ => null,
+          };
+
       return emit(
         state.copyWith(
           status: ThemeStatus.success,
@@ -58,6 +66,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
           useMaterialYouTheme: useMaterialYouTheme,
           useDarkTheme: useDarkTheme,
           reduceAnimations: reduceAnimations,
+          setTextTheme: setTextTheme,
         ),
       );
     } catch (e) {

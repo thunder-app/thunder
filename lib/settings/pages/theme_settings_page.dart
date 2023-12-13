@@ -45,6 +45,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ];
 
   // Font Settings
+  String appFontFamily = '';
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
   FontScale commentFontSizeScale = FontScale.base;
@@ -92,6 +93,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         break;
 
       // Font Settings
+      case LocalSettings.appFontFamily:
+        await prefs.setString(LocalSettings.appFontFamily.name, value);
+        setState(() => appFontFamily = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case LocalSettings.titleFontSizeScale:
         await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
@@ -130,6 +136,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Font Settings
+      appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
       commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
@@ -247,6 +254,16 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             'Fonts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ListOption(
+                          description: 'App Font', // TODO
+                          value: ListPickerItem(label: appFontFamily.isEmpty ? 'System' : appFontFamily, /* TODO */ icon: Icons.font_download_rounded, payload: appFontFamily),
+                          options: [
+                            const ListPickerItem(icon: Icons.font_download_rounded, label: 'System', payload: ''),
+                            const ListPickerItem(icon: Icons.font_download_rounded, label: 'Poppins', payload: 'Poppins'),
+                          ],
+                          icon: Icons.font_download_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),
                         ),
                         ListOption(
                           description: LocalSettings.titleFontSizeScale.label,

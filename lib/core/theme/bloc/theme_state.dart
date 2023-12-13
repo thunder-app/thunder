@@ -10,6 +10,7 @@ class ThemeState extends Equatable {
     this.useDarkTheme = false,
     this.useMaterialYouTheme = false,
     this.reduceAnimations = false,
+    this.setTextTheme,
   });
 
   final ThemeStatus status;
@@ -20,6 +21,7 @@ class ThemeState extends Equatable {
   final bool useDarkTheme;
   final bool useMaterialYouTheme;
   final bool reduceAnimations;
+  final TextTheme? Function(TextTheme startingTextTheme)? setTextTheme;
 
   ThemeState copyWith({
     required ThemeStatus status,
@@ -28,6 +30,7 @@ class ThemeState extends Equatable {
     bool? useDarkTheme,
     bool? useMaterialYouTheme,
     bool? reduceAnimations,
+    TextTheme? Function(TextTheme startingTextTheme)? setTextTheme,
   }) {
     return ThemeState(
       status: status,
@@ -36,6 +39,7 @@ class ThemeState extends Equatable {
       useDarkTheme: useDarkTheme ?? false,
       useMaterialYouTheme: useMaterialYouTheme ?? false,
       reduceAnimations: reduceAnimations ?? false,
+      setTextTheme: setTextTheme,
     );
   }
 
