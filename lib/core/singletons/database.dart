@@ -55,7 +55,11 @@ class DB {
   }
 
   void _updateTableV4toV5(Batch batch) {
-    batch.execute(_createTableFavoritesRawString());
+    try {
+      batch.execute(_createTableFavoritesRawString());
+    } catch (e) {
+      debugPrint('Error updating to V5: $e');
+    }
   }
 
   String _createTableFavoritesRawString() {
@@ -72,10 +76,15 @@ class DB {
       version: 5,
       onCreate: (db, version) {
         var batch = db.batch();
-        batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
-        batch.execute(_getAnonymousSubscriptionsTableRawString());
-        batch.execute(_createTableFavoritesRawString());
-        batch.commit();
+
+        try {
+          batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+          batch.execute(_getAnonymousSubscriptionsTableRawString());
+          batch.execute(_createTableFavoritesRawString());
+          batch.commit();
+        } catch (e) {
+          debugPrint('Error creating database: $e');
+        }
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         var batch = db.batch();
