@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import 'package:thunder/core/enums/custom_theme_type.dart';
 import 'package:thunder/core/enums/font_scale.dart';
@@ -272,13 +271,13 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                               icon: Icons.font_download_rounded,
                               label: 'Poppins',
                               payload: 'Poppins',
-                              textTheme: GoogleFonts.poppinsTextTheme(theme.textTheme),
+                              textTheme: theme.textTheme.apply(fontFamily: 'Poppins'),
                             ),
                             ListPickerItem(
                               icon: Icons.font_download_rounded,
                               label: 'Roboto Slab',
                               payload: 'RobotoSlab',
-                              textTheme: GoogleFonts.robotoSlabTextTheme(theme.textTheme),
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoSlab'),
                             ),
                           ],
                           icon: Icons.font_download_rounded,
