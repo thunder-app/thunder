@@ -19,7 +19,7 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Aldoni Anonima Instancon",
   "@addAnonymousInstance": {},
-  "addedCommunityToSubscriptions": "Aldonita komunumo al abonoj",
+  "addedCommunityToSubscriptions": "Abonis al komunumo",
   "@addedCommunityToSubscriptions": {},
   "allPosts": "Ĉiuj Afiŝoj",
   "@allPosts": {},
@@ -61,7 +61,7 @@
   "@browsingAnonymously": {},
   "cancel": "Nuligi",
   "@cancel": {},
-  "cannotReportOwnComment": "Vi ne povas sendi raporton por via propra komento.",
+  "cannotReportOwnComment": "Vi ne rajtas sendi raporton por via propra komento.",
   "@cannotReportOwnComment": {},
   "cantBlockAdmin": "Vi ne rajtas bloki instancan administranton.",
   "@cantBlockAdmin": {},
@@ -71,7 +71,7 @@
   "@changeSort": {},
   "clearSearch": "Viŝi Serĉon",
   "@clearSearch": {},
-  "clearedDatabase": "Loka datenbazo viŝita. Rekomencu Thunder por uzi novajn ŝanĝojn.",
+  "clearedDatabase": "Loka datenbazo viŝita. Rekomencu Thunder por ke novaj ŝanĝoj efektiviĝu.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Viŝis ĉiujn uzantpreferojn",
   "@clearedUserPreferences": {},
@@ -103,9 +103,9 @@
   "@copy": {},
   "copyText": "Kopii Tekston",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Ne eblis determini afiŝon por viŝi la komenton.",
+  "couldNotDetermineCommentDelete": "Eraro: Ne eblis determini afiŝon por viŝi la komenton.",
   "@couldNotDetermineCommentDelete": {},
-  "couldNotDeterminePostComment": "Ne eblis determini afiŝon al komenti.",
+  "couldNotDeterminePostComment": "Eraro: Ne eblis determini afiŝon al komenti.",
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Via komenta raporto ne povus esti sendita nuntempe. Bonvolu reprovi poste",
   "@couldntCreateReport": {},
@@ -261,7 +261,7 @@
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "Vi devas esti ensalutinta por krei afiŝon",
   "@mustBeLoggedInPost": {},
-  "navigateDown": "Iri al sekva komento",
+  "navigateDown": "Sekva komento",
   "@navigateDown": {},
   "navigateUp": "Antaŭa komento",
   "@navigateUp": {},
@@ -491,7 +491,7 @@
   "@successfullyUnblocked": {},
   "successfullyUnblockedCommunity": "Malblokita {communityName}",
   "@successfullyUnblockedCommunity": {},
-  "tapToExit": "Premu reen dufoje por eliri",
+  "tapToExit": "Reiru dufoje por eliri",
   "@tapToExit": {},
   "text": "Teksto",
   "@text": {},
@@ -691,7 +691,7 @@
   },
   "searchTerm": "Serĉa termino",
   "@searchTerm": {},
-  "deleteLocalDatabaseDescription": "Ĉi tiu ago viŝos la lokan datenbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi volas daŭrigi?",
+  "deleteLocalDatabaseDescription": "Ĉi tiu ago viŝos la lokan datenbazon kaj elsalutos vin el ĉiuj viaj kontoj.\n\nĈu vi certas, ke vi volas daŭrigi?",
   "@deleteLocalDatabaseDescription": {
     "description": "Description for confirmation action to delete local database"
   },
@@ -896,5 +896,65 @@
   "translationsMayNotBeComplete": "Bonvolu noti, ke la tradukoj eble ne estas kompletaj",
   "@translationsMayNotBeComplete": {
     "description": "Warning that translations may not be complete when selecting a language in the settings"
+  },
+  "communityFormat": "Komunuma Formato",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "noKeywordFilters": "Neniujn ŝlosilvortajn filtrilojn aldonis",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "keywordFilterDescription": "Filtrigas afiŝojn enhavantajn ajnajn ŝlosilvortojn en la titolo aŭ korpo",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "commentShowUserInstance": "Montri uzantan instancon",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "confirmLogOutTitle": "Konfirmi Elsalutadon",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "advanced": "Altnivela",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "addKeywordFilter": "Aldoni Ŝlosilvorton",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "keywordFilters": "Ŝlosilvortaj Filtriloj",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "removeKeywordFilter": "Forigi Ŝlosilvorton",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "confirmLogOutBody": "Ĉu vi certas, ke vi volas elsaluti?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "permissionDeniedMessage": "Thunder postulas iujn permesojn por konservi ĉi tiun bildon, kiuj estis rifuzitaj.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "permissionDenied": "Permeso Rifuzita",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "openSettings": "Malfermi Agordojn",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "removeKeyword": "Ĉu forigi \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "userFormat": "Uzanta Formato",
+  "@userFormat": {
+    "description": "Setting for user full name format"
   }
 }
