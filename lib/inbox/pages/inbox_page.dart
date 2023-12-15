@@ -63,26 +63,20 @@ class _InboxPageState extends State<InboxPage> {
               semanticLabel: l10n.readAll,
             ),
             onPressed: () async {
-              bool result = false;
               await showThunderDialog<bool>(
                 context: context,
                 title: l10n.confirmMarkAllAsReadTitle,
                 contentText: l10n.confirmMarkAllAsReadBody,
                 onSecondaryButtonPressed: (dialogContext) {
-                  result = false;
                   Navigator.of(dialogContext).pop();
                 },
                 secondaryButtonText: l10n.cancel,
                 onPrimaryButtonPressed: (dialogContext, _) {
-                  result = true;
                   Navigator.of(dialogContext).pop();
+                  context.read<InboxBloc>().add(MarkAllAsReadEvent());
                 },
                 primaryButtonText: l10n.markAllAsRead,
               );
-
-              if (result && context.mounted) {
-                context.read<InboxBloc>().add(MarkAllAsReadEvent());
-              }
             },
           ),
           IconButton(
