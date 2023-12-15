@@ -191,11 +191,11 @@
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
   },
-  "confirmLogOutTitle": "Confirm Log Out",
+  "confirmLogOutTitle": "Log Out?",
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
   },
-  "confirmMarkAllAsReadTitle": "Confirm Mark All As Read",
+  "confirmMarkAllAsReadTitle": "Mark All As Read?",
   "@confirmMarkAllAsReadTitle": {
     "description": "The title of the confirm mark all as read dialog"
   },
