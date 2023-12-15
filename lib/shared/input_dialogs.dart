@@ -144,7 +144,15 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
 Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return emptySuggestions ?? const Iterable.empty();
+    return (emptySuggestions?.toList()
+          ?..sort(
+            (a, b) => _getFavoriteStatus(context, a.community)
+                ? -1
+                : _getFavoriteStatus(context, b.community)
+                    ? 1
+                    : b.counts.subscribers.compareTo(a.counts.subscribers),
+          )) ??
+        const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
