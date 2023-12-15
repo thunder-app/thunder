@@ -406,7 +406,19 @@ class _ThunderState extends State<Thunder> {
 
                   return Scaffold(
                     key: scaffoldMessengerKey,
-                    drawer: selectedPageIndex == 0 ? const CommunityDrawer() : null,
+                    drawer: selectedPageIndex == 0
+                        ? CommunityDrawer(
+                            navigateToAccount: () {
+                              Navigator.of(context).pop();
+
+                              if (reduceAnimations) {
+                                pageController.jumpToPage(2);
+                              } else {
+                                pageController.animateToPage(2, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+                              }
+                            },
+                          )
+                        : null,
                     floatingActionButton: thunderBlocState.enableFeedsFab
                         ? AnimatedOpacity(
                             opacity: selectedPageIndex == 0 ? 1.0 : 0.0,

@@ -23,20 +23,32 @@
   "@addAccountToSeeProfile": {},
   "addAnonymousInstance": "Add Anonymous Instance",
   "@addAnonymousInstance": {},
-  "addedCommunityToSubscriptions": "Added community to subscriptions",
+  "addKeywordFilter": "Add Keyword",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Add to favorites",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
   "advanced": "Advanced",
   "@advanced": {
     "description": "Heading for advanced settings"
   },
   "all": "All",
+  "@all": {},
   "allPosts": "All Posts",
+  "@allPosts": {},
   "allowOpenSupportedLinks": "Allow app to open supported links.",
   "@allowOpenSupportedLinks": {
     "description": "Option to permit the app to open supported links."
   },
   "alreadyPostedTo": "Already posted to",
+  "@alreadyPostedTo": {},
   "andXMore": "and {count} more",
+  "@andXMore": {},
   "animations": "Animations",
   "@animations": {},
   "anonymous": "Anonymous",
@@ -75,7 +87,7 @@
   "@browsingAnonymously": {},
   "cancel": "Cancel",
   "@cancel": {},
-  "cannotReportOwnComment": "You can't submit a report for your own comment.",
+  "cannotReportOwnComment": "You may not submit a report for your own comment.",
   "@cannotReportOwnComment": {},
   "cantBlockAdmin": "You may not block an instance administrator.",
   "@cantBlockAdmin": {},
@@ -104,7 +116,8 @@
     "description": "Label for action to clear local user preferences in the dialog"
   },
   "clearSearch": "Clear Search",
-  "clearedDatabase": "Local database cleared. Restart Thunder to use new changes.",
+  "@clearSearch": {},
+  "clearedDatabase": "Local database cleared. Restart Thunder for new changes to take effect.",
   "@clearedDatabase": {},
   "clearedUserPreferences": "Cleared all user preferences",
   "@clearedUserPreferences": {},
@@ -144,6 +157,10 @@
   "@commentReported": {},
   "commentSavedAsDraft": "Comment saved as draft",
   "@commentSavedAsDraft": {},
+  "commentShowUserInstance": "Show User Instance",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
   "commentSortType": "Comment Sort Type",
   "@commentSortType": {},
   "commentSwipeGesturesHint": "Looking to use buttons instead? Enable them in the comments section in general settings.",
@@ -151,6 +168,7 @@
   "comments": "Comments",
   "@comments": {},
   "communities": "Communities",
+  "@communities": {},
   "community": "Community",
   "@community": {},
   "communityFormat": "Community Format",
@@ -169,13 +187,13 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
-  "confirmLogOutTitle": "Confirm Log Out",
-  "@confirmLogOutTitle": {
-    "description": "The title of the confirm logout dialog"
-  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Confirm Log Out",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
   },
   "confirmMarkAllAsReadTitle": "Confirm Mark All As Read",
   "@confirmMarkAllAsReadTitle": {
@@ -198,20 +216,23 @@
   "copiedToClipboard": "Copied to clipboard",
   "@copiedToClipboard": {},
   "copy": "Copy",
+  "@copy": {},
   "copyText": "Copy Text",
   "@copyText": {},
-  "couldNotDetermineCommentDelete": "Could not determine post to delete the comment.",
+  "couldNotDetermineCommentDelete": "Error: Could not determine post to delete the comment.",
   "@couldNotDetermineCommentDelete": {},
-  "couldNotDeterminePostComment": "Could not determine post to comment to.",
+  "couldNotDeterminePostComment": "Error: Could not determine post to comment to.",
   "@couldNotDeterminePostComment": {},
   "couldntCreateReport": "Your comment report could not be submitted at this time. Please try again later",
   "@couldntCreateReport": {},
   "countSubscribers": "{count} subscribers",
+  "@countSubscribers": {},
   "createAccount": "Create Account",
   "@createAccount": {},
   "createComment": "Create Comment",
   "@createComment": {},
   "createNewCrossPost": "Create new cross-post",
+  "@createNewCrossPost": {},
   "createPost": "Create Post",
   "@createPost": {},
   "creator": "Creator",
@@ -219,6 +240,7 @@
     "description": "The creator filter for searches."
   },
   "crossPostedTo": "Cross-posted to",
+  "@crossPostedTo": {},
   "currentLongPress": "Currently set as long press",
   "@currentLongPress": {},
   "currentSinglePress": "Currently set as single press",
@@ -239,7 +261,7 @@
   "@deleteLocalDatabase": {
     "description": "Label for action to delete local database"
   },
-  "deleteLocalDatabaseDescription": "This action will remove the local database and will log you out of all your accounts.\n\nDo you want to continue?",
+  "deleteLocalDatabaseDescription": "This action will remove the local database and will log you out of all your accounts.\n\nAre you sure you want to continue?",
   "@deleteLocalDatabaseDescription": {
     "description": "Description for confirmation action to delete local database"
   },
@@ -276,6 +298,7 @@
     "description": "Title when editing a post."
   },
   "empty": "Empty",
+  "@empty": {},
   "emptyInbox": "Empty Inbox",
   "@emptyInbox": {},
   "emptyUri": "The link is empty. Please provide a valid dynamic link to proceed.",
@@ -291,6 +314,7 @@
     "description": "Enable the Floating Action Button for the post"
   },
   "endSearch": "End Search",
+  "@endSearch": {},
   "errorDownloadingMedia": "Could not download the media file to share: {errorMessage}",
   "@errorDownloadingMedia": {},
   "exceptionProcessingUri": "An error occurred while processing the link. It may not be available on your instance.",
@@ -319,6 +343,10 @@
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
@@ -409,6 +437,14 @@
   "@instanceHasAlreadyBenAdded": {},
   "internetOrInstanceIssues": "You may not be connected to the Internet, or your instance may be currently unavailable.",
   "@internetOrInstanceIssues": {},
+  "keywordFilterDescription": "Filters posts containing any keywords in the title or body",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "keywordFilters": "Keyword Filters",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
   "language": "Language",
   "@language": {
     "description": "Label when creating or editing a post."
@@ -420,6 +456,7 @@
   "link": "{count, plural, zero {Link} one {Link} other {Links} } ",
   "@link": {},
   "linkActions": "Link Actions",
+  "@linkActions": {},
   "linksBehaviourSettings": "Links",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
@@ -429,7 +466,9 @@
   "loadMoreSingular": "Load {count} more reply…",
   "@loadMoreSingular": {},
   "local": "Local",
+  "@local": {},
   "localPosts": "Local Posts",
+  "@localPosts": {},
   "logOut": "Log out",
   "@logOut": {},
   "login": "Log in",
@@ -464,7 +503,7 @@
   "@mustBeLoggedInComment": {},
   "mustBeLoggedInPost": "You need to be logged in to create a post",
   "@mustBeLoggedInPost": {},
-  "navigateDown": "Navigate to next comment",
+  "navigateDown": "Next comment",
   "@navigateDown": {},
   "navigateUp": "Previous comment",
   "@navigateUp": {},
@@ -477,11 +516,21 @@
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
   "noCommentsFound": "No comments found",
+  "@noCommentsFound": {},
   "noCommunitiesFound": "No communities found",
+  "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "No favorited communities",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
+  "noKeywordFilters": "No keyword filters added",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
   "noLanguage": "No language",
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
@@ -489,10 +538,17 @@
   "noPosts": "No posts found",
   "@noPosts": {},
   "noPostsFound": "No posts found",
+  "@noPostsFound": {},
   "noResultsFound": "No results found.",
+  "@noResultsFound": {},
+  "noSubscriptions": "No Subscriptions",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
   "noUsersFound": "No users found",
+  "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
   "notValidUrl": "Not a valid URL",
@@ -601,8 +657,20 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
+  "removeFromFavorites": "Remove from favorites",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
   "removeInstance": "Remove instance",
   "@removeInstance": {},
+  "removeKeyword": "Remove \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "removeKeywordFilter": "Remove Keyword",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
   "removedCommunityFromSubscriptions": "Unsubscribed from community",
   "@removedCommunityFromSubscriptions": {},
   "reply": "{count, plural, zero {Reply} one {Reply} other {Replies} }",
@@ -630,6 +698,7 @@
     "description": "Semantic label for button in post appearance settings."
   },
   "resetPreferences": "Reset Preferences",
+  "@resetPreferences": {},
   "resetPreferencesAndData": "Reset Preferences and Data",
   "@resetPreferencesAndData": {
     "description": "Debug setting header for resetting all user preferences and data."
@@ -663,25 +732,35 @@
   "search": "Search",
   "@search": {},
   "searchByText": "Search by text",
+  "@searchByText": {},
   "searchByUrl": "Search by URL",
+  "@searchByUrl": {},
   "searchComments": "Search Comments",
+  "@searchComments": {},
   "searchCommentsFederatedWith": "Search for comments federated with {instance}",
+  "@searchCommentsFederatedWith": {},
   "searchCommunitiesFederatedWith": "Search for communities federated with {instance}",
   "@searchCommunitiesFederatedWith": {},
   "searchInstance": "Search {instance}",
   "@searchInstance": {},
   "searchPostSearchType": "Select Post Search Type",
+  "@searchPostSearchType": {},
   "searchPostsFederatedWith": "Search for posts federated with {instance}",
+  "@searchPostsFederatedWith": {},
   "searchTerm": "Search term",
+  "@searchTerm": {},
   "searchUsersFederatedWith": "Search for users federated with {instance}",
+  "@searchUsersFederatedWith": {},
   "selectCommunity": "Select a community",
   "@selectCommunity": {},
   "selectFeedType": "Select Feed Type",
+  "@selectFeedType": {},
   "selectLanguage": "Select language",
   "@selectLanguage": {
     "description": "The prompt to select a language in the post creation page"
   },
   "selectSearchType": "Select Search Type",
+  "@selectSearchType": {},
   "serverErrorComments": "A server error was encountered when fetching more comments: {message}",
   "@serverErrorComments": {},
   "setAction": "Set Action",
@@ -714,7 +793,7 @@
   "@showBotAccounts": {
     "description": "Option to show bot accounts."
   },
-  "showLess": "Show less",
+  "showLess": "Show fewer",
   "@showLess": {},
   "showMore": "Show more",
   "@showMore": {},
@@ -762,9 +841,10 @@
   "@suggestedTitle": {
     "description": "Suggested title for the post."
   },
-  "tapToExit": "Press back twice to exit",
+  "tapToExit": "Go back twice to exit",
   "@tapToExit": {},
   "text": "Text",
+  "@text": {},
   "theming": "Theming",
   "@theming": {
     "description": "Title of Theming in Settings -> Appearance -> Theming"
@@ -868,11 +948,13 @@
     "description": "Unsupported link type at the present time."
   },
   "url": "URL",
+  "@url": {},
   "useCompactView": "Enable for small posts, disable for big.",
   "@useCompactView": {
     "description": "Option to enable or disable compact view for small posts."
   },
   "useSuggestedTitle": "Use suggested title: {title}",
+  "@useSuggestedTitle": {},
   "userFormat": "User Format",
   "@userFormat": {
     "description": "Setting for user full name format"
@@ -890,6 +972,7 @@
   "username": "Username",
   "@username": {},
   "users": "Users",
+  "@users": {},
   "viewAllComments": "View all comments",
   "@viewAllComments": {},
   "visitCommunity": "Visit Community",
@@ -905,9 +988,5 @@
     "description": "The total score of post or comment"
   },
   "xUpvotes": "{x} upvotes",
-  "@xUpvotes": {},
-  "commentShowUserInstance":"Show User Instance",
-  "@commentShowUserInstance":{
-    "description":"Settings toggle to display user instance alongside their display name in comments"
-  }
+  "@xUpvotes": {}
 }
