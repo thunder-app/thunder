@@ -6,6 +6,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
@@ -44,6 +45,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             }
 
             List<CommunityView> subsciptions = [];
+            List<CommunityView> favoritedCommunities = [];
 
             while (!hasFetchedAllSubsciptions) {
               ListCommunitiesResponse listCommunitiesResponse = await lemmy.run(
@@ -63,6 +65,9 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             // Sort subscriptions by their name
             subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
 
+            List<Favorite> favorites = await Favorite.favorites(account.id);
+            favoritedCommunities = subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
+
             GetPersonDetailsResponse? getPersonDetailsResponse =
                 await lemmy.run(GetPersonDetails(username: account.username, auth: account.jwt, sort: SortType.new_, page: 1)).timeout(timeout, onTimeout: () {
               throw Exception('Error: Timeout when attempting to fetch account details');
@@ -71,7 +76,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             // This eliminates an issue which has plagued me a lot which is that there's a race condition
             // with so many calls to GetAccountInformation, we can return success for the new and old account.
             if (getPersonDetailsResponse.personView.person.id == (await fetchActiveProfileAccount())?.userId) {
-              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, personView: getPersonDetailsResponse.personView));
+              return emit(state.copyWith(status: AccountStatus.success, subsciptions: subsciptions, favorites: favoritedCommunities, personView: getPersonDetailsResponse.personView));
             } else {
               return emit(state.copyWith(status: AccountStatus.success));
             }
@@ -84,6 +89,20 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
       } catch (e) {
         emit(state.copyWith(status: AccountStatus.failure, errorMessage: e.toString()));
       }
+    });
+
+    on<GetFavoritedCommunities>((event, emit) async {
+      Account? account = await fetchActiveProfileAccount();
+
+      if (account == null || account.jwt == null) {
+        return emit(state.copyWith(status: AccountStatus.success));
+      }
+
+      List<Favorite> favorites = await Favorite.favorites(account.id);
+      List<CommunityView> favoritedCommunities =
+          state.subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
+
+      emit(state.copyWith(status: AccountStatus.success, favorites: favoritedCommunities));
     });
   }
 }

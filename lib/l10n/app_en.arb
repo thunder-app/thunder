@@ -27,6 +27,10 @@
   "@addKeywordFilter": {
     "description": "Hint for text field to add keyword"
   },
+  "addToFavorites": "Add to favorites",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
   "addedCommunityToSubscriptions": "Subscribed to community",
   "@addedCommunityToSubscriptions": {},
   "advanced": "Advanced",
@@ -331,6 +335,10 @@
   "@failedToLoadBlocks": {},
   "failedToUnblock": "Could not unblock: {errorMessage}",
   "@failedToUnblock": {},
+  "favorites": "Favorites",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
   "feed": "Feed",
   "@feed": {},
   "feedBehaviourSettings": "Feed",
@@ -501,6 +509,10 @@
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
+  "noFavoritedCommunities": "No favorited communities",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
   "noInstanceBlocks": "No blocked instances.",
   "@noInstanceBlocks": {},
   "noKeywordFilters": "No keyword filters added",
@@ -517,6 +529,10 @@
   "@noPostsFound": {},
   "noResultsFound": "No results found.",
   "@noResultsFound": {},
+  "noSubscriptions": "No Subscriptions",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
   "noUsersFound": "No users found",
@@ -629,6 +645,10 @@
   "@remove": {},
   "removeAccount": "Remove Account",
   "@removeAccount": {},
+  "removeFromFavorites": "Remove from favorites",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
   "removeInstance": "Remove instance",
   "@removeInstance": {},
   "removeKeyword": "Remove \"{keyword}\"?",
