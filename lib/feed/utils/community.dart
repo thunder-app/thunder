@@ -1,7 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
+import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:uuid/uuid.dart';
 
 /// Logic to block a community
 Future<BlockCommunityResponse> blockCommunity(int communityId, bool block) async {
@@ -47,4 +52,26 @@ Future<GetCommunityResponse> fetchCommunityInformation({int? id, String? name}) 
   ));
 
   return fullCommunityView;
+}
+
+Future<void> toggleFavoriteCommunity(BuildContext context, Community community, bool isFavorite) async {
+  if (isFavorite) {
+    await Favorite.deleteFavorite(communityId: community.id);
+    if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
+    return;
+  }
+
+  Account? account = await fetchActiveProfileAccount();
+
+  Uuid uuid = const Uuid();
+  String id = uuid.v4().replaceAll('-', '').substring(0, 13);
+
+  Favorite favorite = Favorite(
+    id: id,
+    communityId: community.id,
+    accountId: account!.id,
+  );
+
+  await Favorite.insertFavorite(favorite);
+  if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
 }

@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -136,12 +137,12 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(query, emptySuggestions),
+    getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
     suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<CommunityView>? emptySuggestions) async {
+Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
     return emptySuggestions ?? const Iterable.empty();
   }
@@ -153,7 +154,14 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
     limit: 20,
     sort: SortType.topAll,
   ));
-  return searchResponse.communities;
+  return searchResponse.communities.toList()
+    ..sort(
+      (a, b) => _getFavoriteStatus(context, a.community)
+          ? -1
+          : _getFavoriteStatus(context, b.community)
+              ? 1
+              : b.counts.subscribers.compareTo(a.counts.subscribers),
+    );
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -194,6 +202,10 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                       _ => '',
                     }}'),
                   ],
+                  if (_getFavoriteStatus(context, payload.community)) ...const [
+                    Text(' · '),
+                    Icon(Icons.star_rounded, size: 15),
+                  ],
                 ],
               )
             ],
@@ -202,6 +214,12 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
       ),
     ),
   );
+}
+
+/// Checks whether the current community is a favorite of the current user
+bool _getFavoriteStatus(BuildContext context, Community community) {
+  final AccountState accountState = context.read<AccountBloc>().state;
+  return accountState.favorites.any((communityView) => communityView.community.id == community.id);
 }
 
 /// Shows a dialog which allows typing/search for an instance

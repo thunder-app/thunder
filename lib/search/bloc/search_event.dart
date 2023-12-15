@@ -14,6 +14,7 @@ class StartSearchEvent extends SearchEvent {
   final SearchType searchType;
   final int? communityId;
   final int? creatorId;
+  final List<CommunityView>? favoriteCommunities;
 
   const StartSearchEvent({
     required this.query,
@@ -22,6 +23,7 @@ class StartSearchEvent extends SearchEvent {
     required this.searchType,
     this.communityId,
     this.creatorId,
+    this.favoriteCommunities,
   });
 }
 
@@ -42,6 +44,7 @@ class ContinueSearchEvent extends SearchEvent {
   final SearchType searchType;
   final int? communityId;
   final int? creatorId;
+  final List<CommunityView>? favoriteCommunities;
 
   const ContinueSearchEvent({
     required this.query,
@@ -50,6 +53,7 @@ class ContinueSearchEvent extends SearchEvent {
     required this.searchType,
     this.communityId,
     this.creatorId,
+    this.favoriteCommunities,
   });
 }
 

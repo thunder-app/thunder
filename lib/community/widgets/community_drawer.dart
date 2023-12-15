@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:thunder/feed/utils/community.dart';
 
 import 'package:uuid/uuid.dart';
 import 'package:lemmy_api_client/v3.dart';
@@ -431,27 +432,7 @@ class CommunityItem extends StatelessWidget {
         ),
         showFavoriteAction
             ? IconButton(
-                onPressed: () async {
-                  if (isFavorite) {
-                    await Favorite.deleteFavorite(communityId: community.id);
-                    if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
-                    return;
-                  }
-
-                  Account? account = await fetchActiveProfileAccount();
-
-                  Uuid uuid = const Uuid();
-                  String id = uuid.v4().replaceAll('-', '').substring(0, 13);
-
-                  Favorite favorite = Favorite(
-                    id: id,
-                    communityId: community.id,
-                    accountId: account!.id,
-                  );
-
-                  await Favorite.insertFavorite(favorite);
-                  if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
-                },
+                onPressed: () async => await toggleFavoriteCommunity(context, community, isFavorite),
                 icon: Icon(
                   isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
                   semanticLabel: isFavorite ? l10n.addToFavorites : l10n.removeFromFavorites,
