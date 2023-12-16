@@ -39,11 +39,11 @@
   "@applied": {},
   "apply": "Apliki",
   "@apply": {},
-  "back": "Reen",
+  "back": "Reiri",
   "@back": {},
-  "backButton": "Reen butono",
+  "backButton": "Reiri butono",
   "@backButton": {},
-  "backToTop": "Reen al Supro",
+  "backToTop": "Reiri al Supro",
   "@backToTop": {},
   "blockCommunity": "Bloki Komunumon",
   "@blockCommunity": {},
@@ -913,7 +913,7 @@
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
   },
-  "confirmLogOutTitle": "Konfirmi Elsalutadon",
+  "confirmLogOutTitle": "Ĉu elsaluti?",
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
   },
@@ -956,5 +956,37 @@
   "userFormat": "Uzanta Formato",
   "@userFormat": {
     "description": "Setting for user full name format"
+  },
+  "confirmMarkAllAsReadTitle": "Ĉu marki ĉion kiel legita?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "addToFavorites": "Aldoni al favoratoj",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "noSubscriptions": "Neniuj Abonoj",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "removeFromFavorites": "Forigi el favoratoj",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "noFavoritedCommunities": "Neniuj favoratigitaj komunumoj",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "favorites": "Favoratoj",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "markAllAsRead": "Marki ĉion kiel legita",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "confirmMarkAllAsReadBody": "Ĉu vi certas, ke vi volas marki ĉiujn mesaĝojn kiel legitajn?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
   }
 }
