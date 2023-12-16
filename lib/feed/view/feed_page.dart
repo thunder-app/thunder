@@ -418,8 +418,10 @@ class _FeedViewState extends State<FeedView> {
   }
 
   FutureOr<bool> _handleBack(bool stopDefaultButtonEvent, RouteInfo info) async {
+    final bool topOfNavigationStack = ModalRoute.of(context)?.isCurrent ?? false;
+
     // If the sidebar is open, close it
-    if (showCommunitySidebar) {
+    if (topOfNavigationStack && showCommunitySidebar) {
       setState(() => showCommunitySidebar = false);
       return true;
     }

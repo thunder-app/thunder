@@ -8,3 +8,5 @@ abstract class AccountEvent extends Equatable {
 }
 
 class GetAccountInformation extends AccountEvent {}
+
+class GetFavoritedCommunities extends AccountEvent {}

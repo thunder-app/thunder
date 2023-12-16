@@ -26,6 +26,7 @@ class SettingsPage extends StatelessWidget {
 
     final List<SettingTopic> topics = [
       SettingTopic(title: l10n.general, icon: Icons.settings, path: '/settings/general'),
+      SettingTopic(title: l10n.filters, icon: Icons.filter_alt_rounded, path: '/settings/filters'),
       SettingTopic(title: l10n.appearance, icon: Icons.color_lens_rounded, path: '/settings/appearance'),
       SettingTopic(title: l10n.gestures, icon: Icons.swipe, path: '/settings/gestures'),
       SettingTopic(title: l10n.floatingActionButton, icon: Icons.settings_applications_rounded, path: '/settings/fab'),
