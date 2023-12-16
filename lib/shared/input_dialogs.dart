@@ -320,13 +320,22 @@ void showLanguageInputDialog(BuildContext context, {required String title, requi
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getLanguageSuggestions(query, languages),
+      getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
       suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<Iterable<Language>> getLanguageSuggestions(String query, Iterable<Language>? emptySuggestions) async {
+Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String query, Iterable<Language>? emptySuggestions) async {
+  final Locale currentLocale = Localizations.localeOf(context);
+
+  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
+    emptySuggestions = emptySuggestions?.toList()
+      ?..remove(currentLanguage)
+      ..insert(2, currentLanguage);
+  }
+
   if (query.isEmpty) {
     return emptySuggestions ?? [];
   }
