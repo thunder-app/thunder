@@ -191,9 +191,17 @@
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
   },
-  "confirmLogOutTitle": "Confirm Log Out",
+  "confirmLogOutTitle": "Log Out?",
   "@confirmLogOutTitle": {
     "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadTitle": "Mark All As Read?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "confirmMarkAllAsReadBody": "Are you sure you want to mark all messages as read?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
   },
   "confirmResetCommentPreferences": "This will reset all comment preferences. Are you sure you want to proceed?",
   "@confirmResetCommentPreferences": {
@@ -481,6 +489,10 @@
   "@manageAccounts": {},
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
+  "markAllAsRead": "Mark All As Read",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
   "message": "{count, plural, zero {Message} one {Message} other {Messages} }",
   "@message": {},
   "missingErrorMessage": "No error message available",
