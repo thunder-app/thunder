@@ -55,20 +55,6 @@ class FeedPageAppBar extends StatelessWidget {
       ),
       actions: [
         if (feedState.feedType == FeedType.community) ...[
-          BlocBuilder<AccountBloc, AccountState>(
-            builder: (_, __) => IconButton(
-              icon: Icon(
-                _getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded,
-                semanticLabel: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
-              ),
-              tooltip: _getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites,
-              onPressed: () async {
-                final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
-                bool isFavorite = _getFavoriteStatus(context);
-                await toggleFavoriteCommunity(context, community, isFavorite);
-              },
-            ),
-          ),
           BlocListener<CommunityBloc, CommunityState>(
             listener: (context, state) {
               if (state.status == CommunityStatus.success && state.communityView != null) {
@@ -99,32 +85,55 @@ class FeedPageAppBar extends StatelessWidget {
             ),
           ),
         ],
+        if (feedState.feedType != FeedType.community)
+          IconButton(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                triggerRefresh(context);
+              },
+              icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
         IconButton(
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              triggerRefresh(context);
-            },
-            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
-        Container(
-          margin: const EdgeInsets.only(right: 8.0),
-          child: IconButton(
-            icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
+          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+          onPressed: () {
+            HapticFeedback.mediumImpact();
 
-              showModalBottomSheet<void>(
-                showDragHandle: true,
-                context: context,
-                isScrollControlled: true,
-                builder: (builderContext) => SortPicker(
-                  title: l10n.sortOptions,
-                  onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                  previouslySelected: feedBloc.state.sortType,
-                ),
-              );
-            },
-          ),
+            showModalBottomSheet<void>(
+              showDragHandle: true,
+              context: context,
+              isScrollControlled: true,
+              builder: (builderContext) => SortPicker(
+                title: l10n.sortOptions,
+                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                previouslySelected: feedBloc.state.sortType,
+              ),
+            );
+          },
         ),
+        if (feedState.feedType == FeedType.community)
+          PopupMenuButton(
+            onSelected: (value) async {
+              switch (value) {
+                case 'refresh':
+                  triggerRefresh(context);
+                  break;
+                case 'favorite':
+                  final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                  bool isFavorite = _getFavoriteStatus(context);
+                  await toggleFavoriteCommunity(context, community, isFavorite);
+                  break;
+              }
+            },
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                value: 'refresh',
+                child: Text(l10n.refresh),
+              ),
+              PopupMenuItem(
+                value: 'favorite',
+                child: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+              ),
+            ],
+          ),
       ],
     );
   }
