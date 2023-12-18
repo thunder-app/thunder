@@ -232,6 +232,8 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ),
                                 child: CommonMarkdownBody(
                                   body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                  // The sidebar is 0.8 the width of the screen, so we'll be just slightly smaller than that
+                                  imageMaxWidth: 0.7 * MediaQuery.of(context).size.width,
                                 ),
                               ),
                               const Padding(
