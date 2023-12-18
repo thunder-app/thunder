@@ -611,6 +611,14 @@
   },
   "postBody": "Post Body",
   "@postBody": {},
+  "postBodySettings": "Post Body Settings",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "These settings affect the display of the post body",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",

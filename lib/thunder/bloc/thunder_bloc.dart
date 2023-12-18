@@ -121,6 +121,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      bool useCompactPostBodyView = prefs.getBool(LocalSettings.useCompactPostBodyView.name) ?? false;
 
       // General Settings
       bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
@@ -248,6 +249,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
+        useCompactPostBodyView: useCompactPostBodyView,
 
         // General Settings
         showVoteActions: showVoteActions,
