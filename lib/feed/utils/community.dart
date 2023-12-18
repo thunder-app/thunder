@@ -75,3 +75,16 @@ Future<void> toggleFavoriteCommunity(BuildContext context, Community community, 
   await Favorite.insertFavorite(favorite);
   if (context.mounted) context.read<AccountBloc>().add(GetFavoritedCommunities());
 }
+
+/// Takes a list of [communities] and returns the list with any [favoriteCommunities] at the beginning of the list
+/// Note that you may need to call [toList] on any lists that are marked as readonly.
+List<CommunityView>? prioritizeFavorites(List<CommunityView>? communities, List<CommunityView>? favoriteCommunities) {
+  return communities
+    ?..sort(
+      (a, b) => favoriteCommunities?.any((c) => c.community.id == a.community.id) == true
+          ? -1
+          : favoriteCommunities?.any((c) => c.community.id == b.community.id) == true
+              ? 1
+              : b.counts.subscribers.compareTo(a.counts.subscribers),
+    );
+}
