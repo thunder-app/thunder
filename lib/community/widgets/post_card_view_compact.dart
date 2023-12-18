@@ -123,7 +123,7 @@ class PostCardViewCompact extends StatelessWidget {
                             semanticLabel: 'Saved',
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity)
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal)
                         WidgetSpan(
                           child: Icon(
                             Icons.push_pin_rounded,
@@ -131,7 +131,7 @@ class PostCardViewCompact extends StatelessWidget {
                             color: indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green,
                           ),
                         ),
-                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
+                      if (postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal || postViewMedia.postView.saved || postViewMedia.postView.post.locked)
                         const WidgetSpan(
                           child: SizedBox(
                             width: 3.5,
@@ -142,7 +142,7 @@ class PostCardViewCompact extends StatelessWidget {
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
-                          color: postViewMedia.postView.post.featuredCommunity
+                          color: postViewMedia.postView.post.featuredCommunity || postViewMedia.postView.post.featuredLocal
                               ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
                         ),
