@@ -594,5 +594,9 @@
   "xDownvotes": "{x} voti in giù",
   "@xDownvotes": {},
   "xUpvotes": "{x} voti in su",
-  "@xUpvotes": {}
+  "@xUpvotes": {},
+  "about": "Riguardo",
+  "@about": {
+    "description": "About settings category."
+  }
 }
