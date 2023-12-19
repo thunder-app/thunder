@@ -187,6 +187,10 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "condensed": "Condensed",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
@@ -487,6 +491,10 @@
   },
   "manageAccounts": "Manage Accounts",
   "@manageAccounts": {},
+  "mediaPreview": "Media preview",
+  "@mediaPreview": {
+    "description": "Media preview post body view type"
+  },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
   "markAllAsRead": "Mark All As Read",
@@ -618,6 +626,10 @@
   "postBodySettingsDescription": "These settings affect the display of the post body",
   "@postBodySettingsDescription": {
     "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Post Body View Type",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
   },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},

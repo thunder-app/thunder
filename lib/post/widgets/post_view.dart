@@ -23,6 +23,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
@@ -115,7 +116,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
               padding: const EdgeInsets.symmetric(vertical: 8.0),
               child: Row(
                 children: [
-                  if (thunderState.useCompactPostBodyView && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && !thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
                   Expanded(
                     child: ScalableText(
@@ -124,9 +125,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                       style: theme.textTheme.titleMedium,
                     ),
                   ),
-                  if (thunderState.useCompactPostBodyView && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
+                  if (thunderState.postBodyViewType == PostBodyViewType.condensed && thunderState.showThumbnailPreviewOnRight && postViewMedia.media.isNotEmpty)
                     _getMediaPreview(thunderState, hideNsfwPreviews, markPostReadOnMediaView, isUserLoggedIn),
-                  if (!thunderState.useCompactPostBodyView || postViewMedia.media.isEmpty)
+                  if (thunderState.postBodyViewType != PostBodyViewType.condensed || postViewMedia.media.isEmpty)
                     IconButton(
                       visualDensity: VisualDensity.compact,
                       icon: Icon(
@@ -141,7 +142,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                 ],
               ),
             ),
-            if (!thunderState.useCompactPostBodyView)
+            if (thunderState.postBodyViewType != PostBodyViewType.condensed)
               Expandable(
                 controller: expandableController,
                 collapsed: Container(),

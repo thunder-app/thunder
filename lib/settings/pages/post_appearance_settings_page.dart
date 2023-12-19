@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/post.dart';
@@ -74,8 +75,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
 
-  /// When enabled, the post body is condensed
-  bool useCompactPostBodyView = false;
+  /// Determines how post bodies are displayed
+  PostBodyViewType postBodyViewType = PostBodyViewType.mediaPreview;
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
@@ -104,7 +105,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
-      useCompactPostBodyView = prefs.getBool(LocalSettings.useCompactPostBodyView.name) ?? false;
+      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.mediaPreview.name);
     });
   }
 
@@ -175,9 +176,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.showCrossPosts.name, value);
         setState(() => showCrossPosts = value);
         break;
-      case LocalSettings.useCompactPostBodyView:
-        await prefs.setBool(LocalSettings.useCompactPostBodyView.name, value);
-        setState(() => useCompactPostBodyView = value);
+      case LocalSettings.postBodyViewType:
+        await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
+        setState(() => postBodyViewType = value);
         break;
     }
 
@@ -205,7 +206,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostSaveAction.name);
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
     await prefs.remove(LocalSettings.showCrossPosts.name);
-    await prefs.remove(LocalSettings.useCompactPostBodyView.name);
+    await prefs.remove(LocalSettings.postBodyViewType.name);
 
     await initPreferences();
 
@@ -648,14 +649,21 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: ListOption(
-                description: l10n.postViewType,
-                value: ListPickerItem(label: useCompactPostBodyView ? l10n.compactView : l10n.cardView, icon: Icons.crop_16_9_rounded, payload: useCompactPostBodyView),
+                description: l10n.postBodyViewType,
+                value: ListPickerItem(
+                    label: switch (postBodyViewType) {
+                      PostBodyViewType.condensed => l10n.condensed,
+                      PostBodyViewType.mediaPreview => l10n.mediaPreview,
+                    },
+                    icon: Icons.crop_16_9_rounded,
+                    payload: postBodyViewType,
+                    capitalizeLabel: false),
                 options: [
-                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.compactView, payload: true),
-                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.cardView, payload: false),
+                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
+                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.mediaPreview, payload: PostBodyViewType.mediaPreview),
                 ],
                 icon: Icons.view_list_rounded,
-                onChanged: (value) => setPreferences(LocalSettings.useCompactPostBodyView, value.payload),
+                onChanged: (value) => setPreferences(LocalSettings.postBodyViewType, value.payload),
               ),
             ),
           ),
