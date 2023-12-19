@@ -114,12 +114,11 @@ class FeedPageAppBar extends StatelessWidget {
             itemBuilder: (context) => [
               PopupMenuItem(
                 onTap: () => triggerRefresh(context),
-                child: Row(
-                  children: [
-                    const Icon(Icons.refresh_rounded, size: 20),
-                    const SizedBox(width: 10),
-                    Text(l10n.refresh),
-                  ],
+                child: ListTile(
+                  dense: true,
+                  horizontalTitleGap: 5,
+                  leading: const Icon(Icons.refresh_rounded, size: 20),
+                  title: Text(l10n.refresh),
                 ),
               ),
               PopupMenuItem(
@@ -128,12 +127,11 @@ class FeedPageAppBar extends StatelessWidget {
                   bool isFavorite = _getFavoriteStatus(context);
                   await toggleFavoriteCommunity(context, community, isFavorite);
                 },
-                child: Row(
-                  children: [
-                    Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
-                    const SizedBox(width: 10),
-                    Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
-                  ],
+                child: ListTile(
+                  dense: true,
+                  horizontalTitleGap: 5,
+                  leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
+                  title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
                 ),
               ),
             ],
