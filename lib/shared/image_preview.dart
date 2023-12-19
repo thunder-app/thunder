@@ -144,12 +144,14 @@ class _ImagePreviewState extends State<ImagePreview> {
                     if (state.extendedImageLoadState == LoadState.loading) {
                       return Container();
                     }
-                    return Text(
-                      l10n.unableToLoadImage,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
-                      ),
-                    );
+                    if (state.extendedImageLoadState == LoadState.failed) {
+                      return Text(
+                        l10n.unableToLoadImage,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
+                        ),
+                      );
+                    }
                   },
                 ),
           TweenAnimationBuilder<double>(
