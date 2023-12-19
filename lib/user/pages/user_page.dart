@@ -49,33 +49,7 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () async {
-                  final ThunderBloc thunderBloc = context.read<ThunderBloc>();
-                  final AuthBloc authBloc = context.read<AuthBloc>();
-
-                  final String? currentAccountId = authBloc.state.account?.id;
-
-                  if (await showLogOutDialog(context) && context.mounted) {
-                    final List<String> anonymousInstances = thunderBloc.state.anonymousInstances;
-                    final List<Account> accounts = (await Account.accounts()).where((account) => account.id != currentAccountId).toList();
-
-                    await Future.delayed(const Duration(milliseconds: 1000), () async {
-                      if (anonymousInstances.isNotEmpty) {
-                        // Switch to an anonymous instance
-                        thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances.last));
-                        authBloc.add(InstanceChanged(instance: anonymousInstances.last));
-                      } else if (accounts.isNotEmpty) {
-                        // Switch to an account
-                        authBloc.add(SwitchAccount(accountId: accounts.last.id));
-                      } else {
-                        // No accounts and no anonymous instances left. Create a new one.
-                        authBloc.add(const LogOutOfAllAccounts());
-                        thunderBloc.add(const OnAddAnonymousInstance('lemmy.ml'));
-                        thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
-                      }
-                    });
-                  }
-                },
+                onPressed: () => showProfileModalSheet(context, logOutOfActiveAccount: true),
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
