@@ -41,7 +41,7 @@ class ThunderState extends Equatable {
     this.showThumbnailPreviewOnRight = false,
     this.showTextPostIndicator = false,
     this.tappableAuthorCommunity = false,
-    this.postBodyViewType = PostBodyViewType.mediaPreview,
+    this.postBodyViewType = PostBodyViewType.expanded,
 
     // General Settings
     this.showVoteActions = true,

@@ -76,7 +76,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   ExpandableController expandableController = ExpandableController();
 
   /// Determines how post bodies are displayed
-  PostBodyViewType postBodyViewType = PostBodyViewType.mediaPreview;
+  PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
 
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
@@ -105,7 +105,7 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
 
       // Post body settings
       showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
-      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.mediaPreview.name);
+      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
     });
   }
 
@@ -653,14 +653,14 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 value: ListPickerItem(
                     label: switch (postBodyViewType) {
                       PostBodyViewType.condensed => l10n.condensed,
-                      PostBodyViewType.mediaPreview => l10n.mediaPreview,
+                      PostBodyViewType.expanded => l10n.expanded,
                     },
                     icon: Icons.crop_16_9_rounded,
                     payload: postBodyViewType,
                     capitalizeLabel: false),
                 options: [
                   ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
-                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.mediaPreview, payload: PostBodyViewType.mediaPreview),
+                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
                 ],
                 icon: Icons.view_list_rounded,
                 onChanged: (value) => setPreferences(LocalSettings.postBodyViewType, value.payload),

@@ -1,4 +1,4 @@
 enum PostBodyViewType {
   condensed,
-  mediaPreview,
+  expanded,
 }

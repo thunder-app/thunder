@@ -329,6 +329,10 @@
   "@expandCommentPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
   },
+  "expanded": "Expanded",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
   "expandInformation": "Expand Information",
   "@expandInformation": {
     "description": "Describes the action to expand information - used in FAB settings"
@@ -491,10 +495,6 @@
   },
   "manageAccounts": "Manage Accounts",
   "@manageAccounts": {},
-  "mediaPreview": "Media preview",
-  "@mediaPreview": {
-    "description": "Media preview post body view type"
-  },
   "mention": "{count, plural, zero {Mention} one {Mention} other {Mentions} }",
   "@mention": {},
   "markAllAsRead": "Mark All As Read",
