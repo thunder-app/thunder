@@ -968,6 +968,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             creatorId: _currentCreatorFilter,
             favoriteCommunities: context.read<AccountBloc>().state.favorites,
           ));
+    } else {
+      context.read<SearchBloc>().add(ResetSearch());
     }
   }
 }
