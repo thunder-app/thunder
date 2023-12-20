@@ -237,7 +237,6 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       }
     }
 
-    //emit(state.copyWith(status: FeedStatus.success, postViewMedias: updatedPostViewMedias));
     emit(state.copyWith(status: FeedStatus.success, postViewMedias: state.postViewMedias));
   }
 
