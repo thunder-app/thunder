@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "7.0.0"
+  background_fetch:
+    dependency: "direct main"
+    description:
+      name: background_fetch
+      sha256: f70b28a0f7a3156195e9742229696f004ea3bf10f74039b7bf4c78a74fbda8a4
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.2.1"
   black_hole_flutter:
     dependency: transitive
     description:
@@ -313,6 +321,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.3"
+  dbus:
+    dependency: transitive
+    description:
+      name: dbus
+      sha256: "365c771ac3b0e58845f39ec6deebc76e3276aa9922b0cc60840712094d9047ac"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.7.10"
   dev_build:
     dependency: transitive
     description:
@@ -630,6 +646,30 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.1"
+  flutter_local_notifications:
+    dependency: "direct main"
+    description:
+      name: flutter_local_notifications
+      sha256: bb5cd63ff7c91d6efe452e41d0d0ae6348925c82eafd10ce170ef585ea04776e
+      url: "https://pub.dev"
+    source: hosted
+    version: "16.2.0"
+  flutter_local_notifications_linux:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_linux
+      sha256: "33f741ef47b5f63cc7f78fe75eeeac7e19f171ff3c3df054d84c1e38bedb6a03"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0+1"
+  flutter_local_notifications_platform_interface:
+    dependency: transitive
+    description:
+      name: flutter_local_notifications_platform_interface
+      sha256: "7cf643d6d5022f3baed0be777b0662cce5919c0a7b86e700299f22dc4ae660ef"
+      url: "https://pub.dev"
+    source: hosted
+    version: "7.0.0+1"
   flutter_localizations:
     dependency: "direct main"
     description: flutter
@@ -910,6 +950,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.8"
+  leak_tracker:
+    dependency: transitive
+    description:
+      name: leak_tracker
+      sha256: "7e108028e3d258667d079986da8c0bc32da4cb57431c2af03b1dc1038621a9dc"
+      url: "https://pub.dev"
+    source: hosted
+    version: "9.0.13"
+  leak_tracker_testing:
+    dependency: transitive
+    description:
+      name: leak_tracker_testing
+      sha256: b06739349ec2477e943055aea30172c5c7000225f79dad4702e2ec0eda79a6ff
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.5"
   lemmy_api_client:
     dependency: "direct main"
     description:
@@ -981,18 +1037,18 @@ packages:
     dependency: transitive
     description:
       name: material_color_utilities
-      sha256: "9528f2f296073ff54cb9fee677df673ace1218163c3bc7628093e7eed5203d41"
+      sha256: "0e0a020085b65b6083975e499759762399b4475f766c21668c4ecca34ea74e5a"
       url: "https://pub.dev"
     source: hosted
-    version: "0.5.0"
+    version: "0.8.0"
   meta:
     dependency: transitive
     description:
       name: meta
-      sha256: a6e590c838b18133bb482a2745ad77c5bb7715fb0451209e1a7567d416678b8e
+      sha256: d584fa6707a52763a52446f02cc621b077888fb63b93bbcb1143a7be5a0c0c04
       url: "https://pub.dev"
     source: hosted
-    version: "1.10.0"
+    version: "1.11.0"
   mime:
     dependency: transitive
     description:
@@ -1496,6 +1552,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.2.0"
+  timezone:
+    dependency: transitive
+    description:
+      name: timezone
+      sha256: "1cfd8ddc2d1cfd836bc93e67b9be88c3adaeca6f40a00ca999104c30693cdca0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.9.2"
   timing:
     dependency: transitive
     description:
@@ -1640,6 +1704,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  vm_service:
+    dependency: transitive
+    description:
+      name: vm_service
+      sha256: b3d56ff4341b8f182b96aceb2fa20e3dcb336b9f867bc0eafc0de10f1048e957
+      url: "https://pub.dev"
+    source: hosted
+    version: "13.0.0"
   watcher:
     dependency: transitive
     description:

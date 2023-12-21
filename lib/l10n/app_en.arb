@@ -69,6 +69,10 @@
   "@back": {},
   "backButton": "Back button",
   "@backButton": {},
+  "backgroundCheckWarning": "Note that notification checks will consume additional battery",
+  "@backgroundCheckWarning": {
+    "description": "Warning for enabling notifications"
+  },
   "backToTop": "Back To Top",
   "@backToTop": {},
   "blockCommunity": "Block Community",
@@ -308,6 +312,10 @@
   "enableFeedFab": "Enable Floating Button on Feeds",
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
+  },
+  "enableInboxNotifications": "Enable Inbox Notifications",
+  "@enableInboxNotifications": {
+    "description": "Setting name for inbox notifications"
   },
   "enablePostFab": "Enable Floating Button on Posts",
   "@enablePostFab": {
@@ -562,6 +570,10 @@
   "notificationsBehaviourSettings": "Notifications",
   "@notificationsBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "notificationsNotAllowed": "Notifications are not allowed for Thunder in system settings",
+  "@notificationsNotAllowed": {
+    "description": "Description for when notifications are now allowed for app"
   },
   "off": "off",
   "@off": {},

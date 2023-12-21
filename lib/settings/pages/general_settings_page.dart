@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
+import 'package:thunder/main.dart';
 import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
@@ -62,6 +64,12 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
 
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
+
+  /// When enabled, system-level notifications will be displayed for new inbox messages
+  bool enableInboxNotifications = false;
+
+  /// Not a setting, but tracks whether Android is allowing Thunder to send notifications
+  bool? areAndroidNotificationsAllowed = false;
 
   /// When enabled, authors and community names will be tappable when in compact view
   bool tappableAuthorCommunity = false;
@@ -168,6 +176,10 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.showInAppUpdateNotification.name, value);
         setState(() => showInAppUpdateNotification = value);
         break;
+      case LocalSettings.enableInboxNotifications:
+        await prefs.setBool(LocalSettings.enableInboxNotifications.name, value);
+        setState(() => enableInboxNotifications = value);
+        break;
 
       case LocalSettings.userFormat:
         await prefs.setString(LocalSettings.userFormat.name, value);
@@ -220,13 +232,24 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
       showInAppUpdateNotification = prefs.getBool(LocalSettings.showInAppUpdateNotification.name) ?? false;
+      enableInboxNotifications = prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _initPreferences();
+
+      // Check whether Android is currently allowing Thunder to send notifications
+      final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
+          FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+      // This setState has no body because async operations aren't allowed,
+      // but its purpose is to update areAndroidNotificationsAllowed.
+      setState(() {});
+    });
   }
 
   @override
@@ -620,6 +643,51 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
               ),
             ),
           ),
+          if (!kIsWeb && Platform.isAndroid)
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ToggleOption(
+                  description: l10n.enableInboxNotifications,
+                  value: enableInboxNotifications,
+                  iconEnabled: Icons.notifications_on_rounded,
+                  iconDisabled: Icons.notifications_off_rounded,
+                  onToggle: (bool value) async {
+                    setPreferences(LocalSettings.enableInboxNotifications, value);
+
+                    if (!kIsWeb && Platform.isAndroid && value) {
+                      // We're on Android. Request notifications permissions if needed.
+                      // This is a no-op if on SDK version < 33
+                      final AndroidFlutterLocalNotificationsPlugin? androidFlutterLocalNotificationsPlugin =
+                          FlutterLocalNotificationsPlugin().resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>();
+
+                      areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.areNotificationsEnabled();
+                      if (areAndroidNotificationsAllowed != true) {
+                        areAndroidNotificationsAllowed = await androidFlutterLocalNotificationsPlugin?.requestNotificationsPermission();
+                      }
+
+                      // This setState has no body because async operations aren't allowed,
+                      // but its purpose is to update areAndroidNotificationsAllowed.
+                      setState(() {});
+                    }
+
+                    if (value) {
+                      // Ensure that background fetching is enabled.
+                      initBackgroundFetch();
+                      initHeadlessBackgroundFetch();
+                    } else {
+                      // Ensure that background fetching is disabled.
+                      disableBackgroundFetch();
+                    }
+                  },
+                  subtitle: enableInboxNotifications
+                      ? !kIsWeb && Platform.isAndroid && areAndroidNotificationsAllowed == true
+                          ? l10n.backgroundCheckWarning
+                          : l10n.notificationsNotAllowed
+                      : null,
+                ),
+              ),
+            ),
 
           const SliverToBoxAdapter(child: SizedBox(height: 16.0)),
           SliverToBoxAdapter(
