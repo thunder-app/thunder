@@ -314,34 +314,37 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-
     final state = context.read<ThunderBloc>().state;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: ScalableText(
-                  widget.title ?? l10n.spoiler,
-                  fontScale: state.contentFontSizeScale,
-                ),
+        Container(
+          transform: Matrix4.translationValues(-4.0, 0, 0.0), // Move the Inkwell slightly to the left to line up text
+          child: InkWell(
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+            onTap: () {
+              expandableController.toggle();
+              setState(() {}); // Update the state to trigger the collapse/expand
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 4.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ScalableText(
+                      widget.title ?? l10n.spoiler,
+                      fontScale: state.contentFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Icon(
+                    expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                  ),
+                ],
               ),
-              IconButton(
-                visualDensity: VisualDensity.compact,
-                icon: Icon(
-                  expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                  semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                ),
-                onPressed: () {
-                  expandableController.toggle();
-                  setState(() {}); // Update the state to trigger the collapse/expand
-                },
-              ),
-            ],
+            ),
           ),
         ),
         Expandable(
