@@ -54,19 +54,33 @@ class DB {
     batch.execute(_getAnonymousSubscriptionsTableRawString());
   }
 
+  void _updateTableV4toV5(Batch batch) {
+    batch.execute(_createTableFavoritesRawString());
+  }
+
+  String _createTableFavoritesRawString() {
+    return 'CREATE TABLE favorites(id STRING PRIMARY KEY, accountId STRING, communityId INTEGER)';
+  }
+
   String _getAnonymousSubscriptionsTableRawString() {
-    return 'CREATE TABLE anonymous_subscriptions(id int PRIMARY KEY, ' + 'name TEXT, title TEXT, actorId TEXT, icon TEXT)';
+    return 'CREATE TABLE anonymous_subscriptions(id INT PRIMARY KEY, name TEXT, title TEXT, actorId TEXT, icon TEXT)';
   }
 
   Future<Database> _init() async {
     return await openDatabase(
       join(await getDatabasesPath(), 'thunder.db'),
-      version: 4,
+      version: 5,
       onCreate: (db, version) {
         var batch = db.batch();
-        batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
-        batch.execute(_getAnonymousSubscriptionsTableRawString());
-        batch.commit();
+
+        try {
+          batch.execute('CREATE TABLE accounts(accountId STRING PRIMARY KEY, username TEXT, jwt TEXT, instance TEXT, userId INTEGER)');
+          batch.execute(_getAnonymousSubscriptionsTableRawString());
+          batch.execute(_createTableFavoritesRawString());
+          batch.commit();
+        } on DatabaseException catch (e) {
+          debugPrint('Error creating database: $e');
+        }
       },
       onUpgrade: (db, oldVersion, newVersion) async {
         var batch = db.batch();
@@ -82,7 +96,16 @@ class DB {
         if (oldVersion < 4) {
           _updateTableAccountsV3toV4(batch);
         }
-        await batch.commit();
+
+        if (oldVersion < 5) {
+          _updateTableV4toV5(batch);
+        }
+
+        try {
+          await batch.commit();
+        } on DatabaseException catch (e) {
+          debugPrint('Error upgrading database: $e');
+        }
       },
     );
   }

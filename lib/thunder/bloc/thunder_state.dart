@@ -53,6 +53,7 @@ class ThunderState extends Equatable {
     this.dimReadPosts = true,
     this.useAdvancedShareSheet = true,
     this.showCrossPosts = true,
+    this.keywordFilters = const [],
     this.appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
@@ -178,6 +179,7 @@ class ThunderState extends Equatable {
   final bool dimReadPosts;
   final bool useAdvancedShareSheet;
   final bool showCrossPosts;
+  final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -310,6 +312,7 @@ class ThunderState extends Equatable {
     bool? useAdvancedShareSheet,
     bool? showCrossPosts,
     String? appLanguageCode,
+    List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
@@ -434,6 +437,7 @@ class ThunderState extends Equatable {
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
       showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -565,6 +569,7 @@ class ThunderState extends Equatable {
         useAdvancedShareSheet,
         showCrossPosts,
         appLanguageCode,
+        keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,

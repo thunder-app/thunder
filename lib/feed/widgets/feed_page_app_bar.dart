@@ -6,12 +6,14 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lemmy_api_client/v3.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -52,7 +54,7 @@ class FeedPageAppBar extends StatelessWidget {
         },
       ),
       actions: [
-        if (feedState.feedType == FeedType.community)
+        if (feedState.feedType == FeedType.community) ...[
           BlocListener<CommunityBloc, CommunityState>(
             listener: (context, state) {
               if (state.status == CommunityStatus.success && state.communityView != null) {
@@ -82,32 +84,58 @@ class FeedPageAppBar extends StatelessWidget {
               },
             ),
           ),
+        ],
+        if (feedState.feedType != FeedType.community)
+          IconButton(
+              onPressed: () {
+                HapticFeedback.mediumImpact();
+                triggerRefresh(context);
+              },
+              icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
         IconButton(
-            onPressed: () {
-              HapticFeedback.mediumImpact();
-              triggerRefresh(context);
-            },
-            icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
-        Container(
-          margin: const EdgeInsets.only(right: 8.0),
-          child: IconButton(
-            icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-            onPressed: () {
-              HapticFeedback.mediumImpact();
+          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+          onPressed: () {
+            HapticFeedback.mediumImpact();
 
-              showModalBottomSheet<void>(
-                showDragHandle: true,
-                context: context,
-                isScrollControlled: true,
-                builder: (builderContext) => SortPicker(
-                  title: l10n.sortOptions,
-                  onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                  previouslySelected: feedBloc.state.sortType,
-                ),
-              );
-            },
-          ),
+            showModalBottomSheet<void>(
+              showDragHandle: true,
+              context: context,
+              isScrollControlled: true,
+              builder: (builderContext) => SortPicker(
+                title: l10n.sortOptions,
+                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                previouslySelected: feedBloc.state.sortType,
+              ),
+            );
+          },
         ),
+        if (feedState.feedType == FeedType.community)
+          PopupMenuButton(
+            itemBuilder: (context) => [
+              PopupMenuItem(
+                onTap: () => triggerRefresh(context),
+                child: ListTile(
+                  dense: true,
+                  horizontalTitleGap: 5,
+                  leading: const Icon(Icons.refresh_rounded, size: 20),
+                  title: Text(l10n.refresh),
+                ),
+              ),
+              PopupMenuItem(
+                onTap: () async {
+                  final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                  bool isFavorite = _getFavoriteStatus(context);
+                  await toggleFavoriteCommunity(context, community, isFavorite);
+                },
+                child: ListTile(
+                  dense: true,
+                  horizontalTitleGap: 5,
+                  leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
+                  title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }
@@ -158,6 +186,13 @@ SubscribedType? _getSubscriptionStatus(BuildContext context) {
   }
 
   return anonymousSubscriptionsBloc.state.ids.contains(feedBloc.state.fullCommunityView?.communityView.community.id) ? SubscribedType.subscribed : SubscribedType.notSubscribed;
+}
+
+/// Checks whether the current community is a favorite of the current user
+bool _getFavoriteStatus(BuildContext context) {
+  final AccountState accountState = context.read<AccountBloc>().state;
+  final FeedBloc feedBloc = context.read<FeedBloc>();
+  return accountState.favorites.any((communityView) => communityView.community.id == feedBloc.state.fullCommunityView!.communityView.community.id);
 }
 
 void _onSubscribeIconPressed(BuildContext context) {

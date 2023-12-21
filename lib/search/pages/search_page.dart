@@ -68,6 +68,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   int _previousFocusSearchId = 0;
   final searchTextFieldFocus = FocusNode();
   int? _previousUserId;
+  int? _previousFavoritesCount;
 
   SearchType _currentSearchType = SearchType.communities;
   ListingType _currentFeedType = ListingType.all;
@@ -123,6 +124,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
               searchType: _getSearchTypeToUse(),
               communityId: _currentCommunityFilter,
               creatorId: _currentCreatorFilter,
+              favoriteCommunities: context.read<AccountBloc>().state.favorites,
             ));
       }
     }
@@ -171,11 +173,13 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
             // When account changes, that means our instance most likely changed, so reset search.
             if (state.status == AccountStatus.success &&
-                ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id)) {
+                    ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id) ||
+                state.favorites.length != _previousFavoritesCount) {
               _controller.clear();
-              context.read<SearchBloc>().add(ResetSearch());
+              if (context.mounted) context.read<SearchBloc>().add(ResetSearch());
               setState(() {});
               _previousUserId = activeProfile?.userId;
+              _previousFavoritesCount = state.favorites.length;
             }
           }),
           BlocListener<ThunderBloc, ThunderState>(
@@ -532,6 +536,26 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      if (context.read<AccountBloc>().state.favorites.isNotEmpty) ...[
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
+                          child: Text(
+                            l10n.favorites,
+                            style: theme.textTheme.titleLarge,
+                          ),
+                        ),
+                        ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: context.read<AccountBloc>().state.favorites.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            CommunityView communityView = context.read<AccountBloc>().state.favorites[index];
+                            final Set<int> currentSubscriptions = context.read<AnonymousSubscriptionsBloc>().state.ids;
+                            return _buildCommunityEntry(communityView, isUserLoggedIn, currentSubscriptions, indicateFavorites: false);
+                          },
+                        ),
+                        const SizedBox(height: 20),
+                      ],
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                         child: Text(
@@ -540,6 +564,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
                         ),
                       ),
                       ListView.builder(
+                        physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
                         itemCount: state.trendingCommunities!.length,
                         itemBuilder: (BuildContext context, int index) {
@@ -690,7 +715,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
     }
   }
 
-  Widget _buildCommunityEntry(CommunityView communityView, bool isUserLoggedIn, Set<int> currentSubscriptions) {
+  Widget _buildCommunityEntry(CommunityView communityView, bool isUserLoggedIn, Set<int> currentSubscriptions, {bool indicateFavorites = true}) {
     final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Tooltip(
@@ -716,6 +741,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           ),
           const SizedBox(width: 4),
           const Icon(Icons.people_rounded, size: 16.0),
+          if (indicateFavorites && _getFavoriteStatus(context, communityView.community)) ...const [
+            Text(' · '),
+            Icon(Icons.star_rounded, size: 15),
+          ]
         ]),
         trailing: IconButton(
           onPressed: () {
@@ -743,6 +772,11 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
         },
       ),
     );
+  }
+
+  bool _getFavoriteStatus(BuildContext context, Community community) {
+    final AccountState accountState = context.read<AccountBloc>().state;
+    return accountState.favorites.any((communityView) => communityView.community.id == community.id);
   }
 
   Widget _buildUserEntry(PersonView personView) {
@@ -932,7 +966,10 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             searchType: _getSearchTypeToUse(),
             communityId: _currentCommunityFilter,
             creatorId: _currentCreatorFilter,
+            favoriteCommunities: context.read<AccountBloc>().state.favorites,
           ));
+    } else {
+      context.read<SearchBloc>().add(ResetSearch());
     }
   }
 }

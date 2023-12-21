@@ -135,7 +135,14 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: searchResponse.communities,
+        communities: searchResponse.communities.toList()
+          ..sort(
+            (a, b) => event.favoriteCommunities?.any((c) => c.community.id == a.community.id) == true
+                ? -1
+                : event.favoriteCommunities?.any((c) => c.community.id == b.community.id) == true
+                    ? 1
+                    : b.counts.subscribers.compareTo(a.counts.subscribers),
+          ),
         users: searchResponse.users,
         comments: searchResponse.comments,
         posts: await parsePostViews(searchResponse.posts),

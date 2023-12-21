@@ -124,10 +124,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                             child: CommunityStatsList(communityView: communityView),
                           ),
                           const SidebarSectionHeader(value: "Moderators"),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
-                          ),
+                          CommunityModeratorList(getCommunityResponse: widget.getCommunityResponse!),
                           Container(
                             child: widget.getCommunityResponse!.site != null
                                 ? Column(
@@ -220,43 +217,44 @@ class CommunityModeratorList extends StatelessWidget {
     return Column(
       children: [
         for (CommunityModeratorView mods in getCommunityResponse.moderators)
-          GestureDetector(
-            onTap: () {
-              navigateToUserPage(context, userId: mods.moderator!.id);
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 8.0),
-              child: Row(
-                children: [
-                  UserAvatar(
-                    person: mods.moderator,
-                    radius: 20.0,
-                  ),
-                  const SizedBox(width: 16.0),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        mods.moderator!.displayName ?? mods.moderator!.name,
-                        overflow: TextOverflow.ellipsis,
-                        maxLines: 1,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
+          Material(
+            child: InkWell(
+              onTap: () => navigateToUserPage(context, userId: mods.moderator.id),
+              borderRadius: BorderRadius.circular(50),
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    UserAvatar(
+                      person: mods.moderator,
+                      radius: 20.0,
+                    ),
+                    const SizedBox(width: 16.0),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          mods.moderator!.displayName ?? mods.moderator!.name,
+                          overflow: TextOverflow.ellipsis,
+                          maxLines: 1,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
                         ),
-                      ),
-                      Text(
-                        generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: theme.colorScheme.onBackground.withOpacity(0.6),
-                          fontSize: 13,
+                        Text(
+                          generateUserFullName(context, mods.moderator.name, fetchInstanceNameFromUrl(mods.moderator.actorId)),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            color: theme.colorScheme.onBackground.withOpacity(0.6),
+                            fontSize: 13,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

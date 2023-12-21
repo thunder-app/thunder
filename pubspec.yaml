@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.7-4+32
+version: 0.2.7-5+33
 
 environment:
   sdk: "^3.0.0"
@@ -104,10 +104,7 @@ dependencies:
   collection: ^1.17.0
   fading_edge_scrollview: ^3.0.0
   flutter_keyboard_visibility: ^5.4.1
-  l10n_esperanto:
-    git:
-      url: https://github.com/deakjahn/l10n_esperanto.git
-      ref: 78e757337a1de881220086d26a083feeb780f609
+  l10n_esperanto: ^2.0.8
   sqflite_common_ffi_web: ^0.4.2
   jovial_svg: ^1.1.19
 

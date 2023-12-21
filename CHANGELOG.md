@@ -12,6 +12,8 @@
 - Added the ability to render SVGs in markdown bodies - contribution from @micahmo
 - Added Safari extension to open Lemmy links in Thunder
 - Added support for displaying comment origin instance - contribution from @ggichure.
+- Added ability to favorite communities on the drawer
+- Added ability to set keywords for filtering post titles/body
 
 ## Changed
 - Added new items to the Post and Comment actions sheet - contribution from @micahmo

@@ -7,6 +7,7 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:text_scroll/text_scroll.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/account/bloc/account_bloc.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -136,14 +137,22 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
     title: title,
     inputLabel: AppLocalizations.of(context)!.community,
     onSubmitted: onSubmitted,
-    getSuggestions: (query) => getCommunitySuggestions(query, emptySuggestions),
+    getSuggestions: (query) => getCommunitySuggestions(context, query, emptySuggestions),
     suggestionBuilder: (communityView) => buildCommunitySuggestionWidget(context, communityView),
   );
 }
 
-Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<CommunityView>? emptySuggestions) async {
+Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return emptySuggestions ?? const Iterable.empty();
+    return (emptySuggestions?.toList()
+          ?..sort(
+            (a, b) => _getFavoriteStatus(context, a.community)
+                ? -1
+                : _getFavoriteStatus(context, b.community)
+                    ? 1
+                    : b.counts.subscribers.compareTo(a.counts.subscribers),
+          )) ??
+        const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -153,7 +162,14 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(String query, Iterable<C
     limit: 20,
     sort: SortType.topAll,
   ));
-  return searchResponse.communities;
+  return searchResponse.communities.toList()
+    ..sort(
+      (a, b) => _getFavoriteStatus(context, a.community)
+          ? -1
+          : _getFavoriteStatus(context, b.community)
+              ? 1
+              : b.counts.subscribers.compareTo(a.counts.subscribers),
+    );
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -194,6 +210,10 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
                       _ => '',
                     }}'),
                   ],
+                  if (_getFavoriteStatus(context, payload.community)) ...const [
+                    Text(' · '),
+                    Icon(Icons.star_rounded, size: 15),
+                  ],
                 ],
               )
             ],
@@ -202,6 +222,12 @@ Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payloa
       ),
     ),
   );
+}
+
+/// Checks whether the current community is a favorite of the current user
+bool _getFavoriteStatus(BuildContext context, Community community) {
+  final AccountState accountState = context.read<AccountBloc>().state;
+  return accountState.favorites.any((communityView) => communityView.community.id == community.id);
 }
 
 /// Shows a dialog which allows typing/search for an instance
@@ -352,6 +378,37 @@ Widget buildLanguageSuggestionWidget(payload, {void Function(Language)? onSelect
   );
 }
 
+/// Shows a dialog which allows typing/search for a keyword
+void showKeywordInputDialog(BuildContext context, {required String title, required void Function(String) onKeywordSelected}) async {
+  final l10n = AppLocalizations.of(context)!;
+
+  Future<String?> onSubmitted({String? payload, String? value}) async {
+    String? formattedPayload = payload?.trim();
+    String? formattedValue = value?.trim();
+
+    if (formattedPayload != null && formattedPayload.isNotEmpty) {
+      onKeywordSelected(formattedPayload);
+      Navigator.of(context).pop();
+    } else if (formattedValue != null && formattedValue.isNotEmpty) {
+      onKeywordSelected(formattedValue);
+      Navigator.of(context).pop();
+    }
+
+    return null;
+  }
+
+  if (context.mounted) {
+    showInputDialog<String>(
+      context: context,
+      title: title,
+      inputLabel: l10n.addKeywordFilter,
+      onSubmitted: onSubmitted,
+      getSuggestions: (query) => [] as Future<Iterable<String>>,
+      suggestionBuilder: (payload) => Container(),
+    );
+  }
+}
+
 /// Shows a dialog which takes input and offers suggestions
 void showInputDialog<T>({
   required BuildContext context,
@@ -390,7 +447,7 @@ void showInputDialog<T>({
               textFieldConfiguration: TextFieldConfiguration(
                 controller: textController,
                 onChanged: (value) {
-                  setPrimaryButtonEnabled(value.isNotEmpty);
+                  setPrimaryButtonEnabled(value.trim().isNotEmpty);
                   setState(() => contentWidgetError = null);
                 },
                 autofocus: true,

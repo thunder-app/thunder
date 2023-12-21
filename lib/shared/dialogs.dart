@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 Future<T?> showThunderDialog<T>({
@@ -29,7 +31,14 @@ Future<T?> showThunderDialog<T>({
     return StatefulBuilder(
       builder: (context, setState) => AlertDialog(
         title: Text(title),
-        content: contentText != null ? Text(contentText) : contentWidgetBuilder!((enabled) => setState(() => primaryButtonEnabled = enabled)),
+        content: SizedBox(
+          width: min(MediaQuery.of(context).size.width, 700),
+          child: contentText != null
+              ? Text(contentText)
+              : contentWidgetBuilder!(
+                  (enabled) => setState(() => primaryButtonEnabled = enabled),
+                ),
+        ),
         actions: [
           if (secondaryButtonText != null)
             TextButton(
