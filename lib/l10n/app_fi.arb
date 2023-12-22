@@ -600,5 +600,13 @@
   "confirmMarkAllAsReadBody": "Oletko varma, että haluat merkitä kaikki viestit luetuiksi?",
   "@confirmMarkAllAsReadBody": {
     "description": "The body of the confirm mark all as read dialog"
-  }
+  },
+  "apply": "Käytä",
+  "@apply": {},
+  "addKeywordFilter": "Lisää avainsana",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "applied": "Käytössä",
+  "@applied": {}
 }
