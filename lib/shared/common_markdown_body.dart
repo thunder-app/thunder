@@ -331,12 +331,14 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
               padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 4.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  ScalableText(
-                    widget.title ?? l10n.spoiler,
-                    fontScale: state.contentFontSizeScale,
-                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                  Expanded(
+                    child: ScalableText(
+                      widget.title ?? l10n.spoiler,
+                      fontScale: state.contentFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
                   Icon(
                     expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
