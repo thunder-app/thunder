@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:html/parser.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
@@ -58,10 +59,14 @@ Future<void> pollRepliesAndShowNotifications() async {
   // For each message, generate a notification.
   // On Android, put them in the same group.
   for (final CommentReplyView commentReplyView in newReplies) {
+    // Format the comment body in a couple ways
+    final String htmlComment = markdownToHtml(commentReplyView.comment.content);
+    final String plaintextComment = parse(parse(htmlComment).body?.text).documentElement?.text ?? commentReplyView.comment.content;
+
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     // Configure Android-specific settings
     final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
-      '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n${markdownToHtml(commentReplyView.comment.content)}',
+      '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n$htmlComment',
       contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
       summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator),
       htmlFormatBigText: true,
@@ -83,7 +88,7 @@ Future<void> pollRepliesAndShowNotifications() async {
       // Title (username of sender)
       generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
       // Body (body of comment)
-      commentReplyView.comment.content,
+      plaintextComment,
       notificationDetails,
       payload: repliesGroupKey, // In the future, this could be a specific message ID for deep navigation
     );
