@@ -4,10 +4,12 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/utils/instance.dart';
+import 'package:markdown/markdown.dart';
 
 const String _inboxMessagesChannelId = 'inbox_messages';
 const String _inboxMessagesChannelName = 'Inbox Messages';
@@ -27,6 +29,8 @@ Future<void> pollRepliesAndShowNotifications() async {
   debugPrint('Thunder - Background fetch - Running notification poll');
 
   final SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+  final FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
+  final FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
 
   // We shouldn't even come here if the setting is disabled, but just in case, exit.
   if (prefs.getBool(LocalSettings.enableInboxNotifications.name) != true) return;
@@ -56,12 +60,19 @@ Future<void> pollRepliesAndShowNotifications() async {
   for (final CommentReplyView commentReplyView in newReplies) {
     final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     // Configure Android-specific settings
-    const AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
+    final BigTextStyleInformation bigTextStyleInformation = BigTextStyleInformation(
+      '${commentReplyView.post.name} · ${generateCommunityFullName(null, commentReplyView.community.name, fetchInstanceNameFromUrl(commentReplyView.community.actorId), communitySeparator: communitySeparator)}\n${markdownToHtml(commentReplyView.comment.content)}',
+      contentTitle: generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
+      summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator),
+      htmlFormatBigText: true,
+    );
+    final AndroidNotificationDetails androidNotificationDetails = AndroidNotificationDetails(
       _inboxMessagesChannelId,
       _inboxMessagesChannelName,
+      styleInformation: bigTextStyleInformation,
       groupKey: repliesGroupKey,
     );
-    const NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
+    final NotificationDetails notificationDetails = NotificationDetails(android: androidNotificationDetails);
 
     // Show the notification!
     await flutterLocalNotificationsPlugin.show(
@@ -70,7 +81,7 @@ Future<void> pollRepliesAndShowNotifications() async {
       // to avoid comment id collisions.
       commentReplyView.comment.id,
       // Title (username of sender)
-      '${commentReplyView.creator.name}@${fetchInstanceNameFromUrl(commentReplyView.creator.actorId)}',
+      generateUserFullName(null, commentReplyView.creator.name, fetchInstanceNameFromUrl(commentReplyView.creator.actorId), userSeparator: userSeparator),
       // Body (body of comment)
       commentReplyView.comment.content,
       notificationDetails,
@@ -80,7 +91,8 @@ Future<void> pollRepliesAndShowNotifications() async {
     // Create a summary notification for the group.
     // Note that it's ok to create this for every message, because it has a fixed ID,
     // so it will just get 'updated'.
-    final InboxStyleInformation inboxStyleInformationSummary = InboxStyleInformation([], contentTitle: '', summaryText: '${account.username}@${account.instance}');
+    final InboxStyleInformation inboxStyleInformationSummary =
+        InboxStyleInformation([], contentTitle: '', summaryText: generateUserFullName(null, account.username, account.instance, userSeparator: userSeparator));
     final AndroidNotificationDetails androidNotificationDetailsSummary = AndroidNotificationDetails(
       _inboxMessagesChannelId,
       _inboxMessagesChannelName,
