@@ -608,5 +608,21 @@
     "description": "Hint for text field to add keyword"
   },
   "applied": "Käytössä",
-  "@applied": {}
+  "@applied": {},
+  "communityFormat": "Yhteisön formaatti",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "combineCommentScoresLabel": "Yhdistä kommenttipisteet",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "commentSwipeGesturesHint": "Haluatko käyttää mielummin painikkeita? Ota ne käyttöön yleisten asetusten kommenttiosiossa.",
+  "@commentSwipeGesturesHint": {},
+  "commentPreview": "Näytä kommenttien esikatselu määritetyillä asetuksilla",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "combineNavAndFab": "Kelluva toimintopainike näytetään navigointipainikkeiden välissä.",
+  "@combineNavAndFab": {}
 }
