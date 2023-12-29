@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:math';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:extended_image/extended_image.dart';
@@ -13,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:thunder/shared/dialogs.dart';
 
 import 'package:thunder/shared/snackbar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -74,7 +76,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   Future<bool> _requestPermission() async {
     bool androidVersionBelow33 = false;
 
-    if (Platform.isAndroid) {
+    if (!kIsWeb && Platform.isAndroid) {
       androidVersionBelow33 = (await DeviceInfoPlugin().androidInfo).version.sdkInt <= 32;
     }
 
@@ -90,28 +92,22 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
       hasPhotosPermission = await Permission.photos.isGranted || await Permission.photos.isLimited;
     }
 
-    if (Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
+    if (!kIsWeb && Platform.isAndroid && androidVersionBelow33) return hasStoragePermission;
     return hasPhotosPermission;
   }
 
   /// Shows a dialog indicating that permissions have been denied, and must be granted in order to save image.
   void showPermissionDeniedDialog(BuildContext context) {
-    showDialog(
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+    showThunderDialog(
       context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Permission Denied'),
-          content: const Text('Thunder requires some permissions in order to save this image which has been denied.'),
-          actions: [
-            TextButton(
-              onPressed: () {
-                openAppSettings();
-              },
-              child: const Text('Open Settings'),
-            )
-          ],
-        );
+      title: l10n.permissionDenied,
+      contentText: l10n.permissionDeniedMessage,
+      onPrimaryButtonPressed: (_, __) {
+        openAppSettings();
       },
+      primaryButtonText: l10n.openSettings,
     );
   }
 
@@ -421,13 +417,13 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                         if (context.mounted) showPermissionDeniedDialog(context);
                                       }
 
-                                      if ((Platform.isAndroid || Platform.isIOS) && hasPermission) {
-                                        if (Platform.isAndroid) {
+                                      if (!kIsWeb && (Platform.isAndroid || Platform.isIOS) && hasPermission) {
+                                        if (!kIsWeb && Platform.isAndroid) {
                                           // Save image to [internal storage]/Pictures/Thunder
                                           GallerySaver.saveImage(file.path, albumName: "Thunder").then((value) {
                                             setState(() => downloaded = value as bool);
                                           });
-                                        } else if (Platform.isIOS) {
+                                        } else if (!kIsWeb && Platform.isIOS) {
                                           GallerySaver.saveImage(file.path, albumName: "Thunder").then((bool? value) {
                                             if (value == null || value == false) {
                                               // If the image cannot be saved to the Thunder album, then just save it to Photos
@@ -437,7 +433,7 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                             setState(() => downloaded = value ?? false);
                                           });
                                         }
-                                      } else if (Platform.isLinux || Platform.isWindows) {
+                                      } else if (!kIsWeb && Platform.isLinux || Platform.isWindows) {
                                         final filePath = '${(await getApplicationDocumentsDirectory()).path}/Thunder/${basename(file.path)}';
 
                                         File(filePath)

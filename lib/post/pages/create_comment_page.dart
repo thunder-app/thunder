@@ -7,9 +7,7 @@ import 'package:markdown_editable_textinput/markdown_buttons.dart';
 import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
-import 'package:thunder/core/enums/font_scale.dart';
 
-import 'package:thunder/core/models/comment_view_tree.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
@@ -17,6 +15,7 @@ import 'package:thunder/shared/common_markdown_body.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/media_view.dart';
 import 'package:thunder/shared/snackbar.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/user/widgets/user_indicator.dart';
 import 'package:thunder/utils/image.dart';
@@ -74,9 +73,18 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
 
   DraftComment newDraftComment = DraftComment();
 
+  bool isInInbox = false;
+
   @override
   void initState() {
     super.initState();
+
+    try {
+      BlocProvider.of<InboxBloc>(context); // Attempt to get inbox bloc
+      isInInbox = true;
+    } catch (e) {
+      isInInbox = false;
+    }
 
     _bodyFocusNode.requestFocus();
 
@@ -97,7 +105,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
     } else if (widget.commentView != null) {
       replyingToAuthor = widget.commentView?.creator.name;
       replyingToContent = widget.commentView?.comment.content;
-    } else if (widget.comment != null) {
+    } else if (isInInbox) {
       replyingToAuthor = widget.parentCommentAuthor;
       replyingToContent = widget.comment?.content;
     }
@@ -159,7 +167,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
             }
           },
         ),
-        if (widget.comment != null)
+        if (isInInbox)
           BlocListener<InboxBloc, InboxState>(
             listenWhen: (previous, current) {
               return previous.status != current.status;
@@ -219,7 +227,7 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                           return context.read<PostBloc>().add(EditCommentEvent(content: _bodyTextController.text, commentId: widget.commentView!.comment.id));
                         }
 
-                        if (widget.comment != null) {
+                        if (isInInbox) {
                           context.read<InboxBloc>().add(CreateInboxCommentReplyEvent(content: _bodyTextController.text, parentCommentId: widget.comment!.id, postId: widget.comment!.postId));
                         } else {
                           context.read<PostBloc>().add(CreateCommentEvent(
@@ -265,9 +273,9 @@ class _CreateCommentPageState extends State<CreateCommentPage> {
                                     children: [
                                       Padding(
                                         padding: const EdgeInsets.symmetric(vertical: 8.0),
-                                        child: Text(
+                                        child: ScalableText(
                                           widget.postView?.postView.post.name ?? '',
-                                          textScaleFactor: MediaQuery.of(context).textScaleFactor * thunderState.titleFontSizeScale.textScaleFactor,
+                                          fontScale: thunderState.titleFontSizeScale,
                                           style: theme.textTheme.titleMedium,
                                         ),
                                       ),

@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -77,6 +78,15 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     on<NavigateCommentEvent>(
       _navigateCommentEvent,
     );
+    on<StartCommentSearchEvent>(
+      _startCommentSearchEvent,
+    );
+    on<ContinueCommentSearchEvent>(
+      _continueCommentSearchEvent,
+    );
+    on<EndCommentSearchEvent>(
+      _endCommentSearchEvent,
+    );
     on<ReportCommentEvent>(
       _reportCommentEvent,
       transformer: throttleDroppable(throttleDuration),
@@ -104,14 +114,17 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
           GetPostResponse? getPostResponse;
 
-          if (event.postId != null) {
-            getPostResponse = await lemmy.run(GetPost(id: event.postId!, auth: account?.jwt)).timeout(timeout, onTimeout: () {
+          // Retrieve the full post for moderators and cross-posts
+          int? postId = event.postId ?? event.postView?.postView.post.id;
+          if (postId != null) {
+            getPostResponse = await lemmy.run(GetPost(id: postId, auth: account?.jwt)).timeout(timeout, onTimeout: () {
               throw Exception(AppLocalizations.of(GlobalContext.context)!.timeoutComments);
             });
           }
 
           PostViewMedia? postView = event.postView;
           List<CommunityModeratorView>? moderators;
+          List<PostView>? crossPosts;
 
           if (getPostResponse != null) {
             // Parse the posts and add in media information which is used elsewhere in the app
@@ -120,6 +133,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             postView = posts.first;
 
             moderators = getPostResponse.moderators;
+            crossPosts = getPostResponse.crossPosts;
           }
 
           // If we can't get mods from the post response, fallback to getting the whole community.
@@ -140,6 +154,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               postView: postView,
               communityId: postView?.postView.post.communityId,
               moderators: moderators,
+              crossPosts: crossPosts,
               selectedCommentPath: event.selectedCommentPath,
               selectedCommentId: event.selectedCommentId,
               newlyCreatedCommentId: event.newlyCreatedCommentId));
@@ -207,6 +222,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
   /// Event to fetch more comments from a post
   Future<void> _getPostCommentsEvent(GetPostCommentsEvent event, emit) async {
+    bool searchWasInProgress = state.status == PostStatus.searchInProgress;
+
     int attemptCount = 0;
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -258,7 +275,8 @@ class PostBloc extends Bloc<PostEvent, PostState> {
               state.copyWith(
                   selectedCommentId: null,
                   selectedCommentPath: null,
-                  status: PostStatus.success,
+                  newlyCreatedCommentId: state.newlyCreatedCommentId,
+                  status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
                   comments: commentTree,
                   commentResponseMap: responseMap,
                   commentPage: 1,
@@ -281,7 +299,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
             }
             return;
           }
-          emit(state.copyWith(status: PostStatus.refreshing));
+          emit(state.copyWith(status: PostStatus.refreshing, newlyCreatedCommentId: state.newlyCreatedCommentId));
 
           GetCommentsResponse getCommentsResponse = await lemmy
               .run(GetComments(
@@ -321,9 +339,10 @@ class PostBloc extends Bloc<PostEvent, PostState> {
           // We'll add in a edge case here to stop fetching comments after theres no more comments to be fetched
           return emit(state.copyWith(
             sortType: sortType,
-            status: PostStatus.success,
+            status: searchWasInProgress ? PostStatus.searchInProgress : PostStatus.success,
             selectedCommentPath: null,
             selectedCommentId: null,
+            newlyCreatedCommentId: state.newlyCreatedCommentId,
             comments: commentViewTree,
             commentResponseMap: state.commentResponseMap,
             commentPage: event.commentParentId != null ? 1 : state.commentPage + 1,
@@ -568,7 +587,7 @@ class PostBloc extends Bloc<PostEvent, PostState> {
 
       return emit(
           state.copyWith(status: PostStatus.success, comments: state.comments, moddingCommentId: -1, selectedCommentId: state.selectedCommentId, selectedCommentPath: state.selectedCommentPath));
-    } catch (e, s) {
+    } catch (e) {
       return emit(state.copyWith(status: PostStatus.failure, errorMessage: e.toString(), moddingCommentId: -1));
     }
   }
@@ -608,5 +627,88 @@ class PostBloc extends Bloc<PostEvent, PostState> {
     } else {
       return emit(state.copyWith(status: PostStatus.success, navigateCommentIndex: event.targetIndex, navigateCommentId: state.navigateCommentId + 1));
     }
+  }
+
+  Future<void> _startCommentSearchEvent(StartCommentSearchEvent event, Emitter<PostState> emit) async {
+    if (event.commentMatches.isEmpty) {
+      return;
+    }
+
+    // Find the parent comment of the match
+    Comment? parentComment = findParent(event.commentMatches.first);
+
+    return emit(state.copyWith(
+      status: PostStatus.searchInProgress,
+      postView: null,
+      newlyCreatedCommentId: event.commentMatches.first.id,
+      commentMatches: event.commentMatches,
+      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment.id)) + 1,
+      navigateCommentId: state.navigateCommentId + 1,
+    ));
+  }
+
+  Future<void> _continueCommentSearchEvent(ContinueCommentSearchEvent event, Emitter<PostState> emit) async {
+    if (state.commentMatches?.isNotEmpty != true) {
+      return;
+    }
+
+    int newSelectedCommentId = state.commentMatches!.first.id;
+    Comment? parentComment = findParent(state.commentMatches!.first);
+
+    // Try to select and navigate to the next match
+    Comment? existingSelectedComment = state.commentMatches!.firstWhereOrNull((c) => c.id == state.newlyCreatedCommentId);
+    if (state.newlyCreatedCommentId != null && existingSelectedComment != null) {
+      int index = state.commentMatches!.indexOf(existingSelectedComment);
+      if (index + 1 < state.commentMatches!.length && index + 1 >= 0) {
+        newSelectedCommentId = state.commentMatches![index + 1].id;
+
+        // Find the parent comment of the match
+        parentComment = findParent(state.commentMatches![index + 1]);
+      }
+    }
+
+    return emit(state.copyWith(
+      status: PostStatus.searchInProgress,
+      postView: null,
+      newlyCreatedCommentId: newSelectedCommentId,
+      navigateCommentIndex: parentComment == null ? null : state.comments.indexOf(state.comments.firstWhere((c) => c.commentView?.comment.id == parentComment!.id)) + 1,
+      navigateCommentId: state.navigateCommentId + 1,
+    ));
+  }
+
+  Future<void> _endCommentSearchEvent(EndCommentSearchEvent event, Emitter<PostState> emit) async {
+    return emit(state.copyWith(
+      status: PostStatus.success,
+      newlyCreatedCommentId: null,
+      commentMatches: null,
+    ));
+  }
+
+  /// Finds the parent [CommentViewTree] from the current [state]
+  /// which contains the given [comment] anywhere in its descendents.
+  Comment? findParent(Comment comment) {
+    /// Recursive function which checks if any child has the given [comment].
+    bool childrenContains(CommentViewTree commentViewTree, Comment comment) {
+      if (commentViewTree.replies.firstWhereOrNull((cvt) => cvt.commentView?.comment.id == comment.id) != null) {
+        return true;
+      } else {
+        for (CommentViewTree child in commentViewTree.replies) {
+          if (childrenContains(child, comment)) {
+            return true;
+          }
+        }
+      }
+
+      return false;
+    }
+
+    // Only iterate through top-level comments.
+    for (CommentViewTree commentViewTree in state.comments) {
+      if (commentViewTree.commentView!.comment.id == comment.id || childrenContains(commentViewTree, comment)) {
+        return commentViewTree.commentView!.comment;
+      }
+    }
+
+    return null;
   }
 }

@@ -13,8 +13,8 @@ import 'package:thunder/community/widgets/post_card_metadata.dart';
 import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
-import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/shared/media_view.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class PostCardViewComfortable extends StatelessWidget {
@@ -143,6 +143,7 @@ class PostCardViewComfortable extends StatelessWidget {
                       text: HtmlUnescape().convert(postViewMedia.postView.post.name),
                       style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
+                        fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                         color: postViewMedia.postView.post.featuredCommunity
                             ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                             : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
@@ -150,7 +151,7 @@ class PostCardViewComfortable extends StatelessWidget {
                     ),
                   ],
                 ),
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                textScaler: TextScaler.noScaling,
               ),
             ),
           if (postViewMedia.media.isNotEmpty && edgeToEdgeImages)
@@ -204,6 +205,7 @@ class PostCardViewComfortable extends StatelessWidget {
                         text: postViewMedia.postView.post.name,
                         style: theme.textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
+                          fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * state.titleFontSizeScale.textScaleFactor),
                           color: postViewMedia.postView.post.featuredCommunity
                               ? (indicateRead && postViewMedia.postView.read ? Colors.green.withOpacity(0.55) : Colors.green)
                               : (indicateRead && postViewMedia.postView.read ? theme.textTheme.bodyMedium?.color?.withOpacity(0.55) : null),
@@ -211,17 +213,17 @@ class PostCardViewComfortable extends StatelessWidget {
                       ),
                     ],
                   ),
-                  textScaleFactor: MediaQuery.of(context).textScaleFactor * textScaleFactor,
+                  textScaler: TextScaler.noScaling,
                 )),
           Visibility(
             visible: showTextContent && textContent.isNotEmpty,
             child: Padding(
               padding: const EdgeInsets.only(bottom: 6.0, left: 12.0, right: 12.0),
-              child: Text(
+              child: ScalableText(
                 textContent,
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                textScaleFactor: MediaQuery.of(context).textScaleFactor * state.contentFontSizeScale.textScaleFactor,
+                fontScale: state.contentFontSizeScale,
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: readColor,
                 ),
@@ -273,6 +275,8 @@ class PostCardViewComfortable extends StatelessWidget {
                         actionsToInclude: [
                           PostCardAction.visitInstance,
                           PostCardAction.visitProfile,
+                          PostCardAction.blockUser,
+                          PostCardAction.blockInstance,
                           PostCardAction.visitCommunity,
                           PostCardAction.blockCommunity,
                         ],

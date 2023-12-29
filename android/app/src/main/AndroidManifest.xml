@@ -54,19 +54,18 @@
               <category android:name="android.intent.category.DEFAULT" />
               <category android:name="android.intent.category.BROWSABLE" />
               <data android:scheme="https"/>
-               <!-- TODO(lemmy_server_domain_finder): Setup a script to update available lemmy domains  -->
-              <!-- Obtained from github.com/dessalines/jerboa/blob/main/app/src/main/AndroidManifest.xml-->
               <!--#AUTO_GEN_INSTANCE_LIST_DO_NOT_TOUCH#-->
               <data android:host="aussie.zone" />
+              <data android:host="awful.systems" />
               <data android:host="bakchodi.org" />
               <data android:host="beehaw.org" />
               <data android:host="burggit.moe" />
               <data android:host="dataterm.digital" />
               <data android:host="delraymisfitsboard.com" />
+              <data android:host="discuss.online" />
               <data android:host="discuss.tchncs.de" />
               <data android:host="exploding-heads.com" />
               <data android:host="feddit.ch" />
-              <data android:host="feddit.cl" />
               <data android:host="feddit.de" />
               <data android:host="feddit.dk" />
               <data android:host="feddit.it" />
@@ -97,10 +96,10 @@
               <data android:host="lemmy.zip" />
               <data android:host="lemmygrad.ml" />
               <data android:host="lemmynsfw.com" />
+              <data android:host="lemy.lol" />
               <data android:host="mander.xyz" />
               <data android:host="midwest.social" />
               <data android:host="monero.town" />
-              <data android:host="monyet.cc" />
               <data android:host="pawb.social" />
               <data android:host="programming.dev" />
               <data android:host="reddthat.com" />

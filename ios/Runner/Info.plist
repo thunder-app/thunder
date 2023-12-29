@@ -59,5 +59,19 @@
 		<!-- Security compliance -->
 		<key>ITSAppUsesNonExemptEncryption</key>
 		<false/>
+
+		<key>CFBundleURLTypes</key>
+		<array>
+			<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>com.hjiangsu.thunder</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>thunder</string>
+			</array>
+			</dict>
+		</array>
 	</dict>
 </plist>

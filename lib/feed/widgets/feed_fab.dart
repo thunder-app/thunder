@@ -21,7 +21,6 @@ import 'package:thunder/shared/gesture_fab.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:thunder/thunder/thunder_icons.dart';
 
 class FeedFAB extends StatelessWidget {
   const FeedFAB({super.key, this.heroTag});
@@ -276,22 +275,7 @@ class FeedFAB extends StatelessWidget {
       final ThunderState thunderState = context.read<ThunderBloc>().state;
       final bool reduceAnimations = thunderState.reduceAnimations;
 
-      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
-      DraftPost? newDraftPost;
-      DraftPost? previousDraftPost;
-      String draftId = '${LocalSettings.draftsCache.name}-${feedBloc.state.communityId}';
-      String? draftPostJson = prefs.getString(draftId);
-      if (draftPostJson != null) {
-        previousDraftPost = DraftPost.fromJson(jsonDecode(draftPostJson));
-      }
-      Timer timer = Timer.periodic(const Duration(seconds: 10), (Timer t) {
-        if (newDraftPost?.isNotEmpty == true) {
-          prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-        }
-      });
-
-      Navigator.of(context)
-          .push(
+      Navigator.of(context).push(
         SwipeablePageRoute(
           transitionDuration: reduceAnimations ? const Duration(milliseconds: 100) : null,
           canOnlySwipeFromEdge: true,
@@ -306,24 +290,11 @@ class FeedFAB extends StatelessWidget {
               child: CreatePostPage(
                 communityId: feedBloc.state.communityId,
                 communityView: feedBloc.state.fullCommunityView?.communityView,
-                previousDraftPost: previousDraftPost,
-                onUpdateDraft: (p) => newDraftPost = p,
               ),
             );
           },
         ),
-      )
-          .whenComplete(() async {
-        timer.cancel();
-
-        if (newDraftPost?.saveAsDraft == true && newDraftPost?.isNotEmpty == true) {
-          await Future.delayed(const Duration(milliseconds: 300));
-          showSnackbar(context, AppLocalizations.of(context)!.postSavedAsDraft);
-          prefs.setString(draftId, jsonEncode(newDraftPost!.toJson()));
-        } else {
-          prefs.remove(draftId);
-        }
-      });
+      );
     }
   }
 }

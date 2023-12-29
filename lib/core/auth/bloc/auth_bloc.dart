@@ -1,17 +1,27 @@
 import 'package:bloc/bloc.dart';
+import 'package:uuid/uuid.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:collection/collection.dart';
-import 'package:thunder/utils/error_messages.dart';
-import 'package:uuid/uuid.dart';
+import 'package:bloc_concurrency/bloc_concurrency.dart';
+import 'package:stream_transform/stream_transform.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+import 'package:thunder/utils/error_messages.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 
 part 'auth_event.dart';
 part 'auth_state.dart';
+
+const throttleDuration = Duration(milliseconds: 100);
+
+EventTransformer<E> throttleDroppable<E>(Duration duration) {
+  return (events, mapper) {
+    return droppable<E>().call(events.throttle(duration), mapper);
+  };
+}
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(const AuthState()) {
@@ -98,7 +108,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
         return emit(state.copyWith(status: AuthStatus.success, account: activeAccount, isLoggedIn: true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
       }
-    });
+    }, transformer: throttleDroppable(throttleDuration));
 
     /// This event should be triggered when the user logs in with a username/password
     on<LoginAttempt>((event, emit) async {
@@ -186,6 +196,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       bool downvotesEnabled = getSiteResponse.siteView.localSite.enableDownvotes;
 
       return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, downvotesEnabled: downvotesEnabled, getSiteResponse: getSiteResponse));
+    });
+
+    /// When any account setting synced with Lemmy is updated, re-fetch the instance information and preferences.
+    on<LemmyAccountSettingUpdated>((event, emit) async {
+      LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
+
+      // Check to see if there is an active, non-anonymous account
+      SharedPreferences prefs = (await UserPreferences.instance).sharedPreferences;
+      String? activeProfileId = prefs.getString('active_profile_id');
+      Account? account = (activeProfileId != null) ? await Account.fetchAccount(activeProfileId) : null;
+
+      GetSiteResponse getSiteResponse = await lemmy.run(GetSite(auth: account?.jwt));
+      return emit(state.copyWith(status: AuthStatus.success, account: account, isLoggedIn: activeProfileId?.isNotEmpty == true, getSiteResponse: getSiteResponse));
     });
   }
 }

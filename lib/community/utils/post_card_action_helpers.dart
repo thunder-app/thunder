@@ -10,14 +10,18 @@ import 'package:thunder/community/bloc/community_bloc.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
+import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
+import 'package:thunder/instance/bloc/instance_bloc.dart';
+import 'package:thunder/instance/enums/instance_action.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/shared/advanced_share_sheet.dart';
 import 'package:thunder/shared/picker_item.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
+import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
@@ -34,12 +38,14 @@ enum PostCardAction {
   sharePost,
   shareMedia,
   shareLink,
+  blockInstance,
   blockCommunity,
   upvote,
   downvote,
   save,
   toggleRead,
   share,
+  blockUser,
 }
 
 class ExtendedPostCardActions {
@@ -66,6 +72,17 @@ class ExtendedPostCardActions {
 
 final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
+    postCardAction: PostCardAction.visitProfile,
+    icon: Icons.person_search_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockUser,
+    icon: Icons.block,
+    label: AppLocalizations.of(GlobalContext.context)!.blockUser,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
     icon: Icons.home_work_rounded,
     label: AppLocalizations.of(GlobalContext.context)!.visitCommunity,
@@ -77,14 +94,15 @@ final List<ExtendedPostCardActions> postCardActionItems = [
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
-    postCardAction: PostCardAction.visitProfile,
-    icon: Icons.person_search_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
-  ),
-  ExtendedPostCardActions(
     postCardAction: PostCardAction.visitInstance,
     icon: Icons.language,
     label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.blockInstance,
+    icon: Icons.block_rounded,
+    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.sharePost,
@@ -153,7 +171,11 @@ void showPostActionBottomModalSheet(
   final bool useAdvancedShareSheet = context.read<ThunderBloc>().state.useAdvancedShareSheet;
 
   actionsToInclude ??= [];
-  final postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
+  List<ExtendedPostCardActions> postCardActionItemsToUse = postCardActionItems.where((extendedAction) => actionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
+
+  if (actionsToInclude.contains(PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
+    postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
+  }
 
   multiActionsToInclude ??= [];
   final multiPostCardActionItemsToUse = postCardActionItems.where((extendedAction) => multiActionsToInclude!.any((action) => extendedAction.postCardAction == action)).toList();
@@ -239,7 +261,7 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       navigateToUserPage(context, userId: postViewMedia.postView.post.creatorId);
       break;
     case PostCardAction.visitInstance:
-      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!);
+      navigateToInstancePage(context, instanceHost: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId)!, instanceId: postViewMedia.postView.community.instanceId);
       break;
     case PostCardAction.sharePost:
       Share.share(postViewMedia.postView.post.apId);
@@ -273,6 +295,14 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
     case PostCardAction.shareLink:
       if (postViewMedia.media.first.originalUrl != null) Share.share(postViewMedia.media.first.originalUrl!);
       break;
+    case PostCardAction.blockInstance:
+      context.read<InstanceBloc>().add(InstanceActionEvent(
+            instanceAction: InstanceAction.block,
+            instanceId: postViewMedia.postView.community.instanceId,
+            domain: fetchInstanceNameFromUrl(postViewMedia.postView.community.actorId),
+            value: true,
+          ));
+      break;
     case PostCardAction.blockCommunity:
       context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.block, communityId: postViewMedia.postView.community.id, value: true));
       break;
@@ -298,6 +328,9 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
                   postViewMedia,
                   actionsToInclude: [PostCardAction.sharePost, PostCardAction.shareMedia, PostCardAction.shareLink],
                 );
+      break;
+    case PostCardAction.blockUser:
+      context.read<UserBloc>().add(BlockUserEvent(personId: postViewMedia.postView.creator.id, blocked: true));
       break;
   }
 }

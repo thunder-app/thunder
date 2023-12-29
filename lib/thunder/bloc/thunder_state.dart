@@ -31,6 +31,8 @@ class ThunderState extends Equatable {
     this.disableFeedFab = false,
     this.showInAppUpdateNotification = false,
     this.scoreCounters = false,
+    this.userSeparator = FullNameSeparator.at,
+    this.communitySeparator = FullNameSeparator.dot,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -50,6 +52,9 @@ class ThunderState extends Equatable {
     this.showPostAuthor = false,
     this.dimReadPosts = true,
     this.useAdvancedShareSheet = true,
+    this.showCrossPosts = true,
+    this.keywordFilters = const [],
+    this.appLanguageCode,
 
     /// -------------------------- Post Page Related Settings --------------------------
     this.disablePostFabs = false,
@@ -58,6 +63,8 @@ class ThunderState extends Equatable {
     this.defaultCommentSortType = DEFAULT_COMMENT_SORT_TYPE,
     this.collapseParentCommentOnGesture = true,
     this.showCommentButtonActions = false,
+    this.commentShowUserInstance = false,
+    this.combineCommentScores = false,
     this.nestedCommentIndicatorStyle = NestedCommentIndicatorStyle.thick,
     this.nestedCommentIndicatorColor = NestedCommentIndicatorColor.colorful,
 
@@ -104,7 +111,8 @@ class ThunderState extends Equatable {
     this.postFabEnableChangeSort = true,
     this.postFabEnableReplyToPost = true,
     this.postFabEnableRefresh = true,
-    this.feedFabSinglePressAction = FeedFabAction.dismissRead,
+    this.postFabEnableSearch = true,
+    this.feedFabSinglePressAction = FeedFabAction.newPost,
     this.feedFabLongPressAction = FeedFabAction.openFab,
     this.postFabSinglePressAction = PostFabAction.replyToPost,
     this.postFabLongPressAction = PostFabAction.openFab,
@@ -147,6 +155,9 @@ class ThunderState extends Equatable {
   final bool markPostReadOnMediaView;
   final bool disableFeedFab;
   final bool showInAppUpdateNotification;
+  final String? appLanguageCode;
+  final FullNameSeparator userSeparator;
+  final FullNameSeparator communitySeparator;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -167,6 +178,8 @@ class ThunderState extends Equatable {
   final bool scoreCounters;
   final bool dimReadPosts;
   final bool useAdvancedShareSheet;
+  final bool showCrossPosts;
+  final List<String> keywordFilters;
 
   /// -------------------------- Post Page Related Settings --------------------------
   final bool disablePostFabs;
@@ -175,6 +188,8 @@ class ThunderState extends Equatable {
   final CommentSortType defaultCommentSortType;
   final bool collapseParentCommentOnGesture;
   final bool showCommentButtonActions;
+  final bool commentShowUserInstance;
+  final bool combineCommentScores;
   final NestedCommentIndicatorStyle nestedCommentIndicatorStyle;
   final NestedCommentIndicatorColor nestedCommentIndicatorColor;
 
@@ -226,6 +241,7 @@ class ThunderState extends Equatable {
   final bool postFabEnableChangeSort;
   final bool postFabEnableReplyToPost;
   final bool postFabEnableRefresh;
+  final bool postFabEnableSearch;
 
   final FeedFabAction feedFabSinglePressAction;
   final FeedFabAction feedFabLongPressAction;
@@ -273,6 +289,8 @@ class ThunderState extends Equatable {
     bool? markPostReadOnMediaView,
     bool? showInAppUpdateNotification,
     bool? scoreCounters,
+    FullNameSeparator? userSeparator,
+    FullNameSeparator? communitySeparator,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -292,12 +310,17 @@ class ThunderState extends Equatable {
     bool? showPostAuthor,
     bool? dimReadPosts,
     bool? useAdvancedShareSheet,
+    bool? showCrossPosts,
+    String? appLanguageCode,
+    List<String>? keywordFilters,
 
     /// -------------------------- Post Page Related Settings --------------------------
     // Comment Related Settings
     CommentSortType? defaultCommentSortType,
     bool? collapseParentCommentOnGesture,
     bool? showCommentButtonActions,
+    bool? commentShowUserInstance,
+    bool? combineCommentScores,
     NestedCommentIndicatorStyle? nestedCommentIndicatorStyle,
     NestedCommentIndicatorColor? nestedCommentIndicatorColor,
 
@@ -346,6 +369,7 @@ class ThunderState extends Equatable {
     bool? postFabEnableChangeSort,
     bool? postFabEnableReplyToPost,
     bool? postFabEnableRefresh,
+    bool? postFabEnableSearch,
     FeedFabAction? feedFabSinglePressAction,
     FeedFabAction? feedFabLongPressAction,
     PostFabAction? postFabSinglePressAction,
@@ -390,6 +414,9 @@ class ThunderState extends Equatable {
       disableFeedFab: disableFeedFab ?? this.disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
+      appLanguageCode: appLanguageCode ?? this.appLanguageCode,
+      userSeparator: userSeparator ?? this.userSeparator,
+      communitySeparator: communitySeparator ?? this.communitySeparator,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -409,6 +436,8 @@ class ThunderState extends Equatable {
       showPostAuthor: showPostAuthor ?? this.showPostAuthor,
       dimReadPosts: dimReadPosts ?? this.dimReadPosts,
       useAdvancedShareSheet: useAdvancedShareSheet ?? this.useAdvancedShareSheet,
+      showCrossPosts: showCrossPosts ?? this.showCrossPosts,
+      keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
       disablePostFabs: disablePostFabs ?? this.disablePostFabs,
@@ -417,6 +446,8 @@ class ThunderState extends Equatable {
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,
       collapseParentCommentOnGesture: collapseParentCommentOnGesture ?? this.collapseParentCommentOnGesture,
       showCommentButtonActions: showCommentButtonActions ?? this.showCommentButtonActions,
+      commentShowUserInstance: commentShowUserInstance ?? this.commentShowUserInstance,
+      combineCommentScores: combineCommentScores ?? this.combineCommentScores,
       nestedCommentIndicatorStyle: nestedCommentIndicatorStyle ?? this.nestedCommentIndicatorStyle,
       nestedCommentIndicatorColor: nestedCommentIndicatorColor ?? this.nestedCommentIndicatorColor,
 
@@ -467,6 +498,7 @@ class ThunderState extends Equatable {
       postFabEnableChangeSort: postFabEnableChangeSort ?? this.postFabEnableChangeSort,
       postFabEnableReplyToPost: postFabEnableReplyToPost ?? this.postFabEnableReplyToPost,
       postFabEnableRefresh: postFabEnableRefresh ?? this.postFabEnableRefresh,
+      postFabEnableSearch: postFabEnableSearch ?? this.postFabEnableSearch,
       feedFabSinglePressAction: feedFabSinglePressAction ?? this.feedFabSinglePressAction,
       feedFabLongPressAction: feedFabLongPressAction ?? this.feedFabLongPressAction,
       postFabSinglePressAction: postFabSinglePressAction ?? this.postFabSinglePressAction,
@@ -514,6 +546,8 @@ class ThunderState extends Equatable {
         markPostReadOnMediaView,
         disableFeedFab,
         showInAppUpdateNotification,
+        userSeparator,
+        communitySeparator,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         /// Compact Related Settings
@@ -533,6 +567,9 @@ class ThunderState extends Equatable {
         showPostAuthor,
         dimReadPosts,
         useAdvancedShareSheet,
+        showCrossPosts,
+        appLanguageCode,
+        keywordFilters,
 
         /// -------------------------- Post Page Related Settings --------------------------
         disablePostFabs,
@@ -541,6 +578,9 @@ class ThunderState extends Equatable {
         defaultCommentSortType,
         collapseParentCommentOnGesture,
         showCommentButtonActions,
+        commentShowUserInstance,
+        combineCommentScores,
+
         nestedCommentIndicatorStyle,
         nestedCommentIndicatorColor,
 
@@ -589,6 +629,7 @@ class ThunderState extends Equatable {
         postFabEnableChangeSort,
         postFabEnableReplyToPost,
         postFabEnableRefresh,
+        postFabEnableSearch,
         feedFabSinglePressAction,
         feedFabLongPressAction,
         postFabSinglePressAction,

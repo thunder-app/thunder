@@ -12,7 +12,6 @@ import 'package:thunder/post/enums/post_action.dart';
 
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
@@ -62,6 +61,7 @@ class LinkPreviewCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final ThunderState thunderState = context.read<ThunderBloc>().state;
 
     if ((mediaURL != null || originURL != null) && viewMode == ViewMode.comfortable) {
       return Semantics(
@@ -122,10 +122,13 @@ class LinkPreviewCard extends StatelessWidget {
                 Container(
                   alignment: Alignment.center,
                   padding: const EdgeInsets.fromLTRB(20, 20, 20, 50),
-                  child: Column(
+                  child: const Column(
                     children: [
-                      const Icon(Icons.warning_rounded, size: 55),
-                      Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                      Icon(Icons.warning_rounded, size: 55),
+                      Text(
+                        "NSFW - Tap to reveal",
+                        textScaler: TextScaler.linear(1.5),
+                      ),
                     ],
                   ),
                 ),
@@ -136,6 +139,7 @@ class LinkPreviewCard extends StatelessWidget {
                   child: InkWell(
                     splashColor: theme.colorScheme.primary.withOpacity(0.4),
                     onTap: () => triggerOnTap(context),
+                    onLongPress: originURL != null ? () => handleLinkLongPress(context, thunderState, originURL!, originURL) : null,
                     borderRadius: BorderRadius.circular((edgeToEdgeImages ? 0 : 12)),
                   ),
                 ),
@@ -256,9 +260,6 @@ class LinkPreviewCard extends StatelessWidget {
   }
 
   void triggerOnTap(BuildContext context) async {
-    final ThunderState state = context.read<ThunderBloc>().state;
-    final openInExternalBrowser = state.openInExternalBrowser;
-
     if (isUserLoggedIn && markPostReadOnMediaView) {
       // Mark post as read when on the feed page
       try {
@@ -296,7 +297,9 @@ class LinkPreviewCard extends StatelessWidget {
         }
       }
 
-      openLink(context, url: originURL!, openInExternalBrowser: openInExternalBrowser);
+      if (context.mounted) {
+        handleLink(context, url: originURL!);
+      }
     }
   }
 

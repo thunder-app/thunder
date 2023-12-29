@@ -17,3 +17,5 @@ const NestedCommentIndicatorColor DEFAULT_NESTED_COMMENT_INDICATOR_COLOR = Neste
 
 /// https://developer.android.com/reference/android/content/Intent#FLAG_ACTIVITY_NEW_TASK
 const int ANDROID_INTENT_FLAG_ACTIVITY_NEW_TASK = 268435456;
+
+const String ANDROID_INTENT_ACTION_VIEW = "android.intent.action.VIEW";

@@ -67,17 +67,17 @@ final RegExp username = RegExp(r'^@?(https?:\/\/)?((?:(?!\/u\/u).)*)@(.*)$');
 /// Otherwise, returns null.
 Future<String?> getLemmyUser(String text) async {
   final RegExpMatch? fullUsernameUrlMatch = fullUsernameUrl.firstMatch(text);
-  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4 && await isLemmyInstance(fullUsernameUrlMatch.group(4))) {
+  if (fullUsernameUrlMatch != null && fullUsernameUrlMatch.groupCount >= 4) {
     return '${fullUsernameUrlMatch.group(3)}@${fullUsernameUrlMatch.group(4)}';
   }
 
   final RegExpMatch? shortUsernameUrlMatch = shortUsernameUrl.firstMatch(text);
-  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3 && await isLemmyInstance(shortUsernameUrlMatch.group(2))) {
+  if (shortUsernameUrlMatch != null && shortUsernameUrlMatch.groupCount >= 3) {
     return '${shortUsernameUrlMatch.group(3)}@${shortUsernameUrlMatch.group(2)}';
   }
 
   final RegExpMatch? usernameMatch = username.firstMatch(text);
-  if (usernameMatch != null && usernameMatch.groupCount >= 3 && await isLemmyInstance(usernameMatch.group(3))) {
+  if (usernameMatch != null && usernameMatch.groupCount >= 3) {
     return '${usernameMatch.group(2)}@${usernameMatch.group(3)}';
   }
 
@@ -136,24 +136,29 @@ Future<int?> getLemmyCommentId(String text) async {
   return null;
 }
 
-class GetInstanceIconResponse {
-  final String? icon;
+class GetInstanceInfoResponse {
   final bool success;
+  final String? icon;
+  final String? version;
 
-  const GetInstanceIconResponse({required this.success, this.icon});
+  const GetInstanceInfoResponse({required this.success, this.icon, this.version});
 }
 
-Future<GetInstanceIconResponse> getInstanceIcon(String? url) async {
+Future<GetInstanceInfoResponse> getInstanceInfo(String? url) async {
   if (url?.isEmpty ?? true) {
-    return const GetInstanceIconResponse(success: false);
+    return const GetInstanceInfoResponse(success: false);
   }
 
   try {
     final site = await LemmyApiV3(url!).run(const GetSite()).timeout(const Duration(seconds: 5));
-    return GetInstanceIconResponse(success: true, icon: site.siteView?.site.icon);
+    return GetInstanceInfoResponse(
+      success: true,
+      icon: site.siteView.site.icon,
+      version: site.version,
+    );
   } catch (e) {
     // Bad instances will throw an exception, so no icon
-    return const GetInstanceIconResponse(success: false);
+    return const GetInstanceInfoResponse(success: false);
   }
 }
 

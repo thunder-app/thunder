@@ -177,144 +177,173 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                 context.pop();
                               },
                         borderRadius: BorderRadius.circular(50),
-                        child: ListTile(
-                          leading: Stack(
-                            children: [
-                              AnimatedCrossFade(
-                                crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                duration: const Duration(milliseconds: 500),
-                                firstChild: const SizedBox(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
-                                    child: Icon(
-                                      Icons.person,
-                                    ),
-                                  ),
-                                ),
-                                secondChild: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
-                                  maxRadius: 20,
-                                ),
-                              ),
-                              // This widget creates a slight border around the status indicator
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: SizedBox(
-                                  width: 12,
-                                  height: 12,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: currentAccountId == accounts![index].account.id ? selectedColor : null,
-                                  ),
-                                ),
-                              ),
-                              // This is the status indicator
-                              Positioned(
-                                right: 1,
-                                bottom: 1,
-                                child: AnimatedOpacity(
-                                  opacity: accounts![index].alive == null ? 0 : 1,
+                        child: AnimatedSize(
+                          duration: const Duration(milliseconds: 250),
+                          child: ListTile(
+                            leading: Stack(
+                              children: [
+                                AnimatedCrossFade(
+                                  crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                                   duration: const Duration(milliseconds: 500),
-                                  child: Icon(
-                                    accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
-                                    size: 10,
-                                    color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                                  firstChild: const SizedBox(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                      child: Icon(
+                                        Icons.person,
+                                      ),
+                                    ),
+                                  ),
+                                  secondChild: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
+                                    maxRadius: 20,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          title: Text(
-                            accounts![index].account.username ?? 'N/A',
-                            style: theme.textTheme.titleMedium?.copyWith(),
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
-                              AnimatedOpacity(
-                                opacity: accounts![index].latency == null ? 0 : 1,
-                                duration: const Duration(milliseconds: 500),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      '•',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                      ),
+                                // This widget creates a slight border around the status indicator
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                                     ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      '${accounts![index].latency?.inMilliseconds}ms',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
-                              ? (currentAccountId == accounts![index].account.id)
-                                  ? IconButton(
-                                      icon: loggingOutId == accounts![index].account.id
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(),
-                                            )
-                                          : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
-                                      onPressed: () async {
-                                        if (await showLogOutDialog(context)) {
+                                // This is the status indicator
+                                Positioned(
+                                  right: 1,
+                                  bottom: 1,
+                                  child: AnimatedOpacity(
+                                    opacity: accounts![index].alive == null ? 0 : 1,
+                                    duration: const Duration(milliseconds: 500),
+                                    child: Icon(
+                                      accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                      size: 10,
+                                      color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            title: Text(
+                              accounts![index].account.username ?? 'N/A',
+                              style: theme.textTheme.titleMedium?.copyWith(),
+                            ),
+                            subtitle: Wrap(
+                              children: [
+                                Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+                                AnimatedSize(
+                                  duration: const Duration(milliseconds: 250),
+                                  child: accounts![index].version == null
+                                      ? const SizedBox(height: 20, width: 0)
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '•',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              'v${accounts![index].version}',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                                AnimatedSize(
+                                  duration: const Duration(milliseconds: 250),
+                                  child: accounts![index].latency == null
+                                      ? const SizedBox(height: 20, width: 0)
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '•',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '${accounts![index].latency?.inMilliseconds}ms',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ],
+                            ),
+                            trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
+                                ? (currentAccountId == accounts![index].account.id)
+                                    ? IconButton(
+                                        icon: loggingOutId == accounts![index].account.id
+                                            ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: CircularProgressIndicator(),
+                                              )
+                                            : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
+                                        onPressed: () async {
+                                          if (await showLogOutDialog(context)) {
+                                            setState(() => loggingOutId = accounts![index].account.id);
+
+                                            await Future.delayed(const Duration(milliseconds: 1000), () {
+                                              if ((anonymousInstances?.length ?? 0) > 0) {
+                                                context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
+                                                context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.last.instance));
+                                              } else {
+                                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
+                                              }
+
+                                              setState(() {
+                                                accounts = null;
+                                                loggingOutId = null;
+                                              });
+                                            });
+                                          }
+                                        },
+                                      )
+                                    : IconButton(
+                                        icon: loggingOutId == accounts![index].account.id
+                                            ? const SizedBox(
+                                                height: 20,
+                                                width: 20,
+                                                child: CircularProgressIndicator(),
+                                              )
+                                            : Icon(
+                                                Icons.delete,
+                                                semanticLabel: AppLocalizations.of(context)!.removeAccount,
+                                              ),
+                                        onPressed: () async {
+                                          context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
+
                                           setState(() => loggingOutId = accounts![index].account.id);
 
-                                          await Future.delayed(const Duration(milliseconds: 1000), () {
-                                            if ((anonymousInstances?.length ?? 0) > 0) {
-                                              context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                              context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.last.instance));
-                                            } else {
-                                              context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
-                                            }
-
-                                            setState(() {
-                                              accounts = null;
-                                              loggingOutId = null;
+                                          if (currentAccountId != null) {
+                                            await Future.delayed(const Duration(milliseconds: 1000), () {
+                                              context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
                                             });
+                                          }
+
+                                          setState(() {
+                                            accounts = null;
+                                            loggingOutId = null;
                                           });
-                                        }
-                                      },
-                                    )
-                                  : IconButton(
-                                      icon: loggingOutId == accounts![index].account.id
-                                          ? const SizedBox(
-                                              height: 20,
-                                              width: 20,
-                                              child: CircularProgressIndicator(),
-                                            )
-                                          : Icon(
-                                              Icons.delete,
-                                              semanticLabel: AppLocalizations.of(context)!.removeAccount,
-                                            ),
-                                      onPressed: () async {
-                                        context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
-
-                                        setState(() => loggingOutId = accounts![index].account.id);
-
-                                        if (currentAccountId != null) {
-                                          await Future.delayed(const Duration(milliseconds: 1000), () {
-                                            context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
-                                          });
-                                        }
-
-                                        setState(() {
-                                          accounts = null;
-                                          loggingOutId = null;
-                                        });
-                                      })
-                              : null,
+                                        })
+                                : null,
+                          ),
                         ),
                       ),
                     ),
@@ -330,131 +359,160 @@ class _ProfileSelectState extends State<ProfileSelect> {
                         onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
                             ? null
                             : () async {
-                                context.read<AuthBloc>().add(LogOutOfAllAccounts());
+                                context.read<AuthBloc>().add(const LogOutOfAllAccounts());
                                 context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
                                 context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![realIndex].instance));
                                 context.pop();
                               },
                         borderRadius: BorderRadius.circular(50),
-                        child: ListTile(
-                          leading: Stack(
-                            children: [
-                              AnimatedCrossFade(
-                                crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                duration: const Duration(milliseconds: 500),
-                                firstChild: const SizedBox(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
-                                    child: Icon(
-                                      Icons.language,
-                                    ),
-                                  ),
-                                ),
-                                secondChild: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  foregroundImage: anonymousInstances![realIndex].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![realIndex].instanceIcon!),
-                                  maxRadius: 20,
-                                ),
-                              ),
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: SizedBox(
-                                  width: 12,
-                                  height: 12,
-                                  child: Material(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
-                                  ),
-                                ),
-                              ),
-                              // This is the status indicator
-                              Positioned(
-                                right: 1,
-                                bottom: 1,
-                                child: AnimatedOpacity(
-                                  opacity: anonymousInstances![realIndex].alive == null ? 0 : 1,
+                        child: AnimatedSize(
+                          duration: const Duration(milliseconds: 250),
+                          child: ListTile(
+                            leading: Stack(
+                              children: [
+                                AnimatedCrossFade(
+                                  crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
                                   duration: const Duration(milliseconds: 500),
-                                  child: Icon(
-                                    anonymousInstances![realIndex].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
-                                    size: 10,
-                                    color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![realIndex].alive == true ? Colors.green : Colors.red),
+                                  firstChild: const SizedBox(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                      child: Icon(
+                                        Icons.language,
+                                      ),
+                                    ),
+                                  ),
+                                  secondChild: CircleAvatar(
+                                    backgroundColor: Colors.transparent,
+                                    foregroundImage: anonymousInstances![realIndex].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![realIndex].instanceIcon!),
+                                    maxRadius: 20,
                                   ),
                                 ),
-                              ),
-                            ],
-                          ),
-                          title: Row(
-                            children: [
-                              const Icon(
-                                Icons.person_off_rounded,
-                                size: 15,
-                              ),
-                              const SizedBox(width: 5),
-                              Text(
-                                AppLocalizations.of(context)!.anonymous,
-                                style: theme.textTheme.titleMedium?.copyWith(),
-                              ),
-                            ],
-                          ),
-                          subtitle: Row(
-                            children: [
-                              Text(anonymousInstances![realIndex].instance),
-                              AnimatedOpacity(
-                                opacity: anonymousInstances![realIndex].latency == null ? 0 : 1,
-                                duration: const Duration(milliseconds: 500),
-                                child: Row(
-                                  children: [
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      '•',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                      ),
+                                Positioned(
+                                  right: 0,
+                                  bottom: 0,
+                                  child: SizedBox(
+                                    width: 12,
+                                    height: 12,
+                                    child: Material(
+                                      borderRadius: BorderRadius.circular(10),
+                                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                                     ),
-                                    const SizedBox(width: 5),
-                                    Text(
-                                      '${anonymousInstances![realIndex].latency?.inMilliseconds}ms',
-                                      style: TextStyle(
-                                        color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                      ),
-                                    ),
-                                  ],
+                                  ),
                                 ),
-                              ),
-                            ],
+                                // This is the status indicator
+                                Positioned(
+                                  right: 1,
+                                  bottom: 1,
+                                  child: AnimatedOpacity(
+                                    opacity: anonymousInstances![realIndex].alive == null ? 0 : 1,
+                                    duration: const Duration(milliseconds: 500),
+                                    child: Icon(
+                                      anonymousInstances![realIndex].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                      size: 10,
+                                      color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![realIndex].alive == true ? Colors.green : Colors.red),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            title: Row(
+                              children: [
+                                const Icon(
+                                  Icons.person_off_rounded,
+                                  size: 15,
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  AppLocalizations.of(context)!.anonymous,
+                                  style: theme.textTheme.titleMedium?.copyWith(),
+                                ),
+                              ],
+                            ),
+                            subtitle: Wrap(
+                              children: [
+                                Text(anonymousInstances![realIndex].instance),
+                                AnimatedSize(
+                                  duration: const Duration(milliseconds: 250),
+                                  child: anonymousInstances![realIndex].version == null
+                                      ? const SizedBox(height: 20, width: 0)
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '•',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              'v${anonymousInstances![realIndex].version}',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                                AnimatedSize(
+                                  duration: const Duration(milliseconds: 250),
+                                  child: anonymousInstances![realIndex].latency == null
+                                      ? const SizedBox(height: 20, width: 0)
+                                      : Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '•',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                            const SizedBox(width: 5),
+                                            Text(
+                                              '${anonymousInstances![realIndex].latency?.inMilliseconds}ms',
+                                              style: TextStyle(
+                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                ),
+                              ],
+                            ),
+                            trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
+                                ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
+                                    ? IconButton(
+                                        icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
+                                        onPressed: () async {
+                                          context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
+
+                                          if (anonymousInstances!.length > 1) {
+                                            context
+                                                .read<ThunderBloc>()
+                                                .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
+                                            context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
+                                          } else {
+                                            context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
+                                          }
+
+                                          setState(() => anonymousInstances = null);
+                                        },
+                                      )
+                                    : IconButton(
+                                        icon: Icon(
+                                          Icons.delete,
+                                          semanticLabel: AppLocalizations.of(context)!.removeInstance,
+                                        ),
+                                        onPressed: () async {
+                                          context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
+                                          setState(() {
+                                            anonymousInstances = null;
+                                          });
+                                        })
+                                : null,
                           ),
-                          trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                              ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
-                                  ? IconButton(
-                                      icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
-                                      onPressed: () async {
-                                        context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
-
-                                        if (anonymousInstances!.length > 1) {
-                                          context
-                                              .read<ThunderBloc>()
-                                              .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
-                                          context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
-                                        } else {
-                                          context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
-                                        }
-
-                                        setState(() => anonymousInstances = null);
-                                      },
-                                    )
-                                  : IconButton(
-                                      icon: Icon(
-                                        Icons.delete,
-                                        semanticLabel: AppLocalizations.of(context)!.removeInstance,
-                                      ),
-                                      onPressed: () async {
-                                        context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
-                                        setState(() {
-                                          anonymousInstances = null;
-                                        });
-                                      })
-                              : null,
                         ),
                       ),
                     ),
@@ -477,21 +535,22 @@ class _ProfileSelectState extends State<ProfileSelect> {
     })).timeout(const Duration(seconds: 5));
 
     // Intentionally don't await these here
-    fetchInstanceIcons(accountsExtended);
+    fetchInstanceInfo(accountsExtended);
     pingInstances(accountsExtended);
 
     setState(() => this.accounts = accountsExtended);
   }
 
-  Future<void> fetchInstanceIcons(List<AccountExtended> accountsExtended) async {
+  Future<void> fetchInstanceInfo(List<AccountExtended> accountsExtended) async {
     accountsExtended.forEach((account) async {
-      final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(account.instance).timeout(
+      final GetInstanceInfoResponse instanceinfoResponse = await getInstanceInfo(account.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const GetInstanceIconResponse(success: false),
+        onTimeout: () => const GetInstanceInfoResponse(success: false),
       );
       setState(() {
-        account.instanceIcon = instanceIconResponse.icon;
-        account.alive = instanceIconResponse.success;
+        account.instanceIcon = instanceinfoResponse.icon;
+        account.version = instanceinfoResponse.version;
+        account.alive = instanceinfoResponse.success;
       });
     });
   }
@@ -512,21 +571,22 @@ class _ProfileSelectState extends State<ProfileSelect> {
   void fetchAnonymousInstances() {
     final List<AnonymousInstanceExtended> anonymousInstances = context.read<ThunderBloc>().state.anonymousInstances.map((instance) => AnonymousInstanceExtended(instance: instance)).toList();
 
-    fetchAnonymousInstanceIcons(anonymousInstances);
+    fetchAnonymousInstanceInfo(anonymousInstances);
     pingAnonymousInstances(anonymousInstances);
 
     setState(() => this.anonymousInstances = anonymousInstances);
   }
 
-  Future<void> fetchAnonymousInstanceIcons(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
+  Future<void> fetchAnonymousInstanceInfo(List<AnonymousInstanceExtended> anonymousInstancesExtended) async {
     anonymousInstancesExtended.forEach((anonymousInstance) async {
-      final GetInstanceIconResponse instanceIconResponse = await getInstanceIcon(anonymousInstance.instance).timeout(
+      final GetInstanceInfoResponse instanceInfoResponse = await getInstanceInfo(anonymousInstance.instance).timeout(
         const Duration(seconds: 5),
-        onTimeout: () => const GetInstanceIconResponse(success: false),
+        onTimeout: () => const GetInstanceInfoResponse(success: false),
       );
       setState(() {
-        anonymousInstance.instanceIcon = instanceIconResponse.icon;
-        anonymousInstance.alive = instanceIconResponse.success;
+        anonymousInstance.instanceIcon = instanceInfoResponse.icon;
+        anonymousInstance.version = instanceInfoResponse.version;
+        anonymousInstance.alive = instanceInfoResponse.success;
       });
     });
   }
@@ -548,6 +608,7 @@ class AccountExtended {
   final Account account;
   String? instance;
   String? instanceIcon;
+  String? version;
   Duration? latency;
   bool? alive;
 
@@ -558,6 +619,7 @@ class AccountExtended {
 class AnonymousInstanceExtended {
   String instance;
   String? instanceIcon;
+  String? version;
   Duration? latency;
   bool? alive;
 

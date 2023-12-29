@@ -6,6 +6,7 @@ import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugins.GeneratedPluginRegistrant
 import android.os.Bundle
+import io.flutter.plugin.common.MethodChannel
 
 class MainActivity: FlutterActivity() {
     override fun configureFlutterEngine(@NonNull flutterEngine: FlutterEngine) {
@@ -33,5 +34,22 @@ class MainActivity: FlutterActivity() {
             startActivity(intent);
         }
         super.onCreate(savedInstanceState)
+
+        var binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger;
+        if (binaryMessenger != null) {
+            val channel = MethodChannel(binaryMessenger!!, "com.hjiangsu.thunder/method_channel");
+            channel.invokeMethod("set_intent", intent.action.toString());
+        }
     }
+
+    override fun onNewIntent(newIntent: Intent) { 
+        var binaryMessenger = flutterEngine?.dartExecutor?.binaryMessenger;
+        if (binaryMessenger != null) {
+            val channel = MethodChannel(binaryMessenger!!, "com.hjiangsu.thunder/method_channel");
+            channel.invokeMethod("set_intent", newIntent.action.toString());
+        }
+
+        super.onNewIntent(newIntent);
+   }
+
 }

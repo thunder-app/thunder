@@ -10,10 +10,8 @@ import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
 
-import 'package:thunder/utils/image.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
-import 'package:thunder/community/bloc/community_bloc_old.dart';
 import 'package:thunder/core/enums/media_type.dart';
 import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
@@ -151,7 +149,11 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
               child: Column(
                 children: [
                   Icon(Icons.warning_rounded, size: widget.viewMode != ViewMode.compact ? 55 : 30),
-                  if (widget.viewMode != ViewMode.compact) Text("NSFW - Tap to reveal", textScaleFactor: MediaQuery.of(context).textScaleFactor * 1.5),
+                  if (widget.viewMode != ViewMode.compact)
+                    const Text(
+                      "NSFW - Tap to reveal",
+                      textScaler: TextScaler.linear(1.5),
+                    ),
                 ],
               ),
             ),
@@ -174,9 +176,10 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                     // Mark post as read when on the user page
                     try {
                       UserBloc userBloc = BlocProvider.of<UserBloc>(context);
-                      userBloc.add(MarkUserPostAsReadEvent(postId: postId!, read: true));
+                      userBloc.add(MarkUserPostAsReadEvent(postId: postId, read: true));
                     } catch (e) {}
                   }
+                  // TODO: This could be refactored eventually
                   Navigator.of(context).push(
                     PageRouteBuilder(
                       opaque: false,
@@ -210,9 +213,6 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
 
   Widget previewImage(BuildContext context) {
     final theme = Theme.of(context);
-    final ThunderState state = context.read<ThunderBloc>().state;
-
-    final openInExternalBrowser = state.openInExternalBrowser;
 
     double? height = widget.viewMode == ViewMode.compact ? 75 : (widget.showFullHeightImages ? widget.postView!.media.first.height : 150);
     double width = widget.viewMode == ViewMode.compact ? 75 : MediaQuery.of(context).size.width - (widget.edgeToEdgeImages ? 0 : 24);
@@ -286,7 +286,7 @@ class _MediaViewState extends State<MediaView> with SingleTickerProviderStateMix
                       InkWell(
                         onTap: () {
                           if (widget.post?.url != null) {
-                            openLink(context, url: widget.post!.url!, openInExternalBrowser: openInExternalBrowser);
+                            handleLink(context, url: widget.post!.url!);
                           }
                         },
                       ),

@@ -4,13 +4,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 
-import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_actions.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/models/comment_view_tree.dart';
+import 'package:thunder/shared/text/scalable_text.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import '../../shared/comment_content.dart';
 import '../utils/comment_action_helpers.dart';
@@ -420,11 +420,11 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                                               ),
                                             ),
                                             padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
-                                            child: Text(
+                                            child: ScalableText(
                                               widget.commentViewTree.commentView!.counts.childCount == 1
                                                   ? AppLocalizations.of(context)!.loadMoreSingular(widget.commentViewTree.commentView!.counts.childCount)
                                                   : AppLocalizations.of(context)!.loadMorePlural(widget.commentViewTree.commentView!.counts.childCount),
-                                              textScaleFactor: MediaQuery.of(context).textScaleFactor * state.commentFontSizeScale.textScaleFactor,
+                                              fontScale: state.commentFontSizeScale,
                                               style: theme.textTheme.bodyMedium?.copyWith(
                                                 color: theme.textTheme.bodyMedium?.color?.withOpacity(0.5),
                                               ),
@@ -446,6 +446,7 @@ class _CommentCardState extends State<CommentCard> with SingleTickerProviderStat
                           )
                         : ListView.builder(
                             // addSemanticIndexes: false,
+                            padding: EdgeInsets.zero,
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (context, index) => CommentCard(
