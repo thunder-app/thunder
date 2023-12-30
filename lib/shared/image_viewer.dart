@@ -112,7 +112,6 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   }
 
   Future<void> getImageSize(String imageUrl, context) async {
-    retrieveImageDimensions(imageUrl);
     Size decodedImage = await retrieveImageDimensions(imageUrl);
 
     setState(() {
@@ -127,7 +126,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    getImageSize(widget.url!, context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getImageSize(widget.url!, context);
+    });
   }
 
   @override
