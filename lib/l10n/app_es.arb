@@ -900,5 +900,93 @@
   "commentShowUserInstance": "Mostrar instancia de usuario",
   "@commentShowUserInstance": {
     "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "confirmMarkAllAsReadTitle": "¿Marcar todo como leído?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "communityFormat": "Formato de la comunidad",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "addToFavorites": "Añadir a favoritos",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "noKeywordFilters": "No se han añadido filtros de palabras clave",
+  "@noKeywordFilters": {
+    "description": "Message for no keywords added"
+  },
+  "noSubscriptions": "Sin suscripciones",
+  "@noSubscriptions": {
+    "description": "Message for no subscriptions on the drawer"
+  },
+  "keywordFilterDescription": "Filtra los mensajes que contienen palabras clave en el título o en el cuerpo",
+  "@keywordFilterDescription": {
+    "description": "Description of keyword filter settings"
+  },
+  "confirmLogOutTitle": "¿Cerrar sesión?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "advanced": "Avanzado",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "addKeywordFilter": "Añadir palabra clave",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "keywordFilters": "Filtros por palabra clave",
+  "@keywordFilters": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "removeFromFavorites": "Eliminar de favoritos",
+  "@removeFromFavorites": {
+    "description": "Action to remove a community in drawer from favorites"
+  },
+  "noFavoritedCommunities": "Ninguna comunidad favorita",
+  "@noFavoritedCommunities": {
+    "description": "Message for no favorited communities on the drawer"
+  },
+  "removeKeywordFilter": "Eliminar palabra clave",
+  "@removeKeywordFilter": {
+    "description": "Title for dialig to remove keyword"
+  },
+  "confirmLogOutBody": "¿Seguro que quieres cerrar la sesión?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "favorites": "Favoritos",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "permissionDeniedMessage": "Thunder requiere algunos permisos para guardar esta imagen que han sido denegados.",
+  "@permissionDeniedMessage": {
+    "description": "Explanation for error when user denies OS permissions"
+  },
+  "permissionDenied": "Permiso denegado",
+  "@permissionDenied": {
+    "description": "Title for error when user denies OS permissions"
+  },
+  "openSettings": "Abrir la configuración",
+  "@openSettings": {
+    "description": "Prompt for the user to open system settings"
+  },
+  "removeKeyword": "¿Quitar \"{keyword}\"?",
+  "@removeKeyword": {
+    "description": "Description of removing a keyword"
+  },
+  "userFormat": "Formato del usuario",
+  "@userFormat": {
+    "description": "Setting for user full name format"
+  },
+  "markAllAsRead": "Marcar todo como leído",
+  "@markAllAsRead": {
+    "description": "The mark all as read action"
+  },
+  "confirmMarkAllAsReadBody": "¿Estás seguro de que quieres marcar todos los mensajes como leídos?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
   }
 }
