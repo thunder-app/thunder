@@ -57,7 +57,7 @@
 - Added support for display cross-posts - contribution from @micahmo
 
 ### Changed
-
+- Dynamic Maximum Zoom Level Based on Image Resolution - contribution from @Niranjan-Dorage
 - Collapsed comments are easier to expand - contribution from @micahmo
 - Show up to 99 before adding + in the unread count - contribution from @micahmo
 - Migrate from old BottomNavigationBar to NavigationBar - contribution from @ggichure
