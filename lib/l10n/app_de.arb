@@ -320,5 +320,55 @@
   "downloadingMedia": "Lade Medien zum Teilen herunter…",
   "@downloadingMedia": {},
   "collapsePost": "Post einklappen",
-  "@collapsePost": {}
+  "@collapsePost": {},
+  "expandPostPreview": "Post-Vorschau erweitern",
+  "@expandPostPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Posts"
+  },
+  "expandOptions": "Optionen erweitern",
+  "@expandOptions": {},
+  "failedToUnblock": "Entblocken fehlgeschlagen: {errorMessage}",
+  "@failedToUnblock": {},
+  "expandCommentPreview": "Kommentarvorschau ausklappen",
+  "@expandCommentPreview": {
+    "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "floatingActionButton": "Schwebender Button",
+  "@floatingActionButton": {
+    "description": "Floating Action Button settings category."
+  },
+  "feedTypeAndSorts": "Standard Feed-Art und -sortierung",
+  "@feedTypeAndSorts": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "expandInformation": "Informationen erweitern",
+  "@expandInformation": {
+    "description": "Describes the action to expand information - used in FAB settings"
+  },
+  "filters": "Filter",
+  "@filters": {
+    "description": "Category to describe various filters (user, community, instance blocking)"
+  },
+  "failedToBlock": "Blockieren fehlgeschlagen: {errorMessage}",
+  "@failedToBlock": {},
+  "expandPost": "Post erweitern",
+  "@expandPost": {},
+  "failedToLoadBlocks": "Konnte Blockierungen nicht laden: {errorMessage}",
+  "@failedToLoadBlocks": {},
+  "favorites": "Favoriten",
+  "@favorites": {
+    "description": "The favorited communities on the drawer"
+  },
+  "feed": "Feed",
+  "@feed": {},
+  "feedBehaviourSettings": "Feed",
+  "@feedBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "filteringBy": "Filtere nach {entity}",
+  "@filteringBy": {
+    "description": "Filtering by a community or creator in search."
+  },
+  "fetchAccountError": "Konnte Konto nicht abrufen",
+  "@fetchAccountError": {}
 }
