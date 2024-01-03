@@ -9,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/widgets/post_card_view_comfortable.dart';
 import 'package:thunder/community/widgets/post_card_view_compact.dart';
 import 'package:thunder/core/enums/local_settings.dart';
+import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/post.dart';
@@ -74,6 +75,9 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
   /// Controller to manage expandable state for comment preview
   ExpandableController expandableController = ExpandableController();
 
+  /// Determines how post bodies are displayed
+  PostBodyViewType postBodyViewType = PostBodyViewType.expanded;
+
   /// Initialize the settings from the user's shared preferences
   Future<void> initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
@@ -85,7 +89,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showPostAuthor = prefs.getBool(LocalSettings.showPostAuthor.name) ?? false;
       useDisplayNames = prefs.getBool(LocalSettings.useDisplayNamesForUsers.name) ?? true;
       dimReadPosts = prefs.getBool(LocalSettings.dimReadPosts.name) ?? true;
-      showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
 
       // Compact View Settings
       showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
@@ -99,6 +102,10 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
       showSaveAction = prefs.getBool(LocalSettings.showPostSaveAction.name) ?? true;
       showCommunityIcons = prefs.getBool(LocalSettings.showPostCommunityIcons.name) ?? false;
+
+      // Post body settings
+      showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
+      postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
     });
   }
 
@@ -126,10 +133,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
       case LocalSettings.dimReadPosts:
         await prefs.setBool(LocalSettings.dimReadPosts.name, value);
         setState(() => dimReadPosts = value);
-        break;
-      case LocalSettings.showCrossPosts:
-        await prefs.setBool(LocalSettings.showCrossPosts.name, value);
-        setState(() => showCrossPosts = value);
         break;
 
       case LocalSettings.showThumbnailPreviewOnRight:
@@ -168,6 +171,15 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
         await prefs.setBool(LocalSettings.showPostCommunityIcons.name, value);
         setState(() => showCommunityIcons = value);
         break;
+
+      case LocalSettings.showCrossPosts:
+        await prefs.setBool(LocalSettings.showCrossPosts.name, value);
+        setState(() => showCrossPosts = value);
+        break;
+      case LocalSettings.postBodyViewType:
+        await prefs.setString(LocalSettings.postBodyViewType.name, (value as PostBodyViewType).name);
+        setState(() => postBodyViewType = value);
+        break;
     }
 
     if (context.mounted) {
@@ -184,7 +196,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostAuthor.name);
     await prefs.remove(LocalSettings.useDisplayNamesForUsers.name);
     await prefs.remove(LocalSettings.dimReadPosts.name);
-    await prefs.remove(LocalSettings.showCrossPosts.name);
     await prefs.remove(LocalSettings.showThumbnailPreviewOnRight.name);
     await prefs.remove(LocalSettings.showTextPostIndicator.name);
     await prefs.remove(LocalSettings.showPostTitleFirst.name);
@@ -194,6 +205,8 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
     await prefs.remove(LocalSettings.showPostVoteActions.name);
     await prefs.remove(LocalSettings.showPostSaveAction.name);
     await prefs.remove(LocalSettings.showPostCommunityIcons.name);
+    await prefs.remove(LocalSettings.showCrossPosts.name);
+    await prefs.remove(LocalSettings.postBodyViewType.name);
 
     await initPreferences();
 
@@ -458,18 +471,6 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
               ),
             ),
           ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: LocalSettings.showCrossPosts.label,
-                value: showCrossPosts,
-                iconEnabled: Icons.repeat_on_rounded,
-                iconDisabled: Icons.repeat_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
-              ),
-            ),
-          ),
           const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
           SliverToBoxAdapter(
             child: Padding(
@@ -611,6 +612,58 @@ class _PostAppearanceSettingsPageState extends State<PostAppearanceSettingsPage>
                 iconEnabled: Icons.groups,
                 iconDisabled: Icons.groups,
                 onToggle: useCompactView ? null : (bool value) => setPreferences(LocalSettings.showPostCommunityIcons, value),
+              ),
+            ),
+          ),
+          const SliverToBoxAdapter(child: SizedBox(height: 32.0)),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(l10n.postBodySettings, style: theme.textTheme.titleMedium),
+                  Text(
+                    l10n.postBodySettingsDescription,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.textTheme.bodyMedium?.color?.withOpacity(0.8),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: LocalSettings.showCrossPosts.label,
+                value: showCrossPosts,
+                iconEnabled: Icons.repeat_on_rounded,
+                iconDisabled: Icons.repeat_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ListOption(
+                description: l10n.postBodyViewType,
+                value: ListPickerItem(
+                    label: switch (postBodyViewType) {
+                      PostBodyViewType.condensed => l10n.condensed,
+                      PostBodyViewType.expanded => l10n.expanded,
+                    },
+                    icon: Icons.crop_16_9_rounded,
+                    payload: postBodyViewType,
+                    capitalizeLabel: false),
+                options: [
+                  ListPickerItem(icon: Icons.crop_16_9_rounded, label: l10n.condensed, payload: PostBodyViewType.condensed),
+                  ListPickerItem(icon: Icons.crop_din_rounded, label: l10n.expanded, payload: PostBodyViewType.expanded),
+                ],
+                icon: Icons.view_list_rounded,
+                onChanged: (value) => setPreferences(LocalSettings.postBodyViewType, value.payload),
               ),
             ),
           ),

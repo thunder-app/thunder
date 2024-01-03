@@ -29,6 +29,7 @@ enum LocalSettings {
   showThumbnailPreviewOnRight(name: 'setting_compact_show_thumbnail_on_right', label: 'Thumbnails on the Right'),
   showTextPostIndicator(name: 'setting_compact_show_text_post_indicator', label: 'Show Text Post Indicator'),
   tappableAuthorCommunity(name: 'setting_compact_tappable_author_community', label: 'Tappable Authors & Communities'),
+  postBodyViewType(name: 'setting_general_post_body_view_type', label: ''),
 
   // General Settings
   showPostVoteActions(name: 'setting_general_show_vote_actions', label: 'Show Vote Buttons'),

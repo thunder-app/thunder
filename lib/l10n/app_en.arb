@@ -191,6 +191,10 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "condensed": "Condensed",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
@@ -332,6 +336,10 @@
   "expandCommentPreview": "Expand Comment Preview",
   "@expandCommentPreview": {
     "description": "Semantic label for the expand button in Setting -> Appearance -> Comments"
+  },
+  "expanded": "Expanded",
+  "@expanded": {
+    "description": "Expanded post body view type"
   },
   "expandInformation": "Expand Information",
   "@expandInformation": {
@@ -623,6 +631,18 @@
   },
   "postBody": "Post Body",
   "@postBody": {},
+  "postBodySettings": "Post Body Settings",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "These settings affect the display of the post body",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Post Body View Type",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
   "postLocked": "Post locked. No replies allowed.",
   "@postLocked": {},
   "postNSFW": "Mark as NSFW",
