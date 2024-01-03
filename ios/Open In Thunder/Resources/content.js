@@ -1,4 +1,5 @@
 let instances = [
+    "ani.social",
     "aussie.zone",
     "awful.systems",
     "bakchodi.org",
@@ -10,10 +11,12 @@ let instances = [
     "discuss.tchncs.de",
     "exploding-heads.com",
     "feddit.ch",
+    "feddit.cl",
     "feddit.de",
     "feddit.dk",
     "feddit.it",
     "feddit.nl",
+    "feddit.nu",
     "feddit.uk",
     "geddit.social",
     "hexbear.net",
@@ -37,6 +40,7 @@ let instances = [
     "lemmy.today",
     "lemmy.whynotdrs.org",
     "lemmy.world",
+    "lemmy.wtf",
     "lemmy.zip",
     "lemmygrad.ml",
     "lemmynsfw.com",
@@ -53,11 +57,11 @@ let instances = [
     "sopuli.xyz",
     "startrek.website",
     "szmer.info",
+    "thelemmy.club",
     "ttrpg.network",
     "vlemmy.net",
     "waveform.social",
-    "www.hexbear.net",
-    "yiffit.net"
+    "www.hexbear.net"
 ];
 
 document.addEventListener('readystatechange', handleNavigation);
