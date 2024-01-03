@@ -43,6 +43,7 @@ import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/utils/navigate_user.dart';
+import 'package:thunder/utils/numbers.dart';
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -736,7 +737,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             ),
           ),
           Text(
-            ' · ${communityView.counts.subscribers}',
+            ' · ${formatLongNumber(communityView.counts.subscribers)}',
             semanticsLabel: l10n.countSubscribers(communityView.counts.subscribers),
           ),
           const SizedBox(width: 4),
@@ -968,6 +969,8 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             creatorId: _currentCreatorFilter,
             favoriteCommunities: context.read<AccountBloc>().state.favorites,
           ));
+    } else {
+      context.read<SearchBloc>().add(ResetSearch());
     }
   }
 }

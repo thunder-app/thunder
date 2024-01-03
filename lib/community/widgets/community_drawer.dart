@@ -435,7 +435,7 @@ class CommunityItem extends StatelessWidget {
                 onPressed: () async => await toggleFavoriteCommunity(context, community, isFavorite),
                 icon: Icon(
                   isFavorite ? Icons.star_rounded : Icons.star_border_rounded,
-                  semanticLabel: isFavorite ? l10n.addToFavorites : l10n.removeFromFavorites,
+                  semanticLabel: isFavorite ? l10n.removeFromFavorites : l10n.addToFavorites,
                 ),
               )
             : Container(),

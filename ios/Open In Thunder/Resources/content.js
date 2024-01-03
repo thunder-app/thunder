@@ -60,41 +60,28 @@ let instances = [
     "yiffit.net"
 ];
 
-const observeUrlChange = () => {
-    let oldHref = document.location.href;
+document.addEventListener('readystatechange', handleNavigation);
 
-    const body = document.querySelector("body");
-    const observer = new MutationObserver((mutations) => {
-        if (oldHref !== document.location.href) {
-            oldHref = document.location.href;
-            openInThunder();
-        }
-    });
+let previousReadyState;
 
-    observer.observe(body, { childList: true, subtree: true });
-};
-
-
-function isLemmyInstance(arr) {
-    const currentHost = new URL(document.location.href).host;
-
-    for (let i = 0; i < instances.length; i++) {
-        if (currentHost.includes(instances[i])) {
-            return true;
-        }
+function handleNavigation() {
+    if (previousReadyState === document.readyState) return;
+    previousReadyState = document.readyState;
+    
+    // Wait until the page is fully loaded
+    if (document.readyState !== 'complete') return;
+    
+    // Double check that host matches one of the instances
+    if (matchesHost(document.location.host, instances)) {
+        openInThunder();
     }
+}
 
-    return false;
+function matchesHost(host, allowedHosts) {
+    return allowedHosts.includes(host);
 }
 
 function openInThunder() {
-    const shouldOpen = isLemmyInstance();
-    if (!shouldOpen) return;
-
-    let url = new URL(document.location.href);
-    url.protocol = "thunder:";
+    let url = new URL('thunder:' + document.location.href.slice(document.location.protocol.length));
     window.location.href = url;
 }
-
-openInThunder();
-window.onload = observeUrlChange;
