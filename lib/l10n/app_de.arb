@@ -1,1 +1,74 @@
-{}
+{
+  "addAccount": "Konto hinzufügen",
+  "@addAccount": {},
+  "addAccountToSeeProfile": "Bitte zum Betrachten des Profils einloggen.",
+  "@addAccountToSeeProfile": {},
+  "andXMore": "und {count} mehr",
+  "@andXMore": {},
+  "appLanguage": "App-Sprache",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "addToFavorites": "Zu Favoriten hinzufügen",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "accessibility": "Bedienungshilfen",
+  "@accessibility": {},
+  "anonymous": "Anonym",
+  "@anonymous": {},
+  "all": "Alle",
+  "@all": {},
+  "alreadyPostedTo": "Bereits gepostet auf",
+  "@alreadyPostedTo": {},
+  "allPosts": "Alle Posts",
+  "@allPosts": {},
+  "backButton": "\"Zurück\"-Button",
+  "@backButton": {},
+  "allowOpenSupportedLinks": "Erlaube Thunder, unterstütze Links zu öffnen.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "apply": "Übernehmen",
+  "@apply": {},
+  "addedCommunityToSubscriptions": "Community abonniert",
+  "@addedCommunityToSubscriptions": {},
+  "appearance": "Erscheinungsbild",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "animations": "Animationen",
+  "@animations": {},
+  "advanced": "Erweitert",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "back": "Zurück",
+  "@back": {},
+  "accessibilityProfilesDescription": "Profile für Bedienungshilfen ermöglichen es, mehrere Einstellungen auf einmal zu übernehmen, um den bestimmten Anforderungen eines Nutzers gerecht zu werden.",
+  "@accessibilityProfilesDescription": {},
+  "addKeywordFilter": "Schlüsselwort hinzufügen",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "account": "Konto",
+  "@account": {},
+  "addAnonymousInstance": "Anonyme Instanz hinzufügen",
+  "@addAnonymousInstance": {},
+  "about": "Über",
+  "@about": {
+    "description": "About settings category."
+  },
+  "active": "Aktiv",
+  "@active": {},
+  "actions": "Aktionen",
+  "@actions": {},
+  "accountSettings": "Kontoeinstellungen",
+  "@accountSettings": {},
+  "applied": "Übernommen",
+  "@applied": {},
+  "add": "Hinzufügen",
+  "@add": {},
+  "backToTop": "Zurück nach oben",
+  "@backToTop": {}
+}
