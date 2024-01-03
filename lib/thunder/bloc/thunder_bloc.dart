@@ -13,6 +13,7 @@ import 'package:thunder/core/enums/font_scale.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/enums/nested_comment_indicator.dart';
+import 'package:thunder/core/enums/post_body_view_type.dart';
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/enums/theme_type.dart';
 import 'package:thunder/core/models/version.dart';
@@ -121,6 +122,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       bool showThumbnailPreviewOnRight = prefs.getBool(LocalSettings.showThumbnailPreviewOnRight.name) ?? false;
       bool showTextPostIndicator = prefs.getBool(LocalSettings.showTextPostIndicator.name) ?? false;
       bool tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
+      PostBodyViewType postBodyViewType = PostBodyViewType.values.byName(prefs.getString(LocalSettings.postBodyViewType.name) ?? PostBodyViewType.expanded.name);
 
       // General Settings
       bool showVoteActions = prefs.getBool(LocalSettings.showPostVoteActions.name) ?? true;
@@ -248,6 +250,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         showThumbnailPreviewOnRight: showThumbnailPreviewOnRight,
         showTextPostIndicator: showTextPostIndicator,
         tappableAuthorCommunity: tappableAuthorCommunity,
+        postBodyViewType: postBodyViewType,
 
         // General Settings
         showVoteActions: showVoteActions,
