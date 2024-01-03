@@ -70,5 +70,21 @@
   "add": "Hinzufügen",
   "@add": {},
   "backToTop": "Zurück nach oben",
-  "@backToTop": {}
+  "@backToTop": {},
+  "blockedUsers": "Blockierte Nutzer",
+  "@blockedUsers": {},
+  "blockedCommunities": "Blockierte Communitys",
+  "@blockedCommunities": {},
+  "blockInstance": "Instanz blockieren",
+  "@blockInstance": {},
+  "browsingAnonymously": "Du bist anonym auf {instance}.",
+  "@browsingAnonymously": {},
+  "blockCommunity": "Community blockieren",
+  "@blockCommunity": {},
+  "cancel": "Abbrechen",
+  "@cancel": {},
+  "blockedInstances": "Blockierte Instanzen",
+  "@blockedInstances": {},
+  "blockUser": "Benutzer blockieren",
+  "@blockUser": {}
 }
