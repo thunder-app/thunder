@@ -67,7 +67,7 @@ class CommonMarkdownBody extends StatelessWidget {
                               isExpandable: true,
                               isComment: isComment,
                               showFullHeightImages: true,
-                              maxWdith: imageMaxWidth,
+                              maxWidth: imageMaxWidth,
                             ),
                 ],
               ),

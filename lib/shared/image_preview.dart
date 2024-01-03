@@ -13,7 +13,7 @@ class ImagePreview extends StatefulWidget {
   final bool nsfw;
   final double? height;
   final double? width;
-  final double? maxWdith;
+  final double? maxWidth;
   final bool isGallery;
   final bool isExpandable;
   final bool showFullHeightImages;
@@ -28,7 +28,7 @@ class ImagePreview extends StatefulWidget {
     this.bytes,
     this.height,
     this.width,
-    this.maxWdith,
+    this.maxWidth,
     this.nsfw = false,
     this.isGallery = false,
     this.isExpandable = true,
@@ -99,7 +99,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
                       : BoxConstraints(
-                          maxWidth: widget.maxWdith ?? MediaQuery.of(context).size.width - 24,
+                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
                         ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.url!,
@@ -133,7 +133,7 @@ class _ImagePreviewState extends State<ImagePreview> {
                           maxWidth: MediaQuery.of(context).size.width * 0.60,
                         )
                       : BoxConstraints(
-                          maxWidth: widget.maxWdith ?? MediaQuery.of(context).size.width - 24,
+                          maxWidth: widget.maxWidth ?? MediaQuery.of(context).size.width - 24,
                         ),
                   alignment: widget.isComment == true ? Alignment.topCenter : Alignment.center,
                   widget.bytes!,
