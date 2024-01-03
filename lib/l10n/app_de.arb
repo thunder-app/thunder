@@ -86,5 +86,239 @@
   "blockedInstances": "Blockierte Instanzen",
   "@blockedInstances": {},
   "blockUser": "Benutzer blockieren",
-  "@blockUser": {}
+  "@blockUser": {},
+  "copyText": "Text kopieren",
+  "@copyText": {},
+  "comment": "Kommentieren",
+  "@comment": {},
+  "clearPreferences": "Einstellungen zurücksetzen",
+  "@clearPreferences": {
+    "description": "Label for action to clear local user preferences in the dialog"
+  },
+  "compactView": "Kompaktansicht",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "confirmMarkAllAsReadTitle": "Alles als gelesen markieren?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "close": "Schließen",
+  "@close": {},
+  "couldntCreateReport": "Deine Meldung konnte nicht abgesendet werden. Bitte versuche es später wieder",
+  "@couldntCreateReport": {},
+  "customizeSwipeActions": "Wischgesten bearbeiten (zum Ändern antippen)",
+  "@customizeSwipeActions": {},
+  "confirmResetCommentPreferences": "Dies wird alle Kommentareinstellungen zurücksetzen. Bist du sicher, dass du fortfahren möchtest?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "commentReported": "Der Kommentar wurde gemeldet.",
+  "@commentReported": {},
+  "communityFormat": "Formatierung Communityname",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "changeSort": "Sortierung ändern",
+  "@changeSort": {},
+  "creator": "Autor",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "compactViewDescription": "Kompaktansicht aktivieren um Einstellungen anzupassen",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "endSearch": "Suche beenden",
+  "@endSearch": {},
+  "cardViewSettings": "Einstellungen für Kartenansicht",
+  "@cardViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "deleteLocalPreferencesDescription": "Dies wird alle deine Benutzereinstellungen und Einstellungen in Thunder löschen.\n\nBist du sicher, dass du fortfahren möchtest?",
+  "@deleteLocalPreferencesDescription": {
+    "description": "Description for confirmation action to delete local preferences"
+  },
+  "clearedDatabase": "Lokale Datenbank zurückgesetzt. Thunder bitte neu starten.",
+  "@clearedDatabase": {},
+  "commentShowUserInstance": "Instanz des Nutzers anzeigen",
+  "@commentShowUserInstance": {
+    "description": "Settings toggle to display user instance alongside their display name in comments"
+  },
+  "collapsePostPreview": "Post-Vorschau einklappen",
+  "@collapsePostPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Posts"
+  },
+  "clearedUserPreferences": "Einstellungen zurückgesetzt",
+  "@clearedUserPreferences": {},
+  "commentSavedAsDraft": "Kommentar als Entwurf gespeichert",
+  "@commentSavedAsDraft": {},
+  "combineCommentScoresLabel": "Kommentarbewertungen kombinieren",
+  "@combineCommentScoresLabel": {
+    "description": "Label for setting to combine comment scores"
+  },
+  "displayUserScore": "Nutzerpunktzahl anzeigen (\"Karma\").",
+  "@displayUserScore": {
+    "description": "Option for displaying user scores or karma."
+  },
+  "edit": "Bearbeiten",
+  "@edit": {},
+  "clearSearch": "Suchverlauf löschen",
+  "@clearSearch": {},
+  "copy": "Kopieren",
+  "@copy": {},
+  "compactViewSettings": "Einstellungen für die Kompaktansicht",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "deleteLocalDatabaseDescription": "Dies wird die lokale Datenbank löschen und dich aus allen Accounts ausloggen.\n\nBist du sicher, dass du fortfahren möchtest?",
+  "@deleteLocalDatabaseDescription": {
+    "description": "Description for confirmation action to delete local database"
+  },
+  "createPost": "Post erstellen",
+  "@createPost": {},
+  "exceptionProcessingUri": "Bei der Verarbeitung des Links ist ein Fehler aufgetreten. Möglicherweise ist er auf deiner Instanz nicht verfügbar.",
+  "@exceptionProcessingUri": {
+    "description": "An unspecified error during link processing."
+  },
+  "confirmLogOutTitle": "Ausloggen?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "createNewCrossPost": "Neuen Crosspost erstellen",
+  "@createNewCrossPost": {},
+  "cantBlockYourself": "Du kannst dich nicht selbst blockieren.",
+  "@cantBlockYourself": {},
+  "errorDownloadingMedia": "Konnte Medien nicht herunterladen: {errorMessage}",
+  "@errorDownloadingMedia": {},
+  "downvotesDisabled": "Herunterwählen ist auf dieser Instanz deaktiviert.",
+  "@downvotesDisabled": {},
+  "confirmResetPostPreferences": "Dies wird alle Post-Einstellungen zurücksetzen. Bist du sicher, dass du fortfahren möchtest?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "delete": "Löschen",
+  "@delete": {},
+  "collapseCommentPreview": "Kommentarvorschau einklappen",
+  "@collapseCommentPreview": {
+    "description": "Semantic label for the collapse button in Setting -> Appearance -> Comments"
+  },
+  "couldNotDetermineCommentDelete": "Fehler: Konnte Kommentar nicht löschen (Post nicht bestimmbar)",
+  "@couldNotDetermineCommentDelete": {},
+  "couldNotDeterminePostComment": "Fehler: Kommentar nicht gespeichert (Post nicht bestimmbar)",
+  "@couldNotDeterminePostComment": {},
+  "deleteLocalPreferences": "Lokale Einstellungen löschen",
+  "@deleteLocalPreferences": {
+    "description": "Label for action to delete local preferences"
+  },
+  "debug": "Debuggen",
+  "@debug": {
+    "description": "Debug settings category."
+  },
+  "enablePostFab": "Schwebenden Button auf Posts aktivieren",
+  "@enablePostFab": {
+    "description": "Enable the Floating Action Button for the post"
+  },
+  "commentBehaviourSettings": "Kommentare",
+  "@commentBehaviourSettings": {
+    "description": "Subcategory in Setting -> General"
+  },
+  "commentSwipeGesturesHint": "Lieber Buttons benutzen? Schalte sie im Abschnitt \"Kommentare\" in den allgemeinen Einstellungen ein.",
+  "@commentSwipeGesturesHint": {},
+  "collapseInformation": "Informationen einklappen",
+  "@collapseInformation": {
+    "description": "Describes the action to collapse information - used in FAB settings"
+  },
+  "dismissRead": "Gelesene verwerfen",
+  "@dismissRead": {},
+  "createAccount": "Konto erstellen",
+  "@createAccount": {},
+  "currentSinglePress": "Momentan auf kurzes Drücken eingestellt",
+  "@currentSinglePress": {},
+  "currentLongPress": "Momentan auf langes Drücken eingestellt",
+  "@currentLongPress": {},
+  "emptyInbox": "Posteingang ist leer",
+  "@emptyInbox": {},
+  "confirmLogOutBody": "Willst du dich wirklich ausloggen?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "cardView": "Kartenansicht",
+  "@cardView": {
+    "description": "Label for the card view option in Setting -> Appearance -> Posts"
+  },
+  "clearDatabase": "Datenbank zurücksetzen",
+  "@clearDatabase": {
+    "description": "Label for action to clear local database in the dialog"
+  },
+  "enableFeedFab": "Schwebenden Button auf Feeds aktivieren",
+  "@enableFeedFab": {
+    "description": "Enable the Floating Action Button for the feed"
+  },
+  "emptyUri": "Der Link ist leer. Bitte zum Fortsetzen einen gültigen, dynamischen Link eingeben.",
+  "@emptyUri": {
+    "description": "Error message for empty link."
+  },
+  "createComment": "Kommentar erstellen",
+  "@createComment": {},
+  "commentSortType": "Kommentarsortierung",
+  "@commentSortType": {},
+  "editComment": "Kommentar bearbeiten",
+  "@editComment": {},
+  "commentPreview": "Zeige eine Kommentarvorschau mit den gewählten Einstellungen",
+  "@commentPreview": {
+    "description": "Description for the comment preview in Setting -> Appearance -> Comments"
+  },
+  "copiedToClipboard": "In Zwischenablage kopiert",
+  "@copiedToClipboard": {},
+  "combineNavAndFab": "Der schwebende Action Button wird zwischen den Navigationsbuttons angezeigt werden.",
+  "@combineNavAndFab": {},
+  "cantBlockAdmin": "Du kannst den Administrator der Instanz blockieren.",
+  "@cantBlockAdmin": {},
+  "dimReadPosts": "Gelesene Posts werden ausgegraut",
+  "@dimReadPosts": {
+    "description": "Description of the effect on read posts."
+  },
+  "deleteLocalDatabase": "Lokale Datenbank zurücksetzen",
+  "@deleteLocalDatabase": {
+    "description": "Label for action to delete local database"
+  },
+  "community": "Community",
+  "@community": {},
+  "cannotReportOwnComment": "Du kannst nicht deinen eigenen Kommentar melden.",
+  "@cannotReportOwnComment": {},
+  "controversial": "Kontrovers",
+  "@controversial": {},
+  "editPost": "Post bearbeiten",
+  "@editPost": {
+    "description": "Title when editing a post."
+  },
+  "empty": "Leer",
+  "@empty": {},
+  "crossPostedTo": "Crossgeposted auf",
+  "@crossPostedTo": {},
+  "countSubscribers": "{count} Abonennten",
+  "@countSubscribers": {},
+  "communities": "Communitys",
+  "@communities": {},
+  "cardViewDescription": "Kartenansicht aktivieren um Einstellungen anzupassen",
+  "@cardViewDescription": {
+    "description": "Description for the card view subcategory in Setting -> Appearance -> Posts"
+  },
+  "debugDescription": "Die folgenden Debug-Einstellungen sollten nur zur Problemermittlung eingesetzt werden.",
+  "@debugDescription": {
+    "description": "Explanation for debug settings page"
+  },
+  "downvote": "Herunterwählen",
+  "@downvote": {},
+  "confirmMarkAllAsReadBody": "Bist du sicher, dass du alle Nachrichten als gelesen markieren willst?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "comments": "Kommentare",
+  "@comments": {},
+  "downloadingMedia": "Lade Medien zum Teilen herunter…",
+  "@downloadingMedia": {},
+  "collapsePost": "Post einklappen",
+  "@collapsePost": {}
 }
