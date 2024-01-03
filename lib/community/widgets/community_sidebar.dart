@@ -31,6 +31,8 @@ import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 
+const kSidebarWidthFactor = 0.8;
+
 class CommunitySidebar extends StatefulWidget {
   final GetCommunityResponse? getCommunityResponse;
   final Function onDismiss;
@@ -74,7 +76,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
             onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
-              widthFactor: 0.8,
+              widthFactor: kSidebarWidthFactor,
               alignment: FractionalOffset.centerRight,
               child: Container(
                 color: theme.colorScheme.background,
@@ -119,8 +121,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                         children: [
                           CommonMarkdownBody(
                             body: communityView.community.description ?? '',
-                            // The sidebar is 0.8 the width of the screen, so we'll be just slightly smaller than that
-                            imageMaxWidth: 0.7 * MediaQuery.of(context).size.width,
+                            imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
                           ),
                           const SidebarSectionHeader(value: "Stats"),
                           Padding(
