@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
+import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -50,6 +51,8 @@ void main() async {
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   runApp(const ThunderApp());
+  // Set high refresh rate after app initialization
+  FlutterDisplayMode.setHighRefreshRate();
 }
 
 class ThunderApp extends StatelessWidget {
