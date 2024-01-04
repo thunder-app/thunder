@@ -17,9 +17,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileModalBody extends StatefulWidget {
   final bool anonymous;
-  final bool logOutOfActiveAccount;
+  final bool showLogoutDialog;
 
-  const ProfileModalBody({super.key, this.anonymous = false, this.logOutOfActiveAccount = false});
+  const ProfileModalBody({super.key, this.anonymous = false, this.showLogoutDialog = false});
 
   static final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -45,7 +45,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
         MaterialPage(
           child: ProfileSelect(
             pushRegister: pushRegister,
-            logOutOfActiveAccount: widget.logOutOfActiveAccount,
+            showLogoutDialog: widget.showLogoutDialog,
           ),
         )
       ],
@@ -59,7 +59,7 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
       case '/':
         page = ProfileSelect(
           pushRegister: pushRegister,
-          logOutOfActiveAccount: widget.logOutOfActiveAccount,
+          showLogoutDialog: widget.showLogoutDialog,
         );
         break;
 
@@ -79,12 +79,12 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
 
 class ProfileSelect extends StatefulWidget {
   final void Function({bool anonymous}) pushRegister;
-  final bool logOutOfActiveAccount;
+  final bool showLogoutDialog;
 
   const ProfileSelect({
     super.key,
     required this.pushRegister,
-    this.logOutOfActiveAccount = false,
+    this.showLogoutDialog = false,
   });
 
   @override
@@ -103,7 +103,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   void initState() {
     super.initState();
 
-    if (widget.logOutOfActiveAccount) {
+    if (widget.showLogoutDialog) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         await Future.delayed(const Duration(milliseconds: 250));
         _logOutOfActiveAccount();

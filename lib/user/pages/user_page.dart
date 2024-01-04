@@ -49,7 +49,7 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () => showProfileModalSheet(context, logOutOfActiveAccount: true),
+                onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
