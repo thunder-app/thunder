@@ -12,6 +12,7 @@ import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/post/utils/post.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/utils/comment.dart';
@@ -135,14 +136,7 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
 
       return emit(state.copyWith(
         status: SearchStatus.success,
-        communities: searchResponse.communities.toList()
-          ..sort(
-            (a, b) => event.favoriteCommunities?.any((c) => c.community.id == a.community.id) == true
-                ? -1
-                : event.favoriteCommunities?.any((c) => c.community.id == b.community.id) == true
-                    ? 1
-                    : b.counts.subscribers.compareTo(a.counts.subscribers),
-          ),
+        communities: prioritizeFavorites(searchResponse.communities.toList(), event.favoriteCommunities),
         users: searchResponse.users,
         comments: searchResponse.comments,
         posts: await parsePostViews(searchResponse.posts),

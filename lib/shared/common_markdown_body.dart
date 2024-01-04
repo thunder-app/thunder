@@ -28,11 +28,14 @@ class CommonMarkdownBody extends StatelessWidget {
   /// TODO: This should be converted to an enum of possible markdown content (e.g., post, comment, general, metadata, etc.) to allow for more fined-tuned scaling of text
   final bool? isComment;
 
+  final double? imageMaxWidth;
+
   const CommonMarkdownBody({
     super.key,
     required this.body,
     this.isSelectableText = false,
     this.isComment,
+    this.imageMaxWidth,
   });
 
   @override
@@ -64,6 +67,7 @@ class CommonMarkdownBody extends StatelessWidget {
                               isExpandable: true,
                               isComment: isComment,
                               showFullHeightImages: true,
+                              maxWidth: imageMaxWidth,
                             ),
                 ],
               ),

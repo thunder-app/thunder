@@ -260,7 +260,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         context,
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
-        trailingIconColor: Theme.of(context).colorScheme.error,
+        trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
           sharedPreferences?.remove(draftId);
           _titleTextController.clear();
@@ -750,7 +750,6 @@ class _CommunitySelectorState extends State<CommunitySelector> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final accountState = context.read<AccountBloc>().state;
 
     return Transform.translate(
       offset: const Offset(-8, 0),
@@ -767,7 +766,6 @@ class _CommunitySelectorState extends State<CommunitySelector> {
 
               widget.onCommunitySelected(cv);
             },
-            emptySuggestions: accountState.subsciptions,
           );
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),

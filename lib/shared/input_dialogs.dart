@@ -14,6 +14,7 @@ import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
+import 'package:thunder/feed/utils/community.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -104,6 +105,13 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 
 /// Shows a dialog which allows typing/search for a community
 void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
+  try {
+    emptySuggestions ??= context.read<AccountBloc>().state.subsciptions;
+    // TODO sort
+  } catch (e) {
+    // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
+  }
+
   Future<String?> onSubmitted({CommunityView? payload, String? value}) async {
     if (payload != null) {
       onCommunitySelected(payload);
@@ -144,15 +152,7 @@ void showCommunityInputDialog(BuildContext context, {required String title, requ
 
 Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, String query, Iterable<CommunityView>? emptySuggestions) async {
   if (query.isNotEmpty != true) {
-    return (emptySuggestions?.toList()
-          ?..sort(
-            (a, b) => _getFavoriteStatus(context, a.community)
-                ? -1
-                : _getFavoriteStatus(context, b.community)
-                    ? 1
-                    : b.counts.subscribers.compareTo(a.counts.subscribers),
-          )) ??
-        const Iterable.empty();
+    return emptySuggestions ?? const Iterable.empty();
   }
   Account? account = await fetchActiveProfileAccount();
   final SearchResponse searchResponse = await LemmyClient.instance.lemmyApiV3.run(Search(
@@ -162,14 +162,17 @@ Future<Iterable<CommunityView>> getCommunitySuggestions(BuildContext context, St
     limit: 20,
     sort: SortType.topAll,
   ));
-  return searchResponse.communities.toList()
-    ..sort(
-      (a, b) => _getFavoriteStatus(context, a.community)
-          ? -1
-          : _getFavoriteStatus(context, b.community)
-              ? 1
-              : b.counts.subscribers.compareTo(a.counts.subscribers),
-    );
+
+  List<CommunityView>? favorites;
+  if (context.mounted) {
+    try {
+      favorites = context.read<AccountBloc>().state.favorites;
+    } catch (e) {
+      // Don't worry if we can't fetch favorites
+    }
+  }
+
+  return prioritizeFavorites(searchResponse.communities.toList(), favorites) ?? const Iterable.empty();
 }
 
 Widget buildCommunitySuggestionWidget(BuildContext context, CommunityView payload, {void Function(CommunityView)? onSelected}) {
@@ -346,13 +349,22 @@ void showLanguageInputDialog(BuildContext context, {required String title, requi
       title: title,
       inputLabel: AppLocalizations.of(context)!.language,
       onSubmitted: onSubmitted,
-      getSuggestions: (query) => getLanguageSuggestions(query, languages),
+      getSuggestions: (query) => getLanguageSuggestions(context, query, languages),
       suggestionBuilder: (payload) => buildLanguageSuggestionWidget(payload, context: context),
     );
   }
 }
 
-Future<Iterable<Language>> getLanguageSuggestions(String query, Iterable<Language>? emptySuggestions) async {
+Future<Iterable<Language>> getLanguageSuggestions(BuildContext context, String query, Iterable<Language>? emptySuggestions) async {
+  final Locale currentLocale = Localizations.localeOf(context);
+
+  final Language? currentLanguage = emptySuggestions?.firstWhereOrNull((Language l) => l.code == currentLocale.languageCode);
+  if (currentLanguage != null && (emptySuggestions?.length ?? 0) >= 2) {
+    emptySuggestions = emptySuggestions?.toList()
+      ?..remove(currentLanguage)
+      ..insert(2, currentLanguage);
+  }
+
   if (query.isEmpty) {
     return emptySuggestions ?? [];
   }
