@@ -8,6 +8,7 @@ import 'package:flutter/services.dart';
 
 // External Packages
 import 'package:flutter_bloc/flutter_bloc.dart';
+import "package:flutter_displaymode/flutter_displaymode.dart";
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:l10n_esperanto/l10n_esperanto.dart';
@@ -75,6 +76,9 @@ void main() async {
   LemmyClient.instance.changeBaseUrl(initialInstance);
 
   runApp(const ThunderApp());
+
+  // Set high refresh rate after app initialization
+  FlutterDisplayMode.setHighRefreshRate();
 
   // Register to receive BackgroundFetch events after app is terminated.
   if (!kIsWeb && Platform.isAndroid && (prefs.getBool(LocalSettings.enableInboxNotifications.name) ?? false)) {
