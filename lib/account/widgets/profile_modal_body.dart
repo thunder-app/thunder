@@ -17,8 +17,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ProfileModalBody extends StatefulWidget {
   final bool anonymous;
+  final bool showLogoutDialog;
 
-  const ProfileModalBody({super.key, this.anonymous = false});
+  const ProfileModalBody({super.key, this.anonymous = false, this.showLogoutDialog = false});
 
   static final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
@@ -40,7 +41,14 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
     return Navigator(
       key: ProfileModalBody.shellNavigatorKey,
       onPopPage: (route, result) => false,
-      pages: [MaterialPage(child: ProfileSelect(pushRegister: pushRegister))],
+      pages: [
+        MaterialPage(
+          child: ProfileSelect(
+            pushRegister: pushRegister,
+            showLogoutDialog: widget.showLogoutDialog,
+          ),
+        )
+      ],
       onGenerateRoute: _onGenerateRoute,
     );
   }
@@ -49,7 +57,10 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
     late Widget page;
     switch (settings.name) {
       case '/':
-        page = ProfileSelect(pushRegister: pushRegister);
+        page = ProfileSelect(
+          pushRegister: pushRegister,
+          showLogoutDialog: widget.showLogoutDialog,
+        );
         break;
 
       case '/login':
@@ -68,7 +79,13 @@ class _ProfileModalBodyState extends State<ProfileModalBody> {
 
 class ProfileSelect extends StatefulWidget {
   final void Function({bool anonymous}) pushRegister;
-  ProfileSelect({Key? key, required this.pushRegister}) : super(key: key);
+  final bool showLogoutDialog;
+
+  const ProfileSelect({
+    super.key,
+    required this.pushRegister,
+    this.showLogoutDialog = false,
+  });
 
   @override
   State<ProfileSelect> createState() => _ProfileSelectState();
@@ -81,6 +98,18 @@ class _ProfileSelectState extends State<ProfileSelect> {
 
   // Represents the ID of the account/instance we're currently logging out of / removing
   String? loggingOutId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.showLogoutDialog) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        await Future.delayed(const Duration(milliseconds: 250));
+        _logOutOfActiveAccount();
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -295,25 +324,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
                                                 child: CircularProgressIndicator(),
                                               )
                                             : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
-                                        onPressed: () async {
-                                          if (await showLogOutDialog(context)) {
-                                            setState(() => loggingOutId = accounts![index].account.id);
-
-                                            await Future.delayed(const Duration(milliseconds: 1000), () {
-                                              if ((anonymousInstances?.length ?? 0) > 0) {
-                                                context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
-                                                context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.last.instance));
-                                              } else {
-                                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.lastWhere((account) => account.account.id != currentAccountId).account.id));
-                                              }
-
-                                              setState(() {
-                                                accounts = null;
-                                                loggingOutId = null;
-                                              });
-                                            });
-                                          }
-                                        },
+                                        onPressed: () => _logOutOfActiveAccount(activeAccountId: accounts![index].account.id),
                                       )
                                     : IconButton(
                                         icon: loggingOutId == accounts![index].account.id
@@ -525,6 +536,38 @@ class _ProfileSelectState extends State<ProfileSelect> {
         ),
       ),
     );
+  }
+
+  Future<void> _logOutOfActiveAccount({String? activeAccountId}) async {
+    activeAccountId ??= context.read<AuthBloc>().state.account?.id;
+
+    final AuthBloc authBloc = context.read<AuthBloc>();
+    final ThunderBloc thunderBloc = context.read<ThunderBloc>();
+
+    final List<Account> accountsNotCurrent = (await Account.accounts()).where((a) => a.id != activeAccountId).toList();
+
+    if (context.mounted && activeAccountId != null && await showLogOutDialog(context)) {
+      setState(() => loggingOutId = activeAccountId);
+
+      await Future.delayed(const Duration(milliseconds: 1000), () {
+        if ((anonymousInstances?.length ?? 0) > 0) {
+          thunderBloc.add(OnSetCurrentAnonymousInstance(anonymousInstances!.last.instance));
+          authBloc.add(InstanceChanged(instance: anonymousInstances!.last.instance));
+        } else if (accountsNotCurrent.isNotEmpty) {
+          authBloc.add(SwitchAccount(accountId: accountsNotCurrent.last.id));
+        } else {
+          // No accounts and no anonymous instances left. Create a new one.
+          authBloc.add(const LogOutOfAllAccounts());
+          thunderBloc.add(const OnAddAnonymousInstance('lemmy.ml'));
+          thunderBloc.add(const OnSetCurrentAnonymousInstance('lemmy.ml'));
+        }
+
+        setState(() {
+          accounts = null;
+          loggingOutId = null;
+        });
+      });
+    }
   }
 
   Future<void> fetchAccounts() async {
