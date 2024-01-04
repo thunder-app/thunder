@@ -72,9 +72,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, sharing posts will use the advanced share sheet
   bool useAdvancedShareSheet = true;
 
-  /// When enabled, cross posts will be shown on the post page
-  bool showCrossPosts = true;
-
   /// When enabled, the parent comment body will be hidden if the parent comment is collapsed
   bool collapseParentCommentOnGesture = true;
 
@@ -129,10 +126,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
         await prefs.setBool(LocalSettings.useTabletMode.name, value);
         setState(() => tabletMode = value);
 
-      case LocalSettings.showCrossPosts:
-        await prefs.setBool(LocalSettings.showCrossPosts.name, value);
-        setState(() => showCrossPosts = value);
-        break;
       case LocalSettings.useAdvancedShareSheet:
         await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
         setState(() => useAdvancedShareSheet = value);
@@ -205,7 +198,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
 
-      showCrossPosts = prefs.getBool(LocalSettings.showCrossPosts.name) ?? true;
       useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
 
       collapseParentCommentOnGesture = prefs.getBool(LocalSettings.collapseParentCommentBodyOnGesture.name) ?? true;
@@ -417,18 +409,6 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
               child: Text(l10n.postBehaviourSettings, style: theme.textTheme.titleMedium),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ToggleOption(
-                description: LocalSettings.showCrossPosts.label,
-                value: showCrossPosts,
-                iconEnabled: Icons.repeat_on_rounded,
-                iconDisabled: Icons.repeat_rounded,
-                onToggle: (bool value) => setPreferences(LocalSettings.showCrossPosts, value),
-              ),
             ),
           ),
           SliverToBoxAdapter(

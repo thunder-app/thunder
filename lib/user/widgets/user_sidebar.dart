@@ -20,6 +20,8 @@ import '../../thunder/bloc/thunder_bloc.dart';
 import '../../utils/date_time.dart';
 import '../bloc/user_bloc.dart';
 
+const kSidebarWidthFactor = 0.8;
+
 class UserSidebar extends StatefulWidget {
   final PersonView? userInfo;
   final List<CommunityModeratorView>? moderates;
@@ -99,7 +101,7 @@ class _UserSidebarState extends State<UserSidebar> {
     return Container(
       alignment: Alignment.topRight,
       child: FractionallySizedBox(
-        widthFactor: 0.8,
+        widthFactor: kSidebarWidthFactor,
         child: AnimatedSwitcher(
           duration: const Duration(milliseconds: 300),
           child: Stack(
@@ -232,6 +234,7 @@ class _UserSidebarState extends State<UserSidebar> {
                                 ),
                                 child: CommonMarkdownBody(
                                   body: widget.userInfo?.person.bio ?? 'Nothing here. This user has not written a bio.',
+                                  imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
                                 ),
                               ),
                               const Padding(
