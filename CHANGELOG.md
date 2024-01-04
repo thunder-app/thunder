@@ -25,7 +25,6 @@
 - Fixed issue where custom tabs would not respect default browser when opening links
 - Fixed issue where initial app startup takes a long time to load (503 errors)
 - Fixed issue where image dimensions were being fetched regardless of post view types (card/compact)
-- Fixed issue where thunder was being locked to 60Hz on 120Hz displays
 
 ## 0.2.6 - 2023-11-22
 ### Fixed
