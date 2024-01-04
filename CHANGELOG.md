@@ -1,3 +1,7 @@
+## Unreleased
+### Fixed
+- Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
+
 ## 0.2.7 - 2024-01-03
 ## Added
 - Added ability to collapse post in post page
