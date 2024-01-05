@@ -175,7 +175,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
             // When account changes, that means our instance most likely changed, so reset search.
             if (state.status == AccountStatus.success &&
                     ((activeProfile?.userId == null && _previousUserId != null) || state.personView?.person.id == activeProfile?.userId && _previousUserId != state.personView?.person.id) ||
-                state.favorites.length != _previousFavoritesCount) {
+                (state.favorites.length != _previousFavoritesCount && _controller.text.isEmpty)) {
               _controller.clear();
               if (context.mounted) context.read<SearchBloc>().add(ResetSearch());
               setState(() {});
@@ -742,7 +742,9 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
           ),
           const SizedBox(width: 4),
           const Icon(Icons.people_rounded, size: 16.0),
-          if (indicateFavorites && _getFavoriteStatus(context, communityView.community)) ...const [
+          if (indicateFavorites &&
+              _getFavoriteStatus(context, communityView.community) &&
+              _getCurrentSubscriptionStatus(isUserLoggedIn, communityView, currentSubscriptions) == SubscribedType.subscribed) ...const [
             Text(' · '),
             Icon(Icons.star_rounded, size: 15),
           ]
