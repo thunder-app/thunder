@@ -77,14 +77,22 @@ Future<void> toggleFavoriteCommunity(BuildContext context, Community community, 
 }
 
 /// Takes a list of [communities] and returns the list with any [favoriteCommunities] at the beginning of the list
-/// Note that you may need to call [toList] on any lists that are marked as readonly.
+/// Note that you may need to call [toList] when passing in lists that are marked as readonly.
 List<CommunityView>? prioritizeFavorites(List<CommunityView>? communities, List<CommunityView>? favoriteCommunities) {
-  return communities
-    ?..sort(
-      (a, b) => favoriteCommunities?.any((c) => c.community.id == a.community.id) == true
-          ? -1
-          : favoriteCommunities?.any((c) => c.community.id == b.community.id) == true
-              ? 1
-              : b.counts.subscribers.compareTo(a.counts.subscribers),
-    );
+  // If either communities or favorites are empty, no reason to prioritize.
+  if (communities?.isNotEmpty != true || favoriteCommunities?.isNotEmpty != true) {
+    return communities;
+  }
+
+  // Create a set of the favorited community ids for filtering later
+  Set<int> favoriteCommunityIds = Set<int>.from(favoriteCommunities!.map((c) => c.community.id));
+
+  // Filters out communities that are part of the favorites, and keeps the same order
+  List<CommunityView>? sortedFavorites = communities!.where((c) => favoriteCommunityIds.contains(c.community.id)).toList();
+
+  // Filters out communities that are not a part of the favorites, and keeps the same order
+  List<CommunityView>? sortedNonFavorites = communities.where((c) => !favoriteCommunityIds.contains(c.community.id)).toList();
+
+  // Combine them together, with favorites at the top
+  return List<CommunityView>.from(sortedFavorites)..addAll(sortedNonFavorites);
 }
