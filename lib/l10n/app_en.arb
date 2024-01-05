@@ -235,6 +235,10 @@
   "@couldntCreateReport": {},
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
+  "countUsers": "{count} users",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
   "createAccount": "Create Account",
   "@createAccount": {},
   "createComment": "Create Comment",
@@ -476,6 +480,18 @@
   "linksBehaviourSettings": "Links",
   "@linksBehaviourSettings": {
     "description": "Subcategory in Setting -> General"
+  },
+  "collapseSpoiler": "Collapse Spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "expandSpoiler": "Expand Spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
   },
   "loadMorePlural": "Load {count} more replies…",
   "@loadMorePlural": {},
