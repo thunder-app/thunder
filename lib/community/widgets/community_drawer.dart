@@ -1,19 +1,15 @@
 import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:thunder/feed/utils/community.dart';
 
-import 'package:uuid/uuid.dart';
+import 'package:flutter/material.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
-import 'package:thunder/account/models/favourite.dart';
 import 'package:thunder/account/utils/profiles.dart';
 import 'package:thunder/community/bloc/anonymous_subscriptions_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/feed/feed.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/user_avatar.dart';
@@ -21,6 +17,7 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/global_context.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
+import 'package:thunder/feed/utils/community.dart';
 
 class CommunityDrawer extends StatefulWidget {
   const CommunityDrawer({super.key, this.navigateToAccount});

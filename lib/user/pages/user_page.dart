@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
-import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
-import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -14,7 +13,6 @@ import 'package:thunder/user/pages/user_page_success.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/user/pages/user_settings_page.dart';
-import 'package:thunder/user/utils/logout_dialog.dart';
 
 class UserPage extends StatefulWidget {
   final int? userId;

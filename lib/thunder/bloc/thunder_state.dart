@@ -414,7 +414,7 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
-      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
@@ -444,7 +444,7 @@ class ThunderState extends Equatable {
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
-      disablePostFabs: disablePostFabs ?? this.disablePostFabs,
+      disablePostFabs: disablePostFabs,
 
       // Comment Related Settings
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,

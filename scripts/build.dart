@@ -73,7 +73,7 @@ void createAPKFile(String version) {
   // Copy the APK file to the "release" directory and rename it
   File apkFile = File('build/app/outputs/flutter-apk/app-release.apk');
   String newApkPath = '${releaseDir.path}/thunder-v$version.apk';
-  File renamedApkFile = apkFile.copySync(newApkPath);
+  apkFile.copySync(newApkPath);
 
   print('APK file copied and renamed successfully!');
 }
