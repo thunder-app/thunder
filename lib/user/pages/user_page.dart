@@ -4,7 +4,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
+import 'package:thunder/account/models/account.dart';
 import 'package:thunder/account/utils/profiles.dart';
+import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/shared/primitive_wrapper.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
@@ -47,7 +49,7 @@ class _UserPageState extends State<UserPage> {
         scrolledUnderElevation: 0,
         leading: widget.isAccountUser
             ? IconButton(
-                onPressed: () => showLogOutDialog(context),
+                onPressed: () => showProfileModalSheet(context, showLogoutDialog: true),
                 icon: Icon(
                   Icons.logout,
                   semanticLabel: AppLocalizations.of(context)!.logOut,
