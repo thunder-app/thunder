@@ -121,19 +121,20 @@ class FeedPageAppBar extends StatelessWidget {
                   title: Text(l10n.refresh),
                 ),
               ),
-              PopupMenuItem(
-                onTap: () async {
-                  final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
-                  bool isFavorite = _getFavoriteStatus(context);
-                  await toggleFavoriteCommunity(context, community, isFavorite);
-                },
-                child: ListTile(
-                  dense: true,
-                  horizontalTitleGap: 5,
-                  leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
-                  title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+              if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
+                PopupMenuItem(
+                  onTap: () async {
+                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                    bool isFavorite = _getFavoriteStatus(context);
+                    await toggleFavoriteCommunity(context, community, isFavorite);
+                  },
+                  child: ListTile(
+                    dense: true,
+                    horizontalTitleGap: 5,
+                    leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
+                    title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                  ),
                 ),
-              ),
             ],
           ),
       ],
