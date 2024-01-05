@@ -231,6 +231,10 @@
   "@couldntCreateReport": {},
   "countSubscribers": "{count} subscribers",
   "@countSubscribers": {},
+  "countUsers": "{count} users",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
   "createAccount": "Create Account",
   "@createAccount": {},
   "createComment": "Create Comment",
