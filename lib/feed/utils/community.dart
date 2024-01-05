@@ -77,14 +77,36 @@ Future<void> toggleFavoriteCommunity(BuildContext context, Community community, 
 }
 
 /// Takes a list of [communities] and returns the list with any [favoriteCommunities] at the beginning of the list
-/// Note that you may need to call [toList] on any lists that are marked as readonly.
+/// Note that you may need to call [toList] when passing in lists that are marked as readonly.
 List<CommunityView>? prioritizeFavorites(List<CommunityView>? communities, List<CommunityView>? favoriteCommunities) {
-  return communities
-    ?..sort(
-      (a, b) => favoriteCommunities?.any((c) => c.community.id == a.community.id) == true
-          ? -1
-          : favoriteCommunities?.any((c) => c.community.id == b.community.id) == true
-              ? 1
-              : b.counts.subscribers.compareTo(a.counts.subscribers),
-    );
+  // This is the list we will return. If we don't do any prioritization,
+  // it will just be the initial list we received.
+  List<CommunityView>? prioritizedCommunities = communities;
+
+  // Only attempt to prioritize favorites if the list of communities and favorites is not empty
+  if (communities?.isNotEmpty == true && favoriteCommunities?.isNotEmpty == true) {
+    prioritizedCommunities = [];
+    final List<CommunityView> sortedFavorites = [];
+
+    // Iterate through the list in reverse so that we can insert things at index 0 while preserving the order.
+    for (int i = communities!.length - 1; i >= 0; --i) {
+      // Grab the community at this index
+      final CommunityView community = communities[i];
+
+      if (favoriteCommunities!.any((c) => c.community.id == communities[i].community.id)) {
+        // If this is a favorite, add it to a separate list which only holds favorites
+        sortedFavorites.insert(0, community);
+      } else {
+        // If this is not a favorite, add it to our final list.
+        prioritizedCommunities.insert(0, community);
+      }
+    }
+
+    // At this point, we have a list of communities in the same order they were passed in but with no favorites.
+    // Now insert all the favorites at the beginning.
+    prioritizedCommunities.insertAll(0, sortedFavorites);
+  }
+
+  // Return the finalized list. If we were not gives communities/favorites, this may be null.
+  return prioritizedCommunities;
 }
