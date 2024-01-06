@@ -1008,5 +1008,21 @@
   "postBodySettings": "Configuración del cuerpo del mensaje",
   "@postBodySettings": {
     "description": "Settings heading for post body settings"
+  },
+  "countUsers": "{count} usuarios",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "expandSpoiler": "Ampliar spoiler",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "spoiler": "Spoiler",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "collapseSpoiler": "Contraer el spoiler",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
   }
 }
