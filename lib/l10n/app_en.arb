@@ -539,9 +539,9 @@
   "@new_": {},
   "noComments": "Oh. There are no comments.",
   "@noComments": {},
-  "noCommentsFound": "No comments found",
+  "noCommentsFound": "No comments found.",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No communities found",
+  "noCommunitiesFound": "No communities found.",
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "No blocked communities.",
   "@noCommunityBlocks": {},
@@ -559,7 +559,7 @@
   "@noLanguage": {
     "description": "The entry for no language when selecting a post language"
   },
-  "noPosts": "No posts found",
+  "noPosts": "No posts found.",
   "@noPosts": {},
   "noPostsFound": "No posts found",
   "@noPostsFound": {},
@@ -571,7 +571,7 @@
   },
   "noUserBlocks": "No blocked users.",
   "@noUserBlocks": {},
-  "noUsersFound": "No users found",
+  "noUsersFound": "No users found.",
   "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
@@ -937,6 +937,10 @@
   },
   "trendingCommunities": "Trending Communities",
   "@trendingCommunities": {},
+  "trySearchingFor": "Try searching for...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
+  },
   "unableToFindCommunity": "Unable to find community",
   "@unableToFindCommunity": {},
   "unableToFindInstance": "Unable to find instance",
