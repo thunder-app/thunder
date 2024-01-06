@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
-
 import 'package:stream_transform/stream_transform.dart';
 
 import 'package:thunder/account/models/account.dart';
@@ -74,8 +73,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      Object exception;
-
       Account? account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
@@ -168,7 +165,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             hasReachedCommentEnd: posts.isEmpty && fullPersonView.comments.isEmpty,
           ));
         } catch (e) {
-          exception = e;
           attemptCount++;
         }
       }
@@ -182,8 +178,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     int limit = 30;
 
     try {
-      Object exception;
-
       Account? account = await fetchActiveProfileAccount();
 
       while (attemptCount < 2) {
@@ -269,7 +263,6 @@ class UserBloc extends Bloc<UserEvent, UserState> {
             hasReachedSavedCommentEnd: commentTree.isEmpty || commentTree.length < limit,
           ));
         } catch (e) {
-          exception = e;
           attemptCount++;
         }
       }

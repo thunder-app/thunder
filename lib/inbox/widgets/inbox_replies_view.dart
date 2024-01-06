@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -15,7 +16,6 @@ import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-
 import 'package:thunder/inbox/bloc/inbox_bloc.dart';
 import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/post/utils/comment_action_helpers.dart';
@@ -23,7 +23,6 @@ import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 extension on CommentReplyView {
   CommentView toCommentView() {
@@ -168,12 +167,12 @@ class _InboxRepliesViewState extends State<InboxRepliesView> {
                   });
                 },
                 isOwnComment: widget.replies[index].creator.id == context.read<AuthBloc>().state.account?.userId,
-                child: widget.replies[index].commentReply?.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply?.id)
-                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply?.id
+                child: widget.replies[index].commentReply.read == false && !inboxRepliesMarkedAsRead.contains(widget.replies[index].commentReply.id)
+                    ? inboxReplyMarkedAsRead != widget.replies[index].commentReply.id
                         ? IconButton(
                             onPressed: () {
-                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply?.id);
-                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply!.id, read: true, showAll: widget.showAll));
+                              setState(() => inboxReplyMarkedAsRead = widget.replies[index].commentReply.id);
+                              context.read<InboxBloc>().add(MarkReplyAsReadEvent(commentReplyId: widget.replies[index].commentReply.id, read: true, showAll: widget.showAll));
                             },
                             icon: const Icon(
                               Icons.check,

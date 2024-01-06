@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -91,7 +92,6 @@ class _PostCardListState extends State<PostCardList> {
     final ThunderState state = context.watch<ThunderBloc>().state;
 
     bool tabletMode = state.tabletMode;
-    bool reduceAnimations = state.reduceAnimations;
 
     const tabletGridDelegate = SliverSimpleGridDelegateWithFixedCrossAxisCount(
       crossAxisCount: 2,

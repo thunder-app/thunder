@@ -1,15 +1,15 @@
 import 'dart:math';
 import 'dart:ui';
 
-import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/post/enums/post_action.dart';
-
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/user/bloc/user_bloc.dart';
 import 'package:thunder/core/enums/media_type.dart';
@@ -17,7 +17,6 @@ import 'package:thunder/core/enums/view_mode.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/image_viewer.dart';
 import 'package:thunder/shared/link_preview_card.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class MediaView extends StatefulWidget {
   final Post? post;

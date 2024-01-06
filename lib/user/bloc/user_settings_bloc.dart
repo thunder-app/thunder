@@ -3,7 +3,6 @@ import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:equatable/equatable.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
@@ -62,8 +61,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
 
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
-
     if (account == null) {
       return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));
     }
@@ -87,8 +84,6 @@ class UserSettingsBloc extends Bloc<UserSettingsEvent, UserSettingsState> {
   Future<void> _updateUserSettingsEvent(UpdateUserSettingsEvent event, emit) async {
     LemmyApiV3 lemmy = LemmyClient.instance.lemmyApiV3;
     Account? account = await fetchActiveProfileAccount();
-
-    final l10n = AppLocalizations.of(GlobalContext.context)!;
 
     if (account == null) {
       return emit(state.copyWith(status: UserSettingsStatus.notLoggedIn));

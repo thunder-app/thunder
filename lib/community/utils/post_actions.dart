@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-import 'package:lemmy_api_client/v3.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
-
 import 'package:thunder/core/enums/swipe_action.dart';
 import 'package:thunder/core/models/post_view_media.dart';
 import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void triggerPostAction({
   required BuildContext context,

@@ -8,7 +8,6 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
 import 'package:thunder/feed/utils/community.dart';
-import 'package:thunder/post/bloc/post_bloc.dart';
 import 'package:thunder/utils/global_context.dart';
 
 part 'community_event.dart';
