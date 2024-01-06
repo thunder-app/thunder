@@ -10,6 +10,7 @@ class ThemeState extends Equatable {
     this.useDarkTheme = false,
     this.useMaterialYouTheme = false,
     this.reduceAnimations = false,
+    this.appFontFamily = '',
   });
 
   final ThemeStatus status;
@@ -20,6 +21,7 @@ class ThemeState extends Equatable {
   final bool useDarkTheme;
   final bool useMaterialYouTheme;
   final bool reduceAnimations;
+  final String appFontFamily;
 
   ThemeState copyWith({
     required ThemeStatus status,
@@ -28,6 +30,7 @@ class ThemeState extends Equatable {
     bool? useDarkTheme,
     bool? useMaterialYouTheme,
     bool? reduceAnimations,
+    String appFontFamily = '',
   }) {
     return ThemeState(
       status: status,
@@ -36,6 +39,7 @@ class ThemeState extends Equatable {
       useDarkTheme: useDarkTheme ?? false,
       useMaterialYouTheme: useMaterialYouTheme ?? false,
       reduceAnimations: reduceAnimations ?? false,
+      appFontFamily: appFontFamily,
     );
   }
 

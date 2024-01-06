@@ -114,6 +114,7 @@ class _BottomSheetListPickerState<T> extends State<BottomSheetListPicker<T>> {
                               ),
                             ],
                           ),
+                          textTheme: item.textTheme,
                         ),
                       )
                       .toList(),
@@ -154,6 +155,7 @@ class ListPickerItem<T> {
   final String label;
   final T payload;
   final bool capitalizeLabel;
+  final TextTheme? textTheme;
 
   const ListPickerItem({
     this.icon,
@@ -161,5 +163,6 @@ class ListPickerItem<T> {
     required this.label,
     required this.payload,
     this.capitalizeLabel = true,
+    this.textTheme,
   });
 }

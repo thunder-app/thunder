@@ -135,30 +135,170 @@ flutter:
   # For details regarding adding assets from package dependencies, see
   # https://flutter.dev/assets-and-images/#from-packages
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
-
   fonts:
    - family: Thunder
      fonts:
       - asset: fonts/Thunder.ttf
+   - family: RobotoSlab
+     fonts:
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Thin.ttf
+        weight: 100
+      - asset: google_fonts/RobotoSlab/RobotoSlab-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Light.ttf
+        weight: 300
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Regular.ttf
+        weight: 400
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Medium.ttf
+        weight: 500
+      - asset: google_fonts/RobotoSlab/RobotoSlab-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Bold.ttf
+        weight: 700
+      - asset: google_fonts/RobotoSlab/RobotoSlab-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/RobotoSlab/RobotoSlab-Black.ttf
+        weight: 900
+   - family: Poppins
+     fonts:
+      - asset: google_fonts/Poppins/Poppins-Thin.ttf
+        weight: 100
+      - asset: google_fonts/Poppins/Poppins-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/Poppins/Poppins-Light.ttf
+        weight: 300
+      - asset: google_fonts/Poppins/Poppins-Regular.ttf
+        weight: 400
+      - asset: google_fonts/Poppins/Poppins-Medium.ttf
+        weight: 500
+      - asset: google_fonts/Poppins/Poppins-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/Poppins/Poppins-Bold.ttf
+        weight: 700
+      - asset: google_fonts/Poppins/Poppins-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/Poppins/Poppins-Black.ttf
+        weight: 900
+   - family: Montserrat
+     fonts:
+      - asset: google_fonts/Montserrat/Montserrat-Thin.ttf
+        weight: 100
+      - asset: google_fonts/Montserrat/Montserrat-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/Montserrat/Montserrat-Light.ttf
+        weight: 300
+      - asset: google_fonts/Montserrat/Montserrat-Regular.ttf
+        weight: 400
+      - asset: google_fonts/Montserrat/Montserrat-Medium.ttf
+        weight: 500
+      - asset: google_fonts/Montserrat/Montserrat-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/Montserrat/Montserrat-Bold.ttf
+        weight: 700
+      - asset: google_fonts/Montserrat/Montserrat-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/Montserrat/Montserrat-Black.ttf
+        weight: 900
+   - family: RobotoCondensed
+     fonts:
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Thin.ttf
+        weight: 100
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Light.ttf
+        weight: 300
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Regular.ttf
+        weight: 400
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Medium.ttf
+        weight: 500
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Bold.ttf
+        weight: 700
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/RobotoCondensed/RobotoCondensed-Black.ttf
+        weight: 900
+   - family: NotoSans
+     fonts:
+      - asset: google_fonts/NotoSans/NotoSans-Thin.ttf
+        weight: 100
+      - asset: google_fonts/NotoSans/NotoSans-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/NotoSans/NotoSans-Light.ttf
+        weight: 300
+      - asset: google_fonts/NotoSans/NotoSans-Regular.ttf
+        weight: 400
+      - asset: google_fonts/NotoSans/NotoSans-Medium.ttf
+        weight: 500
+      - asset: google_fonts/NotoSans/NotoSans-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/NotoSans/NotoSans-Bold.ttf
+        weight: 700
+      - asset: google_fonts/NotoSans/NotoSans-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/NotoSans/NotoSans-Black.ttf
+        weight: 900
+   - family: Raleway
+     fonts:
+      - asset: google_fonts/Raleway/Raleway-Thin.ttf
+        weight: 100
+      - asset: google_fonts/Raleway/Raleway-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/Raleway/Raleway-Light.ttf
+        weight: 300
+      - asset: google_fonts/Raleway/Raleway-Regular.ttf
+        weight: 400
+      - asset: google_fonts/Raleway/Raleway-Medium.ttf
+        weight: 500
+      - asset: google_fonts/Raleway/Raleway-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/Raleway/Raleway-Bold.ttf
+        weight: 700
+      - asset: google_fonts/Raleway/Raleway-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/Raleway/Raleway-Black.ttf
+        weight: 900
+   - family: NotoSerif
+     fonts:
+      - asset: google_fonts/NotoSerif/NotoSerif-Thin.ttf
+        weight: 100
+      - asset: google_fonts/NotoSerif/NotoSerif-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/NotoSerif/NotoSerif-Light.ttf
+        weight: 300
+      - asset: google_fonts/NotoSerif/NotoSerif-Regular.ttf
+        weight: 400
+      - asset: google_fonts/NotoSerif/NotoSerif-Medium.ttf
+        weight: 500
+      - asset: google_fonts/NotoSerif/NotoSerif-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/NotoSerif/NotoSerif-Bold.ttf
+        weight: 700
+      - asset: google_fonts/NotoSerif/NotoSerif-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/NotoSerif/NotoSerif-Black.ttf
+        weight: 900
+   - family: NotoSansMono
+     fonts:
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Thin.ttf
+        weight: 100
+      - asset: google_fonts/NotoSansMono/NotoSansMono-ExtraLight.ttf
+        weight: 200
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Light.ttf
+        weight: 300
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Regular.ttf
+        weight: 400
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Medium.ttf
+        weight: 500
+      - asset: google_fonts/NotoSansMono/NotoSansMono-SemiBold.ttf
+        weight: 600
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Bold.ttf
+        weight: 700
+      - asset: google_fonts/NotoSansMono/NotoSansMono-ExtraBold.ttf
+        weight: 800
+      - asset: google_fonts/NotoSansMono/NotoSansMono-Black.ttf
+        weight: 900
 
 flutter_native_splash:
   image: assets/logo.png

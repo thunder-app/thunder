@@ -7,6 +7,7 @@ class PickerItem<T> extends StatelessWidget {
   final IconData? trailingIcon;
   final void Function()? onSelected;
   final bool? isSelected;
+  final TextTheme? textTheme;
 
   const PickerItem({
     super.key,
@@ -16,6 +17,7 @@ class PickerItem<T> extends StatelessWidget {
     this.isSelected,
     this.trailingIcon,
     this.leading,
+    this.textTheme,
   });
 
   @override
@@ -32,7 +34,9 @@ class PickerItem<T> extends StatelessWidget {
           child: ListTile(
             title: Text(
               label,
-              style: theme.textTheme.bodyMedium?.copyWith(color: theme.textTheme.bodyMedium?.color?.withOpacity(onSelected == null ? 0.5 : 1)),
+              style: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.copyWith(
+                color: (textTheme?.bodyMedium ?? theme.textTheme.bodyMedium)?.color?.withOpacity(onSelected == null ? 0.5 : 1),
+              ),
             ),
             leading: icon != null ? Icon(icon) : this.leading,
             trailing: Icon(trailingIcon),

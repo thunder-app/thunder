@@ -16,6 +16,7 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ThemeSettingsPage extends StatefulWidget {
   const ThemeSettingsPage({super.key});
@@ -45,6 +46,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   ];
 
   // Font Settings
+  String appFontFamily = '';
   FontScale titleFontSizeScale = FontScale.base;
   FontScale contentFontSizeScale = FontScale.base;
   FontScale commentFontSizeScale = FontScale.base;
@@ -92,6 +94,11 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         break;
 
       // Font Settings
+      case LocalSettings.appFontFamily:
+        await prefs.setString(LocalSettings.appFontFamily.name, value);
+        setState(() => appFontFamily = value);
+        if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        break;
       case LocalSettings.titleFontSizeScale:
         await prefs.setString(LocalSettings.titleFontSizeScale.name, (value as FontScale).name);
         setState(() => titleFontSizeScale = value);
@@ -130,6 +137,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
       useMaterialYouTheme = prefs.getBool(LocalSettings.useMaterialYouTheme.name) ?? false;
 
       // Font Settings
+      appFontFamily = prefs.getString(LocalSettings.appFontFamily.name) ?? '';
       titleFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.titleFontSizeScale.name) ?? FontScale.base.name);
       contentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.contentFontSizeScale.name) ?? FontScale.base.name);
       commentFontSizeScale = FontScale.values.byName(prefs.getString(LocalSettings.commentFontSizeScale.name) ?? FontScale.base.name);
@@ -148,6 +156,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Theming'), centerTitle: false),
@@ -247,6 +256,69 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
                             'Fonts',
                             style: theme.textTheme.titleLarge,
                           ),
+                        ),
+                        ListOption(
+                          description: l10n.appFont,
+                          value: ListPickerItem(label: appFontFamily.isEmpty ? l10n.system : appFontFamily, icon: Icons.font_download_rounded, payload: appFontFamily),
+                          options: [
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: l10n.system,
+                              payload: '',
+                              textTheme: theme.textTheme.apply(fontFamily: ''),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Poppins',
+                              payload: 'Poppins',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Poppins'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Slab',
+                              payload: 'RobotoSlab',
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoSlab'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Montserrat',
+                              payload: 'Montserrat',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Montserrat'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Roboto Condensed',
+                              payload: 'RobotoCondensed',
+                              textTheme: theme.textTheme.apply(fontFamily: 'RobotoCondensed'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Raleway',
+                              payload: 'Raleway',
+                              textTheme: theme.textTheme.apply(fontFamily: 'Raleway'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans',
+                              payload: 'NotoSans',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSans'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Serif',
+                              payload: 'NotoSerif',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSerif'),
+                            ),
+                            ListPickerItem(
+                              icon: Icons.font_download_rounded,
+                              label: 'Noto Sans Mono',
+                              payload: 'NotoSansMono',
+                              textTheme: theme.textTheme.apply(fontFamily: 'NotoSansMono'),
+                            ),
+                          ],
+                          icon: Icons.font_download_rounded,
+                          onChanged: (value) => setPreferences(LocalSettings.appFontFamily, value.payload),
+                          closeOnSelect: false,
                         ),
                         ListOption(
                           description: LocalSettings.titleFontSizeScale.label,

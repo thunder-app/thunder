@@ -130,6 +130,14 @@ class ThunderApp extends StatelessWidget {
                 pageTransitionsTheme: pageTransitionsTheme,
               );
 
+              // Set text theme
+              theme = theme.copyWith(
+                textTheme: theme.textTheme.apply(fontFamily: state.appFontFamily),
+              );
+              darkTheme = darkTheme.copyWith(
+                textTheme: darkTheme.textTheme.apply(fontFamily: state.appFontFamily),
+              );
+
               // Set navigation bar color on Android to be transparent
               SystemChrome.setSystemUIOverlayStyle(
                 SystemUiOverlayStyle(
