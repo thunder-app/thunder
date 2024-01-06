@@ -1,1 +1,160 @@
-{}
+{
+  "accessibility": "Accessibilité",
+  "@accessibility": {},
+  "addAccountToSeeProfile": "Connectez-vous pour voir votre compte.",
+  "@addAccountToSeeProfile": {},
+  "addAnonymousInstance": "Ajouter une instance anonyme",
+  "@addAnonymousInstance": {},
+  "addKeywordFilter": "Ajouter un mot-clef",
+  "@addKeywordFilter": {
+    "description": "Hint for text field to add keyword"
+  },
+  "addToFavorites": "Ajouter au favoris",
+  "@addToFavorites": {
+    "description": "Action to add a community in drawer to favorites"
+  },
+  "addedCommunityToSubscriptions": "S'abonner à la communauté",
+  "@addedCommunityToSubscriptions": {},
+  "allPosts": "Tous les messages",
+  "@allPosts": {},
+  "alreadyPostedTo": "Déjà posté dans",
+  "@alreadyPostedTo": {},
+  "andXMore": "et {count} plus",
+  "@andXMore": {},
+  "animations": "Animations",
+  "@animations": {},
+  "anonymous": "Anonyme",
+  "@anonymous": {},
+  "applied": "Appliqué",
+  "@applied": {},
+  "apply": "Appliquer",
+  "@apply": {},
+  "back": "Retour",
+  "@back": {},
+  "backButton": "Bouton retour",
+  "@backButton": {},
+  "backToTop": "Retour en haut",
+  "@backToTop": {},
+  "blockCommunity": "Bloquer la communauté",
+  "@blockCommunity": {},
+  "blockedCommunities": "Communautés bloquées",
+  "@blockedCommunities": {},
+  "blockedUsers": "Utilisateurs bloqués",
+  "@blockedUsers": {},
+  "communityFormat": "Format de la communauté",
+  "@communityFormat": {
+    "description": "Setting for community full name format"
+  },
+  "compactView": "Vue compacte",
+  "@compactView": {
+    "description": "Label for the compact view option in Setting -> Appearance -> Posts"
+  },
+  "compactViewSettings": "Configurations de la vue compacte",
+  "@compactViewSettings": {
+    "description": "Subcategory in Setting -> Appearance -> Posts"
+  },
+  "condensed": "Condensé",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "confirmLogOutBody": "Êtes-vous sûr de vouloir vous déconnecter ?",
+  "@confirmLogOutBody": {
+    "description": "The body of the confirm logout dialog"
+  },
+  "confirmLogOutTitle": "Déconnecter ?",
+  "@confirmLogOutTitle": {
+    "description": "The title of the confirm logout dialog"
+  },
+  "confirmMarkAllAsReadBody": "Êtes-vous sûr de vouloir marquer tous les messages comme lu ?",
+  "@confirmMarkAllAsReadBody": {
+    "description": "The body of the confirm mark all as read dialog"
+  },
+  "confirmResetCommentPreferences": "Ceci va réinitialiser toutes les préférences des commentaires. Êtes-vous sûr de vouloir poursuivre ?",
+  "@confirmResetCommentPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Comments"
+  },
+  "confirmResetPostPreferences": "Cette opération réinitialisera toutes les préférences de publication. Êtes-vous sûr de vouloir continuer ?",
+  "@confirmResetPostPreferences": {
+    "description": "Description for reset preferences dialog in Setting -> Appearance -> Posts"
+  },
+  "controversial": "Controversé",
+  "@controversial": {},
+  "copiedToClipboard": "Copié dans le presse-papiers",
+  "@copiedToClipboard": {},
+  "copy": "Copier",
+  "@copy": {},
+  "copyText": "Copier le texte",
+  "@copyText": {},
+  "couldNotDetermineCommentDelete": "Erreur : Impossible de déterminer le commentaire à supprimer.",
+  "@couldNotDetermineCommentDelete": {},
+  "countUsers": "{count} utilisateurs",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "createAccount": "Créer un compte",
+  "@createAccount": {},
+  "createComment": "Créer un commentaire",
+  "@createComment": {},
+  "createNewCrossPost": "Créer un nouveau message croisé",
+  "@createNewCrossPost": {},
+  "createPost": "Créer publication",
+  "@createPost": {},
+  "creator": "Créateur",
+  "@creator": {
+    "description": "The creator filter for searches."
+  },
+  "about": "À propos",
+  "@about": {
+    "description": "About settings category."
+  },
+  "accessibilityProfilesDescription": "Les profils d'accessibilité permettent d'appliquer plusieurs paramètres à la fois pour répondre à une exigence d'accessibilité particulière.",
+  "@accessibilityProfilesDescription": {},
+  "account": "Compte",
+  "@account": {},
+  "accountSettings": "Paramètres de compte",
+  "@accountSettings": {},
+  "addAccount": "Ajouter compte",
+  "@addAccount": {},
+  "actions": "Actions",
+  "@actions": {},
+  "add": "Ajouter",
+  "@add": {},
+  "advanced": "Avancé",
+  "@advanced": {
+    "description": "Heading for advanced settings"
+  },
+  "all": "Tout",
+  "@all": {},
+  "allowOpenSupportedLinks": "Autoriser l'application à ouvrir les liens compatibles.",
+  "@allowOpenSupportedLinks": {
+    "description": "Option to permit the app to open supported links."
+  },
+  "appLanguage": "Langue de l'application",
+  "@appLanguage": {
+    "description": "Language selection in settings."
+  },
+  "appearance": "Apparence",
+  "@appearance": {
+    "description": "Title of Appearance in Settings -> Appearance"
+  },
+  "blockInstance": "Bloquer l'instance",
+  "@blockInstance": {},
+  "blockUser": "Bloquer l'utilisateur",
+  "@blockUser": {},
+  "blockedInstances": "Instances bloquées",
+  "@blockedInstances": {},
+  "compactViewDescription": "Appliquer la vue compacte pour modifier les paramètres",
+  "@compactViewDescription": {
+    "description": "Description for the compact view subcategory in Setting -> Appearance -> Posts"
+  },
+  "confirmMarkAllAsReadTitle": "Tout marquer comme lu ?",
+  "@confirmMarkAllAsReadTitle": {
+    "description": "The title of the confirm mark all as read dialog"
+  },
+  "couldNotDeterminePostComment": "Erreur : Impossible de déterminer le message à supprimer.",
+  "@couldNotDeterminePostComment": {},
+  "couldntCreateReport": "Votre signalement de commentaire n'a pas pu être transmis pour le moment. Veuillez réessayer plus tard",
+  "@couldntCreateReport": {},
+  "countSubscribers": "{count} abonnés",
+  "@countSubscribers": {}
+}
