@@ -18,6 +18,7 @@ enum LocalSettings {
   useDisplayNamesForUsers(name: 'setting_use_display_names_for_users', label: 'Show User Display Names'),
   markPostAsReadOnMediaView(name: 'setting_general_mark_post_read_on_media_view', label: 'Mark Read After Viewing Media'),
   showInAppUpdateNotification(name: 'setting_notifications_show_inapp_update', label: 'Get notified of new GitHub releases'),
+  enableInboxNotifications(name: 'setting_enable_inbox_notifications', label: ''),
   scoreCounters(name: 'setting_score_counters', label: "Display User Scores"),
   appLanguageCode(name: 'setting_app_language_code', label: 'App Language'),
 
