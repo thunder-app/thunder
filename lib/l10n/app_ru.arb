@@ -49,7 +49,7 @@
   "@xUpvotes": {},
   "top": "Топ",
   "@top": {},
-  "addAccountToSeeProfile": "Войдите, чтобы увидеть свою учетную запись.",
+  "addAccountToSeeProfile": "Войдите, чтобы увидеть свой аккаунт.",
   "@addAccountToSeeProfile": {},
   "customizeSwipeActions": "Настройте действия свайпа (нажмите, чтобы изменить)",
   "@customizeSwipeActions": {},
@@ -191,7 +191,7 @@
   "@keywordFilterDescription": {
     "description": "Description of keyword filter settings"
   },
-  "userSettingDescription": "Эти настройки синхронизируются с вашей учетной записью Lemmy и применяются только к каждой учетной записи.",
+  "userSettingDescription": "Эти настройки синхронизируются с вашим аккаунтом Lemmy и применяются только к каждому аккаунту.",
   "@userSettingDescription": {
     "description": "Description which explains that the settings are applied globally to the current user."
   },
@@ -357,7 +357,7 @@
   "@includePostLink": {},
   "inbox": "Входящие",
   "@inbox": {},
-  "deleteLocalDatabaseDescription": "Это действие удалит локальную базу данных и сбросит вас из всех ваших учетных записей.\n\nВы уверены, что хотите продолжить?",
+  "deleteLocalDatabaseDescription": "Это действие удалит локальную базу данных и сбросит вас из всех ваших аккаунтов.\n\nВы уверены, что хотите продолжить?",
   "@deleteLocalDatabaseDescription": {
     "description": "Description for confirmation action to delete local database"
   },
@@ -605,7 +605,7 @@
   "@unsubscribed": {},
   "noResultsFound": "Результаты не найдены.",
   "@noResultsFound": {},
-  "createAccount": "Создать учетную запись",
+  "createAccount": "Создать аккаунт",
   "@createAccount": {},
   "visitCommunity": "Посетите сообщество",
   "@visitCommunity": {},
@@ -903,7 +903,7 @@
   "@markAllAsRead": {
     "description": "The mark all as read action"
   },
-  "removeAccount": "Удалить учетную запись",
+  "removeAccount": "Удалить аккаунт",
   "@removeAccount": {},
   "postSwipeGesturesHint": "Хотите вместо этого использовать кнопки? Измените, какие кнопки отображаются на открытках, в общих настройках.",
   "@postSwipeGesturesHint": {},
@@ -984,5 +984,45 @@
   "collapsePost": "Свернуть публикацию",
   "@collapsePost": {},
   "loginToSeeInbox": "Войдите, чтобы увидеть свои входящие",
-  "@loginToSeeInbox": {}
+  "@loginToSeeInbox": {},
+  "condensed": "Сжатый",
+  "@condensed": {
+    "description": "Condensed post body view type"
+  },
+  "countUsers": "{count} пользователей",
+  "@countUsers": {
+    "description": "Describes a certain number of users"
+  },
+  "expanded": "Расширенный",
+  "@expanded": {
+    "description": "Expanded post body view type"
+  },
+  "spoiler": "Спойлер",
+  "@spoiler": {
+    "description": "Placeholder label for spoiler"
+  },
+  "postBodySettings": "Настройки тела сообщения",
+  "@postBodySettings": {
+    "description": "Settings heading for post body settings"
+  },
+  "postBodySettingsDescription": "Эти настройки влияют на отображение тела сообщения",
+  "@postBodySettingsDescription": {
+    "description": "Description of post body settings"
+  },
+  "postBodyViewType": "Тип представления тела сообщения",
+  "@postBodyViewType": {
+    "description": "Setting name for the post body view type setting"
+  },
+  "collapseSpoiler": "Свернуть спойлер",
+  "@collapseSpoiler": {
+    "description": "Label for collapsing spoiler"
+  },
+  "expandSpoiler": "Развернуть спойлер",
+  "@expandSpoiler": {
+    "description": "Label for expanding spoiler"
+  },
+  "dismissRead": "Отклонить чтение",
+  "@dismissRead": {},
+  "scaled": "Масштабированный",
+  "@scaled": {}
 }
