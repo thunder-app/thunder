@@ -289,6 +289,10 @@
   "@dimReadPosts": {
     "description": "Description of the effect on read posts."
   },
+  "disable": "Disable",
+  "@disable": {
+    "description": "Action for disabling something"
+  },
   "dismissRead": "Dismiss Read",
   "@dismissRead": {},
   "displayUserScore": "Display User Scores (Karma).",
@@ -321,7 +325,7 @@
   "@enableFeedFab": {
     "description": "Enable the Floating Action Button for the feed"
   },
-  "enableInboxNotifications": "Enable Inbox Notifications",
+  "enableInboxNotifications": "Enable Inbox Notifications (Experimental)",
   "@enableInboxNotifications": {
     "description": "Setting name for inbox notifications"
   },
@@ -598,6 +602,10 @@
   "notificationsNotAllowed": "Notifications are not allowed for Thunder in system settings",
   "@notificationsNotAllowed": {
     "description": "Description for when notifications are now allowed for app"
+  },
+  "notificationsWarningDialog": "Notifications are an experimental feature which may not function correctly on all devices.\n\n· Checks will occur every ~15 minutes and will consume additional battery.\n\n· Disable battery optimizations for a higher likelihood of successful notifications.\n\nSee the following page for more information.",
+  "@notificationsWarningDialog": {
+    "description": "The content of the warning dialog for the notifications feature"
   },
   "off": "off",
   "@off": {},
@@ -977,6 +985,10 @@
   "@unblockInstance": {
     "description": "Tooltip for unblocking an instance"
   },
+  "understandEnable": "I Understand, Enable",
+  "@understandEnable": {
+    "description": "Action for acknowledging and enabling something"
+  },
   "unexpectedError": "Unexpected Error",
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",
@@ -1029,6 +1041,10 @@
   "@visitInstance": {},
   "visitUserProfile": "Visit User Profile",
   "@visitUserProfile": {},
+  "warning": "Warning",
+  "@warning": {
+    "description": "Heading for warning dialogs"
+  },
   "xDownvotes": "{x} downvotes",
   "@xDownvotes": {},
   "xScore": "{x} score",

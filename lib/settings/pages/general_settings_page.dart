@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,11 +19,13 @@ import 'package:thunder/settings/widgets/list_option.dart';
 import 'package:thunder/settings/widgets/settings_list_tile.dart';
 import 'package:thunder/settings/widgets/toggle_option.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/dialogs.dart';
 import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/bottom_sheet_list_picker.dart';
 import 'package:thunder/utils/constants.dart';
 import 'package:thunder/utils/language/language.dart';
+import 'package:thunder/utils/links.dart';
 
 class GeneralSettingsPage extends StatefulWidget {
   const GeneralSettingsPage({super.key});
@@ -633,6 +636,43 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   iconEnabled: Icons.notifications_on_rounded,
                   iconDisabled: Icons.notifications_off_rounded,
                   onToggle: (bool value) async {
+                    // Show a warning message about the experimental nature of this feature.
+                    // This message is specific to Android.
+                    if (!kIsWeb && Platform.isAndroid && value) {
+                      bool res = false;
+                      await showThunderDialog(
+                        context: context,
+                        title: l10n.warning,
+                        contentWidgetBuilder: (_) => Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(l10n.notificationsWarningDialog),
+                            const SizedBox(height: 10),
+                            Align(
+                              alignment: Alignment.centerLeft,
+                              child: GestureDetector(
+                                onTap: () => handleLink(context, url: 'https://dontkillmyapp.com/'),
+                                child: Text(
+                                  'https://dontkillmyapp.com/',
+                                  style: theme.textTheme.bodyMedium?.copyWith(color: Colors.blue),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        primaryButtonText: l10n.understandEnable,
+                        onPrimaryButtonPressed: (dialogContext, _) {
+                          res = true;
+                          dialogContext.pop();
+                        },
+                        secondaryButtonText: l10n.disable,
+                        onSecondaryButtonPressed: (dialogContext) => dialogContext.pop(),
+                      );
+
+                      // The user chose not to enable the feature
+                      if (!res) return;
+                    }
+
                     setPreferences(LocalSettings.enableInboxNotifications, value);
 
                     if (!kIsWeb && Platform.isAndroid && value) {
@@ -662,7 +702,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                   },
                   subtitle: enableInboxNotifications
                       ? !kIsWeb && Platform.isAndroid && areAndroidNotificationsAllowed == true
-                          ? l10n.backgroundCheckWarning
+                          ? null
                           : l10n.notificationsNotAllowed
                       : null,
                 ),
