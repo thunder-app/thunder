@@ -1,6 +1,6 @@
 part of 'feed_bloc.dart';
 
-enum FeedStatus { initial, fetching, success, failure }
+enum FeedStatus { initial, fetching, success, failure, failureLoadingCommunity }
 
 final class FeedState extends Equatable {
   const FeedState({

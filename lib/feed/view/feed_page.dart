@@ -270,7 +270,7 @@ class _FeedViewState extends State<FeedView> {
                   if (!isScrollable) context.read<FeedBloc>().add(const FeedFetchedEvent());
                 }
 
-                if (state.status == FeedStatus.failure && state.message != null) {
+                if ((state.status == FeedStatus.failure || state.status == FeedStatus.failureLoadingCommunity) && state.message != null) {
                   showSnackbar(context, state.message!, customState: _key.currentState);
                   context.read<FeedBloc>().add(FeedClearMessageEvent()); // Clear the message so that it does not spam
                 }
@@ -298,12 +298,12 @@ class _FeedViewState extends State<FeedView> {
                               hasScrollBody: false,
                               child: Center(child: CircularProgressIndicator()),
                             ),
-                          if (state.status == FeedStatus.failure)
+                          if (state.status == FeedStatus.failureLoadingCommunity)
                             SliverToBoxAdapter(
                               child: Container(),
                             ),
                           // Display tagline and list of posts once they are fetched
-                          if (state.status != FeedStatus.initial && state.status != FeedStatus.failure) ...[
+                          if (state.status != FeedStatus.initial && state.status != FeedStatus.failureLoadingCommunity) ...[
                             SliverToBoxAdapter(
                               child: Visibility(
                                 visible: state.feedType == FeedType.general && state.status != FeedStatus.initial,

@@ -53,7 +53,7 @@ class FeedPageAppBar extends StatelessWidget {
           (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
         },
       ),
-      actions: feedState.status != FeedStatus.failure
+      actions: feedState.status != FeedStatus.failureLoadingCommunity
           ? [
               if (feedState.feedType == FeedType.community) ...[
                 BlocListener<CommunityBloc, CommunityState>(

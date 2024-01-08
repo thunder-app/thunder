@@ -121,7 +121,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles clearing any messages from the state
   Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.failure, message: null));
+    emit(state.copyWith(status: state.status == FeedStatus.failureLoadingCommunity ? state.status : FeedStatus.success, message: null));
   }
 
   /// Handles post related actions on a given item within the feed
@@ -304,7 +304,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
           } catch (e) {
             // If we are given a community feed, but we can't load the community, that's a problem! Emit an error.
             return emit(state.copyWith(
-              status: FeedStatus.failure,
+              status: FeedStatus.failureLoadingCommunity,
               message: getExceptionErrorMessage(e, additionalInfo: event.communityName),
               feedType: event.feedType,
             ));
