@@ -62,15 +62,15 @@ enum LocalSettings {
 
   /// -------------------------- Theme Related Settings --------------------------
   // Theme Settings
-  appTheme(name: 'setting_theme_app_theme', label: 'Theme'),
-  appThemeAccentColor(name: 'setting_theme_custom_app_theme', label: 'Accent Colors'),
-  useMaterialYouTheme(name: 'setting_theme_use_material_you', label: 'Use Material You Theme'),
+  appTheme(name: 'setting_theme_app_theme', label: ''),
+  appThemeAccentColor(name: 'setting_theme_custom_app_theme', label: ''),
+  useMaterialYouTheme(name: 'setting_theme_use_material_you', label: ''),
 
   // Font Settings
-  titleFontSizeScale(name: 'setting_theme_title_font_size_scale', label: 'Post Title Font Scale'),
-  contentFontSizeScale(name: 'setting_theme_content_font_size_scale', label: 'Post Content Font Scale'),
-  commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', label: 'Comment Content Font Scale'),
-  metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', label: 'Metadata Font Scale'),
+  titleFontSizeScale(name: 'setting_theme_title_font_size_scale', label: ''),
+  contentFontSizeScale(name: 'setting_theme_content_font_size_scale', label: ''),
+  commentFontSizeScale(name: 'setting_theme_comment_font_size_scale', label: ''),
+  metadataFontSizeScale(name: 'setting_theme_metadata_font_size_scale', label: ''),
 
   /// -------------------------- Gesture Related Settings --------------------------
   // Sidebar Gesture Settings

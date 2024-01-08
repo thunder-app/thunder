@@ -405,6 +405,78 @@
   "@generalSettings": {
     "description": "Subcategory in Settings"
   },
+  "fonts": "Fonts",
+  "@fonts": {
+    "description": "Settings category for fonts"
+  },
+  "accentColors": "Accent Colors",
+  "@accentColors": {
+    "description": "Label describing theme accent colors"
+  },
+  "useMaterialYouTheme": "Use Material You Theme",
+  "@useMaterialYouTheme": {
+    "description": "Label describing setting for using Material You theme"
+  },
+  "useMaterialYouThemeDescription": "Overrides the selected custom theme",
+  "@useMaterialYouThemeDescription": {
+    "description": "Subtitle of the setting for using Material You theme"
+  },
+  "titleFontSizeScale": "Title Font Size Scale",
+  "@titleFontSizeScale": {
+    "description": "Label describing setting for the font scale of post titles"
+  },
+  "contentFontSizeScale": "Post Content Font Scale",
+  "@contentFontSizeScale": {
+    "description": "Label describing setting for the font scale of post content"
+  },
+  "commentFontSizeScale": "Comment Font Size Scale",
+  "@commentFontSizeScale": {
+    "description": "Label describing setting for the font scale of comments"
+  },
+  "metadataFontSizeScale": "Metadata Font Size Scale",
+  "@metadataFontSizeScale": {
+    "description": "Label describing setting for the font scale of metadata text"
+  },
+  "system": "System",
+  "@system": {
+    "description": "Describes using the system settings for theme"
+  },
+  "light": "Light",
+  "@light": {
+    "description":  "Describes using the light theme"
+  },
+  "dark": "Dark",
+  "@dark": {
+    "description": "Describes using the dark theme"
+  },
+  "pureBlack": "Pure Black",
+  "@pureBlack": {
+    "description": "Describes using the pure black theme"
+  },
+  "theme": "Theme",
+  "@theme": {
+    "description": "Settings category for theme"
+  },
+  "small": "Small",
+  "@small": {
+    "description": "Description for small font scale"
+  },
+  "base": "Base",
+  "@base": {
+    "description": "Description for base font scale"
+  },
+  "medium": "Medium",
+  "@medium": {
+    "description": "Description for medium font scale"
+  },
+  "large": "Large",
+  "@large": {
+    "description": "Description for large font scale"
+  },
+  "extraLarge": "Extra Large",
+  "@extraLarge": {
+    "description": "Description for extra large font scale"
+  },
   "gestures": "Gestures",
   "@gestures": {},
   "gettingStarted": "Getting Started",
