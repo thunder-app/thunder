@@ -939,6 +939,10 @@
   "@trendingCommunities": {},
   "unableToFindCommunity": "Unable to find community",
   "@unableToFindCommunity": {},
+  "unableToFindCommunityName": "Unable to find community '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
+  },
   "unableToFindInstance": "Unable to find instance",
   "@unableToFindInstance": {},
   "unableToFindLanguage": "Unable to find language",

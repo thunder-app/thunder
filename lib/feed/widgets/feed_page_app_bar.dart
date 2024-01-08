@@ -53,91 +53,93 @@ class FeedPageAppBar extends StatelessWidget {
           (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
         },
       ),
-      actions: [
-        if (feedState.feedType == FeedType.community) ...[
-          BlocListener<CommunityBloc, CommunityState>(
-            listener: (context, state) {
-              if (state.status == CommunityStatus.success && state.communityView != null) {
-                feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
-              }
-            },
-            child: IconButton(
-              icon: Icon(
-                  switch (_getSubscriptionStatus(context)) {
-                    SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
-                    SubscribedType.pending => Icons.pending_outlined,
-                    SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
-                    _ => Icons.add_circle_outline_rounded,
+      actions: feedState.status != FeedStatus.failureLoadingCommunity
+          ? [
+              if (feedState.feedType == FeedType.community) ...[
+                BlocListener<CommunityBloc, CommunityState>(
+                  listener: (context, state) {
+                    if (state.status == CommunityStatus.success && state.communityView != null) {
+                      feedBloc.add(FeedCommunityViewUpdatedEvent(communityView: state.communityView!));
+                    }
                   },
-                  semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? AppLocalizations.of(context)!.subscribe : AppLocalizations.of(context)!.unsubscribe),
-              tooltip: switch (_getSubscriptionStatus(context)) {
-                SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
-                SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
-                SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
-                _ => null,
-              },
-              onPressed: () {
-                if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
+                  child: IconButton(
+                    icon: Icon(
+                        switch (_getSubscriptionStatus(context)) {
+                          SubscribedType.notSubscribed => Icons.add_circle_outline_rounded,
+                          SubscribedType.pending => Icons.pending_outlined,
+                          SubscribedType.subscribed => Icons.remove_circle_outline_rounded,
+                          _ => Icons.add_circle_outline_rounded,
+                        },
+                        semanticLabel: (_getSubscriptionStatus(context) == SubscribedType.notSubscribed) ? AppLocalizations.of(context)!.subscribe : AppLocalizations.of(context)!.unsubscribe),
+                    tooltip: switch (_getSubscriptionStatus(context)) {
+                      SubscribedType.notSubscribed => AppLocalizations.of(context)!.subscribe,
+                      SubscribedType.pending => AppLocalizations.of(context)!.unsubscribePending,
+                      SubscribedType.subscribed => AppLocalizations.of(context)!.unsubscribe,
+                      _ => null,
+                    },
+                    onPressed: () {
+                      if (thunderBloc.state.isFabOpen) thunderBloc.add(const OnFabToggle(false));
 
-                HapticFeedback.mediumImpact();
-                _onSubscribeIconPressed(context);
-              },
-            ),
-          ),
-        ],
-        if (feedState.feedType != FeedType.community)
-          IconButton(
-              onPressed: () {
-                HapticFeedback.mediumImpact();
-                triggerRefresh(context);
-              },
-              icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
-        IconButton(
-          icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
-          onPressed: () {
-            HapticFeedback.mediumImpact();
-
-            showModalBottomSheet<void>(
-              showDragHandle: true,
-              context: context,
-              isScrollControlled: true,
-              builder: (builderContext) => SortPicker(
-                title: l10n.sortOptions,
-                onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
-                previouslySelected: feedBloc.state.sortType,
-              ),
-            );
-          },
-        ),
-        if (feedState.feedType == FeedType.community)
-          PopupMenuButton(
-            itemBuilder: (context) => [
-              PopupMenuItem(
-                onTap: () => triggerRefresh(context),
-                child: ListTile(
-                  dense: true,
-                  horizontalTitleGap: 5,
-                  leading: const Icon(Icons.refresh_rounded, size: 20),
-                  title: Text(l10n.refresh),
-                ),
-              ),
-              if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
-                PopupMenuItem(
-                  onTap: () async {
-                    final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
-                    bool isFavorite = _getFavoriteStatus(context);
-                    await toggleFavoriteCommunity(context, community, isFavorite);
-                  },
-                  child: ListTile(
-                    dense: true,
-                    horizontalTitleGap: 5,
-                    leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
-                    title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                      HapticFeedback.mediumImpact();
+                      _onSubscribeIconPressed(context);
+                    },
                   ),
                 ),
-            ],
-          ),
-      ],
+              ],
+              if (feedState.feedType != FeedType.community)
+                IconButton(
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      triggerRefresh(context);
+                    },
+                    icon: Icon(Icons.refresh_rounded, semanticLabel: l10n.refresh)),
+              IconButton(
+                icon: Icon(Icons.sort, semanticLabel: l10n.sortBy),
+                onPressed: () {
+                  HapticFeedback.mediumImpact();
+
+                  showModalBottomSheet<void>(
+                    showDragHandle: true,
+                    context: context,
+                    isScrollControlled: true,
+                    builder: (builderContext) => SortPicker(
+                      title: l10n.sortOptions,
+                      onSelect: (selected) => feedBloc.add(FeedChangeSortTypeEvent(selected.payload)),
+                      previouslySelected: feedBloc.state.sortType,
+                    ),
+                  );
+                },
+              ),
+              if (feedState.feedType == FeedType.community)
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () => triggerRefresh(context),
+                      child: ListTile(
+                        dense: true,
+                        horizontalTitleGap: 5,
+                        leading: const Icon(Icons.refresh_rounded, size: 20),
+                        title: Text(l10n.refresh),
+                      ),
+                    ),
+                    if (_getSubscriptionStatus(context) == SubscribedType.subscribed)
+                      PopupMenuItem(
+                        onTap: () async {
+                          final Community community = context.read<FeedBloc>().state.fullCommunityView!.communityView.community;
+                          bool isFavorite = _getFavoriteStatus(context);
+                          await toggleFavoriteCommunity(context, community, isFavorite);
+                        },
+                        child: ListTile(
+                          dense: true,
+                          horizontalTitleGap: 5,
+                          leading: Icon(_getFavoriteStatus(context) ? Icons.star_rounded : Icons.star_border_rounded, size: 20),
+                          title: Text(_getFavoriteStatus(context) ? l10n.removeFromFavorites : l10n.addToFavorites),
+                        ),
+                      ),
+                  ],
+                ),
+            ]
+          : [],
     );
   }
 }
