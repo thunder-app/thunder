@@ -44,7 +44,7 @@ class FeedPageAppBar extends StatelessWidget {
       toolbarHeight: 70.0,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
-        icon: Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community
+        icon: scaffoldStateKey == null
             ? (!kIsWeb && Platform.isIOS
                 ? Icon(
                     Icons.arrow_back_ios_new_rounded,
@@ -54,7 +54,7 @@ class FeedPageAppBar extends StatelessWidget {
             : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : scaffoldStateKey?.currentState?.openDrawer();
+          (scaffoldStateKey == null && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : scaffoldStateKey?.currentState?.openDrawer();
         },
       ),
       actions: feedState.status != FeedStatus.failureLoadingCommunity
