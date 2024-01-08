@@ -1,4 +1,7 @@
 ## Unreleased
+### Added
+- Added indicator when community posting is locked to moderators
+
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
 
