@@ -34,10 +34,11 @@ class FeedPageAppBar extends StatelessWidget {
     final FeedState feedState = feedBloc.state;
 
     return SliverAppBar(
-      pinned: true,
+      pinned: !thunderBloc.state.hideTopBarOnScroll,
       floating: true,
       centerTitle: false,
       toolbarHeight: 70.0,
+      surfaceTintColor: thunderBloc.state.hideTopBarOnScroll ? Colors.transparent : null,
       title: FeedAppBarTitle(visible: showAppBarTitle),
       leading: IconButton(
         icon: Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community
