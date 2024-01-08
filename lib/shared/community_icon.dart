@@ -57,7 +57,7 @@ class CommunityIcon extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(4.0),
                     decoration: BoxDecoration(color: theme.colorScheme.background, shape: BoxShape.circle),
-                    child: Icon(Icons.lock, color: theme.colorScheme.error, size: 20.0),
+                    child: Icon(Icons.lock, color: theme.colorScheme.error, size: 20.0, semanticLabel: l10n.postingRestrictedToMods),
                   ),
                 ),
               ),
