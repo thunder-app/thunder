@@ -33,19 +33,21 @@ import 'package:thunder/utils/global_context.dart';
 
 enum PostCardAction {
   visitProfile,
+  blockUser,
   visitCommunity,
+  subscribeToCommunity,
+  unsubscribeFromCommunity,
+  blockCommunity,
   visitInstance,
+  blockInstance,
   sharePost,
   shareMedia,
   shareLink,
-  blockInstance,
-  blockCommunity,
   upvote,
   downvote,
   save,
   toggleRead,
   share,
-  blockUser,
 }
 
 class ExtendedPostCardActions {
@@ -70,58 +72,72 @@ class ExtendedPostCardActions {
   final bool Function(bool isUserLoggedIn)? shouldEnable;
 }
 
+final l10n = AppLocalizations.of(GlobalContext.context)!;
+
 final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitProfile,
     icon: Icons.person_search_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.visitUserProfile,
+    label: l10n.visitUserProfile,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.blockUser,
     icon: Icons.block,
-    label: AppLocalizations.of(GlobalContext.context)!.blockUser,
+    label: l10n.blockUser,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitCommunity,
     icon: Icons.home_work_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.visitCommunity,
+    label: l10n.visitCommunity,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.subscribeToCommunity,
+    icon: Icons.add_circle_outline_rounded,
+    label: l10n.subscribeToCommunity,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
+  ),
+  ExtendedPostCardActions(
+    postCardAction: PostCardAction.unsubscribeFromCommunity,
+    icon: Icons.remove_circle_outline_rounded,
+    label: l10n.unsubscribeFromCommunity,
+    shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.blockCommunity,
     icon: Icons.block_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.blockCommunity,
+    label: l10n.blockCommunity,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.visitInstance,
     icon: Icons.language,
-    label: AppLocalizations.of(GlobalContext.context)!.visitInstance,
+    label: l10n.visitInstance,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.blockInstance,
     icon: Icons.block_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.blockInstance,
+    label: l10n.blockInstance,
     shouldEnable: (isUserLoggedIn) => isUserLoggedIn,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.sharePost,
     icon: Icons.share_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.sharePost,
+    label: l10n.sharePost,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareMedia,
     icon: Icons.image_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.shareMedia,
+    label: l10n.shareMedia,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.shareLink,
     icon: Icons.link_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.shareLink,
+    label: l10n.shareLink,
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.upvote,
-    label: AppLocalizations.of(GlobalContext.context)!.upvote,
+    label: l10n.upvote,
     icon: Icons.arrow_upward_rounded,
     color: Colors.orange,
     getForegroundColor: (postView) => postView.myVote == 1 ? Colors.orange : null,
@@ -129,7 +145,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.downvote,
-    label: AppLocalizations.of(GlobalContext.context)!.downvote,
+    label: l10n.downvote,
     icon: Icons.arrow_downward_rounded,
     color: Colors.blue,
     getForegroundColor: (postView) => postView.myVote == -1 ? Colors.blue : null,
@@ -138,7 +154,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.save,
-    label: AppLocalizations.of(GlobalContext.context)!.save,
+    label: l10n.save,
     icon: Icons.star_border_rounded,
     color: Colors.purple,
     getForegroundColor: (postView) => postView.saved ? Colors.purple : null,
@@ -147,7 +163,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ),
   ExtendedPostCardActions(
     postCardAction: PostCardAction.toggleRead,
-    label: AppLocalizations.of(GlobalContext.context)!.toggelRead,
+    label: l10n.toggelRead,
     icon: Icons.mail_outline_outlined,
     color: Colors.teal.shade300,
     getOverrideIcon: (postView) => postView.read ? Icons.mark_email_unread_rounded : Icons.mark_email_read_outlined,
@@ -156,7 +172,7 @@ final List<ExtendedPostCardActions> postCardActionItems = [
   ExtendedPostCardActions(
     postCardAction: PostCardAction.share,
     icon: Icons.share_rounded,
-    label: AppLocalizations.of(GlobalContext.context)!.share,
+    label: l10n.share,
   )
 ];
 
@@ -175,6 +191,11 @@ void showPostActionBottomModalSheet(
 
   if (actionsToInclude.contains(PostCardAction.blockInstance) && !LemmyClient.instance.supportsFeature(LemmyFeature.blockInstance)) {
     postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockInstance);
+  }
+
+  // Hide the option to block a community if the user is subscribed to it
+  if (actionsToInclude.contains(PostCardAction.blockCommunity) && postViewMedia.postView.subscribed != SubscribedType.notSubscribed) {
+    postCardActionItemsToUse.removeWhere((ExtendedPostCardActions postCardActionItem) => postCardActionItem.postCardAction == PostCardAction.blockCommunity);
   }
 
   multiActionsToInclude ??= [];
@@ -331,6 +352,12 @@ void onSelected(BuildContext context, PostCardAction postCardAction, PostViewMed
       break;
     case PostCardAction.blockUser:
       context.read<UserBloc>().add(BlockUserEvent(personId: postViewMedia.postView.creator.id, blocked: true));
+      break;
+    case PostCardAction.subscribeToCommunity:
+      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: true));
+      break;
+    case PostCardAction.unsubscribeFromCommunity:
+      context.read<CommunityBloc>().add(CommunityActionEvent(communityAction: CommunityAction.follow, communityId: postViewMedia.postView.community.id, value: false));
       break;
   }
 }

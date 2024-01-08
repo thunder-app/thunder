@@ -1,4 +1,7 @@
 ## Unreleased
+### Added
+- Added ability to subscribe/unsubscribe to community from long press action on posts
+
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
 

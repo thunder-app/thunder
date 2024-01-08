@@ -861,6 +861,10 @@
   "@submit": {},
   "subscribe": "Subscribe",
   "@subscribe": {},
+  "subscribeToCommunity": "Subscribe to Community",
+  "@subscribeToCommunity": {
+    "description": "Action for subscribing to a community"
+  },
   "subscribed": "Subscribed",
   "@subscribed": {},
   "subscriptions": "Subscriptions",
@@ -973,6 +977,10 @@
   "@unexpectedError": {},
   "unsubscribe": "Unsubscribe",
   "@unsubscribe": {},
+  "unsubscribeFromCommunity": "Unsubscribe from Community",
+  "@unsubscribeFromCommunity": {
+    "description": "Action for unsubscribing from a community"
+  },
   "unsubscribePending": "Unsubscribe (subscription pending)",
   "@unsubscribePending": {},
   "unsubscribed": "Unsubscribed",
