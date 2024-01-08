@@ -21,9 +21,13 @@ import 'package:thunder/shared/sort_picker.dart';
 import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class FeedPageAppBar extends StatelessWidget {
-  const FeedPageAppBar({super.key, this.showAppBarTitle = true});
+  const FeedPageAppBar({super.key, this.showAppBarTitle = true, this.scaffoldStateKey});
 
+  /// Whether to show the app bar title
   final bool showAppBarTitle;
+
+  /// The scaffold key of the parent scaffold holding the drawer.
+  final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +54,7 @@ class FeedPageAppBar extends StatelessWidget {
             : Icon(Icons.menu, semanticLabel: MaterialLocalizations.of(context).openAppDrawerTooltip),
         onPressed: () {
           HapticFeedback.mediumImpact();
-          (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : Scaffold.of(context).openDrawer();
+          (Navigator.of(context).canPop() && feedBloc.state.feedType == FeedType.community) ? Navigator.of(context).maybePop() : scaffoldStateKey?.currentState?.openDrawer();
         },
       ),
       actions: feedState.status != FeedStatus.failureLoadingCommunity
