@@ -94,6 +94,7 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                           CommunityIcon(
                             community: widget.getCommunityResponse.communityView.community,
                             radius: 45.0,
+                            showCommunityStatus: true,
                           ),
                           const SizedBox(width: 20.0),
                           Expanded(
