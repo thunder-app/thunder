@@ -106,55 +106,57 @@ class CommonMarkdownBody extends StatelessWidget {
     md.ExtensionSet customExtensionSet = md.ExtensionSet.gitHubFlavored;
     customExtensionSet = md.ExtensionSet(List.from(customExtensionSet.blockSyntaxes)..add(SpoilerBlockSyntax()), List.from(customExtensionSet.inlineSyntaxes));
 
-    return ExtendedMarkdownBody(
-      data: body,
-      extensionSet: customExtensionSet,
-      inlineSyntaxes: [LemmyLinkSyntax(), SpoilerInlineSyntax()],
-      builders: {
-        'spoiler': SpoilerElementBuilder(),
-      },
-      imageBuilder: (uri, title, alt) {
-        if (hideContent) return Container();
+    return Material(
+      child: ExtendedMarkdownBody(
+        data: body,
+        extensionSet: customExtensionSet,
+        inlineSyntaxes: [LemmyLinkSyntax(), SpoilerInlineSyntax()],
+        builders: {
+          'spoiler': SpoilerElementBuilder(),
+        },
+        imageBuilder: (uri, title, alt) {
+          if (hideContent) return Container();
 
-        return FutureBuilder(
-          future: isImageUriSvg(uri),
-          builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-            return Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  !snapshot.hasData
-                      ? Container()
-                      : snapshot.data == true
-                          ? ScalableImageWidget.fromSISource(
-                              si: ScalableImageSource.fromSvgHttpUrl(uri),
-                            )
-                          : ImagePreview(
-                              url: uri.toString(),
-                              isExpandable: true,
-                              isComment: isComment,
-                              showFullHeightImages: true,
-                              maxWidth: imageMaxWidth,
-                            ),
-                ],
+          return FutureBuilder(
+            future: isImageUriSvg(uri),
+            builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    !snapshot.hasData
+                        ? Container()
+                        : snapshot.data == true
+                            ? ScalableImageWidget.fromSISource(
+                                si: ScalableImageSource.fromSvgHttpUrl(uri),
+                              )
+                            : ImagePreview(
+                                url: uri.toString(),
+                                isExpandable: true,
+                                isComment: isComment,
+                                showFullHeightImages: true,
+                                maxWidth: imageMaxWidth,
+                              ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+        selectable: isSelectableText,
+        onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
+        onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
+        styleSheet: hideContent
+            ? spoilerMarkdownStyleSheet
+            : MarkdownStyleSheet.fromTheme(theme).copyWith(
+                textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
+                blockquoteDecoration: const BoxDecoration(
+                  color: Colors.transparent,
+                  border: Border(left: BorderSide(color: Colors.grey, width: 4)),
+                ),
               ),
-            );
-          },
-        );
-      },
-      selectable: isSelectableText,
-      onTapLink: (text, url, title) => handleLinkTap(context, state, text, url),
-      onLongPressLink: (text, url, title) => handleLinkLongPress(context, state, text, url),
-      styleSheet: hideContent
-          ? spoilerMarkdownStyleSheet
-          : MarkdownStyleSheet.fromTheme(theme).copyWith(
-              textScaleFactor: MediaQuery.of(context).textScaleFactor * (isComment == true ? state.commentFontSizeScale.textScaleFactor : state.contentFontSizeScale.textScaleFactor),
-              blockquoteDecoration: const BoxDecoration(
-                color: Colors.transparent,
-                border: Border(left: BorderSide(color: Colors.grey, width: 4)),
-              ),
-            ),
+      ),
     );
   }
 }
@@ -323,33 +325,31 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(
-          transform: Matrix4.translationValues(-4.0, 0, 0.0), // Move the Inkwell slightly to the left to line up text
-          child: InkWell(
-            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-            onTap: () {
-              expandableController.toggle();
-              setState(() {}); // Update the state to trigger the collapse/expand
-            },
-            child: Padding(
-              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 4.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: ScalableText(
-                      widget.title ?? l10n.spoiler,
-                      fontScale: state.contentFontSizeScale,
-                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-                    ),
+        InkWell(
+          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+          onTap: () {
+            expandableController.toggle();
+            setState(() {}); // Update the state to trigger the collapse/expand
+          },
+          child: Padding(
+            padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ScalableText(
+                    widget.title ?? l10n.spoiler,
+                    fontScale: state.contentFontSizeScale,
+                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
-                  Icon(
-                    expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                  ),
-                ],
-              ),
+                ),
+                Icon(
+                  expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                  semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                  size: 20,
+                ),
+              ],
             ),
           ),
         ),
