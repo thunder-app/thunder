@@ -27,7 +27,7 @@ import 'package:thunder/feed/view/feed_widget.dart';
 import 'package:thunder/post/bloc/post_bloc.dart' as post_bloc;
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/search/bloc/search_bloc.dart';
-import 'package:thunder/search/pages/search_action_chip.dart';
+import 'package:thunder/search/widgets/search_action_chip.dart';
 import 'package:thunder/search/utils/search_utils.dart';
 import 'package:thunder/shared/comment_reference.dart';
 import 'package:thunder/shared/error_message.dart';
