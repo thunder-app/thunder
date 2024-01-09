@@ -1024,5 +1024,9 @@
   "collapseSpoiler": "Contraer el spoiler",
   "@collapseSpoiler": {
     "description": "Label for collapsing spoiler"
+  },
+  "unableToFindCommunityName": "No se ha podido encontrar la comunidad '{communityName}'",
+  "@unableToFindCommunityName": {
+    "description": "Error message for when we are unable to find a community, including the name"
   }
 }
