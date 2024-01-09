@@ -796,6 +796,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   Widget _buildCommentEntry(BuildContext context, CommentView commentView) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
     final bool isOwnComment = commentView.creator.id == context.read<AuthBloc>().state.account?.userId;
 
     return BlocProvider<post_bloc.PostBloc>(
@@ -859,7 +860,7 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
 
                 if (newDraftComment?.saveAsDraft == true && newDraftComment?.isNotEmpty == true && (!isEdit || commentView.comment.content != newDraftComment?.text)) {
                   await Future.delayed(const Duration(milliseconds: 300));
-                  if (context.mounted) showSnackbar(context, AppLocalizations.of(context)!.commentSavedAsDraft);
+                  if (context.mounted) showSnackbar(context, l10n.commentSavedAsDraft);
                   prefs.setString(draftId, jsonEncode(newDraftComment!.toJson()));
                 } else {
                   prefs.remove(draftId);
@@ -964,12 +965,14 @@ class _SearchPageState extends State<SearchPage> with AutomaticKeepAliveClientMi
   }
 
   void _setCurrentSearchType(SearchType newCurrentSearchType) {
+    final AppLocalizations l10n = AppLocalizations.of(context)!;
+
     setState(() {
       _currentSearchType = newCurrentSearchType;
 
       if (_currentSearchType == SearchType.posts && Uri.tryParse(_controller.text)?.isAbsolute == true) {
         _searchByUrl = true;
-        _searchUrlLabel = AppLocalizations.of(context)!.url;
+        _searchUrlLabel = l10n.url;
       }
     });
 
