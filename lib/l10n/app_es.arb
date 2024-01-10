@@ -277,21 +277,21 @@
   "@new_": {},
   "noComments": "Oh. No hay comentarios.",
   "@noComments": {},
-  "noCommentsFound": "No hay comentarios",
+  "noCommentsFound": "No hay comentarios.",
   "@noCommentsFound": {},
-  "noCommunitiesFound": "No se han encontrado comunidades",
+  "noCommunitiesFound": "No se han encontrado comunidades.",
   "@noCommunitiesFound": {},
   "noCommunityBlocks": "Ninguna comunidad bloqueada.",
   "@noCommunityBlocks": {},
   "noInstanceBlocks": "Ninguna instancia bloqueada.",
   "@noInstanceBlocks": {},
-  "noPosts": "No hay ninguna publicación",
+  "noPosts": "No hay ninguna publicación.",
   "@noPosts": {},
   "noPostsFound": "No se ha encontrado ningún tema",
   "@noPostsFound": {},
   "noUserBlocks": "Ningún usuario bloqueado.",
   "@noUserBlocks": {},
-  "noUsersFound": "No se encontraron usuarios",
+  "noUsersFound": "No se encontraron usuarios.",
   "@noUsersFound": {},
   "notValidLemmyInstance": "{instance} does not appear to be a valid Lemmy instance",
   "@notValidLemmyInstance": {},
@@ -1028,5 +1028,13 @@
   "unableToFindCommunityName": "No se ha podido encontrar la comunidad '{communityName}'",
   "@unableToFindCommunityName": {
     "description": "Error message for when we are unable to find a community, including the name"
+  },
+  "hideTopBarOnScroll": "Ocultar la barra superior al desplazarse",
+  "@hideTopBarOnScroll": {
+    "description": "Settings toggle to hide the top bar on scroll"
+  },
+  "trySearchingFor": "Intentando buscar por...",
+  "@trySearchingFor": {
+    "description": "Suggestion for the user to try searching for a different type"
   }
 }
