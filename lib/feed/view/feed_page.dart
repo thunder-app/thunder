@@ -51,6 +51,7 @@ class FeedPage extends StatefulWidget {
     this.communityName,
     this.userId,
     this.username,
+    this.scaffoldStateKey,
   });
 
   /// The type of feed to display.
@@ -79,6 +80,9 @@ class FeedPage extends StatefulWidget {
   ///
   /// This is useful if we want to keep the user on the "same" page
   final bool useGlobalFeedBloc;
+
+  /// The scaffold key which holds the drawer
+  final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
   State<FeedPage> createState() => _FeedPageState();
@@ -123,7 +127,7 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
 
       return BlocProvider.value(
         value: bloc,
-        child: const FeedView(),
+        child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
       );
     }
 
@@ -139,13 +143,16 @@ class _FeedPageState extends State<FeedPage> with AutomaticKeepAliveClientMixin<
           username: widget.username,
           reset: true,
         )),
-      child: const FeedView(),
+      child: FeedView(scaffoldStateKey: widget.scaffoldStateKey),
     );
   }
 }
 
 class FeedView extends StatefulWidget {
-  const FeedView({super.key});
+  const FeedView({super.key, this.scaffoldStateKey});
+
+  /// The scaffold key which holds the drawer
+  final GlobalKey<ScaffoldState>? scaffoldStateKey;
 
   @override
   State<FeedView> createState() => _FeedViewState();
@@ -293,7 +300,10 @@ class _FeedViewState extends State<FeedView> {
                         physics: showCommunitySidebar ? const NeverScrollableScrollPhysics() : null, // Disable scrolling on the feed page when the community sidebar is open
                         controller: _scrollController,
                         slivers: <Widget>[
-                          FeedPageAppBar(showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle),
+                          FeedPageAppBar(
+                            showAppBarTitle: (state.feedType == FeedType.general && state.status != FeedStatus.initial) ? true : showAppBarTitle,
+                            scaffoldStateKey: widget.scaffoldStateKey,
+                          ),
                           // Display loading indicator until the feed is fetched
                           if (state.status == FeedStatus.initial)
                             const SliverFillRemaining(
