@@ -1,4 +1,7 @@
 ## Unreleased
+### Added
+- Added option to hide top app bar on scroll
+
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
 

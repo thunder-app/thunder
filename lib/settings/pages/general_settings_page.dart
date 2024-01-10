@@ -60,6 +60,9 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
   /// When enabled, posts will be marked as read when opening the image/media
   bool markPostReadOnMediaView = false;
 
+  /// When enabled, the top bar will be hidden on scroll
+  bool hideTopBarOnScroll = false;
+
   /// When enabled, an app update notification will be shown when an update is available
   bool showInAppUpdateNotification = false;
 
@@ -125,6 +128,11 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       case LocalSettings.useTabletMode:
         await prefs.setBool(LocalSettings.useTabletMode.name, value);
         setState(() => tabletMode = value);
+        break;
+      case LocalSettings.hideTopBarOnScroll:
+        await prefs.setBool(LocalSettings.hideTopBarOnScroll.name, value);
+        setState(() => hideTopBarOnScroll = value);
+        break;
 
       case LocalSettings.useAdvancedShareSheet:
         await prefs.setBool(LocalSettings.useAdvancedShareSheet.name, value);
@@ -197,6 +205,7 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
       tappableAuthorCommunity = prefs.getBool(LocalSettings.tappableAuthorCommunity.name) ?? false;
       markPostReadOnMediaView = prefs.getBool(LocalSettings.markPostAsReadOnMediaView.name) ?? false;
       tabletMode = prefs.getBool(LocalSettings.useTabletMode.name) ?? false;
+      hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       useAdvancedShareSheet = prefs.getBool(LocalSettings.useAdvancedShareSheet.name) ?? true;
 
@@ -400,6 +409,18 @@ class _GeneralSettingsPageState extends State<GeneralSettingsPage> with SingleTi
                 iconEnabled: Icons.tablet_rounded,
                 iconDisabled: Icons.smartphone_rounded,
                 onToggle: (bool value) => setPreferences(LocalSettings.useTabletMode, value),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ToggleOption(
+                description: l10n.hideTopBarOnScroll,
+                value: hideTopBarOnScroll,
+                iconEnabled: Icons.app_settings_alt_outlined,
+                iconDisabled: Icons.app_settings_alt_rounded,
+                onToggle: (bool value) => setPreferences(LocalSettings.hideTopBarOnScroll, value),
               ),
             ),
           ),
