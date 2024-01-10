@@ -165,14 +165,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                         ),
                         widget.isNewPost != true
                             ? InkWell(
-                                onTap: () async {
-                                  await navigateToCreatePostPage(
-                                    context,
-                                    title: widget.originalPost!.postView.post.name,
-                                    url: widget.originalPost!.postView.post.url,
-                                    prePopulated: true,
-                                  );
-                                },
+                                onTap: () => createCrossPost(context, widget.originalPost!.postView.post.name, widget.originalPost!.postView.post.url),
                                 borderRadius: BorderRadius.circular(10),
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
@@ -197,4 +190,13 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
       ),
     );
   }
+}
+
+void createCrossPost(BuildContext context, String title, String? url) async {
+  await navigateToCreatePostPage(
+    context,
+    title: title,
+    url: url,
+    prePopulated: true,
+  );
 }
