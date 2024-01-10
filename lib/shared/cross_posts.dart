@@ -165,7 +165,7 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
                         ),
                         widget.isNewPost != true
                             ? InkWell(
-                                onTap: () => createCrossPost(context, widget.originalPost!.postView.post.name, widget.originalPost!.postView.post.url),
+                                onTap: () => createCrossPost(context, title: widget.originalPost!.postView.post.name, url: widget.originalPost!.postView.post.url),
                                 borderRadius: BorderRadius.circular(10),
                                 child: Padding(
                                   padding: const EdgeInsets.all(5),
@@ -192,11 +192,23 @@ class _CrossPostsState extends State<CrossPosts> with SingleTickerProviderStateM
   }
 }
 
-void createCrossPost(BuildContext context, String title, String? url) async {
+void createCrossPost(BuildContext context, {required String title, String? url, String? text, String? postUrl}) async {
+  assert((text == null) == (postUrl == null));
+
+  final AppLocalizations l10n = AppLocalizations.of(context)!;
+
+  if (url?.isNotEmpty == true) {
+    text = null;
+  } else {
+    final String? quotedText = text?.split('\n').map((value) => '> $value\n').join();
+    text = "${l10n.crossPostedFrom(postUrl ?? '')}\n\n$quotedText";
+  }
+
   await navigateToCreatePostPage(
     context,
     title: title,
     url: url,
+    text: text,
     prePopulated: true,
   );
 }

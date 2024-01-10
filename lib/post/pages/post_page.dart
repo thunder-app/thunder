@@ -202,22 +202,25 @@ class _PostPageState extends State<PostPage> {
                     showSortBottomSheet(context, state);
                   },
                 ),
-                // Note: Once there are more actions in the popup menu,
-                // this condition can be moved to surround only the create cross-posts button.
-                if (widget.postView?.postView.post.url?.isNotEmpty == true)
-                  PopupMenuButton(
-                    itemBuilder: (context) => [
-                      PopupMenuItem(
-                        onTap: () => createCrossPost(context, widget.postView!.postView.post.name, widget.postView!.postView.post.url),
-                        child: ListTile(
-                          dense: true,
-                          horizontalTitleGap: 5,
-                          leading: const Icon(Icons.repeat_rounded, size: 20),
-                          title: Text(l10n.createNewCrossPost),
-                        ),
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () => createCrossPost(
+                        context,
+                        title: widget.postView?.postView.post.name ?? '',
+                        url: widget.postView?.postView.post.url,
+                        text: widget.postView?.postView.post.body,
+                        postUrl: widget.postView?.postView.post.apId,
                       ),
-                    ],
-                  ),
+                      child: ListTile(
+                        dense: true,
+                        horizontalTitleGap: 5,
+                        leading: const Icon(Icons.repeat_rounded, size: 20),
+                        title: Text(l10n.createNewCrossPost),
+                      ),
+                    ),
+                  ],
+                ),
               ],
               centerTitle: false,
               toolbarHeight: 70.0,
