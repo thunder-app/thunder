@@ -325,31 +325,34 @@ class _SpoilerWidgetState extends State<SpoilerWidget> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        InkWell(
-          borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
-          onTap: () {
-            expandableController.toggle();
-            setState(() {}); // Update the state to trigger the collapse/expand
-          },
-          child: Padding(
-            padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: ScalableText(
-                    widget.title ?? l10n.spoiler,
-                    fontScale: state.contentFontSizeScale,
-                    style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+        Container(
+          transform: Matrix4.translationValues(-4.0, 0, 0.0), // Move the Inkwell slightly to the left to line up text
+          child: InkWell(
+            borderRadius: const BorderRadius.all(Radius.elliptical(5, 5)),
+            onTap: () {
+              expandableController.toggle();
+              setState(() {}); // Update the state to trigger the collapse/expand
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(top: 4.0, bottom: 4.0, left: 4.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: ScalableText(
+                      widget.title ?? l10n.spoiler,
+                      fontScale: state.contentFontSizeScale,
+                      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+                    ),
                   ),
-                ),
-                Icon(
-                  expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
-                  semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
-                  size: 20,
-                ),
-              ],
+                  Icon(
+                    expandableController.expanded ? Icons.expand_less_rounded : Icons.expand_more_rounded,
+                    semanticLabel: expandableController.expanded ? l10n.collapseSpoiler : l10n.expandSpoiler,
+                    size: 20,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
