@@ -284,6 +284,7 @@ class PostCardViewComfortable extends StatelessWidget {
                           PostCardAction.blockUser,
                           PostCardAction.blockInstance,
                           PostCardAction.visitCommunity,
+                          postViewMedia.postView.subscribed == SubscribedType.notSubscribed ? PostCardAction.subscribeToCommunity : PostCardAction.unsubscribeFromCommunity,
                           PostCardAction.blockCommunity,
                         ],
                         multiActionsToInclude: [
