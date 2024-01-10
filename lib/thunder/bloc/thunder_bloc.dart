@@ -114,6 +114,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
       String? appLanguageCode = prefs.getString(LocalSettings.appLanguageCode.name);
       FullNameSeparator userSeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.userFormat.name) ?? FullNameSeparator.at.name);
       FullNameSeparator communitySeparator = FullNameSeparator.values.byName(prefs.getString(LocalSettings.communityFormat.name) ?? FullNameSeparator.dot.name);
+      bool hideTopBarOnScroll = prefs.getBool(LocalSettings.hideTopBarOnScroll.name) ?? false;
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -242,6 +243,7 @@ class ThunderBloc extends Bloc<ThunderEvent, ThunderState> {
         appLanguageCode: appLanguageCode,
         userSeparator: userSeparator,
         communitySeparator: communitySeparator,
+        hideTopBarOnScroll: hideTopBarOnScroll,
 
         /// -------------------------- Feed Post Related Settings --------------------------
         // Compact Related Settings

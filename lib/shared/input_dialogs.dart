@@ -106,8 +106,9 @@ Widget buildUserSuggestionWidget(BuildContext context, PersonView payload, {void
 /// Shows a dialog which allows typing/search for a community
 void showCommunityInputDialog(BuildContext context, {required String title, required void Function(CommunityView) onCommunitySelected, Iterable<CommunityView>? emptySuggestions}) async {
   try {
-    emptySuggestions ??= context.read<AccountBloc>().state.subsciptions;
-    // TODO sort
+    final AccountState accountState = context.read<AccountBloc>().state;
+    emptySuggestions ??= accountState.subsciptions;
+    emptySuggestions = prioritizeFavorites(emptySuggestions.toList(), accountState.favorites);
   } catch (e) {
     // If we can't read the AccountBloc here, for whatever reason, it's ok. No need for subscriptions.
   }
