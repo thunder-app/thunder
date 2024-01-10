@@ -33,6 +33,7 @@ class ThunderState extends Equatable {
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.communitySeparator = FullNameSeparator.dot,
+    this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -159,6 +160,7 @@ class ThunderState extends Equatable {
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final FullNameSeparator communitySeparator;
+  final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -293,6 +295,7 @@ class ThunderState extends Equatable {
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     FullNameSeparator? communitySeparator,
+    bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -420,6 +423,7 @@ class ThunderState extends Equatable {
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings

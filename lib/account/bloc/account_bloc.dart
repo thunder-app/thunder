@@ -63,7 +63,7 @@ class AccountBloc extends Bloc<AccountEvent, AccountState> {
             }
 
             // Sort subscriptions by their name
-            subsciptions.sort((CommunityView a, CommunityView b) => a.community.name.compareTo(b.community.name));
+            subsciptions.sort((CommunityView a, CommunityView b) => a.community.title.toLowerCase().compareTo(b.community.title.toLowerCase()));
 
             List<Favorite> favorites = await Favorite.favorites(account.id);
             favoritedCommunities = subsciptions.where((CommunityView communityView) => favorites.any((Favorite favorite) => favorite.communityId == communityView.community.id)).toList();
