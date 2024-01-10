@@ -1,6 +1,10 @@
 ## Unreleased
+### Added
+- Added option to hide top app bar on scroll
+
 ### Fixed
 - Fixed issue where Thunder was being locked to 60Hz on 120Hz displays on Android
+- Fixed issue where subscriptions list in drawer is not respecting alphabetical order
 
 ## 0.2.7 - 2024-01-03
 ## Added

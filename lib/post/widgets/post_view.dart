@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:expandable/expandable.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:expandable/expandable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart' as account_bloc;
 import 'package:thunder/account/bloc/account_bloc.dart';
@@ -44,7 +45,6 @@ import 'package:thunder/user/utils/special_user_checks.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
 import 'package:thunder/utils/numbers.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:thunder/shared/snackbar.dart';
 
 class PostSubview extends StatefulWidget {
@@ -406,7 +406,7 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                               final Account? account = await fetchActiveProfileAccount();
                               final GetCommunityResponse getCommunityResponse = await LemmyClient.instance.lemmyApiV3.run(GetCommunity(
                                 auth: account?.jwt,
-                                id: postViewMedia!.postView.community.id,
+                                id: postViewMedia.postView.community.id,
                               ));
 
                               if (context.mounted) {
@@ -422,9 +422,9 @@ class _PostSubviewState extends State<PostSubview> with SingleTickerProviderStat
                                           BlocProvider<AccountBloc>.value(value: accountBloc),
                                         ],
                                         child: CreatePostPage(
-                                          communityId: postViewMedia!.postView.community.id,
+                                          communityId: postViewMedia.postView.community.id,
                                           communityView: getCommunityResponse.communityView,
-                                          postView: postViewMedia!.postView,
+                                          postView: postViewMedia.postView,
                                           onPostSuccess: (PostViewMedia pvm) {
                                             setState(() => postViewMedia = pvm);
                                           },

@@ -34,6 +34,7 @@ class ThunderState extends Equatable {
     this.scoreCounters = false,
     this.userSeparator = FullNameSeparator.at,
     this.communitySeparator = FullNameSeparator.dot,
+    this.hideTopBarOnScroll = false,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     // Compact Related Settings
@@ -161,6 +162,7 @@ class ThunderState extends Equatable {
   final String? appLanguageCode;
   final FullNameSeparator userSeparator;
   final FullNameSeparator communitySeparator;
+  final bool hideTopBarOnScroll;
 
   /// -------------------------- Feed Post Related Settings --------------------------
   /// Compact Related Settings
@@ -296,6 +298,7 @@ class ThunderState extends Equatable {
     bool? scoreCounters,
     FullNameSeparator? userSeparator,
     FullNameSeparator? communitySeparator,
+    bool? hideTopBarOnScroll,
 
     /// -------------------------- Feed Post Related Settings --------------------------
     /// Compact Related Settings
@@ -417,13 +420,14 @@ class ThunderState extends Equatable {
       openInReaderMode: openInReaderMode ?? this.openInReaderMode,
       useDisplayNames: useDisplayNames ?? this.useDisplayNames,
       markPostReadOnMediaView: markPostReadOnMediaView ?? this.markPostReadOnMediaView,
-      disableFeedFab: disableFeedFab ?? this.disableFeedFab,
+      disableFeedFab: disableFeedFab,
       showInAppUpdateNotification: showInAppUpdateNotification ?? this.showInAppUpdateNotification,
       enableInboxNotifications: enableInboxNotifications ?? this.enableInboxNotifications,
       scoreCounters: scoreCounters ?? this.scoreCounters,
       appLanguageCode: appLanguageCode ?? this.appLanguageCode,
       userSeparator: userSeparator ?? this.userSeparator,
       communitySeparator: communitySeparator ?? this.communitySeparator,
+      hideTopBarOnScroll: hideTopBarOnScroll ?? this.hideTopBarOnScroll,
 
       /// -------------------------- Feed Post Related Settings --------------------------
       // Compact Related Settings
@@ -448,7 +452,7 @@ class ThunderState extends Equatable {
       keywordFilters: keywordFilters ?? this.keywordFilters,
 
       /// -------------------------- Post Page Related Settings --------------------------
-      disablePostFabs: disablePostFabs ?? this.disablePostFabs,
+      disablePostFabs: disablePostFabs,
 
       // Comment Related Settings
       defaultCommentSortType: defaultCommentSortType ?? this.defaultCommentSortType,

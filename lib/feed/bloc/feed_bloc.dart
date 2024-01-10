@@ -11,6 +11,7 @@ import 'package:thunder/feed/utils/post.dart';
 import 'package:thunder/feed/view/feed_page.dart';
 import 'package:thunder/post/enums/post_action.dart';
 import 'package:thunder/post/utils/post.dart';
+import 'package:thunder/utils/error_messages.dart';
 
 part 'feed_event.dart';
 part 'feed_state.dart';
@@ -120,7 +121,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
 
   /// Handles clearing any messages from the state
   Future<void> _onFeedClearMessage(FeedClearMessageEvent event, Emitter<FeedState> emit) async {
-    emit(state.copyWith(status: FeedStatus.success, message: null));
+    emit(state.copyWith(status: state.status == FeedStatus.failureLoadingCommunity ? state.status : FeedStatus.success, message: null));
   }
 
   /// Handles post related actions on a given item within the feed
@@ -298,7 +299,16 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
       switch (event.feedType) {
         case FeedType.community:
           // Fetch community information
-          fullCommunityView = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
+          try {
+            fullCommunityView = await fetchCommunityInformation(id: event.communityId, name: event.communityName);
+          } catch (e) {
+            // If we are given a community feed, but we can't load the community, that's a problem! Emit an error.
+            return emit(state.copyWith(
+              status: FeedStatus.failureLoadingCommunity,
+              message: getExceptionErrorMessage(e, additionalInfo: event.communityName),
+              feedType: event.feedType,
+            ));
+          }
           break;
         case FeedType.user:
           // Fetch user information

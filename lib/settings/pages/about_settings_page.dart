@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:thunder/feed/utils/utils.dart';
 import 'package:thunder/feed/view/feed_page.dart';
-
 import 'package:thunder/utils/links.dart';
 import 'package:thunder/core/update/check_github_update.dart';
-import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 
 class AboutSettingsPage extends StatelessWidget {
   const AboutSettingsPage({super.key});
@@ -14,8 +11,6 @@ class AboutSettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
-
-    final ThunderState state = context.read<ThunderBloc>().state;
 
     return Scaffold(
       appBar: AppBar(centerTitle: false),

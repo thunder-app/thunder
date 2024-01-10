@@ -3,14 +3,13 @@ import 'package:equatable/equatable.dart';
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:stream_transform/stream_transform.dart';
+
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/core/auth/helpers/fetch_account.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-
-import '../../utils/comment.dart';
+import 'package:thunder/utils/comment.dart';
 
 part 'inbox_event.dart';
-
 part 'inbox_state.dart';
 
 const throttleDuration = Duration(seconds: 1);
@@ -236,7 +235,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.success));
       }
 
-      PersonMentionResponse personMentionResponse = await lemmy.run(MarkPersonMentionAsRead(
+      await lemmy.run(MarkPersonMentionAsRead(
         auth: account!.jwt!,
         personMentionId: event.personMentionId,
         read: event.read,
@@ -259,7 +258,7 @@ class InboxBloc extends Bloc<InboxEvent, InboxState> {
         return emit(state.copyWith(status: InboxStatus.failure, errorMessage: 'You are not logged in. Cannot create a comment'));
       }
 
-      CommentResponse commentResponse = await lemmy.run(CreateComment(
+      await lemmy.run(CreateComment(
         auth: account!.jwt!,
         content: event.content,
         postId: event.postId,

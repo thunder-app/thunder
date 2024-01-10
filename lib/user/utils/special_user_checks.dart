@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lemmy_api_client/v3.dart';
+
 import 'package:thunder/core/theme/bloc/theme_bloc.dart';
 
 // These checks are for whether a given user falls into a given category
@@ -17,7 +19,7 @@ bool commentAuthorIsPostAuthor(Post? post, Comment? comment) {
 
 /// Checks whether the given [person] is a moderator of the given [moderators].
 bool isModerator(Person? person, List<CommunityModeratorView>? moderators) {
-  return person != null && moderators?.any((moderator) => moderator.moderator?.id == person.id) == true;
+  return person != null && moderators?.any((moderator) => moderator.moderator.id == person.id) == true;
 }
 
 /// Checks whether the given [person] is a bot account
