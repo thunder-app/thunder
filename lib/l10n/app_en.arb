@@ -7,8 +7,10 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
-  "@account": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "actions": "Actions",
