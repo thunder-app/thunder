@@ -114,6 +114,7 @@ class _ProfileSelectState extends State<ProfileSelect> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final l10n = AppLocalizations.of(context)!;
     final bool darkTheme = context.read<ThemeBloc>().state.useDarkTheme;
     Color selectedColor = theme.colorScheme.primaryContainer;
     if (!darkTheme) {
@@ -141,397 +142,371 @@ class _ProfileSelectState extends State<ProfileSelect> {
       child: ScaffoldMessenger(
         key: _scaffoldMessengerKey,
         child: Scaffold(
-          body: ListView.builder(
-            itemBuilder: (context, index) {
-              if (index == (accounts?.length ?? 0) + (anonymousInstances?.length ?? 0)) {
-                return Column(
-                  children: [
-                    const Divider(indent: 16.0, endIndent: 16.0, thickness: 2.0),
-                    Padding(
+          body: CustomScrollView(
+            slivers: [
+              SliverAppBar(
+                title: Text(l10n.account(2)),
+                centerTitle: false,
+                scrolledUnderElevation: 0,
+                pinned: true,
+                actions: [
+                  IconButton(
+                    icon: const Icon(Icons.person_add),
+                    tooltip: l10n.addAccount,
+                    onPressed: () => widget.pushRegister(),
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.add),
+                    tooltip: l10n.addAnonymousInstance,
+                    onPressed: () => widget.pushRegister(anonymous: true),
+                  ),
+                  const SizedBox(width: 12.0),
+                ],
+              ),
+              SliverList.builder(
+                itemBuilder: (context, index) {
+                  if (index < (accounts?.length ?? 0)) {
+                    return Padding(
                       padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(45),
-                          backgroundColor: theme.colorScheme.primaryContainer.withOpacity(0.5),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: 8.0),
-                            Text(
-                              AppLocalizations.of(context)!.addAccount,
-                              style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                            ),
-                          ],
-                        ),
-                        onPressed: () => widget.pushRegister(),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                      child: TextButton(
-                        style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(45),
-                          backgroundColor: theme.colorScheme.secondaryContainer.withOpacity(0.5),
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Icon(Icons.add),
-                            const SizedBox(width: 8.0),
-                            Text(
-                              AppLocalizations.of(context)!.addAnonymousInstance,
-                              style: TextStyle(color: theme.colorScheme.onPrimaryContainer),
-                            ),
-                          ],
-                        ),
-                        onPressed: () => widget.pushRegister(anonymous: true),
-                      ),
-                    ),
-                  ],
-                );
-              } else {
-                if (index < (accounts?.length ?? 0)) {
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    child: Material(
-                      color: currentAccountId == accounts![index].account.id ? selectedColor : null,
-                      borderRadius: BorderRadius.circular(50),
-                      child: InkWell(
-                        onTap: (currentAccountId == accounts![index].account.id)
-                            ? null
-                            : () {
-                                context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
-                                context.pop();
-                              },
+                      child: Material(
+                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                         borderRadius: BorderRadius.circular(50),
-                        child: AnimatedSize(
-                          duration: const Duration(milliseconds: 250),
-                          child: ListTile(
-                            leading: Stack(
-                              children: [
-                                AnimatedCrossFade(
-                                  crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                  duration: const Duration(milliseconds: 500),
-                                  firstChild: const SizedBox(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
-                                      child: Icon(
-                                        Icons.person,
+                        child: InkWell(
+                          onTap: (currentAccountId == accounts![index].account.id)
+                              ? null
+                              : () {
+                                  context.read<AuthBloc>().add(SwitchAccount(accountId: accounts![index].account.id));
+                                  context.pop();
+                                },
+                          borderRadius: BorderRadius.circular(50),
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 250),
+                            child: ListTile(
+                              leading: Stack(
+                                children: [
+                                  AnimatedCrossFade(
+                                    crossFadeState: accounts![index].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                    duration: const Duration(milliseconds: 500),
+                                    firstChild: const SizedBox(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                        child: Icon(
+                                          Icons.person,
+                                        ),
+                                      ),
+                                    ),
+                                    secondChild: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
+                                      maxRadius: 20,
+                                    ),
+                                  ),
+                                  // This widget creates a slight border around the status indicator
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: currentAccountId == accounts![index].account.id ? selectedColor : null,
                                       ),
                                     ),
                                   ),
-                                  secondChild: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundImage: accounts![index].instanceIcon == null ? null : CachedNetworkImageProvider(accounts![index].instanceIcon!),
-                                    maxRadius: 20,
-                                  ),
-                                ),
-                                // This widget creates a slight border around the status indicator
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: currentAccountId == accounts![index].account.id ? selectedColor : null,
+                                  // This is the status indicator
+                                  Positioned(
+                                    right: 1,
+                                    bottom: 1,
+                                    child: AnimatedOpacity(
+                                      opacity: accounts![index].alive == null ? 0 : 1,
+                                      duration: const Duration(milliseconds: 500),
+                                      child: Icon(
+                                        accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                        size: 10,
+                                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                // This is the status indicator
-                                Positioned(
-                                  right: 1,
-                                  bottom: 1,
-                                  child: AnimatedOpacity(
-                                    opacity: accounts![index].alive == null ? 0 : 1,
-                                    duration: const Duration(milliseconds: 500),
-                                    child: Icon(
-                                      accounts![index].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
-                                      size: 10,
-                                      color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), accounts![index].alive == true ? Colors.green : Colors.red),
-                                    ),
+                                ],
+                              ),
+                              title: Text(
+                                accounts![index].account.username ?? 'N/A',
+                                style: theme.textTheme.titleMedium?.copyWith(),
+                              ),
+                              subtitle: Wrap(
+                                children: [
+                                  Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: accounts![index].version == null
+                                        ? const SizedBox(height: 20, width: 0)
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '•',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                'v${accounts![index].version}',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
                                   ),
-                                ),
-                              ],
-                            ),
-                            title: Text(
-                              accounts![index].account.username ?? 'N/A',
-                              style: theme.textTheme.titleMedium?.copyWith(),
-                            ),
-                            subtitle: Wrap(
-                              children: [
-                                Text(accounts![index].account.instance?.replaceAll('https://', '') ?? 'N/A'),
-                                AnimatedSize(
-                                  duration: const Duration(milliseconds: 250),
-                                  child: accounts![index].version == null
-                                      ? const SizedBox(height: 20, width: 0)
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '•',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: accounts![index].latency == null
+                                        ? const SizedBox(height: 20, width: 0)
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '•',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              'v${accounts![index].version}',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '${accounts![index].latency?.inMilliseconds}ms',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                                AnimatedSize(
-                                  duration: const Duration(milliseconds: 250),
-                                  child: accounts![index].latency == null
-                                      ? const SizedBox(height: 20, width: 0)
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '•',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                              ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '${accounts![index].latency?.inMilliseconds}ms',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                              ],
-                            ),
-                            trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
-                                ? (currentAccountId == accounts![index].account.id)
-                                    ? IconButton(
-                                        icon: loggingOutId == accounts![index].account.id
-                                            ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: CircularProgressIndicator(),
-                                              )
-                                            : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
-                                        onPressed: () => _logOutOfActiveAccount(activeAccountId: accounts![index].account.id),
-                                      )
-                                    : IconButton(
-                                        icon: loggingOutId == accounts![index].account.id
-                                            ? const SizedBox(
-                                                height: 20,
-                                                width: 20,
-                                                child: CircularProgressIndicator(),
-                                              )
-                                            : Icon(
-                                                Icons.delete,
-                                                semanticLabel: AppLocalizations.of(context)!.removeAccount,
-                                              ),
-                                        onPressed: () async {
-                                          context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
+                                            ],
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              trailing: (accounts!.length > 1 || anonymousInstances?.isNotEmpty == true)
+                                  ? (currentAccountId == accounts![index].account.id)
+                                      ? IconButton(
+                                          icon: loggingOutId == accounts![index].account.id
+                                              ? const SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: CircularProgressIndicator(),
+                                                )
+                                              : Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.logOut),
+                                          onPressed: () => _logOutOfActiveAccount(activeAccountId: accounts![index].account.id),
+                                        )
+                                      : IconButton(
+                                          icon: loggingOutId == accounts![index].account.id
+                                              ? const SizedBox(
+                                                  height: 20,
+                                                  width: 20,
+                                                  child: CircularProgressIndicator(),
+                                                )
+                                              : Icon(
+                                                  Icons.delete,
+                                                  semanticLabel: AppLocalizations.of(context)!.removeAccount,
+                                                ),
+                                          onPressed: () async {
+                                            context.read<AuthBloc>().add(RemoveAccount(accountId: accounts![index].account.id));
 
-                                          setState(() => loggingOutId = accounts![index].account.id);
+                                            setState(() => loggingOutId = accounts![index].account.id);
 
-                                          if (currentAccountId != null) {
-                                            await Future.delayed(const Duration(milliseconds: 1000), () {
-                                              context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                            if (currentAccountId != null) {
+                                              await Future.delayed(const Duration(milliseconds: 1000), () {
+                                                context.read<AuthBloc>().add(SwitchAccount(accountId: currentAccountId));
+                                              });
+                                            }
+
+                                            setState(() {
+                                              accounts = null;
+                                              loggingOutId = null;
                                             });
-                                          }
-
-                                          setState(() {
-                                            accounts = null;
-                                            loggingOutId = null;
-                                          });
-                                        })
-                                : null,
+                                          })
+                                  : null,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                } else {
-                  int realIndex = index - (accounts?.length ?? 0);
-                  return Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
-                    child: Material(
-                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
-                      borderRadius: BorderRadius.circular(50),
-                      child: InkWell(
-                        onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
-                            ? null
-                            : () async {
-                                context.read<AuthBloc>().add(const LogOutOfAllAccounts());
-                                context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
-                                context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![realIndex].instance));
-                                context.pop();
-                              },
+                    );
+                  } else {
+                    int realIndex = index - (accounts?.length ?? 0);
+                    return Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 5, 10, 5),
+                      child: Material(
+                        color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                         borderRadius: BorderRadius.circular(50),
-                        child: AnimatedSize(
-                          duration: const Duration(milliseconds: 250),
-                          child: ListTile(
-                            leading: Stack(
-                              children: [
-                                AnimatedCrossFade(
-                                  crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                                  duration: const Duration(milliseconds: 500),
-                                  firstChild: const SizedBox(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
-                                      child: Icon(
-                                        Icons.language,
+                        child: InkWell(
+                          onTap: (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
+                              ? null
+                              : () async {
+                                  context.read<AuthBloc>().add(const LogOutOfAllAccounts());
+                                  context.read<ThunderBloc>().add(OnSetCurrentAnonymousInstance(anonymousInstances![realIndex].instance));
+                                  context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances![realIndex].instance));
+                                  context.pop();
+                                },
+                          borderRadius: BorderRadius.circular(50),
+                          child: AnimatedSize(
+                            duration: const Duration(milliseconds: 250),
+                            child: ListTile(
+                              leading: Stack(
+                                children: [
+                                  AnimatedCrossFade(
+                                    crossFadeState: anonymousInstances![realIndex].instanceIcon == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                                    duration: const Duration(milliseconds: 500),
+                                    firstChild: const SizedBox(
+                                      child: Padding(
+                                        padding: EdgeInsets.only(left: 8, top: 8, right: 8, bottom: 8),
+                                        child: Icon(
+                                          Icons.language,
+                                        ),
+                                      ),
+                                    ),
+                                    secondChild: CircleAvatar(
+                                      backgroundColor: Colors.transparent,
+                                      foregroundImage: anonymousInstances![realIndex].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![realIndex].instanceIcon!),
+                                      maxRadius: 20,
+                                    ),
+                                  ),
+                                  Positioned(
+                                    right: 0,
+                                    bottom: 0,
+                                    child: SizedBox(
+                                      width: 12,
+                                      height: 12,
+                                      child: Material(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
                                       ),
                                     ),
                                   ),
-                                  secondChild: CircleAvatar(
-                                    backgroundColor: Colors.transparent,
-                                    foregroundImage: anonymousInstances![realIndex].instanceIcon == null ? null : CachedNetworkImageProvider(anonymousInstances![realIndex].instanceIcon!),
-                                    maxRadius: 20,
-                                  ),
-                                ),
-                                Positioned(
-                                  right: 0,
-                                  bottom: 0,
-                                  child: SizedBox(
-                                    width: 12,
-                                    height: 12,
-                                    child: Material(
-                                      borderRadius: BorderRadius.circular(10),
-                                      color: currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance ? selectedColor : null,
+                                  // This is the status indicator
+                                  Positioned(
+                                    right: 1,
+                                    bottom: 1,
+                                    child: AnimatedOpacity(
+                                      opacity: anonymousInstances![realIndex].alive == null ? 0 : 1,
+                                      duration: const Duration(milliseconds: 500),
+                                      child: Icon(
+                                        anonymousInstances![realIndex].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
+                                        size: 10,
+                                        color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![realIndex].alive == true ? Colors.green : Colors.red),
+                                      ),
                                     ),
                                   ),
-                                ),
-                                // This is the status indicator
-                                Positioned(
-                                  right: 1,
-                                  bottom: 1,
-                                  child: AnimatedOpacity(
-                                    opacity: anonymousInstances![realIndex].alive == null ? 0 : 1,
-                                    duration: const Duration(milliseconds: 500),
-                                    child: Icon(
-                                      anonymousInstances![realIndex].alive == true ? Icons.check_circle_rounded : Icons.remove_circle_rounded,
-                                      size: 10,
-                                      color: Color.alphaBlend(theme.colorScheme.primaryContainer.withOpacity(0.6), anonymousInstances![realIndex].alive == true ? Colors.green : Colors.red),
-                                    ),
+                                ],
+                              ),
+                              title: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.person_off_rounded,
+                                    size: 15,
                                   ),
-                                ),
-                              ],
-                            ),
-                            title: Row(
-                              children: [
-                                const Icon(
-                                  Icons.person_off_rounded,
-                                  size: 15,
-                                ),
-                                const SizedBox(width: 5),
-                                Text(
-                                  AppLocalizations.of(context)!.anonymous,
-                                  style: theme.textTheme.titleMedium?.copyWith(),
-                                ),
-                              ],
-                            ),
-                            subtitle: Wrap(
-                              children: [
-                                Text(anonymousInstances![realIndex].instance),
-                                AnimatedSize(
-                                  duration: const Duration(milliseconds: 250),
-                                  child: anonymousInstances![realIndex].version == null
-                                      ? const SizedBox(height: 20, width: 0)
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '•',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                  const SizedBox(width: 5),
+                                  Text(
+                                    AppLocalizations.of(context)!.anonymous,
+                                    style: theme.textTheme.titleMedium?.copyWith(),
+                                  ),
+                                ],
+                              ),
+                              subtitle: Wrap(
+                                children: [
+                                  Text(anonymousInstances![realIndex].instance),
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: anonymousInstances![realIndex].version == null
+                                        ? const SizedBox(height: 20, width: 0)
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '•',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              'v${anonymousInstances![realIndex].version}',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                'v${anonymousInstances![realIndex].version}',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                                AnimatedSize(
-                                  duration: const Duration(milliseconds: 250),
-                                  child: anonymousInstances![realIndex].latency == null
-                                      ? const SizedBox(height: 20, width: 0)
-                                      : Row(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '•',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                            ],
+                                          ),
+                                  ),
+                                  AnimatedSize(
+                                    duration: const Duration(milliseconds: 250),
+                                    child: anonymousInstances![realIndex].latency == null
+                                        ? const SizedBox(height: 20, width: 0)
+                                        : Row(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '•',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 5),
-                                            Text(
-                                              '${anonymousInstances![realIndex].latency?.inMilliseconds}ms',
-                                              style: TextStyle(
-                                                color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                              const SizedBox(width: 5),
+                                              Text(
+                                                '${anonymousInstances![realIndex].latency?.inMilliseconds}ms',
+                                                style: TextStyle(
+                                                  color: Theme.of(context).colorScheme.onPrimaryContainer.withOpacity(0.55),
+                                                ),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                ),
-                              ],
-                            ),
-                            trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
-                                ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
-                                    ? IconButton(
-                                        icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
-                                        onPressed: () async {
-                                          context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
+                                            ],
+                                          ),
+                                  ),
+                                ],
+                              ),
+                              trailing: ((accounts?.length ?? 0) > 0 || anonymousInstances!.length > 1)
+                                  ? (currentAccountId == null && currentAnonymousInstance == anonymousInstances![realIndex].instance)
+                                      ? IconButton(
+                                          icon: Icon(Icons.logout, semanticLabel: AppLocalizations.of(context)!.removeInstance),
+                                          onPressed: () async {
+                                            context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
 
-                                          if (anonymousInstances!.length > 1) {
-                                            context
-                                                .read<ThunderBloc>()
-                                                .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
-                                            context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
-                                          } else {
-                                            context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
-                                          }
+                                            if (anonymousInstances!.length > 1) {
+                                              context
+                                                  .read<ThunderBloc>()
+                                                  .add(OnSetCurrentAnonymousInstance(anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
+                                              context.read<AuthBloc>().add(InstanceChanged(instance: anonymousInstances!.lastWhere((instance) => instance != anonymousInstances![realIndex]).instance));
+                                            } else {
+                                              context.read<AuthBloc>().add(SwitchAccount(accountId: accounts!.last.account.id));
+                                            }
 
-                                          setState(() => anonymousInstances = null);
-                                        },
-                                      )
-                                    : IconButton(
-                                        icon: Icon(
-                                          Icons.delete,
-                                          semanticLabel: AppLocalizations.of(context)!.removeInstance,
-                                        ),
-                                        onPressed: () async {
-                                          context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
-                                          setState(() {
-                                            anonymousInstances = null;
-                                          });
-                                        })
-                                : null,
+                                            setState(() => anonymousInstances = null);
+                                          },
+                                        )
+                                      : IconButton(
+                                          icon: Icon(
+                                            Icons.delete,
+                                            semanticLabel: AppLocalizations.of(context)!.removeInstance,
+                                          ),
+                                          onPressed: () async {
+                                            context.read<ThunderBloc>().add(OnRemoveAnonymousInstance(anonymousInstances![realIndex].instance));
+                                            setState(() {
+                                              anonymousInstances = null;
+                                            });
+                                          })
+                                  : null,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  );
-                }
-              }
-            },
-            itemCount: (accounts?.length ?? 0) + (anonymousInstances?.length ?? 0) + 1,
+                    );
+                  }
+                },
+                itemCount: (accounts?.length ?? 0) + (anonymousInstances?.length ?? 0),
+              ),
+              const SliverToBoxAdapter(child: SizedBox(height: 100))
+            ],
           ),
         ),
       ),

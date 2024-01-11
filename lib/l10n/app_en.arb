@@ -7,8 +7,10 @@
   "@accessibility": {},
   "accessibilityProfilesDescription": "Accessibility profiles allows applying several settings at once to accommodate a particular accessibility requirement.",
   "@accessibilityProfilesDescription": {},
-  "account": "Account",
-  "@account": {},
+  "account": "{count, plural, zero {Account} one {Account} other {Accounts} } ",
+  "@account": {
+    "description": "Describes the user account"
+  },
   "accountSettings": "Account Settings",
   "@accountSettings": {},
   "actions": "Actions",
@@ -246,6 +248,10 @@
   "creator": "Creator",
   "@creator": {
     "description": "The creator filter for searches."
+  },
+  "crossPostedFrom": "cross-posted from:  {postUrl}",
+  "@crossPostedFrom": {
+    "description": "Initial heading for text-based cross-post"
   },
   "crossPostedTo": "Cross-posted to",
   "@crossPostedTo": {},

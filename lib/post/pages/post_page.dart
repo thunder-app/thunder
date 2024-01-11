@@ -23,6 +23,7 @@ import 'package:thunder/post/pages/post_page_success.dart';
 import 'package:thunder/post/pages/create_comment_page.dart';
 import 'package:thunder/shared/comment_navigator_fab.dart';
 import 'package:thunder/shared/comment_sort_picker.dart';
+import 'package:thunder/shared/cross_posts.dart';
 import 'package:thunder/shared/error_message.dart';
 import 'package:thunder/shared/input_dialogs.dart';
 import 'package:thunder/shared/snackbar.dart';
@@ -200,6 +201,25 @@ class _PostPageState extends State<PostPage> {
                     }
                     showSortBottomSheet(context, state);
                   },
+                ),
+                PopupMenuButton(
+                  itemBuilder: (context) => [
+                    PopupMenuItem(
+                      onTap: () => createCrossPost(
+                        context,
+                        title: widget.postView?.postView.post.name ?? '',
+                        url: widget.postView?.postView.post.url,
+                        text: widget.postView?.postView.post.body,
+                        postUrl: widget.postView?.postView.post.apId,
+                      ),
+                      child: ListTile(
+                        dense: true,
+                        horizontalTitleGap: 5,
+                        leading: const Icon(Icons.repeat_rounded, size: 20),
+                        title: Text(l10n.createNewCrossPost),
+                      ),
+                    ),
+                  ],
                 ),
               ],
               centerTitle: false,
