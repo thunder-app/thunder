@@ -73,6 +73,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
         await prefs.setInt(LocalSettings.appTheme.name, value);
         setState(() => themeType = ThemeType.values[value]);
         if (context.mounted) context.read<ThemeBloc>().add(ThemeChangeEvent());
+        Future.delayed(const Duration(milliseconds: 300), () => _initFontScaleOptions()); // Refresh the font scale options since the textTheme has most likely changed (dark -> light and vice versa)
         break;
       case LocalSettings.appThemeAccentColor:
         await prefs.setString(LocalSettings.appThemeAccentColor.name, (value as CustomThemeType).name);
@@ -116,23 +117,6 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
 
-    final theme = Theme.of(context);
-
-    fontScaleOptions = FontScale.values
-        .map(
-          (FontScale fontScale) => ListPickerItem(
-            icon: Icons.text_fields_rounded,
-            label: fontScale.label,
-            payload: fontScale,
-            textTheme: theme.textTheme.copyWith(
-              bodyMedium: theme.textTheme.bodyMedium?.copyWith(
-                fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
-              ),
-            ),
-          ),
-        )
-        .toList();
-
     setState(() {
       /// -------------------------- Theme Related Settings --------------------------
       // Theme Settings
@@ -150,6 +134,27 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     });
   }
 
+  void _initFontScaleOptions() {
+    final theme = Theme.of(context);
+
+    setState(() {
+      fontScaleOptions = FontScale.values
+          .map(
+            (FontScale fontScale) => ListPickerItem(
+              icon: Icons.text_fields_rounded,
+              label: fontScale.label,
+              payload: fontScale,
+              textTheme: theme.textTheme.copyWith(
+                bodyMedium: theme.textTheme.bodyMedium?.copyWith(
+                  fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
+                ),
+              ),
+            ),
+          )
+          .toList();
+    });
+  }
+
   @override
   void initState() {
     themeOptions = [
@@ -160,6 +165,8 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
     ];
 
     WidgetsBinding.instance.addPostFrameCallback((_) => _initPreferences());
+    WidgetsBinding.instance.addPostFrameCallback((_) => _initFontScaleOptions());
+
     super.initState();
   }
 
