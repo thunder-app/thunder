@@ -1,7 +1,7 @@
 name: thunder
 description: An open-source cross-platform Lemmy client for iOS and Android built with Flutter
 publish_to: "none"
-version: 0.2.7+35
+version: 0.2.8+36
 
 environment:
   sdk: "^3.0.0"
