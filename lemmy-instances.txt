@@ -1,3 +1,4 @@
+ani.social
 aussie.zone
 awful.systems
 bakchodi.org
@@ -9,10 +10,12 @@ discuss.online
 discuss.tchncs.de
 exploding-heads.com
 feddit.ch
+feddit.cl
 feddit.de
 feddit.dk
 feddit.it
 feddit.nl
+feddit.nu
 feddit.uk
 geddit.social
 hexbear.net
@@ -36,6 +39,7 @@ lemmy.sdf.org
 lemmy.today
 lemmy.whynotdrs.org
 lemmy.world
+lemmy.wtf
 lemmy.zip
 lemmygrad.ml
 lemmynsfw.com
@@ -52,8 +56,8 @@ social.fossware.space
 sopuli.xyz
 startrek.website
 szmer.info
+thelemmy.club
 ttrpg.network
 vlemmy.net
 waveform.social
 www.hexbear.net
-yiffit.net

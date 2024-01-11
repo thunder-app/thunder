@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:lemmy_api_client/v3.dart';
-import 'package:thunder/core/enums/full_name_separator.dart';
 
+import 'package:thunder/core/enums/full_name_separator.dart';
 import 'package:thunder/shared/community_icon.dart';
 import 'package:thunder/shared/icon_text.dart';
 import 'package:thunder/utils/instance.dart';
@@ -112,12 +112,12 @@ class _CommunityHeaderState extends State<CommunityHeader> {
                                   children: [
                                     IconText(
                                       icon: const Icon(Icons.people_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.subscribers ?? 0),
+                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.subscribers),
                                     ),
                                     const SizedBox(width: 8.0),
                                     IconText(
                                       icon: const Icon(Icons.calendar_month_rounded),
-                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth ?? 0),
+                                      text: formatNumberToK(widget.getCommunityResponse.communityView.counts.usersActiveMonth),
                                     ),
                                   ],
                                 ),

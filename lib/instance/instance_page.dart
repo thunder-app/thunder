@@ -9,6 +9,7 @@ import 'package:thunder/shared/snackbar.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/links.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:thunder/utils/numbers.dart';
 
 class InstancePage extends StatefulWidget {
   final GetSiteResponse getSiteResponse;
@@ -71,7 +72,7 @@ class _InstancePageState extends State<InstancePage> {
                         fetchInstanceNameFromUrl(widget.getSiteResponse.siteView.site.actorId) ?? '',
                         style: theme.textTheme.titleLarge,
                       ),
-                      subtitle: Text("v${widget.getSiteResponse.version}"),
+                      subtitle: Text("v${widget.getSiteResponse.version} · ${l10n.countUsers(formatLongNumber(widget.getSiteResponse.siteView.counts.users))}"),
                       contentPadding: const EdgeInsets.symmetric(horizontal: 0),
                     ),
                     actions: [
