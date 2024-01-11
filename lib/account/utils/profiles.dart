@@ -11,6 +11,7 @@ void showProfileModalSheet(BuildContext context, {bool showLogoutDialog = false}
   ThunderBloc thunderBloc = context.read<ThunderBloc>();
 
   showModalBottomSheet(
+    elevation: 0,
     isScrollControlled: true,
     context: context,
     showDragHandle: true,
@@ -21,7 +22,7 @@ void showProfileModalSheet(BuildContext context, {bool showLogoutDialog = false}
           BlocProvider.value(value: thunderBloc),
         ],
         child: FractionallySizedBox(
-          heightFactor: 0.9,
+          heightFactor: 0.8,
           child: ProfileModalBody(showLogoutDialog: showLogoutDialog),
         ),
       );
