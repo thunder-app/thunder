@@ -284,6 +284,7 @@ class _UserSettingsPageState extends State<UserSettingsPage> {
                         },
                       ),
                     ),
+                    const SizedBox(height: 100.0),
                   ],
                 ),
               );
