@@ -56,9 +56,9 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
   /// User Settings
   bool isUserLoggedIn = false;
   bool isDownloadingMedia = false;
-  late double imagewidth = 0;
-  late double imageheight = 0;
-  late double maxzoomlevel = 3;
+  late double imageWidth = 0;
+  late double imageHeight = 0;
+  late double maxZoomLevel = 3;
 
   void _maybeSlide(BuildContext context) {
     setState(() {
@@ -115,10 +115,10 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
     Size decodedImage = await retrieveImageDimensions(imageUrl);
 
     setState(() {
-      imagewidth = decodedImage.width;
-      imageheight = decodedImage.height;
-      maxzoomlevel = max(imagewidth, imageheight) / 128;
-      debugPrint("$imagewidth + $imageheight + $maxzoomlevel");
+      imageWidth = decodedImage.width;
+      imageHeight = decodedImage.height;
+      maxZoomLevel = max(imageWidth, imageHeight) / 128;
+      debugPrint("$imageWidth + $imageHeight + $maxZoomLevel");
       areImageDimensionsLoaded = true;
     });
   }
@@ -259,8 +259,8 @@ class _ImageViewerState extends State<ImageViewer> with TickerProviderStateMixin
                                           return GestureConfig(
                                             minScale: 0.8,
                                             animationMinScale: 0.8,
-                                            maxScale: maxzoomlevel.toDouble(),
-                                            animationMaxScale: maxzoomlevel.toDouble(),
+                                            maxScale: maxZoomLevel.toDouble(),
+                                            animationMaxScale: maxZoomLevel.toDouble(),
                                             speed: 1.0,
                                             inertialSpeed: 250.0,
                                             initialScale: 1.0,
