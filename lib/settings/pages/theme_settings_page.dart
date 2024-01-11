@@ -58,7 +58,7 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
   List<ListPickerItem> themeOptions = [];
 
   /// Font size scales
-  List<ListPickerItem> fontScaleOptions = FontScale.values.map((FontScale fontScale) => ListPickerItem(icon: Icons.text_fields_rounded, label: fontScale.label, payload: fontScale)).toList();
+  List<ListPickerItem> fontScaleOptions = [];
 
   // Loading
   bool isLoading = true;
@@ -115,6 +115,23 @@ class _ThemeSettingsPageState extends State<ThemeSettingsPage> {
 
   void _initPreferences() async {
     final prefs = (await UserPreferences.instance).sharedPreferences;
+
+    final theme = Theme.of(context);
+
+    fontScaleOptions = FontScale.values
+        .map(
+          (FontScale fontScale) => ListPickerItem(
+            icon: Icons.text_fields_rounded,
+            label: fontScale.label,
+            payload: fontScale,
+            textTheme: theme.textTheme.copyWith(
+              bodyMedium: theme.textTheme.bodyMedium?.copyWith(
+                fontSize: MediaQuery.textScalerOf(context).scale(theme.textTheme.bodyMedium!.fontSize! * fontScale.textScaleFactor),
+              ),
+            ),
+          ),
+        )
+        .toList();
 
     setState(() {
       /// -------------------------- Theme Related Settings --------------------------
