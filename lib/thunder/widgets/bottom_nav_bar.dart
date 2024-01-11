@@ -77,6 +77,7 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
 
     final ThunderState state = context.watch<ThunderBloc>().state;
@@ -100,20 +101,22 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
           destinations: [
             NavigationDestination(
               icon: const Icon(Icons.dashboard_rounded),
-              label: AppLocalizations.of(context)!.feed,
+              label: l10n.feed,
             ),
             NavigationDestination(
               icon: const Icon(Icons.search_rounded),
-              label: AppLocalizations.of(context)!.search,
+              label: l10n.search,
             ),
-            NavigationDestination(
-              icon: GestureDetector(
-                  onLongPress: () {
-                    HapticFeedback.mediumImpact();
-                    showProfileModalSheet(context);
-                  },
-                  child: const Icon(Icons.person_rounded)),
-              label: AppLocalizations.of(context)!.account,
+            GestureDetector(
+              onLongPress: () {
+                HapticFeedback.mediumImpact();
+                showProfileModalSheet(context);
+              },
+              child: NavigationDestination(
+                icon: const Icon(Icons.person_rounded),
+                label: l10n.account(1),
+                tooltip: '', // Disable tooltip so that gesture detector triggers properly
+              ),
             ),
             NavigationDestination(
               icon: Badge(
@@ -121,11 +124,11 @@ class _CustomBottomNavigationBarState extends State<CustomBottomNavigationBar> {
                 label: Text(inboxState.totalUnreadCount > 99 ? '99+' : inboxState.totalUnreadCount.toString()),
                 child: const Icon(Icons.inbox_rounded),
               ),
-              label: AppLocalizations.of(context)!.inbox,
+              label: l10n.inbox,
             ),
             NavigationDestination(
               icon: const Icon(Icons.settings_rounded),
-              label: AppLocalizations.of(context)!.settings,
+              label: l10n.settings,
             ),
           ],
           onDestinationSelected: (index) {

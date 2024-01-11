@@ -32,6 +32,12 @@ final RegExp instanceName = RegExp(r'^!?(https?:\/\/)?((?:(?!\/c\/c).)*)@(.*)$')
 /// If so, returns the community name in the format community@instance.tld.
 /// Otherwise, returns null.
 Future<String?> getLemmyCommunity(String text) async {
+  // Do an initial check for usernames in the format /u/user@instance.tld.
+  // These can accidentally trip our community name detection.
+  if (text.toLowerCase().startsWith('/u/')) {
+    return null;
+  }
+
   final RegExpMatch? fullCommunityUrlMatch = fullCommunityUrl.firstMatch(text);
   if (fullCommunityUrlMatch != null && fullCommunityUrlMatch.groupCount >= 4 && await isLemmyInstance(fullCommunityUrlMatch.group(4))) {
     return '${fullCommunityUrlMatch.group(3)}@${fullCommunityUrlMatch.group(4)}';

@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
-
 import 'package:lemmy_api_client/v3.dart';
 import 'package:link_preview_generator/link_preview_generator.dart';
 import 'package:markdown_editable_textinput/format_markdown.dart';
@@ -16,7 +15,6 @@ import 'package:markdown_editable_textinput/markdown_text_input_field.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/account/models/account.dart';
 import 'package:thunder/community/bloc/image_bloc.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
@@ -169,7 +167,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       _titleTextController.text = widget.title ?? '';
       _bodyTextController.text = widget.text ?? '';
       _urlTextController.text = widget.url ?? '';
-      _getDataFromLink();
+      _getDataFromLink(updateTitleField: _titleTextController.text.isEmpty);
 
       if (widget.image != null) {
         WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
@@ -260,7 +258,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         context,
         AppLocalizations.of(context)!.restoredPostFromDraft,
         trailingIcon: Icons.delete_forever_rounded,
-        trailingIconColor: Theme.of(context).colorScheme.error,
+        trailingIconColor: Theme.of(context).colorScheme.errorContainer,
         trailingAction: () {
           sharedPreferences?.remove(draftId);
           _titleTextController.clear();
@@ -750,7 +748,6 @@ class _CommunitySelectorState extends State<CommunitySelector> {
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
-    final accountState = context.read<AccountBloc>().state;
 
     return Transform.translate(
       offset: const Offset(-8, 0),
@@ -767,7 +764,6 @@ class _CommunitySelectorState extends State<CommunitySelector> {
 
               widget.onCommunitySelected(cv);
             },
-            emptySuggestions: accountState.subsciptions,
           );
         },
         borderRadius: const BorderRadius.all(Radius.circular(50)),

@@ -1,16 +1,10 @@
-import 'dart:async';
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 
+import 'package:intl/intl.dart';
 import 'package:lemmy_api_client/v3.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:swipeable_page_route/swipeable_page_route.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'package:thunder/account/bloc/account_bloc.dart';
 import 'package:thunder/community/bloc/community_bloc.dart';
@@ -18,9 +12,7 @@ import 'package:thunder/community/enums/community_action.dart';
 import 'package:thunder/community/pages/create_post_page.dart';
 import 'package:thunder/core/auth/bloc/auth_bloc.dart';
 import 'package:thunder/core/enums/full_name_separator.dart';
-import 'package:thunder/core/enums/local_settings.dart';
 import 'package:thunder/core/singletons/lemmy_client.dart';
-import 'package:thunder/core/singletons/preferences.dart';
 import 'package:thunder/feed/bloc/feed_bloc.dart';
 import 'package:thunder/instance/instance_view.dart';
 import 'package:thunder/shared/common_markdown_body.dart';
@@ -30,6 +22,8 @@ import 'package:thunder/thunder/bloc/thunder_bloc.dart';
 import 'package:thunder/utils/date_time.dart';
 import 'package:thunder/utils/instance.dart';
 import 'package:thunder/utils/navigate_user.dart';
+
+const kSidebarWidthFactor = 0.8;
 
 class CommunitySidebar extends StatefulWidget {
   final GetCommunityResponse? getCommunityResponse;
@@ -74,7 +68,7 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
             onUpdate: (DismissUpdateDetails details) => details.reached ? widget.onDismiss() : null,
             direction: DismissDirection.startToEnd,
             child: FractionallySizedBox(
-              widthFactor: 0.8,
+              widthFactor: kSidebarWidthFactor,
               alignment: FractionalOffset.centerRight,
               child: Container(
                 color: theme.colorScheme.background,
@@ -117,7 +111,10 @@ class _CommunitySidebarState extends State<CommunitySidebar> {
                       child: ListView(
                         shrinkWrap: true,
                         children: [
-                          CommonMarkdownBody(body: communityView.community.description ?? ''),
+                          CommonMarkdownBody(
+                            body: communityView.community.description ?? '',
+                            imageMaxWidth: (kSidebarWidthFactor - 0.1) * MediaQuery.of(context).size.width,
+                          ),
                           const SidebarSectionHeader(value: "Stats"),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
@@ -235,7 +232,7 @@ class CommunityModeratorList extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          mods.moderator!.displayName ?? mods.moderator!.name,
+                          mods.moderator.displayName ?? mods.moderator.name,
                           overflow: TextOverflow.ellipsis,
                           maxLines: 1,
                           style: const TextStyle(
