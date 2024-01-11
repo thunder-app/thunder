@@ -187,6 +187,10 @@
   "@compactViewSettings": {
     "description": "Subcategory in Setting -> Appearance -> Posts"
   },
+  "confirm": "Confirm",
+  "@confirm": {
+    "description": "Label for the confirm action in the dialog"
+  },
   "confirmLogOutBody": "Are you sure you want to log out?",
   "@confirmLogOutBody": {
     "description": "The body of the confirm logout dialog"
@@ -247,6 +251,10 @@
   "@currentSinglePress": {},
   "customizeSwipeActions": "Customize swipe actions (tap to change)",
   "@customizeSwipeActions": {},
+  "dangerZone": "Danger Zone",
+  "@dangerZone": {
+    "description": "Describes a section where the actions could be dangerous (e.g., permanently deleting account)"
+  },
   "debug": "Debug",
   "@debug": {
     "description": "Debug settings category."
@@ -257,6 +265,14 @@
   },
   "delete": "Delete",
   "@delete": {},
+  "deleteAccount": "Delete Account",
+  "@deleteAccount": {
+    "description": "Label for action to delete account"
+  },
+  "deleteAccountDescription": "To permanently delete your account, you will be redirected to your instance site. \n\nAre you sure you want to continue?",
+  "@deleteAccountDescription": {
+    "description": "Description for confirmation action to delete account"
+  },
   "deleteLocalDatabase": "Delete Local Database",
   "@deleteLocalDatabase": {
     "description": "Label for action to delete local database"
